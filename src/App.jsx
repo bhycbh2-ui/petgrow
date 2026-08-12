@@ -807,16 +807,16 @@ const LeafIcon = (p) => (
     <path d="M4 20c9 0 16-7 16-16-9 0-16 7-16 16zm0 0c2-4 5-7 9-9" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
-// PetGrow 브랜드 마크 (업로드해주신 로고를 참고해 만든 심볼 — 강아지+고양이+하트)
+// PetGrow 브랜드 마크 (강아지+고양이+하트) — 귀여운 핑크 톤
 const PetGrowMark = (p) => (
   <svg viewBox="0 0 100 100" {...p}>
     <g fill="none" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M30 30c-8 0-13 6-13 14 0 7 4 12 9 15-3 6-2 13 2 18" stroke="#3a3a3a" strokeWidth="3.2" />
-      <circle cx="20" cy="34" r="1.6" fill="#3a3a3a" />
-      <path d="M55 38c8-2 15 3 17 11 2 8-2 15-8 19 2 6 0 12-4 16" stroke="#7fa66b" strokeWidth="3.2" />
-      <circle cx="65" cy="42" r="1.6" fill="#7fa66b" />
-      <path d="M32 60c4-5 10-5 14 0 4-5 10-5 14 0 0 6-7 12-14 16-7-4-14-10-14-16z" stroke="#7fa66b" strokeWidth="3" />
-      <path d="M46 58c0-4 2-6 6-7-1 4-2 6-6 7z" fill="#7fa66b" stroke="none" />
+      <path d="M30 30c-8 0-13 6-13 14 0 7 4 12 9 15-3 6-2 13 2 18" stroke="#5B4A4F" strokeWidth="3.2" />
+      <circle cx="20" cy="34" r="1.6" fill="#5B4A4F" />
+      <path d="M55 38c8-2 15 3 17 11 2 8-2 15-8 19 2 6 0 12-4 16" stroke="#FFB3C9" strokeWidth="3.2" />
+      <circle cx="65" cy="42" r="1.6" fill="#FFB3C9" />
+      <path d="M32 60c4-5 10-5 14 0 4-5 10-5 14 0 0 6-7 12-14 16-7-4-14-10-14-16z" stroke="#FFB3C9" strokeWidth="3" />
+      <path d="M46 58c0-4 2-6 6-7-1 4-2 6-6 7z" fill="#FFB3C9" stroke="none" />
     </g>
   </svg>
 );
@@ -1103,85 +1103,87 @@ function NotificationBell({ items, onSelect, onEnablePush, pushStatus }) {
    ============================================================ */
 const GlobalStyle = () => (
   <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap');
     .bboggl-root{
-      --primary:#2383E2;--text:#191919;--sub:#787774;--bg:#FFFFFF;--surface:#F7F6F3;--border:#E9E9E7;
-      font-family:'Inter',sans-serif; letter-spacing:-0.01em; color:var(--text); background:var(--bg);
+      --primary:#FFB3C9;--primary-dark:#FF9CBB;--text:#6B5B60;--sub:#C9A8B0;--bg:#FFFDFB;--surface:#FFF6F9;--border:#FFE3EC;
+      font-family:'Gowun Dodum','Inter',sans-serif; letter-spacing:0; color:var(--text); background:var(--bg);
       min-height:100%; width:100%; box-sizing:border-box;
     }
     .bboggl-root *{box-sizing:border-box;}
-    .bboggl-root h1,.bboggl-root h2,.bboggl-root h3{font-weight:800; margin:0;}
-    .bg-btn{border-radius:10px;padding:12px 20px;font-weight:700;background:var(--primary);color:#fff;border:none;
-      box-shadow:0 6px 14px rgba(0,0,0,.25);cursor:pointer;transition:.15s; font-size:15px; font-family:inherit;}
-    .bg-btn:hover{transform:translateY(-1px); box-shadow:0 9px 18px rgba(0,0,0,.3);}
-    .bg-btn:disabled{opacity:.4; cursor:not-allowed; transform:none;}
-    .bg-btn-ghost{background:var(--surface); color:var(--text); box-shadow:none; border:1px solid var(--border);}
-    .bg-btn-ghost:hover{box-shadow:0 4px 10px rgba(0,0,0,.12);}
+    .bboggl-root h1,.bboggl-root h2,.bboggl-root h3{font-family:'Jua','Gowun Dodum',sans-serif; font-weight:400; margin:0;}
+    .bg-btn{border-radius:999px;padding:13px 22px;font-weight:700;background:var(--primary);color:#fff;border:none;
+      box-shadow:0 5px 0 var(--primary-dark);cursor:pointer;transition:.12s; font-size:15px; font-family:inherit;}
+    .bg-btn:hover{transform:translateY(-2px); box-shadow:0 7px 0 var(--primary-dark);}
+    .bg-btn:active{transform:translateY(2px); box-shadow:0 2px 0 var(--primary-dark);}
+    .bg-btn:disabled{opacity:.4; cursor:not-allowed; transform:none; box-shadow:0 5px 0 var(--primary-dark);}
+    .bg-btn-ghost{background:var(--surface); color:var(--text); box-shadow:0 4px 0 var(--border); border:none;}
+    .bg-btn-ghost:hover{box-shadow:0 5px 0 var(--border);}
+    .bg-btn-ghost:active{box-shadow:0 1px 0 var(--border);}
     .icon{width:22px;height:22px;fill:currentColor;stroke:none;flex-shrink:0;}
-    .bg-card{background:var(--bg); border:1px solid var(--border); border-radius:14px; padding:20px;}
-    .bg-surface-card{background:var(--surface); border-radius:14px; padding:20px;}
-    .bg-input{width:100%; padding:11px 13px; border:1px solid var(--border); border-radius:10px; font-family:inherit;
+    .bg-card{background:var(--bg); border:2px solid var(--border); border-radius:26px; padding:22px;}
+    .bg-surface-card{background:var(--surface); border-radius:22px; padding:20px;}
+    .bg-input{width:100%; padding:12px 16px; border:2px solid var(--border); border-radius:18px; font-family:inherit;
       font-size:14px; background:#fff; color:var(--text);}
-    .bg-input:focus{outline:2px solid var(--primary); outline-offset:1px;}
-    .bg-chip{padding:10px 14px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;
+    .bg-input:focus{outline:none; border-color:var(--primary);}
+    .bg-chip{padding:10px 16px; border-radius:999px; border:2px solid var(--border); background:#fff; cursor:pointer;
       font-family:inherit; font-size:14px; font-weight:500; color:var(--text); transition:.12s; text-align:left;}
-    .bg-chip:hover{border-color:var(--primary);}
+    .bg-chip:hover{border-color:var(--primary); transform:translateY(-1px);}
     .bg-chip.active{background:var(--primary); color:#fff; border-color:var(--primary); font-weight:700;}
     .bg-label{font-size:13px; font-weight:700; color:var(--text); margin-bottom:8px; display:block;}
     .bg-sub{color:var(--sub); font-size:13px;}
-    .bg-accordion{border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-bottom:8px;}
-    .bg-accordion summary{padding:14px 16px; cursor:pointer; font-weight:700; font-size:14px; list-style:none;
+    .bg-accordion{border:2px solid var(--border); border-radius:20px; overflow:hidden; margin-bottom:10px;}
+    .bg-accordion summary{padding:14px 18px; cursor:pointer; font-weight:700; font-size:14px; list-style:none;
       display:flex; align-items:center; justify-content:space-between; background:#fff;}
     .bg-accordion summary::-webkit-details-marker{display:none;}
-    .bg-accordion[open] summary{border-bottom:1px solid var(--border);}
-    .bg-accordion .acc-body{padding:14px 16px; font-size:13px; line-height:1.7; color:var(--text); background:var(--surface);}
-    .photo-tile{aspect-ratio:1; border-radius:12px; overflow:hidden; position:relative; cursor:pointer;
-      border:1px solid var(--border); background:var(--surface); display:flex; align-items:center; justify-content:center;}
+    .bg-accordion[open] summary{border-bottom:2px solid var(--border);}
+    .bg-accordion .acc-body{padding:14px 18px; font-size:13px; line-height:1.7; color:var(--text); background:var(--surface);}
+    .photo-tile{aspect-ratio:1; border-radius:22px; overflow:hidden; position:relative; cursor:pointer;
+      border:2px solid var(--border); background:var(--surface); display:flex; align-items:center; justify-content:center;}
     .photo-tile.locked{cursor:not-allowed; opacity:.5;}
     .photo-tile img{width:100%; height:100%; object-fit:cover;}
-    .photo-tile .tile-label{position:absolute; bottom:0; left:0; right:0; background:rgba(25,25,25,.6); color:#fff;
+    .photo-tile .tile-label{position:absolute; bottom:0; left:0; right:0; background:rgba(91,74,79,.65); color:#fff;
       font-size:11px; font-weight:700; padding:4px 6px; text-align:center;}
     .tile-actions{position:absolute; top:5px; right:5px; display:flex; gap:4px;}
-    .tile-btn{width:26px; height:26px; border-radius:8px; border:none; background:rgba(25,25,25,.55);
+    .tile-btn{width:28px; height:28px; border-radius:50%; border:none; background:rgba(91,74,79,.55);
       display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0;}
-    .tile-btn:hover{background:rgba(25,25,25,.8);}
+    .tile-btn:hover{background:rgba(91,74,79,.8);}
     .tile-btn .icon{width:14px; height:14px; fill:#fff;}
-    .reminder-banner{display:flex; align-items:center; gap:10px; background:#fff; border:1px solid var(--primary);
-      border-radius:10px; padding:12px 14px; margin-bottom: 14px;}
-    .photo-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(110px,1fr)); gap:8px;}
-    .pet-switcher{display:flex; gap:8px; overflow-x:auto; padding-bottom:6px; margin-bottom:18px;}
+    .reminder-banner{display:flex; align-items:center; gap:10px; background:#fff; border:2px solid var(--primary);
+      border-radius:18px; padding:12px 14px; margin-bottom: 14px;}
+    .photo-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(110px,1fr)); gap:10px;}
+    .pet-switcher{display:flex; gap:12px; overflow-x:auto; padding:2px 2px 8px; margin-bottom:18px;}
     .pet-switcher .bg-chip{white-space:nowrap; flex-shrink:0;}
-    .bg-input.invalid{border-color:var(--primary); box-shadow:0 0 0 1px var(--primary);}
-    .field-error{color:var(--primary); font-size:12px; font-weight:700; margin-top:5px;}
-    .form-alert{display:flex; align-items:flex-start; gap:8px; background:var(--surface); border:1px solid var(--primary);
-      border-radius:10px; padding:10px 12px; font-size:13px; font-weight:600; margin-bottom:12px;}
-    .icon-btn{width:38px; height:38px; border-radius:10px; border:1px solid var(--border); background:#fff;
+    .bg-input.invalid{border-color:var(--primary);}
+    .field-error{color:var(--primary-dark); font-size:12px; font-weight:700; margin-top:5px;}
+    .form-alert{display:flex; align-items:flex-start; gap:8px; background:var(--surface); border:2px solid var(--primary);
+      border-radius:18px; padding:10px 14px; font-size:13px; font-weight:600; margin-bottom:12px;}
+    .icon-btn{width:40px; height:40px; border-radius:50%; border:2px solid var(--border); background:#fff;
       display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;}
-    .icon-btn:hover{border-color:var(--primary);}
-    .profile-avatar{width:64px; height:64px; border-radius:50%; background:var(--surface); border:1px solid var(--border);
+    .icon-btn:hover{border-color:var(--primary); transform:translateY(-1px);}
+    .profile-avatar{width:64px; height:64px; border-radius:50%; background:var(--surface); border:2px solid var(--border);
       display:flex; align-items:center; justify-content:center; overflow:hidden; cursor:pointer; flex-shrink:0;}
     .profile-avatar img{width:100%; height:100%; object-fit:cover;}
     .profile-header{display:flex; align-items:center; gap:16px;}
-    .profile-header-avatar{width:76px; height:76px; border-radius:50%; background:var(--surface);
-      border:1px solid var(--border); display:flex; align-items:center; justify-content:center; overflow:hidden;
+    .profile-header-avatar{width:112px; height:112px; border-radius:50%; background:var(--surface);
+      border:4px solid var(--border); display:flex; align-items:center; justify-content:center; overflow:hidden;
       flex-shrink:0; cursor:pointer; position:relative;}
     .profile-header-avatar img{width:100%; height:100%; object-fit:cover;}
-    .profile-header-avatar .avatar-edit-badge{position:absolute; bottom:0; right:0; width:24px; height:24px;
+    .profile-header-avatar .avatar-edit-badge{position:absolute; bottom:2px; right:2px; width:32px; height:32px;
       border-radius:50%; background:var(--primary); display:flex; align-items:center; justify-content:center;
       border:2px solid #fff;}
-    .profile-header-avatar .avatar-edit-badge .icon{width:12px; height:12px; fill:#fff;}
-    .profile-header-name{font-size:20px; font-weight:800; color:var(--text);}
-    .profile-header-meta{font-size:13px; color:var(--sub); margin-top:4px;}
-    .lang-toggle{display:flex; border:1px solid var(--border); border-radius:10px; overflow:hidden; flex-shrink:0;}
-    .lang-toggle button{border:none; background:#fff; padding:0 12px; height:38px; font-family:inherit; font-size:12px;
+    .profile-header-avatar .avatar-edit-badge .icon{width:14px; height:14px; fill:#fff;}
+    .profile-header-name{font-family:'Jua',sans-serif; font-size:24px; color:var(--text);}
+    .profile-header-meta{font-size:13px; color:var(--sub); margin-top:6px;}
+    .lang-toggle{display:flex; border:2px solid var(--border); border-radius:999px; overflow:hidden; flex-shrink:0;}
+    .lang-toggle button{border:none; background:#fff; padding:0 14px; height:40px; font-family:inherit; font-size:12px;
       font-weight:700; cursor:pointer; color:var(--sub);}
     .lang-toggle button.active{background:var(--primary); color:#fff;}
-    .account-btn{display:flex; align-items:center; gap:6px; height:38px; padding:0 12px; border-radius:10px;
-      border:1px solid var(--border); background:#fff; cursor:pointer; font-family:inherit; font-size:13px;
+    .account-btn{display:flex; align-items:center; gap:6px; height:40px; padding:0 14px; border-radius:999px;
+      border:2px solid var(--border); background:#fff; cursor:pointer; font-family:inherit; font-size:13px;
       font-weight:700; color:var(--text); flex-shrink:0;}
     .account-btn:hover{border-color:var(--primary);}
-    .demo-tag{font-size:10px; font-weight:700; color:var(--primary); background:var(--surface);
-      border-radius:6px; padding:2px 6px; margin-left:2px;}
+    .demo-tag{font-size:10px; font-weight:700; color:var(--primary-dark); background:var(--surface);
+      border-radius:999px; padding:2px 8px; margin-left:2px;}
     .login-divider{display:flex; align-items:center; gap:10px; margin:16px 0; color:var(--sub); font-size:12px;}
     .login-divider::before, .login-divider::after{content:""; flex:1; height:1px; background:var(--border);}
     .btn-google{display:flex; align-items:center; justify-content:center; gap:8px; width:100%;}
@@ -1190,18 +1192,18 @@ const GlobalStyle = () => (
       font-weight:700; min-width:16px; height:16px; border-radius:8px; display:flex; align-items:center;
       justify-content:center; padding:0 3px;}
     .notif-panel{position:absolute; top:calc(100% + 6px); right:0; width:280px; background:#fff;
-      border:1px solid var(--border); border-radius:12px; box-shadow:0 12px 28px rgba(0,0,0,.16); z-index:30;
+      border:2px solid var(--border); border-radius:20px; box-shadow:0 12px 28px rgba(91,74,79,.16); z-index:30;
       max-height:340px; overflow-y:auto;}
     .notif-item{padding:11px 14px; font-size:13px; line-height:1.5; cursor:pointer; border-bottom:1px solid var(--border);}
     .notif-item:hover{background:var(--surface);}
     .notif-footer{padding:12px 14px; border-top:1px solid var(--border);}
-    .slideshow-card{background:#111; border-radius:16px; padding:16px; max-width:640px; width:100%;
+    .slideshow-card{background:#3a2e32; border-radius:24px; padding:16px; max-width:640px; width:100%;
       display:flex; flex-direction:column; position:relative;}
-    .slideshow-close{position:absolute; top:10px; right:10px; width:32px; height:32px; border-radius:8px;
+    .slideshow-close{position:absolute; top:10px; right:10px; width:32px; height:32px; border-radius:50%;
       border:none; background:rgba(255,255,255,.15); color:#fff; font-size:16px; cursor:pointer; z-index:2;}
     .slideshow-image-wrap{position:relative; display:flex; align-items:center; justify-content:center;
       min-height:280px; max-height:60vh;}
-    .slideshow-image-wrap img{max-width:100%; max-height:60vh; border-radius:8px; object-fit:contain;}
+    .slideshow-image-wrap img{max-width:100%; max-height:60vh; border-radius:16px; object-fit:contain;}
     .slideshow-nav{position:absolute; top:50%; transform:translateY(-50%); width:40px; height:40px;
       border-radius:50%; border:none; background:rgba(255,255,255,.2); color:#fff; font-size:24px; cursor:pointer;}
     .slideshow-nav:hover{background:rgba(255,255,255,.35);}
@@ -1293,14 +1295,14 @@ const GlobalStyle = () => (
     .landing-footer-text{text-align:center; color:rgba(255,255,255,.55); font-size:11px; margin-top:10px; line-height:1.7;}
     @media (max-width:680px){ .landing-features{grid-template-columns:1fr;} .landing-steps{grid-template-columns:1fr;} .landing-pricing{grid-template-columns:1fr;}
       .landing-showcase-row, .landing-showcase-row.reverse{flex-direction:column; gap:28px;} .landing-showcase{gap:52px;} }
-    .modal-overlay{position:fixed; inset:0; background:rgba(25,25,25,.5); display:flex; align-items:center;
+    .modal-overlay{position:fixed; inset:0; background:rgba(91,74,79,.45); display:flex; align-items:center;
       justify-content:center; padding:20px; z-index:100;}
-    .modal-card{background:#fff; border-radius:16px; padding:26px; width:100%; box-shadow:0 24px 48px rgba(0,0,0,.3);
+    .modal-card{background:#fff; border-radius:28px; padding:26px; width:100%; box-shadow:0 24px 48px rgba(91,74,79,.25);
       max-height:82vh; overflow-y:auto;}
     .combobox-wrap{position:relative;}
     .combobox-dropdown{position:absolute; top:calc(100% + 4px); left:0; right:0; background:#fff;
-      border:1px solid var(--border); border-radius:10px; max-height:260px; overflow-y:auto; z-index:20;
-      box-shadow:0 8px 20px rgba(0,0,0,.14);}
+      border:2px solid var(--border); border-radius:18px; max-height:260px; overflow-y:auto; z-index:20;
+      box-shadow:0 8px 20px rgba(91,74,79,.14);}
     .combobox-group-label{padding:8px 12px 4px; font-size:11px; font-weight:700; color:var(--sub);}
     .combobox-item{padding:9px 12px; font-size:14px; cursor:pointer;}
     .combobox-item:hover, .combobox-item.active{background:var(--surface);}
@@ -1645,14 +1647,14 @@ function GrowthChartCard({ table, ageMonths, currentWeightKg }) {
       </div>
       <ResponsiveContainer width="100%" height={220}>
         <LineChart data={data} margin={{ top: 10, right: 16, left: -10, bottom: 0 }}>
-          <CartesianGrid stroke="#E9E9E7" vertical={false} />
-          <XAxis dataKey="month" type="number" domain={[0, 24]} tick={{ fontSize: 12, fill: "#787774" }} tickFormatter={(m) => t.monthLabel(m)}
-            stroke="#E9E9E7" />
-          <YAxis tick={{ fontSize: 12, fill: "#787774" }} stroke="#E9E9E7" width={40} tickFormatter={(v) => `${v}kg`} />
+          <CartesianGrid stroke="#FFE3EC" vertical={false} />
+          <XAxis dataKey="month" type="number" domain={[0, 24]} tick={{ fontSize: 12, fill: "#C9A8B0" }} tickFormatter={(m) => t.monthLabel(m)}
+            stroke="#FFE3EC" />
+          <YAxis tick={{ fontSize: 12, fill: "#C9A8B0" }} stroke="#FFE3EC" width={40} tickFormatter={(v) => `${v}kg`} />
           <Tooltip formatter={(v) => [`${v}kg`, t.tooltipWeight]} labelFormatter={(m) => t.monthLabelAge(m)}
-            contentStyle={{ borderRadius: 10, border: "1px solid #E9E9E7", fontSize: 13 }} />
-          <Line type="monotone" dataKey="weight" stroke="#2383E2" strokeWidth={2.5} dot={{ r: 3, fill: "#2383E2" }} />
-          <ReferenceDot x={currentPoint.month} y={currentPoint.weight} r={6} fill="#191919" stroke="#fff" strokeWidth={2} />
+            contentStyle={{ borderRadius: 16, border: "2px solid #FBD9E4", fontSize: 13 }} />
+          <Line type="monotone" dataKey="weight" stroke="#FFB3C9" strokeWidth={3} dot={{ r: 4, fill: "#FFB3C9" }} />
+          <ReferenceDot x={currentPoint.month} y={currentPoint.weight} r={7} fill="#FF9CBB" stroke="#fff" strokeWidth={2} />
         </LineChart>
       </ResponsiveContainer>
       <div className="bg-sub" style={{ fontSize: 12, marginTop: 4 }}>{t.chartLegend}</div>
@@ -2099,12 +2101,12 @@ function SpeciesTabBar({ species, onChange, dogCount, catCount }) {
   return (
     <div style={{ display: "flex", gap: 8 }}>
       <button className={`bg-chip ${species === "dog" ? "active" : ""}`}
-        style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
+        style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}
         onClick={() => onChange("dog")}>
         <PawIcon style={{ width: 16, height: 16 }} /> {t.tabDog(dogCount)}
       </button>
       <button className={`bg-chip ${species === "cat" ? "active" : ""}`}
-        style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
+        style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}
         onClick={() => onChange("cat")}>
         <CatIcon style={{ width: 16, height: 16 }} /> {t.tabCat(catCount)}
       </button>
@@ -2201,9 +2203,9 @@ function ResultPage({ pet, breedGroups, onAddRecord, onAddPhoto, onEditPhoto, on
             {profile.profileImage ? (
               <img src={profile.profileImage} alt={profile.name} />
             ) : profile.species === "cat" ? (
-              <CatIcon style={{ width: 32, height: 32, color: "var(--sub)" }} />
+              <CatIcon style={{ width: 46, height: 46, color: "var(--sub)" }} />
             ) : (
-              <PawIcon style={{ width: 32, height: 32, color: "var(--sub)" }} />
+              <PawIcon style={{ width: 46, height: 46, color: "var(--sub)" }} />
             )}
             <span className="avatar-edit-badge"><EditIcon /></span>
             <input ref={avatarInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handlePickAvatar} />
@@ -2590,8 +2592,8 @@ function AppInner({ lang, setLang }) {
         <div style={{ display: "flex", gap: 8, alignItems: "center", justifyContent: "space-between", marginBottom: 12, flexWrap: "wrap" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <PetGrowMark style={{ width: 22, height: 22 }} />
-            <span style={{ fontSize: 15, fontWeight: 800 }}>
-              <span style={{ color: "#33383a" }}>Pet</span><span style={{ color: "#7fa66b" }}>Grow</span>
+            <span style={{ fontSize: 15, fontWeight: 800, fontFamily: "'Jua',sans-serif" }}>
+              <span style={{ color: "var(--text)" }}>Pet</span><span style={{ color: "var(--primary)" }}>Grow</span>
             </span>
           </div>
           <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
