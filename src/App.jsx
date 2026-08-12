@@ -190,6 +190,10 @@ const STRINGS = {
     errWeight: "현재 체중을 입력해주세요",
     errCustomBreed: (otherLabel) => `${otherLabel} 이름을 입력해주세요`,
     labelPetName: (speciesLabel) => `${speciesLabel} 이름`,
+    labelProfileImage: "대표 사진 (선택)",
+    profileImagePickBtn: "사진 선택",
+    profileImageRemoveBtn: "삭제",
+    profileHeaderBirth: (dateText) => `${dateText}생`,
     placeholderPetName: { dog: "예: 뭉치", cat: "예: 나비" },
     defaultPetName: { dog: "뭉치", cat: "나비" },
     labelBreedField: (otherLabel) => otherLabel,
@@ -407,6 +411,10 @@ const STRINGS = {
     errWeight: "Please enter the current weight",
     errCustomBreed: (otherLabel) => `Please enter a ${otherLabel} name`,
     labelPetName: (speciesLabel) => `${speciesLabel.charAt(0).toUpperCase() + speciesLabel.slice(1)}'s name`,
+    labelProfileImage: "Profile photo (optional)",
+    profileImagePickBtn: "Choose photo",
+    profileImageRemoveBtn: "Remove",
+    profileHeaderBirth: (dateText) => `Born ${dateText}`,
     placeholderPetName: { dog: "e.g. Buddy", cat: "e.g. Nabi" },
     defaultPetName: { dog: "Buddy", cat: "Nabi" },
     labelBreedField: (otherLabel) => otherLabel.charAt(0).toUpperCase() + otherLabel.slice(1),
@@ -659,6 +667,14 @@ function buildGrowthTable(estimateKg, curveKey, currentAgeMonths) {
 
 function fmtKg(n) {
   return `${n.toFixed(1)}kg`;
+}
+
+function formatBirthDate(dateStr, lang) {
+  const d = new Date(dateStr);
+  if (lang === "en") {
+    return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+  }
+  return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
 }
 
 // 이전 버전(월령 고정 슬롯)에 저장된 사진을 새 형식(날짜 배열)으로 변환
@@ -1142,6 +1158,20 @@ const GlobalStyle = () => (
     .icon-btn{width:38px; height:38px; border-radius:10px; border:1px solid var(--border); background:#fff;
       display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;}
     .icon-btn:hover{border-color:var(--primary);}
+    .profile-avatar{width:64px; height:64px; border-radius:50%; background:var(--surface); border:1px solid var(--border);
+      display:flex; align-items:center; justify-content:center; overflow:hidden; cursor:pointer; flex-shrink:0;}
+    .profile-avatar img{width:100%; height:100%; object-fit:cover;}
+    .profile-header{display:flex; align-items:center; gap:16px;}
+    .profile-header-avatar{width:76px; height:76px; border-radius:50%; background:var(--surface);
+      border:1px solid var(--border); display:flex; align-items:center; justify-content:center; overflow:hidden;
+      flex-shrink:0; cursor:pointer; position:relative;}
+    .profile-header-avatar img{width:100%; height:100%; object-fit:cover;}
+    .profile-header-avatar .avatar-edit-badge{position:absolute; bottom:0; right:0; width:24px; height:24px;
+      border-radius:50%; background:var(--primary); display:flex; align-items:center; justify-content:center;
+      border:2px solid #fff;}
+    .profile-header-avatar .avatar-edit-badge .icon{width:12px; height:12px; fill:#fff;}
+    .profile-header-name{font-size:20px; font-weight:800; color:var(--text);}
+    .profile-header-meta{font-size:13px; color:var(--sub); margin-top:4px;}
     .lang-toggle{display:flex; border:1px solid var(--border); border-radius:10px; overflow:hidden; flex-shrink:0;}
     .lang-toggle button{border:none; background:#fff; padding:0 12px; height:38px; font-family:inherit; font-size:12px;
       font-weight:700; cursor:pointer; color:var(--sub);}
@@ -1357,6 +1387,44 @@ function BreedCombobox({ breedGroups, allBreeds, species, value, onChange, inval
   );
 }
 
+function ProfileImagePicker({ species, value, onChange }) {
+  const t = useT();
+  const inputRef = useRef(null);
+  const handlePick = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const dataUrl = await fileToDataUrl(file);
+    onChange(dataUrl);
+    e.target.value = "";
+  };
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+      <div className="profile-avatar" onClick={() => inputRef.current && inputRef.current.click()}>
+        {value ? (
+          <img src={value} alt="" />
+        ) : species === "cat" ? (
+          <CatIcon style={{ width: 30, height: 30, color: "var(--sub)" }} />
+        ) : (
+          <PawIcon style={{ width: 30, height: 30, color: "var(--sub)" }} />
+        )}
+      </div>
+      <div style={{ display: "flex", gap: 8 }}>
+        <button type="button" className="bg-btn bg-btn-ghost" style={{ padding: "9px 14px", fontSize: 13 }}
+          onClick={() => inputRef.current && inputRef.current.click()}>
+          {t.profileImagePickBtn}
+        </button>
+        {value && (
+          <button type="button" className="bg-btn bg-btn-ghost" style={{ padding: "9px 14px", fontSize: 13 }}
+            onClick={() => onChange(null)}>
+            {t.profileImageRemoveBtn}
+          </button>
+        )}
+      </div>
+      <input ref={inputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handlePick} />
+    </div>
+  );
+}
+
 function OnboardingPage({ species, breedGroups, sizeOptions, initialValues, onSubmit, onCancel }) {
   const lang = useLang();
   const t = useT();
@@ -1367,6 +1435,7 @@ function OnboardingPage({ species, breedGroups, sizeOptions, initialValues, onSu
   const otherLabel = t.otherLabel[species];
 
   const [name, setName] = useState(initialValues?.name ?? t.defaultPetName[species]);
+  const [profileImage, setProfileImage] = useState(initialValues?.profileImage ?? null);
   const [breedId, setBreedId] = useState(initialValues?.breedId ?? allBreeds[0]?.id ?? "custom");
   const [customBreedName, setCustomBreedName] = useState(initialValues?.breedId === "custom" ? initialValues.breedName : "");
   const [sizeCategory, setSizeCategory] = useState(
@@ -1423,6 +1492,7 @@ function OnboardingPage({ species, breedGroups, sizeOptions, initialValues, onSu
     onSubmit({
       species,
       name: name.trim(),
+      profileImage,
       breedId,
       breedName: breedNameToStore,
       curveKey,
@@ -1455,6 +1525,11 @@ function OnboardingPage({ species, breedGroups, sizeOptions, initialValues, onSu
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
+        <div>
+          <label className="bg-label">{t.labelProfileImage}</label>
+          <ProfileImagePicker species={species} value={profileImage} onChange={setProfileImage} />
+        </div>
+
         <div>
           <label className="bg-label">{t.labelPetName(speciesLabel)}</label>
           <input className={`bg-input ${errors.name ? "invalid" : ""}`} value={name}
@@ -2069,7 +2144,7 @@ function PetSwitcher({ species, pets, activePetId, onSelect, onAddNew }) {
 /* ============================================================
    ResultPage
    ============================================================ */
-function ResultPage({ pet, breedGroups, onAddRecord, onAddPhoto, onEditPhoto, onDeletePhoto, onEdit, onDelete }) {
+function ResultPage({ pet, breedGroups, onAddRecord, onAddPhoto, onEditPhoto, onDeletePhoto, onEdit, onDelete, onUpdateProfileImage }) {
   const lang = useLang();
   const t = useT();
   const { profile, records, photos } = pet;
@@ -2077,6 +2152,15 @@ function ResultPage({ pet, breedGroups, onAddRecord, onAddPhoto, onEditPhoto, on
   const ageMonthsNow = monthsBetween(new Date(profile.birthDate), now);
   const allBreedsFlat = useMemo(() => breedGroups.flatMap((g) => g.breeds), [breedGroups]);
   const breedDisplayName = getBreedDisplayName(profile, allBreedsFlat, lang);
+  const avatarInputRef = useRef(null);
+
+  const handlePickAvatar = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const dataUrl = await fileToDataUrl(file);
+    onUpdateProfileImage(dataUrl);
+    e.target.value = "";
+  };
 
   const sortedRecords = useMemo(
     () => [...records].sort((a, b) => new Date(a.date) - new Date(b.date)),
@@ -2111,12 +2195,25 @@ function ResultPage({ pet, breedGroups, onAddRecord, onAddPhoto, onEditPhoto, on
 
   return (
     <div style={{ maxWidth: 640, margin: "0 auto", padding: "0 20px 60px" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 8 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {profile.species === "cat"
-            ? <CatIcon style={{ width: 22, height: 22, color: "var(--primary)" }} />
-            : <PawIcon style={{ width: 22, height: 22, color: "var(--primary)" }} />}
-          <h1 style={{ fontSize: 18 }}>{t.reportTitle(profile.name)}</h1>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
+        <div className="profile-header">
+          <div className="profile-header-avatar" onClick={() => avatarInputRef.current && avatarInputRef.current.click()}>
+            {profile.profileImage ? (
+              <img src={profile.profileImage} alt={profile.name} />
+            ) : profile.species === "cat" ? (
+              <CatIcon style={{ width: 32, height: 32, color: "var(--sub)" }} />
+            ) : (
+              <PawIcon style={{ width: 32, height: 32, color: "var(--sub)" }} />
+            )}
+            <span className="avatar-edit-badge"><EditIcon /></span>
+            <input ref={avatarInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handlePickAvatar} />
+          </div>
+          <div>
+            <div className="profile-header-name">{profile.name}</div>
+            <div className="profile-header-meta">
+              {breedDisplayName} · {t.profileHeaderBirth(formatBirthDate(profile.birthDate, lang))}
+            </div>
+          </div>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           <button className="bg-btn bg-btn-ghost" onClick={onEdit}>{t.editBtn}</button>
@@ -2132,13 +2229,6 @@ function ResultPage({ pet, breedGroups, onAddRecord, onAddPhoto, onEditPhoto, on
         <PeerCompareCard profile={profile} latestWeightKg={latest.weightKg} ageAtLatest={ageAtLatest} />
         <PhotoAlbum birthDate={profile.birthDate} photos={photos} onAdd={onAddPhoto} onEdit={onEditPhoto} onDelete={onDeletePhoto} />
         <InfoAccordion profile={profile} latestWeightKg={latest.weightKg} ageAtLatest={ageAtLatest} />
-
-        <div className="bg-surface-card" style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-          <InfoIcon style={{ width: 18, height: 18, color: "var(--sub)", marginTop: 1 }} />
-          <div className="bg-sub" style={{ fontSize: 13, lineHeight: 1.6 }}>
-            {t.footerNote1} <strong style={{ color: "var(--text)" }}>{t.footerNoteStrong}</strong>{t.footerNote2}
-          </div>
-        </div>
       </div>
     </div>
   );
@@ -2360,17 +2450,6 @@ function AppInner({ lang, setLang }) {
   const [loaded, setLoaded] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null); // {id, name} | null
-  const [pushStatus, setPushStatus] = useState(null);
-
-  const handleEnablePush = async () => {
-    if (typeof Notification === "undefined") { setPushStatus("unsupported"); return; }
-    try {
-      const perm = await Notification.requestPermission();
-      setPushStatus(perm === "granted" ? "granted" : "denied");
-    } catch {
-      setPushStatus("unsupported");
-    }
-  };
 
   useEffect(() => {
     (async () => {
@@ -2465,6 +2544,11 @@ function AppInner({ lang, setLang }) {
     scrollToTop();
   };
 
+  const handleUpdateProfileImage = (dataUrl) => {
+    const nextList = currentList.map((p) => (p.id === currentPet.id ? { ...p, profile: { ...p.profile, profileImage: dataUrl } } : p));
+    persistPets({ ...pets, [species]: nextList });
+  };
+
   const requestDeletePet = () => {
     if (!currentPet) return;
     setDeleteTarget({ id: currentPet.id, name: currentPet.profile.name });
@@ -2498,13 +2582,6 @@ function AppInner({ lang, setLang }) {
   const breedGroups = species === "dog" ? DOG_BREED_GROUPS : CAT_BREED_GROUPS;
   const sizeOptions = species === "dog" ? DOG_SIZE_OPTIONS : CAT_SIZE_OPTIONS;
   const showOnboarding = mode === "onboarding" || mode === "edit" || (mode === "view" && !currentPet);
-  const notifications = computeNotifications(pets.dog, pets.cat, new Date(), t);
-  const handleSelectNotification = (n) => {
-    setSpecies(n.species);
-    persistActive({ ...activeId, [n.species]: n.petId });
-    setMode("view");
-    scrollToTop();
-  };
 
   return (
     <div className="bboggl-root" style={{ minHeight: "100vh" }}>
@@ -2518,8 +2595,6 @@ function AppInner({ lang, setLang }) {
             </span>
           </div>
           <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-            <NotificationBell items={notifications} onSelect={handleSelectNotification}
-              onEnablePush={handleEnablePush} pushStatus={pushStatus} />
             <LangToggle lang={lang} onChange={setLang} />
             <button type="button" className="icon-btn" aria-label={t.helpAria}
               onClick={() => setGuideOpen(true)}>
@@ -2555,6 +2630,7 @@ function AppInner({ lang, setLang }) {
             onDeletePhoto={handleDeletePhoto}
             onEdit={() => setMode("edit")}
             onDelete={requestDeletePet}
+            onUpdateProfileImage={handleUpdateProfileImage}
           />
         </>
       )}
