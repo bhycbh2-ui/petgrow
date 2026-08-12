@@ -1,0 +1,28 @@
+{
+  "name": "PetGrow - 반려동물 성장 기록",
+  "short_name": "PetGrow",
+  "description": "반려동물의 성장, 과학적인 계산으로 더 건강하게",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#eef3ea",
+  "theme_color": "#7fa66b",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
