@@ -2425,6 +2425,8 @@ function TipsPage({ onClose }) {
     if (n === 0) return [];
     return [0, 1, 2].map((i) => tipsSource[(dayIndex + i) % n]);
   }, [tipsSource]);
+
+  const categories = [
     { id: "all", name: t.tipCategoryLabels.all },
     { id: "dog", name: t.tipCategoryLabels.dog },
     { id: "cat", name: t.tipCategoryLabels.cat },
