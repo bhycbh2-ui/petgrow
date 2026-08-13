@@ -1,0 +1,8 @@
+{
+  "appId": "kr.co.petgrow.app",
+  "appName": "PetGrow",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}

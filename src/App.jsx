@@ -166,9 +166,57 @@ const STRINGS = {
     privacyTitle: "개인정보처리방침",
     privacyIntro: "Petgrow(이하 \"서비스\")는 이용자의 개인정보를 중요하게 생각하며, 「개인정보 보호법」 등 관련 법령을 준수하기 위해 노력합니다. 본 개인정보처리방침은 Petgrow 웹사이트 및 모바일 애플리케이션에 적용됩니다.",
     contactBtn: "문의하기",
-    contactFallback: "메일 앱이 안 열리면 help.petgrow@gmail.com으로 직접 보내주세요.",
+    contactFallback: "메일 앱이 안 열리면 help.petgrow@gmail.com으로 직접 보내주세요. 기능 개선 제안이나 버그 제보도 언제든 환영이에요!",
+    feedbackBtn: "개선 요청하기",
     tipsTitle: "꿀팁",
     myPetsNav: "우리 아이",
+    petgrowTagline: "우리 아이의 건강한 성장을 함께",
+    badgesTitle: "성장 배지",
+    badgeInfo: {
+      record_first: { title: "첫 기록", desc: "체중 기록을 처음 추가했어요" },
+      records_3: { title: "기록 3회", desc: "체중 기록을 3번 남겼어요" },
+      records_10: { title: "기록 10회", desc: "체중 기록을 10번 남겼어요" },
+      records_20: { title: "기록 20회", desc: "체중 기록을 20번 남겼어요" },
+      first_photo: { title: "첫 사진", desc: "성장앨범에 사진을 처음 등록했어요" },
+      photos_5: { title: "사진 5장", desc: "성장앨범에 사진 5장을 모았어요" },
+      photos_10: { title: "사진 10장", desc: "성장앨범에 사진 10장을 모았어요" },
+      photos_20: { title: "사진 20장", desc: "성장앨범에 사진 20장을 모았어요" },
+      age_3m: { title: "3개월 함께", desc: "생후 3개월을 함께했어요" },
+      age_6m: { title: "6개월 함께", desc: "생후 6개월을 함께했어요" },
+      one_year: { title: "함께한 1년", desc: "등록 후 1년(생후 12개월)을 함께했어요" },
+      vaccine_progress: { title: "접종 관리 중", desc: "예방접종 체크리스트를 3개 이상 체크했어요" },
+    },
+    badgeNext: (name) => `다음 배지: "${name}" — 조금만 더 기록해보세요!`,
+    breedInfoNotice: "품종 특성은 일반적인 경향을 참고용으로 정리한 것이며, 개체마다 차이가 클 수 있어요.",
+    breedInfoAvgWeight: "평균 성체 체중",
+    breedInfoLifespan: "평균 수명",
+    breedInfoActivity: "활동량",
+    breedInfoGrooming: "털 관리",
+    breedInfoBtn: "품종 정보 보기",
+    vaccineChecklistTitle: "예방접종 체크리스트",
+    vaccineChecklistNote: "실제 접종 시기·종류는 반려동물과 지역에 따라 다를 수 있어요. 정확한 일정은 동물병원과 상담해주세요.",
+    vaccineChecklistItems: {
+      dog: [
+        { age: "생후 6~8주", label: "종합백신 1차" },
+        { age: "생후 9~11주", label: "종합백신 2차" },
+        { age: "생후 12~14주", label: "종합백신 3차 + 광견병 1차" },
+        { age: "생후 15~17주", label: "종합백신 4차" },
+        { age: "생후 6개월 전후", label: "중성화 상담" },
+        { age: "생후 12개월 전후", label: "종합백신·광견병 연 1회 추가접종" },
+      ],
+      cat: [
+        { age: "생후 6~8주", label: "켓트리플(FVRCP) 1차" },
+        { age: "생후 9~11주", label: "켓트리플 2차" },
+        { age: "생후 12~14주", label: "켓트리플 3차 + 백혈병(FeLV)" },
+        { age: "생후 6개월 전후", label: "중성화 상담" },
+        { age: "생후 12개월 전후", label: "켓트리플 연 1회 추가접종" },
+      ],
+    },
+    shareCardTitle: "성장 리포트 공유 카드",
+    shareCardLoading: "카드를 만들고 있어요...",
+    shareCardDownload: "이미지 저장",
+    shareCardShare: "공유하기",
+    shareCardBtn: "공유 카드 만들기",
     tipsAria: "꿀팁 보기",
     tipSearchPlaceholder: "궁금한 내용을 검색해보세요",
     tipFeaturedTitle: "오늘의 추천",
@@ -179,11 +227,14 @@ const STRINGS = {
     tipCategoryLabels: { all: "전체보기", dog: "강아지", cat: "고양이", health: "건강", life: "생활" },
     privacyFooterLink: "개인정보처리방침",
     guideSections: [
-      { title: "1. 아이 등록하기", body: "이름·품종·생년월일·현재 체중을 입력하면 예상 성체 체중과 성장 그래프가 바로 나와요." },
+      { title: "1. 아이 등록하기", body: "이름·품종·생년월일·현재 체중을 입력하면 예상 성체 체중과 성장 그래프가 바로 나와요. 대표 사진도 등록할 수 있어요." },
       { title: "2. 성장 기록", body: "체중을 잰 날짜와 함께 남기면, 예상보다 빠르게 크는지 느리게 크는지 자동으로 비교해줘요." },
-      { title: "3. 성장앨범", body: "사진과 촬영일을 언제든 추가할 수 있어요. 날짜순으로 정리돼서 성장 과정을 한눈에 볼 수 있어요." },
+      { title: "3. 성장앨범", body: "사진과 촬영일을 언제든 추가할 수 있어요. 월령별로 정리돼서 성장 과정을 한눈에 볼 수 있고, 슬라이드쇼로도 볼 수 있어요." },
       { title: "4. 또래 비교 · 참고 정보", body: "비슷한 또래와 비교하거나 사료량·예방접종 시기 같은 참고 정보를 확인해보세요. 확정 수치가 아니니 병원 상담은 꼭 함께 해주세요." },
-      { title: "5. 여러 마리 관리", body: "상단 탭에서 강아지·고양이를 나누고, 이름 칩을 눌러 최대 10마리까지 각자 따로 관리할 수 있어요." },
+      { title: "5. 성장 배지 · 예방접종 체크리스트", body: "기록·사진을 남길수록 배지가 하나씩 채워져요. 예방접종 일정은 체크리스트로 직접 체크하며 관리할 수 있어요." },
+      { title: "6. 품종 정보 · 공유 카드", body: "이름 아래 품종을 누르면 품종별 참고 정보가 뜨고, 예측 결과 위 버튼으로 예쁜 공유 카드 이미지를 만들어 SNS에 공유할 수 있어요." },
+      { title: "7. 꿀팁", body: "헤더의 '꿀팁' 버튼을 누르면 건강·생활 꿀팁을 검색하고 즐겨찾기할 수 있어요. 오늘의 추천은 매일 자동으로 바뀌어요." },
+      { title: "8. 여러 마리 관리", body: "상단 탭에서 강아지·고양이를 나누고, 이름 칩을 눌러 최대 10마리까지 각자 따로 관리할 수 있어요." },
     ],
     speciesLabel: { dog: "강아지", cat: "고양이" },
     adultWord: { dog: "성견", cat: "성묘" },
@@ -400,9 +451,57 @@ const STRINGS = {
     privacyTitle: "Privacy Policy",
     privacyIntro: "Petgrow (\"the Service\") takes user privacy seriously and works to comply with the Personal Information Protection Act and other applicable laws. This privacy policy applies to the Petgrow website and mobile application.",
     contactBtn: "Contact us",
-    contactFallback: "If your mail app doesn't open, email us directly at help.petgrow@gmail.com.",
+    contactFallback: "If your mail app doesn't open, email us directly at help.petgrow@gmail.com. Feature suggestions and bug reports are always welcome!",
+    feedbackBtn: "Send feedback",
     tipsTitle: "Tips",
     myPetsNav: "My Pets",
+    petgrowTagline: "Growing up healthy, together",
+    badgesTitle: "Growth badges",
+    badgeInfo: {
+      record_first: { title: "First record", desc: "Added your first weight record" },
+      records_3: { title: "3 records", desc: "Logged weight 3 times" },
+      records_10: { title: "10 records", desc: "Logged weight 10 times" },
+      records_20: { title: "20 records", desc: "Logged weight 20 times" },
+      first_photo: { title: "First photo", desc: "Added a first photo to the growth album" },
+      photos_5: { title: "5 photos", desc: "Collected 5 photos in the growth album" },
+      photos_10: { title: "10 photos", desc: "Collected 10 photos in the growth album" },
+      photos_20: { title: "20 photos", desc: "Collected 20 photos in the growth album" },
+      age_3m: { title: "3 months together", desc: "Reached 3 months old" },
+      age_6m: { title: "6 months together", desc: "Reached 6 months old" },
+      one_year: { title: "1 year together", desc: "Been together for a year (12 months old)" },
+      vaccine_progress: { title: "Staying on track", desc: "Checked off 3+ items on the vaccine checklist" },
+    },
+    badgeNext: (name) => `Next badge: "${name}" — keep logging to earn it!`,
+    breedInfoNotice: "These traits are general tendencies for reference only — individual pets can vary a lot.",
+    breedInfoAvgWeight: "Average adult weight",
+    breedInfoLifespan: "Average lifespan",
+    breedInfoActivity: "Activity level",
+    breedInfoGrooming: "Grooming needs",
+    breedInfoBtn: "View breed info",
+    vaccineChecklistTitle: "Vaccine checklist",
+    vaccineChecklistNote: "Actual timing and vaccine types vary by pet and region. Confirm the exact schedule with a vet.",
+    vaccineChecklistItems: {
+      dog: [
+        { age: "6-8 weeks old", label: "Combo vaccine, dose 1" },
+        { age: "9-11 weeks old", label: "Combo vaccine, dose 2" },
+        { age: "12-14 weeks old", label: "Combo vaccine, dose 3 + rabies, dose 1" },
+        { age: "15-17 weeks old", label: "Combo vaccine, dose 4" },
+        { age: "Around 6 months old", label: "Spay/neuter consultation" },
+        { age: "Around 12 months old", label: "Annual combo + rabies booster" },
+      ],
+      cat: [
+        { age: "6-8 weeks old", label: "FVRCP, dose 1" },
+        { age: "9-11 weeks old", label: "FVRCP, dose 2" },
+        { age: "12-14 weeks old", label: "FVRCP, dose 3 + FeLV" },
+        { age: "Around 6 months old", label: "Spay/neuter consultation" },
+        { age: "Around 12 months old", label: "Annual FVRCP booster" },
+      ],
+    },
+    shareCardTitle: "Growth report share card",
+    shareCardLoading: "Building your card...",
+    shareCardDownload: "Save image",
+    shareCardShare: "Share",
+    shareCardBtn: "Make a share card",
     tipsAria: "View tips",
     tipSearchPlaceholder: "Search for a topic",
     tipFeaturedTitle: "Today's picks",
@@ -413,11 +512,14 @@ const STRINGS = {
     tipCategoryLabels: { all: "All", dog: "Dogs", cat: "Cats", health: "Health", life: "Lifestyle" },
     privacyFooterLink: "Privacy Policy",
     guideSections: [
-      { title: "1. Register your pet", body: "Enter a name, breed, birth date, and current weight to instantly see the predicted adult weight and growth chart." },
-      { title: "2. Growth records", body: "Log weight along with the date you measured it — Bboggl automatically compares it to the prediction and tells you if growth is running fast or slow." },
-      { title: "3. Growth album", body: "Add photos with the date taken, anytime. They're organized in chronological order so you can see the whole growth story at a glance." },
+      { title: "1. Register your pet", body: "Enter a name, breed, birth date, and current weight to instantly see the predicted adult weight and growth chart. You can add a profile photo too." },
+      { title: "2. Growth records", body: "Log weight along with the date you measured it — PetGrow automatically compares it to the prediction and tells you if growth is running fast or slow." },
+      { title: "3. Growth album", body: "Add photos with the date taken, anytime. They're grouped by age in months so you can see the whole growth story at a glance, and you can view them as a slideshow." },
       { title: "4. Peer comparison & reference info", body: "Compare with similar-aged pets, and check reference info like feeding amounts and vaccination timing. These are estimates, not prescriptions — always check with a vet." },
-      { title: "5. Managing multiple pets", body: "Switch between dogs and cats with the top tabs, and tap a name chip to switch pets — up to 10 per species." },
+      { title: "5. Growth badges & vaccine checklist", body: "Badges fill in as you log records and photos. Track vaccinations with a checklist you can tick off yourself." },
+      { title: "6. Breed info & share cards", body: "Tap the breed name under your pet's name for breed reference info, and use the button above the prediction to create a shareable image card for social media." },
+      { title: "7. Tips", body: "Tap the 'Tips' button in the header to search and bookmark health and lifestyle tips. Today's picks rotate automatically each day." },
+      { title: "8. Managing multiple pets", body: "Switch between dogs and cats with the top tabs, and tap a name chip to switch pets — up to 10 per species." },
     ],
     speciesLabel: { dog: "dog", cat: "cat" },
     adultWord: { dog: "adult dog", cat: "adult cat" },
@@ -833,6 +935,21 @@ const LeafIcon = (p) => (
     <path d="M4 20c9 0 16-7 16-16-9 0-16 7-16 16zm0 0c2-4 5-7 9-9" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
+const TrophyIcon = (p) => (
+  <svg className="icon" viewBox="0 0 24 24" {...p}>
+    <path d="M6 3h12v2h2a1 1 0 0 1 1 1v1c0 2.2-1.6 4-3.7 4.4A6 6 0 0 1 13 14.9V17h3v2H8v-2h3v-2.1a6 6 0 0 1-4.3-3.5C4.6 11 3 9.2 3 7V6a1 1 0 0 1 1-1h2V3zm0 4V7H5v.02C5.1 8.3 5.9 9.3 7 9.7 6.6 8.9 6.3 8 6.2 7H6zm11.8 0c-.1 1-.4 1.9-.8 2.7 1.1-.4 1.9-1.4 2-2.68V7h-1.2z" />
+  </svg>
+);
+const ShareIcon = (p) => (
+  <svg className="icon" viewBox="0 0 24 24" {...p}>
+    <path d="M18 16.1c-.8 0-1.5.3-2 .8l-7-4.1c.1-.3.1-.5.1-.8s0-.5-.1-.8l6.9-4.1c.6.5 1.3.9 2.1.9 1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3c0 .3 0 .5.1.8L8.1 9.9C7.5 9.4 6.8 9 6 9c-1.7 0-3 1.3-3 3s1.3 3 3 3c.8 0 1.5-.4 2.1-.9l6.9 4.1c-.1.3-.1.5-.1.8 0 1.7 1.3 3 3 3s3-1.3 3-3-1.3-3-3-3z" />
+  </svg>
+);
+const CheckSquareIcon = (p) => (
+  <svg className="icon" viewBox="0 0 24 24" {...p}>
+    <path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm5.2 12.4L18 7.6l-1.4-1.4-7.4 7.4L6 10.4 4.6 11.8l5.6 5.6z" />
+  </svg>
+);
 // PetGrow 브랜드 마크 (강아지+고양이+하트) — 귀여운 핑크 톤
 const PetGrowMark = (p) => (
   <svg viewBox="0 0 100 100" {...p}>
@@ -996,10 +1113,16 @@ function PrivacyContent({ onGoHome }) {
         ))}
       </div>
       <div style={{ marginTop: 30 }}>
-        <a href="mailto:help.petgrow@gmail.com" className="bg-btn"
-          style={{ display: "inline-flex", alignItems: "center", gap: 6, textDecoration: "none", padding: "9px 18px", fontSize: 13 }}>
-          <MailIcon style={{ width: 14, height: 14 }} /> {t.contactBtn}
-        </a>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <a href="mailto:help.petgrow@gmail.com?subject=%5BPetGrow%5D%20%EB%AC%B8%EC%9D%98" className="bg-btn"
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, textDecoration: "none", padding: "9px 18px", fontSize: 13 }}>
+            <MailIcon style={{ width: 14, height: 14 }} /> {t.contactBtn}
+          </a>
+          <a href="mailto:help.petgrow@gmail.com?subject=%5BPetGrow%5D%20%EA%B0%9C%EC%84%A0%20%EC%9A%94%EC%B2%AD" className="bg-btn bg-btn-ghost"
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, textDecoration: "none", padding: "9px 18px", fontSize: 13 }}>
+            <LightbulbIcon style={{ width: 14, height: 14 }} /> {t.feedbackBtn}
+          </a>
+        </div>
         <div className="bg-sub" style={{ fontSize: 12, marginTop: 8 }}>{t.contactFallback}</div>
       </div>
     </div>
@@ -1220,7 +1343,7 @@ const GlobalStyle = () => (
     .album-month-header{position:sticky; top:0; z-index:5; background:var(--bg); display:flex; align-items:baseline;
       gap:8px; padding:6px 0; font-family:'Jua',sans-serif; font-size:16px; color:var(--text);}
     .album-month-header .bg-sub{font-family:'Gowun Dodum',sans-serif; font-size:12px;}
-    .pet-switcher{display:flex; gap:12px; overflow-x:auto; padding:2px 2px 8px; margin-bottom:18px;}
+    .pet-switcher{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px;}
     .pet-switcher .bg-chip{white-space:nowrap; flex-shrink:0;}
     .bg-input.invalid{border-color:var(--primary);}
     .field-error{color:var(--primary-dark); font-size:12px; font-weight:700; margin-top:5px;}
@@ -1243,6 +1366,12 @@ const GlobalStyle = () => (
     .profile-header-avatar .avatar-edit-badge .icon{width:14px; height:14px; fill:#fff;}
     .profile-header-name{font-family:'Jua',sans-serif; font-size:24px; color:var(--text);}
     .profile-header-meta{font-size:13px; color:var(--sub); margin-top:6px;}
+    .badge-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px 4px;}
+    .badge-tile{text-align:center;}
+    .badge-tile-circle{width:56px; height:56px; border-radius:50%; margin:0 auto 6px;
+      display:flex; align-items:center; justify-content:center;}
+    .badge-tile-label{font-size:11px; font-weight:700; line-height:1.3;}
+    @media (max-width:420px){ .badge-grid{grid-template-columns:repeat(3,1fr);} }
     .lang-toggle{display:flex; border:2px solid var(--border); border-radius:999px; overflow:hidden; flex-shrink:0;}
     .lang-toggle button{border:none; background:#fff; padding:0 14px; height:40px; font-family:inherit; font-size:12px;
       font-weight:700; cursor:pointer; color:var(--sub);}
@@ -1311,22 +1440,22 @@ const GlobalStyle = () => (
     .landing-showcase-text{flex:1 1 320px;}
     .landing-showcase-title{font-size:26px; font-weight:800; color:var(--pg-dark); margin-bottom:14px;}
     .landing-showcase-desc{font-size:16px; color:#787774; line-height:1.85; max-width:400px;}
-    .mock-card{background:#fff; border-radius:22px; padding:26px; box-shadow:0 20px 48px rgba(51,56,58,.1);
-      width:100%; max-width:340px;}
-    .mock-card-label{font-size:12px; color:#8a8f86; font-weight:700; text-transform:uppercase; letter-spacing:.03em;}
-    .mock-card-value{font-size:36px; font-weight:800; color:var(--pg-dark); margin-top:6px;}
-    .mock-card-sub{font-size:13px; color:var(--pg-green); font-weight:700; margin-top:4px;}
+    .mock-card{background:#fff; border-radius:22px; padding:26px; box-shadow:0 20px 48px rgba(28,28,28,.1);
+      width:100%; max-width:340px; border:1px solid var(--border);}
+    .mock-card-label{font-size:12px; color:var(--sub); font-weight:700; text-transform:uppercase; letter-spacing:.03em;}
+    .mock-card-value{font-size:36px; font-weight:800; color:var(--text); margin-top:6px;}
+    .mock-card-sub{font-size:13px; color:var(--primary); font-weight:700; margin-top:4px;}
     .mock-sparkline{margin-top:18px;}
     .mock-photos{display:flex; gap:10px; margin-top:14px;}
-    .mock-photo{flex:1; aspect-ratio:1; border-radius:14px; background:var(--pg-green-light);
+    .mock-photo{flex:1; aspect-ratio:1; border-radius:14px; background:var(--surface);
       display:flex; align-items:center; justify-content:center;}
-    .mock-photo-alt{background:#f3efe6;}
-    .mock-photo-caption{font-size:12px; color:#8a8f86; margin-top:12px;}
-    .mock-checklist-row{display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid #f0f2ee;}
+    .mock-photo-alt{background:var(--border);}
+    .mock-photo-caption{font-size:12px; color:var(--sub); margin-top:12px;}
+    .mock-checklist-row{display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border);}
     .mock-checklist-row:last-child{border-bottom:none;}
-    .mock-checklist-icon{width:36px; height:36px; border-radius:10px; background:var(--pg-green-light);
+    .mock-checklist-icon{width:36px; height:36px; border-radius:10px; background:var(--surface);
       display:flex; align-items:center; justify-content:center; flex-shrink:0;}
-    .mock-checklist-text{font-size:14px; font-weight:600; color:var(--pg-dark);}
+    .mock-checklist-text{font-size:14px; font-weight:600; color:var(--text);}
     .landing-features{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:20px;}
     .landing-feature-card{background:#fff; border-radius:16px; padding:26px 20px; text-align:center;
       box-shadow:0 4px 14px rgba(0,0,0,.04);}
@@ -2194,6 +2323,292 @@ function InfoAccordion({ profile, latestWeightKg, ageAtLatest }) {
 }
 
 /* ============================================================
+   ① 성장 마일스톤 배지 — 로컬 데이터만으로 자동 판정
+   ============================================================ */
+const MILESTONE_BADGES = [
+  { id: "record_first", icon: ChartIcon, check: (pet) => pet.records.length >= 2 },
+  { id: "records_3", icon: ChartIcon, check: (pet) => pet.records.length >= 3 },
+  { id: "records_10", icon: ChartIcon, check: (pet) => pet.records.length >= 10 },
+  { id: "records_20", icon: ChartIcon, check: (pet) => pet.records.length >= 20 },
+  { id: "first_photo", icon: CameraIcon, check: (pet) => pet.photos.length >= 1 },
+  { id: "photos_5", icon: CameraIcon, check: (pet) => pet.photos.length >= 5 },
+  { id: "photos_10", icon: CameraIcon, check: (pet) => pet.photos.length >= 10 },
+  { id: "photos_20", icon: CameraIcon, check: (pet) => pet.photos.length >= 20 },
+  { id: "age_3m", icon: TrophyIcon, check: (pet, ageMonths) => ageMonths >= 3 },
+  { id: "age_6m", icon: TrophyIcon, check: (pet, ageMonths) => ageMonths >= 6 },
+  { id: "one_year", icon: TrophyIcon, check: (pet, ageMonths) => ageMonths >= 12 },
+  { id: "vaccine_progress", icon: CheckSquareIcon, check: (pet) => Object.values(pet.vaccineChecklist || {}).filter(Boolean).length >= 3 },
+];
+
+function MilestoneBadges({ pet, ageMonths }) {
+  const t = useT();
+  const next = MILESTONE_BADGES.find((b) => !b.check(pet, ageMonths));
+  return (
+    <div className="bg-card">
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+        <TrophyIcon style={{ width: 18, height: 18, color: "var(--primary)" }} />
+        <h3 style={{ fontSize: 16 }}>{t.badgesTitle}</h3>
+      </div>
+      <div className="badge-grid">
+        {MILESTONE_BADGES.map((b) => {
+          const Icon = b.icon;
+          const got = b.check(pet, ageMonths);
+          return (
+            <div key={b.id} title={t.badgeInfo[b.id].desc} className="badge-tile" style={{ opacity: got ? 1 : 0.35 }}>
+              <div className="badge-tile-circle" style={{ background: got ? "var(--primary)" : "var(--surface)" }}>
+                <Icon style={{ width: 22, height: 22, color: got ? "#fff" : "var(--sub)" }} />
+              </div>
+              <div className="badge-tile-label">{t.badgeInfo[b.id].title}</div>
+            </div>
+          );
+        })}
+      </div>
+      {next && (
+        <div className="bg-sub" style={{ marginTop: 14, fontSize: 12 }}>
+          {t.badgeNext(t.badgeInfo[next.id].title)}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ============================================================
+   ② 품종 정보 페이지 — 보유 중인 견종/묘종 데이터를 활용한 참고 정보
+   ============================================================ */
+const BREED_SIZE_INFO = {
+  "dog-small": { lifespan: "12~16세", activity: "낮음~보통", grooming: "보통", note: "실내 생활에 적합하고 산책 필요량이 상대적으로 적은 편이에요." },
+  "dog-medium": { lifespan: "10~14세", activity: "보통~높음", grooming: "보통", note: "매일 규칙적인 산책과 활동량이 필요한 편이에요." },
+  "dog-large": { lifespan: "8~12세", activity: "높음", grooming: "보통~많음", note: "관절 부담을 줄이기 위해 어릴 때 과격한 운동은 피하는 게 좋아요." },
+  "cat-standard": { lifespan: "13~17세", activity: "보통", grooming: "보통", note: "대부분 실내 생활에 적합하고 개체별 성격 차이가 큰 편이에요." },
+  "cat-giant": { lifespan: "12~15세", activity: "보통", grooming: "많음", note: "몸집이 크고 성장이 느린 편이라 성묘가 되기까지 시간이 더 걸려요." },
+};
+function BreedInfoModal({ open, onClose, profile, breedDisplayName }) {
+  const t = useT();
+  const info = BREED_SIZE_INFO[profile.curveKey] || BREED_SIZE_INFO["dog-small"];
+  const adultWord = t.adultWord[profile.species];
+  return (
+    <Modal open={open} onClose={onClose} width={440}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+        <InfoIcon style={{ width: 20, height: 20, color: "var(--primary)" }} />
+        <h3 style={{ fontSize: 18 }}>{breedDisplayName}</h3>
+      </div>
+      <p className="bg-sub" style={{ fontSize: 12, lineHeight: 1.6, marginBottom: 18 }}>{t.breedInfoNotice}</p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        <div className="bg-surface-card" style={{ display: "flex", justifyContent: "space-between", padding: "14px 18px" }}>
+          <span className="bg-sub">{t.breedInfoAvgWeight}</span>
+          <strong>{fmtKg(profile.avgAdultKg)} {adultWord}</strong>
+        </div>
+        <div className="bg-surface-card" style={{ display: "flex", justifyContent: "space-between", padding: "14px 18px" }}>
+          <span className="bg-sub">{t.breedInfoLifespan}</span>
+          <strong>{info.lifespan}</strong>
+        </div>
+        <div className="bg-surface-card" style={{ display: "flex", justifyContent: "space-between", padding: "14px 18px" }}>
+          <span className="bg-sub">{t.breedInfoActivity}</span>
+          <strong>{info.activity}</strong>
+        </div>
+        <div className="bg-surface-card" style={{ display: "flex", justifyContent: "space-between", padding: "14px 18px" }}>
+          <span className="bg-sub">{t.breedInfoGrooming}</span>
+          <strong>{info.grooming}</strong>
+        </div>
+        <div style={{ fontSize: 13, lineHeight: 1.7, color: "var(--text)" }}>{info.note}</div>
+      </div>
+      <button className="bg-btn" style={{ width: "100%", marginTop: 22 }} onClick={onClose}>{t.guideConfirm}</button>
+    </Modal>
+  );
+}
+
+/* ============================================================
+   ③ 예방접종 일정 체크리스트 — 반려동물별로 로컬 저장
+   ============================================================ */
+function VaccineChecklist({ profile, checklist, onToggle }) {
+  const t = useT();
+  const items = t.vaccineChecklistItems[profile.species];
+  const doneCount = items.filter((_, i) => checklist[i]).length;
+  return (
+    <div className="bg-card">
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <CheckSquareIcon style={{ width: 18, height: 18, color: "var(--primary)" }} />
+          <h3 style={{ fontSize: 16 }}>{t.vaccineChecklistTitle}</h3>
+        </div>
+        <span className="bg-sub" style={{ fontSize: 12 }}>{doneCount}/{items.length}</span>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {items.map((item, i) => (
+          <label key={i} className="bg-surface-card" style={{
+            display: "flex", alignItems: "center", gap: 10, padding: "12px 14px", cursor: "pointer",
+          }}>
+            <input type="checkbox" checked={!!checklist[i]} onChange={() => onToggle(i)}
+              style={{ width: 18, height: 18, accentColor: "var(--primary)", flexShrink: 0 }} />
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, textDecoration: checklist[i] ? "line-through" : "none", color: checklist[i] ? "var(--sub)" : "var(--text)" }}>
+                {item.age}
+              </div>
+              <div className="bg-sub" style={{ fontSize: 12, marginTop: 2 }}>{item.label}</div>
+            </div>
+          </label>
+        ))}
+      </div>
+      <div className="bg-sub" style={{ marginTop: 10, fontSize: 11 }}>{t.vaccineChecklistNote}</div>
+    </div>
+  );
+}
+
+/* ============================================================
+   ④ 성장 리포트 공유 카드 — 캔버스로 이미지 생성 (외부 라이브러리 불필요)
+   ============================================================ */
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+async function renderShareCard({ pet, estimate, range, breedDisplayName, lang, t }) {
+  const canvas = document.createElement("canvas");
+  const W = 800, H = 1000;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext("2d");
+
+  // 배경
+  ctx.fillStyle = "#F2F8F0";
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = "#FFFFFF";
+  const pad = 40;
+  roundRect(ctx, pad, pad, W - pad * 2, H - pad * 2, 32);
+  ctx.fill();
+
+  // 로고 + 워드마크
+  try {
+    const logo = await loadImage(PETGROW_LOGO_DATA_URI);
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(pad + 70, pad + 70, 30, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(logo, pad + 40, pad + 40, 60, 60);
+    ctx.restore();
+  } catch {}
+  ctx.fillStyle = "#1C1C1C";
+  ctx.font = "bold 28px sans-serif";
+  ctx.fillText("Pet", pad + 112, pad + 78);
+  ctx.fillStyle = "#4F9D3C";
+  ctx.fillText("Grow", pad + 112 + ctx.measureText("Pet").width, pad + 78);
+
+  // 반려동물 사진 (원형)
+  const photoCenterX = W / 2;
+  const photoY = pad + 130;
+  const photoR = 110;
+  if (pet.profile.profileImage) {
+    try {
+      const img = await loadImage(pet.profile.profileImage);
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(photoCenterX, photoY + photoR, photoR, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.clip();
+      ctx.drawImage(img, photoCenterX - photoR, photoY, photoR * 2, photoR * 2);
+      ctx.restore();
+    } catch {}
+  } else {
+    ctx.fillStyle = "#F2F8F0";
+    ctx.beginPath();
+    ctx.arc(photoCenterX, photoY + photoR, photoR, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.strokeStyle = "#DCEBD8";
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.arc(photoCenterX, photoY + photoR, photoR, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // 이름
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#1C1C1C";
+  ctx.font = "bold 40px sans-serif";
+  ctx.fillText(pet.profile.name, photoCenterX, photoY + photoR * 2 + 60);
+
+  // 품종
+  ctx.font = "20px sans-serif";
+  ctx.fillStyle = "#666666";
+  ctx.fillText(breedDisplayName, photoCenterX, photoY + photoR * 2 + 92);
+
+  // 예상 체중
+  ctx.font = "16px sans-serif";
+  ctx.fillStyle = "#666666";
+  ctx.fillText(t.heroLabel(t.adultWord[pet.profile.species]), photoCenterX, photoY + photoR * 2 + 150);
+  ctx.font = "bold 56px sans-serif";
+  ctx.fillStyle = "#4F9D3C";
+  ctx.fillText(`${range.low.toFixed(1)} ~ ${range.high.toFixed(1)}kg`, photoCenterX, photoY + photoR * 2 + 210);
+
+  ctx.font = "16px sans-serif";
+  ctx.fillStyle = "#666666";
+  ctx.fillText(t.petgrowTagline, photoCenterX, H - pad - 40);
+
+  ctx.textAlign = "left";
+  return canvas.toDataURL("image/png");
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function ShareCardModal({ open, onClose, pet, estimate, range, breedDisplayName }) {
+  const lang = useLang();
+  const t = useT();
+  const [dataUrl, setDataUrl] = useState(null);
+
+  useEffect(() => {
+    if (!open) { setDataUrl(null); return; }
+    renderShareCard({ pet, estimate, range, breedDisplayName, lang, t }).then(setDataUrl);
+  }, [open, lang]);
+
+  const handleDownload = () => {
+    if (!dataUrl) return;
+    const a = document.createElement("a");
+    a.href = dataUrl;
+    a.download = `${pet.profile.name}-petgrow.png`;
+    a.click();
+  };
+  const handleShare = async () => {
+    if (!dataUrl) return;
+    try {
+      const blob = await (await fetch(dataUrl)).blob();
+      const file = new File([blob], `${pet.profile.name}-petgrow.png`, { type: "image/png" });
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: "PetGrow" });
+        return;
+      }
+    } catch {}
+    handleDownload();
+  };
+
+  return (
+    <Modal open={open} onClose={onClose} width={420}>
+      <h3 style={{ fontSize: 18, marginBottom: 14 }}>{t.shareCardTitle}</h3>
+      {dataUrl ? (
+        <img src={dataUrl} alt="share card" style={{ width: "100%", borderRadius: 16, marginBottom: 16 }} />
+      ) : (
+        <div className="bg-sub" style={{ textAlign: "center", padding: "60px 0" }}>{t.shareCardLoading}</div>
+      )}
+      <div style={{ display: "flex", gap: 8 }}>
+        <button className="bg-btn bg-btn-ghost" style={{ flex: 1 }} onClick={handleDownload}>{t.shareCardDownload}</button>
+        <button className="bg-btn" style={{ flex: 1 }} onClick={handleShare}>{t.shareCardShare}</button>
+      </div>
+    </Modal>
+  );
+}
+
+/* ============================================================
    여러 마리 관리 — 탭 + 펫 스위처 + 언어 토글
    ============================================================ */
 function SpeciesTabBar({ species, onChange, dogCount, catCount }) {
@@ -2512,7 +2927,7 @@ function PetSwitcher({ species, pets, activePetId, onSelect, onAddNew }) {
 /* ============================================================
    ResultPage
    ============================================================ */
-function ResultPage({ pet, breedGroups, onAddRecord, onAddPhoto, onEditPhoto, onDeletePhoto, onEdit, onDelete, onUpdateProfileImage }) {
+function ResultPage({ pet, breedGroups, onAddRecord, onAddPhoto, onEditPhoto, onDeletePhoto, onEdit, onDelete, onUpdateProfileImage, onToggleVaccineItem }) {
   const lang = useLang();
   const t = useT();
   const { profile, records, photos } = pet;
@@ -2521,6 +2936,8 @@ function ResultPage({ pet, breedGroups, onAddRecord, onAddPhoto, onEditPhoto, on
   const allBreedsFlat = useMemo(() => breedGroups.flatMap((g) => g.breeds), [breedGroups]);
   const breedDisplayName = getBreedDisplayName(profile, allBreedsFlat, lang);
   const avatarInputRef = useRef(null);
+  const [breedInfoOpen, setBreedInfoOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   const handlePickAvatar = async (e) => {
     const file = e.target.files && e.target.files[0];
@@ -2541,6 +2958,7 @@ function ResultPage({ pet, breedGroups, onAddRecord, onAddPhoto, onEditPhoto, on
   };
   const ageAtLatest = monthsBetween(new Date(profile.birthDate), new Date(latest.date));
   const estimate = estimateAdultWeight(latest.weightKg, ageAtLatest, profile.curveKey);
+  const range = predictionRange(estimate);
   const table = useMemo(
     () => buildGrowthTable(estimate, profile.curveKey, ageAtLatest),
     [estimate, profile.curveKey, ageAtLatest]
@@ -2578,9 +2996,12 @@ function ResultPage({ pet, breedGroups, onAddRecord, onAddPhoto, onEditPhoto, on
           </div>
           <div>
             <div className="profile-header-name">{profile.name}</div>
-            <div className="profile-header-meta">
-              {breedDisplayName} · {t.profileHeaderBirth(formatBirthDate(profile.birthDate, lang))}
-            </div>
+            <button type="button" onClick={() => setBreedInfoOpen(true)}
+              style={{ background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}>
+              <div className="profile-header-meta" style={{ textDecoration: "underline" }}>
+                {breedDisplayName} · {t.profileHeaderBirth(formatBirthDate(profile.birthDate, lang))}
+              </div>
+            </button>
           </div>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
@@ -2591,13 +3012,22 @@ function ResultPage({ pet, breedGroups, onAddRecord, onAddPhoto, onEditPhoto, on
 
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <AdultWeightHero profile={profile} estimate={estimate} ageMonths={ageMonthsNow} breedDisplayName={breedDisplayName} />
+        <button type="button" className="bg-btn" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+          onClick={() => setShareOpen(true)}>
+          <ShareIcon style={{ width: 16, height: 16 }} /> {t.shareCardBtn}
+        </button>
         <GrowthChartCard table={table} ageMonths={ageAtLatest} currentWeightKg={latest.weightKg} />
         <GrowthTableCard table={table} />
         <RecordSection records={sortedRecords} onAddRecord={handleAddRecord} />
+        <MilestoneBadges pet={pet} ageMonths={ageMonthsNow} />
         <PeerCompareCard profile={profile} latestWeightKg={latest.weightKg} ageAtLatest={ageAtLatest} />
         <PhotoAlbum birthDate={profile.birthDate} photos={photos} onAdd={onAddPhoto} onEdit={onEditPhoto} onDelete={onDeletePhoto} />
+        <VaccineChecklist profile={profile} checklist={pet.vaccineChecklist || {}} onToggle={onToggleVaccineItem} />
         <InfoAccordion profile={profile} latestWeightKg={latest.weightKg} ageAtLatest={ageAtLatest} />
       </div>
+
+      <BreedInfoModal open={breedInfoOpen} onClose={() => setBreedInfoOpen(false)} profile={profile} breedDisplayName={breedDisplayName} />
+      <ShareCardModal open={shareOpen} onClose={() => setShareOpen(false)} pet={pet} estimate={estimate} range={range} breedDisplayName={breedDisplayName} />
     </div>
   );
 }
@@ -2618,9 +3048,9 @@ function MiniPredictionCard() {
       <div className="mock-card-value">5.2<span style={{ fontSize: 16 }}>kg</span></div>
       <div className="mock-card-sub">예측 성체 체중 (±0.4kg)</div>
       <svg className="mock-sparkline" viewBox="0 0 260 70" width="100%" height="70">
-        <polyline points="0,58 40,50 80,40 120,34 160,24 200,16 240,10" fill="none" stroke="#7fa66b" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-        <circle cx="240" cy="10" r="5" fill="#7fa66b" />
-        <circle cx="120" cy="34" r="4" fill="#33383a" />
+        <polyline points="0,58 40,50 80,40 120,34 160,24 200,16 240,10" fill="none" stroke="#4F9D3C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="240" cy="10" r="5" fill="#4F9D3C" />
+        <circle cx="120" cy="34" r="4" fill="#1C1C1C" />
       </svg>
     </div>
   );
@@ -2630,9 +3060,9 @@ function MiniAlbumCard() {
     <div className="mock-card">
       <div className="mock-card-label">성장앨범</div>
       <div className="mock-photos">
-        <div className="mock-photo"><PawIcon style={{ width: 22, height: 22, color: "#7fa66b" }} /></div>
-        <div className="mock-photo mock-photo-alt"><CatIcon style={{ width: 22, height: 22, color: "#33383a" }} /></div>
-        <div className="mock-photo"><CameraIcon style={{ width: 20, height: 20, color: "#7fa66b" }} /></div>
+        <div className="mock-photo"><PawIcon style={{ width: 22, height: 22, color: "#4F9D3C" }} /></div>
+        <div className="mock-photo mock-photo-alt"><CatIcon style={{ width: 22, height: 22, color: "#1C1C1C" }} /></div>
+        <div className="mock-photo"><CameraIcon style={{ width: 20, height: 20, color: "#4F9D3C" }} /></div>
       </div>
       <div className="mock-photo-caption">2026-03-02 · 약 3개월</div>
     </div>
@@ -2643,15 +3073,15 @@ function MiniGuideCard() {
     <div className="mock-card">
       <div className="mock-card-label">참고 정보</div>
       <div className="mock-checklist-row">
-        <div className="mock-checklist-icon"><BowlIcon style={{ width: 16, height: 16, color: "#7fa66b" }} /></div>
+        <div className="mock-checklist-icon"><BowlIcon style={{ width: 16, height: 16, color: "#4F9D3C" }} /></div>
         <div className="mock-checklist-text">사료 급여량 참고</div>
       </div>
       <div className="mock-checklist-row">
-        <div className="mock-checklist-icon"><ShieldIcon style={{ width: 16, height: 16, color: "#7fa66b" }} /></div>
+        <div className="mock-checklist-icon"><ShieldIcon style={{ width: 16, height: 16, color: "#4F9D3C" }} /></div>
         <div className="mock-checklist-text">예방접종·건강관리</div>
       </div>
       <div className="mock-checklist-row">
-        <div className="mock-checklist-icon"><ScaleIcon style={{ width: 16, height: 16, color: "#7fa66b" }} /></div>
+        <div className="mock-checklist-icon"><ScaleIcon style={{ width: 16, height: 16, color: "#4F9D3C" }} /></div>
         <div className="mock-checklist-text">또래 대비 체중 비교</div>
       </div>
     </div>
@@ -2679,7 +3109,7 @@ function LandingPage({ onEnter }) {
 
           <div className="landing-illustration">
             <div className="paw-badge"><PawIcon style={{ width: 60, height: 60, color: "#3a3a3a" }} /></div>
-            <div className="cat-badge"><CatIcon style={{ width: 60, height: 60, color: "#7fa66b" }} /></div>
+            <div className="cat-badge"><CatIcon style={{ width: 60, height: 60, color: "#4F9D3C" }} /></div>
           </div>
         </div>
       </section>
@@ -2809,6 +3239,29 @@ function LandingPage({ onEnter }) {
   );
 }
 
+/* ============================================================
+   소개 페이지 — 로고를 누르면 보이는 간단한 사업 설명 화면
+   ============================================================ */
+function AboutPage({ onStart }) {
+  const t = useT();
+  return (
+    <div style={{ maxWidth: 560, margin: "0 auto", padding: "40px 20px 60px", textAlign: "center" }}>
+      <PetGrowLogo style={{ width: 200, height: 200, margin: "0 auto 32px" }} />
+
+      <h1 style={{ fontSize: 20, marginBottom: 14 }}>{t.landingAboutTitle}</h1>
+      <p style={{ fontSize: 15, lineHeight: 1.85, color: "var(--text)", marginBottom: 36 }}>{t.landingAboutBody}</p>
+
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 24, marginBottom: 40 }}>
+        <MiniPredictionCard />
+        <MiniAlbumCard />
+        <MiniGuideCard />
+      </div>
+
+      <button className="bg-btn" style={{ fontSize: 16, padding: "14px 32px" }} onClick={onStart}>{t.landingCta}</button>
+    </div>
+  );
+}
+
 function AppInner({ lang, setLang }) {
   const t = useT();
   const [species, setSpecies] = useState("dog");
@@ -2819,6 +3272,7 @@ function AppInner({ lang, setLang }) {
   const [guideOpen, setGuideOpen] = useState(false);
   const [showTips, setShowTips] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null); // {id, name} | null
 
   useEffect(() => {
@@ -2895,6 +3349,7 @@ function AppInner({ lang, setLang }) {
       profile: profileData,
       records: [{ id: "initial", date: new Date().toISOString().slice(0, 10), weightKg: profileData.initialWeightKg }],
       photos: [],
+      vaccineChecklist: {},
     };
     const nextList = [...currentList, newPet];
     persistPets({ ...pets, [species]: nextList });
@@ -2916,6 +3371,16 @@ function AppInner({ lang, setLang }) {
 
   const handleUpdateProfileImage = (dataUrl) => {
     const nextList = currentList.map((p) => (p.id === currentPet.id ? { ...p, profile: { ...p.profile, profileImage: dataUrl } } : p));
+    persistPets({ ...pets, [species]: nextList });
+  };
+
+  const handleToggleVaccineItem = (index) => {
+    const nextList = currentList.map((p) => {
+      if (p.id !== currentPet.id) return p;
+      const nextChecklist = { ...(p.vaccineChecklist || {}) };
+      nextChecklist[index] = !nextChecklist[index];
+      return { ...p, vaccineChecklist: nextChecklist };
+    });
     persistPets({ ...pets, [species]: nextList });
   };
 
@@ -2958,7 +3423,7 @@ function AppInner({ lang, setLang }) {
       <GlobalStyle />
       <div style={{ maxWidth: 640, margin: "0 auto", padding: "20px 20px 0" }}>
         <div style={{ display: "flex", gap: 8, alignItems: "center", justifyContent: "space-between", marginBottom: 12, flexWrap: "wrap" }}>
-          <button type="button" onClick={() => { setShowTips(false); setShowPrivacy(false); scrollToTop(); }}
+          <button type="button" onClick={() => { setShowAbout(true); setShowTips(false); setShowPrivacy(false); scrollToTop(); }}
             style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
             <PetGrowLogo style={{ width: 22, height: 22 }} />
             <span style={{ fontSize: 15, fontWeight: 800, fontFamily: "'Jua',sans-serif" }}>
@@ -2967,13 +3432,13 @@ function AppInner({ lang, setLang }) {
           </button>
           <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
             <button type="button" className="bg-chip" style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 14px", height: 40,
-              ...(!showTips && !showPrivacy ? { background: "var(--primary)", color: "#fff", borderColor: "var(--primary)" } : {}) }}
-              onClick={() => { setShowTips(false); setShowPrivacy(false); }}>
+              ...(!showTips && !showPrivacy && !showAbout ? { background: "var(--primary)", color: "#fff", borderColor: "var(--primary)" } : {}) }}
+              onClick={() => { setShowTips(false); setShowPrivacy(false); setShowAbout(false); }}>
               <PawIcon style={{ width: 16, height: 16 }} /> {t.myPetsNav}
             </button>
             <button type="button" className="bg-chip" style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 14px", height: 40,
               ...(showTips && !showPrivacy ? { background: "var(--primary)", color: "#fff", borderColor: "var(--primary)" } : {}) }}
-              onClick={() => { setShowTips(true); setShowPrivacy(false); }}>
+              onClick={() => { setShowTips(true); setShowPrivacy(false); setShowAbout(false); }}>
               <LightbulbIcon style={{ width: 16, height: 16 }} /> {t.tipsTitle}
             </button>
             <LangToggle lang={lang} onChange={setLang} />
@@ -2983,7 +3448,7 @@ function AppInner({ lang, setLang }) {
             </button>
           </div>
         </div>
-        {!showTips && !showPrivacy && (
+        {!showTips && !showPrivacy && !showAbout && (
           <SpeciesTabBar species={species} dogCount={pets.dog.length} catCount={pets.cat.length}
             onChange={(s) => { setSpecies(s); setMode("view"); }} />
         )}
@@ -2991,6 +3456,8 @@ function AppInner({ lang, setLang }) {
 
       {showPrivacy ? (
         <PrivacyContent />
+      ) : showAbout ? (
+        <AboutPage onStart={() => setShowAbout(false)} />
       ) : showTips ? (
         <TipsPage />
       ) : showOnboarding ? (
@@ -3018,6 +3485,7 @@ function AppInner({ lang, setLang }) {
             onEdit={() => setMode("edit")}
             onDelete={requestDeletePet}
             onUpdateProfileImage={handleUpdateProfileImage}
+            onToggleVaccineItem={handleToggleVaccineItem}
           />
         </>
       )}
@@ -3027,7 +3495,7 @@ function AppInner({ lang, setLang }) {
           {t.privacyFooter}
         </div>
         <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 8 }}>
-          <button type="button" onClick={() => { setShowPrivacy(true); setShowTips(false); scrollToTop(); }}
+          <button type="button" onClick={() => { setShowPrivacy(true); setShowTips(false); setShowAbout(false); scrollToTop(); }}
             style={{ fontSize: 11, fontWeight: 700, color: "var(--primary)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
             {t.privacyFooterLink}
           </button>
