@@ -3433,12 +3433,12 @@ function AppInner({ lang, setLang }) {
           <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
             <button type="button" className="bg-chip" style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 14px", height: 40,
               ...(!showTips && !showPrivacy && !showAbout ? { background: "var(--primary)", color: "#fff", borderColor: "var(--primary)" } : {}) }}
-              onClick={() => { setShowTips(false); setShowPrivacy(false); setShowAbout(false); }}>
+              onClick={() => { setShowTips(false); setShowPrivacy(false); setShowAbout(false); scrollToTop(); }}>
               <PawIcon style={{ width: 16, height: 16 }} /> {t.myPetsNav}
             </button>
             <button type="button" className="bg-chip" style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 14px", height: 40,
               ...(showTips && !showPrivacy ? { background: "var(--primary)", color: "#fff", borderColor: "var(--primary)" } : {}) }}
-              onClick={() => { setShowTips(true); setShowPrivacy(false); setShowAbout(false); }}>
+              onClick={() => { setShowTips(true); setShowPrivacy(false); setShowAbout(false); scrollToTop(); }}>
               <LightbulbIcon style={{ width: 16, height: 16 }} /> {t.tipsTitle}
             </button>
             <LangToggle lang={lang} onChange={setLang} />
@@ -3457,7 +3457,7 @@ function AppInner({ lang, setLang }) {
       {showPrivacy ? (
         <PrivacyContent />
       ) : showAbout ? (
-        <AboutPage onStart={() => setShowAbout(false)} />
+        <AboutPage onStart={() => { setShowAbout(false); scrollToTop(); }} />
       ) : showTips ? (
         <TipsPage />
       ) : showOnboarding ? (
