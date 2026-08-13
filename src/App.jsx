@@ -1350,7 +1350,7 @@ const GlobalStyle = () => (
     .bg-input{width:100%; max-width:100%; min-width:0; box-sizing:border-box; padding:12px 16px; border:2px solid var(--border); border-radius:18px; font-family:inherit;
       font-size:14px; background:#fff; color:var(--text);}
     .bg-input:focus{outline:none; border-color:var(--primary);}
-    input[type="date"].bg-input{min-width:0; -webkit-min-logical-width:0;}
+    input[type="date"].bg-input{min-width:0; -webkit-min-logical-width:0; -webkit-appearance:none; appearance:none;}
     .bg-chip{padding:10px 16px; border-radius:999px; border:2px solid var(--border); background:#fff; cursor:pointer;
       font-family:inherit; font-size:14px; font-weight:500; color:var(--text); transition:.12s; text-align:left;}
     .bg-chip:hover{border-color:var(--primary); transform:translateY(-1px);}
@@ -1387,7 +1387,7 @@ const GlobalStyle = () => (
       .add-photo-row{flex-direction:column; align-items:stretch;}
       .add-photo-field{flex-basis:auto; width:100%; max-width:100%; overflow:hidden;}
       .add-photo-row > .bg-btn{width:100%;}
-      input[type="date"].bg-input{padding-left:10px; padding-right:4px; font-size:12px; width:88%; box-sizing:border-box;}
+      input[type="date"].bg-input{padding-left:12px; padding-right:8px; font-size:13px; width:100%; box-sizing:border-box; -webkit-appearance:none; appearance:none;}
     }
     @keyframes aboutFadeUp{from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);}}
     @keyframes aboutFloat{0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);}}
@@ -1501,10 +1501,11 @@ const GlobalStyle = () => (
       display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 10px 24px rgba(0,0,0,.05);}
     .landing-about-text{font-size:17px; line-height:1.9; color:#585d57;}
     .landing-showcase{display:flex; flex-direction:column; gap:36px; margin-top:8px;}
-    .landing-showcase-row{display:flex; align-items:center; gap:40px;}
-    .landing-showcase-row.reverse{flex-direction:row-reverse;}
-    .landing-showcase-media{flex:1 1 320px; display:flex; justify-content:center;}
-    .landing-showcase-text{flex:1 1 320px;}
+    .landing-showcase-row{display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:40px;}
+    .landing-showcase-media{order:1; display:flex; justify-content:center; min-width:0;}
+    .landing-showcase-text{order:2; min-width:0;}
+    .landing-showcase-row.reverse .landing-showcase-media{order:2;}
+    .landing-showcase-row.reverse .landing-showcase-text{order:1;}
     .landing-showcase-title{font-size:26px; font-weight:800; color:var(--pg-dark); margin-bottom:14px;}
     .landing-showcase-desc{font-size:16px; color:#787774; line-height:1.85; max-width:400px;}
     .mock-card{background:#fff; border-radius:22px; padding:26px; box-shadow:0 20px 48px rgba(28,28,28,.1);
@@ -1559,9 +1560,9 @@ const GlobalStyle = () => (
     .landing-footer{background:var(--pg-dark);}
     .landing-footer-text{text-align:center; color:rgba(255,255,255,.55); font-size:11px; margin-top:10px; line-height:1.7;}
     @media (max-width:680px){ .landing-features{grid-template-columns:1fr;} .landing-steps{grid-template-columns:1fr;} .landing-pricing{grid-template-columns:1fr;}
-      .landing-showcase-row, .landing-showcase-row.reverse{flex-direction:column; align-items:stretch; gap:28px;}
+      .landing-showcase-row{grid-template-columns:1fr; gap:20px;}
+      .landing-showcase-row.reverse .landing-showcase-media, .landing-showcase-row.reverse .landing-showcase-text{order:unset;}
       .landing-showcase{gap:36px;}
-      .landing-showcase-media, .landing-showcase-text{flex:none; width:100%; height:auto; min-height:0; border:none; outline:none;}
       .mock-card{max-width:100%;} }
     .modal-overlay{position:fixed; inset:0; background:rgba(91,74,79,.45); display:flex; align-items:center;
       justify-content:center; padding:20px; z-index:100;}
@@ -3216,7 +3217,6 @@ function MiniPredictionCard() {
       <svg className="mock-sparkline" viewBox="0 0 260 70" width="100%" height="70">
         <polyline points="0,58 40,50 80,40 120,34 160,24 200,16 240,10" fill="none" stroke="#4F9D3C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
         <circle cx="240" cy="10" r="5" fill="#4F9D3C" />
-        <circle cx="120" cy="34" r="4" fill="#1C1C1C" />
       </svg>
     </div>
   );
