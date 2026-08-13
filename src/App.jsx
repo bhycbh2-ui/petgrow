@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef, useContext, createContext } from "react";
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceDot,
+  LineChart, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceDot, Label,
 } from "recharts";
 
 /* ============================================================
@@ -216,6 +216,7 @@ const STRINGS = {
     shareCardLoading: "카드를 만들고 있어요...",
     shareCardDownload: "이미지 저장",
     shareCardShare: "공유하기",
+    shareCardManualHint: "저장·공유가 안 되면 이미지를 길게 눌러 직접 저장해보세요.",
     shareCardBtn: "공유 카드 만들기",
     tipsAria: "꿀팁 보기",
     tipSearchPlaceholder: "궁금한 내용을 검색해보세요",
@@ -274,6 +275,10 @@ const STRINGS = {
     labelBodyCondition: "현재 체형",
     submitNew: (adultWord) => `예상 ${adultWord} 체중 확인하기`,
     submitEdit: "수정 완료",
+    onboardingConfirmEditTitle: "정보를 수정하시겠습니까?",
+    onboardingConfirmAddTitle: "이 정보로 등록하시겠습니까?",
+    onboardingConfirmMessage: (name) => `${name}의 정보를 저장할게요. 계속할까요?`,
+    onboardingConfirmBtn: "등록하기",
     ageUnder1Month: "1개월 미만",
     ageAbout: (n) => `약 ${n}개월`,
     heroAgeLabel: (breedName, ageText) => `${breedName} · 현재 ${ageText}령`,
@@ -281,7 +286,9 @@ const STRINGS = {
     heroLikelyPrefix: "가장 가능성이 높은 범위 약",
     heroDisclaimer: "성장 속도는 개체차가 커요. 확정 수치가 아닌 참고용 예측치예요.",
     chartTitle: "월령별 성장 그래프",
-    chartLegend: "● 검은 점 = 현재 위치",
+    chartLegend: "● 진한 점 = 현재 위치",
+    chartBandLegend: "연두색 밴드 = 참고용 정상 범위 (예상치의 ±15%)",
+    chartCurrentLabel: "현재",
     tooltipWeight: "예상 체중",
     monthLabel: (n) => `${n}개월`,
     monthLabelAge: (n) => `${n}개월령`,
@@ -501,6 +508,7 @@ const STRINGS = {
     shareCardLoading: "Building your card...",
     shareCardDownload: "Save image",
     shareCardShare: "Share",
+    shareCardManualHint: "If saving or sharing doesn't work, try pressing and holding the image to save it directly.",
     shareCardBtn: "Make a share card",
     tipsAria: "View tips",
     tipSearchPlaceholder: "Search for a topic",
@@ -559,6 +567,10 @@ const STRINGS = {
     labelBodyCondition: "Current body condition",
     submitNew: (adultWord) => `See predicted ${adultWord} weight`,
     submitEdit: "Save changes",
+    onboardingConfirmEditTitle: "Save these changes?",
+    onboardingConfirmAddTitle: "Register with this info?",
+    onboardingConfirmMessage: (name) => `We'll save ${name}'s info. Continue?`,
+    onboardingConfirmBtn: "Register",
     ageUnder1Month: "under 1 month old",
     ageAbout: (n) => `about ${n} months old`,
     heroAgeLabel: (breedName, ageText) => `${breedName} · currently ${ageText}`,
@@ -566,7 +578,9 @@ const STRINGS = {
     heroLikelyPrefix: "Most likely range: about",
     heroDisclaimer: "Individual growth rates vary a lot — this is a reference estimate, not a fixed number.",
     chartTitle: "Growth chart by age",
-    chartLegend: "● Black dot = current point",
+    chartLegend: "● Bold dot = current point",
+    chartBandLegend: "Green band = reference healthy range (±15% of prediction)",
+    chartCurrentLabel: "Now",
     tooltipWeight: "Predicted weight",
     monthLabel: (n) => `${n}mo`,
     monthLabelAge: (n) => `${n} months old`,
@@ -999,6 +1013,20 @@ function ConfirmModal({ open, title, message, confirmLabel, onConfirm, onCancel 
   );
 }
 
+// 입력 누락 등을 팝업으로 한 번 더 확실히 알려주는 단순 알림창
+function AlertModal({ open, message, onClose }) {
+  const t = useT();
+  return (
+    <Modal open={open} onClose={onClose} width={360}>
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 22 }}>
+        <BellIcon style={{ width: 20, height: 20, color: "var(--primary)", flexShrink: 0, marginTop: 2 }} />
+        <p style={{ fontSize: 14, lineHeight: 1.6, margin: 0 }}>{message}</p>
+      </div>
+      <button className="bg-btn" style={{ width: "100%" }} onClick={onClose}>{t.guideConfirm}</button>
+    </Modal>
+  );
+}
+
 function GuideModal({ open, onClose }) {
   const t = useT();
   return (
@@ -1295,7 +1323,7 @@ const GlobalStyle = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap');
     .bboggl-root{
-      --primary:#4F9D3C;--primary-dark:#3D7A2E;--text:#1C1C1C;--sub:#666666;--bg:#FFFFFF;--surface:#F2F8F0;--border:#DCEBD8;
+      --primary:#4F9D3C;--primary-dark:#3D7A2E;--text:#1C1C1C;--sub:#666666;--bg:#FAF7F0;--surface:#F1F3E9;--border:#E3DECF;
       font-family:'Gowun Dodum','Inter',sans-serif; letter-spacing:0; color:var(--text); background:var(--bg);
       min-height:100%; width:100%; box-sizing:border-box; font-weight:500;
     }
@@ -1307,6 +1335,7 @@ const GlobalStyle = () => (
     .bg-btn:active{transform:translateY(2px); box-shadow:0 2px 0 var(--primary-dark);}
     .bg-btn:disabled{opacity:.4; cursor:not-allowed; transform:none; box-shadow:0 5px 0 var(--primary-dark);}
     .bg-btn-ghost{background:var(--surface); color:var(--text); box-shadow:0 4px 0 var(--border); border:none;}
+    .bg-btn-ghost.invalid{box-shadow:0 4px 0 var(--primary-dark); outline:2px solid var(--primary); outline-offset:-2px;}
     .bg-btn-ghost:hover{box-shadow:0 5px 0 var(--border);}
     .bg-btn-ghost:active{box-shadow:0 1px 0 var(--border);}
     .icon{width:22px;height:22px;fill:currentColor;stroke:none;flex-shrink:0;}
@@ -1355,9 +1384,25 @@ const GlobalStyle = () => (
     @keyframes aboutFadeUp{from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);}}
     @keyframes aboutFloat{0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);}}
     @keyframes sparklineDraw{from{stroke-dashoffset:300;} to{stroke-dashoffset:0;}}
+    @keyframes badgeBounce{0%,100%{transform:translateY(0) rotate(-6deg);} 50%{transform:translateY(-14px) rotate(-6deg);}}
+    @keyframes badgeBounceAlt{0%,100%{transform:translateY(0) rotate(6deg);} 50%{transform:translateY(-14px) rotate(6deg);}}
+    @keyframes stepPop{0%{opacity:0; transform:scale(.4);} 70%{transform:scale(1.12);} 100%{opacity:1; transform:scale(1);}}
+    @keyframes gradientPan{0%{background-position:0% 50%;} 50%{background-position:100% 50%;} 100%{background-position:0% 50%;}}
+    @keyframes leafDrift{0%{transform:translate(0,0) rotate(0deg); opacity:.5;} 50%{opacity:.9;} 100%{transform:translate(14px,-22px) rotate(20deg); opacity:.5;}}
     .about-fade{opacity:0; animation:aboutFadeUp .7s ease both;}
     .about-logo-float{animation:aboutFloat 3.2s ease-in-out infinite;}
     .mock-sparkline polyline{stroke-dasharray:300; animation:sparklineDraw 1.3s ease-out .5s both;}
+    .landing-hero-section{position:relative; overflow:hidden;
+      background:linear-gradient(120deg,#F7FBF5,#EAF3E4,#F7FBF5); background-size:200% 200%; animation:gradientPan 10s ease infinite;}
+    .landing-hero-section::before, .landing-hero-section::after{content:"🌿"; position:absolute; font-size:26px;
+      opacity:.5; animation:leafDrift 6s ease-in-out infinite;}
+    .landing-hero-section::before{top:18%; left:8%;}
+    .landing-hero-section::after{bottom:14%; right:10%; animation-delay:2s;}
+    .landing-illustration .paw-badge{animation:badgeBounce 2.6s ease-in-out infinite;}
+    .landing-illustration .cat-badge{animation:badgeBounceAlt 2.6s ease-in-out infinite .4s;}
+    .landing-step-num{animation:stepPop .6s ease both;}
+    .landing-showcase-media{transition:transform .3s ease;}
+    .landing-showcase-media:hover{transform:translateY(-6px);}
     .pet-switcher .bg-chip{white-space:nowrap; flex-shrink:0;}
     .bg-input.invalid{border-color:var(--primary);}
     .field-error{color:var(--primary-dark); font-size:12px; font-weight:700; margin-top:5px;}
@@ -1422,8 +1467,8 @@ const GlobalStyle = () => (
     .slideshow-prev{left:4px;} .slideshow-next{right:4px;}
     .slideshow-caption{display:flex; justify-content:space-between; color:#fff; font-size:13px; margin-top:12px;}
     .slideshow-caption .bg-sub{color:rgba(255,255,255,.6);}
-    .landing-root{--pg-dark:#33383a; --pg-green:#7fa66b; --pg-green-light:#eef3ea;
-      background:linear-gradient(180deg,#f6f8f4 0%, #eef3ea 60%, #f6f8f4 100%); min-height:100vh;}
+    .landing-root{--pg-dark:#1C1C1C; --pg-green:#4F9D3C; --pg-green-light:#F2F8F0;
+      background:linear-gradient(180deg,#F7FBF5 0%, #F2F8F0 60%, #F7FBF5 100%); min-height:100vh;}
     .landing-wrap{max-width:960px; margin:0 auto; padding:0 24px;}
     .landing-logo-badge{width:132px; height:132px; border-radius:50%; background:#fff; display:flex;
       align-items:center; justify-content:center; margin:0 auto 18px; box-shadow:0 10px 30px rgba(0,0,0,.1);}
@@ -1670,6 +1715,9 @@ function OnboardingPage({ species, breedGroups, sizeOptions, initialValues, onSu
   const selectedBreed = allBreeds.find((b) => b.id === breedId);
   const [errors, setErrors] = useState({});
   const [formAlert, setFormAlert] = useState("");
+  const [alertPopup, setAlertPopup] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pendingData, setPendingData] = useState(null);
 
   const validate = () => {
     const next = {};
@@ -1680,15 +1728,7 @@ function OnboardingPage({ species, breedGroups, sizeOptions, initialValues, onSu
     return next;
   };
 
-  const handleSubmit = () => {
-    const nextErrors = validate();
-    if (Object.keys(nextErrors).length > 0) {
-      setErrors(nextErrors);
-      setFormAlert(t.formAlertMissing);
-      return;
-    }
-    setErrors({});
-    setFormAlert("");
+  const buildProfileData = () => {
     let breedNameToStore, curveKey, avgAdultKg;
     if (isMix) {
       breedNameToStore = t.mixLabel[species].split(" (")[0];
@@ -1703,7 +1743,7 @@ function OnboardingPage({ species, breedGroups, sizeOptions, initialValues, onSu
       curveKey = `${species}-${selectedBreed.size}`;
       avgAdultKg = selectedBreed.avgAdultKg;
     }
-    onSubmit({
+    return {
       species,
       name: name.trim(),
       profileImage,
@@ -1716,11 +1756,30 @@ function OnboardingPage({ species, breedGroups, sizeOptions, initialValues, onSu
       neutered,
       bodyCondition,
       initialWeightKg: isEdit ? initialValues.initialWeightKg : Number(weight),
-    });
+    };
+  };
+
+  const handleSubmit = () => {
+    const nextErrors = validate();
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
+      setFormAlert(t.formAlertMissing);
+      setAlertPopup(true);
+      return;
+    }
+    setErrors({});
+    setFormAlert("");
+    setPendingData(buildProfileData());
+    setConfirmOpen(true);
+  };
+
+  const handleConfirmSave = () => {
+    setConfirmOpen(false);
+    if (pendingData) onSubmit(pendingData);
   };
 
   return (
-    <div style={{ maxWidth: 480, margin: "0 auto", padding: "12px 20px 60px" }}>
+    <div style={{ maxWidth: 560, margin: "0 auto", padding: "12px 20px 60px" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
         {species === "cat"
           ? <CatIcon style={{ width: 28, height: 28, color: "var(--primary)" }} />
@@ -1816,6 +1875,16 @@ function OnboardingPage({ species, breedGroups, sizeOptions, initialValues, onSu
           </button>
         </div>
       </div>
+
+      <AlertModal open={alertPopup} message={t.formAlertMissing} onClose={() => setAlertPopup(false)} />
+      <ConfirmModal
+        open={confirmOpen}
+        title={isEdit ? t.onboardingConfirmEditTitle : t.onboardingConfirmAddTitle}
+        message={t.onboardingConfirmMessage(name.trim() || speciesLabel)}
+        confirmLabel={isEdit ? t.submitEdit : t.onboardingConfirmBtn}
+        onConfirm={handleConfirmSave}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </div>
   );
 }
@@ -1847,29 +1916,45 @@ function AdultWeightHero({ profile, estimate, ageMonths, breedDisplayName }) {
   );
 }
 
-function GrowthChartCard({ table, ageMonths, currentWeightKg }) {
+function GrowthChartCard({ table, ageMonths, currentWeightKg, statusDiffGrams }) {
   const t = useT();
-  const data = table.map((r) => ({ month: r.month, weight: r.weight }));
+  const data = table.map((r) => ({
+    month: r.month,
+    weight: r.weight,
+    band: [Math.round(r.weight * 0.85 * 100) / 100, Math.round(r.weight * 1.15 * 100) / 100],
+  }));
   const currentPoint = { month: Math.round(ageMonths * 10) / 10, weight: currentWeightKg };
+  const status = statusDiffGrams === undefined || statusDiffGrams === null ? null : diffLabel(statusDiffGrams, t);
   return (
     <div className="bg-card">
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
         <ChartIcon style={{ width: 18, height: 18, color: "var(--primary)" }} />
         <h3 style={{ fontSize: 16 }}>{t.chartTitle}</h3>
       </div>
-      <ResponsiveContainer width="100%" height={220}>
+      <ResponsiveContainer width="100%" height={240}>
         <LineChart data={data} margin={{ top: 10, right: 16, left: -10, bottom: 0 }}>
-          <CartesianGrid stroke="#DCEBD8" vertical={false} />
+          <CartesianGrid stroke="#E3DECF" vertical={false} />
           <XAxis dataKey="month" type="number" domain={[0, 24]} tick={{ fontSize: 12, fill: "#666666" }} tickFormatter={(m) => t.monthLabel(m)}
-            stroke="#DCEBD8" />
-          <YAxis tick={{ fontSize: 12, fill: "#666666" }} stroke="#DCEBD8" width={40} tickFormatter={(v) => `${v}kg`} />
-          <Tooltip formatter={(v) => [`${v}kg`, t.tooltipWeight]} labelFormatter={(m) => t.monthLabelAge(m)}
-            contentStyle={{ borderRadius: 16, border: "2px solid #FBD9E4", fontSize: 13 }} />
+            stroke="#E3DECF" />
+          <YAxis tick={{ fontSize: 12, fill: "#666666" }} stroke="#E3DECF" width={40} tickFormatter={(v) => `${v}kg`} />
+          <Tooltip formatter={(v, name) => name === "band" ? null : [`${v}kg`, t.tooltipWeight]} labelFormatter={(m) => t.monthLabelAge(m)}
+            contentStyle={{ borderRadius: 16, border: "2px solid #E3DECF", fontSize: 13 }} />
+          <Area dataKey="band" stroke="none" fill="#4F9D3C" fillOpacity={0.12} isAnimationActive={false} />
           <Line type="monotone" dataKey="weight" stroke="#4F9D3C" strokeWidth={3} dot={{ r: 4, fill: "#4F9D3C" }} />
-          <ReferenceDot x={currentPoint.month} y={currentPoint.weight} r={7} fill="#3D7A2E" stroke="#fff" strokeWidth={2} />
+          <ReferenceDot x={currentPoint.month} y={currentPoint.weight} r={8} fill="#3D7A2E" stroke="#fff" strokeWidth={3}>
+            <Label value={`${t.chartCurrentLabel} ${currentPoint.weight}kg`} position="top" offset={12}
+              style={{ fontSize: 12, fontWeight: 700, fill: "#1C1C1C" }} />
+          </ReferenceDot>
         </LineChart>
       </ResponsiveContainer>
       <div className="bg-sub" style={{ fontSize: 12, marginTop: 4 }}>{t.chartLegend}</div>
+      <div className="bg-sub" style={{ fontSize: 12, marginTop: 2 }}>{t.chartBandLegend}</div>
+      {status && (
+        <div className="bg-surface-card" style={{ marginTop: 12, padding: "12px 16px", fontSize: 13, fontWeight: 700,
+          color: status.tone === "up" ? "var(--primary)" : status.tone === "down" ? "var(--text)" : "var(--sub)" }}>
+          {status.text}
+        </div>
+      )}
     </div>
   );
 }
@@ -1908,32 +1993,52 @@ function RecordForm({ onAdd }) {
   const t = useT();
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [weight, setWeight] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
+  const [alert, setAlert] = useState("");
+  const [alertPopup, setAlertPopup] = useState(false);
 
   const submit = () => {
-    if (!date) { setError(t.recordErrDate); return; }
+    const next = {};
+    if (!date) next.date = t.recordErrDate;
     const w = Number(weight);
-    if (!(w > 0)) { setError(t.recordErrWeight); return; }
-    setError("");
+    if (!(w > 0)) next.weight = t.recordErrWeight;
+    if (Object.keys(next).length > 0) {
+      setErrors(next);
+      setAlert(t.formAlertMissing);
+      setAlertPopup(true);
+      return;
+    }
+    setErrors({});
+    setAlert("");
     onAdd(date, w);
     setWeight("");
   };
 
   return (
-    <div className="add-photo-row">
-      <div className="add-photo-field">
-        <label className="bg-label">{t.recordDateLabel}</label>
-        <input type="date" className="bg-input" value={date} onChange={(e) => setDate(e.target.value)} />
+    <div>
+      {alert && (
+        <div className="form-alert">
+          <BellIcon style={{ width: 16, height: 16, color: "var(--primary)", marginTop: 1 }} />
+          <span>{alert}</span>
+        </div>
+      )}
+      <div className="add-photo-row">
+        <div className="add-photo-field">
+          <label className="bg-label">{t.recordDateLabel}</label>
+          <input type="date" className={`bg-input ${errors.date ? "invalid" : ""}`} value={date} onChange={(e) => setDate(e.target.value)} />
+          {errors.date && <div className="field-error">{errors.date}</div>}
+        </div>
+        <div className="add-photo-field">
+          <label className="bg-label">{t.recordWeightLabel}</label>
+          <input type="number" step="0.01" min="0" className={`bg-input ${errors.weight ? "invalid" : ""}`} value={weight}
+            onChange={(e) => setWeight(e.target.value)} placeholder="1.45" />
+          {errors.weight && <div className="field-error">{errors.weight}</div>}
+        </div>
+        <button className="bg-btn" style={{ height: 42 }} onClick={submit}>
+          {t.recordAddBtn}
+        </button>
       </div>
-      <div className="add-photo-field">
-        <label className="bg-label">{t.recordWeightLabel}</label>
-        <input type="number" step="0.01" min="0" className="bg-input" value={weight}
-          onChange={(e) => setWeight(e.target.value)} placeholder="1.45" />
-      </div>
-      <button className="bg-btn" style={{ height: 42 }} onClick={submit}>
-        {t.recordAddBtn}
-      </button>
-      {error && <div className="field-error" style={{ flexBasis: "100%" }}>{error}</div>}
+      <AlertModal open={alertPopup} message={t.formAlertMissing} onClose={() => setAlertPopup(false)} />
     </div>
   );
 }
@@ -2046,7 +2151,9 @@ function AddPhotoCard({ onAdd }) {
   const inputRef = useRef(null);
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [pendingFile, setPendingFile] = useState(null);
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
+  const [alert, setAlert] = useState("");
+  const [alertPopup, setAlertPopup] = useState(false);
 
   const handlePick = (e) => {
     const file = e.target.files && e.target.files[0];
@@ -2055,32 +2162,50 @@ function AddPhotoCard({ onAdd }) {
   };
 
   const handleAdd = async () => {
-    if (!date) { setError(t.photoErrDate); return; }
-    if (!pendingFile) { setError(t.photoErrPhoto); return; }
-    setError("");
+    const next = {};
+    if (!date) next.date = t.photoErrDate;
+    if (!pendingFile) next.photo = t.photoErrPhoto;
+    if (Object.keys(next).length > 0) {
+      setErrors(next);
+      setAlert(t.formAlertMissing);
+      setAlertPopup(true);
+      return;
+    }
+    setErrors({});
+    setAlert("");
     const dataUrl = await fileToDataUrl(pendingFile);
     onAdd(date, dataUrl);
     setPendingFile(null);
   };
 
   return (
-    <div className="bg-surface-card add-photo-row">
-      <div className="add-photo-field">
-        <label className="bg-label">{t.photoDateLabel}</label>
-        <input type="date" className="bg-input" value={date} onChange={(e) => setDate(e.target.value)} />
-      </div>
-      <div className="add-photo-field">
-        <label className="bg-label">{t.photoLabel}</label>
-        <button type="button" className="bg-btn bg-btn-ghost" style={{ width: "100%", textAlign: "center" }}
-          onClick={() => inputRef.current && inputRef.current.click()}>
-          {pendingFile ? pendingFile.name.slice(0, 16) : t.photoPickBtn}
+    <div className="bg-surface-card">
+      {alert && (
+        <div className="form-alert">
+          <BellIcon style={{ width: 16, height: 16, color: "var(--primary)", marginTop: 1 }} />
+          <span>{alert}</span>
+        </div>
+      )}
+      <div className="add-photo-row">
+        <div className="add-photo-field">
+          <label className="bg-label">{t.photoDateLabel}</label>
+          <input type="date" className={`bg-input ${errors.date ? "invalid" : ""}`} value={date} onChange={(e) => setDate(e.target.value)} />
+          {errors.date && <div className="field-error">{errors.date}</div>}
+        </div>
+        <div className="add-photo-field">
+          <label className="bg-label">{t.photoLabel}</label>
+          <button type="button" className={`bg-btn bg-btn-ghost ${errors.photo ? "invalid" : ""}`} style={{ width: "100%", textAlign: "center" }}
+            onClick={() => inputRef.current && inputRef.current.click()}>
+            {pendingFile ? pendingFile.name.slice(0, 16) : t.photoPickBtn}
+          </button>
+          <input ref={inputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handlePick} />
+          {errors.photo && <div className="field-error">{errors.photo}</div>}
+        </div>
+        <button className="bg-btn" style={{ height: 42 }} onClick={handleAdd}>
+          {t.photoAddBtn}
         </button>
-        <input ref={inputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handlePick} />
       </div>
-      <button className="bg-btn" style={{ height: 42 }} onClick={handleAdd}>
-        {t.photoAddBtn}
-      </button>
-      {error && <div className="field-error" style={{ flexBasis: "100%" }}>{error}</div>}
+      <AlertModal open={alertPopup} message={t.formAlertMissing} onClose={() => setAlertPopup(false)} />
     </div>
   );
 }
@@ -2474,7 +2599,6 @@ function VaccineChecklist({ profile, checklist, onToggle }) {
 function loadImage(src) {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.crossOrigin = "anonymous";
     img.onload = () => resolve(img);
     img.onerror = reject;
     img.src = src;
@@ -2483,16 +2607,16 @@ function loadImage(src) {
 
 async function renderShareCard({ pet, estimate, range, breedDisplayName, lang, t }) {
   const canvas = document.createElement("canvas");
-  const W = 800, H = 1000;
+  const W = 1000, H = 950;
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext("2d");
 
   // 배경
-  ctx.fillStyle = "#F2F8F0";
+  ctx.fillStyle = "#F1F3E9";
   ctx.fillRect(0, 0, W, H);
   ctx.fillStyle = "#FFFFFF";
-  const pad = 40;
-  roundRect(ctx, pad, pad, W - pad * 2, H - pad * 2, 32);
+  const pad = 50;
+  roundRect(ctx, pad, pad, W - pad * 2, H - pad * 2, 40);
   ctx.fill();
 
   // 로고 + 워드마크
@@ -2500,22 +2624,22 @@ async function renderShareCard({ pet, estimate, range, breedDisplayName, lang, t
     const logo = await loadImage(PETGROW_LOGO_DATA_URI);
     ctx.save();
     ctx.beginPath();
-    ctx.arc(pad + 70, pad + 70, 30, 0, Math.PI * 2);
+    ctx.arc(pad + 90, pad + 90, 40, 0, Math.PI * 2);
     ctx.closePath();
     ctx.clip();
-    ctx.drawImage(logo, pad + 40, pad + 40, 60, 60);
+    ctx.drawImage(logo, pad + 50, pad + 50, 80, 80);
     ctx.restore();
   } catch {}
   ctx.fillStyle = "#1C1C1C";
-  ctx.font = "bold 28px sans-serif";
-  ctx.fillText("Pet", pad + 112, pad + 78);
+  ctx.font = "bold 38px sans-serif";
+  ctx.fillText("Pet", pad + 148, pad + 100);
   ctx.fillStyle = "#4F9D3C";
-  ctx.fillText("Grow", pad + 112 + ctx.measureText("Pet").width, pad + 78);
+  ctx.fillText("Grow", pad + 148 + ctx.measureText("Pet").width, pad + 100);
 
   // 반려동물 사진 (원형)
   const photoCenterX = W / 2;
-  const photoY = pad + 130;
-  const photoR = 110;
+  const photoY = pad + 170;
+  const photoR = 150;
   if (pet.profile.profileImage) {
     try {
       const img = await loadImage(pet.profile.profileImage);
@@ -2528,13 +2652,13 @@ async function renderShareCard({ pet, estimate, range, breedDisplayName, lang, t
       ctx.restore();
     } catch {}
   } else {
-    ctx.fillStyle = "#F2F8F0";
+    ctx.fillStyle = "#F1F3E9";
     ctx.beginPath();
     ctx.arc(photoCenterX, photoY + photoR, photoR, 0, Math.PI * 2);
     ctx.fill();
   }
-  ctx.strokeStyle = "#DCEBD8";
-  ctx.lineWidth = 4;
+  ctx.strokeStyle = "#E3DECF";
+  ctx.lineWidth = 6;
   ctx.beginPath();
   ctx.arc(photoCenterX, photoY + photoR, photoR, 0, Math.PI * 2);
   ctx.stroke();
@@ -2542,25 +2666,25 @@ async function renderShareCard({ pet, estimate, range, breedDisplayName, lang, t
   // 이름
   ctx.textAlign = "center";
   ctx.fillStyle = "#1C1C1C";
-  ctx.font = "bold 40px sans-serif";
-  ctx.fillText(pet.profile.name, photoCenterX, photoY + photoR * 2 + 60);
+  ctx.font = "bold 58px sans-serif";
+  ctx.fillText(pet.profile.name, photoCenterX, photoY + photoR * 2 + 78);
 
   // 품종
-  ctx.font = "20px sans-serif";
+  ctx.font = "bold 28px sans-serif";
   ctx.fillStyle = "#666666";
-  ctx.fillText(breedDisplayName, photoCenterX, photoY + photoR * 2 + 92);
+  ctx.fillText(breedDisplayName, photoCenterX, photoY + photoR * 2 + 122);
 
   // 예상 체중
-  ctx.font = "16px sans-serif";
+  ctx.font = "bold 22px sans-serif";
   ctx.fillStyle = "#666666";
-  ctx.fillText(t.heroLabel(t.adultWord[pet.profile.species]), photoCenterX, photoY + photoR * 2 + 150);
-  ctx.font = "bold 56px sans-serif";
+  ctx.fillText(t.heroLabel(t.adultWord[pet.profile.species]), photoCenterX, photoY + photoR * 2 + 192);
+  ctx.font = "bold 78px sans-serif";
   ctx.fillStyle = "#4F9D3C";
-  ctx.fillText(`${range.low.toFixed(1)} ~ ${range.high.toFixed(1)}kg`, photoCenterX, photoY + photoR * 2 + 210);
+  ctx.fillText(`${range.low.toFixed(1)} ~ ${range.high.toFixed(1)}kg`, photoCenterX, photoY + photoR * 2 + 278);
 
-  ctx.font = "16px sans-serif";
+  ctx.font = "bold 21px sans-serif";
   ctx.fillStyle = "#666666";
-  ctx.fillText(t.petgrowTagline, photoCenterX, H - pad - 40);
+  ctx.fillText(t.petgrowTagline, photoCenterX, H - pad - 46);
 
   ctx.textAlign = "left";
   return canvas.toDataURL("image/png");
@@ -2591,7 +2715,9 @@ function ShareCardModal({ open, onClose, pet, estimate, range, breedDisplayName 
     const a = document.createElement("a");
     a.href = dataUrl;
     a.download = `${pet.profile.name}-petgrow.png`;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
   };
   const handleShare = async () => {
     if (!dataUrl) return;
@@ -2607,10 +2733,15 @@ function ShareCardModal({ open, onClose, pet, estimate, range, breedDisplayName 
   };
 
   return (
-    <Modal open={open} onClose={onClose} width={420}>
-      <h3 style={{ fontSize: 18, marginBottom: 14 }}>{t.shareCardTitle}</h3>
+    <Modal open={open} onClose={onClose} width={480}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+        <h3 style={{ fontSize: 18 }}>{t.shareCardTitle}</h3>
+        <button type="button" className="icon-btn" aria-label={t.cancel} onClick={onClose}>
+          <PlusIcon style={{ width: 16, height: 16, color: "var(--sub)", transform: "rotate(45deg)" }} />
+        </button>
+      </div>
       {dataUrl ? (
-        <img src={dataUrl} alt="share card" style={{ width: "100%", borderRadius: 16, marginBottom: 16 }} />
+        <img src={dataUrl} alt="share card" style={{ width: "100%", borderRadius: 16, marginBottom: 16, boxShadow: "0 8px 24px rgba(0,0,0,.12)" }} />
       ) : (
         <div className="bg-sub" style={{ textAlign: "center", padding: "60px 0" }}>{t.shareCardLoading}</div>
       )}
@@ -2618,6 +2749,7 @@ function ShareCardModal({ open, onClose, pet, estimate, range, breedDisplayName 
         <button className="bg-btn bg-btn-ghost" style={{ flex: 1 }} onClick={handleDownload}>{t.shareCardDownload}</button>
         <button className="bg-btn" style={{ flex: 1 }} onClick={handleShare}>{t.shareCardShare}</button>
       </div>
+      <div className="bg-sub" style={{ fontSize: 11, marginTop: 10, textAlign: "center" }}>{t.shareCardManualHint}</div>
     </Modal>
   );
 }
@@ -3030,7 +3162,7 @@ function ResultPage({ pet, breedGroups, onAddRecord, onAddPhoto, onEditPhoto, on
           onClick={() => setShareOpen(true)}>
           <ShareIcon style={{ width: 16, height: 16 }} /> {t.shareCardBtn}
         </button>
-        <GrowthChartCard table={table} ageMonths={ageAtLatest} currentWeightKg={latest.weightKg} />
+        <GrowthChartCard table={table} ageMonths={ageAtLatest} currentWeightKg={latest.weightKg} statusDiffGrams={latest.diffGrams} />
         <GrowthTableCard table={table} />
         <RecordSection records={sortedRecords} onAddRecord={handleAddRecord} />
         <MilestoneBadges pet={pet} ageMonths={ageMonthsNow} />
@@ -3254,24 +3386,106 @@ function LandingPage({ onEnter }) {
 }
 
 /* ============================================================
-   소개 페이지 — 로고를 누르면 보이는 간단한 사업 설명 화면
+   소개 페이지 — 로고를 누르면 보이는 사업 설명 화면 (히어로 + 단계 + 기능 쇼케이스 + 신뢰 배지)
    ============================================================ */
 function AboutPage({ onStart }) {
   const t = useT();
   return (
-    <div style={{ maxWidth: 560, margin: "0 auto", padding: "40px 20px 60px", textAlign: "center" }}>
-      <PetGrowLogo className="about-logo-float" style={{ width: 200, height: 200, margin: "0 auto 32px" }} />
+    <div className="landing-root">
+      <section className="landing-section landing-hero-section">
+        <div className="landing-wrap">
+          <div className="landing-logo-badge about-logo-float">
+            <PetGrowLogo style={{ width: 96, height: 96 }} />
+          </div>
 
-      <h1 className="about-fade" style={{ fontSize: 20, marginBottom: 14, animationDelay: ".15s" }}>{t.landingAboutTitle}</h1>
-      <p className="about-fade" style={{ fontSize: 15, lineHeight: 1.85, color: "var(--text)", marginBottom: 36, animationDelay: ".3s" }}>{t.landingAboutBody}</p>
+          <h1 className="landing-headline about-fade" style={{ animationDelay: ".1s" }}>
+            {t.landingHeadline1} <span className="hl">{t.landingHeadlineHighlight}</span>{t.landingHeadline2}
+          </h1>
+          <p className="landing-subtitle about-fade" style={{ animationDelay: ".22s" }}>{t.landingSubtitle}</p>
+          <button className="landing-cta about-fade" style={{ animationDelay: ".34s" }} onClick={onStart}>{t.landingCta}</button>
 
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 24, marginBottom: 40 }}>
-        <div className="about-fade" style={{ animationDelay: ".45s", width: "100%", display: "flex", justifyContent: "center" }}><MiniPredictionCard /></div>
-        <div className="about-fade" style={{ animationDelay: ".6s", width: "100%", display: "flex", justifyContent: "center" }}><MiniAlbumCard /></div>
-        <div className="about-fade" style={{ animationDelay: ".75s", width: "100%", display: "flex", justifyContent: "center" }}><MiniGuideCard /></div>
-      </div>
+          <div className="landing-illustration about-fade" style={{ animationDelay: ".46s" }}>
+            <div className="paw-badge"><PawIcon style={{ width: 60, height: 60, color: "#3a3a3a" }} /></div>
+            <div className="cat-badge"><CatIcon style={{ width: 60, height: 60, color: "#4F9D3C" }} /></div>
+          </div>
+        </div>
+      </section>
 
-      <button className="bg-btn about-fade" style={{ fontSize: 16, padding: "14px 32px", animationDelay: ".9s" }} onClick={onStart}>{t.landingCta}</button>
+      <section className="landing-section landing-section-white">
+        <div className="landing-wrap">
+          <div className="landing-about about-fade">
+            <div className="landing-about-icon">
+              <PetGrowLogo style={{ width: 52, height: 52 }} />
+            </div>
+            <h2 className="landing-section-title" style={{ marginBottom: 0 }}>{t.landingAboutTitle}</h2>
+            <p className="landing-about-text">{t.landingAboutBody}</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="landing-section">
+        <div className="landing-wrap">
+          <h2 className="landing-section-title about-fade">{t.landingHowTitle}</h2>
+          <div className="landing-steps">
+            <div className="landing-step about-fade" style={{ animationDelay: ".1s" }}>
+              <div className="landing-step-num">1</div>
+              <div className="landing-step-title">{t.landingStep1Title}</div>
+              <div className="landing-step-desc">{t.landingStep1Desc}</div>
+            </div>
+            <div className="landing-step about-fade" style={{ animationDelay: ".22s" }}>
+              <div className="landing-step-num">2</div>
+              <div className="landing-step-title">{t.landingStep2Title}</div>
+              <div className="landing-step-desc">{t.landingStep2Desc}</div>
+            </div>
+            <div className="landing-step about-fade" style={{ animationDelay: ".34s" }}>
+              <div className="landing-step-num">3</div>
+              <div className="landing-step-title">{t.landingStep3Title}</div>
+              <div className="landing-step-desc">{t.landingStep3Desc}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="landing-section landing-section-white">
+        <div className="landing-wrap">
+          <h2 className="landing-section-title">{t.landingFeaturesTitle}</h2>
+          <div className="landing-showcase">
+            <div className="landing-showcase-row">
+              <div className="landing-showcase-media"><MiniPredictionCard /></div>
+              <div className="landing-showcase-text">
+                <div className="landing-showcase-title">{t.landingFeature1Title}</div>
+                <p className="landing-showcase-desc">{t.landingFeature1Desc}</p>
+              </div>
+            </div>
+            <div className="landing-showcase-row reverse">
+              <div className="landing-showcase-media"><MiniAlbumCard /></div>
+              <div className="landing-showcase-text">
+                <div className="landing-showcase-title">{t.landingFeature2Title}</div>
+                <p className="landing-showcase-desc">{t.landingFeature2Desc}</p>
+              </div>
+            </div>
+            <div className="landing-showcase-row">
+              <div className="landing-showcase-media"><MiniGuideCard /></div>
+              <div className="landing-showcase-text">
+                <div className="landing-showcase-title">{t.landingFeature3Title}</div>
+                <p className="landing-showcase-desc">{t.landingFeature3Desc}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="landing-section landing-section-white">
+        <div className="landing-wrap">
+          <div className="landing-trust">
+            <span className="landing-trust-item"><ShieldIcon style={{ width: 14, height: 14 }} />{t.landingTrust1}</span>
+            <span className="landing-trust-item"><PlusIcon style={{ width: 14, height: 14 }} />{t.landingTrust2}</span>
+            <span className="landing-trust-item"><LeafIcon style={{ width: 14, height: 14 }} />{t.landingTrust3}</span>
+            <span className="landing-trust-item"><InfoIcon style={{ width: 14, height: 14 }} />{t.landingTrust4}</span>
+          </div>
+          <button className="landing-cta" style={{ marginTop: 32 }} onClick={onStart}>{t.landingCta}</button>
+        </div>
+      </section>
     </div>
   );
 }
