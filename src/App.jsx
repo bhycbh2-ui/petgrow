@@ -326,6 +326,7 @@ const STRINGS = {
     photoAddBtn: "앨범에 추가",
     photoErrDate: "촬영일을 선택해주세요",
     photoErrPhoto: "사진을 선택해주세요",
+    photoSaveError: "사진을 저장하지 못했어요. 파일이 너무 크거나 저장 공간이 부족할 수 있어요. 다른 사진으로 다시 시도해주세요.",
     albumEmpty: "아직 등록된 사진이 없어요. 첫 사진을 남겨보세요!",
     photoCountLabel: (n) => `${n}장`,
     albumLoginRequiredTitle: "로그인하면 성장앨범을 쓸 수 있어요",
@@ -621,6 +622,7 @@ const STRINGS = {
     photoAddBtn: "Add to album",
     photoErrDate: "Please select the date taken",
     photoErrPhoto: "Please choose a photo",
+    photoSaveError: "Couldn't save the photo. The file may be too large or storage may be full. Please try a different photo.",
     albumEmpty: "No photos yet — add your first one!",
     photoCountLabel: (n) => `${n} photo${n === 1 ? "" : "s"}`,
     albumLoginRequiredTitle: "Log in to use the growth album",
@@ -1664,8 +1666,12 @@ function ProfileImagePicker({ species, value, onChange }) {
   const handlePick = async (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
-    const dataUrl = await fileToDataUrl(file);
-    onChange(dataUrl);
+    try {
+      const dataUrl = await fileToCompressedDataUrl(file);
+      onChange(dataUrl);
+    } catch {
+      alert(t.photoSaveError);
+    }
     e.target.value = "";
   };
   return (
@@ -2167,6 +2173,43 @@ function fileToDataUrl(file) {
   });
 }
 
+// 큰 사진(요즘 폰 카메라는 보통 3~8MB)을 그대로 저장하면 브라우저 저장 용량 한도를
+// 넘어서 저장이 실패할 수 있어서, 저장 전에 자동으로 줄여서(리사이즈+압축) 저장해요.
+function fileToCompressedDataUrl(file, maxDim = 1280, quality = 0.82) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          if (width >= height) {
+            height = Math.round(height * (maxDim / width));
+            width = maxDim;
+          } else {
+            width = Math.round(width * (maxDim / height));
+            height = maxDim;
+          }
+        }
+        try {
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/jpeg", quality));
+        } catch (err) {
+          reject(err);
+        }
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 function AddPhotoCard({ onAdd }) {
   const t = useT();
   const inputRef = useRef(null);
@@ -2194,9 +2237,14 @@ function AddPhotoCard({ onAdd }) {
     }
     setErrors({});
     setAlert("");
-    const dataUrl = await fileToDataUrl(pendingFile);
-    onAdd(date, dataUrl);
-    setPendingFile(null);
+    try {
+      const dataUrl = await fileToCompressedDataUrl(pendingFile);
+      onAdd(date, dataUrl);
+      setPendingFile(null);
+    } catch {
+      setAlert(t.photoSaveError);
+      setAlertPopup(true);
+    }
   };
 
   return (
@@ -2226,7 +2274,7 @@ function AddPhotoCard({ onAdd }) {
           {t.photoAddBtn}
         </button>
       </div>
-      <AlertModal open={alertPopup} message={t.formAlertMissing} onClose={() => setAlertPopup(false)} />
+      <AlertModal open={alertPopup} message={alert} onClose={() => setAlertPopup(false)} />
     </div>
   );
 }
@@ -2237,8 +2285,12 @@ function PhotoTile({ photo, birthDate, onEdit, onDelete, onOpenSlideshow }) {
   const handleChange = async (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
-    const dataUrl = await fileToDataUrl(file);
-    onEdit(photo.id, dataUrl);
+    try {
+      const dataUrl = await fileToCompressedDataUrl(file);
+      onEdit(photo.id, dataUrl);
+    } catch {
+      alert(t.photoSaveError);
+    }
     e.target.value = "";
   };
   const months = monthsBetween(new Date(birthDate), new Date(photo.date));
@@ -3109,8 +3161,12 @@ function ResultPage({ pet, breedGroups, onAddRecord, onAddPhoto, onEditPhoto, on
   const handlePickAvatar = async (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
-    const dataUrl = await fileToDataUrl(file);
-    onUpdateProfileImage(dataUrl);
+    try {
+      const dataUrl = await fileToCompressedDataUrl(file);
+      onUpdateProfileImage(dataUrl);
+    } catch {
+      alert(t.photoSaveError);
+    }
     e.target.value = "";
   };
 
