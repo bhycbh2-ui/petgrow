@@ -1344,20 +1344,17 @@ const GlobalStyle = () => (
     .bg-input{width:100%; max-width:100%; min-width:0; box-sizing:border-box; padding:12px 16px; border:2px solid var(--border); border-radius:18px; font-family:inherit;
       font-size:14px; background:#fff; color:var(--text);}
     .bg-input:focus{outline:none; border-color:var(--primary);}
+    .date-field{width:100%; max-width:100%; min-width:0; overflow:hidden;}
     input[type="date"].bg-input{
-      display:block;
-      width:100%;
-      max-width:100%;
-      min-width:0;
-      inline-size:100%;
-      max-inline-size:100%;
-      min-inline-size:0;
-      -webkit-min-logical-width:0;
-      overflow:hidden;
+      display:block; width:100% !important; max-width:100% !important; min-width:0 !important;
+      inline-size:100% !important; max-inline-size:100% !important; min-inline-size:0 !important;
+      -webkit-min-logical-width:0 !important; box-sizing:border-box !important; overflow:hidden;
     }
-    input[type="date"].bg-input::-webkit-date-and-time-value{
-      min-width:0;
-      text-align:left;
+    input[type="date"].bg-input::-webkit-date-and-time-value{min-width:0; max-width:100%; text-align:left;}
+    input[type="date"].bg-input::-webkit-datetime-edit{min-width:0; max-width:100%; overflow:hidden;}
+    @media (max-width:480px){
+      .date-field{width:100%; max-width:100%; min-width:0; overflow:hidden;}
+      input[type="date"].bg-input{font-size:16px; padding-left:14px; padding-right:10px;}
     }
     .bg-chip{padding:10px 16px; border-radius:999px; border:2px solid var(--border); background:#fff; cursor:pointer;
       font-family:inherit; font-size:14px; font-weight:500; color:var(--text); transition:.12s; text-align:left;}
@@ -1851,7 +1848,7 @@ function OnboardingPage({ species, breedGroups, sizeOptions, initialValues, onSu
           )}
         </div>
 
-        <div>
+        <div className="date-field">
           <label className="bg-label">{t.labelBirthDate}</label>
           <input type="date" className={`bg-input ${errors.birthDate ? "invalid" : ""}`} value={birthDate}
             onChange={(e) => setBirthDate(e.target.value)} />
@@ -2041,7 +2038,7 @@ function RecordForm({ onAdd }) {
         </div>
       )}
       <div className="add-photo-row">
-        <div className="add-photo-field">
+        <div className="add-photo-field date-field">
           <label className="bg-label">{t.recordDateLabel}</label>
           <input type="date" className={`bg-input ${errors.date ? "invalid" : ""}`} value={date} onChange={(e) => setDate(e.target.value)} />
           {errors.date && <div className="field-error">{errors.date}</div>}
@@ -2205,7 +2202,7 @@ function AddPhotoCard({ onAdd }) {
         </div>
       )}
       <div className="add-photo-row">
-        <div className="add-photo-field">
+        <div className="add-photo-field date-field">
           <label className="bg-label">{t.photoDateLabel}</label>
           <input type="date" className={`bg-input ${errors.date ? "invalid" : ""}`} value={date} onChange={(e) => setDate(e.target.value)} />
           {errors.date && <div className="field-error">{errors.date}</div>}
