@@ -1344,7 +1344,8 @@ const GlobalStyle = () => (
     .bg-input{width:100%; max-width:100%; min-width:0; box-sizing:border-box; padding:12px 16px; border:2px solid var(--border); border-radius:18px; font-family:inherit;
       font-size:14px; background:#fff; color:var(--text);}
     .bg-input:focus{outline:none; border-color:var(--primary);}
-    input[type="date"].bg-input{min-width:0; -webkit-min-logical-width:0;}
+    input[type="date"].bg-input{display:block; width:100% !important; max-width:100% !important; min-width:0 !important;
+      inline-size:100% !important; max-inline-size:100% !important; -webkit-min-logical-width:0; box-sizing:border-box;}
     .bg-chip{padding:10px 16px; border-radius:999px; border:2px solid var(--border); background:#fff; cursor:pointer;
       font-family:inherit; font-size:14px; font-weight:500; color:var(--text); transition:.12s; text-align:left;}
     .bg-chip:hover{border-color:var(--primary); transform:translateY(-1px);}
@@ -1568,15 +1569,10 @@ const GlobalStyle = () => (
     .combobox-item{padding:9px 12px; font-size:14px; cursor:pointer;}
     .combobox-item:hover, .combobox-item.active{background:var(--surface);}
     @media (max-width:680px){ .bg-grid-2{grid-template-columns:1fr !important;} }
-  `}
-        /* 성장앨범 날짜칸: 사진선택 칸보다 오른쪽으로 길어지지 않도록 */
-        .album-date-input {
-          width: calc(100% - 14px) !important;
-          max-width: calc(100% - 14px) !important;
-          min-width: 0 !important;
-          box-sizing: border-box !important;
-        }
-</style>
+    /* iPhone Safari 날짜 입력칸이 부모보다 넓어지는 현상 방지 */
+    .album-date-input{width:100% !important; max-width:100% !important; min-width:0 !important;
+      inline-size:100% !important; max-inline-size:100% !important; box-sizing:border-box !important;}
+  `}</style>
 );
 
 /* ============================================================
