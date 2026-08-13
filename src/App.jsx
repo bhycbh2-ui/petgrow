@@ -287,7 +287,7 @@ const STRINGS = {
     heroLikelyPrefix: "가장 가능성이 높은 범위 약",
     heroDisclaimer: "성장 속도는 개체차가 커요. 확정 수치가 아닌 참고용 예측치예요.",
     chartTitle: "월령별 성장 그래프",
-    chartLegend: "● 진한 점 = 현재 위치",
+    chartLegend: "진한 점 = 현재 위치",
     chartBandLegend: "연두색 밴드 = 참고용 정상 범위 (예상치의 ±15%)",
     chartOutsideBand: "⚠ 현재 체중이 정상 범위를 벗어났어요. 건강이 걱정되시면 수의사와 상담해보세요.",
     chartCurrentLabel: "현재",
@@ -582,7 +582,7 @@ const STRINGS = {
     heroLikelyPrefix: "Most likely range: about",
     heroDisclaimer: "Individual growth rates vary a lot — this is a reference estimate, not a fixed number.",
     chartTitle: "Growth chart by age",
-    chartLegend: "● Bold dot = current point",
+    chartLegend: "Bold dot = current point",
     chartBandLegend: "Green band = reference healthy range (±15% of prediction)",
     chartOutsideBand: "⚠ Current weight is outside the healthy range. If you're concerned, please consult a vet.",
     chartCurrentLabel: "Now",
@@ -1387,7 +1387,7 @@ const GlobalStyle = () => (
       .add-photo-row{flex-direction:column; align-items:stretch;}
       .add-photo-field{flex-basis:auto; width:100%; max-width:100%; overflow:hidden;}
       .add-photo-row > .bg-btn{width:100%;}
-      input[type="date"].bg-input{padding-left:12px; padding-right:8px; font-size:13px; width:100%; box-sizing:border-box;}
+      input[type="date"].bg-input{padding-left:10px; padding-right:4px; font-size:12px; width:88%; box-sizing:border-box;}
     }
     @keyframes aboutFadeUp{from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);}}
     @keyframes aboutFloat{0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);}}
