@@ -1346,15 +1346,25 @@ const GlobalStyle = () => (
     .bg-input:focus{outline:none; border-color:var(--primary);}
     .date-field{width:100%; max-width:100%; min-width:0; overflow:hidden;}
     input[type="date"].bg-input{
-      display:block; width:100% !important; max-width:100% !important; min-width:0 !important;
-      inline-size:100% !important; max-inline-size:100% !important; min-inline-size:0 !important;
-      -webkit-min-logical-width:0 !important; box-sizing:border-box !important; overflow:hidden;
+      display:block;
+      width:100% !important;
+      max-width:100% !important;
+      min-width:0 !important;
+      height:42px !important;
+      min-height:42px !important;
+      padding:0 14px !important;
+      inline-size:100% !important;
+      max-inline-size:100% !important;
+      min-inline-size:0 !important;
+      -webkit-min-logical-width:0 !important;
+      box-sizing:border-box !important;
+      overflow:hidden;
     }
     input[type="date"].bg-input::-webkit-date-and-time-value{min-width:0; max-width:100%; text-align:left;}
     input[type="date"].bg-input::-webkit-datetime-edit{min-width:0; max-width:100%; overflow:hidden;}
     @media (max-width:480px){
       .date-field{width:100%; max-width:100%; min-width:0; overflow:hidden;}
-      input[type="date"].bg-input{font-size:16px; padding-left:14px; padding-right:10px;}
+      input[type="date"].bg-input{font-size:16px; width:100% !important; height:42px !important; padding:0 14px !important;}
     }
     .bg-chip{padding:10px 16px; border-radius:999px; border:2px solid var(--border); background:#fff; cursor:pointer;
       font-family:inherit; font-size:14px; font-weight:500; color:var(--text); transition:.12s; text-align:left;}
