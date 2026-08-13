@@ -1478,41 +1478,41 @@ const GlobalStyle = () => (
     .landing-root{--pg-dark:#1C1C1C; --pg-green:#4F9D3C; --pg-green-light:#F2F8F0;
       background:linear-gradient(180deg,#F7FBF5 0%, #F2F8F0 60%, #F7FBF5 100%); min-height:100vh;}
     .landing-wrap{max-width:960px; margin:0 auto; padding:0 24px;}
-    .landing-logo-badge{width:132px; height:132px; border-radius:50%; background:#fff; display:flex;
+    .landing-logo-badge{width:156px; height:156px; border-radius:50%; background:#fff; display:flex;
       align-items:center; justify-content:center; margin:0 auto 18px; box-shadow:0 10px 30px rgba(0,0,0,.1);}
     .landing-wordmark{text-align:center; font-size:clamp(38px,7vw,56px); font-weight:800; letter-spacing:-0.02em;}
     .landing-wordmark .pet{color:var(--pg-dark);} .landing-wordmark .grow{color:var(--pg-green);}
     .landing-tagline{text-align:center; color:#8a8f86; font-size:15px; margin-top:8px;}
-    .landing-headline{text-align:center; font-size:clamp(28px,5vw,42px); font-weight:800; line-height:1.35; margin-top:44px; color:var(--pg-dark);}
+    .landing-headline{text-align:center; font-size:clamp(32px,5.5vw,48px); font-weight:800; line-height:1.35; margin-top:44px; color:var(--pg-dark);}
     .landing-headline .hl{color:var(--pg-green);}
-    .landing-subtitle{text-align:center; color:#787774; font-size:17px; margin-top:18px; line-height:1.7;
-      max-width:560px; margin-left:auto; margin-right:auto;}
+    .landing-subtitle{text-align:center; color:#787774; font-size:19px; margin-top:18px; line-height:1.75;
+      max-width:600px; margin-left:auto; margin-right:auto;}
     .landing-cta{display:block; margin:32px auto 0; background:var(--pg-green); color:#fff; border:none;
       border-radius:14px; padding:18px 42px; font-size:18px; font-weight:700; font-family:inherit; cursor:pointer;
       box-shadow:0 10px 24px rgba(127,166,107,.35); transition:.15s;}
     .landing-cta:hover{transform:translateY(-1px); box-shadow:0 14px 28px rgba(127,166,107,.4);}
     .landing-illustration{display:flex; justify-content:center; gap:24px; margin:52px 0;}
-    .landing-illustration .paw-badge, .landing-illustration .cat-badge{width:128px; height:128px; border-radius:32px;
+    .landing-illustration .paw-badge, .landing-illustration .cat-badge{width:144px; height:144px; border-radius:34px;
       display:flex; align-items:center; justify-content:center; box-shadow:0 12px 28px rgba(0,0,0,.07);}
     .landing-illustration .paw-badge{background:#fff; transform:rotate(-6deg);}
     .landing-illustration .cat-badge{background:var(--pg-green-light); transform:rotate(6deg); margin-top:26px;}
-    .landing-about{display:flex; flex-direction:column; align-items:center; text-align:center; gap:18px; max-width:640px; margin:0 auto;}
-    .landing-about-icon{width:96px; height:96px; border-radius:28px; background:var(--pg-green-light);
+    .landing-about{display:flex; flex-direction:column; align-items:center; text-align:center; gap:18px; max-width:680px; margin:0 auto;}
+    .landing-about-icon{width:104px; height:104px; border-radius:28px; background:var(--pg-green-light);
       display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 10px 24px rgba(0,0,0,.05);}
-    .landing-about-text{font-size:17px; line-height:1.9; color:#585d57;}
+    .landing-about-text{font-size:19px; line-height:1.9; color:#585d57;}
     .landing-showcase{display:flex; flex-direction:column; gap:36px; margin-top:8px;}
     .landing-showcase-row{display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:40px;}
-    .landing-showcase-media{order:1; display:flex; justify-content:center; min-width:0;}
-    .landing-showcase-text{order:2; min-width:0;}
+    .landing-showcase-media{order:1; display:flex; justify-content:center; min-width:0; outline:none; border:none;}
+    .landing-showcase-text{order:2; min-width:0; outline:none; border:none;}
     .landing-showcase-row.reverse .landing-showcase-media{order:2;}
     .landing-showcase-row.reverse .landing-showcase-text{order:1;}
-    .landing-showcase-title{font-size:26px; font-weight:800; color:var(--pg-dark); margin-bottom:14px;}
-    .landing-showcase-desc{font-size:16px; color:#787774; line-height:1.85; max-width:400px;}
-    .mock-card{background:#fff; border-radius:22px; padding:26px; box-shadow:0 20px 48px rgba(28,28,28,.1);
-      width:100%; max-width:340px; border:1px solid var(--border);}
-    .mock-card-label{font-size:12px; color:var(--sub); font-weight:700; text-transform:uppercase; letter-spacing:.03em;}
-    .mock-card-value{font-size:36px; font-weight:800; color:var(--text); margin-top:6px;}
-    .mock-card-sub{font-size:13px; color:var(--primary); font-weight:700; margin-top:4px;}
+    .landing-showcase-title{font-size:30px; font-weight:800; color:var(--pg-dark); margin-bottom:14px;}
+    .landing-showcase-desc{font-size:18px; color:#787774; line-height:1.85; max-width:440px;}
+    .mock-card{background:#fff; border-radius:22px; padding:30px; box-shadow:0 20px 48px rgba(28,28,28,.1);
+      width:100%; max-width:400px; border:1px solid var(--border);}
+    .mock-card-label{font-size:13px; color:var(--sub); font-weight:700; text-transform:uppercase; letter-spacing:.03em;}
+    .mock-card-value{font-size:42px; font-weight:800; color:var(--text); margin-top:6px;}
+    .mock-card-sub{font-size:14px; color:var(--primary); font-weight:700; margin-top:4px;}
     .mock-sparkline{margin-top:18px;}
     .mock-photos{display:flex; gap:10px; margin-top:14px;}
     .mock-photo{flex:1; aspect-ratio:1; border-radius:14px; background:var(--surface);
@@ -1550,7 +1550,7 @@ const GlobalStyle = () => (
     .landing-section{padding:36px 0;}
     .landing-section-white{background:#fff;}
     .landing-hero-section{padding-top:44px; padding-bottom:20px;}
-    .landing-section-title{text-align:center; font-size:22px; font-weight:800; color:var(--pg-dark); margin-bottom:32px;}
+    .landing-section-title{text-align:center; font-size:26px; font-weight:800; color:var(--pg-dark); margin-bottom:32px;}
     .landing-steps{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
     .landing-step{text-align:center;}
     .landing-step-num{width:36px; height:36px; border-radius:50%; background:var(--pg-green); color:#fff;
@@ -3415,7 +3415,7 @@ function AboutPage({ onStart }) {
       <section className="landing-section landing-hero-section">
         <div className="landing-wrap">
           <div className="landing-logo-badge about-logo-float">
-            <PetGrowLogo style={{ width: 96, height: 96 }} />
+            <PetGrowLogo style={{ width: 116, height: 116 }} />
           </div>
 
           <p className="about-fade" style={{ textAlign: "center", fontSize: 15, fontWeight: 700, color: "var(--primary-dark)", marginBottom: 4, animationDelay: "0s" }}>
@@ -3428,8 +3428,8 @@ function AboutPage({ onStart }) {
           <button className="landing-cta about-fade" style={{ animationDelay: ".34s" }} onClick={onStart}>{t.landingCta}</button>
 
           <div className="landing-illustration about-fade" style={{ animationDelay: ".46s" }}>
-            <div className="paw-badge"><PawIcon style={{ width: 60, height: 60, color: "#3a3a3a" }} /></div>
-            <div className="cat-badge"><CatIcon style={{ width: 60, height: 60, color: "#4F9D3C" }} /></div>
+            <div className="paw-badge"><PawIcon style={{ width: 72, height: 72, color: "#3a3a3a" }} /></div>
+            <div className="cat-badge"><CatIcon style={{ width: 72, height: 72, color: "#4F9D3C" }} /></div>
           </div>
         </div>
       </section>
@@ -3438,7 +3438,7 @@ function AboutPage({ onStart }) {
         <div className="landing-wrap">
           <div className="landing-about about-fade">
             <div className="landing-about-icon">
-              <PetGrowLogo style={{ width: 52, height: 52 }} />
+              <PetGrowLogo style={{ width: 62, height: 62 }} />
             </div>
             <h2 className="landing-section-title" style={{ marginBottom: 0 }}>{t.landingAboutTitle}</h2>
             <p className="landing-about-text">{t.landingAboutBody}</p>
