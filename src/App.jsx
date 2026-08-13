@@ -1345,9 +1345,6 @@ const GlobalStyle = () => (
       font-size:14px; background:#fff; color:var(--text);}
     .bg-input:focus{outline:none; border-color:var(--primary);}
     input[type="date"].bg-input{min-width:0; -webkit-min-logical-width:0;}
-    .date-input-wrap{width:100%; min-width:0; max-width:100%; overflow:hidden;}
-    .date-input-wrap > input[type="date"].bg-input{display:block; width:100%; min-width:0; max-width:100%; box-sizing:border-box; -webkit-appearance:none; appearance:none;}
-    .date-input-wrap > input[type="date"].bg-input::-webkit-date-and-time-value{min-width:0; text-align:left;}
     .bg-chip{padding:10px 16px; border-radius:999px; border:2px solid var(--border); background:#fff; cursor:pointer;
       font-family:inherit; font-size:14px; font-weight:500; color:var(--text); transition:.12s; text-align:left;}
     .bg-chip:hover{border-color:var(--primary); transform:translateY(-1px);}
@@ -1571,7 +1568,15 @@ const GlobalStyle = () => (
     .combobox-item{padding:9px 12px; font-size:14px; cursor:pointer;}
     .combobox-item:hover, .combobox-item.active{background:var(--surface);}
     @media (max-width:680px){ .bg-grid-2{grid-template-columns:1fr !important;} }
-  `}</style>
+  `}
+        /* 성장앨범 날짜칸: 사진선택 칸보다 오른쪽으로 길어지지 않도록 */
+        .album-date-input {
+          width: calc(100% - 14px) !important;
+          max-width: calc(100% - 14px) !important;
+          min-width: 0 !important;
+          box-sizing: border-box !important;
+        }
+</style>
 );
 
 /* ============================================================
@@ -1840,7 +1845,7 @@ function OnboardingPage({ species, breedGroups, sizeOptions, initialValues, onSu
           )}
         </div>
 
-        <div className="date-input-wrap">
+        <div>
           <label className="bg-label">{t.labelBirthDate}</label>
           <input type="date" className={`bg-input ${errors.birthDate ? "invalid" : ""}`} value={birthDate}
             onChange={(e) => setBirthDate(e.target.value)} />
@@ -2030,9 +2035,9 @@ function RecordForm({ onAdd }) {
         </div>
       )}
       <div className="add-photo-row">
-        <div className="add-photo-field date-input-wrap">
+        <div className="add-photo-field">
           <label className="bg-label">{t.recordDateLabel}</label>
-          <input type="date" className={`bg-input ${errors.date ? "invalid" : ""}`} value={date} onChange={(e) => setDate(e.target.value)} />
+          <input type="date" className={`bg-input album-date-input ${errors.date ? "invalid" : ""}`} value={date} onChange={(e) => setDate(e.target.value)} />
           {errors.date && <div className="field-error">{errors.date}</div>}
         </div>
         <div className="add-photo-field">
@@ -2194,9 +2199,9 @@ function AddPhotoCard({ onAdd }) {
         </div>
       )}
       <div className="add-photo-row">
-        <div className="add-photo-field date-input-wrap">
+        <div className="add-photo-field">
           <label className="bg-label">{t.photoDateLabel}</label>
-          <input type="date" className={`bg-input ${errors.date ? "invalid" : ""}`} value={date} onChange={(e) => setDate(e.target.value)} />
+          <input type="date" className={`bg-input album-date-input ${errors.date ? "invalid" : ""}`} value={date} onChange={(e) => setDate(e.target.value)} />
           {errors.date && <div className="field-error">{errors.date}</div>}
         </div>
         <div className="add-photo-field">
