@@ -2,6 +2,12 @@ import React, { useState, useMemo, useEffect, useRef, useContext, createContext 
 import {
   LineChart, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceDot, ReferenceLine, Label,
 } from "recharts";
+import { Capacitor } from "@capacitor/core";
+import { AdMob, BannerAdPosition, BannerAdSize } from "@capacitor-community/admob";
+
+const ADMOB_TEST_MODE = true;
+const ADMOB_TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111";
+const ADMOB_PROD_BANNER_ID = "ca-app-pub-9699974051273244/9809518314";
 
 /* ============================================================
    data/growthCurves.js 역할
@@ -3845,6 +3851,38 @@ function AppInner({ lang, setLang }) {
 
 export default function App() {
   const [lang, setLang] = useState("ko");
+
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return undefined;
+
+    let cancelled = false;
+
+    const startAdMob = async () => {
+      try {
+        await AdMob.initialize();
+
+        if (cancelled) return;
+
+        await AdMob.showBanner({
+          adId: ADMOB_TEST_MODE ? ADMOB_TEST_BANNER_ID : ADMOB_PROD_BANNER_ID,
+          adSize: BannerAdSize.ADAPTIVE_BANNER,
+          position: BannerAdPosition.BOTTOM_CENTER,
+          margin: 0,
+          isTesting: ADMOB_TEST_MODE,
+        });
+      } catch (error) {
+        console.error("AdMob banner initialization failed:", error);
+      }
+    };
+
+    startAdMob();
+
+    return () => {
+      cancelled = true;
+      AdMob.removeBanner().catch(() => {});
+    };
+  }, []);
+
   const path = typeof window !== "undefined" ? window.location.pathname : "/";
   const isPrivacyPage = path === "/privacy" || path === "/privacy/";
   return (
