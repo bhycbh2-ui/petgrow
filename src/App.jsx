@@ -2,12 +2,6 @@ import React, { useState, useMemo, useEffect, useRef, useContext, createContext 
 import {
   LineChart, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceDot, ReferenceLine, Label,
 } from "recharts";
-import { Capacitor } from "@capacitor/core";
-import { AdMob, BannerAdPosition, BannerAdSize } from "@capacitor-community/admob";
-
-const ADMOB_TEST_MODE = true;
-const ADMOB_TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111";
-const ADMOB_PROD_BANNER_ID = "ca-app-pub-9699974051273244/9809518314";
 
 /* ============================================================
    data/growthCurves.js 역할
@@ -418,6 +412,8 @@ const STRINGS = {
     landingTagline: "우리 아이의 건강한 성장을 함께",
     landingHeadline1: "반려동물의 성장,",
     landingGreeting: "안녕하세요, 펫그로우입니다 🐾",
+    introVideoMute: "소리 끄기",
+    introVideoUnmute: "소리 켜기",
     landingHeadlineHighlight: "과학적인 계산",
     landingHeadline2: "으로 더 건강하게",
     landingSubtitle: "견종·묘종, 나이, 체중 정보를 바탕으로 예측 체중과 월령별 성장 데이터를 참고해보세요.",
@@ -714,6 +710,8 @@ const STRINGS = {
     landingTagline: "Growing up healthy, together",
     landingHeadline1: "Your pet's growth,",
     landingGreeting: "Hello, welcome to PetGrow 🐾",
+    introVideoMute: "Mute",
+    introVideoUnmute: "Unmute",
     landingHeadlineHighlight: "backed by data",
     landingHeadline2: " — for a healthier future",
     landingSubtitle: "Enter breed, age, and weight to see a predicted adult weight and month-by-month growth data.",
@@ -976,6 +974,16 @@ const ShareIcon = (p) => (
 const CheckSquareIcon = (p) => (
   <svg className="icon" viewBox="0 0 24 24" {...p}>
     <path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm5.2 12.4L18 7.6l-1.4-1.4-7.4 7.4L6 10.4 4.6 11.8l5.6 5.6z" />
+  </svg>
+);
+const SoundOnIcon = (p) => (
+  <svg className="icon" viewBox="0 0 24 24" {...p}>
+    <path d="M4 9v6h4l5 5V4L8 9H4zm11.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM13 3.2v2.06c3.39.85 5.9 3.91 5.9 7.74s-2.51 6.89-5.9 7.74v2.06c4.5-.88 7.9-4.84 7.9-9.8s-3.4-8.92-7.9-9.8z" />
+  </svg>
+);
+const SoundOffIcon = (p) => (
+  <svg className="icon" viewBox="0 0 24 24" {...p}>
+    <path d="M4 9v6h4l5 5V4L8 9H4zm15.7-1.5-1.4-1.4-2.6 2.6-2.6-2.6-1.4 1.4 2.6 2.6-2.6 2.6 1.4 1.4 2.6-2.6 2.6 2.6 1.4-1.4-2.6-2.6z" />
   </svg>
 );
 // PetGrow 브랜드 마크 (강아지+고양이+하트) — 귀여운 핑크 톤
@@ -1558,6 +1566,15 @@ const GlobalStyle = () => (
     .landing-section{padding:36px 0;}
     .landing-section-white{background:#fff;}
     .landing-hero-section{padding-top:44px; padding-bottom:20px;}
+    .intro-video-wrap{position:relative; width:100%; aspect-ratio:16/9; border-radius:24px; overflow:hidden;
+      box-shadow:0 16px 40px rgba(28,28,28,.12); background:#000;}
+    .intro-video{width:100%; height:100%; object-fit:cover; display:block;}
+    .intro-video-sound-btn{position:absolute; bottom:14px; right:14px; width:40px; height:40px; border-radius:50%;
+      background:rgba(0,0,0,.5); border:none; color:#fff; display:flex; align-items:center; justify-content:center;
+      cursor:pointer; backdrop-filter:blur(2px);}
+    .intro-video-sound-btn:hover{background:rgba(0,0,0,.7);}
+    .intro-video-sound-btn.pulse{animation:soundPulse 1.8s ease-in-out infinite;}
+    @keyframes soundPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.5);} 50%{box-shadow:0 0 0 8px rgba(255,255,255,0);}}
     .landing-section-title{text-align:center; font-size:26px; font-weight:800; color:var(--pg-dark); margin-bottom:32px;}
     .landing-steps{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
     .landing-step{text-align:center;}
@@ -3488,10 +3505,70 @@ function LandingPage({ onEnter }) {
 /* ============================================================
    소개 페이지 — 로고를 누르면 보이는 사업 설명 화면 (히어로 + 단계 + 기능 쇼케이스 + 신뢰 배지)
    ============================================================ */
+// 소개 페이지 맨 위 자동재생 영상 — 처음엔 음소거, 버튼으로 소리 켤 수 있어요
+function IntroVideo() {
+  const t = useT();
+  const videoRef = useRef(null);
+  const [muted, setMuted] = useState(true);
+  const [userMuted, setUserMuted] = useState(false); // 사용자가 직접 소리를 껐다면, 자동 켜기를 다시 하지 않음
+
+  const toggleSound = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = !v.muted;
+    setUserMuted(v.muted);
+    if (!v.muted) v.play().catch(() => {});
+    setMuted(v.muted);
+  };
+
+  // 페이지 아무 곳이나 처음 한 번 클릭/터치하면 자동으로 소리를 켜줘요
+  // (브라우저 정책상 사용자 동작 없이는 소리 있는 자동재생이 불가능해서, 이 방법이 가장 빨라요)
+  useEffect(() => {
+    const unmuteOnFirstInteraction = () => {
+      const v = videoRef.current;
+      if (v && !userMuted) {
+        v.muted = false;
+        v.play().catch(() => {});
+        setMuted(false);
+      }
+    };
+    document.addEventListener("click", unmuteOnFirstInteraction, { once: true });
+    document.addEventListener("touchstart", unmuteOnFirstInteraction, { once: true });
+    document.addEventListener("scroll", unmuteOnFirstInteraction, { once: true, passive: true });
+    return () => {
+      document.removeEventListener("click", unmuteOnFirstInteraction);
+      document.removeEventListener("touchstart", unmuteOnFirstInteraction);
+      document.removeEventListener("scroll", unmuteOnFirstInteraction);
+    };
+  }, [userMuted]);
+
+  return (
+    <div className="intro-video-wrap about-fade">
+      <video
+        ref={videoRef}
+        className="intro-video"
+        src="/intro-video.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+      />
+      <button type="button" className={`intro-video-sound-btn ${muted ? "pulse" : ""}`} onClick={toggleSound}
+        aria-label={muted ? t.introVideoUnmute : t.introVideoMute}>
+        {muted ? <SoundOffIcon style={{ width: 18, height: 18 }} /> : <SoundOnIcon style={{ width: 18, height: 18 }} />}
+      </button>
+    </div>
+  );
+}
+
 function AboutPage({ onStart }) {
   const t = useT();
   return (
     <div className="landing-root">
+      <div className="landing-wrap" style={{ paddingTop: 24 }}>
+        <IntroVideo />
+      </div>
       <section className="landing-section landing-hero-section">
         <div className="landing-wrap">
           <div className="landing-logo-badge about-logo-float">
@@ -3851,38 +3928,6 @@ function AppInner({ lang, setLang }) {
 
 export default function App() {
   const [lang, setLang] = useState("ko");
-
-  useEffect(() => {
-    if (!Capacitor.isNativePlatform()) return undefined;
-
-    let cancelled = false;
-
-    const startAdMob = async () => {
-      try {
-        await AdMob.initialize();
-
-        if (cancelled) return;
-
-        await AdMob.showBanner({
-          adId: ADMOB_TEST_MODE ? ADMOB_TEST_BANNER_ID : ADMOB_PROD_BANNER_ID,
-          adSize: BannerAdSize.ADAPTIVE_BANNER,
-          position: BannerAdPosition.BOTTOM_CENTER,
-          margin: 0,
-          isTesting: ADMOB_TEST_MODE,
-        });
-      } catch (error) {
-        console.error("AdMob banner initialization failed:", error);
-      }
-    };
-
-    startAdMob();
-
-    return () => {
-      cancelled = true;
-      AdMob.removeBanner().catch(() => {});
-    };
-  }, []);
-
   const path = typeof window !== "undefined" ? window.location.pathname : "/";
   const isPrivacyPage = path === "/privacy" || path === "/privacy/";
   return (
