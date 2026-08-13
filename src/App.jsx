@@ -1503,7 +1503,7 @@ const GlobalStyle = () => (
     .landing-showcase{display:flex; flex-direction:column; gap:36px; margin-top:8px;}
     .landing-showcase-row{display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:40px;}
     .landing-showcase-media{order:1; display:flex; justify-content:center; min-width:0; outline:none; border:none;}
-    .landing-showcase-text{order:2; min-width:0; outline:none; border:none;}
+    .landing-showcase-text{order:2; min-width:0; outline:none; border:none; padding-left:8px;}
     .landing-showcase-row.reverse .landing-showcase-media{order:2;}
     .landing-showcase-row.reverse .landing-showcase-text{order:1;}
     .landing-showcase-title{font-size:30px; font-weight:800; color:var(--pg-dark); margin-bottom:14px;}
