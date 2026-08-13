@@ -3272,7 +3272,7 @@ function AppInner({ lang, setLang }) {
   const [guideOpen, setGuideOpen] = useState(false);
   const [showTips, setShowTips] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
-  const [showAbout, setShowAbout] = useState(false);
+  const [showAbout, setShowAbout] = useState(true);
   const [deleteTarget, setDeleteTarget] = useState(null); // {id, name} | null
 
   useEffect(() => {
