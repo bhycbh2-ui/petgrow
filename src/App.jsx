@@ -1554,7 +1554,7 @@ const GlobalStyle = () => (
     @media (max-width:680px){ .landing-features{grid-template-columns:1fr;} .landing-steps{grid-template-columns:1fr;} .landing-pricing{grid-template-columns:1fr;}
       .landing-showcase-row, .landing-showcase-row.reverse{flex-direction:column; align-items:stretch; gap:28px;}
       .landing-showcase{gap:36px;}
-      .landing-showcase-media{width:100%;}
+      .landing-showcase-media, .landing-showcase-text{flex:none; width:100%; height:auto; min-height:0; border:none; outline:none;}
       .mock-card{max-width:100%;} }
     .modal-overlay{position:fixed; inset:0; background:rgba(91,74,79,.45); display:flex; align-items:center;
       justify-content:center; padding:20px; z-index:100;}
