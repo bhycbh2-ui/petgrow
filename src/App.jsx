@@ -1344,7 +1344,21 @@ const GlobalStyle = () => (
     .bg-input{width:100%; max-width:100%; min-width:0; box-sizing:border-box; padding:12px 16px; border:2px solid var(--border); border-radius:18px; font-family:inherit;
       font-size:14px; background:#fff; color:var(--text);}
     .bg-input:focus{outline:none; border-color:var(--primary);}
-    input[type="date"].bg-input{min-width:0; -webkit-min-logical-width:0;}
+    input[type="date"].bg-input{
+      display:block;
+      width:100%;
+      max-width:100%;
+      min-width:0;
+      inline-size:100%;
+      max-inline-size:100%;
+      min-inline-size:0;
+      -webkit-min-logical-width:0;
+      overflow:hidden;
+    }
+    input[type="date"].bg-input::-webkit-date-and-time-value{
+      min-width:0;
+      text-align:left;
+    }
     .bg-chip{padding:10px 16px; border-radius:999px; border:2px solid var(--border); background:#fff; cursor:pointer;
       font-family:inherit; font-size:14px; font-weight:500; color:var(--text); transition:.12s; text-align:left;}
     .bg-chip:hover{border-color:var(--primary); transform:translateY(-1px);}
