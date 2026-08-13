@@ -2783,7 +2783,7 @@ function ShareCardModal({ open, onClose, pet, estimate, range, breedDisplayName 
     renderShareCard({ pet, estimate, range, breedDisplayName, lang, t }).then(setDataUrl);
   }, [open, lang]);
 
-  const handleDownload = () => {
+  const triggerDownloadLink = () => {
     if (!dataUrl) return;
     const a = document.createElement("a");
     a.href = dataUrl;
@@ -2791,6 +2791,24 @@ function ShareCardModal({ open, onClose, pet, estimate, range, breedDisplayName 
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+  };
+  // 모바일 브라우저(특히 사파리)는 <a download> 방식이 잘 안 먹혀서,
+  // 공유 API가 있으면(대부분의 모바일) 그걸 먼저 시도해요 — 저장도 그 안에서 할 수 있어요.
+  const handleDownload = async () => {
+    if (!dataUrl) return;
+    try {
+      const blob = await (await fetch(dataUrl)).blob();
+      const file = new File([blob], `${pet.profile.name}-petgrow.png`, { type: "image/png" });
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: "PetGrow" });
+        return;
+      }
+    } catch {}
+    try {
+      triggerDownloadLink();
+    } catch {
+      window.open(dataUrl, "_blank");
+    }
   };
   const handleShare = async () => {
     if (!dataUrl) return;
@@ -2802,7 +2820,7 @@ function ShareCardModal({ open, onClose, pet, estimate, range, breedDisplayName 
         return;
       }
     } catch {}
-    handleDownload();
+    triggerDownloadLink();
   };
 
   return (
