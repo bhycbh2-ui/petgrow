@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef, useContext, createContext } from "react";
 import {
-  LineChart, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceDot, Label,
+  LineChart, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceDot, ReferenceLine, Label,
 } from "recharts";
 
 /* ============================================================
@@ -236,6 +236,7 @@ const STRINGS = {
       { title: "6. 품종 정보 · 공유 카드", body: "이름 아래 품종을 누르면 품종별 참고 정보가 뜨고, 예측 결과 위 버튼으로 예쁜 공유 카드 이미지를 만들어 SNS에 공유할 수 있어요." },
       { title: "7. 꿀팁", body: "헤더의 '꿀팁' 버튼을 누르면 건강·생활 꿀팁을 검색하고 즐겨찾기할 수 있어요. 오늘의 추천은 매일 자동으로 바뀌어요." },
       { title: "8. 여러 마리 관리", body: "상단 탭에서 강아지·고양이를 나누고, 이름 칩을 눌러 최대 10마리까지 각자 따로 관리할 수 있어요." },
+      { title: "9. 성장 그래프 읽는 법", body: "빨간 점이 우리 아이의 현재 위치예요. 연두색 밴드는 참고용 정상 범위(예상치의 ±15%)이고, 이 범위를 벗어나면 그래프에 세로선과 경고 문구가 함께 떠요." },
     ],
     speciesLabel: { dog: "강아지", cat: "고양이" },
     adultWord: { dog: "성견", cat: "성묘" },
@@ -288,6 +289,7 @@ const STRINGS = {
     chartTitle: "월령별 성장 그래프",
     chartLegend: "● 진한 점 = 현재 위치",
     chartBandLegend: "연두색 밴드 = 참고용 정상 범위 (예상치의 ±15%)",
+    chartOutsideBand: "⚠ 현재 체중이 정상 범위를 벗어났어요. 건강이 걱정되시면 수의사와 상담해보세요.",
     chartCurrentLabel: "현재",
     tooltipWeight: "예상 체중",
     monthLabel: (n) => `${n}개월`,
@@ -408,6 +410,7 @@ const STRINGS = {
     pushNote: "실제로 휴대폰에 푸시 알림을 보내려면 Firebase Cloud Messaging(FCM)과 알림을 보낼 서버가 필요해요.",
     landingTagline: "우리 아이의 건강한 성장을 함께",
     landingHeadline1: "반려동물의 성장,",
+    landingGreeting: "안녕하세요, 펫그로우입니다 🐾",
     landingHeadlineHighlight: "과학적인 계산",
     landingHeadline2: "으로 더 건강하게",
     landingSubtitle: "견종·묘종, 나이, 체중 정보를 바탕으로 예측 체중과 월령별 성장 데이터를 참고해보세요.",
@@ -528,6 +531,7 @@ const STRINGS = {
       { title: "6. Breed info & share cards", body: "Tap the breed name under your pet's name for breed reference info, and use the button above the prediction to create a shareable image card for social media." },
       { title: "7. Tips", body: "Tap the 'Tips' button in the header to search and bookmark health and lifestyle tips. Today's picks rotate automatically each day." },
       { title: "8. Managing multiple pets", body: "Switch between dogs and cats with the top tabs, and tap a name chip to switch pets — up to 10 per species." },
+      { title: "9. Reading the growth chart", body: "The red dot marks your pet's current spot. The green band is a reference healthy range (±15% of the prediction) — stepping outside it adds a vertical line and a warning note to the chart." },
     ],
     speciesLabel: { dog: "dog", cat: "cat" },
     adultWord: { dog: "adult dog", cat: "adult cat" },
@@ -580,6 +584,7 @@ const STRINGS = {
     chartTitle: "Growth chart by age",
     chartLegend: "● Bold dot = current point",
     chartBandLegend: "Green band = reference healthy range (±15% of prediction)",
+    chartOutsideBand: "⚠ Current weight is outside the healthy range. If you're concerned, please consult a vet.",
     chartCurrentLabel: "Now",
     tooltipWeight: "Predicted weight",
     monthLabel: (n) => `${n}mo`,
@@ -700,6 +705,7 @@ const STRINGS = {
     pushNote: "Sending real push notifications to a phone needs Firebase Cloud Messaging (FCM) and a server to send them.",
     landingTagline: "Growing up healthy, together",
     landingHeadline1: "Your pet's growth,",
+    landingGreeting: "Hello, welcome to PetGrow 🐾",
     landingHeadlineHighlight: "backed by data",
     landingHeadline2: " — for a healthier future",
     landingSubtitle: "Enter breed, age, and weight to see a predicted adult weight and month-by-month growth data.",
@@ -1344,8 +1350,7 @@ const GlobalStyle = () => (
     .bg-input{width:100%; max-width:100%; min-width:0; box-sizing:border-box; padding:12px 16px; border:2px solid var(--border); border-radius:18px; font-family:inherit;
       font-size:14px; background:#fff; color:var(--text);}
     .bg-input:focus{outline:none; border-color:var(--primary);}
-    input[type="date"].bg-input{display:block; width:100% !important; max-width:100% !important; min-width:0 !important;
-      inline-size:100% !important; max-inline-size:100% !important; -webkit-min-logical-width:0; box-sizing:border-box;}
+    input[type="date"].bg-input{min-width:0; -webkit-min-logical-width:0;}
     .bg-chip{padding:10px 16px; border-radius:999px; border:2px solid var(--border); background:#fff; cursor:pointer;
       font-family:inherit; font-size:14px; font-weight:500; color:var(--text); transition:.12s; text-align:left;}
     .bg-chip:hover{border-color:var(--primary); transform:translateY(-1px);}
@@ -1380,8 +1385,9 @@ const GlobalStyle = () => (
     .add-photo-field{flex:1 1 140px; min-width:0; max-width:100%;}
     @media (max-width:480px){
       .add-photo-row{flex-direction:column; align-items:stretch;}
-      .add-photo-field{flex-basis:auto; width:100%; max-width:100%;}
+      .add-photo-field{flex-basis:auto; width:100%; max-width:100%; overflow:hidden;}
       .add-photo-row > .bg-btn{width:100%;}
+      input[type="date"].bg-input{padding-left:12px; padding-right:8px; font-size:13px; width:100%; box-sizing:border-box;}
     }
     @keyframes aboutFadeUp{from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);}}
     @keyframes aboutFloat{0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);}}
@@ -1569,9 +1575,6 @@ const GlobalStyle = () => (
     .combobox-item{padding:9px 12px; font-size:14px; cursor:pointer;}
     .combobox-item:hover, .combobox-item.active{background:var(--surface);}
     @media (max-width:680px){ .bg-grid-2{grid-template-columns:1fr !important;} }
-    /* iPhone Safari 날짜 입력칸이 부모보다 넓어지는 현상 방지 */
-    .album-date-input{width:100% !important; max-width:100% !important; min-width:0 !important;
-      inline-size:100% !important; max-inline-size:100% !important; box-sizing:border-box !important;}
   `}</style>
 );
 
@@ -1787,7 +1790,7 @@ function OnboardingPage({ species, breedGroups, sizeOptions, initialValues, onSu
   };
 
   return (
-    <div style={{ maxWidth: 560, margin: "0 auto", padding: "12px 20px 60px" }}>
+    <div style={{ maxWidth: 900, margin: "0 auto", padding: "12px 20px 60px" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
         {species === "cat"
           ? <CatIcon style={{ width: 28, height: 28, color: "var(--primary)" }} />
@@ -1932,6 +1935,9 @@ function GrowthChartCard({ table, ageMonths, currentWeightKg, statusDiffGrams })
     band: [Math.round(r.weight * 0.85 * 100) / 100, Math.round(r.weight * 1.15 * 100) / 100],
   }));
   const currentPoint = { month: Math.round(ageMonths * 10) / 10, weight: currentWeightKg };
+  const closest = data.reduce((a, b) => (Math.abs(b.month - currentPoint.month) < Math.abs(a.month - currentPoint.month) ? b : a), data[0]);
+  const isOutsideBand = closest && (currentPoint.weight < closest.band[0] || currentPoint.weight > closest.band[1]);
+  const dotColor = "#E63946";
   const status = statusDiffGrams === undefined || statusDiffGrams === null ? null : diffLabel(statusDiffGrams, t);
   return (
     <div className="bg-card">
@@ -1948,15 +1954,21 @@ function GrowthChartCard({ table, ageMonths, currentWeightKg, statusDiffGrams })
           <Tooltip formatter={(v, name) => name === "band" ? null : [`${v}kg`, t.tooltipWeight]} labelFormatter={(m) => t.monthLabelAge(m)}
             contentStyle={{ borderRadius: 16, border: "2px solid #E3DECF", fontSize: 13 }} />
           <Area dataKey="band" stroke="none" fill="#4F9D3C" fillOpacity={0.12} isAnimationActive={false} />
+          {isOutsideBand && (
+            <ReferenceLine x={currentPoint.month} stroke={dotColor} strokeWidth={2} strokeDasharray="0" ifOverflow="extendDomain" />
+          )}
           <Line type="monotone" dataKey="weight" stroke="#4F9D3C" strokeWidth={3} dot={{ r: 4, fill: "#4F9D3C" }} />
-          <ReferenceDot x={currentPoint.month} y={currentPoint.weight} r={8} fill="#3D7A2E" stroke="#fff" strokeWidth={3}>
-            <Label value={`${t.chartCurrentLabel} ${currentPoint.weight}kg`} position="top" offset={12}
-              style={{ fontSize: 12, fontWeight: 700, fill: "#1C1C1C" }} />
-          </ReferenceDot>
+          <ReferenceDot x={currentPoint.month} y={currentPoint.weight} r={9} fill={dotColor} stroke="#fff" strokeWidth={3} />
         </LineChart>
       </ResponsiveContainer>
-      <div className="bg-sub" style={{ fontSize: 12, marginTop: 4 }}>{t.chartLegend}</div>
+      <div className="bg-sub" style={{ fontSize: 12, marginTop: 4, display: "flex", alignItems: "center", gap: 6 }}>
+        <span style={{ display: "inline-block", width: 9, height: 9, borderRadius: "50%", background: dotColor }} />
+        {t.chartLegend} ({currentPoint.weight}kg)
+      </div>
       <div className="bg-sub" style={{ fontSize: 12, marginTop: 2 }}>{t.chartBandLegend}</div>
+      {isOutsideBand && (
+        <div style={{ marginTop: 8, fontSize: 12, fontWeight: 700, color: dotColor }}>{t.chartOutsideBand}</div>
+      )}
       {status && (
         <div className="bg-surface-card" style={{ marginTop: 12, padding: "12px 16px", fontSize: 13, fontWeight: 700,
           color: status.tone === "up" ? "var(--primary)" : status.tone === "down" ? "var(--text)" : "var(--sub)" }}>
@@ -2033,7 +2045,7 @@ function RecordForm({ onAdd }) {
       <div className="add-photo-row">
         <div className="add-photo-field">
           <label className="bg-label">{t.recordDateLabel}</label>
-          <input type="date" className={`bg-input album-date-input ${errors.date ? "invalid" : ""}`} value={date} onChange={(e) => setDate(e.target.value)} />
+          <input type="date" className={`bg-input ${errors.date ? "invalid" : ""}`} value={date} onChange={(e) => setDate(e.target.value)} />
           {errors.date && <div className="field-error">{errors.date}</div>}
         </div>
         <div className="add-photo-field">
@@ -2197,7 +2209,7 @@ function AddPhotoCard({ onAdd }) {
       <div className="add-photo-row">
         <div className="add-photo-field">
           <label className="bg-label">{t.photoDateLabel}</label>
-          <input type="date" className={`bg-input album-date-input ${errors.date ? "invalid" : ""}`} value={date} onChange={(e) => setDate(e.target.value)} />
+          <input type="date" className={`bg-input ${errors.date ? "invalid" : ""}`} value={date} onChange={(e) => setDate(e.target.value)} />
           {errors.date && <div className="field-error">{errors.date}</div>}
         </div>
         <div className="add-photo-field">
@@ -3406,6 +3418,9 @@ function AboutPage({ onStart }) {
             <PetGrowLogo style={{ width: 96, height: 96 }} />
           </div>
 
+          <p className="about-fade" style={{ textAlign: "center", fontSize: 15, fontWeight: 700, color: "var(--primary-dark)", marginBottom: 4, animationDelay: "0s" }}>
+            {t.landingGreeting}
+          </p>
           <h1 className="landing-headline about-fade" style={{ animationDelay: ".1s" }}>
             {t.landingHeadline1} <span className="hl">{t.landingHeadlineHighlight}</span>{t.landingHeadline2}
           </h1>
