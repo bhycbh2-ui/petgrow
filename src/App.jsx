@@ -4,6 +4,7 @@ import {
 } from "recharts";
 import { Capacitor } from "@capacitor/core";
 import { AdMob, BannerAdPosition, BannerAdSize } from "@capacitor-community/admob";
+import { SplashScreen } from "@capacitor/splash-screen";
 
 // AdMob 앱/광고 단위 ID — 실제 앱(Android/iOS)에서만 동작해요, 웹사이트에서는 광고가 안 떠요
 const ADMOB_ANDROID_APP_ID = "ca-app-pub-9699974051273244~1293517862";
@@ -3826,6 +3827,10 @@ function AppInner({ lang, setLang }) {
         cat: (actives && actives.cat) || (cats[0] && cats[0].id) || null,
       });
       setLoaded(true);
+      // 앱(네이티브)에서 데이터 로딩이 끝나고 화면 준비가 되면 스플래시(흰 바탕 로고) 화면을 닫아요
+      if (Capacitor.isNativePlatform()) {
+        SplashScreen.hide().catch(() => {});
+      }
     })();
   }, []);
 
