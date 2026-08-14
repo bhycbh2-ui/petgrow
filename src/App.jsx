@@ -3845,6 +3845,10 @@ function AppInner({ lang, setLang }) {
         dog: (actives && actives.dog) || (dogs[0] && dogs[0].id) || null,
         cat: (actives && actives.cat) || (cats[0] && cats[0].id) || null,
       });
+      // 이미 등록해둔 반려동물이 있으면(재방문자) 소개 페이지를 건너뛰고 바로 정보 화면으로 보여줘요
+      if (dogs.length > 0 || cats.length > 0) {
+        setShowAbout(false);
+      }
       setLoaded(true);
       // 앱(네이티브)에서 데이터 로딩이 끝나고 화면 준비가 되면 스플래시(흰 바탕 로고) 화면을 닫아요
       if (Capacitor.isNativePlatform()) {
