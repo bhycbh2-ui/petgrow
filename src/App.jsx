@@ -423,6 +423,8 @@ const STRINGS = {
     landingHeadline1: "반려동물의 성장,",
     landingGreeting: "안녕하세요, 펫그로우입니다 🐾",
     socialTitle: "PetGrow 공식 채널",
+    saveToastOk: "저장됐어요",
+    saveToastError: "저장에 실패했어요 — 저장 공간이 가득 찼을 수 있어요. 오래된 사진을 정리해보세요.",
     socialLabels: { youtube: "유튜브", instagram: "인스타그램", threads: "스레드", tiktok: "틱톡", blog: "네이버 블로그" },
     introVideoMute: "소리 끄기",
     introVideoUnmute: "소리 켜기",
@@ -723,6 +725,8 @@ const STRINGS = {
     landingHeadline1: "Your pet's growth,",
     landingGreeting: "Hello, welcome to PetGrow 🐾",
     socialTitle: "PetGrow official channels",
+    saveToastOk: "Saved",
+    saveToastError: "Couldn't save — storage may be full. Try removing some older photos.",
     socialLabels: { youtube: "YouTube", instagram: "Instagram", threads: "Threads", tiktok: "TikTok", blog: "Naver Blog" },
     introVideoMute: "Mute",
     introVideoUnmute: "Unmute",
@@ -859,19 +863,27 @@ function normalizePhotos(photos, birthDate) {
 /* ============================================================
    더미 저장소 (window.storage 사용, 실패해도 앱은 동작)
    ============================================================ */
+/* ============================================================
+   저장소 — 브라우저 localStorage 사용 (기기 로컬 저장)
+   실제 서버(Supabase 등) 연동 시 이 두 함수만 API 호출로 교체하면
+   나머지 코드는 그대로 동작해요.
+   ============================================================ */
 async function safeGet(key) {
   try {
-    const r = await window.storage.get(key, false);
-    return r ? JSON.parse(r.value) : null;
+    const raw = window.localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
   }
 }
 async function safeSet(key, value) {
   try {
-    await window.storage.set(key, JSON.stringify(value), false);
-  } catch {
-    /* 저장 실패해도 화면은 계속 동작 */
+    window.localStorage.setItem(key, JSON.stringify(value));
+    return true;
+  } catch (err) {
+    // 저장 실패해도(예: 용량 초과) 화면은 계속 동작하되, 실패했다는 건 알려줘요
+    console.warn("저장 실패:", key, err);
+    return false;
   }
 }
 
@@ -1535,12 +1547,14 @@ const GlobalStyle = () => (
     .slideshow-close{position:absolute; top:10px; right:10px; width:32px; height:32px; border-radius:50%;
       border:none; background:rgba(255,255,255,.15); color:#fff; font-size:16px; cursor:pointer; z-index:2;}
     .slideshow-image-wrap{position:relative; display:flex; align-items:center; justify-content:center;
-      min-height:280px; max-height:60vh;}
+      min-height:280px; max-height:60vh; padding:0 46px;}
     .slideshow-image-wrap img{max-width:100%; max-height:60vh; border-radius:16px; object-fit:contain;}
-    .slideshow-nav{position:absolute; top:50%; transform:translateY(-50%); width:40px; height:40px;
-      border-radius:50%; border:none; background:rgba(255,255,255,.2); color:#fff; font-size:24px; cursor:pointer;}
-    .slideshow-nav:hover{background:rgba(255,255,255,.35);}
-    .slideshow-prev{left:4px;} .slideshow-next{right:4px;}
+    .slideshow-nav{position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px;
+      border-radius:50%; border:2px solid rgba(255,255,255,.85); background:rgba(0,0,0,.55); color:#fff;
+      font-size:24px; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.4); z-index:3;
+      display:flex; align-items:center; justify-content:center;}
+    .slideshow-nav:hover{background:rgba(0,0,0,.75);}
+    .slideshow-prev{left:8px;} .slideshow-next{right:8px;}
     .slideshow-caption{display:flex; justify-content:space-between; color:#fff; font-size:13px; margin-top:12px;}
     .slideshow-caption .bg-sub{color:rgba(255,255,255,.6);}
     .landing-root{--pg-dark:#1C1C1C; --pg-green:#4F9D3C; --pg-green-light:#F2F8F0;
@@ -1608,6 +1622,11 @@ const GlobalStyle = () => (
     .social-btn{width:46px; height:46px; border-radius:50%; background:#fff; display:flex; align-items:center;
       justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.08); transition:.15s;}
     .social-btn:hover{transform:translateY(-3px); box-shadow:0 8px 20px rgba(0,0,0,.12);}
+    .save-toast{position:fixed; left:50%; bottom:28px; transform:translateX(-50%); z-index:200;
+      background:var(--text); color:#fff; padding:12px 20px; border-radius:999px; font-size:13px; font-weight:700;
+      display:flex; align-items:center; gap:8px; box-shadow:0 10px 24px rgba(0,0,0,.25); animation:toastIn .25s ease both;}
+    .save-toast.error{background:#E63946;}
+    @keyframes toastIn{from{opacity:0; transform:translateX(-50%) translateY(10px);} to{opacity:1; transform:translateX(-50%) translateY(0);}}
     .landing-pricing{display:grid; grid-template-columns:repeat(2,1fr); gap:20px; max-width:640px; margin:0 auto;}
     .landing-pricing-card{background:#fff; border:1px solid #e3e8de; border-radius:18px; padding:28px 24px;}
     .landing-pricing-highlight{background:var(--pg-dark); border-color:var(--pg-dark);}
@@ -3856,14 +3875,21 @@ function AppInner({ lang, setLang }) {
     };
   }, []);
 
-  const persistPets = (next) => {
+  const [saveToast, setSaveToast] = useState(null); // "ok" | "error" | null
+
+  const persistPets = async (next) => {
     setPets(next);
-    safeSet("bboggl:dogs", next.dog);
-    safeSet("bboggl:cats", next.cat);
+    const ok1 = await safeSet("bboggl:dogs", next.dog);
+    const ok2 = await safeSet("bboggl:cats", next.cat);
+    flashSaveToast(ok1 && ok2);
   };
   const persistActive = (next) => {
     setActiveId(next);
     safeSet("bboggl:activeIds", next);
+  };
+  const flashSaveToast = (ok) => {
+    setSaveToast(ok ? "ok" : "error");
+    setTimeout(() => setSaveToast(null), ok ? 1600 : 3200);
   };
 
   const scrollToTop = () => {
@@ -4046,6 +4072,15 @@ function AppInner({ lang, setLang }) {
         onConfirm={confirmDeletePet}
         onCancel={() => setDeleteTarget(null)}
       />
+      {saveToast && (
+        <div className={`save-toast ${saveToast === "error" ? "error" : ""}`}>
+          {saveToast === "ok" ? (
+            <><CheckSquareIcon style={{ width: 16, height: 16 }} /> {t.saveToastOk}</>
+          ) : (
+            <>⚠️ {t.saveToastError}</>
+          )}
+        </div>
+      )}
     </div>
   );
 }
