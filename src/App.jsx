@@ -1371,6 +1371,12 @@ const GlobalStyle = () => (
     .bg-btn-ghost:active{box-shadow:0 1px 0 var(--border);}
     .icon{width:22px;height:22px;fill:currentColor;stroke:none;flex-shrink:0;}
     .bg-card{background:var(--bg); border:2px solid var(--border); border-radius:26px; padding:22px;}
+    .result-columns{display:flex; flex-direction:column; gap:16px;}
+    .result-block{display:flex; flex-direction:column;}
+    @media (min-width:900px){
+      .result-columns{display:block; column-count:2; column-gap:20px;}
+      .result-columns > *{break-inside:avoid; -webkit-column-break-inside:avoid; margin-bottom:16px; display:block; width:100%;}
+    }
     .bg-surface-card{background:var(--surface); border-radius:22px; padding:20px;}
     .bg-input{width:100%; max-width:100%; min-width:0; box-sizing:border-box; padding:12px 16px; border:2px solid var(--border); border-radius:18px; font-family:inherit;
       font-size:14px; background:#fff; color:var(--text);}
@@ -3165,7 +3171,7 @@ function TipsPage({ onClose }) {
         {showBookmarked ? t.tipBookmarkedFilter : t.tipAllTitle}
       </h3>
       {filtered.length > 0 ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <div className="result-columns">
           {filtered.map((tip) => (
             <TipCard key={tip.id} tip={tip} lang={lang} bookmarked={bookmarks.includes(tip.id)} onToggleBookmark={toggleBookmark} />
           ))}
@@ -3287,12 +3293,14 @@ function ResultPage({ pet, breedGroups, onAddRecord, onAddPhoto, onEditPhoto, on
         </div>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <AdultWeightHero profile={profile} estimate={estimate} ageMonths={ageMonthsNow} breedDisplayName={breedDisplayName} />
-        <button type="button" className="bg-btn" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
-          onClick={() => setShareOpen(true)}>
-          <ShareIcon style={{ width: 16, height: 16 }} /> {t.shareCardBtn}
-        </button>
+      <div className="result-columns">
+        <div className="result-block">
+          <AdultWeightHero profile={profile} estimate={estimate} ageMonths={ageMonthsNow} breedDisplayName={breedDisplayName} />
+          <button type="button" className="bg-btn" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", marginTop: 16 }}
+            onClick={() => setShareOpen(true)}>
+            <ShareIcon style={{ width: 16, height: 16 }} /> {t.shareCardBtn}
+          </button>
+        </div>
         <GrowthChartCard table={table} ageMonths={ageAtLatest} currentWeightKg={latest.weightKg} statusDiffGrams={latest.diffGrams} />
         <GrowthTableCard table={table} />
         <RecordSection records={sortedRecords} onAddRecord={handleAddRecord} />
