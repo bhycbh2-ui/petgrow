@@ -414,9 +414,9 @@ const STRINGS = {
     landingGreeting: "안녕하세요, 펫그로우입니다 🐾",
     introVideoMute: "소리 끄기",
     introVideoUnmute: "소리 켜기",
-    landingHeadlineHighlight: "과학적인 계산",
-    landingHeadline2: "으로 더 건강하게",
-    landingSubtitle: "견종·묘종, 나이, 체중 정보를 바탕으로 예측 체중과 월령별 성장 데이터를 참고해보세요.",
+    landingHeadlineHighlight: "데이터",
+    landingHeadline2: "로 더 건강하게",
+    landingSubtitle: "견종·묘종, 나이, 체중 정보를 바탕으로 예측 체중과 월령별 성장데이터를 참고해보세요.",
     landingFeature1Title: "성장 예측",
     landingFeature1Desc: "예측 체중과 월령별 성장 곡선을 보여드려요",
     landingFeature2Title: "성장 기록 · 앨범",
@@ -1052,12 +1052,12 @@ function AlertModal({ open, message, onClose }) {
 function GuideModal({ open, onClose }) {
   const t = useT();
   return (
-    <Modal open={open} onClose={onClose} width={480}>
+    <Modal open={open} onClose={onClose} width={720}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
         <HelpIcon style={{ width: 20, height: 20, color: "var(--primary)" }} />
         <h3 style={{ fontSize: 18 }}>{t.guideTitle}</h3>
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      <div className="guide-grid">
         {t.guideSections.map((s) => (
           <div key={s.title}>
             <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 3 }}>{s.title}</div>
@@ -1499,10 +1499,12 @@ const GlobalStyle = () => (
     .landing-wordmark{text-align:center; font-size:clamp(38px,7vw,56px); font-weight:800; letter-spacing:-0.02em;}
     .landing-wordmark .pet{color:var(--pg-dark);} .landing-wordmark .grow{color:var(--pg-green);}
     .landing-tagline{text-align:center; color:#8a8f86; font-size:15px; margin-top:8px;}
-    .landing-headline{text-align:center; font-size:clamp(32px,5.5vw,48px); font-weight:800; line-height:1.35; margin-top:44px; color:var(--pg-dark);}
+    .landing-headline{text-align:center; font-size:clamp(32px,5.5vw,48px); font-weight:800; line-height:1.35; margin-top:44px; color:var(--pg-dark); word-break:keep-all;}
     .landing-headline .hl{color:var(--pg-green);}
+    .landing-headline .mobile-br{display:none;}
+    @media (max-width:560px){ .landing-headline .mobile-br{display:block; content:"";} }
     .landing-subtitle{text-align:center; color:#787774; font-size:19px; margin-top:18px; line-height:1.75;
-      max-width:600px; margin-left:auto; margin-right:auto;}
+      max-width:600px; margin-left:auto; margin-right:auto; word-break:keep-all;}
     .landing-cta{display:block; margin:32px auto 0; background:var(--pg-green); color:#fff; border:none;
       border-radius:14px; padding:18px 42px; font-size:18px; font-weight:700; font-family:inherit; cursor:pointer;
       box-shadow:0 10px 24px rgba(127,166,107,.35); transition:.15s;}
@@ -1592,7 +1594,9 @@ const GlobalStyle = () => (
     .modal-overlay{position:fixed; inset:0; background:rgba(91,74,79,.45); display:flex; align-items:center;
       justify-content:center; padding:20px; z-index:100;}
     .modal-card{background:#fff; border-radius:28px; padding:26px; width:100%; box-shadow:0 24px 48px rgba(91,74,79,.25);
-      max-height:82vh; overflow-y:auto;}
+      max-height:92vh; overflow-y:auto;}
+    .guide-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px 20px;}
+    @media (max-width:560px){ .guide-grid{grid-template-columns:1fr;} }
     .combobox-wrap{position:relative;}
     .combobox-dropdown{position:absolute; top:calc(100% + 4px); left:0; right:0; background:#fff;
       border:2px solid var(--border); border-radius:18px; max-height:260px; overflow-y:auto; z-index:20;
@@ -3511,10 +3515,16 @@ function IntroVideo() {
   const videoRef = useRef(null);
   const [muted, setMuted] = useState(true);
   const [userMuted, setUserMuted] = useState(false); // 사용자가 직접 소리를 껐다면, 자동 켜기를 다시 하지 않음
+  const DEFAULT_VOLUME = 0.5; // 노래가 너무 크게 들리지 않도록 기본 볼륨을 낮춰둬요
+
+  useEffect(() => {
+    if (videoRef.current) videoRef.current.volume = DEFAULT_VOLUME;
+  }, []);
 
   const toggleSound = () => {
     const v = videoRef.current;
     if (!v) return;
+    v.volume = DEFAULT_VOLUME;
     v.muted = !v.muted;
     setUserMuted(v.muted);
     if (!v.muted) v.play().catch(() => {});
@@ -3527,6 +3537,7 @@ function IntroVideo() {
     const unmuteOnFirstInteraction = () => {
       const v = videoRef.current;
       if (v && !userMuted) {
+        v.volume = DEFAULT_VOLUME;
         v.muted = false;
         v.play().catch(() => {});
         setMuted(false);
@@ -3579,7 +3590,7 @@ function AboutPage({ onStart }) {
             {t.landingGreeting}
           </p>
           <h1 className="landing-headline about-fade" style={{ animationDelay: ".1s" }}>
-            {t.landingHeadline1} <span className="hl">{t.landingHeadlineHighlight}</span>{t.landingHeadline2}
+            {t.landingHeadline1}<br className="mobile-br" /> <span className="hl">{t.landingHeadlineHighlight}</span>{t.landingHeadline2}
           </h1>
           <p className="landing-subtitle about-fade" style={{ animationDelay: ".22s" }}>{t.landingSubtitle}</p>
           <button className="landing-cta about-fade" style={{ animationDelay: ".34s" }} onClick={onStart}>{t.landingCta}</button>
