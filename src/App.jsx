@@ -2,6 +2,15 @@ import React, { useState, useMemo, useEffect, useRef, useContext, createContext 
 import {
   LineChart, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceDot, ReferenceLine, Label,
 } from "recharts";
+import { Capacitor } from "@capacitor/core";
+import { AdMob, BannerAdPosition, BannerAdSize } from "@capacitor-community/admob";
+
+// AdMob 앱/광고 단위 ID — 실제 앱(Android/iOS)에서만 동작해요, 웹사이트에서는 광고가 안 떠요
+const ADMOB_ANDROID_APP_ID = "ca-app-pub-9699974051273244~1293517862";
+const ADMOB_BANNER_ID = "ca-app-pub-9699974051273244/9809518314";
+// 개발 중 테스트할 때는 실제 광고 대신 구글 공식 테스트 ID를 쓰는 게 안전해요(실수로 자기 광고를 클릭하면 계정 정지 위험이 있어요).
+// 테스트하려면 아래 줄의 주석을 풀고, 위 ADMOB_BANNER_ID 대신 이 값을 쓰세요.
+// const ADMOB_BANNER_ID_TEST = "ca-app-pub-3940256099942544/6300978111";
 
 /* ============================================================
    data/growthCurves.js 역할
@@ -3741,6 +3750,28 @@ function AppInner({ lang, setLang }) {
       });
       setLoaded(true);
     })();
+  }, []);
+
+  // AdMob 하단 배너 광고 — 실제 안드로이드/iOS 앱에서만 동작해요 (웹사이트는 그냥 넘어가요)
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+    (async () => {
+      try {
+        await AdMob.initialize();
+        await AdMob.showBanner({
+          adId: ADMOB_BANNER_ID,
+          adSize: BannerAdSize.ADAPTIVE_BANNER,
+          position: BannerAdPosition.BOTTOM_CENTER,
+          isTesting: false,
+        });
+      } catch (err) {
+        // 광고 로드에 실패해도(네트워크 문제 등) 앱은 계속 정상 동작해요
+        console.warn("AdMob banner failed to load", err);
+      }
+    })();
+    return () => {
+      AdMob.removeBanner().catch(() => {});
+    };
   }, []);
 
   const persistPets = (next) => {
