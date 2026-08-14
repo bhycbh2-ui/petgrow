@@ -421,6 +421,8 @@ const STRINGS = {
     landingTagline: "우리 아이의 건강한 성장을 함께",
     landingHeadline1: "반려동물의 성장,",
     landingGreeting: "안녕하세요, 펫그로우입니다 🐾",
+    socialTitle: "PetGrow 공식 채널",
+    socialLabels: { youtube: "유튜브", instagram: "인스타그램", threads: "스레드", tiktok: "틱톡", blog: "네이버 블로그" },
     introVideoMute: "소리 끄기",
     introVideoUnmute: "소리 켜기",
     landingHeadlineHighlight: "데이터",
@@ -719,6 +721,8 @@ const STRINGS = {
     landingTagline: "Growing up healthy, together",
     landingHeadline1: "Your pet's growth,",
     landingGreeting: "Hello, welcome to PetGrow 🐾",
+    socialTitle: "PetGrow official channels",
+    socialLabels: { youtube: "YouTube", instagram: "Instagram", threads: "Threads", tiktok: "TikTok", blog: "Naver Blog" },
     introVideoMute: "Mute",
     introVideoUnmute: "Unmute",
     landingHeadlineHighlight: "backed by data",
@@ -983,6 +987,38 @@ const ShareIcon = (p) => (
 const CheckSquareIcon = (p) => (
   <svg className="icon" viewBox="0 0 24 24" {...p}>
     <path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm5.2 12.4L18 7.6l-1.4-1.4-7.4 7.4L6 10.4 4.6 11.8l5.6 5.6z" />
+  </svg>
+);
+const YoutubeIcon = (p) => (
+  <svg className="icon" viewBox="0 0 24 24" {...p}>
+    <rect x="1" y="5" width="22" height="14" rx="5" fill="currentColor" />
+    <path d="M10 8.5v7l6-3.5-6-3.5z" fill="#fff" />
+  </svg>
+);
+const InstagramIcon = (p) => (
+  <svg className="icon" viewBox="0 0 24 24" {...p}>
+    <rect x="2" y="2" width="20" height="20" rx="6" fill="none" stroke="currentColor" strokeWidth="2" />
+    <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" strokeWidth="2" />
+    <circle cx="17.3" cy="6.7" r="1.3" fill="currentColor" />
+  </svg>
+);
+const ThreadsIcon = (p) => (
+  <svg className="icon" viewBox="0 0 24 24" {...p}>
+    <path d="M12 2C6.5 2 3 6 3 12s3.5 10 9 10c3.8 0 6.3-1.7 7.6-4.4l-2-1c-.9 1.8-2.6 2.9-5.2 2.9-3.6 0-5.9-2.2-6.3-5.6.5.2 1.3.4 2.5.4 3.6 0 6-1.7 6-4.7 0-2.5-2-4.1-5-4.1-2.6 0-4.6 1.1-5.6 3l1.9 1c.7-1.3 1.9-1.9 3.5-1.9 1.5 0 2.4.6 2.4 1.7 0 1.3-1.3 1.9-3.3 1.9-1 0-1.9-.2-2.7-.5.2-3 2.2-4.8 5.2-4.8 3.5 0 6 2.1 6 6 0 4.4-3.1 7-8 7z" fill="none" stroke="currentColor" strokeWidth="0" />
+    <path d="M12 3c4.6 0 7.5 2.9 7.9 7.4.1 1 .1 2 0 2.9C19.5 18.3 16.6 21 12 21c-4.2 0-7.4-2.4-8.6-6.2M12 3c-4.2 0-7.3 2.3-8.5 6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    <path d="M9 9.5c.7-1.3 1.9-1.9 3.5-1.9 2.2 0 3.7 1.2 3.7 3.3 0 2.4-2 3.6-5 3.6-1.2 0-2.2-.2-3-.6.3 2.9 2.3 4.6 5.3 4.6 2.3 0 3.9-1 4.7-2.6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+  </svg>
+);
+const TiktokIcon = (p) => (
+  <svg className="icon" viewBox="0 0 24 24" {...p}>
+    <path d="M15 3c.4 2.2 1.8 3.7 4 4v3c-1.5 0-2.9-.4-4-1.3v6.3c0 3.3-2.4 5.7-5.5 5.7S4 18.3 4 15s2.4-5.7 5.5-5.7c.5 0 1 .1 1.5.2v3.2a2.7 2.7 0 0 0-1.5-.4c-1.5 0-2.5 1.1-2.5 2.7s1 2.7 2.5 2.7 2.6-1 2.6-2.7V3h2.9z" fill="currentColor" />
+  </svg>
+);
+const BlogIcon = (p) => (
+  <svg className="icon" viewBox="0 0 24 24" {...p}>
+    <path d="M5 3h9l5 5v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+    <path d="M14 3v5h5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+    <path d="M7 13h10M7 16.5h7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
   </svg>
 );
 const SoundOnIcon = (p) => (
@@ -1567,6 +1603,10 @@ const GlobalStyle = () => (
     .landing-trust{display:flex; flex-wrap:wrap; justify-content:center; gap:12px 28px; margin-top:44px;
       padding-top:28px; border-top:1px solid #e3e8de;}
     .landing-trust-item{display:flex; align-items:center; gap:6px; font-size:13px; color:#787774; font-weight:600;}
+    .social-links{display:flex; justify-content:center; gap:14px;}
+    .social-btn{width:46px; height:46px; border-radius:50%; background:#fff; display:flex; align-items:center;
+      justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.08); transition:.15s;}
+    .social-btn:hover{transform:translateY(-3px); box-shadow:0 8px 20px rgba(0,0,0,.12);}
     .landing-pricing{display:grid; grid-template-columns:repeat(2,1fr); gap:20px; max-width:640px; margin:0 auto;}
     .landing-pricing-card{background:#fff; border:1px solid #e3e8de; border-radius:18px; padding:28px 24px;}
     .landing-pricing-highlight{background:var(--pg-dark); border-color:var(--pg-dark);}
@@ -3590,6 +3630,31 @@ function IntroVideo() {
   );
 }
 
+// 공식 소셜 채널 링크
+const SOCIAL_LINKS = [
+  { id: "youtube", url: "https://www.youtube.com/@petgrow_official", icon: YoutubeIcon, color: "#FF0000" },
+  { id: "instagram", url: "https://www.instagram.com/petgrow_official", icon: InstagramIcon, color: "#E1306C" },
+  { id: "threads", url: "https://www.threads.com/@petgrow_official", icon: ThreadsIcon, color: "#1C1C1C" },
+  { id: "tiktok", url: "https://www.tiktok.com/@petgrow_official", icon: TiktokIcon, color: "#1C1C1C" },
+  { id: "blog", url: "https://blog.naver.com/petgrow", icon: BlogIcon, color: "#03C75A" },
+];
+function SocialLinks() {
+  const t = useT();
+  return (
+    <div className="social-links">
+      {SOCIAL_LINKS.map((s) => {
+        const Icon = s.icon;
+        return (
+          <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer" className="social-btn"
+            style={{ color: s.color }} aria-label={t.socialLabels[s.id]}>
+            <Icon style={{ width: 22, height: 22 }} />
+          </a>
+        );
+      })}
+    </div>
+  );
+}
+
 function AboutPage({ onStart }) {
   const t = useT();
   return (
@@ -3692,6 +3757,10 @@ function AboutPage({ onStart }) {
             <span className="landing-trust-item"><InfoIcon style={{ width: 14, height: 14 }} />{t.landingTrust4}</span>
           </div>
           <button className="landing-cta" style={{ marginTop: 32 }} onClick={onStart}>{t.landingCta}</button>
+          <div style={{ marginTop: 40 }}>
+            <div className="bg-sub" style={{ textAlign: "center", fontSize: 13, fontWeight: 700, marginBottom: 14 }}>{t.socialTitle}</div>
+            <SocialLinks />
+          </div>
         </div>
       </section>
     </div>
