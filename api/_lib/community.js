@@ -76,18 +76,31 @@ export async function listPosts({ category, sort, search, page, pageSize, viewer
   const offset = (p - 1) * size;
   const term = search && search.trim() ? `%${search.trim()}%` : null;
   const cat = category && category !== "all" ? category : null;
-  const orderClause = sort === "popular" ? sql`order by like_count desc, created_at desc` : sql`order by created_at desc`;
-
-  // limit+1 개를 가져와서 다음 페이지가 더 있는지 판단해요 (COUNT 쿼리 없이 가벼운 무한스크롤 지원)
-  const { rows } = await sql`
-    select * from pg_posts
-    where is_hidden = false
-      and (is_public = true or (${viewerId}::text is not null and user_id = ${viewerId}))
-      and (${cat}::text is null or category = ${cat})
-      and (${term}::text is null or title ilike ${term} or content ilike ${term})
-    ${orderClause}
-    limit ${size + 1} offset ${offset}
-  `;
+  // @vercel/postgres tagged template에서 ORDER BY 같은 SQL 조각을 ${...}로 끼워 넣으면
+  // SQL 조각 자체가 바인드 파라미터($8 등)로 처리되어 문법 오류가 납니다.
+  // 정렬 방식별로 쿼리를 명시적으로 분기해서 안전하게 실행해요.
+  let rows;
+  if (sort === "popular") {
+    ({ rows } = await sql`
+      select * from pg_posts
+      where is_hidden = false
+        and (is_public = true or (${viewerId}::text is not null and user_id = ${viewerId}))
+        and (${cat}::text is null or category = ${cat})
+        and (${term}::text is null or title ilike ${term} or content ilike ${term})
+      order by like_count desc, created_at desc
+      limit ${size + 1} offset ${offset}
+    `);
+  } else {
+    ({ rows } = await sql`
+      select * from pg_posts
+      where is_hidden = false
+        and (is_public = true or (${viewerId}::text is not null and user_id = ${viewerId}))
+        and (${cat}::text is null or category = ${cat})
+        and (${term}::text is null or title ilike ${term} or content ilike ${term})
+      order by created_at desc
+      limit ${size + 1} offset ${offset}
+    `);
+  }
   const hasMore = rows.length > size;
   const pageRows = rows.slice(0, size);
   const ids = pageRows.map((r) => r.id);
@@ -168,6 +181,12 @@ export async function deletePost({ id, userId }) {
 
 export async function toggleLike({ postId, userId }) {
   await ensureSchema();
+  // 비공개 글은 작성자 본인만 접근/좋아요할 수 있어요.
+  const visible = await sql`
+    select id from pg_posts
+    where id = ${postId} and is_hidden = false and (is_public = true or user_id = ${userId})
+  `;
+  if (!visible.rows[0]) throw new Error("post not found");
   const inserted = await sql`
     insert into pg_likes (user_id, post_id) values (${userId}, ${postId})
     on conflict do nothing
@@ -184,6 +203,13 @@ export async function toggleLike({ postId, userId }) {
 
 export async function listComments(postId, viewerId) {
   await ensureSchema();
+  // 댓글도 원글 공개 범위를 그대로 따릅니다. 비공개 글은 작성자 본인만 볼 수 있어요.
+  const post = await sql`
+    select id from pg_posts
+    where id = ${postId} and is_hidden = false
+      and (is_public = true or (${viewerId}::text is not null and user_id = ${viewerId}))
+  `;
+  if (!post.rows[0]) return [];
   const { rows } = await sql`
     select * from pg_comments where post_id = ${postId} and is_hidden = false order by created_at asc
   `;
@@ -193,7 +219,10 @@ export async function listComments(postId, viewerId) {
 export async function addComment({ postId, userId, pet, content }) {
   await ensureSchema();
   const id = newId();
-  const { rows: postRows } = await sql`select id from pg_posts where id = ${postId} and is_hidden = false`;
+  const { rows: postRows } = await sql`
+    select id from pg_posts
+    where id = ${postId} and is_hidden = false and (is_public = true or user_id = ${userId})
+  `;
   if (!postRows[0]) throw new Error("post not found");
   await sql`
     insert into pg_comments (id, post_id, user_id, pet_id, pet_name, pet_photo, content)
@@ -251,7 +280,7 @@ export async function getMyComments(userId, page, pageSize) {
   const { rows } = await sql`
     select c.*, p.title as post_title from pg_comments c
     join pg_posts p on p.id = c.post_id
-    where c.user_id = ${userId}
+    where c.user_id = ${userId} and (p.is_public = true or p.user_id = ${userId})
     order by c.created_at desc limit ${size + 1} offset ${(p - 1) * size}
   `;
   const hasMore = rows.length > size;
@@ -268,7 +297,7 @@ export async function getMyLikedPosts(userId, page, pageSize) {
   const size = Math.min(30, Math.max(1, pageSize || 10));
   const { rows } = await sql`
     select p.* from pg_likes l join pg_posts p on p.id = l.post_id
-    where l.user_id = ${userId} and p.is_hidden = false
+    where l.user_id = ${userId} and p.is_hidden = false and (p.is_public = true or p.user_id = ${userId})
     order by l.created_at desc limit ${size + 1} offset ${(p - 1) * size}
   `;
   const hasMore = rows.length > size;
