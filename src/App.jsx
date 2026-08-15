@@ -518,6 +518,9 @@ const STRINGS = {
     communityNeedPetBody: "Pet톡은 '우리 아이'에 등록한 반려동물과 함께 글을 남기는 공간이에요. 먼저 반려동물을 등록해주세요.",
     communityComposeTitlePet: "함께 표시할 아이",
     communityComposeTitleCategory: "카테고리",
+    communityComposeVisibility: "공개 설정",
+    communityComposeVisibilityPublicHelp: "모든 PetGrow 이용자가 볼 수 있어요.",
+    communityComposeVisibilityPrivateHelp: "나만 볼 수 있어요. MY 페이지에서는 확인할 수 있어요.",
     communityComposeTitleTitle: "제목",
     communityComposeTitlePlaceholder: "제목을 입력해주세요",
     communityComposeTitleContent: "내용",
@@ -583,6 +586,7 @@ const STRINGS = {
     homePetCardBtn: "아이 정보 보기",
     homeAddPetBtn: "우리 아이 등록하기",
     homeServicesTitle: "PetGrow와 함께 성장해요",
+    homeCardGrowthTitle: "우리 아이",
     homeCardGrowthDesc: "나이·체중·예방접종 등 우리 아이 성장 기록",
     homeCardSajuDesc: "생년월일로 보는 우리 아이의 운세",
     homeCardPetBtiDesc: "성격 유형 검사로 우리 아이 이해하기",
@@ -1049,6 +1053,9 @@ const STRINGS = {
     communityNeedPetBody: "Pet Talk posts are shared alongside a pet registered under My Pets. Please register a pet first.",
     communityComposeTitlePet: "Post with",
     communityComposeTitleCategory: "Category",
+    communityComposeVisibility: "Visibility",
+    communityComposeVisibilityPublicHelp: "Visible to everyone on PetGrow.",
+    communityComposeVisibilityPrivateHelp: "Only you can see it. It remains available from MY.",
     communityComposeTitleTitle: "Title",
     communityComposeTitlePlaceholder: "Enter a title",
     communityComposeTitleContent: "Content",
@@ -1109,6 +1116,7 @@ const STRINGS = {
     homePetCardBtn: "View pet info",
     homeAddPetBtn: "Register your pet",
     homeServicesTitle: "Grow together with PetGrow",
+    homeCardGrowthTitle: "My Pet",
     homeCardGrowthDesc: "Age, weight, vaccines — your pet's growth records",
     homeCardSajuDesc: "Your pet's fortune, based on their birth date",
     homeCardPetBtiDesc: "Understand your pet through a personality test",
@@ -2032,7 +2040,7 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete }) {
       {account && (
         <div className="bg-surface-card" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
           {account.profileImage ? (
-            <img src={account.profileImage} alt="" style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover" }} />
+            <img src={account.profileImage} alt="" style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", objectPosition: "center" }} />
           ) : (
             <div style={{ width: 40, height: 40, borderRadius: "50%", background: "var(--primary)", color: "#fff",
               display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -2462,6 +2470,10 @@ const GlobalStyle = () => (
     @media (max-width:820px){ .landing-community-wrap{grid-template-columns:1fr; gap:28px;} }
     .landing-community-text{text-align:left;}
     @media (max-width:820px){ .landing-community-text{text-align:center;} }
+    .landing-community-cta{margin:0;}
+    @media (max-width:820px){
+      .landing-community-cta{margin:24px auto 0; max-width:100%;}
+    }
     .landing-community-desc{font-size:15px; color:#787774; line-height:1.8; margin:14px 0 24px;}
     .cm-mock-feed{position:relative; max-width:340px; margin:0 auto; display:flex; flex-direction:column; gap:14px;}
     .cm-mock-card{background:#fff; border-radius:18px; padding:16px; box-shadow:0 8px 22px rgba(0,0,0,.06);
@@ -4726,27 +4738,39 @@ function SajuResultView({ input, onRestart }) {
   const result = useMemo(() => generateSajuResult(input, lang), [input, lang]);
 
   return (
-    <div style={{ maxWidth: 640, margin: "0 auto" }}>
-      <div style={{ textAlign: "center", marginBottom: 8 }}>
-        <div style={{ fontSize: 13, color: "var(--sub)", fontWeight: 700 }}>🐾 {t.sajuResultHeading(input.name)}</div>
-        <h2 style={{ fontSize: 22, marginTop: 8, lineHeight: 1.4 }}>{result.summary}</h2>
+    <div style={{ maxWidth: 720, margin: "0 auto" }}>
+      <div style={{ textAlign: "center", marginBottom: 12 }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, marginBottom: 12 }}>
+          <span style={{ width: 92, height: 92, borderRadius: "50%", overflow: "hidden", display: "block", border: "3px solid var(--primary)", background: "var(--surface)" }}>
+            {input.profileImage ? (
+              <img src={input.profileImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
+            ) : (
+              <span style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 38 }}>
+                {input.species === "cat" ? "🐱" : "🐶"}
+              </span>
+            )}
+          </span>
+          <div style={{ fontSize: 18, fontWeight: 800 }}>{input.name}</div>
+        </div>
+        <div style={{ fontSize: 16, color: "var(--sub)", fontWeight: 700 }}>🐾 {t.sajuResultHeading(input.name)}</div>
+        <h2 style={{ fontSize: 28, marginTop: 10, lineHeight: 1.45 }}>{result.summary}</h2>
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 24 }}>
         {result.categories.map((c) => (
           <div key={c.key} className="bg-surface-card">
-            <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 6 }}>{c.icon} {t.sajuCategoryTitle[c.key]}</div>
-            <div style={{ fontSize: 14, lineHeight: 1.75 }}>{c.text}</div>
+            <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 8 }}>{c.icon} {t.sajuCategoryTitle[c.key]}</div>
+            <div style={{ fontSize: 17, lineHeight: 1.85 }}>{c.text}</div>
           </div>
         ))}
       </div>
 
       <div className="bg-card" style={{ marginTop: 16, textAlign: "center" }}>
-        <div style={{ fontSize: 13, color: "var(--sub)", fontWeight: 700, marginBottom: 8 }}>{t.sajuOneWordTitle(input.name)}</div>
-        <div style={{ fontSize: 17, fontWeight: 800, marginBottom: 12 }}>🐶 {result.oneWord}</div>
+        <div style={{ fontSize: 15, color: "var(--sub)", fontWeight: 700, marginBottom: 10 }}>{t.sajuOneWordTitle(input.name)}</div>
+        <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 14 }}>{input.species === "cat" ? "🐱" : "🐶"} {result.oneWord}</div>
         <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
           {result.tags.map((tag) => (
-            <span key={tag} className="bg-chip" style={{ fontSize: 12, cursor: "default" }}>{tag}</span>
+            <span key={tag} className="bg-chip" style={{ fontSize: 14, cursor: "default", padding: "8px 12px" }}>{tag}</span>
           ))}
         </div>
       </div>
@@ -5183,7 +5207,7 @@ function generatePetBtiResult(input, answers, lang) {
 function PetBtiStatBar({ label, icon, value }) {
   return (
     <div style={{ marginBottom: 10 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 700, marginBottom: 4 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 15, fontWeight: 700, marginBottom: 4 }}>
         <span>{icon} {label}</span><span style={{ color: "var(--primary)" }}>{value}</span>
       </div>
       <div style={{ background: "var(--surface)", borderRadius: 999, height: 10, overflow: "hidden" }}>
@@ -5372,16 +5396,28 @@ function PetBtiResultView({ input, result, lang, onRestart }) {
   const nickname = result.nickname;
 
   return (
-    <div style={{ maxWidth: 640, margin: "0 auto" }}>
-      <div style={{ textAlign: "center", marginBottom: 8 }}>
-        <div style={{ fontSize: 13, color: "var(--sub)", fontWeight: 700 }}>{t.petBtiResultHeading(input.name)}</div>
-        <div style={{ fontSize: 34, fontWeight: 800, color: "var(--primary)", marginTop: 10 }}>{result.type}</div>
-        <div style={{ fontSize: 19, fontWeight: 800, marginTop: 4 }}>{nickname.emoji} {lang === "en" ? nickname.en : nickname.ko}</div>
-        <p style={{ fontSize: 15, marginTop: 12, color: "var(--text)" }}>{result.summary}</p>
+    <div style={{ maxWidth: 720, margin: "0 auto" }}>
+      <div style={{ textAlign: "center", marginBottom: 12 }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, marginBottom: 12 }}>
+          <span style={{ width: 92, height: 92, borderRadius: "50%", overflow: "hidden", display: "block", border: "3px solid var(--primary)", background: "var(--surface)" }}>
+            {input.profileImage ? (
+              <img src={input.profileImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
+            ) : (
+              <span style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 38 }}>
+                {input.species === "cat" ? "🐱" : "🐶"}
+              </span>
+            )}
+          </span>
+          <div style={{ fontSize: 18, fontWeight: 800 }}>{input.name}</div>
+        </div>
+        <div style={{ fontSize: 16, color: "var(--sub)", fontWeight: 700 }}>{t.petBtiResultHeading(input.name)}</div>
+        <div style={{ fontSize: 42, fontWeight: 800, color: "var(--primary)", marginTop: 10 }}>{result.type}</div>
+        <div style={{ fontSize: 23, fontWeight: 800, marginTop: 6 }}>{nickname.emoji} {lang === "en" ? nickname.en : nickname.ko}</div>
+        <p style={{ fontSize: 18, marginTop: 14, color: "var(--text)", lineHeight: 1.7 }}>{result.summary}</p>
       </div>
 
       <div className="bg-card" style={{ marginTop: 22 }}>
-        <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 14 }}>{t.petBtiStatsTitle}</div>
+        <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 16 }}>{t.petBtiStatsTitle}</div>
         <PetBtiStatBar label={t.petBtiStatAffection} icon="💕" value={result.stats.affection} />
         <PetBtiStatBar label={t.petBtiStatCuriosity} icon="👀" value={result.stats.curiosity} />
         <PetBtiStatBar label={t.petBtiStatFood} icon="🍖" value={result.stats.food} />
@@ -5392,35 +5428,35 @@ function PetBtiResultView({ input, result, lang, onRestart }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 16 }}>
         {result.sections.map((s) => (
           <div key={s.key} className="bg-surface-card">
-            <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 6 }}>
+            <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 8 }}>
               {PETBTI_SECTION_ICON[s.key]} {t.petBtiSectionTitle[s.key]}
             </div>
-            <div style={{ fontSize: 14, lineHeight: 1.75 }}>{s.text}</div>
+            <div style={{ fontSize: 17, lineHeight: 1.85 }}>{s.text}</div>
           </div>
         ))}
       </div>
 
       <div className="bg-card" style={{ marginTop: 16, textAlign: "center" }}>
-        <div style={{ fontSize: 13, color: "var(--sub)", fontWeight: 700, marginBottom: 8 }}>{t.petBtiOneWordTitle(input.name)}</div>
-        <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 12 }}>🐶 {result.oneWord}</div>
+        <div style={{ fontSize: 15, color: "var(--sub)", fontWeight: 700, marginBottom: 10 }}>{t.petBtiOneWordTitle(input.name)}</div>
+        <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 14 }}>{input.species === "cat" ? "🐱" : "🐶"} {result.oneWord}</div>
         <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
           {result.tags.map((tag) => (
-            <span key={tag} className="bg-chip" style={{ fontSize: 12, cursor: "default" }}>{tag}</span>
+            <span key={tag} className="bg-chip" style={{ fontSize: 14, cursor: "default", padding: "8px 12px" }}>{tag}</span>
           ))}
         </div>
       </div>
 
       <div className="bg-card" style={{ marginTop: 16 }}>
-        <div style={{ fontWeight: 800, fontSize: 15, marginBottom: 12 }}>{t.petBtiCompatTitle(input.name)}</div>
+        <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 14 }}>{t.petBtiCompatTitle(input.name)}</div>
         <div className="bg-surface-card" style={{ marginBottom: 10 }}>
-          <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 4 }}>
+          <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 6 }}>
             {result.oppositeType} {result.oppositeNickname.emoji} {lang === "en" ? result.oppositeNickname.en : result.oppositeNickname.ko}
           </div>
-          <div style={{ fontSize: 13, lineHeight: 1.6 }}>{t.petBtiCompatGood(input.name)}</div>
+          <div style={{ fontSize: 16, lineHeight: 1.75 }}>{t.petBtiCompatGood(input.name)}</div>
         </div>
         <div className="bg-surface-card">
-          <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 4 }}>😂 {t.petBtiCompatChaosTitle}</div>
-          <div style={{ fontSize: 13, lineHeight: 1.6 }}>{t.petBtiCompatChaos(input.name)}</div>
+          <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 6 }}>😂 {t.petBtiCompatChaosTitle}</div>
+          <div style={{ fontSize: 16, lineHeight: 1.75 }}>{t.petBtiCompatChaos(input.name)}</div>
         </div>
       </div>
 
@@ -5548,7 +5584,7 @@ function PetPicker({ pets, activeId, onSelect }) {
           <span style={{ width: 48, height: 48, borderRadius: "50%", overflow: "hidden", display: "block",
             border: p.id === activeId ? "2.5px solid var(--primary)" : "2px solid var(--border)", background: "var(--surface)" }}>
             {p.profile.profileImage ? (
-              <img src={p.profile.profileImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src={p.profile.profileImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
             ) : (
               <span style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>
                 {p.species === "cat" ? "🐱" : "🐶"}
@@ -5572,7 +5608,7 @@ function FeaturePetHeader({ pet }) {
       <span style={{ width: 68, height: 68, borderRadius: "50%", overflow: "hidden", display: "block",
         border: "3px solid var(--primary)", background: "var(--surface)" }}>
         {pet.profile.profileImage ? (
-          <img src={pet.profile.profileImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <img src={pet.profile.profileImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
         ) : (
           <span style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30 }}>
             {pet.species === "cat" ? "🐱" : "🐶"}
@@ -6293,7 +6329,7 @@ function AboutPage({ onStart, onNavigate }) {
           <div className="landing-community-wrap">
             <div className="landing-community-text">
               <p className="landing-community-desc">{t.landingCommunityDesc}</p>
-              <button type="button" className="landing-cta" style={{ margin: 0 }} onClick={() => go("community")}>
+              <button type="button" className="landing-cta landing-community-cta" onClick={() => go("community")}>
                 {t.landingCommunityCta}
               </button>
             </div>
@@ -6425,10 +6461,55 @@ function HomeServiceCard({ Illust, bg, title, desc, onClick }) {
 
 function HomePage({ account, firstPet, lang, onGoPets, onGoView }) {
   const t = useT();
+  const introVideoRef = useRef(null);
+  const [introMuted, setIntroMuted] = useState(true);
+
+  const toggleIntroSound = () => {
+    const video = introVideoRef.current;
+    if (!video) return;
+    if (video.muted) {
+      video.volume = 0.5;
+      video.muted = false;
+      setIntroMuted(false);
+      video.play().catch(() => {});
+    } else {
+      video.muted = true;
+      setIntroMuted(true);
+    }
+  };
+
   return (
     <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 60px" }}>
       <h1 style={{ fontSize: 21, marginBottom: 4 }}>{t.homeGreeting(account.name)}</h1>
-      <p className="bg-sub" style={{ fontSize: 14, marginBottom: 22 }}>{t.homeSubGreeting}</p>
+      <p className="bg-sub" style={{ fontSize: 14, marginBottom: 18 }}>{t.homeSubGreeting}</p>
+
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: "4px 0 24px" }}>
+        <div style={{ position: "relative", width: "min(100%, 560px)", borderRadius: 22, overflow: "hidden", boxShadow: "0 12px 34px rgba(49, 91, 36, 0.12)", background: "#fff" }}>
+          <video
+            ref={introVideoRef}
+            src="/intro-video.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            style={{ display: "block", width: "100%", height: "auto" }}
+          />
+          <button
+            type="button"
+            onClick={toggleIntroSound}
+            aria-label={introMuted ? "영상 소리 켜기" : "영상 소리 끄기"}
+            title={introMuted ? "소리 켜기 (50%)" : "소리 끄기"}
+            style={{
+              position: "absolute", right: 12, bottom: 12, border: "1px solid rgba(255,255,255,.7)",
+              borderRadius: 999, padding: "8px 12px", background: "rgba(24,24,24,.66)", color: "#fff",
+              fontSize: 12, fontWeight: 700, cursor: "pointer", backdropFilter: "blur(6px)"
+            }}
+          >
+            {introMuted ? "🔇 소리 켜기" : "🔊 50%"}
+          </button>
+        </div>
+      </div>
 
       {firstPet ? (
         <div className="home-pet-card" onClick={onGoPets}>
@@ -6458,7 +6539,7 @@ function HomePage({ account, firstPet, lang, onGoPets, onGoView }) {
 
       <h2 style={{ fontSize: 17, marginTop: 30, marginBottom: 14 }}>{t.homeServicesTitle}</h2>
       <div className="home-service-grid">
-        <HomeServiceCard Illust={IllustGrowth} bg="#EAF6E4" title={t.landingCardGrowthTitle.replace(/^\S+\s/, "")} desc={t.homeCardGrowthDesc} onClick={onGoPets} />
+        <HomeServiceCard Illust={IllustGrowth} bg="#EAF6E4" title={t.homeCardGrowthTitle} desc={t.homeCardGrowthDesc} onClick={onGoPets} />
         <HomeServiceCard Illust={IllustSaju} bg="#F1ECFA" title={t.landingCardSajuTitle.replace(/^\S+\s/, "")} desc={t.homeCardSajuDesc} onClick={() => onGoView("saju")} />
         <HomeServiceCard Illust={IllustPetBti} bg="#E9F1FB" title={t.landingCardPetBtiTitle.replace(/^\S+\s/, "")} desc={t.homeCardPetBtiDesc} onClick={() => onGoView("petbti")} />
         <HomeServiceCard Illust={IllustTips} bg="#FBF3DC" title={t.landingCardTipsTitle.replace(/^\S+\s/, "")} desc={t.homeCardTipsDesc} onClick={() => onGoView("tips")} />
@@ -6730,6 +6811,7 @@ function PostComposer({ pets, initialPost, onCancel, onSaved }) {
   const [title, setTitle] = useState(initialPost ? initialPost.title : "");
   const [content, setContent] = useState(initialPost ? initialPost.content : "");
   const [images, setImages] = useState(initialPost ? initialPost.images : []);
+  const [isPublic, setIsPublic] = useState(initialPost ? initialPost.isPublic !== false : true);
   const [uploading, setUploading] = useState(false);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -6762,9 +6844,9 @@ function PostComposer({ pets, initialPost, onCancel, onSaved }) {
     try {
       const pet = pets.find((p) => p.id === petId);
       if (isEdit) {
-        await communityUpdatePost(initialPost.id, { category, title: title.trim(), content: content.trim(), imageUrls: images });
+        await communityUpdatePost(initialPost.id, { category, title: title.trim(), content: content.trim(), imageUrls: images, isPublic });
       } else {
-        await communityCreatePost({ pet: petSnapshot(pet), category, title: title.trim(), content: content.trim(), imageUrls: images });
+        await communityCreatePost({ pet: petSnapshot(pet), category, title: title.trim(), content: content.trim(), imageUrls: images, isPublic });
       }
       onSaved();
     } catch {
@@ -6788,6 +6870,19 @@ function PostComposer({ pets, initialPost, onCancel, onSaved }) {
               {t.communityCategoryLabels[k]}
             </button>
           ))}
+        </div>
+
+        <label className="bg-label" style={{ marginTop: 14 }}>{t.communityComposeVisibility}</label>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <button type="button" className={`bg-chip ${isPublic ? "active" : ""}`} onClick={() => setIsPublic(true)}>
+            🌐 {t.communityVisibilityPublic}
+          </button>
+          <button type="button" className={`bg-chip ${!isPublic ? "active" : ""}`} onClick={() => setIsPublic(false)}>
+            🔒 {t.communityVisibilityPrivate}
+          </button>
+        </div>
+        <div style={{ marginTop: 7, fontSize: 12, color: "#8a8278", lineHeight: 1.55 }}>
+          {isPublic ? t.communityComposeVisibilityPublicHelp : t.communityComposeVisibilityPrivateHelp}
         </div>
 
         <label className="bg-label" style={{ marginTop: 14 }}>{t.communityComposeTitleTitle}</label>
@@ -7227,7 +7322,7 @@ function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost })
       <div className="bg-card" style={{ marginBottom: 18 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           {account?.profileImage ? (
-            <img src={account.profileImage} alt="" style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover" }} />
+            <img src={account.profileImage} alt="" style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover", objectPosition: "center" }} />
           ) : (
             <div style={{ width: 52, height: 52, borderRadius: "50%", background: "var(--surface)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <UserIcon style={{ width: 24, height: 24, color: "var(--primary)" }} />
