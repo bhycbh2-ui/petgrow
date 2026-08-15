@@ -189,7 +189,7 @@ const STRINGS = {
     contactBtn: "문의하기",
     contactFallback: "메일 앱이 안 열리면 help.petgrow@gmail.com으로 직접 보내주세요. 기능 개선 제안이나 버그 제보도 언제든 환영이에요!",
     feedbackBtn: "개선 요청하기",
-    tipsTitle: "Pet꿀팁",
+    tipsTitle: "Pet정보",
     myPetsNav: "우리 아이",
     petgrowTagline: "우리 아이의 건강한 성장을 함께",
     badgesTitle: "성장 배지",
@@ -319,7 +319,7 @@ const STRINGS = {
       { title: "8. 여러 마리 관리", body: "상단 탭에서 강아지·고양이를 나누고, 이름 칩을 눌러 최대 10마리까지 각자 따로 관리할 수 있어요." },
       { title: "9. 성장 그래프 읽는 법", body: "빨간 점이 우리 아이의 현재 위치예요. 연두색 밴드는 참고용 정상 범위(예상치의 ±15%)이고, 이 범위를 벗어나면 그래프에 세로선과 경고 문구가 함께 떠요." },
     ],
-    infoGuideTitle: "Pet가이드",
+    infoGuideTitle: "사용방법",
     infoGuideIntro: "PetGrow의 기능을 처음이라도 쉽게 따라 할 수 있도록 정리했어요.",
     infoGuideSections: [
       { title: "카카오 간편로그인", body: "PetGrow는 카카오 계정 하나로 간편하게 로그인해요. 별도 회원가입이나 비밀번호 없이 '카카오로 시작하기' 버튼만 누르면 돼요." },
@@ -330,10 +330,10 @@ const STRINGS = {
       { title: "Pet사주", body: "등록한 우리 아이의 정보를 바탕으로 성격·궁합·행운 같은 재미있는 사주 콘텐츠를 볼 수 있어요. 결과는 참고와 재미를 위한 것이에요." },
             { title: "PetBTI", body: "몇 가지 질문에 답하면 우리 아이만의 16가지 성격 유형이 나와요. 강아지와 고양이 각각에 맞는 질문으로 진행돼요." },
       { title: "PetBTI 결과 저장", body: "완료한 결과는 자동으로 저장돼서 'PetBTI 결과 보기'로 언제든 다시 볼 수 있고, '다시 검사하기'로 새로 진행할 수도 있어요." },
-      { title: "Pet꿀팁", body: "건강관리·식단영양·행동훈련·성장생활·안전상식 다섯 카테고리, 총 50개의 꿀팁을 확인할 수 있어요. 검색창에서는 전체 꿀팁을 대상으로 검색돼요." },
+      { title: "Pet정보", body: "건강관리·식단영양·행동훈련·성장생활·안전상식 다섯 카테고리, 총 50개의 꿀팁을 확인할 수 있어요. 검색창에서는 전체 꿀팁을 대상으로 검색돼요." },
       { title: "Pet톡", body: "우리 아이 사진과 일상을 다른 보호자와 나누는 커뮤니티예요. 일상·자랑·질문·건강·정보공유·산책·훈련·용품추천·자유수다로 분류해서 글을 남기고 좋아요·댓글을 주고받을 수 있어요." },
       { title: "닉네임 · 내 활동", body: "계정 설정에서 Pet톡에 표시할 닉네임을 변경할 수 있어요. MY와 Pet톡의 내 활동에서는 내가 작성한 글·댓글·좋아요를 확인할 수 있어요." },
-      { title: "검색", body: "Pet꿀팁 화면 상단 검색창에 원하는 키워드를 입력하면 현재 페이지가 아닌 전체 50개 꿀팁 중에서 찾아줘요." },
+      { title: "검색", body: "Pet정보 화면 상단 검색창에 원하는 키워드를 입력하면 현재 페이지가 아닌 전체 50개 꿀팁 중에서 찾아줘요." },
       { title: "로그아웃", body: "우측 상단 계정 버튼을 누르면 로그아웃할 수 있어요. 로그아웃해도 서버에 저장된 정보는 삭제되지 않고, 다시 로그인하면 그대로 남아있어요." },
       { title: "회원탈퇴", body: "계정 설정에서 회원탈퇴를 진행하면 반려동물 정보·사진·PetBTI 결과·Pet톡 게시글과 댓글 등 계정에 연결된 데이터가 함께 삭제돼요. 삭제 후에는 복구할 수 없어요." },
     ],
@@ -499,6 +499,7 @@ const STRINGS = {
     accountLoginBtn: "로그인",
     accountLogoutBtn: "로그아웃",
     accountDeleteBtn: "회원탈퇴",
+    accountCloseBtn: "닫기",
     accountSettingsBtn: "계정 설정",
     accountSettingsTitle: "계정 설정",
     accountKakaoTag: "카카오 계정으로 로그인됨",
@@ -661,7 +662,7 @@ const STRINGS = {
     landingCardFortuneDesc: "오늘 우리 아이의 하루는 어떨까요? 매일 가볍게 확인하는 우리 아이의 오늘의 운세를 제공해요.",
     landingCardCompatTitle: "🫶 보호자 궁합",
     landingCardCompatDesc: "나와 우리 아이는 얼마나 잘 맞을까요? 보호자와 반려동물의 재미있는 궁합 결과를 확인해요.",
-    landingCardTipsTitle: "💡 Pet꿀팁",
+    landingCardTipsTitle: "💡 Pet정보",
     landingCardTipsDesc: "반려생활에 필요한 정보를 쉽고 빠르게. 건강, 식단, 행동, 성장, 생활 정보를 확인해요.",
     landingCardCommunityTitle: "💬 Pet톡",
     landingCardCommunityDesc: "우리 아이 이야기를 함께 나눠요. 다른 보호자들과 반려동물의 일상과 사진, 질문과 정보를 공유하는 커뮤니티예요.",
@@ -683,10 +684,10 @@ const STRINGS = {
     landingMockPost1Text: "오늘 산책하다가 친구를 만났어요 🐾",
     landingMockPost2Name: "나비", landingMockPost2Breed: "코리안숏헤어", landingMockPost2Time: "1시간 전",
     landingMockPost2Text: "창가에서 낮잠 자는 중... 방해 금지 🐱",
-    landingTipsGuideTitle: "Pet꿀팁",
-    landingTipsGuideDesc: "건강·식단·행동·성장·생활부터 훈련·안전·미용까지, 반려생활에 바로 활용할 수 있는 Pet꿀팁을 모아봤어요.",
-    landingTipsTeaserLabel: "Pet꿀팁 보러가기",
-    landingGuideTeaserLabel: "Pet가이드 보러가기",
+    landingTipsGuideTitle: "Pet정보",
+    landingTipsGuideDesc: "건강·식단·행동·성장·생활부터 훈련·안전·미용까지, 반려생활에 바로 활용할 수 있는 Pet정보을 모아봤어요.",
+    landingTipsTeaserLabel: "Pet정보 보러가기",
+    landingGuideTeaserLabel: "사용방법 보기",
     landingFinalCtaLine1: "우리 아이와 함께한 오늘,",
     landingFinalCtaLine2: "PetGrow에 남겨보세요 🐾",
     landingFinalCtaDesc: "성장하는 순간부터 소소한 일상까지\nPetGrow가 우리 아이와 함께합니다.",
@@ -858,7 +859,7 @@ const STRINGS = {
       { title: "8. Managing multiple pets", body: "Switch between dogs and cats with the top tabs, and tap a name chip to switch pets — up to 10 per species." },
       { title: "9. Reading the growth chart", body: "The red dot marks your pet's current spot. The green band is a reference healthy range (±15% of the prediction) — stepping outside it adds a vertical line and a warning note to the chart." },
     ],
-    infoGuideTitle: "Pet Guide",
+    infoGuideTitle: "How to use",
     infoGuideIntro: "A simple walkthrough of everything PetGrow can do, even if it's your first time.",
     infoGuideSections: [
       { title: "Kakao Login", body: "PetGrow logs you in with a single Kakao account. No separate sign-up or password — just tap 'Start with Kakao'." },
@@ -1036,6 +1037,7 @@ const STRINGS = {
     accountLoginBtn: "Log in",
     accountLogoutBtn: "Log out",
     accountDeleteBtn: "Delete account",
+    accountCloseBtn: "Close",
     accountSettingsBtn: "Account settings",
     accountSettingsTitle: "Account settings",
     accountKakaoTag: "Logged in with Kakao",
@@ -1223,7 +1225,7 @@ const STRINGS = {
     landingTipsGuideTitle: "Pet Tips · Info Guide",
     landingTipsGuideDesc: "50 tips across health, diet, behavior, growth, and lifestyle — plus a full info guide to PetGrow from start to finish.",
     landingTipsTeaserLabel: "Browse Pet Tips",
-    landingGuideTeaserLabel: "Open the Info Guide",
+    landingGuideTeaserLabel: "How to use",
     landingFinalCtaLine1: "Today, with your pet —",
     landingFinalCtaLine2: "leave it in PetGrow 🐾",
     landingFinalCtaDesc: "From growing moments to quiet everyday ones,\nPetGrow is with you and your pet.",
@@ -1825,19 +1827,19 @@ function GuideModal({ open, onClose }) {
    개인정보처리방침 (초안) — 법률 자문 아님, 배포 전 검토 필요
    ============================================================ */
 const PRIVACY_SECTIONS_KO = [
-  { title: "1. 개인정보의 처리 목적", body: "PetGrow는 카카오 간편로그인을 통한 회원 식별·계정 관리, 로그인 유지, 반려동물 정보 저장 및 기기 간 동기화, PetBTI 등 서비스 결과 저장·다시보기, 고객 문의, 서비스 안정성·품질 개선, 광고 제공 및 성과 측정, 부정 이용 방지, 회원탈퇴 및 개인정보 삭제 처리를 위하여 필요한 범위에서 개인정보를 처리할 수 있습니다." },
-  { title: "2. 처리하는 개인정보 항목", body: "가. 카카오 간편로그인\n- 카카오가 제공하는 사용자 고유 식별정보\n- 닉네임, 프로필 이미지 등은 실제로 동의받아 제공받고 서비스에서 사용하는 경우에만 처리\n- 이메일 등 추가 정보는 실제 구현상 필요한 경우에만 동의를 받아 처리\n\n나. 반려동물 및 서비스 정보\n- 반려동물 이름, 종류, 품종, 생년월일, 성별, 현재 체중 및 성장 관련 정보\n- 반려동물 프로필 사진\n- PetBTI 결과 및 검사일\n- Pet사주 등 저장이 필요한 서비스 정보\n\n다. 자동으로 처리될 수 있는 정보\n- IP 주소, 기기·운영체제·브라우저 또는 앱 정보\n- 접속 및 서비스 이용기록, 오류·보안 관련 기록\n- 광고 식별정보 및 광고 상호작용 정보\n\nPetGrow는 서비스 제공에 필요하지 않은 전화번호, 성별, 생일, 친구목록 등의 개인정보를 불필요하게 요청하지 않는 것을 원칙으로 합니다." },
+  { title: "1. 개인정보의 처리 목적", body: "PetGrow는 카카오 간편로그인을 통한 회원 식별·계정 관리, 로그인 유지, 반려동물 정보 저장 및 기기 간 동기화, PetBTI 등 서비스 결과 저장·다시보기, 보호자 궁합 계산, 고객 문의, 서비스 안정성·품질 개선, 광고 제공 및 성과 측정, 부정 이용 방지, 회원탈퇴 및 개인정보 삭제 처리를 위하여 필요한 범위에서 개인정보를 처리할 수 있습니다." },
+  { title: "2. 처리하는 개인정보 항목", body: "가. 카카오 간편로그인\n- 카카오가 제공하는 사용자 고유 식별정보\n- 닉네임, 프로필 이미지 등은 실제로 동의받아 제공받고 서비스에서 사용하는 경우에만 처리\n- 이메일 등 추가 정보는 실제 구현상 필요한 경우에만 동의를 받아 처리\n\n나. 반려동물 및 서비스 정보\n- 반려동물 이름, 종류, 품종, 생년월일, 성별, 현재 체중 및 성장 관련 정보\n- 반려동물 프로필 사진\n- PetBTI 결과 및 검사일\n- Pet사주 등 저장이 필요한 서비스 정보\n\n다. 보호자 궁합 입력정보\n- 보호자 이름, 보호자 생년월일\n- 위 정보는 보호자 궁합 결과를 계산하기 위해 해당 화면에서만 일시적으로 사용하며, 현재 구현상 PetGrow 서버 또는 계정에 저장하지 않습니다.\n\n라. 자동으로 처리될 수 있는 정보\n- IP 주소, 기기·운영체제·브라우저 또는 앱 정보\n- 접속 및 서비스 이용기록, 오류·보안 관련 기록\n- 광고 식별정보 및 광고 상호작용 정보\n\nPetGrow는 서비스 제공에 필요하지 않은 전화번호, 친구목록 등의 개인정보를 불필요하게 요청하지 않는 것을 원칙으로 합니다. 보호자 궁합에서 입력하는 보호자 이름·생년월일은 궁합 계산에만 일시적으로 사용되며 현재 구현상 서버로 전송하거나 계정에 저장하지 않습니다." },
   { title: "3. 개인정보의 저장 방식", body: "로그인 후 이용자가 등록하거나 생성한 정보는 단순히 '이 기기' 또는 '이 브라우저'에만 저장되는 구조를 원칙으로 하지 않으며, 로그인한 PetGrow 계정에 연결하여 서버 또는 클라우드 저장소에 저장·동기화될 수 있습니다. 동일한 카카오 계정으로 로그인하면 지원되는 다른 기기 또는 웹 환경에서 저장된 정보를 불러올 수 있습니다. 로그인 기능 도입 이전의 기존 기기 저장정보는 이용자의 선택에 따라 계정으로 이전될 수 있습니다." },
   { title: "4. 개인정보의 처리 및 보유기간", body: "회원계정 및 계정에 연결된 개인정보는 원칙적으로 회원탈퇴 시까지 보유·이용합니다. 회원탈퇴 시 관계 법령에 따라 별도로 보관할 필요가 있는 정보를 제외하고 계정 및 관련 개인정보를 삭제합니다. 외부 인증·광고·호스팅 사업자가 자체적으로 처리하는 정보는 해당 사업자의 정책 및 실제 처리 구조에 따를 수 있습니다." },
   { title: "5. 카카오 간편로그인", body: "PetGrow는 이용 편의를 위해 카카오 간편로그인을 제공할 수 있습니다. 로그인 과정에서 카카오의 동의 화면을 통해 이용자가 동의한 범위의 정보만 PetGrow에 제공될 수 있습니다. 처리 목적은 회원 식별, 계정 생성·관리, 사용자별 데이터 저장·동기화, 회원탈퇴 및 고객지원 등입니다." },
-  { title: "6. 반려동물 정보 및 프로필 사진", body: "이용자가 등록한 반려동물 정보와 프로필 사진은 해당 PetGrow 계정과 연결하여 저장될 수 있으며, 우리 아이, 성장정보, Pet사주, PetBTI 등 반려동물별 기능 제공에 이용될 수 있습니다." },
+  { title: "6. 반려동물 정보 및 프로필 사진", body: "이용자가 등록한 반려동물 정보와 프로필 사진은 해당 PetGrow 계정과 연결하여 저장될 수 있으며, 우리 아이, 성장정보, Pet사주(기본 Pet사주·오늘의 펫운세·보호자 궁합), PetBTI 등 반려동물별 기능 제공에 이용될 수 있습니다." },
   { title: "7. 기존 기기 저장정보의 계정 이전", body: "카카오 간편로그인 도입 이전에 기기 또는 브라우저에 저장되어 있던 반려동물 정보가 있는 경우 이용자의 선택과 동의에 따라 로그인 계정으로 이전할 수 있습니다. 서버 저장이 정상 완료되기 전에 기존 데이터를 임의로 삭제하지 않도록 운영합니다." },
   { title: "8. 개인정보의 제3자 제공·처리위탁 및 국외 이전", body: "PetGrow는 이용자의 개인정보를 임의로 판매하지 않습니다. 제3자 제공, 처리위탁 또는 국외 이전이 발생하는 경우 실제 데이터 흐름, 제공자, 처리 목적, 항목, 보유기간 및 관련 법령상 고지·동의 필요 여부를 확인하여 본 방침에 반영합니다. 실제 사용하는 DB, Storage 및 호스팅 사업자는 최종 배포 구조에 맞추어 구체적으로 기재합니다.\n\n현재 PetGrow는 회원 데이터 저장을 위해 Vercel(호스팅 및 서버리스 인프라), Vercel Postgres(데이터베이스, Neon 기반), Vercel Blob(Pet톡 게시글 사진 저장)을 사용하고 있으며, 이 과정에서 이용자의 반려동물 정보 및 Pet톡 게시물 등이 해당 사업자의 서버(국외 소재 가능)에 저장·처리될 수 있습니다." },
   { title: "9. 외부 서비스", body: "PetGrow는 서비스 운영을 위해 카카오(간편로그인), Google AdMob(광고), 데이터베이스·파일 저장·호스팅 제공업체 등을 사용할 수 있습니다. Google은 간편로그인 제공자가 아니라 광고 등 실제 사용하는 서비스의 제공자로만 기재합니다. 외부 사업자가 자체적으로 처리하는 개인정보에는 해당 사업자의 개인정보처리방침이 적용될 수 있습니다." },
   { title: "10. 쿠키 및 유사 기술", body: "웹 서비스는 로그인 유지, 서비스 제공, 이용 현황 분석 또는 광고 제공 등을 위해 쿠키 및 유사 기술을 사용할 수 있습니다. 이용자는 브라우저 또는 기기 설정을 통해 일부 기능을 제한할 수 있으나 서비스 이용에 제한이 생길 수 있습니다." },
   { title: "11. 개인정보의 파기", body: "개인정보 처리 목적이 달성되거나 회원이 탈퇴한 경우 관계 법령상 보관 의무가 있는 정보를 제외하고 개인정보를 삭제합니다. 삭제 대상에는 PetGrow 계정, 카카오 인증 관련 식별정보, 반려동물 정보, 프로필 사진, 저장된 검사 및 서비스 결과, Pet톡에 작성한 게시글·댓글·좋아요 기록 및 첨부 사진 등이 포함될 수 있습니다." },
   { title: "12. 이용자의 권리", body: "이용자는 관련 법령에서 정한 범위에서 자신의 개인정보에 대한 열람, 정정, 삭제 또는 처리정지 등을 요청할 수 있습니다. 서비스 내 회원탈퇴 기능을 통해 계정 및 관련 데이터 삭제를 요청할 수 있으며, 앱 이용이 어려운 경우 help.petgrow@gmail.com으로 문의할 수 있습니다." },
-  { title: "13. 회원탈퇴 및 계정 삭제", body: "회원은 언제든지 PetGrow의 계정 또는 설정 메뉴에서 회원탈퇴를 요청할 수 있습니다. 탈퇴 완료 시 법령상 별도 보관 의무가 있는 경우를 제외하고 계정과 연결된 개인정보 및 서비스 데이터를 삭제합니다.\n\n계정 삭제 안내: https://www.petgrow.co.kr/delete-account" },
+  { title: "13. 회원탈퇴 및 계정 삭제", body: "회원은 언제든지 PetGrow의 회원정보/정보 수정 영역에서 회원탈퇴를 요청할 수 있습니다. 탈퇴 완료 시 법령상 별도 보관 의무가 있는 경우를 제외하고 계정과 연결된 개인정보 및 서비스 데이터를 삭제합니다.\n\n계정 삭제 안내: https://www.petgrow.co.kr/delete-account" },
   { title: "14. 아동의 개인정보", body: "PetGrow는 아동의 개인정보를 의도적으로 수집하는 것을 목적으로 하지 않습니다. 향후 아동을 대상으로 하는 기능을 제공하거나 아동의 개인정보를 처리하게 되는 경우 관련 법령 및 앱 마켓 정책에서 요구하는 보호조치를 적용합니다." },
   { title: "15. 개인정보의 안전성 확보조치", body: "PetGrow는 인증정보 및 비밀키 보호, 사용자별 데이터 접근권한 제한, 불필요한 접근 최소화, 서비스 보안 점검 등 합리적으로 필요한 기술적·관리적 보호조치를 적용하도록 노력합니다." },
   { title: "16. Pet톡(커뮤니티) 서비스와 개인정보", body: "PetGrow는 회원 간 반려동물 정보를 공유하는 커뮤니티 기능 'Pet톡'을 제공합니다. Pet톡 이용과 관련하여 다음 정보가 처리됩니다.\n- 게시글, 댓글, 좋아요 및 신고 내역\n- 게시글에 첨부한 사진(최대 5장)\n- 게시글·댓글에 표시되는 반려동물 정보(반려동물 이름, 품종, 생년월일 기반 나이, 프로필 사진)\n\n회원의 카카오 식별정보, 이메일 등 회원 개인정보는 다른 회원에게 공개되지 않습니다. Pet톡에는 회원이 직접 설정한 닉네임과, 게시글 작성 시 선택한 반려동물의 이름·품종·나이·프로필 사진이 표시될 수 있습니다. 작성자는 게시글 상세 화면에서 게시글을 공개 또는 비공개로 전환할 수 있으며, 비공개 게시글은 작성자 본인에게만 제공됩니다. 게시글 작성자 본인 여부는 서버에서만 확인하며 다른 회원에게 노출되지 않습니다." },
@@ -1848,7 +1850,7 @@ const PRIVACY_SECTIONS_KO = [
 ];
 const PRIVACY_SECTIONS_EN = [
   { title: "1. Purpose of Processing", body: "PetGrow may process personal information to the extent necessary for: member identification and account management via Kakao Login; keeping you logged in; storing and syncing pet information across devices; saving and re-viewing results such as PetBTI; customer support; improving service stability and quality; delivering ads and measuring ad performance; preventing fraud; and processing account deletion and related data removal." },
-  { title: "2. Categories of Personal Information Processed", body: "a. Kakao Login\n- The unique user identifier provided by Kakao\n- Nickname and profile image are only processed where actually consented to and used by the service\n- Additional info such as email is only requested with consent where actually needed\n\nb. Pet & service information\n- Pet name, species, breed, birth date, sex, current weight, and growth-related information\n- Pet profile photo\n- PetBTI results and test date\n- Saju and other service results that need to be saved\n\nc. Information that may be processed automatically\n- IP address, device/OS/browser or app info\n- Access and usage logs, error/security logs\n- Advertising identifiers and ad interaction data\n\nPetGrow's principle is not to request phone number, gender, birthday, friend list, or other information not needed for the service." },
+  { title: "2. Categories of Personal Information Processed", body: "a. Kakao Login\n- The unique user identifier provided by Kakao\n- Nickname and profile image are only processed where actually consented to and used by the service\n- Additional info such as email is only requested with consent where actually needed\n\nb. Pet & service information\n- Pet name, species, breed, birth date, sex, current weight, and growth-related information\n- Pet profile photo\n- PetBTI results and test date\n- Saju and other service results that need to be saved\n\nc. Guardian compatibility input\n- Guardian name and date of birth\n- These are used temporarily on the compatibility screen to calculate the result and, in the current implementation, are not sent to or stored on PetGrow servers or the account.\n\nd. Information that may be processed automatically\n- IP address, device/OS/browser or app info\n- Access and usage logs, error/security logs\n- Advertising identifiers and ad interaction data\n\nPetGrow's principle is not to request phone number, gender, birthday, friend list, or other information not needed for the service." },
   { title: "3. How Information Is Stored", body: "Information you register or create after logging in is not simply stored on 'this device' or 'this browser' — it is linked to your logged-in PetGrow account and may be stored/synced on our servers or cloud storage. Logging in with the same Kakao account lets you retrieve your saved information on other supported devices or the web. Data stored locally before Kakao Login was introduced may be migrated to your account with a separate process." },
   { title: "4. Retention Period", body: "Member accounts and connected personal information are generally retained until account deletion. Upon deletion, the account and related personal information are deleted except where retention is required by law. Information processed by external authentication, advertising, or hosting providers follows those providers' own policies and actual processing structure." },
   { title: "5. Kakao Login", body: "PetGrow may provide Kakao Login for convenience. During login, only the information you consent to on Kakao's consent screen is provided to PetGrow. It is processed for member identification, account creation/management, per-user data storage/sync, account deletion, and customer support." },
@@ -1871,12 +1873,12 @@ const PRIVACY_SECTIONS_EN = [
 
 const TERMS_SECTIONS_KO = [
   { title: "제1조 (목적)", body: "본 약관은 PetGrow가 제공하는 웹사이트, 모바일 애플리케이션 및 관련 서비스의 이용조건과 PetGrow 및 이용자의 권리·의무·책임사항을 정함을 목적으로 합니다." },
-  { title: "제2조 (용어의 정의)", body: "① \"서비스\"란 PetGrow가 제공하는 반려동물 등록·성장정보·Pet사주·PetBTI·Pet꿀팁 및 기타 관련 기능을 말합니다.\n② \"이용자\"란 PetGrow 서비스를 이용하는 모든 자를 말합니다.\n③ \"회원\"이란 카카오 간편로그인을 통해 계정을 생성하고 서비스를 이용하는 자를 말합니다.\n④ \"계정\"이란 회원 식별 및 사용자별 데이터 저장을 위해 생성되는 PetGrow 이용자 정보를 말합니다.\n⑤ \"반려동물 정보\"란 회원이 등록하는 반려동물의 이름, 종류, 품종, 생년월일, 성별, 체중, 프로필 사진 및 기타 관련 정보를 말합니다." },
+  { title: "제2조 (용어의 정의)", body: "① \"서비스\"란 PetGrow가 제공하는 반려동물 등록·성장정보·Pet사주·PetBTI·Pet정보 및 기타 관련 기능을 말합니다.\n② \"이용자\"란 PetGrow 서비스를 이용하는 모든 자를 말합니다.\n③ \"회원\"이란 카카오 간편로그인을 통해 계정을 생성하고 서비스를 이용하는 자를 말합니다.\n④ \"계정\"이란 회원 식별 및 사용자별 데이터 저장을 위해 생성되는 PetGrow 이용자 정보를 말합니다.\n⑤ \"반려동물 정보\"란 회원이 등록하는 반려동물의 이름, 종류, 품종, 생년월일, 성별, 체중, 프로필 사진 및 기타 관련 정보를 말합니다." },
   { title: "제3조 (약관의 효력 및 변경)", body: "본 약관은 서비스에 게시함으로써 효력이 발생합니다. PetGrow는 관련 법령을 위반하지 않는 범위에서 필요한 경우 약관을 변경할 수 있으며 중요한 변경사항은 서비스 내에서 안내합니다." },
   { title: "제4조 (회원가입 및 이용계약)", body: "이용자가 카카오 간편로그인 등 PetGrow가 제공하는 인증 절차를 완료하고 필요한 약관 및 개인정보 관련 절차에 동의하면 이용계약이 성립할 수 있습니다." },
   { title: "제5조 (카카오 간편로그인)", body: "① PetGrow는 회원 편의를 위해 카카오의 외부 인증 서비스를 이용한 간편로그인을 제공할 수 있습니다.\n② 회원은 카카오 계정을 이용하여 PetGrow에 로그인할 수 있습니다.\n③ 카카오 서비스의 장애, 정책 변경 또는 이용자의 카카오 계정 상태에 따라 로그인이 일시적으로 제한될 수 있습니다.\n④ 카카오 인증 서비스 자체에 대해서는 카카오의 이용약관 및 개인정보처리방침이 적용될 수 있습니다." },
   { title: "제6조 (계정 및 로그인 상태 관리)", body: "회원은 자신의 카카오 계정을 안전하게 관리해야 합니다. PetGrow의 주요 기능은 로그인한 회원에게 제공될 수 있으며, 로그아웃 시 서버에 저장된 계정 데이터는 삭제되지 않습니다. 동일한 카카오 계정으로 다시 로그인하면 저장된 정보를 불러올 수 있습니다." },
-  { title: "제7조 (서비스 제공)", body: "PetGrow는 우리 아이 등록·관리, 성장 예상 및 성장정보, Pet사주, PetBTI, Pet꿀팁, Pet가이드, Pet톡 커뮤니티, MY(계정·활동 관리), 계정별 데이터 저장 및 기기 간 동기화 등의 서비스를 제공할 수 있습니다." },
+  { title: "제7조 (서비스 제공)", body: "PetGrow는 우리 아이 등록·관리, 성장 예상 및 성장정보, Pet사주, PetBTI, Pet정보, Pet톡 커뮤니티, 회원정보(계정·닉네임·활동 관리), 계정별 데이터 저장 및 기기 간 동기화 등의 서비스를 제공할 수 있습니다." },
   { title: "제8조 (데이터 저장 및 동기화)", body: "로그인 회원이 등록한 반려동물 정보와 일부 서비스 결과는 회원 계정에 연결하여 서버 또는 클라우드 저장소에 저장될 수 있습니다. 따라서 서비스 내에서 '이 기기에만 저장', '이 브라우저에만 저장'되는 것으로 안내하지 않습니다. 동일한 카카오 계정으로 로그인하면 지원되는 다른 기기 또는 웹 환경에서 저장된 정보를 불러올 수 있습니다. 다만 카카오 간편로그인 도입 이전의 기존 로컬 데이터는 별도의 이전 절차가 적용될 수 있습니다." },
   { title: "제9조 (이용자의 의무)", body: "이용자는 타인의 계정·정보 도용, 시스템의 정상 운영 방해, 취약점 악용, 불법적인 데이터 수집, PetGrow 또는 제3자의 권리 침해, 관계 법령 위반 등의 행위를 해서는 안 됩니다." },
   { title: "제10조 (서비스 이용 제한)", body: "이용자가 본 약관 또는 관계 법령을 위반하거나 서비스의 안정적인 운영을 방해하는 경우 PetGrow는 필요한 범위에서 서비스 이용을 제한하거나 이용계약을 해지할 수 있습니다." },
@@ -1884,7 +1886,7 @@ const TERMS_SECTIONS_KO = [
   { title: "제11조 (회원탈퇴 및 이용계약 해지)", body: "회원은 언제든지 서비스 내 회원탈퇴 기능을 통해 이용계약을 해지할 수 있습니다. 회원탈퇴가 완료되면 관계 법령에 따라 별도로 보관해야 하는 정보가 있는 경우를 제외하고 회원계정 및 계정과 연결된 개인정보와 저장정보를 삭제합니다." },
   { title: "제12조 (반려동물 관련 정보 및 계산 결과)", body: "PetGrow의 성장 예상, 체중 계산 및 기타 반려동물 관련 정보는 일반적인 자료와 이용자가 입력한 정보를 기반으로 제공되는 참고용 정보이며 실제 결과를 보장하지 않습니다." },
   { title: "제13조 (건강 관련 정보)", body: "PetGrow에서 제공하는 건강, 식단, 영양 및 관리 정보는 일반적인 참고정보이며 수의사의 진료, 진단 또는 처방을 대신하지 않습니다. 반려동물에게 이상 증상이나 응급상황이 있는 경우 수의사 또는 동물병원의 진료를 받아야 합니다." },
-  { title: "제14조 (Pet사주·PetBTI 등 재미 콘텐츠)", body: "Pet사주 및 PetBTI 등은 재미와 참고를 위한 콘텐츠이며 과학적 진단, 의학적 판단 또는 미래 결과를 보장하는 자료가 아닙니다." },
+  { title: "제14조 (Pet사주·PetBTI 등 재미 콘텐츠)", body: "기본 Pet사주, 오늘의 펫운세, 보호자 궁합 및 PetBTI는 재미와 참고를 위한 콘텐츠이며 과학적 진단, 의학적 판단, 성격 진단 또는 미래 결과를 보장하는 자료가 아닙니다. 보호자 궁합을 위해 입력한 보호자 이름과 생년월일은 현재 구현상 결과 계산에만 일시적으로 사용되며 PetGrow 서버 또는 계정에 저장되지 않습니다." },
   { title: "제15조 (광고 및 외부 서비스)", body: "PetGrow는 서비스 운영을 위해 광고 및 카카오 인증, Google AdMob 등 외부 서비스를 이용할 수 있습니다. Google은 간편로그인 수단으로 제공하지 않으며, 실제 사용하는 광고 등 외부 서비스에 대해서만 해당 제공자의 이용약관 및 개인정보처리방침이 적용될 수 있습니다." },
   { title: "제16조 (개인정보 보호)", body: "회원의 개인정보 처리에 관한 사항은 PetGrow 개인정보처리방침에 따릅니다." },
   { title: "제17조 (지식재산권)", body: "PetGrow가 직접 제작한 로고, 디자인, 문구, 프로그램 및 콘텐츠에 대한 권리는 PetGrow 또는 정당한 권리자에게 귀속됩니다. 이용자는 권리자의 허락 없이 이를 영리 목적으로 복제·배포·판매 또는 변형해서는 안 됩니다." },
@@ -1899,12 +1901,12 @@ const TERMS_SECTIONS_KO = [
 ];
 const TERMS_SECTIONS_EN = [
   { title: "Article 1 (Purpose)", body: "These Terms set out the conditions of use for the website, mobile application, and related services provided by PetGrow, and the rights, obligations, and responsibilities of PetGrow and users." },
-  { title: "Article 2 (Definitions)", body: "① \"Service\" means pet registration, growth info, Saju, PetBTI, Pet Tips, and other related features provided by PetGrow.\n② \"User\" means anyone who uses the PetGrow service.\n③ \"Member\" means a person who creates an account via Kakao Login and uses the service.\n④ \"Account\" means PetGrow user information created to identify members and store per-user data.\n⑤ \"Pet Information\" means a pet's name, species, breed, date of birth, sex, weight, profile photo, and other related information registered by a member." },
+  { title: "Article 2 (Definitions)", body: "① \"Service\" means pet registration, growth info, Saju, PetBTI, Pet Info, and other related features provided by PetGrow.\n② \"User\" means anyone who uses the PetGrow service.\n③ \"Member\" means a person who creates an account via Kakao Login and uses the service.\n④ \"Account\" means PetGrow user information created to identify members and store per-user data.\n⑤ \"Pet Information\" means a pet's name, species, breed, date of birth, sex, weight, profile photo, and other related information registered by a member." },
   { title: "Article 3 (Effect and Amendment of Terms)", body: "These Terms take effect when posted on the service. PetGrow may amend these Terms as needed, within the bounds of applicable law, and will announce material changes within the service." },
   { title: "Article 4 (Membership and Service Agreement)", body: "A service agreement may be formed once a user completes an authentication procedure provided by PetGrow (such as Kakao Login) and agrees to the required terms and personal-information procedures." },
   { title: "Article 5 (Kakao Login)", body: "① PetGrow may provide Kakao Login, using Kakao's external authentication service, for member convenience.\n② Members may log in to PetGrow using their Kakao account.\n③ Login may be temporarily limited due to Kakao service outages, policy changes, or the status of a user's Kakao account.\n④ Kakao's own Terms of Service and Privacy Policy may apply to the Kakao authentication service itself." },
   { title: "Article 6 (Account and Login Session Management)", body: "Members must securely manage their own Kakao account. PetGrow's core features may be provided to logged-in members, and account data stored on the server is not deleted upon logout. Logging in again with the same Kakao account lets you retrieve your saved information." },
-  { title: "Article 7 (Provision of Service)", body: "PetGrow may provide services including registering/managing pets, growth prediction and growth info, basic Pet Saju, Daily Pet Fortune, Guardian Compatibility, PetBTI, Pet Tips, the Pet Talk community, member-info/nickname/activity management, and per-account data storage and cross-device sync." },
+  { title: "Article 7 (Provision of Service)", body: "PetGrow may provide services including registering/managing pets, growth prediction and growth info, basic Pet Saju, Daily Pet Fortune, Guardian Compatibility, PetBTI, Pet Info, the Pet Talk community, member-info/nickname/activity management, and per-account data storage and cross-device sync." },
   { title: "Article 8 (Data Storage and Sync)", body: "Pet information and certain service results registered by a logged-in member may be stored on our servers or cloud storage, linked to the member's account. Accordingly, the service does not describe data as being stored 'only on this device' or 'only in this browser.' Logging in with the same Kakao account lets you retrieve saved information on other supported devices or the web. Local data predating Kakao Login may be subject to a separate migration process." },
   { title: "Article 9 (User Obligations)", body: "Users must not impersonate or misuse another person's account or information, interfere with normal system operation, exploit vulnerabilities, unlawfully collect data, infringe the rights of PetGrow or third parties, or violate applicable law." },
   { title: "Article 10 (Restriction of Service Use)", body: "If a user violates these Terms or applicable law, or interferes with the stable operation of the service, PetGrow may restrict use of the service or terminate the service agreement to the necessary extent." },
@@ -2121,7 +2123,7 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
   return (
     <>
     <Modal open={open} onClose={onClose} width={380}>
-      <button type="button" onClick={onClose} aria-label="닫기" style={{ position: "absolute", right: 16, top: 14, border: 0, background: "transparent", fontSize: 26, lineHeight: 1, cursor: "pointer", color: "var(--sub)" }}>×</button>
+      <button type="button" onClick={onClose} aria-label={t.accountCloseBtn} title={t.accountCloseBtn} className="account-modal-close">×</button>
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18, paddingRight: 30 }}>
         <UserIcon style={{ width: 20, height: 20, color: "var(--primary)" }} />
         <h3 style={{ fontSize: 18 }}>{t.accountSettingsTitle}</h3>
@@ -2143,6 +2145,7 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
         <div className="bg-sub" style={{ fontSize: 11, lineHeight: 1.6, marginBottom: 12 }}>{t.accountFreshLoginHelp}</div>
       </>)}
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <button type="button" className="bg-btn account-modal-close-btn" onClick={onClose}>{t.accountCloseBtn}</button>
         <button type="button" className="bg-btn bg-btn-ghost" onClick={onLogout}>{t.accountLogoutBtn}</button>
         <button type="button" className="bg-btn bg-btn-ghost" style={{ color: "#C0392B" }} onClick={onRequestDelete}>{t.accountDeleteBtn}</button>
       </div>
@@ -2260,6 +2263,8 @@ const GlobalStyle = () => (
       font-size:14px; background:#fff; color:var(--text);}
     .bg-input:focus{outline:none; border-color:var(--primary);}
     input[type="date"].bg-input{min-width:0; -webkit-min-logical-width:0; -webkit-appearance:none; appearance:none;}
+    input[type="date"].bg-input.compat-birth-input{min-height:58px;height:58px;padding:0 16px;line-height:58px;}
+    .my-activity-tabs .bg-chip{white-space:nowrap;}
     .bg-chip{padding:10px 16px; border-radius:999px; border:2px solid var(--border); background:#fff; cursor:pointer;
       font-family:inherit; font-size:14px; font-weight:500; color:var(--text); transition:.12s; text-align:left;}
     .bg-chip:hover{border-color:var(--primary); transform:translateY(-1px);}
@@ -2297,6 +2302,9 @@ const GlobalStyle = () => (
       .add-photo-field{flex-basis:auto; width:100%; max-width:100%; overflow:hidden;}
       .add-photo-row > .bg-btn{width:100%;}
       input[type="date"].bg-input{padding-left:12px; padding-right:8px; font-size:13px; width:100%; box-sizing:border-box; -webkit-appearance:none; appearance:none;}
+      input[type="date"].bg-input.compat-birth-input{height:58px;min-height:58px;padding:0 16px;font-size:16px;line-height:58px;}
+      .my-activity-tabs{gap:6px!important;}
+      .my-activity-tabs .bg-chip{font-size:13px!important;padding:9px 11px;line-height:1.2;flex:0 1 auto;}
     }
     @keyframes aboutFadeUp{from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);}}
     @keyframes aboutFloat{0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);}}
@@ -2342,6 +2350,15 @@ const GlobalStyle = () => (
     .profile-header-avatar .avatar-edit-badge .icon{width:14px; height:14px; fill:#fff;}
     .profile-header-name{font-family:'Jua',sans-serif; font-size:24px; color:var(--text);}
     .profile-header-meta{font-size:13px; color:var(--sub); margin-top:6px;}
+    .account-modal-close{position:absolute; right:16px; top:14px; width:36px; height:36px; border-radius:50%; border:1px solid #DFE5D7; background:#F3F7EF; color:#2E3328; font-size:24px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:2; box-shadow:0 3px 10px rgba(28,28,28,.08);}
+    .account-modal-close:hover{background:#EAF4E4; color:var(--primary); transform:translateY(-1px);}
+    .account-modal-close-btn{width:100%; background:#EEF6E9; color:#2E3328; box-shadow:0 5px 0 #D7E4CF;}
+    .pet-result-page{background:linear-gradient(180deg,#FFFDF8 0%,#FAFCF7 100%); border:1px solid #E8EBDD; border-radius:30px;}
+    .pet-result-profile-shell{background:#fff; border:1px solid #DFE7D8; border-radius:24px; padding:18px 20px; box-shadow:0 8px 24px rgba(54,76,45,.08);}
+    .pet-result-page .bg-card{background:#fff; border-color:#DFE6D7; box-shadow:0 6px 18px rgba(54,76,45,.055);}
+    .pet-result-page .bg-surface-card{background:#F2F7EE; border:1px solid #E0E8D9;}
+    .pet-result-page .result-block>.bg-surface-card{background:linear-gradient(135deg,#F0F8EA 0%,#FFFDF7 100%); border:1px solid #D8E7D0; box-shadow:0 8px 20px rgba(79,157,60,.08);}
+    @media (max-width:680px){.pet-result-page{border-radius:22px; padding:14px 12px 48px !important}.pet-result-profile-shell{padding:14px; border-radius:20px}.profile-header-avatar{width:84px; height:84px}.account-modal-close{right:12px; top:12px;}}
     .badge-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px 4px;}
     .badge-tile{text-align:center;}
     .badge-tile-circle{width:56px; height:56px; border-radius:50%; margin:0 auto 6px;
@@ -2649,7 +2666,7 @@ const GlobalStyle = () => (
     .landing-steps{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
     .landing-step{text-align:center;}
     .landing-step-num{width:36px; height:36px; border-radius:50%; background:var(--pg-green); color:#fff;
-      display:flex; align-items:center; justify-content:center; font-weight:800; margin:0 auto 12px;}
+      display:flex; align-items:center; justify-content:center; font-weight:800; margin:0 auto 20px;}
     .landing-step-title{font-weight:700; font-size:14px; color:var(--pg-dark); margin-bottom:6px;}
     .landing-step-desc{font-size:12px; color:#8a8f86; line-height:1.6;}
     .landing-footer{background:var(--pg-dark);}
@@ -5177,13 +5194,12 @@ function SajuPage({ pet, onGoRegister }) {
         <label className="bg-label">{lang === "en" ? "Guardian name" : "보호자 이름"}</label>
         <input className="bg-input" value={guardianName} onChange={(e) => { setGuardianName(e.target.value); setCompatResult(null); }} placeholder={lang === "en" ? "Enter name" : "보호자 이름을 입력해주세요"} />
         <label className="bg-label" style={{ marginTop: 14 }}>{lang === "en" ? "Guardian birth date" : "보호자 생년월일"}</label>
-        <input type="date" className="bg-input" value={guardianBirthDate} onChange={(e) => { setGuardianBirthDate(e.target.value); setCompatResult(null); }} />
+        <input type="date" className="bg-input compat-birth-input" value={guardianBirthDate} onChange={(e) => { setGuardianBirthDate(e.target.value); setCompatResult(null); }} />
         <button className="bg-btn" disabled={!guardianName.trim() || !guardianBirthDate} style={{ width: "100%", marginTop: 18, opacity: (!guardianName.trim() || !guardianBirthDate) ? .55 : 1 }} onClick={calculateCompat}>{lang === "en" ? "See compatibility" : "궁합 결과 보기"}</button>
         {compatResult && <div className="bg-surface-card" style={{ marginTop: 18, textAlign: "center", background: "#fff" }}>
           <div style={{ fontSize: 12, color: "var(--sub)", fontWeight: 700 }}>{lang === "en" ? "Compatibility score" : "궁합 점수"}</div>
           <div style={{ fontSize: 42, fontWeight: 900, color: "var(--primary)", margin: "8px 0 12px" }}>{compatResult.score}%</div>
           <p style={{ fontSize: 15, lineHeight: 1.8 }}>{compatResult.message}</p>
-          <div className="bg-sub" style={{ fontSize: 11, marginTop: 12 }}>{lang === "en" ? "The same pet and guardian information always produces the same result." : "같은 반려동물 정보와 보호자 정보를 입력하면 항상 같은 결과가 나와요."}</div>
         </div>}
         <button className="bg-btn bg-btn-ghost" style={{ width: "100%", marginTop: 18 }} onClick={() => { setMode("menu"); setCompatResult(null); }}>{lang === "en" ? "Back" : "다른 Pet사주 보기"}</button>
       </div><div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 16 }}>{t.sajuDisclaimer}</div></div>;
@@ -6042,8 +6058,8 @@ function ResultPage({ pet, breedGroups, onAddRecord, onDeleteRecord, onAddPhoto,
   };
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 60px" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
+    <div className="pet-result-page" style={{ maxWidth: 900, margin: "0 auto", padding: "18px 20px 60px" }}>
+      <div className="pet-result-profile-shell" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
         <div className="profile-header">
           <div className="profile-header-avatar" onClick={() => avatarInputRef.current && avatarInputRef.current.click()}>
             {profile.profileImage ? (
@@ -6603,7 +6619,6 @@ function AboutPage({ onStart, onNavigate }) {
             <LandingFeatureCard Illust={IllustPetBti} title={t.landingCardPetBtiTitle} desc={t.landingCardPetBtiDesc} />
             <LandingFeatureCard Illust={IllustTips} title={t.landingCardTipsTitle} desc={t.landingCardTipsDesc} />
             <LandingFeatureCard Illust={IllustCommunity} title={t.landingCardCommunityTitle} desc={t.landingCardCommunityDesc} />
-            <LandingFeatureCard Illust={HelpIcon} title={lang === "en" ? "📘 Pet Guide" : "📘 Pet가이드"} desc={lang === "en" ? "A simple guide to PetGrow features, account use, and pet care flows." : "PetGrow 기능과 계정 이용 방법을 처음부터 쉽게 안내해요."} />
             <LandingFeatureCard Illust={UserIcon} title={lang === "en" ? "👤 MY" : "👤 MY"} desc={lang === "en" ? "Manage your profile nickname, pets, and Pet Talk activity in one place." : "닉네임·계정 설정, 등록한 아이와 Pet톡 활동을 한곳에서 관리해요."} />
           </div>
         </div>
@@ -6677,7 +6692,7 @@ function AboutPage({ onStart, onNavigate }) {
         </div>
       </section>
 
-      {/* Pet꿀팁 */}
+      {/* Pet정보 */}
       <section className="landing-section">
         <div className="landing-wrap">
           <h2 className="landing-section-title" style={{ marginBottom: 6 }}>{t.landingTipsGuideTitle}</h2>
@@ -6871,7 +6886,7 @@ function AppBottomNav({ active, onNavigate }) {
   );
 }
 
-// Pet콘텐츠 (전체 | Pet사주 | PetBTI | Pet꿀팁) — 앱 하단탭에서만 진입하는 통합 콘텐츠 허브
+// Pet콘텐츠 (전체 | Pet사주 | PetBTI | Pet정보) — 앱 하단탭에서만 진입하는 통합 콘텐츠 허브
 function PetContentPage({ subTab, onSubTabChange, allPets, featurePet, onSelectFeaturePet, onGoRegister, onUpdatePetBti }) {
   const t = useT();
   return (
@@ -7617,7 +7632,7 @@ function MyActivityPage({ lang, onOpenPost, embedded = false }) {
   return (
     <div style={embedded ? { maxWidth: 640, margin: "0 auto" } : { maxWidth: 640, margin: "0 auto", padding: "0 20px 60px" }}>
       {!embedded && <h1 style={{ fontSize: 20, marginBottom: 16 }}>{t.communityMyActivityNav}</h1>}
-      <div style={{ display: "flex", gap: 8, marginBottom: 18 }}>
+      <div className="my-activity-tabs" style={{ display: "flex", gap: 8, marginBottom: 18 }}>
         <button type="button" className={`bg-chip ${tab === "posts" ? "active" : ""}`} onClick={() => setTab("posts")}>{t.communityMyPostsTab}</button>
         <button type="button" className={`bg-chip ${tab === "comments" ? "active" : ""}`} onClick={() => setTab("comments")}>{t.communityMyCommentsTab}</button>
         <button type="button" className={`bg-chip ${tab === "likes" ? "active" : ""}`} onClick={() => setTab("likes")}>{t.communityMyLikesTab}</button>
@@ -7779,9 +7794,9 @@ const MENU_HELP = {
   community: { icon: "💬", koTitle: "Pet톡", koBody: "다른 보호자들과 일상·질문·건강·산책·훈련 이야기를 나눠요. 닉네임은 회원정보에서 바꿀 수 있어요.", enTitle: "Pet Talk", enBody: "Share daily life, questions, health, walks and training with other pet guardians." },
   saju: { icon: "🔮", koTitle: "Pet사주", koBody: "기본 Pet사주, 오늘의 펫운세, 보호자 궁합 중 원하는 콘텐츠를 골라 재미로 즐겨보세요.", enTitle: "Pet Saju", enBody: "Enjoy Pet Saju, today's fortune, or guardian compatibility for fun." },
   petbti: { icon: "🧩", koTitle: "PetBTI", koBody: "우리 아이의 행동 성향을 질문으로 알아보고 재미있는 성격 유형을 확인해요.", enTitle: "PetBTI", enBody: "Answer behavior questions and discover a fun personality type for your pet." },
-  tips: { icon: "💡", koTitle: "Pet꿀팁", koBody: "건강·식단·생활·훈련 등 반려생활에 바로 써먹기 좋은 정보를 모아봤어요.", enTitle: "Pet Tips", enBody: "Browse practical tips for health, food, daily care and training." },
+  tips: { icon: "💡", koTitle: "Pet정보", koBody: "건강·식단·생활·훈련 등 반려생활에 바로 써먹기 좋은 정보를 모아봤어요.", enTitle: "Pet Tips", enBody: "Browse practical tips for health, food, daily care and training." },
   my: { icon: "👤", koTitle: "회원정보", koBody: "닉네임과 계정 정보를 수정하고, 반려동물 관리와 Pet톡 내 활동을 확인할 수 있어요.", enTitle: "Member info", enBody: "Edit your nickname and account, manage pets, and review your Pet Talk activity." },
-  content: { icon: "✨", koTitle: "Pet 콘텐츠", koBody: "Pet사주·PetBTI·Pet꿀팁을 한곳에서 골라 이용할 수 있어요.", enTitle: "Pet Content", enBody: "Choose Pet Saju, PetBTI and Pet Tips in one place." },
+  content: { icon: "✨", koTitle: "Pet 콘텐츠", koBody: "Pet사주·PetBTI·Pet정보을 한곳에서 골라 이용할 수 있어요.", enTitle: "Pet Content", enBody: "Choose Pet Saju, PetBTI and Pet Tips in one place." },
 };
 
 function MenuHelpCoach({ view, lang, open, onClose, onOpen }) {

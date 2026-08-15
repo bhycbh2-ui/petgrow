@@ -165,12 +165,10 @@ export async function updateUserNickname(id, nickname) {
 export async function deleteUser(id) {
   await ensureSchema();
   // Pet톡에 올린 이미지(Vercel Blob)는 DB 삭제로 자동 정리되지 않으므로 먼저 지워요.
-  try {
-    const { deleteAllBlobsForUser } = await import("./community.js");
-    await deleteAllBlobsForUser(id);
-  } catch (err) {
-    console.warn("community blob cleanup failed on account delete:", err);
-  }
+  // 첨부 이미지 삭제가 실패한 상태에서 계정만 먼저 삭제하면 고아 파일이 남을 수 있으므로,
+  // Blob 정리가 성공한 뒤 DB 계정을 삭제합니다. 실패하면 요청 자체를 실패시켜 사용자가 다시 시도할 수 있게 합니다.
+  const { deleteAllBlobsForUser } = await import("./community.js");
+  await deleteAllBlobsForUser(id);
   // ON DELETE CASCADE 로 pg_user_state(반려동물 정보 등)와 Pet톡 게시글/댓글/좋아요/신고 내역까지 함께 삭제돼요.
   await sql`delete from pg_users where id = ${id}`;
 }

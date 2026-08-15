@@ -183,7 +183,7 @@ export async function deletePost({ id, userId }) {
   const { rows } = await sql`select storage_url from pg_post_images where post_id = ${id}`;
   const { rowCount } = await sql`delete from pg_posts where id = ${id} and user_id = ${userId}`;
   if (rowCount > 0) {
-    await Promise.all(rows.map((r) => blobDel(r.storage_url).catch(() => {})));
+    await Promise.all(rows.map((r) => blobDel(r.storage_url)));
   }
   return rowCount > 0;
 }
@@ -336,5 +336,5 @@ export async function deleteAllBlobsForUser(userId) {
     join pg_posts p on p.id = i.post_id
     where p.user_id = ${userId}
   `;
-  await Promise.all(rows.map((r) => blobDel(r.storage_url).catch(() => {})));
+  await Promise.all(rows.map((r) => blobDel(r.storage_url)));
 }

@@ -189,7 +189,7 @@ const STRINGS = {
     contactBtn: "문의하기",
     contactFallback: "메일 앱이 안 열리면 help.petgrow@gmail.com으로 직접 보내주세요. 기능 개선 제안이나 버그 제보도 언제든 환영이에요!",
     feedbackBtn: "개선 요청하기",
-    tipsTitle: "Pet꿀팁",
+    tipsTitle: "Pet정보",
     myPetsNav: "우리 아이",
     petgrowTagline: "우리 아이의 건강한 성장을 함께",
     badgesTitle: "성장 배지",
@@ -330,10 +330,10 @@ const STRINGS = {
       { title: "Pet사주", body: "등록한 우리 아이의 정보를 바탕으로 성격·궁합·행운 같은 재미있는 사주 콘텐츠를 볼 수 있어요. 결과는 참고와 재미를 위한 것이에요." },
             { title: "PetBTI", body: "몇 가지 질문에 답하면 우리 아이만의 16가지 성격 유형이 나와요. 강아지와 고양이 각각에 맞는 질문으로 진행돼요." },
       { title: "PetBTI 결과 저장", body: "완료한 결과는 자동으로 저장돼서 'PetBTI 결과 보기'로 언제든 다시 볼 수 있고, '다시 검사하기'로 새로 진행할 수도 있어요." },
-      { title: "Pet꿀팁", body: "건강관리·식단영양·행동훈련·성장생활·안전상식 다섯 카테고리, 총 50개의 꿀팁을 확인할 수 있어요. 검색창에서는 전체 꿀팁을 대상으로 검색돼요." },
+      { title: "Pet정보", body: "건강관리·식단영양·행동훈련·성장생활·안전상식 다섯 카테고리, 총 50개의 꿀팁을 확인할 수 있어요. 검색창에서는 전체 꿀팁을 대상으로 검색돼요." },
       { title: "Pet톡", body: "우리 아이 사진과 일상을 다른 보호자와 나누는 커뮤니티예요. 일상·자랑·질문·건강·정보공유·산책·훈련·용품추천·자유수다로 분류해서 글을 남기고 좋아요·댓글을 주고받을 수 있어요." },
       { title: "닉네임 · 내 활동", body: "계정 설정에서 Pet톡에 표시할 닉네임을 변경할 수 있어요. MY와 Pet톡의 내 활동에서는 내가 작성한 글·댓글·좋아요를 확인할 수 있어요." },
-      { title: "검색", body: "Pet꿀팁 화면 상단 검색창에 원하는 키워드를 입력하면 현재 페이지가 아닌 전체 50개 꿀팁 중에서 찾아줘요." },
+      { title: "검색", body: "Pet정보 화면 상단 검색창에 원하는 키워드를 입력하면 현재 페이지가 아닌 전체 50개 꿀팁 중에서 찾아줘요." },
       { title: "로그아웃", body: "우측 상단 계정 버튼을 누르면 로그아웃할 수 있어요. 로그아웃해도 서버에 저장된 정보는 삭제되지 않고, 다시 로그인하면 그대로 남아있어요." },
       { title: "회원탈퇴", body: "계정 설정에서 회원탈퇴를 진행하면 반려동물 정보·사진·PetBTI 결과·Pet톡 게시글과 댓글 등 계정에 연결된 데이터가 함께 삭제돼요. 삭제 후에는 복구할 수 없어요." },
     ],
@@ -661,7 +661,7 @@ const STRINGS = {
     landingCardFortuneDesc: "오늘 우리 아이의 하루는 어떨까요? 매일 가볍게 확인하는 우리 아이의 오늘의 운세를 제공해요.",
     landingCardCompatTitle: "🫶 보호자 궁합",
     landingCardCompatDesc: "나와 우리 아이는 얼마나 잘 맞을까요? 보호자와 반려동물의 재미있는 궁합 결과를 확인해요.",
-    landingCardTipsTitle: "💡 Pet꿀팁",
+    landingCardTipsTitle: "💡 Pet정보",
     landingCardTipsDesc: "반려생활에 필요한 정보를 쉽고 빠르게. 건강, 식단, 행동, 성장, 생활 정보를 확인해요.",
     landingCardCommunityTitle: "💬 Pet톡",
     landingCardCommunityDesc: "우리 아이 이야기를 함께 나눠요. 다른 보호자들과 반려동물의 일상과 사진, 질문과 정보를 공유하는 커뮤니티예요.",
@@ -683,9 +683,9 @@ const STRINGS = {
     landingMockPost1Text: "오늘 산책하다가 친구를 만났어요 🐾",
     landingMockPost2Name: "나비", landingMockPost2Breed: "코리안숏헤어", landingMockPost2Time: "1시간 전",
     landingMockPost2Text: "창가에서 낮잠 자는 중... 방해 금지 🐱",
-    landingTipsGuideTitle: "Pet꿀팁 · Pet가이드",
+    landingTipsGuideTitle: "Pet정보 · Pet가이드",
     landingTipsGuideDesc: "건강·식단·행동·성장·생활 꿀팁 50가지와, PetGrow를 처음부터 끝까지 안내하는 Pet가이드도 준비되어 있어요.",
-    landingTipsTeaserLabel: "Pet꿀팁 보러가기",
+    landingTipsTeaserLabel: "Pet정보 보러가기",
     landingGuideTeaserLabel: "Pet가이드 보러가기",
     landingFinalCtaLine1: "우리 아이와 함께한 오늘,",
     landingFinalCtaLine2: "PetGrow에 남겨보세요 🐾",
@@ -1871,12 +1871,12 @@ const PRIVACY_SECTIONS_EN = [
 
 const TERMS_SECTIONS_KO = [
   { title: "제1조 (목적)", body: "본 약관은 PetGrow가 제공하는 웹사이트, 모바일 애플리케이션 및 관련 서비스의 이용조건과 PetGrow 및 이용자의 권리·의무·책임사항을 정함을 목적으로 합니다." },
-  { title: "제2조 (용어의 정의)", body: "① \"서비스\"란 PetGrow가 제공하는 반려동물 등록·성장정보·Pet사주·PetBTI·Pet꿀팁 및 기타 관련 기능을 말합니다.\n② \"이용자\"란 PetGrow 서비스를 이용하는 모든 자를 말합니다.\n③ \"회원\"이란 카카오 간편로그인을 통해 계정을 생성하고 서비스를 이용하는 자를 말합니다.\n④ \"계정\"이란 회원 식별 및 사용자별 데이터 저장을 위해 생성되는 PetGrow 이용자 정보를 말합니다.\n⑤ \"반려동물 정보\"란 회원이 등록하는 반려동물의 이름, 종류, 품종, 생년월일, 성별, 체중, 프로필 사진 및 기타 관련 정보를 말합니다." },
+  { title: "제2조 (용어의 정의)", body: "① \"서비스\"란 PetGrow가 제공하는 반려동물 등록·성장정보·Pet사주·PetBTI·Pet정보 및 기타 관련 기능을 말합니다.\n② \"이용자\"란 PetGrow 서비스를 이용하는 모든 자를 말합니다.\n③ \"회원\"이란 카카오 간편로그인을 통해 계정을 생성하고 서비스를 이용하는 자를 말합니다.\n④ \"계정\"이란 회원 식별 및 사용자별 데이터 저장을 위해 생성되는 PetGrow 이용자 정보를 말합니다.\n⑤ \"반려동물 정보\"란 회원이 등록하는 반려동물의 이름, 종류, 품종, 생년월일, 성별, 체중, 프로필 사진 및 기타 관련 정보를 말합니다." },
   { title: "제3조 (약관의 효력 및 변경)", body: "본 약관은 서비스에 게시함으로써 효력이 발생합니다. PetGrow는 관련 법령을 위반하지 않는 범위에서 필요한 경우 약관을 변경할 수 있으며 중요한 변경사항은 서비스 내에서 안내합니다." },
   { title: "제4조 (회원가입 및 이용계약)", body: "이용자가 카카오 간편로그인 등 PetGrow가 제공하는 인증 절차를 완료하고 필요한 약관 및 개인정보 관련 절차에 동의하면 이용계약이 성립할 수 있습니다." },
   { title: "제5조 (카카오 간편로그인)", body: "① PetGrow는 회원 편의를 위해 카카오의 외부 인증 서비스를 이용한 간편로그인을 제공할 수 있습니다.\n② 회원은 카카오 계정을 이용하여 PetGrow에 로그인할 수 있습니다.\n③ 카카오 서비스의 장애, 정책 변경 또는 이용자의 카카오 계정 상태에 따라 로그인이 일시적으로 제한될 수 있습니다.\n④ 카카오 인증 서비스 자체에 대해서는 카카오의 이용약관 및 개인정보처리방침이 적용될 수 있습니다." },
   { title: "제6조 (계정 및 로그인 상태 관리)", body: "회원은 자신의 카카오 계정을 안전하게 관리해야 합니다. PetGrow의 주요 기능은 로그인한 회원에게 제공될 수 있으며, 로그아웃 시 서버에 저장된 계정 데이터는 삭제되지 않습니다. 동일한 카카오 계정으로 다시 로그인하면 저장된 정보를 불러올 수 있습니다." },
-  { title: "제7조 (서비스 제공)", body: "PetGrow는 우리 아이 등록·관리, 성장 예상 및 성장정보, Pet사주, PetBTI, Pet꿀팁, Pet가이드, Pet톡 커뮤니티, MY(계정·활동 관리), 계정별 데이터 저장 및 기기 간 동기화 등의 서비스를 제공할 수 있습니다." },
+  { title: "제7조 (서비스 제공)", body: "PetGrow는 우리 아이 등록·관리, 성장 예상 및 성장정보, Pet사주, PetBTI, Pet정보, Pet가이드, Pet톡 커뮤니티, MY(계정·활동 관리), 계정별 데이터 저장 및 기기 간 동기화 등의 서비스를 제공할 수 있습니다." },
   { title: "제8조 (데이터 저장 및 동기화)", body: "로그인 회원이 등록한 반려동물 정보와 일부 서비스 결과는 회원 계정에 연결하여 서버 또는 클라우드 저장소에 저장될 수 있습니다. 따라서 서비스 내에서 '이 기기에만 저장', '이 브라우저에만 저장'되는 것으로 안내하지 않습니다. 동일한 카카오 계정으로 로그인하면 지원되는 다른 기기 또는 웹 환경에서 저장된 정보를 불러올 수 있습니다. 다만 카카오 간편로그인 도입 이전의 기존 로컬 데이터는 별도의 이전 절차가 적용될 수 있습니다." },
   { title: "제9조 (이용자의 의무)", body: "이용자는 타인의 계정·정보 도용, 시스템의 정상 운영 방해, 취약점 악용, 불법적인 데이터 수집, PetGrow 또는 제3자의 권리 침해, 관계 법령 위반 등의 행위를 해서는 안 됩니다." },
   { title: "제10조 (서비스 이용 제한)", body: "이용자가 본 약관 또는 관계 법령을 위반하거나 서비스의 안정적인 운영을 방해하는 경우 PetGrow는 필요한 범위에서 서비스 이용을 제한하거나 이용계약을 해지할 수 있습니다." },
@@ -6453,7 +6453,7 @@ function AboutPage({ onStart, onNavigate }) {
         </div>
       </section>
 
-      {/* Pet꿀팁 / 정보가이드 */}
+      {/* Pet정보 / 정보가이드 */}
       <section className="landing-section">
         <div className="landing-wrap">
           <h2 className="landing-section-title" style={{ marginBottom: 6 }}>{t.landingTipsGuideTitle}</h2>
@@ -6650,7 +6650,7 @@ function AppBottomNav({ active, onNavigate }) {
   );
 }
 
-// Pet콘텐츠 (전체 | Pet사주 | PetBTI | Pet꿀팁) — 앱 하단탭에서만 진입하는 통합 콘텐츠 허브
+// Pet콘텐츠 (전체 | Pet사주 | PetBTI | Pet정보) — 앱 하단탭에서만 진입하는 통합 콘텐츠 허브
 function PetContentPage({ subTab, onSubTabChange, allPets, featurePet, onSelectFeaturePet, onGoRegister, onUpdatePetBti }) {
   const t = useT();
   return (
