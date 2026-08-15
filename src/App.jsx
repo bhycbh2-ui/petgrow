@@ -356,7 +356,7 @@ const STRINGS = {
     deleteAccountNeedLogin: "회원탈퇴를 진행하려면 먼저 카카오 계정으로 로그인해주세요.",
     deleteAccountEmailFallback: "카카오 계정으로 로그인할 수 없는 경우 help.petgrow@gmail.com 으로 문의해주시면 확인 후 처리해드릴게요.",
     deleteAccountConfirmTitle: "정말 탈퇴하시겠어요?",
-    deleteAccountConfirmBody: "탈퇴하면 계정과 반려동물 정보가 모두 삭제되며 되돌릴 수 없어요.",
+    deleteAccountConfirmBody: "탈퇴하면 PetGrow 계정, 반려동물 정보·프로필 사진, 성장 기록, PetBTI 결과, Pet톡 게시글·댓글·좋아요 및 첨부 사진 등 계정에 연결된 데이터가 삭제되며 복구할 수 없습니다. 정말 회원탈퇴를 진행하시겠어요?",
     deleteAccountDoneTitle: "탈퇴가 완료됐어요",
     deleteAccountDoneBody: "그동안 PetGrow를 이용해주셔서 감사해요. 계정과 관련 정보가 모두 삭제됐어요.",
     speciesLabel: { dog: "강아지", cat: "고양이" },
@@ -887,7 +887,7 @@ const STRINGS = {
     deleteAccountNeedLogin: "Please log in with Kakao first to delete your account.",
     deleteAccountEmailFallback: "If you can't log in with Kakao, email help.petgrow@gmail.com and we'll take care of it for you.",
     deleteAccountConfirmTitle: "Are you sure you want to delete your account?",
-    deleteAccountConfirmBody: "This deletes your account and all pet data, and it can't be undone.",
+    deleteAccountConfirmBody: "Deleting your account removes your PetGrow account, pet information and profile photos, growth records, PetBTI results, PetTalk posts, comments, likes, attached photos, and other account-linked data. This cannot be undone. Do you want to continue?",
     deleteAccountDoneTitle: "Your account has been deleted",
     deleteAccountDoneBody: "Thank you for using PetGrow. Your account and all related data have been deleted.",
     speciesLabel: { dog: "dog", cat: "cat" },
@@ -1707,15 +1707,16 @@ function Modal({ open, onClose, children, width = 420 }) {
   );
 }
 
-function ConfirmModal({ open, title, message, confirmLabel, onConfirm, onCancel }) {
+function ConfirmModal({ open, title, message, confirmLabel, onConfirm, onCancel, danger = false, busy = false }) {
   const t = useT();
   return (
-    <Modal open={open} onClose={onCancel}>
+    <Modal open={open} onClose={busy ? () => {} : onCancel}>
       <h3 style={{ fontSize: 17, marginBottom: 10 }}>{title}</h3>
-      <p className="bg-sub" style={{ fontSize: 14, lineHeight: 1.6, marginBottom: 22 }}>{message}</p>
+      <p className="bg-sub" style={{ fontSize: 14, lineHeight: 1.7, marginBottom: 22, whiteSpace: "pre-line" }}>{message}</p>
       <div style={{ display: "flex", gap: 8 }}>
-        <button className="bg-btn bg-btn-ghost" style={{ flex: 1 }} onClick={onCancel}>{t.cancel}</button>
-        <button className="bg-btn" style={{ flex: 1 }} onClick={onConfirm}>{confirmLabel}</button>
+        <button className="bg-btn bg-btn-ghost" style={{ flex: 1 }} onClick={onCancel} disabled={busy}>{t.cancel}</button>
+        <button className="bg-btn" style={danger ? { flex: 1, background: "#C0392B", boxShadow: "0 5px 0 #922B21" } : { flex: 1 }}
+          onClick={onConfirm} disabled={busy}>{confirmLabel}</button>
       </div>
     </Modal>
   );
@@ -6702,6 +6703,8 @@ function DeleteAccountPage() {
         confirmLabel={deleting ? t.migrationSaving : t.accountDeleteBtn}
         onConfirm={runDelete}
         onCancel={() => setConfirmOpen(false)}
+        danger
+        busy={deleting}
       />
     </div>
   );
@@ -8034,6 +8037,8 @@ function AppInner({ lang, setLang }) {
         confirmLabel={deletingAccount ? t.migrationSaving : t.accountDeleteBtn}
         onConfirm={handleConfirmDeleteAccount}
         onCancel={() => setDeleteAccountConfirmOpen(false)}
+        danger
+        busy={deletingAccount}
       />
       <MigrationModal
         open={!!pendingMigration}
