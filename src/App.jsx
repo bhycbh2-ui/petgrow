@@ -1989,8 +1989,8 @@ function HamburgerMenu({ open, onClose, view, onNavigate, onOpenAccount, account
   }, [open]);
 
   const items = [
-    { key: "about", label: t.aboutNav, Icon: InfoIcon },
     ...(account ? [{ key: "home", label: t.hamNavHome, Icon: HomeIcon }] : []),
+    { key: "about", label: t.aboutNav, Icon: InfoIcon },
     { key: "pets", label: t.myPetsNav, Icon: PawIcon },
     { key: "community", label: t.communityNav, Icon: TalkIcon },
     { key: "saju", label: t.sajuNav, Icon: SajuIcon },
@@ -6206,20 +6206,6 @@ function IntroVideo() {
   );
 }
 
-function LogoVideoModal({ open, onClose }) {
-  if (!open) return null;
-  return (
-    <Modal open={open} onClose={onClose} width={720}>
-      <div style={{ textAlign: "center" }}>
-        <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 12, fontFamily: "'Jua',sans-serif" }}>
-          PetGrow와 함께하는 반려생활 🐾
-        </div>
-        <IntroVideo />
-      </div>
-    </Modal>
-  );
-}
-
 // 공식 소셜 채널 링크
 const SOCIAL_LINKS = [
   { id: "youtube", url: "https://www.youtube.com/@petgrow_official", icon: YoutubeIcon, color: "#FF0000" },
@@ -6268,6 +6254,13 @@ function AboutPage({ onStart, onNavigate }) {
           <button className="landing-cta about-fade" style={{ animationDelay: ".28s", fontSize: 17, padding: "18px 46px" }} onClick={onStart}>
             {t.landingCta}
           </button>
+
+          <div className="about-fade" style={{ maxWidth: 620, margin: "26px auto 0", animationDelay: ".36s" }}>
+            <div style={{ textAlign: "center", fontSize: 17, fontWeight: 800, marginBottom: 12, fontFamily: "'Jua',sans-serif" }}>
+              PetGrow와 함께하는 반려생활 🐾
+            </div>
+            <IntroVideo />
+          </div>
 
           <div className="landing-illustration about-fade" style={{ animationDelay: ".46s" }}>
             <div className="paw-badge"><PawIcon style={{ width: 72, height: 72, color: "#3a3a3a" }} /></div>
@@ -7449,7 +7442,6 @@ function AppInner({ lang, setLang }) {
   const [authChecked, setAuthChecked] = useState(false);
   const [accountModalOpen, setAccountModalOpen] = useState(false);
   const [hamOpen, setHamOpen] = useState(false);
-  const [logoVideoOpen, setLogoVideoOpen] = useState(false);
   const [contentSubTab, setContentSubTab] = useState("all");
   const isNativeApp = Capacitor.isNativePlatform();
   const [deleteAccountConfirmOpen, setDeleteAccountConfirmOpen] = useState(false);
@@ -7743,8 +7735,8 @@ function AppInner({ lang, setLang }) {
             {/* PC: 한 줄 상단 메뉴 (900px 이상) */}
             <div className="desktop-nav" style={{ alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                <button type="button" onClick={() => setLogoVideoOpen(true)}
-                  aria-label="PetGrow 브랜드 영상 보기"
+                <button type="button" onClick={() => goView("home")}
+                  aria-label="홈으로 이동"
                   style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0, flexShrink: 0 }}>
                   <PetGrowLogo style={{ width: 24, height: 24 }} />
                   <span style={{ fontSize: 16, fontWeight: 800, fontFamily: "'Jua',sans-serif" }}>
@@ -7752,6 +7744,7 @@ function AppInner({ lang, setLang }) {
                   </span>
                 </button>
                 <nav style={{ display: "flex", alignItems: "center", gap: 2 }}>
+                  {account && <button type="button" className={`desktop-nav-link ${view === "home" ? "active" : ""}`} onClick={() => goView("home")}>{t.hamNavHome}</button>}
                   <button type="button" className={`desktop-nav-link ${view === "about" ? "active" : ""}`} onClick={() => goView("about")}>{t.aboutNav}</button>
                   <button type="button" className={`desktop-nav-link ${view === "pets" ? "active" : ""}`} onClick={() => goView("pets")}>{t.myPetsNav}</button>
                   <button type="button" className={`desktop-nav-link ${view === "community" ? "active" : ""}`} onClick={() => goView("community")}>{t.communityNav}</button>
@@ -7773,8 +7766,8 @@ function AppInner({ lang, setLang }) {
               <button type="button" className="icon-btn" aria-label={t.hamMenuAria} onClick={() => setHamOpen(true)}>
                 <HamburgerIcon style={{ width: 20, height: 20 }} />
               </button>
-              <button type="button" onClick={() => setLogoVideoOpen(true)}
-                aria-label="PetGrow 브랜드 영상 보기"
+              <button type="button" onClick={() => goView("home")}
+                aria-label="홈으로 이동"
                 style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
                 <PetGrowLogo style={{ width: 21, height: 21 }} />
                 <span style={{ fontSize: 15, fontWeight: 800, fontFamily: "'Jua',sans-serif" }}>
@@ -7792,12 +7785,13 @@ function AppInner({ lang, setLang }) {
         {/* 앱(Capacitor 네이티브): 하단 5탭이 내비게이션을 담당하므로 상단은 로고 한 줄만 */}
         {isNativeApp && (
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <button type="button" onClick={() => goView("home")} aria-label="홈으로 이동"
+              style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
               <PetGrowLogo style={{ width: 21, height: 21 }} />
               <span style={{ fontSize: 15, fontWeight: 800, fontFamily: "'Jua',sans-serif" }}>
                 <span style={{ color: "var(--text)" }}>Pet</span><span style={{ color: "var(--primary)" }}>Grow</span>
               </span>
-            </span>
+            </button>
             <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
               <LangToggle lang={lang} onChange={setLang} />
               <AccountButton account={account} onOpen={() => (account ? setAccountModalOpen(true) : goView("pets"))} />
@@ -7909,7 +7903,6 @@ function AppInner({ lang, setLang }) {
       )}
       <HamburgerMenu open={hamOpen} onClose={() => setHamOpen(false)} view={view} onNavigate={goView}
         account={account} onOpenAccount={() => (account ? setAccountModalOpen(true) : goView("pets"))} />
-      <LogoVideoModal open={logoVideoOpen} onClose={() => setLogoVideoOpen(false)} />
       <GuideModal open={guideOpen} onClose={() => setGuideOpen(false)} />
       <ConfirmModal
         open={!!deleteTarget}
