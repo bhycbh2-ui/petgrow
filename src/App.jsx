@@ -1762,9 +1762,9 @@ function UpdateModal({ open, config, onLater }) {
     <Modal open={open} onClose={force ? () => {} : onLater} width={380}>
       <div style={{ textAlign: "center" }}>
         <div style={{ fontSize: 42, lineHeight: 1, marginBottom: 12 }}>🐾</div>
-        <h3 style={{ fontSize: 19, marginBottom: 10 }}>{config.title || "새로운 버전이 출시됐어요"}</h3>
+        <h3 style={{ fontSize: 19, marginBottom: 10 }}>{config.title || "PetGrow 업데이트 안내 🐾"}</h3>
         <p className="bg-sub" style={{ fontSize: 14, lineHeight: 1.7, margin: "0 0 20px" }}>
-          {config.message || "더 안정적인 PetGrow를 위해 최신 버전으로 업데이트해주세요."}
+          {config.message || "더 나은 사용을 위해 새로운 업데이트가 준비되었어요. 최신 버전으로 업데이트해주세요."}
         </p>
         <div style={{ display: "flex", gap: 8 }}>
           {!force && (
