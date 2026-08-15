@@ -3,7 +3,7 @@ import crypto from "crypto";
 import { del as blobDel } from "@vercel/blob";
 import { ensureSchema } from "./db.js";
 
-export const CATEGORIES = ["daily", "brag", "question", "health", "info"];
+export const CATEGORIES = ["daily", "brag", "question", "health", "info", "walk", "training", "shopping", "free"];
 
 function newId() {
   return crypto.randomUUID();
@@ -14,6 +14,7 @@ function newId() {
 function shapePost(row, viewerId, images, likedByMe) {
   return {
     id: row.id,
+    authorNickname: row.author_nickname || "PetGrow 회원",
     isOwner: viewerId ? row.user_id === viewerId : false,
     pet: {
       id: row.pet_id,
@@ -40,6 +41,7 @@ function shapeComment(row, viewerId) {
   return {
     id: row.id,
     postId: row.post_id,
+    authorNickname: row.author_nickname || "PetGrow 회원",
     isOwner: viewerId ? row.user_id === viewerId : false,
     pet: { id: row.pet_id, name: row.pet_name, photo: row.pet_photo },
     content: row.content,
@@ -82,22 +84,24 @@ export async function listPosts({ category, sort, search, page, pageSize, viewer
   let rows;
   if (sort === "popular") {
     ({ rows } = await sql`
-      select * from pg_posts
-      where is_hidden = false
-        and (is_public = true or (${viewerId}::text is not null and user_id = ${viewerId}))
-        and (${cat}::text is null or category = ${cat})
-        and (${term}::text is null or title ilike ${term} or content ilike ${term})
-      order by like_count desc, created_at desc
+      select p.*, u.nickname as author_nickname from pg_posts p
+      join pg_users u on u.id = p.user_id
+      where p.is_hidden = false
+        and (p.is_public = true or (${viewerId}::text is not null and p.user_id = ${viewerId}))
+        and (${cat}::text is null or p.category = ${cat})
+        and (${term}::text is null or p.title ilike ${term} or p.content ilike ${term})
+      order by p.like_count desc, p.created_at desc
       limit ${size + 1} offset ${offset}
     `);
   } else {
     ({ rows } = await sql`
-      select * from pg_posts
-      where is_hidden = false
-        and (is_public = true or (${viewerId}::text is not null and user_id = ${viewerId}))
-        and (${cat}::text is null or category = ${cat})
-        and (${term}::text is null or title ilike ${term} or content ilike ${term})
-      order by created_at desc
+      select p.*, u.nickname as author_nickname from pg_posts p
+      join pg_users u on u.id = p.user_id
+      where p.is_hidden = false
+        and (p.is_public = true or (${viewerId}::text is not null and p.user_id = ${viewerId}))
+        and (${cat}::text is null or p.category = ${cat})
+        and (${term}::text is null or p.title ilike ${term} or p.content ilike ${term})
+      order by p.created_at desc
       limit ${size + 1} offset ${offset}
     `);
   }
@@ -114,7 +118,12 @@ export async function listPosts({ category, sort, search, page, pageSize, viewer
 
 export async function getPostById(id, viewerId) {
   await ensureSchema();
-  const { rows } = await sql`select * from pg_posts where id = ${id} and is_hidden = false and (is_public = true or (${viewerId}::text is not null and user_id = ${viewerId}))`;
+  const { rows } = await sql`
+    select p.*, u.nickname as author_nickname from pg_posts p
+    join pg_users u on u.id = p.user_id
+    where p.id = ${id} and p.is_hidden = false
+      and (p.is_public = true or (${viewerId}::text is not null and p.user_id = ${viewerId}))
+  `;
   if (!rows[0]) return null;
   const [imgMap, liked] = await Promise.all([imagesForPosts([id]), likedPostIds(viewerId, [id])]);
   return shapePost(rows[0], viewerId, imgMap[id], liked.has(id));
@@ -211,7 +220,9 @@ export async function listComments(postId, viewerId) {
   `;
   if (!post.rows[0]) return [];
   const { rows } = await sql`
-    select * from pg_comments where post_id = ${postId} and is_hidden = false order by created_at asc
+    select c.*, u.nickname as author_nickname from pg_comments c
+    join pg_users u on u.id = c.user_id
+    where c.post_id = ${postId} and c.is_hidden = false order by c.created_at asc
   `;
   return rows.map((r) => shapeComment(r, viewerId));
 }
@@ -229,7 +240,11 @@ export async function addComment({ postId, userId, pet, content }) {
     values (${id}, ${postId}, ${userId}, ${pet?.id || null}, ${pet?.name || "PetGrow"}, ${pet?.photo || null}, ${content})
   `;
   await sql`update pg_posts set comment_count = comment_count + 1 where id = ${postId}`;
-  const { rows } = await sql`select * from pg_comments where id = ${id}`;
+  const { rows } = await sql`
+    select c.*, u.nickname as author_nickname from pg_comments c
+    join pg_users u on u.id = c.user_id
+    where c.id = ${id}
+  `;
   return shapeComment(rows[0], userId);
 }
 
@@ -263,8 +278,10 @@ export async function getMyPosts(userId, page, pageSize) {
   const p = Math.max(1, page || 1);
   const size = Math.min(30, Math.max(1, pageSize || 10));
   const { rows } = await sql`
-    select * from pg_posts where user_id = ${userId}
-    order by created_at desc limit ${size + 1} offset ${(p - 1) * size}
+    select p.*, u.nickname as author_nickname from pg_posts p
+    join pg_users u on u.id = p.user_id
+    where p.user_id = ${userId}
+    order by p.created_at desc limit ${size + 1} offset ${(p - 1) * size}
   `;
   const hasMore = rows.length > size;
   const pageRows = rows.slice(0, size);
@@ -278,8 +295,9 @@ export async function getMyComments(userId, page, pageSize) {
   const p = Math.max(1, page || 1);
   const size = Math.min(30, Math.max(1, pageSize || 10));
   const { rows } = await sql`
-    select c.*, p.title as post_title from pg_comments c
+    select c.*, p.title as post_title, u.nickname as author_nickname from pg_comments c
     join pg_posts p on p.id = c.post_id
+    join pg_users u on u.id = c.user_id
     where c.user_id = ${userId} and (p.is_public = true or p.user_id = ${userId})
     order by c.created_at desc limit ${size + 1} offset ${(p - 1) * size}
   `;
@@ -296,7 +314,9 @@ export async function getMyLikedPosts(userId, page, pageSize) {
   const p = Math.max(1, page || 1);
   const size = Math.min(30, Math.max(1, pageSize || 10));
   const { rows } = await sql`
-    select p.* from pg_likes l join pg_posts p on p.id = l.post_id
+    select p.*, u.nickname as author_nickname from pg_likes l
+    join pg_posts p on p.id = l.post_id
+    join pg_users u on u.id = p.user_id
     where l.user_id = ${userId} and p.is_hidden = false and (p.is_public = true or p.user_id = ${userId})
     order by l.created_at desc limit ${size + 1} offset ${(p - 1) * size}
   `;

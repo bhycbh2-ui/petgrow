@@ -18,6 +18,8 @@ export default async function handler(req, res) {
   authorizeUrl.searchParams.set("redirect_uri", redirectUri);
   authorizeUrl.searchParams.set("response_type", "code");
   authorizeUrl.searchParams.set("state", state);
+  // 저장된 카카오 계정이 여러 개여도 사용자가 원하는 계정을 다시 선택할 수 있게 해요.
+  authorizeUrl.searchParams.set("prompt", "select_account");
 
   res.setHeader("Set-Cookie", [
     `${OAUTH_STATE_COOKIE}=${state}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=600`,

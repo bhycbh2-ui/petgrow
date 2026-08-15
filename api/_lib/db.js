@@ -150,6 +150,18 @@ export async function getUserById(id) {
   return rows[0] || null;
 }
 
+export async function updateUserNickname(id, nickname) {
+  await ensureSchema();
+  const clean = String(nickname || "").trim();
+  if (clean.length < 2 || clean.length > 20) throw new Error("invalid nickname");
+  const { rows } = await sql`
+    update pg_users set nickname = ${clean}
+    where id = ${id}
+    returning *
+  `;
+  return rows[0] || null;
+}
+
 export async function deleteUser(id) {
   await ensureSchema();
   // Pet톡에 올린 이미지(Vercel Blob)는 DB 삭제로 자동 정리되지 않으므로 먼저 지워요.
