@@ -172,8 +172,8 @@ const STRINGS = {
     hamCloseAria: "메뉴 닫기",
     hamNavHome: "홈",
     aboutNav: "소개",
-    hamNavMy: "회원정보",
-    hamNavSettings: "정보 수정",
+    hamNavMy: "MY",
+    hamNavSettings: "설정",
     appTabPetInfo: "Pet정보",
     appTabPetContent: "Pet콘텐츠",
     contentTabAll: "전체",
@@ -306,7 +306,7 @@ const STRINGS = {
     sajuComingSoon: "곧 만나요! 준비 중이에요",
     sajuRestartBtn: "다시 보기",
     sajuDisclaimer: "재미로 보는 PetGrow 콘텐츠예요 🐾 실제 성격이나 미래를 판단하는 자료가 아니에요.",
-    tipCategoryLabels: { all: "전체보기", dog: "강아지", cat: "고양이", health: "건강", life: "생활", food: "식단·영양", training: "훈련", safety: "안전", grooming: "미용·위생" },
+    tipCategoryLabels: { all: "전체보기", dog: "강아지", cat: "고양이", health: "건강", life: "생활" },
     privacyFooterLink: "개인정보처리방침",
     guideSections: [
       { title: "1. 아이 등록하기", body: "이름·품종·생년월일·현재 체중을 입력하면 예상 성체 체중과 성장 그래프가 바로 나와요. 대표 사진도 등록할 수 있어요." },
@@ -573,12 +573,12 @@ const STRINGS = {
     communityMyEmptyPosts: "아직 작성한 글이 없어요.",
     communityMyEmptyComments: "아직 작성한 댓글이 없어요.",
     communityMyEmptyLikes: "아직 좋아요한 글이 없어요.",
-    myPageTitle: "회원정보",
+    myPageTitle: "MY",
     myPageAccountTitle: "내 계정",
     myPagePetsTitle: "등록한 우리 아이",
     myPagePetsCount: (n) => `${n}마리`,
     myPageActivityTitle: "Pet톡 내 활동",
-    myPageSettingsBtn: "정보 수정",
+    myPageSettingsBtn: "계정 설정",
     myPageManagePetsBtn: "우리 아이 관리",
     communityImageTooMany: "사진은 최대 5장까지 등록할 수 있어요.",
     communityImageInvalidType: "JPG, PNG, WebP 형식의 사진만 등록할 수 있어요.",
@@ -683,8 +683,8 @@ const STRINGS = {
     landingMockPost1Text: "오늘 산책하다가 친구를 만났어요 🐾",
     landingMockPost2Name: "나비", landingMockPost2Breed: "코리안숏헤어", landingMockPost2Time: "1시간 전",
     landingMockPost2Text: "창가에서 낮잠 자는 중... 방해 금지 🐱",
-    landingTipsGuideTitle: "Pet꿀팁",
-    landingTipsGuideDesc: "건강·식단·행동·성장·생활부터 훈련·안전·미용까지, 반려생활에 바로 활용할 수 있는 Pet꿀팁을 모아봤어요.",
+    landingTipsGuideTitle: "Pet꿀팁 · Pet가이드",
+    landingTipsGuideDesc: "건강·식단·행동·성장·생활 꿀팁 50가지와, PetGrow를 처음부터 끝까지 안내하는 Pet가이드도 준비되어 있어요.",
     landingTipsTeaserLabel: "Pet꿀팁 보러가기",
     landingGuideTeaserLabel: "Pet가이드 보러가기",
     landingFinalCtaLine1: "우리 아이와 함께한 오늘,",
@@ -845,7 +845,7 @@ const STRINGS = {
     sajuComingSoon: "Coming soon!",
     sajuRestartBtn: "Try again",
     sajuDisclaimer: "A fun PetGrow feature 🐾 not a real assessment of personality or the future.",
-    tipCategoryLabels: { all: "All", dog: "Dogs", cat: "Cats", health: "Health", life: "Lifestyle", food: "Food & Nutrition", training: "Training", safety: "Safety", grooming: "Grooming" },
+    tipCategoryLabels: { all: "All", dog: "Dogs", cat: "Cats", health: "Health", life: "Lifestyle" },
     privacyFooterLink: "Privacy Policy",
     guideSections: [
       { title: "1. Register your pet", body: "Enter a name, breed, birth date, and current weight to instantly see the predicted adult weight and growth chart. You can add a profile photo too." },
@@ -1840,11 +1840,11 @@ const PRIVACY_SECTIONS_KO = [
   { title: "13. 회원탈퇴 및 계정 삭제", body: "회원은 언제든지 PetGrow의 계정 또는 설정 메뉴에서 회원탈퇴를 요청할 수 있습니다. 탈퇴 완료 시 법령상 별도 보관 의무가 있는 경우를 제외하고 계정과 연결된 개인정보 및 서비스 데이터를 삭제합니다.\n\n계정 삭제 안내: https://www.petgrow.co.kr/delete-account" },
   { title: "14. 아동의 개인정보", body: "PetGrow는 아동의 개인정보를 의도적으로 수집하는 것을 목적으로 하지 않습니다. 향후 아동을 대상으로 하는 기능을 제공하거나 아동의 개인정보를 처리하게 되는 경우 관련 법령 및 앱 마켓 정책에서 요구하는 보호조치를 적용합니다." },
   { title: "15. 개인정보의 안전성 확보조치", body: "PetGrow는 인증정보 및 비밀키 보호, 사용자별 데이터 접근권한 제한, 불필요한 접근 최소화, 서비스 보안 점검 등 합리적으로 필요한 기술적·관리적 보호조치를 적용하도록 노력합니다." },
-  { title: "16. Pet톡(커뮤니티) 서비스와 개인정보", body: "PetGrow는 회원 간 반려동물 정보를 공유하는 커뮤니티 기능 'Pet톡'을 제공합니다. Pet톡 이용과 관련하여 다음 정보가 처리됩니다.\n- 게시글, 댓글, 좋아요 및 신고 내역\n- 게시글에 첨부한 사진(최대 5장)\n- 게시글·댓글에 표시되는 반려동물 정보(반려동물 이름, 품종, 생년월일 기반 나이, 프로필 사진)\n\n회원의 카카오 식별정보, 이메일 등 회원 개인정보는 다른 회원에게 공개되지 않습니다. Pet톡에는 회원이 직접 설정한 닉네임과, 게시글 작성 시 선택한 반려동물의 이름·품종·나이·프로필 사진이 표시될 수 있습니다. 작성자는 게시글 상세 화면에서 게시글을 공개 또는 비공개로 전환할 수 있으며, 비공개 게시글은 작성자 본인에게만 제공됩니다. 게시글 작성자 본인 여부는 서버에서만 확인하며 다른 회원에게 노출되지 않습니다." },
+  { title: "16. Pet톡(커뮤니티) 서비스와 개인정보", body: "PetGrow는 회원 간 반려동물 정보를 공유하는 커뮤니티 기능 'Pet톡'을 제공합니다. Pet톡 이용과 관련하여 다음 정보가 처리됩니다.\n- 게시글, 댓글, 좋아요 및 신고 내역\n- 게시글에 첨부한 사진(최대 5장)\n- 게시글·댓글에 표시되는 반려동물 정보(반려동물 이름, 품종, 생년월일 기반 나이, 프로필 사진)\n\n회원의 카카오 식별정보, 이메일 등 회원 개인정보는 다른 회원에게 공개되지 않으며, Pet톡에는 회원이 선택한 반려동물의 이름·품종·나이·프로필 사진만 표시됩니다. 작성자는 게시글 상세 화면에서 게시글을 공개 또는 비공개로 전환할 수 있으며, 비공개 게시글은 작성자 본인에게만 제공됩니다. 게시글 작성자 본인 여부는 서버에서만 확인하며 다른 회원에게 노출되지 않습니다." },
   { title: "17. Pet톡 게시물의 보유기간 및 삭제", body: "Pet톡의 게시글·댓글·좋아요·신고 내역은 게시글/댓글이 삭제되거나 회원이 탈퇴할 때까지 보유됩니다. 회원은 본인이 작성한 게시글과 댓글을 언제든지 직접 삭제할 수 있습니다. 회원탈퇴 시 해당 회원이 작성한 모든 게시글·댓글·좋아요 기록은 즉시 삭제되며, 첨부된 사진 파일도 함께 삭제됩니다. 신고 내역은 신고한 회원이 탈퇴하는 경우 함께 삭제됩니다.\n\nPetGrow는 신고된 게시물에 대해 운영자가 확인 후 게시글·댓글을 숨기거나 삭제할 수 있습니다." },
   { title: "18. Pet톡 이미지 저장", body: "Pet톡에 첨부하는 사진은 Vercel Blob(파일 저장 서비스)에 저장되며, 데이터베이스에는 사진의 저장 위치(URL)만 저장됩니다. 업로드 시 허용된 이미지 형식(JPG/PNG/WebP) 및 용량 제한이 적용되며, 게시글이 삭제되면 저장된 사진 파일도 함께 삭제됩니다." },
   { title: "19. 개인정보 관련 문의", body: "서비스명: PetGrow\n문의 이메일: help.petgrow@gmail.com" },
-  { title: "20. 개인정보처리방침의 변경", body: "서비스 기능, 개인정보 처리 방식, 외부 서비스 또는 관련 법령·정책 변경에 따라 본 개인정보처리방침이 변경될 수 있습니다. 중요한 변경사항은 PetGrow 웹사이트 또는 애플리케이션을 통해 안내합니다.\n\n최종 업데이트: 2026년 8월 16일\n시행일: 2026년 8월 16일" },
+  { title: "20. 개인정보처리방침의 변경", body: "서비스 기능, 개인정보 처리 방식, 외부 서비스 또는 관련 법령·정책 변경에 따라 본 개인정보처리방침이 변경될 수 있습니다. 중요한 변경사항은 PetGrow 웹사이트 또는 애플리케이션을 통해 안내합니다.\n\n최종 업데이트: 2026년 8월 15일\n시행일: 2026년 8월 15일" },
 ];
 const PRIVACY_SECTIONS_EN = [
   { title: "1. Purpose of Processing", body: "PetGrow may process personal information to the extent necessary for: member identification and account management via Kakao Login; keeping you logged in; storing and syncing pet information across devices; saving and re-viewing results such as PetBTI; customer support; improving service stability and quality; delivering ads and measuring ad performance; preventing fraud; and processing account deletion and related data removal." },
@@ -1862,11 +1862,11 @@ const PRIVACY_SECTIONS_EN = [
   { title: "13. Account Withdrawal and Deletion", body: "You may request account withdrawal at any time from PetGrow's account/settings menu. Upon completion, personal information and service data linked to the account are deleted except where separate retention is legally required.\n\nAccount deletion info: https://www.petgrow.co.kr/delete-account" },
   { title: "14. Children's Personal Information", body: "PetGrow does not intend to intentionally collect children's personal information. If PetGrow offers features aimed at children or processes children's personal information in the future, it will apply the protective measures required by applicable law and app marketplace policy." },
   { title: "15. Security Measures", body: "PetGrow strives to apply reasonably necessary technical and managerial safeguards, including protecting authentication credentials and secret keys, limiting per-user data access, minimizing unnecessary access, and conducting security checks." },
-  { title: "16. Pet Talk (Community) and Personal Information", body: "PetGrow provides 'Pet Talk,' a community feature for sharing pet information between members. The following is processed in connection with Pet Talk:\n- Posts, comments, likes, and reports\n- Photos attached to posts (up to 5 per post)\n- Pet information shown on posts/comments (pet name, breed, age derived from birth date, profile photo)\n\nA member's Kakao identifier, email, and other personal information are never shown to other members. Pet Talk may show the nickname chosen by the member together with the name, breed, age, and profile photo of the pet selected for the post. Authors can switch their own post between public and private on the post detail screen; private posts are available only to the author. Whether a member is the author of a post is checked only on the server and is never exposed to other members." },
+  { title: "16. Pet Talk (Community) and Personal Information", body: "PetGrow provides 'Pet Talk,' a community feature for sharing pet information between members. The following is processed in connection with Pet Talk:\n- Posts, comments, likes, and reports\n- Photos attached to posts (up to 5 per post)\n- Pet information shown on posts/comments (pet name, breed, age derived from birth date, profile photo)\n\nA member's Kakao identifier, email, and other personal information are never shown to other members. Only the name, breed, age, and profile photo of the pet the member chooses are shown on Pet Talk. Authors can switch their own post between public and private on the post detail screen; private posts are available only to the author. Whether a member is the author of a post is checked only on the server and is never exposed to other members." },
   { title: "17. Retention and Deletion of Pet Talk Content", body: "Posts, comments, likes, and reports on Pet Talk are retained until the post/comment is deleted or the member withdraws. Members can delete their own posts and comments at any time. Upon account withdrawal, all posts, comments, and likes by that member are deleted immediately, along with any attached photo files. Report records are deleted if the reporting member withdraws.\n\nPetGrow may hide or delete reported posts/comments after operator review." },
   { title: "18. Pet Talk Image Storage", body: "Photos attached to Pet Talk posts are stored in Vercel Blob (a file storage service); only the storage location (URL) is stored in the database. Uploads are restricted to allowed image formats (JPG/PNG/WebP) and a size limit, and stored photo files are deleted when a post is deleted." },
   { title: "19. Contact", body: "Service: PetGrow\nContact email: help.petgrow@gmail.com" },
-  { title: "20. Changes to This Policy", body: "This policy may change due to changes in service features, how personal information is processed, external services, or applicable laws/policies. Material changes will be announced via the PetGrow website or app.\n\nLast updated: August 16, 2026\nEffective date: August 16, 2026" },
+  { title: "20. Changes to This Policy", body: "This policy may change due to changes in service features, how personal information is processed, external services, or applicable laws/policies. Material changes will be announced via the PetGrow website or app.\n\nLast updated: August 15, 2026\nEffective date: August 15, 2026" },
 ];
 
 const TERMS_SECTIONS_KO = [
@@ -1880,7 +1880,6 @@ const TERMS_SECTIONS_KO = [
   { title: "제8조 (데이터 저장 및 동기화)", body: "로그인 회원이 등록한 반려동물 정보와 일부 서비스 결과는 회원 계정에 연결하여 서버 또는 클라우드 저장소에 저장될 수 있습니다. 따라서 서비스 내에서 '이 기기에만 저장', '이 브라우저에만 저장'되는 것으로 안내하지 않습니다. 동일한 카카오 계정으로 로그인하면 지원되는 다른 기기 또는 웹 환경에서 저장된 정보를 불러올 수 있습니다. 다만 카카오 간편로그인 도입 이전의 기존 로컬 데이터는 별도의 이전 절차가 적용될 수 있습니다." },
   { title: "제9조 (이용자의 의무)", body: "이용자는 타인의 계정·정보 도용, 시스템의 정상 운영 방해, 취약점 악용, 불법적인 데이터 수집, PetGrow 또는 제3자의 권리 침해, 관계 법령 위반 등의 행위를 해서는 안 됩니다." },
   { title: "제10조 (서비스 이용 제한)", body: "이용자가 본 약관 또는 관계 법령을 위반하거나 서비스의 안정적인 운영을 방해하는 경우 PetGrow는 필요한 범위에서 서비스 이용을 제한하거나 이용계약을 해지할 수 있습니다." },
-  { title: "제10조의2 (Pet톡 닉네임 및 공개정보)", body: "회원은 계정의 회원정보 수정 기능에서 Pet톡에 표시할 닉네임을 설정·변경할 수 있습니다. Pet톡 게시글 및 댓글에는 회원이 설정한 닉네임과 선택한 반려동물의 일부 정보가 표시될 수 있습니다. 카카오 계정의 고유 식별정보나 로그인 정보는 다른 회원에게 공개되지 않습니다." },
   { title: "제11조 (회원탈퇴 및 이용계약 해지)", body: "회원은 언제든지 서비스 내 회원탈퇴 기능을 통해 이용계약을 해지할 수 있습니다. 회원탈퇴가 완료되면 관계 법령에 따라 별도로 보관해야 하는 정보가 있는 경우를 제외하고 회원계정 및 계정과 연결된 개인정보와 저장정보를 삭제합니다." },
   { title: "제12조 (반려동물 관련 정보 및 계산 결과)", body: "PetGrow의 성장 예상, 체중 계산 및 기타 반려동물 관련 정보는 일반적인 자료와 이용자가 입력한 정보를 기반으로 제공되는 참고용 정보이며 실제 결과를 보장하지 않습니다." },
   { title: "제13조 (건강 관련 정보)", body: "PetGrow에서 제공하는 건강, 식단, 영양 및 관리 정보는 일반적인 참고정보이며 수의사의 진료, 진단 또는 처방을 대신하지 않습니다. 반려동물에게 이상 증상이나 응급상황이 있는 경우 수의사 또는 동물병원의 진료를 받아야 합니다." },
@@ -1895,7 +1894,7 @@ const TERMS_SECTIONS_KO = [
   { title: "제22조 (서비스 변경 및 종료)", body: "PetGrow는 서비스 개선이나 기술적·운영상 필요에 따라 서비스의 전부 또는 일부를 변경할 수 있습니다. 중요한 변경 또는 서비스 종료가 예정된 경우 가능한 범위에서 사전에 안내합니다." },
   { title: "제23조 (책임의 제한)", body: "천재지변, 통신장애, 카카오 인증 서비스 장애 또는 PetGrow가 합리적으로 통제하기 어려운 사유로 서비스 이용에 문제가 발생한 경우 관련 법령에서 허용하는 범위에서 책임이 제한될 수 있습니다. 본 조는 관련 법령상 PetGrow가 부담해야 하는 책임을 부당하게 배제하는 것으로 해석되지 않습니다." },
   { title: "제24조 (분쟁 해결 및 준거법)", body: "본 약관은 대한민국 법령을 준거법으로 합니다. PetGrow와 이용자 사이에 분쟁이 발생하는 경우 상호 원만한 해결을 위해 노력하며 관할법원은 관계 법령에서 정하는 바에 따릅니다." },
-  { title: "부칙", body: "본 약관은 2026년 8월 16일부터 시행합니다.\n최종 업데이트: 2026년 8월 16일" },
+  { title: "부칙", body: "본 약관은 2026년 8월 15일부터 시행합니다.\n최종 업데이트: 2026년 8월 15일" },
 ];
 const TERMS_SECTIONS_EN = [
   { title: "Article 1 (Purpose)", body: "These Terms set out the conditions of use for the website, mobile application, and related services provided by PetGrow, and the rights, obligations, and responsibilities of PetGrow and users." },
@@ -1904,11 +1903,10 @@ const TERMS_SECTIONS_EN = [
   { title: "Article 4 (Membership and Service Agreement)", body: "A service agreement may be formed once a user completes an authentication procedure provided by PetGrow (such as Kakao Login) and agrees to the required terms and personal-information procedures." },
   { title: "Article 5 (Kakao Login)", body: "① PetGrow may provide Kakao Login, using Kakao's external authentication service, for member convenience.\n② Members may log in to PetGrow using their Kakao account.\n③ Login may be temporarily limited due to Kakao service outages, policy changes, or the status of a user's Kakao account.\n④ Kakao's own Terms of Service and Privacy Policy may apply to the Kakao authentication service itself." },
   { title: "Article 6 (Account and Login Session Management)", body: "Members must securely manage their own Kakao account. PetGrow's core features may be provided to logged-in members, and account data stored on the server is not deleted upon logout. Logging in again with the same Kakao account lets you retrieve your saved information." },
-  { title: "Article 7 (Provision of Service)", body: "PetGrow may provide services including registering/managing pets, growth prediction and growth info, basic Pet Saju, Daily Pet Fortune, Guardian Compatibility, PetBTI, Pet Tips, the Pet Talk community, member-info/nickname/activity management, and per-account data storage and cross-device sync." },
+  { title: "Article 7 (Provision of Service)", body: "PetGrow may provide services including registering/managing pets, growth prediction and growth info, Saju, PetBTI, Pet Tips, the info guide, Pet Talk community, MY account/activity management, and per-account data storage and cross-device sync." },
   { title: "Article 8 (Data Storage and Sync)", body: "Pet information and certain service results registered by a logged-in member may be stored on our servers or cloud storage, linked to the member's account. Accordingly, the service does not describe data as being stored 'only on this device' or 'only in this browser.' Logging in with the same Kakao account lets you retrieve saved information on other supported devices or the web. Local data predating Kakao Login may be subject to a separate migration process." },
   { title: "Article 9 (User Obligations)", body: "Users must not impersonate or misuse another person's account or information, interfere with normal system operation, exploit vulnerabilities, unlawfully collect data, infringe the rights of PetGrow or third parties, or violate applicable law." },
   { title: "Article 10 (Restriction of Service Use)", body: "If a user violates these Terms or applicable law, or interferes with the stable operation of the service, PetGrow may restrict use of the service or terminate the service agreement to the necessary extent." },
-  { title: "Article 10-2 (Pet Talk Nickname and Public Information)", body: "Members may set or change the nickname displayed on Pet Talk from the member-info editing feature. Pet Talk posts and comments may display the member-selected nickname together with some information about the selected pet. Kakao account identifiers and login credentials are not disclosed to other members." },
   { title: "Article 11 (Withdrawal and Termination)", body: "Members may terminate the service agreement at any time via the in-service account withdrawal feature. Upon completion, the member account and connected personal information and stored data are deleted, except for information that must be separately retained under applicable law." },
   { title: "Article 12 (Pet-Related Information and Calculated Results)", body: "PetGrow's growth predictions, weight calculations, and other pet-related information are reference information based on general data and information entered by the user, and do not guarantee actual outcomes." },
   { title: "Article 13 (Health-Related Information)", body: "Health, diet, nutrition, and care information provided by PetGrow is general reference information and does not replace examination, diagnosis, or treatment by a veterinarian. If your pet shows abnormal symptoms or an emergency, please see a veterinarian or animal hospital." },
@@ -1923,7 +1921,7 @@ const TERMS_SECTIONS_EN = [
   { title: "Article 22 (Changes to and Discontinuation of Service)", body: "PetGrow may change all or part of the service for improvement or operational/technical reasons. Where a material change or discontinuation is planned, PetGrow will provide advance notice where reasonably possible." },
   { title: "Article 23 (Limitation of Liability)", body: "Where an issue arises from force majeure, communication failure, a Kakao authentication service outage, or a cause PetGrow cannot reasonably control, PetGrow's liability may be limited to the extent permitted by applicable law. This article shall not be construed as unfairly excluding liability that PetGrow must bear under applicable law." },
   { title: "Article 24 (Dispute Resolution and Governing Law)", body: "These Terms are governed by the laws of the Republic of Korea. PetGrow and users will make good-faith efforts to resolve disputes amicably, and jurisdiction follows applicable law." },
-  { title: "Addendum", body: "These Terms take effect on August 16, 2026.\nLast updated: August 16, 2026." },
+  { title: "Addendum", body: "These Terms take effect on August 15, 2026.\nLast updated: August 15, 2026." },
 ];
 
 function LegalContent({ title, intro, sections, contactExtra, showLogo = false }) {
@@ -2065,6 +2063,7 @@ function HamburgerMenu({ open, onClose, view, onNavigate, onOpenAccount, account
     { key: "saju", label: t.sajuNav, Icon: SajuIcon },
     { key: "petbti", label: t.petBtiNav, Icon: PetBtiIcon },
     { key: "tips", label: t.tipsTitle, Icon: LightbulbIcon },
+    { key: "guide", label: t.infoGuideTitle, Icon: HelpIcon },
   ];
 
   return (
@@ -2104,8 +2103,7 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
   const [nickname, setNickname] = useState(account?.name || "");
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState("");
-  const [savedOpen, setSavedOpen] = useState(false);
-  useEffect(() => { setNickname(account?.name || ""); setMsg(""); setSavedOpen(false); }, [account?.name, open]);
+  useEffect(() => { setNickname(account?.name || ""); setMsg(""); }, [account?.name, open]);
   const saveNickname = async () => {
     const clean = nickname.trim();
     if (clean.length < 2 || clean.length > 20) { setMsg(t.accountNicknameError); return; }
@@ -2114,15 +2112,12 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
       const data = await apiUpdateNickname(clean);
       onNicknameUpdated?.(data.name || clean);
       setMsg(t.accountNicknameSaved);
-      setSavedOpen(true);
     } catch { setMsg(t.accountNicknameError); }
     setSaving(false);
   };
   return (
-    <>
     <Modal open={open} onClose={onClose} width={380}>
-      <button type="button" onClick={onClose} aria-label="닫기" style={{ position: "absolute", right: 16, top: 14, border: 0, background: "transparent", fontSize: 26, lineHeight: 1, cursor: "pointer", color: "var(--sub)" }}>×</button>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18, paddingRight: 30 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18 }}>
         <UserIcon style={{ width: 20, height: 20, color: "var(--primary)" }} />
         <h3 style={{ fontSize: 18 }}>{t.accountSettingsTitle}</h3>
       </div>
@@ -2147,8 +2142,6 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
         <button type="button" className="bg-btn bg-btn-ghost" style={{ color: "#C0392B" }} onClick={onRequestDelete}>{t.accountDeleteBtn}</button>
       </div>
     </Modal>
-    <AlertModal open={savedOpen} message={t.accountNicknameSaved} onClose={() => setSavedOpen(false)} />
-    </>
   );
 }
 
@@ -2721,17 +2714,6 @@ const GlobalStyle = () => (
     .combobox-item{padding:9px 12px; font-size:14px; cursor:pointer;}
     .combobox-item:hover, .combobox-item.active{background:var(--surface);}
     @media (max-width:680px){ .bg-grid-2{grid-template-columns:1fr !important;} }
-
-/* 2026-08-16 contextual page guide + member menu refresh */
-.menu-help-fab{position:fixed;right:22px;bottom:24px;z-index:1150;width:42px;height:42px;border-radius:50%;border:1px solid rgba(74,139,58,.16);background:#fff;color:var(--primary);font-weight:900;font-size:18px;box-shadow:0 10px 28px rgba(40,70,35,.16);cursor:pointer;transition:transform .2s ease,box-shadow .2s ease}.menu-help-fab:hover{transform:translateY(-2px) rotate(-4deg);box-shadow:0 14px 34px rgba(40,70,35,.2)}
-.menu-help-dim{position:fixed;inset:0;background:rgba(28,35,29,.08);backdrop-filter:blur(1px);z-index:1190;opacity:0;pointer-events:none;transition:opacity .28s ease}.menu-help-dim.open{opacity:1;pointer-events:auto}
-.menu-help-coach{position:fixed;right:20px;top:92px;width:min(360px,calc(100vw - 40px));z-index:1200;background:linear-gradient(145deg,#fffdf8,#f5fbf2);border:1px solid rgba(95,144,78,.14);border-radius:26px;padding:22px;box-shadow:0 24px 60px rgba(46,67,43,.2);transform:translateX(calc(100% + 45px));opacity:0;pointer-events:none;transition:transform .42s cubic-bezier(.2,.8,.2,1),opacity .3s ease}.menu-help-coach.open{transform:translateX(0);opacity:1;pointer-events:auto}.menu-help-top{display:flex;justify-content:space-between;align-items:center}.menu-help-emoji{display:grid;place-items:center;width:54px;height:54px;border-radius:18px;background:linear-gradient(135deg,#fff1dc,#f0e7ff);font-size:27px;animation:pgFloat 2.8s ease-in-out infinite}.menu-help-close{width:34px;height:34px;border:0;border-radius:50%;background:#f1f3ee;color:#71786d;font-size:23px;cursor:pointer}.menu-help-kicker{margin-top:16px;font-size:10px;letter-spacing:.16em;font-weight:900;color:#7ca76d}.menu-help-coach h3{font-size:22px;margin:5px 0 7px;font-family:'Jua','Gowun Dodum','Noto Sans KR',sans-serif}.menu-help-coach p{font-size:13px;line-height:1.75;color:var(--sub);margin:0}.menu-help-actions{display:flex;gap:8px;margin-top:18px}.menu-help-actions button{border:0;border-radius:13px;padding:11px 13px;font-size:12px;font-weight:800;cursor:pointer}.menu-help-secondary{flex:1;background:#f1f3ee;color:#60685d}.menu-help-primary{background:var(--primary);color:#fff;min-width:74px}
-.my-page-head{display:flex;justify-content:space-between;align-items:center;padding:22px 24px;margin-bottom:16px;border-radius:26px;background:linear-gradient(135deg,#f4fbef,#fff8ea);overflow:hidden;position:relative}.my-page-head:after{content:'';position:absolute;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.55);right:-35px;top:-46px}.my-page-head h1{font-size:24px;margin:3px 0 5px}.my-page-head p{font-size:13px;color:var(--sub);margin:0}.my-page-kicker{font-size:10px;letter-spacing:.14em;font-weight:900;color:#74a660}.my-page-head-icon{font-size:44px;position:relative;z-index:1;animation:pgFloat 3.1s ease-in-out infinite}.my-menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}.my-menu-card{border:0;border-radius:20px;padding:16px;text-align:left;display:flex;align-items:center;gap:11px;cursor:pointer;color:var(--text);animation:pgCardIn .48s both;transition:transform .2s ease,box-shadow .2s ease}.my-menu-card:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(60,70,55,.10)}.my-menu-mint{background:#edf8ef}.my-menu-pink{background:#fff0f3}.my-menu-blue{background:#edf5ff}.my-menu-purple{background:#f4efff}.my-menu-card-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.72);font-size:21px;flex:0 0 auto}.my-menu-card-copy{display:flex;flex-direction:column;min-width:0;flex:1}.my-menu-card-copy strong{font-size:14px}.my-menu-card-copy small{font-size:11px;color:var(--sub);line-height:1.45;margin-top:3px}.my-menu-card-arrow{font-size:23px;color:#8b9488}.my-member-summary,.my-activity-card{border:1px solid rgba(80,120,72,.08)}
-@keyframes pgCardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pgFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-@media(max-width:700px){.menu-help-fab{right:16px;bottom:92px;width:40px;height:40px}.menu-help-coach{top:auto;right:0;bottom:0;width:100%;max-width:none;border-radius:26px 26px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom));transform:translateY(calc(100% + 30px))}.menu-help-coach.open{transform:translateY(0)}.menu-help-actions{flex-direction:column-reverse}.menu-help-primary{width:100%}.my-menu-grid{grid-template-columns:1fr}.my-menu-card{padding:15px}.my-page-head{padding:19px 18px}.my-page-head h1{font-size:22px}}
-@media(prefers-reduced-motion:reduce){.menu-help-coach,.menu-help-fab,.my-menu-card,.menu-help-emoji,.my-page-head-icon{animation:none!important;transition:none!important}}
-
   `}</style>
 );
 
@@ -4285,179 +4267,17 @@ const TIPS_DATA = [
     title: { ko: "매일 짧게라도, 온전히 함께하는 시간", en: "A few focused minutes together, every day" },
     summary: { ko: "짧더라도 매일 온전히 집중해주는 시간이 유대감 형성에 큰 도움이 돼요.", en: "Even a short daily block of undivided attention does a lot for your bond." },
     body: { ko: "스킨십, 눈맞춤, 짧은 놀이만으로도 충분해요. 휴대폰을 잠깐 내려두는 것만으로도 아이는 그 차이를 느껴요.", en: "A little petting, eye contact, or brief play is enough. Just putting the phone down for a few minutes makes a difference they can feel." } },
-  { id: "t51", category: "food", featured: false,
-    title: { ko: "사료는 갑자기 바꾸지 않기", en: "사료는 갑자기 바꾸지 않기" },
-    summary: { ko: "새 사료는 기존 사료와 섞어 5~7일에 걸쳐 천천히 바꿔주세요.", en: "새 사료는 기존 사료와 섞어 5~7일에 걸쳐 천천히 바꿔주세요." },
-    body: { ko: "새 사료는 기존 사료와 섞어 5~7일에 걸쳐 천천히 바꿔주세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "새 사료는 기존 사료와 섞어 5~7일에 걸쳐 천천히 바꿔주세요." } },
-  { id: "t52", category: "food", featured: false,
-    title: { ko: "간식은 하루 열량의 10% 이내", en: "간식은 하루 열량의 10% 이내" },
-    summary: { ko: "간식이 많아지면 주식 섭취와 영양 균형이 흐트러질 수 있어요.", en: "간식이 많아지면 주식 섭취와 영양 균형이 흐트러질 수 있어요." },
-    body: { ko: "간식이 많아지면 주식 섭취와 영양 균형이 흐트러질 수 있어요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "간식이 많아지면 주식 섭취와 영양 균형이 흐트러질 수 있어요." } },
-  { id: "t53", category: "food", featured: false,
-    title: { ko: "물그릇은 매일 세척하기", en: "물그릇은 매일 세척하기" },
-    summary: { ko: "신선한 물을 자주 갈고 물그릇의 미끈한 막도 매일 씻어주세요.", en: "신선한 물을 자주 갈고 물그릇의 미끈한 막도 매일 씻어주세요." },
-    body: { ko: "신선한 물을 자주 갈고 물그릇의 미끈한 막도 매일 씻어주세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "신선한 물을 자주 갈고 물그릇의 미끈한 막도 매일 씻어주세요." } },
-  { id: "t54", category: "food", featured: false,
-    title: { ko: "사람 음식의 양념은 피하기", en: "사람 음식의 양념은 피하기" },
-    summary: { ko: "소금·양념·기름이 많은 음식은 반려동물에게 부담이 될 수 있어요.", en: "소금·양념·기름이 많은 음식은 반려동물에게 부담이 될 수 있어요." },
-    body: { ko: "소금·양념·기름이 많은 음식은 반려동물에게 부담이 될 수 있어요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "소금·양념·기름이 많은 음식은 반려동물에게 부담이 될 수 있어요." } },
-  { id: "t55", category: "food", featured: false,
-    title: { ko: "급하게 먹는 아이는 슬로우피더", en: "급하게 먹는 아이는 슬로우피더" },
-    summary: { ko: "너무 빨리 먹는다면 넓은 그릇이나 슬로우피더로 속도를 낮춰보세요.", en: "너무 빨리 먹는다면 넓은 그릇이나 슬로우피더로 속도를 낮춰보세요." },
-    body: { ko: "너무 빨리 먹는다면 넓은 그릇이나 슬로우피더로 속도를 낮춰보세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "너무 빨리 먹는다면 넓은 그릇이나 슬로우피더로 속도를 낮춰보세요." } },
-  { id: "t56", category: "food", featured: false,
-    title: { ko: "체중에 맞춰 급여량 점검", en: "체중에 맞춰 급여량 점검" },
-    summary: { ko: "사료 봉지 권장량은 시작점이에요. 활동량과 체형에 맞춰 조절하세요.", en: "사료 봉지 권장량은 시작점이에요. 활동량과 체형에 맞춰 조절하세요." },
-    body: { ko: "사료 봉지 권장량은 시작점이에요. 활동량과 체형에 맞춰 조절하세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "사료 봉지 권장량은 시작점이에요. 활동량과 체형에 맞춰 조절하세요." } },
-  { id: "t57", category: "food", featured: false,
-    title: { ko: "새 간식은 소량부터", en: "새 간식은 소량부터" },
-    summary: { ko: "처음 먹는 간식은 아주 조금 주고 소화 상태와 알레르기 반응을 살펴보세요.", en: "처음 먹는 간식은 아주 조금 주고 소화 상태와 알레르기 반응을 살펴보세요." },
-    body: { ko: "처음 먹는 간식은 아주 조금 주고 소화 상태와 알레르기 반응을 살펴보세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "처음 먹는 간식은 아주 조금 주고 소화 상태와 알레르기 반응을 살펴보세요." } },
-  { id: "t58", category: "food", featured: false,
-    title: { ko: "식사 시간은 일정하게", en: "식사 시간은 일정하게" },
-    summary: { ko: "비슷한 시간에 급여하면 생활 리듬과 배변 패턴 관리에 도움이 돼요.", en: "비슷한 시간에 급여하면 생활 리듬과 배변 패턴 관리에 도움이 돼요." },
-    body: { ko: "비슷한 시간에 급여하면 생활 리듬과 배변 패턴 관리에 도움이 돼요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "비슷한 시간에 급여하면 생활 리듬과 배변 패턴 관리에 도움이 돼요." } },
-  { id: "t59", category: "food", featured: false,
-    title: { ko: "초콜릿·포도·양파는 금지", en: "초콜릿·포도·양파는 금지" },
-    summary: { ko: "대표적인 위험 식품은 닿지 않는 곳에 보관하고 가족 모두가 공유해두세요.", en: "대표적인 위험 식품은 닿지 않는 곳에 보관하고 가족 모두가 공유해두세요." },
-    body: { ko: "대표적인 위험 식품은 닿지 않는 곳에 보관하고 가족 모두가 공유해두세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "대표적인 위험 식품은 닿지 않는 곳에 보관하고 가족 모두가 공유해두세요." } },
-  { id: "t60", category: "food", featured: false,
-    title: { ko: "식욕 변화는 기록하기", en: "식욕 변화는 기록하기" },
-    summary: { ko: "평소보다 갑자기 덜 먹거나 많이 먹는 변화가 이어지면 기록 후 상담해보세요.", en: "평소보다 갑자기 덜 먹거나 많이 먹는 변화가 이어지면 기록 후 상담해보세요." },
-    body: { ko: "평소보다 갑자기 덜 먹거나 많이 먹는 변화가 이어지면 기록 후 상담해보세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "평소보다 갑자기 덜 먹거나 많이 먹는 변화가 이어지면 기록 후 상담해보세요." } },
-  { id: "t61", category: "training", featured: false,
-    title: { ko: "이름을 부르면 좋은 일이 생기게", en: "이름을 부르면 좋은 일이 생기게" },
-    summary: { ko: "이름을 부른 뒤 바라보면 바로 칭찬해 이름에 긍정적인 의미를 만들어주세요.", en: "이름을 부른 뒤 바라보면 바로 칭찬해 이름에 긍정적인 의미를 만들어주세요." },
-    body: { ko: "이름을 부른 뒤 바라보면 바로 칭찬해 이름에 긍정적인 의미를 만들어주세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "이름을 부른 뒤 바라보면 바로 칭찬해 이름에 긍정적인 의미를 만들어주세요." } },
-  { id: "t62", category: "training", featured: false,
-    title: { ko: "짧고 자주 훈련하기", en: "짧고 자주 훈련하기" },
-    summary: { ko: "한 번에 오래 하기보다 3~5분씩 자주 연습하는 편이 집중에 좋아요.", en: "한 번에 오래 하기보다 3~5분씩 자주 연습하는 편이 집중에 좋아요." },
-    body: { ko: "한 번에 오래 하기보다 3~5분씩 자주 연습하는 편이 집중에 좋아요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "한 번에 오래 하기보다 3~5분씩 자주 연습하는 편이 집중에 좋아요." } },
-  { id: "t63", category: "training", featured: false,
-    title: { ko: "성공 직후 바로 칭찬하기", en: "성공 직후 바로 칭찬하기" },
-    summary: { ko: "행동 후 1~2초 안에 보상해야 어떤 행동이 좋았는지 이해하기 쉬워요.", en: "행동 후 1~2초 안에 보상해야 어떤 행동이 좋았는지 이해하기 쉬워요." },
-    body: { ko: "행동 후 1~2초 안에 보상해야 어떤 행동이 좋았는지 이해하기 쉬워요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "행동 후 1~2초 안에 보상해야 어떤 행동이 좋았는지 이해하기 쉬워요." } },
-  { id: "t64", category: "training", featured: false,
-    title: { ko: "가족의 신호어 통일하기", en: "가족의 신호어 통일하기" },
-    summary: { ko: "앉아·기다려 같은 신호어는 가족 모두 같은 단어를 사용하는 게 좋아요.", en: "앉아·기다려 같은 신호어는 가족 모두 같은 단어를 사용하는 게 좋아요." },
-    body: { ko: "앉아·기다려 같은 신호어는 가족 모두 같은 단어를 사용하는 게 좋아요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "앉아·기다려 같은 신호어는 가족 모두 같은 단어를 사용하는 게 좋아요." } },
-  { id: "t65", category: "training", featured: false,
-    title: { ko: "실수했을 때 큰소리 내지 않기", en: "실수했을 때 큰소리 내지 않기" },
-    summary: { ko: "혼내기보다 원하는 행동을 다시 유도하고 성공했을 때 보상해주세요.", en: "혼내기보다 원하는 행동을 다시 유도하고 성공했을 때 보상해주세요." },
-    body: { ko: "혼내기보다 원하는 행동을 다시 유도하고 성공했을 때 보상해주세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "혼내기보다 원하는 행동을 다시 유도하고 성공했을 때 보상해주세요." } },
-  { id: "t66", category: "training", featured: false,
-    title: { ko: "기다려는 짧은 시간부터", en: "기다려는 짧은 시간부터" },
-    summary: { ko: "1초 성공부터 시작해 조금씩 시간을 늘리면 실패가 줄어요.", en: "1초 성공부터 시작해 조금씩 시간을 늘리면 실패가 줄어요." },
-    body: { ko: "1초 성공부터 시작해 조금씩 시간을 늘리면 실패가 줄어요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "1초 성공부터 시작해 조금씩 시간을 늘리면 실패가 줄어요." } },
-  { id: "t67", category: "training", featured: false,
-    title: { ko: "산책 전 흥분 낮추기", en: "산책 전 흥분 낮추기" },
-    summary: { ko: "문 앞에서 잠깐 기다렸다가 차분해졌을 때 출발하는 습관을 만들어보세요.", en: "문 앞에서 잠깐 기다렸다가 차분해졌을 때 출발하는 습관을 만들어보세요." },
-    body: { ko: "문 앞에서 잠깐 기다렸다가 차분해졌을 때 출발하는 습관을 만들어보세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "문 앞에서 잠깐 기다렸다가 차분해졌을 때 출발하는 습관을 만들어보세요." } },
-  { id: "t68", category: "training", featured: false,
-    title: { ko: "하우스는 벌주는 곳이 아니에요", en: "하우스는 벌주는 곳이 아니에요" },
-    summary: { ko: "하우스 안에서 간식과 휴식을 경험하게 해 편안한 공간으로 만들어주세요.", en: "하우스 안에서 간식과 휴식을 경험하게 해 편안한 공간으로 만들어주세요." },
-    body: { ko: "하우스 안에서 간식과 휴식을 경험하게 해 편안한 공간으로 만들어주세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "하우스 안에서 간식과 휴식을 경험하게 해 편안한 공간으로 만들어주세요." } },
-  { id: "t69", category: "training", featured: false,
-    title: { ko: "사회화는 거리 조절이 핵심", en: "사회화는 거리 조절이 핵심" },
-    summary: { ko: "무조건 가까이 데려가기보다 편안함을 유지할 수 있는 거리에서 경험시켜주세요.", en: "무조건 가까이 데려가기보다 편안함을 유지할 수 있는 거리에서 경험시켜주세요." },
-    body: { ko: "무조건 가까이 데려가기보다 편안함을 유지할 수 있는 거리에서 경험시켜주세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "무조건 가까이 데려가기보다 편안함을 유지할 수 있는 거리에서 경험시켜주세요." } },
-  { id: "t70", category: "training", featured: false,
-    title: { ko: "문제행동 전 상황을 기록하기", en: "문제행동 전 상황을 기록하기" },
-    summary: { ko: "언제·어디서·무엇 직후 행동했는지 적으면 원인을 찾고 훈련하기 쉬워져요.", en: "언제·어디서·무엇 직후 행동했는지 적으면 원인을 찾고 훈련하기 쉬워져요." },
-    body: { ko: "언제·어디서·무엇 직후 행동했는지 적으면 원인을 찾고 훈련하기 쉬워져요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "언제·어디서·무엇 직후 행동했는지 적으면 원인을 찾고 훈련하기 쉬워져요." } },
-  { id: "t71", category: "safety", featured: false,
-    title: { ko: "현관문 열기 전 위치 확인", en: "현관문 열기 전 위치 확인" },
-    summary: { ko: "택배나 외출 때 갑자기 뛰어나가지 않도록 문을 열기 전 아이 위치를 확인하세요.", en: "택배나 외출 때 갑자기 뛰어나가지 않도록 문을 열기 전 아이 위치를 확인하세요." },
-    body: { ko: "택배나 외출 때 갑자기 뛰어나가지 않도록 문을 열기 전 아이 위치를 확인하세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "택배나 외출 때 갑자기 뛰어나가지 않도록 문을 열기 전 아이 위치를 확인하세요." } },
-  { id: "t72", category: "safety", featured: false,
-    title: { ko: "목줄·하네스 마모 점검", en: "목줄·하네스 마모 점검" },
-    summary: { ko: "끈이나 버클이 닳거나 갈라지지 않았는지 산책 전에 가볍게 확인해주세요.", en: "끈이나 버클이 닳거나 갈라지지 않았는지 산책 전에 가볍게 확인해주세요." },
-    body: { ko: "끈이나 버클이 닳거나 갈라지지 않았는지 산책 전에 가볍게 확인해주세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "끈이나 버클이 닳거나 갈라지지 않았는지 산책 전에 가볍게 확인해주세요." } },
-  { id: "t73", category: "safety", featured: false,
-    title: { ko: "차 안에 혼자 두지 않기", en: "차 안에 혼자 두지 않기" },
-    summary: { ko: "짧은 시간에도 차량 내부 온도는 빠르게 변할 수 있어요.", en: "짧은 시간에도 차량 내부 온도는 빠르게 변할 수 있어요." },
-    body: { ko: "짧은 시간에도 차량 내부 온도는 빠르게 변할 수 있어요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "짧은 시간에도 차량 내부 온도는 빠르게 변할 수 있어요." } },
-  { id: "t74", category: "safety", featured: false,
-    title: { ko: "약과 세제는 높은 곳에", en: "약과 세제는 높은 곳에" },
-    summary: { ko: "사람 약·세제·살충제는 반려동물이 열 수 없는 곳에 보관하세요.", en: "사람 약·세제·살충제는 반려동물이 열 수 없는 곳에 보관하세요." },
-    body: { ko: "사람 약·세제·살충제는 반려동물이 열 수 없는 곳에 보관하세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "사람 약·세제·살충제는 반려동물이 열 수 없는 곳에 보관하세요." } },
-  { id: "t75", category: "safety", featured: false,
-    title: { ko: "작은 물건 삼킴 주의", en: "작은 물건 삼킴 주의" },
-    summary: { ko: "고무줄·동전·건전지·작은 장난감은 바닥에 두지 않는 게 안전해요.", en: "고무줄·동전·건전지·작은 장난감은 바닥에 두지 않는 게 안전해요." },
-    body: { ko: "고무줄·동전·건전지·작은 장난감은 바닥에 두지 않는 게 안전해요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "고무줄·동전·건전지·작은 장난감은 바닥에 두지 않는 게 안전해요." } },
-  { id: "t76", category: "safety", featured: false,
-    title: { ko: "여름 아스팔트 온도 확인", en: "여름 아스팔트 온도 확인" },
-    summary: { ko: "손등을 바닥에 대기 힘들 정도로 뜨거우면 산책 시간을 바꿔주세요.", en: "손등을 바닥에 대기 힘들 정도로 뜨거우면 산책 시간을 바꿔주세요." },
-    body: { ko: "손등을 바닥에 대기 힘들 정도로 뜨거우면 산책 시간을 바꿔주세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "손등을 바닥에 대기 힘들 정도로 뜨거우면 산책 시간을 바꿔주세요." } },
-  { id: "t77", category: "safety", featured: false,
-    title: { ko: "겨울 제설제 닦아주기", en: "겨울 제설제 닦아주기" },
-    summary: { ko: "산책 후 발바닥에 묻은 제설제나 오염물을 미지근한 물로 닦아주세요.", en: "산책 후 발바닥에 묻은 제설제나 오염물을 미지근한 물로 닦아주세요." },
-    body: { ko: "산책 후 발바닥에 묻은 제설제나 오염물을 미지근한 물로 닦아주세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "산책 후 발바닥에 묻은 제설제나 오염물을 미지근한 물로 닦아주세요." } },
-  { id: "t78", category: "safety", featured: false,
-    title: { ko: "창문·베란다 추락 방지", en: "창문·베란다 추락 방지" },
-    summary: { ko: "방충망만 믿지 말고 안전망이나 잠금장치를 추가로 확인해주세요.", en: "방충망만 믿지 말고 안전망이나 잠금장치를 추가로 확인해주세요." },
-    body: { ko: "방충망만 믿지 말고 안전망이나 잠금장치를 추가로 확인해주세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "방충망만 믿지 말고 안전망이나 잠금장치를 추가로 확인해주세요." } },
-  { id: "t79", category: "safety", featured: false,
-    title: { ko: "응급 연락처 저장하기", en: "응급 연락처 저장하기" },
-    summary: { ko: "가까운 24시간 동물병원과 주치의 연락처를 휴대폰에 미리 저장해두세요.", en: "가까운 24시간 동물병원과 주치의 연락처를 휴대폰에 미리 저장해두세요." },
-    body: { ko: "가까운 24시간 동물병원과 주치의 연락처를 휴대폰에 미리 저장해두세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "가까운 24시간 동물병원과 주치의 연락처를 휴대폰에 미리 저장해두세요." } },
-  { id: "t80", category: "safety", featured: false,
-    title: { ko: "여행 전 인식표 확인", en: "여행 전 인식표 확인" },
-    summary: { ko: "외출·여행 전 인식표 연락처가 최신인지 확인하면 만일의 상황에 도움이 돼요.", en: "외출·여행 전 인식표 연락처가 최신인지 확인하면 만일의 상황에 도움이 돼요." },
-    body: { ko: "외출·여행 전 인식표 연락처가 최신인지 확인하면 만일의 상황에 도움이 돼요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "외출·여행 전 인식표 연락처가 최신인지 확인하면 만일의 상황에 도움이 돼요." } },
-  { id: "t81", category: "grooming", featured: false,
-    title: { ko: "빗질은 짧게 자주", en: "빗질은 짧게 자주" },
-    summary: { ko: "엉킨 뒤 한꺼번에 풀기보다 짧게 자주 빗어주면 피부 확인도 쉬워요.", en: "엉킨 뒤 한꺼번에 풀기보다 짧게 자주 빗어주면 피부 확인도 쉬워요." },
-    body: { ko: "엉킨 뒤 한꺼번에 풀기보다 짧게 자주 빗어주면 피부 확인도 쉬워요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "엉킨 뒤 한꺼번에 풀기보다 짧게 자주 빗어주면 피부 확인도 쉬워요." } },
-  { id: "t82", category: "grooming", featured: false,
-    title: { ko: "목욕 후 속털까지 말리기", en: "목욕 후 속털까지 말리기" },
-    summary: { ko: "겉만 마른 것처럼 보여도 속털이 젖어 있으면 피부가 습해질 수 있어요.", en: "겉만 마른 것처럼 보여도 속털이 젖어 있으면 피부가 습해질 수 있어요." },
-    body: { ko: "겉만 마른 것처럼 보여도 속털이 젖어 있으면 피부가 습해질 수 있어요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "겉만 마른 것처럼 보여도 속털이 젖어 있으면 피부가 습해질 수 있어요." } },
-  { id: "t83", category: "grooming", featured: false,
-    title: { ko: "귀 청소는 보이는 부분만", en: "귀 청소는 보이는 부분만" },
-    summary: { ko: "면봉을 깊게 넣지 말고 전용 제품으로 보이는 부분을 부드럽게 관리하세요.", en: "면봉을 깊게 넣지 말고 전용 제품으로 보이는 부분을 부드럽게 관리하세요." },
-    body: { ko: "면봉을 깊게 넣지 말고 전용 제품으로 보이는 부분을 부드럽게 관리하세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "면봉을 깊게 넣지 말고 전용 제품으로 보이는 부분을 부드럽게 관리하세요." } },
-  { id: "t84", category: "grooming", featured: false,
-    title: { ko: "발톱은 조금씩 자르기", en: "발톱은 조금씩 자르기" },
-    summary: { ko: "혈관 위치가 불확실하면 아주 조금씩 자르고 어려우면 전문가 도움을 받으세요.", en: "혈관 위치가 불확실하면 아주 조금씩 자르고 어려우면 전문가 도움을 받으세요." },
-    body: { ko: "혈관 위치가 불확실하면 아주 조금씩 자르고 어려우면 전문가 도움을 받으세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "혈관 위치가 불확실하면 아주 조금씩 자르고 어려우면 전문가 도움을 받으세요." } },
-  { id: "t85", category: "grooming", featured: false,
-    title: { ko: "발바닥 털 미끄럼 주의", en: "발바닥 털 미끄럼 주의" },
-    summary: { ko: "패드 사이 털이 너무 길면 미끄러울 수 있어 주기적으로 정리해주세요.", en: "패드 사이 털이 너무 길면 미끄러울 수 있어 주기적으로 정리해주세요." },
-    body: { ko: "패드 사이 털이 너무 길면 미끄러울 수 있어 주기적으로 정리해주세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "패드 사이 털이 너무 길면 미끄러울 수 있어 주기적으로 정리해주세요." } },
-  { id: "t86", category: "grooming", featured: false,
-    title: { ko: "눈곱은 굳기 전에 닦기", en: "눈곱은 굳기 전에 닦기" },
-    summary: { ko: "미지근한 물에 적신 거즈로 눈 주변을 안쪽에서 바깥쪽으로 부드럽게 닦아주세요.", en: "미지근한 물에 적신 거즈로 눈 주변을 안쪽에서 바깥쪽으로 부드럽게 닦아주세요." },
-    body: { ko: "미지근한 물에 적신 거즈로 눈 주변을 안쪽에서 바깥쪽으로 부드럽게 닦아주세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "미지근한 물에 적신 거즈로 눈 주변을 안쪽에서 바깥쪽으로 부드럽게 닦아주세요." } },
-  { id: "t87", category: "grooming", featured: false,
-    title: { ko: "칫솔질은 적응부터", en: "칫솔질은 적응부터" },
-    summary: { ko: "처음부터 오래 닦기보다 입 주변 만지기부터 단계적으로 익숙하게 해주세요.", en: "처음부터 오래 닦기보다 입 주변 만지기부터 단계적으로 익숙하게 해주세요." },
-    body: { ko: "처음부터 오래 닦기보다 입 주변 만지기부터 단계적으로 익숙하게 해주세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "처음부터 오래 닦기보다 입 주변 만지기부터 단계적으로 익숙하게 해주세요." } },
-  { id: "t88", category: "grooming", featured: false,
-    title: { ko: "미용 도구는 아이 전용으로", en: "미용 도구는 아이 전용으로" },
-    summary: { ko: "빗·가위·수건을 깨끗하게 관리하고 다른 동물과 공유하지 않는 게 좋아요.", en: "빗·가위·수건을 깨끗하게 관리하고 다른 동물과 공유하지 않는 게 좋아요." },
-    body: { ko: "빗·가위·수건을 깨끗하게 관리하고 다른 동물과 공유하지 않는 게 좋아요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "빗·가위·수건을 깨끗하게 관리하고 다른 동물과 공유하지 않는 게 좋아요." } },
-  { id: "t89", category: "grooming", featured: false,
-    title: { ko: "피부 붉음과 냄새 확인", en: "피부 붉음과 냄새 확인" },
-    summary: { ko: "빗질이나 목욕 때 피부의 붉은 부위·각질·평소와 다른 냄새를 함께 확인하세요.", en: "빗질이나 목욕 때 피부의 붉은 부위·각질·평소와 다른 냄새를 함께 확인하세요." },
-    body: { ko: "빗질이나 목욕 때 피부의 붉은 부위·각질·평소와 다른 냄새를 함께 확인하세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "빗질이나 목욕 때 피부의 붉은 부위·각질·평소와 다른 냄새를 함께 확인하세요." } },
-  { id: "t90", category: "grooming", featured: false,
-    title: { ko: "미용 후 행동 변화 살피기", en: "미용 후 행동 변화 살피기" },
-    summary: { ko: "미용 후 계속 핥거나 걷는 모습이 이상하면 피부 자극이나 발톱 상태를 확인해주세요.", en: "미용 후 계속 핥거나 걷는 모습이 이상하면 피부 자극이나 발톱 상태를 확인해주세요." },
-    body: { ko: "미용 후 계속 핥거나 걷는 모습이 이상하면 피부 자극이나 발톱 상태를 확인해주세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "미용 후 계속 핥거나 걷는 모습이 이상하면 피부 자극이나 발톱 상태를 확인해주세요." } },
 ];
 
 function TipCard({ tip, lang, bookmarked, onToggleBookmark }) {
   const t = useT();
   const [open, setOpen] = useState(false);
   const categoryLabel = t.tipCategoryLabels[tip.category];
-  const categoryColors = { dog: "#EEF8E9", cat: "#FFF1F5", health: "#EAF4FF", life: "#FFF7DE", food: "#FFF0E5", training: "#F2EDFF", safety: "#E9F8F5", grooming: "#FCEEF9" };
-  const categoryText = { dog: "#4F9D3C", cat: "#D66B8D", health: "#4C86B8", life: "#A37B18", food: "#C8733C", training: "#7965B3", safety: "#388C7D", grooming: "#B45D9A" };
   return (
-    <div className="bg-surface-card" style={{ padding: "16px 18px", background: categoryColors[tip.category] || "var(--surface)" }}>
+    <div className="bg-surface-card" style={{ padding: "16px 18px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
         <div style={{ flex: 1, cursor: "pointer" }} onClick={() => setOpen((o) => !o)}>
-          <span className="bg-sub" style={{ fontSize: 11, fontWeight: 600, lineHeight: 1.4, fontFamily: "inherit", color: categoryText[tip.category] || "var(--primary)" }}>{categoryLabel}</span>
+          <span className="bg-sub" style={{ fontSize: 11, fontWeight: 700, color: "var(--primary)" }}>{categoryLabel}</span>
           <div style={{ fontWeight: 700, fontSize: 15, marginTop: 4 }}>{tip.title[lang]}</div>
           <div className="bg-sub" style={{ fontSize: 13, marginTop: 4, lineHeight: 1.5 }}>{tip.summary[lang]}</div>
         </div>
@@ -4536,10 +4356,6 @@ function TipsPage({ onClose }) {
     { id: "cat", name: t.tipCategoryLabels.cat },
     { id: "health", name: t.tipCategoryLabels.health },
     { id: "life", name: t.tipCategoryLabels.life },
-    { id: "food", name: t.tipCategoryLabels.food },
-    { id: "training", name: t.tipCategoryLabels.training },
-    { id: "safety", name: t.tipCategoryLabels.safety },
-    { id: "grooming", name: t.tipCategoryLabels.grooming },
   ];
 
   return (
@@ -4789,10 +4605,8 @@ const SAJU_TODAY = {
 };
 
 function generateSajuResult(input, lang) {
-  const { name, birthDate, species, gender, birthTime, breed } = input;
-  // 동일한 입력은 언제 다시 계산해도 동일한 결과가 나오도록 고정 시드를 사용합니다.
-  const seed = [name, birthDate, species, gender || "", birthTime || "", breed || ""]
-    .map((v) => String(v ?? "").trim().toLowerCase()).join("|");
+  const { name, birthDate, species, gender } = input;
+  const seed = `${name}|${birthDate}|${species}|${gender || ""}`;
   const bank = SAJU_DATA[lang] || SAJU_DATA.ko;
   const pick = (key, salt) => seededPick(seed, salt, bank[key](name));
   const today = new Date().toISOString().slice(0, 10);
@@ -5119,86 +4933,51 @@ function SajuResultView({ input, onRestart }) {
 
 function SajuPage({ pet, onGoRegister }) {
   const t = useT();
-  const lang = useLang();
   const [input, setInput] = useState(null);
-  const [mode, setMode] = useState("menu");
-  const [guardianName, setGuardianName] = useState("");
-  const [guardianBirthDate, setGuardianBirthDate] = useState("");
-  const [compatResult, setCompatResult] = useState(null);
 
-  if (input) return <SajuResultView input={input} onRestart={() => { setInput(null); setMode("menu"); }} />;
-
-  if (!pet) return (
-    <div style={{ maxWidth: 480, margin: "0 auto" }}><div className="bg-card" style={{ textAlign: "center" }}>
-      <SajuIcon style={{ width: 40, height: 40, color: "var(--primary)", margin: "0 auto 14px" }} />
-      <h2 style={{ fontSize: 19, marginBottom: 6 }}>{t.sajuNeedPetTitle}</h2><p className="bg-sub" style={{ fontSize: 13, marginBottom: 22 }}>{t.sajuNeedPetBody}</p>
-      <button className="bg-btn" style={{ width: "100%", fontSize: 15 }} onClick={onGoRegister}>{t.sajuGoRegisterBtn}</button>
-    </div></div>
-  );
-
-  const petName = pet.profile.name;
-  const dailyMessages = lang === "en" ? ["A great day for a relaxed walk and lots of praise.", "A small new experience could become a happy memory today.", "Slow down and enjoy some cozy time together today."] : ["오늘은 여유로운 산책과 칭찬을 듬뿍 받으면 기분이 더 좋아지는 날이에요. 🐾", "작은 새로운 경험 하나가 즐거운 추억이 되기 좋은 날이에요. ✨", "오늘은 서두르기보다 보호자님과 포근하게 쉬는 시간이 행운을 불러와요. 💚"];
-  const todayKey = new Date().toISOString().slice(0, 10);
-  const dailySeed = `${petName}|${pet.profile.birthDate || ""}|${pet.profile.species || ""}|${todayKey}`;
-  const idx = hashString(dailySeed) % dailyMessages.length;
-
-  if (mode === "daily") return <div style={{ maxWidth: 520, margin: "0 auto" }}><div className="bg-card" style={{ textAlign: "center", background: "#FFF7DE" }}>
-    <div style={{ fontSize: 38, marginBottom: 8 }}>🌤️</div><h2 style={{ fontSize: 21, marginBottom: 10 }}>{lang === "en" ? `${petName}'s fortune today` : `${petName}의 오늘의 펫운세`}</h2>
-    <p style={{ fontSize: 15, lineHeight: 1.8 }}>{dailyMessages[idx]}</p><button className="bg-btn bg-btn-ghost" style={{ width: "100%", marginTop: 22 }} onClick={() => setMode("menu")}>{lang === "en" ? "Back" : "다른 Pet사주 보기"}</button>
-  </div><div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 16 }}>{t.sajuDisclaimer}</div></div>;
-
-  if (mode === "compat") {
-    const calculateCompat = () => {
-      const name = guardianName.trim();
-      if (!name || !guardianBirthDate) return;
-      const seed = [petName, pet.profile.birthDate || "", pet.profile.species || "", name, guardianBirthDate]
-        .map((v) => String(v).trim().toLowerCase()).join("|");
-      const score = 70 + (hashString(seed + "|compat-score") % 30);
-      const koMessages = [
-        `${petName}와 ${name} 보호자님은 서로의 생활 리듬을 편안하게 맞춰가는 안정형 궁합이에요. 꾸준한 눈맞춤과 칭찬이 유대감을 더 깊게 만들어줘요. 💕`,
-        `${petName}와 ${name} 보호자님은 함께할수록 장점이 살아나는 성장형 궁합이에요. 새로운 놀이와 산책 코스를 함께 경험해보세요. 🐾`,
-        `${petName}와 ${name} 보호자님은 감정 신호를 잘 주고받는 교감형 궁합이에요. 차분한 목소리와 스킨십이 특히 잘 맞아요. 🌿`,
-        `${petName}와 ${name} 보호자님은 서로에게 즐거운 자극이 되는 활력형 궁합이에요. 짧아도 자주 놀아주는 시간이 큰 힘이 돼요. ✨`,
-      ];
-      const enMessages = [
-        `${petName} and ${name} have a calm, steady bond. Consistent praise and eye contact can deepen it even more.`,
-        `${petName} and ${name} are a growth-oriented pair who bring out each other's strengths. Try new walks and games together.`,
-        `${petName} and ${name} connect especially well through emotional cues. A calm voice and gentle affection suit this bond.`,
-        `${petName} and ${name} energize each other. Short but frequent play sessions can make the relationship even stronger.`,
-      ];
-      const messages = lang === "en" ? enMessages : koMessages;
-      const message = messages[hashString(seed + "|compat-message") % messages.length];
-      setCompatResult({ score, message });
-    };
-    return <div style={{ maxWidth: 520, margin: "0 auto" }}>
-      <div className="bg-card" style={{ background: "#FFF0F4" }}>
-        <div style={{ textAlign: "center" }}><div style={{ fontSize: 38, marginBottom: 8 }}>🫶</div><h2 style={{ fontSize: 21, marginBottom: 8 }}>{lang === "en" ? "Guardian compatibility" : "보호자 궁합"}</h2>
-        <p className="bg-sub" style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 18 }}>{lang === "en" ? "Enter guardian information to see the compatibility result." : "보호자 정보를 입력하면 우리 아이와의 궁합을 확인할 수 있어요."}</p></div>
-        <label className="bg-label">{lang === "en" ? "Guardian name" : "보호자 이름"}</label>
-        <input className="bg-input" value={guardianName} onChange={(e) => { setGuardianName(e.target.value); setCompatResult(null); }} placeholder={lang === "en" ? "Enter name" : "보호자 이름을 입력해주세요"} />
-        <label className="bg-label" style={{ marginTop: 14 }}>{lang === "en" ? "Guardian birth date" : "보호자 생년월일"}</label>
-        <input type="date" className="bg-input" value={guardianBirthDate} onChange={(e) => { setGuardianBirthDate(e.target.value); setCompatResult(null); }} />
-        <button className="bg-btn" disabled={!guardianName.trim() || !guardianBirthDate} style={{ width: "100%", marginTop: 18, opacity: (!guardianName.trim() || !guardianBirthDate) ? .55 : 1 }} onClick={calculateCompat}>{lang === "en" ? "See compatibility" : "궁합 결과 보기"}</button>
-        {compatResult && <div className="bg-surface-card" style={{ marginTop: 18, textAlign: "center", background: "#fff" }}>
-          <div style={{ fontSize: 12, color: "var(--sub)", fontWeight: 700 }}>{lang === "en" ? "Compatibility score" : "궁합 점수"}</div>
-          <div style={{ fontSize: 42, fontWeight: 900, color: "var(--primary)", margin: "8px 0 12px" }}>{compatResult.score}%</div>
-          <p style={{ fontSize: 15, lineHeight: 1.8 }}>{compatResult.message}</p>
-          <div className="bg-sub" style={{ fontSize: 11, marginTop: 12 }}>{lang === "en" ? "The same pet and guardian information always produces the same result." : "같은 반려동물 정보와 보호자 정보를 입력하면 항상 같은 결과가 나와요."}</div>
-        </div>}
-        <button className="bg-btn bg-btn-ghost" style={{ width: "100%", marginTop: 18 }} onClick={() => { setMode("menu"); setCompatResult(null); }}>{lang === "en" ? "Back" : "다른 Pet사주 보기"}</button>
-      </div><div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 16 }}>{t.sajuDisclaimer}</div></div>;
+  if (input) {
+    return <SajuResultView input={input} onRestart={() => setInput(null)} />;
   }
 
-  const startBasic = () => setInput({ name: pet.profile.name, species: pet.profile.species, birthDate: pet.profile.birthDate, gender: pet.profile.gender, birthTime: "", breed: pet.profile.breedName, profileImage: pet.profile.profileImage || null });
-  const modes = [
-    { id: "basic", icon: "🔮", title: lang === "en" ? "Basic Pet Saju" : "기본 Pet사주", desc: lang === "en" ? "Personality, bonds, play style and luck" : "타고난 성격·인연·놀이 스타일·복을 재미로 봐요.", bg: "#F2EDFF", click: startBasic },
-    { id: "daily", icon: "🌤️", title: lang === "en" ? "Today's Pet Fortune" : "오늘의 펫운세", desc: lang === "en" ? "A light daily fortune for your pet" : "오늘 우리 아이에게 어울리는 행운 메시지를 확인해요.", bg: "#FFF7DE", click: () => setMode("daily") },
-    { id: "compat", icon: "🫶", title: lang === "en" ? "Guardian Compatibility" : "보호자 궁합", desc: lang === "en" ? "See the fun chemistry between you two" : "우리 아이와 보호자님의 케미와 유대감을 재미로 확인해요.", bg: "#FFF0F4", click: () => setMode("compat") },
-  ];
-  return <div style={{ maxWidth: 620, margin: "0 auto" }}><div style={{ textAlign: "center", marginBottom: 18 }}><FeaturePetHeader pet={pet} /><h2 style={{ fontSize: 21, marginTop: 10 }}>{lang === "en" ? `Choose ${petName}'s Pet Saju` : `${petName}와 어떤 Pet사주를 볼까요?`}</h2><p className="bg-sub" style={{ fontSize: 13, marginTop: 6 }}>{lang === "en" ? "Choose one of three fun contents." : "원하는 콘텐츠를 골라 재미로 즐겨보세요."}</p></div>
-    <div style={{ display: "grid", gap: 12 }}>{modes.map(m => <button key={m.id} type="button" onClick={m.click} className="bg-surface-card" style={{ border: 0, cursor: "pointer", background: m.bg, padding: "20px", textAlign: "left", display: "flex", alignItems: "center", gap: 16 }}><span style={{ fontSize: 34 }}>{m.icon}</span><span><strong style={{ display: "block", fontSize: 17, marginBottom: 5 }}>{m.title}</strong><span className="bg-sub" style={{ fontSize: 13, lineHeight: 1.55 }}>{m.desc}</span></span><span style={{ marginLeft: "auto", fontSize: 22, color: "var(--primary)" }}>›</span></button>)}</div>
-    <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 20, lineHeight: 1.6 }}>{t.sajuDisclaimer}</div>
-  </div>;
+  if (!pet) {
+    return (
+      <div style={{ maxWidth: 480, margin: "0 auto" }}>
+        <div className="bg-card" style={{ textAlign: "center" }}>
+          <SajuIcon style={{ width: 40, height: 40, color: "var(--primary)", margin: "0 auto 14px" }} />
+          <h2 style={{ fontSize: 19, marginBottom: 6 }}>{t.sajuNeedPetTitle}</h2>
+          <p className="bg-sub" style={{ fontSize: 13, marginBottom: 22 }}>{t.sajuNeedPetBody}</p>
+          <button className="bg-btn" style={{ width: "100%", fontSize: 15 }} onClick={onGoRegister}>
+            {t.sajuGoRegisterBtn}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ maxWidth: 480, margin: "0 auto" }}>
+      <div className="bg-card" style={{ textAlign: "center" }}>
+        <FeaturePetHeader pet={pet} />
+        <h2 style={{ fontSize: 19, marginBottom: 6, marginTop: 10 }}>{t.sajuIntroTitle(pet.profile.name)}</h2>
+        <p className="bg-sub" style={{ fontSize: 13, marginBottom: 22 }}>{t.sajuIntroSub}</p>
+        <button className="bg-btn" style={{ width: "100%", fontSize: 15 }}
+          onClick={() => setInput({
+            name: pet.profile.name,
+            species: pet.profile.species,
+            birthDate: pet.profile.birthDate,
+            gender: pet.profile.gender,
+            birthTime: "",
+            breed: pet.profile.breedName,
+            profileImage: pet.profile.profileImage || null,
+          })}>
+          {t.sajuGenerateBtn}
+        </button>
+      </div>
+      <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 20, lineHeight: 1.6 }}>
+        {t.sajuDisclaimer}
+      </div>
+    </div>
+  );
 }
 
 /* ============================================================
@@ -5542,9 +5321,7 @@ function generatePetBtiResult(input, answers, lang) {
   const name = input.name;
   const sections = ["personality", "bond", "friends", "play", "walk", "food", "alone", "mischief", "affection", "hidden"]
     .map((key) => ({ key, text: petBtiSectionText(type, key, name, lang, stats) }));
-  // 같은 반려동물 정보와 같은 답변 조합은 항상 같은 세부 결과가 나오도록 고정 시드를 사용합니다.
-  const seed = [name, input.birthDate || "", input.species || "", type, JSON.stringify(answers)]
-    .map((v) => String(v).trim().toLowerCase()).join("|");
+  const seed = `${name}|${type}|${JSON.stringify(answers)}`;
   const tagBanks = {
     ko: ["#핵인싸", "#집콕러버", "#호기심대장", "#마이웨이", "#사랑교감러", "#루틴수호자", "#즉흥모험가", "#간식러버", "#애교쟁이", "#집사조종러", "#산책마니아", "#관찰형천재"],
     en: ["#SocialStar", "#HomebodyHeart", "#CuriousOne", "#MyWayStyle", "#DeepBonder", "#RoutineKeeper", "#SpontaneousSoul", "#TreatLover", "#AffectionOverload", "#SecretlyInCharge", "#WalkFanatic", "#QuietObserver"],
@@ -5906,8 +5683,7 @@ function PetBtiPage({ pet, onUpdatePetBti, onGoRegister }) {
         </button>
       </div>
       <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 20, lineHeight: 1.6 }}>
-        {t.petBtiDisclaimer}<br />
-        {lang === "en" ? "The same pet information and the same answers always produce the same result." : "같은 반려동물 정보와 같은 답변을 입력하면 항상 같은 결과가 나와요."}
+        {t.petBtiDisclaimer}
       </div>
     </div>
   );
@@ -6677,7 +6453,7 @@ function AboutPage({ onStart, onNavigate }) {
         </div>
       </section>
 
-      {/* Pet꿀팁 */}
+      {/* Pet꿀팁 / 정보가이드 */}
       <section className="landing-section">
         <div className="landing-wrap">
           <h2 className="landing-section-title" style={{ marginBottom: 6 }}>{t.landingTipsGuideTitle}</h2>
@@ -6687,7 +6463,10 @@ function AboutPage({ onStart, onNavigate }) {
               <span className="landing-mini-teaser-icon"><IllustTips style={{ width: 20, height: 20 }} /></span>
               <span className="landing-mini-teaser-label">{t.landingTipsTeaserLabel}</span>
             </button>
-
+            <button type="button" className="landing-mini-teaser-item" onClick={() => go("guide")}>
+              <span className="landing-mini-teaser-icon"><HelpIcon style={{ width: 18, height: 18, color: "var(--primary)" }} /></span>
+              <span className="landing-mini-teaser-label">{t.landingGuideTeaserLabel}</span>
+            </button>
           </div>
         </div>
       </section>
@@ -7653,38 +7432,10 @@ function MyActivityPage({ lang, onOpenPost, embedded = false }) {
 
 function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost }) {
   const t = useT();
-  const goActivity = () => {
-    const el = document.getElementById("my-pettalk-activity");
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-  const menuItems = [
-    { key: "member", icon: "👤", title: lang === "en" ? "Member info" : "회원정보", desc: lang === "en" ? "Check your PetGrow profile and Kakao-linked account." : "PetGrow 프로필과 카카오 연동 계정을 확인해요.", cls: "my-menu-mint", action: () => window.scrollTo({ top: 0, behavior: "smooth" }) },
-    { key: "edit", icon: "✏️", title: lang === "en" ? "Edit info" : "정보 수정", desc: lang === "en" ? "Change the nickname shown in Pet Talk and manage your account." : "Pet톡에 보이는 닉네임과 계정 정보를 수정해요.", cls: "my-menu-pink", action: onOpenAccount },
-    { key: "pets", icon: "🐾", title: lang === "en" ? "Manage pets" : "반려동물 관리", desc: lang === "en" ? `Manage ${allPets.length} registered pet(s).` : `등록한 아이 ${allPets.length}마리의 정보와 성장기록을 관리해요.`, cls: "my-menu-blue", action: onGoPets },
-    { key: "activity", icon: "💬", title: lang === "en" ? "Pet Talk activity" : "Pet톡 내 활동", desc: lang === "en" ? "See your posts, comments and likes in one place." : "내가 작성한 글·댓글·좋아요를 한곳에서 확인해요.", cls: "my-menu-purple", action: goActivity },
-  ];
   return (
     <div style={{ maxWidth: 760, margin: "0 auto", padding: "0 20px 70px" }}>
-      <div className="my-page-head">
-        <div>
-          <div className="my-page-kicker">{lang === "en" ? "MY PETGROW" : "MY PETGROW"}</div>
-          <h1>{lang === "en" ? "Member info" : "회원정보"}</h1>
-          <p>{lang === "en" ? "Manage your profile, pets, and Pet Talk activity." : "회원정보부터 우리 아이와 Pet톡 활동까지 한곳에서 관리해요."}</p>
-        </div>
-        <span className="my-page-head-icon">🐶</span>
-      </div>
-
-      <div className="my-menu-grid">
-        {menuItems.map((item, i) => (
-          <button key={item.key} type="button" className={`my-menu-card ${item.cls}`} onClick={item.action} style={{ animationDelay: `${i * 70}ms` }}>
-            <span className="my-menu-card-icon">{item.icon}</span>
-            <span className="my-menu-card-copy"><strong>{item.title}</strong><small>{item.desc}</small></span>
-            <span className="my-menu-card-arrow">›</span>
-          </button>
-        ))}
-      </div>
-
-      <div className="bg-card my-member-summary" style={{ marginBottom: 18 }}>
+      <h1 style={{ fontSize: 22, marginBottom: 18 }}>{t.myPageTitle}</h1>
+      <div className="bg-card" style={{ marginBottom: 18 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           {account?.profileImage ? (
             <img src={account.profileImage} alt="" style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover", objectPosition: "center" }} />
@@ -7694,17 +7445,37 @@ function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost })
             </div>
           )}
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 12, color: "var(--sub)", fontWeight: 700 }}>{lang === "en" ? "Pet Talk nickname" : "Pet톡 닉네임"}</div>
+            <div style={{ fontSize: 12, color: "var(--sub)", fontWeight: 700 }}>{t.myPageAccountTitle}</div>
             <div style={{ fontSize: 17, fontWeight: 800, marginTop: 2 }}>{account?.name || "PetGrow"}</div>
             <div className="bg-sub" style={{ fontSize: 11, marginTop: 2 }}>{t.accountKakaoTag}</div>
           </div>
-          <button type="button" className="bg-btn bg-btn-ghost" style={{ fontSize: 12 }} onClick={onOpenAccount}>{lang === "en" ? "Edit info" : "정보 수정"}</button>
+          <button type="button" className="bg-btn bg-btn-ghost" style={{ fontSize: 12 }} onClick={onOpenAccount}>{t.myPageSettingsBtn}</button>
         </div>
       </div>
 
-      <div id="my-pettalk-activity" className="bg-card my-activity-card">
-        <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 6 }}>{t.myPageActivityTitle}</div>
-        <div className="bg-sub" style={{ fontSize: 12, marginBottom: 14 }}>{lang === "en" ? "Your Pet Talk history stays together here." : "내 Pet톡 활동을 탭별로 편하게 확인해보세요."}</div>
+      <div className="bg-card" style={{ marginBottom: 18 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 800 }}>{t.myPagePetsTitle}</div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: "var(--primary)", marginTop: 4 }}>{t.myPagePetsCount(allPets.length)}</div>
+          </div>
+          <button type="button" className="bg-btn bg-btn-ghost" onClick={onGoPets}>{t.myPageManagePetsBtn}</button>
+        </div>
+        {allPets.length > 0 && (
+          <div style={{ display: "flex", gap: 8, overflowX: "auto", marginTop: 14, paddingBottom: 2 }}>
+            {allPets.slice(0, 10).map((pet) => (
+              <div key={pet.id} style={{ minWidth: 110, background: "var(--surface)", borderRadius: 16, padding: 10 }}>
+                <CmPetAvatar pet={petSnapshot(pet)} size={34} />
+                <div style={{ fontSize: 12, fontWeight: 800, marginTop: 6 }}>{pet.profile.name}</div>
+                <div className="bg-sub" style={{ fontSize: 10, marginTop: 2 }}>{petAgeLabel(pet.profile.birthDate, lang)}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="bg-card">
+        <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 14 }}>{t.myPageActivityTitle}</div>
         <MyActivityPage lang={lang} onOpenPost={onOpenPost} embedded />
       </div>
     </div>
@@ -7772,43 +7543,6 @@ function CommunityPage({ allPets, account, onGoRegister }) {
   );
 }
 
-const MENU_HELP = {
-  home: { icon: "🏠", koTitle: "홈", koBody: "우리 아이와 PetGrow의 주요 기능을 한눈에 보고 원하는 메뉴로 바로 이동할 수 있어요.", enTitle: "Home", enBody: "See your pets and jump into PetGrow features from one place." },
-  about: { icon: "🌱", koTitle: "PetGrow 소개", koBody: "PetGrow가 어떤 서비스인지, 어떤 기능을 제공하는지 한눈에 살펴볼 수 있어요.", enTitle: "About PetGrow", enBody: "See what PetGrow is and what you can do here." },
-  pets: { icon: "🐾", koTitle: "우리 아이", koBody: "반려동물 정보를 등록하고 체중·성장기록·사진을 꾸준히 관리해보세요.", enTitle: "My Pets", enBody: "Register your pets and manage growth, weight, and photos." },
-  community: { icon: "💬", koTitle: "Pet톡", koBody: "다른 보호자들과 일상·질문·건강·산책·훈련 이야기를 나눠요. 닉네임은 회원정보에서 바꿀 수 있어요.", enTitle: "Pet Talk", enBody: "Share daily life, questions, health, walks and training with other pet guardians." },
-  saju: { icon: "🔮", koTitle: "Pet사주", koBody: "기본 Pet사주, 오늘의 펫운세, 보호자 궁합 중 원하는 콘텐츠를 골라 재미로 즐겨보세요.", enTitle: "Pet Saju", enBody: "Enjoy Pet Saju, today's fortune, or guardian compatibility for fun." },
-  petbti: { icon: "🧩", koTitle: "PetBTI", koBody: "우리 아이의 행동 성향을 질문으로 알아보고 재미있는 성격 유형을 확인해요.", enTitle: "PetBTI", enBody: "Answer behavior questions and discover a fun personality type for your pet." },
-  tips: { icon: "💡", koTitle: "Pet꿀팁", koBody: "건강·식단·생활·훈련 등 반려생활에 바로 써먹기 좋은 정보를 모아봤어요.", enTitle: "Pet Tips", enBody: "Browse practical tips for health, food, daily care and training." },
-  my: { icon: "👤", koTitle: "회원정보", koBody: "닉네임과 계정 정보를 수정하고, 반려동물 관리와 Pet톡 내 활동을 확인할 수 있어요.", enTitle: "Member info", enBody: "Edit your nickname and account, manage pets, and review your Pet Talk activity." },
-  content: { icon: "✨", koTitle: "Pet 콘텐츠", koBody: "Pet사주·PetBTI·Pet꿀팁을 한곳에서 골라 이용할 수 있어요.", enTitle: "Pet Content", enBody: "Choose Pet Saju, PetBTI and Pet Tips in one place." },
-};
-
-function MenuHelpCoach({ view, lang, open, onClose, onOpen }) {
-  const data = MENU_HELP[view];
-  if (!data) return null;
-  const title = lang === "en" ? data.enTitle : data.koTitle;
-  const body = lang === "en" ? data.enBody : data.koBody;
-  return (
-    <>
-      <button type="button" className="menu-help-fab" onClick={onOpen} aria-label={lang === "en" ? "Open page guide" : "이 페이지 설명 보기"}>?</button>
-      <div className={`menu-help-dim ${open ? "open" : ""}`} onClick={onClose} />
-      <aside className={`menu-help-coach ${open ? "open" : ""}`} aria-hidden={!open}>
-        <div className="menu-help-top">
-          <span className="menu-help-emoji">{data.icon}</span>
-          <button type="button" className="menu-help-close" onClick={onClose} aria-label="close">×</button>
-        </div>
-        <div className="menu-help-kicker">PETGROW HELP</div>
-        <h3>{title}</h3>
-        <p>{body}</p>
-        <div className="menu-help-actions">
-          <button type="button" className="menu-help-primary" onClick={onClose}>{lang === "en" ? "Close" : "닫기"}</button>
-        </div>
-      </aside>
-    </>
-  );
-}
-
 function AppInner({ lang, setLang }) {
   const t = useT();
   const [species, setSpecies] = useState("dog");
@@ -7818,7 +7552,6 @@ function AppInner({ lang, setLang }) {
   const [loaded, setLoaded] = useState(false);
   const [welcomeBackOpen, setWelcomeBackOpen] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
-  const [menuHelpOpen, setMenuHelpOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null); // {id, name} | null
 
   // 'about' | 'pets' | 'saju' | 'petbti' | 'tips' | 'guide' | 'privacy' | 'terms'
@@ -8036,11 +7769,6 @@ function AppInner({ lang, setLang }) {
 
   const goView = (v) => { setView(v); scrollToTop(); };
 
-  // 도움말은 자동으로 열지 않아요. 사용자가 각 화면의 ? 버튼을 눌렀을 때만 표시합니다.
-  useEffect(() => {
-    setMenuHelpOpen(false);
-  }, [view, account]);
-
   const currentList = pets[species];
   const currentPet = currentList.find((p) => p.id === activeId[species]) || null;
   const allPets = [
@@ -8243,6 +7971,7 @@ function AppInner({ lang, setLang }) {
                   <button type="button" className={`desktop-nav-link ${view === "saju" ? "active" : ""}`} onClick={() => goView("saju")}>{t.sajuNav}</button>
                   <button type="button" className={`desktop-nav-link ${view === "petbti" ? "active" : ""}`} onClick={() => goView("petbti")}>{t.petBtiNav}</button>
                   <button type="button" className={`desktop-nav-link ${view === "tips" ? "active" : ""}`} onClick={() => goView("tips")}>{t.tipsTitle}</button>
+                  <button type="button" className={`desktop-nav-link ${view === "guide" ? "active" : ""}`} onClick={() => goView("guide")}>{t.infoGuideTitle}</button>
                   {account && <button type="button" className={`desktop-nav-link ${view === "my" ? "active" : ""}`} onClick={() => goView("my")}>{t.hamNavMy}</button>}
                 </nav>
               </div>
@@ -8311,6 +8040,8 @@ function AppInner({ lang, setLang }) {
         <PetContentPage subTab={contentSubTab} onSubTabChange={setContentSubTab}
           allPets={allPets} featurePet={featurePet} onSelectFeaturePet={setFeaturePetId}
           onUpdatePetBti={handleUpdatePetBti} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} />
+      ) : effectiveView === "guide" ? (
+        <InfoGuidePage />
       ) : effectiveView === "community" ? (
         <CommunityPage allPets={allPets} account={account} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} />
       ) : effectiveView === "my" ? (
@@ -8370,28 +8101,18 @@ function AppInner({ lang, setLang }) {
           </div>
           <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 10 }}>
             <button type="button" onClick={() => goView("terms")}
-              style={{ fontSize: 11, fontWeight: 600, lineHeight: 1.4, fontFamily: "inherit", color: "var(--primary)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+              style={{ fontSize: 11, fontWeight: 700, color: "var(--primary)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
               {t.termsFooterLink}
             </button>
             <button type="button" onClick={() => goView("privacy")}
-              style={{ fontSize: 11, fontWeight: 600, lineHeight: 1.4, fontFamily: "inherit", color: "var(--primary)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+              style={{ fontSize: 11, fontWeight: 700, color: "var(--primary)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
               {t.privacyFooterLink}
             </button>
-            <a href="mailto:help.petgrow@gmail.com" style={{ fontSize: 11, fontWeight: 600, lineHeight: 1.4, fontFamily: "inherit", color: "var(--primary)", textDecoration: "none" }}>
+            <a href="mailto:help.petgrow@gmail.com" style={{ fontSize: 11, fontWeight: 700, color: "var(--primary)", textDecoration: "none" }}>
               {t.contactBtn}
             </a>
           </div>
         </div>
-      )}
-
-      {effectiveView !== "login" && MENU_HELP[effectiveView] && (
-        <MenuHelpCoach
-          view={effectiveView}
-          lang={lang}
-          open={menuHelpOpen}
-          onOpen={() => setMenuHelpOpen(true)}
-          onClose={() => setMenuHelpOpen(false)}
-        />
       )}
 
       {isNativeApp && (
