@@ -1988,10 +1988,9 @@ function HamburgerMenu({ open, onClose, view, onNavigate, onOpenAccount, account
     return () => { document.body.style.overflow = prevOverflow; };
   }, [open]);
 
-  const homeKey = account ? "home" : "about";
   const items = [
-    { key: homeKey, label: t.hamNavHome, Icon: HomeIcon },
     { key: "about", label: t.aboutNav, Icon: InfoIcon },
+    ...(account ? [{ key: "home", label: t.hamNavHome, Icon: HomeIcon }] : []),
     { key: "pets", label: t.myPetsNav, Icon: PawIcon },
     { key: "community", label: t.communityNav, Icon: TalkIcon },
     { key: "saju", label: t.sajuNav, Icon: SajuIcon },
@@ -6207,6 +6206,20 @@ function IntroVideo() {
   );
 }
 
+function LogoVideoModal({ open, onClose }) {
+  if (!open) return null;
+  return (
+    <Modal open={open} onClose={onClose} width={720}>
+      <div style={{ textAlign: "center" }}>
+        <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 12, fontFamily: "'Jua',sans-serif" }}>
+          PetGrow와 함께하는 반려생활 🐾
+        </div>
+        <IntroVideo />
+      </div>
+    </Modal>
+  );
+}
+
 // 공식 소셜 채널 링크
 const SOCIAL_LINKS = [
   { id: "youtube", url: "https://www.youtube.com/@petgrow_official", icon: YoutubeIcon, color: "#FF0000" },
@@ -6252,12 +6265,7 @@ function AboutPage({ onStart, onNavigate }) {
           </h1>
           <p className="landing-subtitle about-fade" style={{ animationDelay: ".22s" }}>{t.landingSubtitle}</p>
 
-          <div className="about-video-shell about-fade" style={{ animationDelay: ".28s" }}>
-            <div className="about-video-label">PetGrow와 함께하는 반려생활 🐾</div>
-            <IntroVideo />
-          </div>
-
-          <button className="landing-cta about-fade" style={{ animationDelay: ".34s", fontSize: 17, padding: "18px 46px" }} onClick={onStart}>
+          <button className="landing-cta about-fade" style={{ animationDelay: ".28s", fontSize: 17, padding: "18px 46px" }} onClick={onStart}>
             {t.landingCta}
           </button>
 
@@ -6483,22 +6491,6 @@ function HomeServiceCard({ Illust, bg, title, desc, onClick }) {
 
 function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
   const t = useT();
-  const introVideoRef = useRef(null);
-  const [introMuted, setIntroMuted] = useState(true);
-
-  const toggleIntroSound = () => {
-    const video = introVideoRef.current;
-    if (!video) return;
-    if (video.muted) {
-      video.volume = 0.5;
-      video.muted = false;
-      setIntroMuted(false);
-      video.play().catch(() => {});
-    } else {
-      video.muted = true;
-      setIntroMuted(true);
-    }
-  };
 
   return (
     <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 60px" }}>
@@ -6540,38 +6532,6 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
           <span>{t.homeAddPetBtn}</span>
         </button>
       )}
-
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: "22px 0 20px" }}>
-        <div style={{ fontSize: 14, fontWeight: 800, color: "var(--pg-dark)", marginBottom: 10, textAlign: "center" }}>
-          PetGrow와 함께하는 반려생활 🐾
-        </div>
-        <div style={{ position: "relative", width: "min(92vw, 580px)", maxWidth: "100%", borderRadius: 20, overflow: "hidden", boxShadow: "0 10px 28px rgba(49, 91, 36, 0.10)", background: "#fff" }}>
-          <video
-            ref={introVideoRef}
-            src="/intro-video.mp4"
-            poster="/intro-video-poster.webp"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="none"
-            style={{ display: "block", width: "100%", height: "auto" }}
-          />
-          <button
-            type="button"
-            onClick={toggleIntroSound}
-            aria-label={introMuted ? "영상 소리 켜기" : "영상 소리 끄기"}
-            title={introMuted ? "소리 켜기 (50%)" : "소리 끄기"}
-            style={{
-              position: "absolute", right: 10, bottom: 10, border: "1px solid rgba(255,255,255,.7)",
-              borderRadius: 999, padding: "7px 10px", background: "rgba(24,24,24,.62)", color: "#fff",
-              fontSize: 11, fontWeight: 700, cursor: "pointer", backdropFilter: "blur(6px)"
-            }}
-          >
-            {introMuted ? "🔇 소리" : "🔊 50%"}
-          </button>
-        </div>
-      </div>
 
       <h2 style={{ fontSize: 17, marginTop: 24, marginBottom: 14 }}>{t.homeServicesTitle}</h2>
       <div className="home-service-grid">
@@ -7489,6 +7449,7 @@ function AppInner({ lang, setLang }) {
   const [authChecked, setAuthChecked] = useState(false);
   const [accountModalOpen, setAccountModalOpen] = useState(false);
   const [hamOpen, setHamOpen] = useState(false);
+  const [logoVideoOpen, setLogoVideoOpen] = useState(false);
   const [contentSubTab, setContentSubTab] = useState("all");
   const isNativeApp = Capacitor.isNativePlatform();
   const [deleteAccountConfirmOpen, setDeleteAccountConfirmOpen] = useState(false);
@@ -7579,7 +7540,6 @@ function AppInner({ lang, setLang }) {
         } catch {}
       }
 
-      if (me && view === "about") setView("home");
       if (dogs.length > 0 || cats.length > 0) {
         const today = new Date().toISOString().slice(0, 10);
         const lastWelcome = await safeGet("bboggl:lastWelcomeDate", me);
@@ -7783,7 +7743,8 @@ function AppInner({ lang, setLang }) {
             {/* PC: 한 줄 상단 메뉴 (900px 이상) */}
             <div className="desktop-nav" style={{ alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                <button type="button" onClick={() => goView("about")}
+                <button type="button" onClick={() => setLogoVideoOpen(true)}
+                  aria-label="PetGrow 브랜드 영상 보기"
                   style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0, flexShrink: 0 }}>
                   <PetGrowLogo style={{ width: 24, height: 24 }} />
                   <span style={{ fontSize: 16, fontWeight: 800, fontFamily: "'Jua',sans-serif" }}>
@@ -7812,7 +7773,8 @@ function AppInner({ lang, setLang }) {
               <button type="button" className="icon-btn" aria-label={t.hamMenuAria} onClick={() => setHamOpen(true)}>
                 <HamburgerIcon style={{ width: 20, height: 20 }} />
               </button>
-              <button type="button" onClick={() => goView("about")}
+              <button type="button" onClick={() => setLogoVideoOpen(true)}
+                aria-label="PetGrow 브랜드 영상 보기"
                 style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
                 <PetGrowLogo style={{ width: 21, height: 21 }} />
                 <span style={{ fontSize: 15, fontWeight: 800, fontFamily: "'Jua',sans-serif" }}>
@@ -7947,6 +7909,7 @@ function AppInner({ lang, setLang }) {
       )}
       <HamburgerMenu open={hamOpen} onClose={() => setHamOpen(false)} view={view} onNavigate={goView}
         account={account} onOpenAccount={() => (account ? setAccountModalOpen(true) : goView("pets"))} />
+      <LogoVideoModal open={logoVideoOpen} onClose={() => setLogoVideoOpen(false)} />
       <GuideModal open={guideOpen} onClose={() => setGuideOpen(false)} />
       <ConfirmModal
         open={!!deleteTarget}
