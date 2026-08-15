@@ -235,6 +235,63 @@ const STRINGS = {
     tipBookmarkedFilter: "즐겨찾기",
     tipBookmarkAria: "즐겨찾기 추가/해제",
     tipEmptyResult: "조건에 맞는 꿀팁이 없어요.",
+    optional: "선택",
+    sajuNav: "사주",
+    petBtiNav: "PetBTI",
+    petBtiMainTitle: "우리 아이는 어떤 성격일까?",
+    petBtiMainDesc: "평소 행동 몇 가지만 알려주세요.\nPetGrow가 우리 아이의 성격 유형을 찾아드릴게요 🐶💕",
+    petBtiStartBtn: "PetBTI 시작하기 🐾",
+    petBtiRestartBtn: "다시 테스트하기",
+    petBtiNoPet: "먼저 '우리 아이'에 반려동물을 등록해주세요.",
+    petBtiPreviousResult: (name) => `${name}의 저장된 PetBTI`,
+    petBtiResultHeading: (name) => `${name}의 PetBTI는?`,
+    petBtiStatsTitle: "PetBTI 능력치",
+    petBtiStatAffection: "애교력", petBtiStatCuriosity: "호기심", petBtiStatFood: "먹방력",
+    petBtiStatSocial: "친화력", petBtiStatControl: "집사조종력",
+    petBtiSectionTitle: {
+      personality: "기본 성격", bond: "보호자와의 관계", friends: "친구 관계", play: "놀이 스타일", walk: "산책 스타일",
+      food: "간식 앞에서는?", alone: "혼자 있을 때", mischief: "사고뭉치 모먼트", affection: "애정 표현법", hidden: "숨겨진 매력",
+    },
+    petBtiOneWordTitle: (name) => `${name}를 한마디로 표현하면?`,
+    petBtiCompatTitle: (name) => `💕 ${name}와 잘 맞는 친구`,
+    petBtiCompatGood: (name) => `${name}에게 없는 매력을 가진 상대라, 서로 다른 점이 오히려 좋은 케미가 될 수 있어요. 함께 있으면 서로의 부족한 부분을 자연스럽게 채워줄 가능성이 높아요.`,
+    petBtiCompatChaosTitle: "만나면 정신없는 조합",
+    petBtiCompatChaos: (name) => `${name}와 성향이 아주 비슷한 친구예요. 만나면 둘 다 신나서 정신없이 놀 수도 있어요 — 나쁘다는 게 아니라 그만큼 텐션이 두 배가 된다는 뜻이에요 😆`,
+    petBtiShareBtn: "내 PetBTI 공유하기 🐾",
+    petBtiShareTitle: "PetBTI 카드 공유",
+    petBtiShareHeading: (name) => `${name}의 PetBTI`,
+    petBtiDisclaimer: "재미로 알아보는 PetGrow 반려동물 성격 테스트예요. 행동학적·의학적 진단을 대신하지 않아요.",
+    sajuFormTitle: "우리 아이 사주 🐾",
+    sajuFormSub: "정보를 입력하면 재미로 보는 우리 아이 운명을 알려드려요.",
+    sajuNameLabel: "이름",
+    sajuNamePlaceholder: "몽치",
+    sajuSpeciesLabel: "강아지 / 고양이",
+    sajuBirthLabel: "생년월일",
+    sajuGenderLabel: "성별",
+    sajuTimeLabel: "태어난 시간",
+    sajuBreedLabel: "품종",
+    sajuBreedPlaceholder: "말티즈",
+    sajuGenerateBtn: "우리 아이 운명 알아보기 🐾",
+    sajuErrName: "이름을 입력해주세요",
+    sajuErrBirth: "생년월일을 입력해주세요",
+    sajuIntroTitle: (name) => `${name}의 사주를 볼까요?`,
+    sajuIntroSub: "등록된 정보로 바로 결과를 볼 수 있어요.",
+    sajuUseOtherInfo: "다른 정보로 보기",
+    sajuResultHeading: (name) => `${name}의 타고난 운명`,
+    sajuCategoryTitle: {
+      personality: "타고난 성격", bond: "보호자와의 인연", friends: "친구 관계", food: "먹을 복",
+      play: "놀이·산책 스타일", affection: "애교 스타일", mischief: "사고뭉치 지수", luck: "타고난 복",
+    },
+    sajuOneWordTitle: (name) => `${name}를 한마디로 표현하면?`,
+    sajuTodayTitle: "오늘의 한마디",
+    sajuShareBtn: "우리 아이 사주 공유하기",
+    sajuShareTitle: "사주 카드 공유",
+    sajuShareHeading: (name) => `${name}의 타고난 운명`,
+    sajuComingCompat: "보호자와 궁합 보기",
+    sajuComingDaily: "오늘의 운세 보기",
+    sajuComingSoon: "곧 만나요! 준비 중이에요",
+    sajuRestartBtn: "다시 보기",
+    sajuDisclaimer: "재미로 보는 PetGrow 콘텐츠예요 🐾 실제 성격이나 미래를 판단하는 자료가 아니에요.",
     tipCategoryLabels: { all: "전체보기", dog: "강아지", cat: "고양이", health: "건강", life: "생활" },
     privacyFooterLink: "개인정보처리방침",
     guideSections: [
@@ -312,6 +369,9 @@ const STRINGS = {
     recordErrDate: "측정일을 선택해주세요",
     recordErrWeight: "체중을 입력해주세요",
     recordFirst: "첫 기록이에요",
+    recordDeleteBtn: "삭제",
+    recordDeleteTitle: "기록을 삭제할까요?",
+    recordDeleteMsg: (date, weight) => `${date} · ${weight}kg 기록을 삭제해요. 이 작업은 되돌릴 수 없어요.`,
     recordUpdated: (prev, next) => `성체 예상치 ${prev}kg → ${next}kg으로 업데이트`,
     diffUp: (g) => `예상보다 +${g}g 빠르게 성장 중`,
     diffDown: (g) => `예상보다 ${g}g 느리게 성장 중`,
@@ -425,6 +485,7 @@ const STRINGS = {
     socialTitle: "PetGrow 공식 채널",
     saveToastOk: "저장됐어요",
     saveToastError: "저장에 실패했어요 — 저장 공간이 가득 찼을 수 있어요. 오래된 사진을 정리해보세요.",
+    welcomeBackMsg: (name) => name ? `다시 오셨군요! 🐾 ${name}의 기록을 이어가볼까요?` : "다시 오셨군요! 🐾 기록을 이어가볼까요?",
     socialLabels: { youtube: "유튜브", instagram: "인스타그램", threads: "스레드", tiktok: "틱톡", blog: "네이버 블로그" },
     introVideoMute: "소리 끄기",
     introVideoUnmute: "소리 켜기",
@@ -537,6 +598,63 @@ const STRINGS = {
     tipBookmarkedFilter: "Bookmarked",
     tipBookmarkAria: "Add/remove bookmark",
     tipEmptyResult: "No tips match your filters.",
+    optional: "optional",
+    sajuNav: "Saju",
+    petBtiNav: "PetBTI",
+    petBtiMainTitle: "What's your pet's personality?",
+    petBtiMainDesc: "Just answer a few questions about their everyday behavior.\nPetGrow will find their personality type 🐶💕",
+    petBtiStartBtn: "Start PetBTI 🐾",
+    petBtiRestartBtn: "Take the test again",
+    petBtiNoPet: "Please add a pet under 'My Pets' first.",
+    petBtiPreviousResult: (name) => `${name}'s saved PetBTI`,
+    petBtiResultHeading: (name) => `${name}'s PetBTI is...`,
+    petBtiStatsTitle: "PetBTI Stats",
+    petBtiStatAffection: "Affection", petBtiStatCuriosity: "Curiosity", petBtiStatFood: "Food Drive",
+    petBtiStatSocial: "Sociability", petBtiStatControl: "Charm Power",
+    petBtiSectionTitle: {
+      personality: "Natural personality", bond: "Bond with you", friends: "With other pets", play: "Play style", walk: "Walk style",
+      food: "At treat time", alone: "When alone", mischief: "Mischief moments", affection: "How they show love", hidden: "Hidden charm",
+    },
+    petBtiOneWordTitle: (name) => `${name} in one line?`,
+    petBtiCompatTitle: (name) => `💕 A friend who'd suit ${name}`,
+    petBtiCompatGood: (name) => `A personality with charms ${name} doesn't have — their differences could actually make for a great pairing, each filling in where the other doesn't.`,
+    petBtiCompatChaosTitle: "The chaos combo",
+    petBtiCompatChaos: (name) => `A friend with a very similar personality to ${name}. Put them together and it might get delightfully chaotic — not a bad thing, just double the energy 😆`,
+    petBtiShareBtn: "Share my PetBTI 🐾",
+    petBtiShareTitle: "Share PetBTI card",
+    petBtiShareHeading: (name) => `${name}'s PetBTI`,
+    petBtiDisclaimer: "A fun PetGrow personality quiz — not a behavioral or medical assessment.",
+    sajuFormTitle: "Pet Fortune 🐾",
+    sajuFormSub: "Enter a few details for a fun look at your pet's fortune.",
+    sajuNameLabel: "Name",
+    sajuNamePlaceholder: "Bella",
+    sajuSpeciesLabel: "Dog / Cat",
+    sajuBirthLabel: "Birth date",
+    sajuGenderLabel: "Gender",
+    sajuTimeLabel: "Birth time",
+    sajuBreedLabel: "Breed",
+    sajuBreedPlaceholder: "Maltese",
+    sajuGenerateBtn: "Reveal my pet's fortune 🐾",
+    sajuErrName: "Please enter a name",
+    sajuErrBirth: "Please enter a birth date",
+    sajuIntroTitle: (name) => `See ${name}'s fortune?`,
+    sajuIntroSub: "We'll use their saved profile info.",
+    sajuUseOtherInfo: "Use different info",
+    sajuResultHeading: (name) => `${name}'s fortune`,
+    sajuCategoryTitle: {
+      personality: "Natural personality", bond: "Bond with you", friends: "With other pets", food: "Food luck",
+      play: "Play & walk style", affection: "Affection style", mischief: "Mischief meter", luck: "Their strongest luck",
+    },
+    sajuOneWordTitle: (name) => `${name} in one line?`,
+    sajuTodayTitle: "A word for today",
+    sajuShareBtn: "Share this fortune",
+    sajuShareTitle: "Share fortune card",
+    sajuShareHeading: (name) => `${name}'s fortune`,
+    sajuComingCompat: "Compatibility with you",
+    sajuComingDaily: "Today's horoscope",
+    sajuComingSoon: "Coming soon!",
+    sajuRestartBtn: "Try again",
+    sajuDisclaimer: "A fun PetGrow feature 🐾 not a real assessment of personality or the future.",
     tipCategoryLabels: { all: "All", dog: "Dogs", cat: "Cats", health: "Health", life: "Lifestyle" },
     privacyFooterLink: "Privacy Policy",
     guideSections: [
@@ -614,6 +732,9 @@ const STRINGS = {
     recordErrDate: "Please select the date measured",
     recordErrWeight: "Please enter a weight",
     recordFirst: "First record",
+    recordDeleteBtn: "Delete",
+    recordDeleteTitle: "Delete this record?",
+    recordDeleteMsg: (date, weight) => `This will delete the ${date} · ${weight}kg record. This can't be undone.`,
     recordUpdated: (prev, next) => `Adult estimate updated: ${prev}kg → ${next}kg`,
     diffUp: (g) => `Growing +${g}g faster than predicted`,
     diffDown: (g) => `Growing ${g}g slower than predicted`,
@@ -727,6 +848,7 @@ const STRINGS = {
     socialTitle: "PetGrow official channels",
     saveToastOk: "Saved",
     saveToastError: "Couldn't save — storage may be full. Try removing some older photos.",
+    welcomeBackMsg: (name) => name ? `Welcome back! 🐾 Ready to continue tracking ${name}?` : "Welcome back! 🐾 Ready to continue your records?",
     socialLabels: { youtube: "YouTube", instagram: "Instagram", threads: "Threads", tiktok: "TikTok", blog: "Naver Blog" },
     introVideoMute: "Mute",
     introVideoUnmute: "Unmute",
@@ -1622,11 +1744,20 @@ const GlobalStyle = () => (
     .social-btn{width:46px; height:46px; border-radius:50%; background:#fff; display:flex; align-items:center;
       justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.08); transition:.15s;}
     .social-btn:hover{transform:translateY(-3px); box-shadow:0 8px 20px rgba(0,0,0,.12);}
-    .save-toast{position:fixed; left:50%; bottom:28px; transform:translateX(-50%); z-index:200;
+    .save-toast{position:fixed; left:50%; bottom:max(28px, calc(env(safe-area-inset-bottom) + 20px)); transform:translateX(-50%); z-index:200;
       background:var(--text); color:#fff; padding:12px 20px; border-radius:999px; font-size:13px; font-weight:700;
-      display:flex; align-items:center; gap:8px; box-shadow:0 10px 24px rgba(0,0,0,.25); animation:toastIn .25s ease both;}
+      display:flex; align-items:center; gap:8px; box-shadow:0 10px 24px rgba(0,0,0,.25); animation:toastIn .25s ease both;
+      max-width:calc(100vw - 32px); text-align:center;}
     .save-toast.error{background:#E63946;}
     @keyframes toastIn{from{opacity:0; transform:translateX(-50%) translateY(10px);} to{opacity:1; transform:translateX(-50%) translateY(0);}}
+    @media (max-width:480px){
+      .header-toprow{flex-direction:column; align-items:center;}
+    }
+    @media (min-width:720px){
+      .header-logo{width:30px !important; height:30px !important;}
+    }
+    .icon-btn-sm{background:none; border:none; cursor:pointer; padding:4px; display:flex; align-items:center; justify-content:center; border-radius:8px;}
+    .icon-btn-sm:hover{background:var(--surface);}
     .landing-pricing{display:grid; grid-template-columns:repeat(2,1fr); gap:20px; max-width:640px; margin:0 auto;}
     .landing-pricing-card{background:#fff; border:1px solid #e3e8de; border-radius:18px; padding:28px 24px;}
     .landing-pricing-highlight{background:var(--pg-dark); border-color:var(--pg-dark);}
@@ -1667,9 +1798,10 @@ const GlobalStyle = () => (
       .landing-showcase{gap:36px;}
       .mock-card{max-width:100%;} }
     .modal-overlay{position:fixed; inset:0; background:rgba(91,74,79,.45); display:flex; align-items:center;
-      justify-content:center; padding:20px; z-index:100;}
-    .modal-card{background:#fff; border-radius:28px; padding:26px; width:100%; box-shadow:0 24px 48px rgba(91,74,79,.25);
-      max-height:92vh; overflow-y:auto;}
+      justify-content:center; padding:16px; padding-top:max(16px, env(safe-area-inset-top));
+      padding-bottom:max(16px, env(safe-area-inset-bottom)); z-index:100;}
+    .modal-card{background:#fff; border-radius:28px; padding:24px; width:100%; box-shadow:0 24px 48px rgba(91,74,79,.25);
+      max-height:85vh; max-height:85dvh; overflow-y:auto; -webkit-overflow-scrolling:touch;}
     .guide-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px 20px;}
     @media (max-width:560px){ .guide-grid{grid-template-columns:1fr;} }
     .combobox-wrap{position:relative;}
@@ -2172,8 +2304,9 @@ function RecordForm({ onAdd }) {
   );
 }
 
-function RecordList({ records }) {
+function RecordList({ records, onDelete }) {
   const t = useT();
+  const [deleteTarget, setDeleteTarget] = useState(null);
   const rows = [...records].sort((a, b) => new Date(b.date) - new Date(a.date));
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 16 }}>
@@ -2181,9 +2314,15 @@ function RecordList({ records }) {
         const label = r.diffGrams === undefined ? null : diffLabel(r.diffGrams, t);
         return (
           <div key={r.id} className="bg-surface-card" style={{ padding: "14px 16px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
               <span style={{ fontWeight: 700, fontSize: 14 }}>{r.date}</span>
-              <span style={{ fontWeight: 800, fontSize: 16 }}>{r.weightKg}kg</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ fontWeight: 800, fontSize: 16 }}>{r.weightKg}kg</span>
+                <button type="button" className="icon-btn-sm" aria-label={t.recordDeleteBtn}
+                  onClick={() => setDeleteTarget(r)}>
+                  <TrashIcon style={{ width: 15, height: 15, color: "var(--sub)" }} />
+                </button>
+              </div>
             </div>
             {label ? (
               <div style={{ marginTop: 6, fontSize: 13, fontWeight: 600, color: label.tone === "up" ? "var(--primary)" : "var(--text)" }}>
@@ -2200,11 +2339,19 @@ function RecordList({ records }) {
           </div>
         );
       })}
+      <ConfirmModal
+        open={!!deleteTarget}
+        title={t.recordDeleteTitle}
+        message={deleteTarget ? t.recordDeleteMsg(deleteTarget.date, deleteTarget.weightKg) : ""}
+        confirmLabel={t.recordDeleteBtn}
+        onConfirm={() => { onDelete(deleteTarget.id); setDeleteTarget(null); }}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }
 
-function RecordSection({ records, onAddRecord }) {
+function RecordSection({ records, onAddRecord, onDeleteRecord }) {
   const t = useT();
   return (
     <div className="bg-card">
@@ -2213,7 +2360,7 @@ function RecordSection({ records, onAddRecord }) {
         <h3 style={{ fontSize: 16 }}>{t.recordTitle}</h3>
       </div>
       <RecordForm onAdd={onAddRecord} />
-      <RecordList records={records} />
+      <RecordList records={records} onDelete={onDeleteRecord} />
     </div>
   );
 }
@@ -3001,6 +3148,23 @@ const LightbulbIcon = (p) => (
     <path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2v.3h6v-.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2zM9.5 19h5v1a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1v-1z" />
   </svg>
 );
+const SajuIcon = (p) => (
+  <svg className="icon" viewBox="0 0 24 24" {...p}>
+    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.6" />
+    <path d="M12 3c2.5 2.5 2.5 6.5 0 9s-2.5 6.5 0 9" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    <path d="M12 3c-2.5 2.5-2.5 6.5 0 9s2.5 6.5 0 9" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" opacity="0" />
+    <circle cx="12" cy="7" r="1.2" fill="currentColor" />
+    <circle cx="12" cy="17" r="1.2" fill="currentColor" />
+  </svg>
+);
+const PetBtiIcon = (p) => (
+  <svg className="icon" viewBox="0 0 24 24" {...p}>
+    <rect x="3" y="3" width="8" height="8" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" />
+    <rect x="13" y="3" width="8" height="8" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" />
+    <rect x="3" y="13" width="8" height="8" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" />
+    <rect x="13" y="13" width="8" height="8" rx="2" fill="currentColor" />
+  </svg>
+);
 
 /* ============================================================
    꿀팁 콘텐츠 소스 — 구글 시트로 직접 관리할 수 있게 하는 장치
@@ -3243,6 +3407,1104 @@ function TipsPage({ onClose }) {
   );
 }
 
+/* ============================================================
+   우리 아이 사주 🐾 — 생년월일 기반 재미 콘텐츠 (참고용, 미신 아님)
+   데이터와 UI를 분리해서 나중에 문구 추가/수정이 쉬워요.
+   ============================================================ */
+function hashString(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = (h << 5) - h + str.charCodeAt(i);
+    h |= 0;
+  }
+  return Math.abs(h);
+}
+function hasFinalConsonant(str) {
+  const ch = (str || "").trim().slice(-1);
+  const code = ch.charCodeAt(0);
+  if (code < 0xac00 || code > 0xd7a3) return true;
+  return (code - 0xac00) % 28 !== 0;
+}
+function josa(name, withFinal, withoutFinal) {
+  return `${name}${hasFinalConsonant(name) ? withFinal : withoutFinal}`;
+}
+function seededPick(seed, salt, arr) {
+  return arr[hashString(seed + "::" + salt) % arr.length];
+}
+
+const SAJU_DATA = {
+  ko: {
+    summaries: (n) => [
+      `사랑받기 위해 태어난 애교쟁이 💕`,
+      `호기심은 만렙, 겁은 조금 많은 귀염둥이 🐾`,
+      `조용히 집사를 조종하는 천재 전략가 😼`,
+      `한번 마음먹으면 끝까지 가는 뚝심의 아이 💪`,
+      `어디서든 사랑받는 인싸 기질 만렙 ✨`,
+      `느긋해 보이지만 은근 예민한 감성파 🌿`,
+      `장난기 가득, 매일이 놀이 시간인 아이 🎾`,
+      `보기만 해도 힐링되는 순둥이 캐릭터 🍀`,
+      `가족을 세상에서 제일 좋아하는 껌딱지 🧸`,
+      `자기만의 세계가 확실한 개성파 스타 🌟`,
+    ],
+    personality: (n) => [
+      `${josa(n, "이는", "는")} 낯을 좀 가리는 편이지만, 한번 마음을 열면 세상 누구보다 다정한 모습을 보여줘요. 처음 보는 사람 앞에서는 살짝 거리를 두다가도, 며칠만 지나면 어느새 곁을 지키고 있을 거예요.`,
+      `호기심이 많아서 새로운 냄새, 새로운 장소를 그냥 지나치지 못하는 타입이에요. 그만큼 세상을 즐겁게 탐험하는 아이지만, 가끔은 그 호기심 때문에 엉뚱한 사고를 칠 수도 있어요 😆`,
+      `겉으로는 씩씩해 보여도 속은 은근히 여린 구석이 있어요. 큰 소리에 놀라거나 낯선 환경에 예민하게 반응할 수 있으니, 보호자의 다정한 목소리 하나가 이 아이에겐 제일 큰 안정제예요.`,
+      `한번 마음먹으면 쉽게 생각을 바꾸지 않는 귀여운 뚝심이 있어요. 고집이 세다기보다는, 자기가 좋아하는 것에 확신이 있는 스타일이라고 봐주세요 😌`,
+      `에너지가 넘쳐서 가만히 있는 걸 잘 못 견뎌요. 몸을 움직이고 노는 시간이 부족하면 답답함을 표현할 수도 있으니, 하루 한 번은 신나게 놀아주는 시간이 필요해요.`,
+      `느긋하고 여유로운 성격이라 웬만한 일에는 크게 동요하지 않아요. 그래서 옆에 있으면 저절로 마음이 편안해지는, 힐링 담당 반려동물일 가능성이 높아요.`,
+    ],
+    bond: (n) => [
+      `보호자를 세상에서 제일 믿음직한 존재로 생각해요. 하루 종일 밖에서 무슨 일이 있었든, 집에 돌아온 보호자를 보는 순간 그 하루의 스트레스가 다 날아가는 표정을 지을 거예요.`,
+      `애정 표현이 은근하지만 확실한 편이에요. 대놓고 매달리진 않아도, 슬쩍 옆에 와서 붙어있거나 시야 안에 보호자가 있는지 자꾸 확인하는 습관이 있을 수 있어요.`,
+      `보호자와의 유대감이 아주 깊어서, 보호자의 기분 변화를 은근히 잘 알아채는 편이에요. 우울한 날엔 괜히 더 옆에 붙어 있으려는 모습을 보일 수도 있어요 🥹`,
+      `독립적인 성향이 있어서 혼자만의 시간도 잘 즐기지만, 보호자가 집에 없으면 은근히 기다리는 타입이에요. 츤데레 같은 매력이 있는 관계랄까요.`,
+      `${josa(n, "이는", "는")} '내 사람'이라고 정한 상대에게는 유독 곁을 잘 내주는 편이에요. 보호자를 그렇게 자기 사람으로 인정했다는 증거가 여기저기서 보일 거예요.`,
+    ],
+    friends: (n) => [
+      `다른 친구들과 어울리는 걸 좋아하지만, 처음엔 살짝 탐색전을 벌이는 신중한 스타일이에요. 친해지고 나면 의외로 먼저 장난을 걸 수도 있어요.`,
+      `무리에서 은근히 리더십을 발휘하는 타입이에요. 먼저 나서서 노는 판을 짜거나, 다른 친구들을 이끄는 모습을 볼 수도 있어요.`,
+      `낯선 친구를 만나면 조심스럽게 거리를 재다가, 상대가 편안하다고 느껴지면 금방 마음을 여는 편이에요.`,
+      `혼자 노는 것도 좋아하지만 마음 맞는 친구가 생기면 껌딱지처럼 붙어다니는 스타일이라, 단짝이 생기면 우정이 아주 깊어질 아이예요.`,
+      `또래 친구들 사이에서 인기가 많을 상이에요. 특유의 붙임성 덕분에 어디서든 금방 친구를 사귈 수 있어요.`,
+    ],
+    food: (n) => [
+      `간식 냄새를 맡는 순간 눈빛부터 달라지는 타입이에요. 평소엔 얌전하다가도 간식 앞에서는 세상 진지해지는 반전 매력이 있어요 🍖`,
+      `먹을 복이 아주 강한 편이에요. 밥그릇 앞에서는 그 누구보다 집중력이 좋아지고, 어쩌면 은근슬쩍 간식을 더 얻어내는 잔기술도 있을지 몰라요.`,
+      `맛있는 걸 보면 못 참는 편이라, 식탐이 있다기보다는 '인생을 맛있게 즐길 줄 아는 아이'라고 봐주세요 😋`,
+      `의외로 입이 짧아서 좋아하는 것만 콕 집어 먹는 미식가 스타일일 수 있어요. 그래도 좋아하는 간식 앞에서는 눈빛이 반짝일 거예요.`,
+      `식사 시간이 되면 제일 먼저 알아채고 보호자 곁을 맴도는 타입이에요. 배고픔을 티내는 것도 이 아이만의 애교 포인트예요.`,
+    ],
+    play: (n) => [
+      `몸을 움직이는 놀이를 좋아해서, 공놀이나 뛰어다니는 활동을 하면 눈에 띄게 신나 해요. 산책이나 활동량이 부족하면 스트레스가 쌓일 수 있으니 신경 써주세요.`,
+      `조용히 앉아서 하는 놀이도 은근히 좋아하는 편이라, 장난감 하나를 물고 오랫동안 혼자서도 잘 놀아요.`,
+      `산책 나가는 걸 세상에서 제일 좋아하는 타입일 가능성이 높아요. 현관 근처에서 목줄이나 신발 소리만 나도 반응할 거예요.`,
+      `새로운 장난감에 대한 호기심이 커서, 처음 보는 물건은 일단 탐색부터 하고 보는 스타일이에요.`,
+      `놀이 중에 갑자기 정색하고 진지해지는 반전 매력이 있어요. 노는 것도 진심으로 임하는 타입이랄까요 😆`,
+    ],
+    affection: (n) => [
+      `애교가 은근하지만 확실한 스타일이에요. 대놓고 표현하기보다는, 슬쩍 다가와 몸을 기대는 걸로 마음을 전할 가능성이 높아요.`,
+      `보호자가 다른 곳에 정신이 팔려 있으면 슬쩍 옆으로 와서 존재감을 어필하는 것도 이 아이만의 애정 표현일 수 있어요.`,
+      `스킨십을 아주 좋아해서, 쓰다듬어주는 손길 앞에서는 세상 행복한 표정을 지을 거예요.`,
+      `애교가 폭발적인 타입이라, 보호자가 집에 들어오는 순간 온몸으로 반가움을 표현할 가능성이 높아요.`,
+      `무심한 듯 보이지만 사실은 보호자의 관심을 은근히 원하는 츤데레 스타일이에요.`,
+    ],
+    mischief: (n) => [
+      `조용하다 싶으면 뭔가 재미있는 일을 계획하고 있을지도 몰라요 👀 심심할 때 특히 장난기가 발동하는 타입이에요.`,
+      `보호자가 안 보는 틈을 귀신같이 알아채는 눈치의 아이예요. 그 틈을 타 작은 장난을 칠 가능성이 높아요.`,
+      `호기심이 많아서 새로운 물건이 생기면 일단 확인부터 하고 보는 습성이 있어요. 가끔 그게 장난으로 이어질 수 있어요.`,
+      `평소엔 얌전하다가도 특정 시간대(주로 저녁 무렵)에 갑자기 에너지가 폭발하는 '개모차/캣모차' 타임이 있을 수 있어요.`,
+      `장난기 지수가 꽤 높은 편이라, 심심함을 못 참고 스스로 놀거리를 만들어내는 창의력이 있어요.`,
+    ],
+    luck: (n) => [
+      `사랑받는 복이 특히 강한 아이예요. 어딜 가든 자연스럽게 사람들의 시선과 애정을 끌어모으는 매력이 있어요.`,
+      `건강 복이 좋은 편이라, 잘 챙겨주기만 하면 무럭무럭 튼튼하게 자랄 가능성이 높아요.`,
+      `먹을 복이 타고났어요. 밥이든 간식이든, 이 아이 앞에는 늘 맛있는 것들이 끊이지 않을 거예요.`,
+      `친구 복이 많아요. 사람이든 다른 동물 친구든, 이 아이 주변엔 좋은 인연이 잘 모여요.`,
+      `보호자 복이 최고예요. 이렇게 사랑을 듬뿍 주는 보호자를 만난 것 자체가 이 아이의 가장 큰 복일지도 몰라요 💕`,
+    ],
+  },
+  en: {
+    summaries: (n) => [
+      `Born to be loved — total charmer 💕`,
+      `Maxed-out curiosity, a little bit of a scaredy-cat 🐾`,
+      `The quiet genius who secretly runs the household 😼`,
+      `Once decided, never changes their mind 💪`,
+      `Loved wherever they go — natural social star ✨`,
+      `Looks chill, but a sensitive soul underneath 🌿`,
+    ],
+    personality: (n) => [
+      `${n} can be a little shy with new faces, but once the walls come down, few are more affectionate. Give it a few days and you'll find them right by your side.`,
+      `Endlessly curious about new smells and places — always exploring the world with excitement. That same curiosity can occasionally lead to a bit of mischief too.`,
+      `Looks tough on the outside but has a soft, sensitive side. Loud noises or new environments can be a bit much, so a calm, gentle voice goes a long way.`,
+      `Once they set their mind on something, they rarely change it — call it charming stubbornness rather than difficulty.`,
+    ],
+    bond: (n) => [
+      `You're the most trusted person in their world. Whatever kind of day it was, seeing you walk through the door seems to melt all of it away.`,
+      `Affection is shown quietly but clearly — maybe not dramatic displays, but a habit of staying close and keeping an eye on where you are.`,
+      `The bond runs deep, and they're surprisingly good at picking up on your mood — expect extra cuddles on your rough days.`,
+    ],
+    friends: (n) => [
+      `Enjoys the company of other animals, though they like to size things up carefully at first before warming up.`,
+      `Has a bit of natural leadership among peers — often the one starting the games.`,
+      `A little cautious with strangers at first, but quick to open up once comfortable.`,
+    ],
+    food: (n) => [
+      `The moment a treat appears, the whole demeanor changes — food time is serious business 🍖`,
+      `Blessed with strong food luck — impressively focused at mealtime, and maybe a little skilled at getting extra treats.`,
+      `Not exactly picky, more like someone who truly knows how to enjoy a good meal 😋`,
+    ],
+    play: (n) => [
+      `Loves active play like fetch or running around — regular exercise really matters for keeping them happy.`,
+      `Also enjoys quieter play, happily entertained by a favorite toy for a long stretch.`,
+      `Walks might be their favorite thing in the world — even the sound of a leash can set off excitement.`,
+    ],
+    affection: (n) => [
+      `Shows love in quiet but unmistakable ways — leaning in close says more than words ever could.`,
+      `If you're distracted, don't be surprised by a gentle nudge reminding you they're there — that's love too.`,
+      `A big fan of physical affection — expect a very happy expression during pets and cuddles.`,
+    ],
+    mischief: (n) => [
+      `If it's suspiciously quiet, something fun might be brewing 👀 — mischief tends to strike when bored.`,
+      `Has an uncanny sense for when you're not looking — prime time for a little trouble.`,
+      `New objects get investigated immediately, which occasionally turns into a game.`,
+    ],
+    luck: (n) => [
+      `Especially blessed with the luck of being loved — draws attention and affection everywhere they go.`,
+      `Good health luck — with proper care, likely to grow up strong and thriving.`,
+      `Born with food luck — treats and good meals seem to always find their way to them.`,
+    ],
+  },
+};
+
+const SAJU_TAG_POOL = {
+  ko: ["#껌딱지", "#간식러버", "#사랑둥이", "#호기심대장", "#애교폭발", "#뚝심캐릭터", "#산책러버", "#낯가림주의", "#인싸기질", "#힐링요정", "#장난꾸러기", "#집사바라기"],
+  en: ["#Velcro", "#TreatLover", "#SweetSoul", "#CuriousOne", "#AffectionOverload", "#GentleStubborn", "#WalkFanatic", "#ShyAtFirst", "#SocialStar", "#HealingVibes", "#LittleTrouble", "#DevotedToYou"],
+};
+
+const SAJU_ONE_WORD = {
+  ko: [
+    "사랑받는 법을 너무 잘 아는 천재 막내",
+    "온 집안의 분위기 메이커",
+    "조용히 마음을 훔치는 스나이퍼",
+    "매일이 즐거운 긍정 에너지 발전소",
+    "보기만 해도 웃음이 나는 힐링캠프",
+    "은근한 고집으로 집사를 조종하는 상전",
+  ],
+  en: [
+    "A tiny genius at being loved",
+    "The household's official mood-maker",
+    "A quiet expert at stealing hearts",
+    "A little engine of pure positive energy",
+    "Instant happiness, just add eye contact",
+    "The boss who runs things with gentle stubbornness",
+  ],
+};
+
+const SAJU_TODAY = {
+  ko: [
+    (n) => `오늘 ${josa(n, "이가", "가")} 먼저 다가온다면 하던 일을 잠깐 멈추고 쓰다듬어 주세요. 평소보다 사랑을 더 받고 싶은 날일지도 몰라요. 💕`,
+    (n) => `오늘은 ${n}랑 눈을 오래 맞춰보세요. 생각보다 많은 이야기를 하고 있을지도 몰라요 👀`,
+    (n) => `${n}가 오늘 유독 옆에 붙어있다면, 그건 "오늘 하루 잘했어"라는 무언의 인사일 수 있어요.`,
+    (n) => `오늘 간식 하나 정도는 그냥 넘어가 줘도 좋은 날이에요. ${n}도 가끔은 특별대우가 필요하니까요 🍖`,
+    (n) => `바쁘더라도 오늘은 ${n}와 잠깐 산책이나 놀이 시간을 가져보세요. 그 몇 분이 하루를 다르게 만들어줄 거예요.`,
+  ],
+  en: [
+    (n) => `If ${n} comes to you first today, pause what you're doing and give them a good pet. They might just want extra love today. 💕`,
+    (n) => `Try holding eye contact with ${n} a little longer today — there might be more being said than you'd expect 👀`,
+    (n) => `If ${n} is extra clingy today, take it as their quiet way of saying "you did great today."`,
+    (n) => `Today's a good day to let one extra treat slide — ${n} deserves a little special treatment sometimes 🍖`,
+    (n) => `However busy today is, try to fit in a short walk or play session with ${n} — those few minutes go a long way.`,
+  ],
+};
+
+function generateSajuResult(input, lang) {
+  const { name, birthDate, species, gender } = input;
+  const seed = `${name}|${birthDate}|${species}|${gender || ""}`;
+  const bank = SAJU_DATA[lang] || SAJU_DATA.ko;
+  const pick = (key, salt) => seededPick(seed, salt, bank[key](name));
+  const today = new Date().toISOString().slice(0, 10);
+  const todayBank = SAJU_TODAY[lang] || SAJU_TODAY.ko;
+  const todayLine = seededPick(seed + today, "today", todayBank)(name);
+  const tagPool = SAJU_TAG_POOL[lang] || SAJU_TAG_POOL.ko;
+  const t1 = seededPick(seed, "tag1", tagPool);
+  let t2 = seededPick(seed, "tag2", tagPool);
+  while (t2 === t1) t2 = tagPool[(tagPool.indexOf(t2) + 1) % tagPool.length];
+  let t3 = seededPick(seed, "tag3", tagPool);
+  while (t3 === t1 || t3 === t2) t3 = tagPool[(tagPool.indexOf(t3) + 1) % tagPool.length];
+  return {
+    summary: pick("summaries", "summary"),
+    oneWord: seededPick(seed, "oneword", (SAJU_ONE_WORD[lang] || SAJU_ONE_WORD.ko)),
+    tags: [t1, t2, t3],
+    today: todayLine,
+    categories: [
+      { key: "personality", icon: "🌱", text: pick("personality", "personality") },
+      { key: "bond", icon: "💕", text: pick("bond", "bond") },
+      { key: "friends", icon: "🐾", text: pick("friends", "friends") },
+      { key: "food", icon: "🍖", text: pick("food", "food") },
+      { key: "play", icon: "🧸", text: pick("play", "play") },
+      { key: "affection", icon: "💗", text: pick("affection", "affection") },
+      { key: "mischief", icon: "😈", text: pick("mischief", "mischief") },
+      { key: "luck", icon: "🍀", text: pick("luck", "luck") },
+    ],
+  };
+}
+
+function SajuInputForm({ defaultPet, onGenerate }) {
+  const t = useT();
+  const [name, setName] = useState(defaultPet ? defaultPet.profile.name : "");
+  const [species, setSpecies] = useState(defaultPet ? defaultPet.profile.species : "dog");
+  const [birthDate, setBirthDate] = useState(defaultPet ? defaultPet.profile.birthDate : "");
+  const [gender, setGender] = useState(defaultPet ? defaultPet.profile.gender : "female");
+  const [birthTime, setBirthTime] = useState("");
+  const [breed, setBreed] = useState(defaultPet ? defaultPet.profile.breedName : "");
+  const [errors, setErrors] = useState({});
+
+  const submit = () => {
+    const next = {};
+    if (!name.trim()) next.name = t.sajuErrName;
+    if (!birthDate) next.birthDate = t.sajuErrBirth;
+    if (Object.keys(next).length > 0) {
+      setErrors(next);
+      return;
+    }
+    onGenerate({ name: name.trim(), species, birthDate, gender, birthTime, breed: breed.trim() });
+  };
+
+  return (
+    <div className="bg-card">
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+        <SajuIcon style={{ width: 20, height: 20, color: "var(--primary)" }} />
+        <h3 style={{ fontSize: 17 }}>{t.sajuFormTitle}</h3>
+      </div>
+      <p className="bg-sub" style={{ fontSize: 13, marginBottom: 18 }}>{t.sajuFormSub}</p>
+
+      <div style={{ marginBottom: 14 }}>
+        <label className="bg-label">{t.sajuNameLabel}</label>
+        <input type="text" className={`bg-input ${errors.name ? "invalid" : ""}`} value={name}
+          onChange={(e) => setName(e.target.value)} placeholder={t.sajuNamePlaceholder} />
+        {errors.name && <div className="field-error">{errors.name}</div>}
+      </div>
+
+      <div style={{ marginBottom: 14 }}>
+        <label className="bg-label">{t.sajuSpeciesLabel}</label>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button type="button" className={`bg-chip ${species === "dog" ? "active" : ""}`} style={{ flex: 1 }}
+            onClick={() => setSpecies("dog")}>🐶 {t.speciesLabel.dog}</button>
+          <button type="button" className={`bg-chip ${species === "cat" ? "active" : ""}`} style={{ flex: 1 }}
+            onClick={() => setSpecies("cat")}>🐱 {t.speciesLabel.cat}</button>
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 14 }}>
+        <label className="bg-label">{t.sajuBirthLabel}</label>
+        <input type="date" className={`bg-input ${errors.birthDate ? "invalid" : ""}`} value={birthDate}
+          onChange={(e) => setBirthDate(e.target.value)} />
+        {errors.birthDate && <div className="field-error">{errors.birthDate}</div>}
+      </div>
+
+      <div style={{ marginBottom: 14 }}>
+        <label className="bg-label">{t.sajuGenderLabel}</label>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button type="button" className={`bg-chip ${gender === "female" ? "active" : ""}`} style={{ flex: 1 }}
+            onClick={() => setGender("female")}>{t.genderFemale}</button>
+          <button type="button" className={`bg-chip ${gender === "male" ? "active" : ""}`} style={{ flex: 1 }}
+            onClick={() => setGender("male")}>{t.genderMale}</button>
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 14 }}>
+        <label className="bg-label">{t.sajuTimeLabel} ({t.optional})</label>
+        <input type="time" className="bg-input" value={birthTime} onChange={(e) => setBirthTime(e.target.value)} />
+      </div>
+
+      <div style={{ marginBottom: 20 }}>
+        <label className="bg-label">{t.sajuBreedLabel} ({t.optional})</label>
+        <input type="text" className="bg-input" value={breed} onChange={(e) => setBreed(e.target.value)} placeholder={t.sajuBreedPlaceholder} />
+      </div>
+
+      <button className="bg-btn" style={{ width: "100%", fontSize: 15 }} onClick={submit}>{t.sajuGenerateBtn}</button>
+    </div>
+  );
+}
+
+async function renderSajuShareCard({ result, name, lang, t }) {
+  const canvas = document.createElement("canvas");
+  const W = 1000, H = 1350;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext("2d");
+
+  ctx.fillStyle = "#F1F3E9";
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = "#FFFFFF";
+  const pad = 50;
+  roundRect(ctx, pad, pad, W - pad * 2, H - pad * 2, 40);
+  ctx.fill();
+
+  try {
+    const logo = await loadImage(PETGROW_LOGO_DATA_URI);
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(pad + 80, pad + 80, 34, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(logo, pad + 46, pad + 46, 68, 68);
+    ctx.restore();
+  } catch {}
+  ctx.fillStyle = "#1C1C1C";
+  ctx.font = "bold 30px sans-serif";
+  ctx.fillText("Pet", pad + 128, pad + 90);
+  ctx.fillStyle = "#4F9D3C";
+  ctx.fillText("Grow", pad + 128 + ctx.measureText("Pet").width, pad + 90);
+
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#666666";
+  ctx.font = "24px sans-serif";
+  ctx.fillText(t.sajuShareHeading(name), W / 2, pad + 190);
+
+  ctx.fillStyle = "#1C1C1C";
+  ctx.font = "bold 40px sans-serif";
+  wrapText(ctx, result.summary, W / 2, pad + 260, W - pad * 2 - 60, 52);
+
+  let y = pad + 420;
+  ctx.font = "bold 26px sans-serif";
+  ctx.fillStyle = "#4F9D3C";
+  result.categories.slice(0, 3).forEach((c) => {
+    ctx.textAlign = "left";
+    ctx.fillStyle = "#4F9D3C";
+    ctx.font = "bold 26px sans-serif";
+    ctx.fillText(c.icon, pad + 40, y);
+    ctx.fillStyle = "#1C1C1C";
+    ctx.font = "22px sans-serif";
+    wrapText(ctx, c.text, pad + 90, y, W - pad * 2 - 130, 30, 2);
+    y += 150;
+  });
+
+  ctx.textAlign = "center";
+  ctx.font = "bold 24px sans-serif";
+  ctx.fillStyle = "#4F9D3C";
+  ctx.fillText(result.tags.join("   "), W / 2, y + 30);
+
+  ctx.font = "18px sans-serif";
+  ctx.fillStyle = "#999999";
+  ctx.fillText("petgrow.co.kr", W / 2, H - pad - 40);
+
+  ctx.textAlign = "left";
+  return canvas.toDataURL("image/png");
+}
+
+function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines = 3) {
+  const words = text.split(" ");
+  let line = "";
+  let lines = [];
+  for (let n = 0; n < words.length; n++) {
+    const testLine = line + words[n] + " ";
+    if (ctx.measureText(testLine).width > maxWidth && line !== "") {
+      lines.push(line);
+      line = words[n] + " ";
+    } else {
+      line = testLine;
+    }
+  }
+  lines.push(line);
+  lines = lines.slice(0, maxLines);
+  const startY = y - ((lines.length - 1) * lineHeight) / 2;
+  lines.forEach((l, i) => ctx.fillText(l.trim(), x, startY + i * lineHeight));
+}
+
+function SajuShareModal({ open, onClose, result, name, lang }) {
+  const t = useT();
+  const [dataUrl, setDataUrl] = useState(null);
+
+  useEffect(() => {
+    if (!open || !result) { setDataUrl(null); return; }
+    renderSajuShareCard({ result, name, lang, t }).then(setDataUrl);
+  }, [open, result, lang]);
+
+  const triggerDownloadLink = () => {
+    if (!dataUrl) return;
+    const a = document.createElement("a");
+    a.href = dataUrl;
+    a.download = `${name}-petgrow-saju.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+  const handleShare = async () => {
+    if (!dataUrl) return;
+    try {
+      const blob = await (await fetch(dataUrl)).blob();
+      const file = new File([blob], `${name}-petgrow-saju.png`, { type: "image/png" });
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: "PetGrow" });
+        return;
+      }
+    } catch {}
+    triggerDownloadLink();
+  };
+
+  return (
+    <Modal open={open} onClose={onClose} width={480}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+        <h3 style={{ fontSize: 18 }}>{t.sajuShareTitle}</h3>
+        <button type="button" className="icon-btn" aria-label={t.cancel} onClick={onClose}>
+          <PlusIcon style={{ width: 16, height: 16, color: "var(--sub)", transform: "rotate(45deg)" }} />
+        </button>
+      </div>
+      {dataUrl ? (
+        <img src={dataUrl} alt="saju share card" style={{ width: "100%", borderRadius: 16, marginBottom: 16, boxShadow: "0 8px 24px rgba(0,0,0,.12)" }} />
+      ) : (
+        <div className="bg-sub" style={{ textAlign: "center", padding: "60px 0" }}>{t.shareCardLoading}</div>
+      )}
+      <div style={{ display: "flex", gap: 8 }}>
+        <button className="bg-btn bg-btn-ghost" style={{ flex: 1 }} onClick={handleShare}>{t.sajuShareBtn}</button>
+      </div>
+    </Modal>
+  );
+}
+
+function SajuResultView({ input, onRestart }) {
+  const lang = useLang();
+  const t = useT();
+  const [shareOpen, setShareOpen] = useState(false);
+  const result = useMemo(() => generateSajuResult(input, lang), [input, lang]);
+
+  return (
+    <div style={{ maxWidth: 640, margin: "0 auto" }}>
+      <div style={{ textAlign: "center", marginBottom: 8 }}>
+        <div style={{ fontSize: 13, color: "var(--sub)", fontWeight: 700 }}>🐾 {t.sajuResultHeading(input.name)}</div>
+        <h2 style={{ fontSize: 22, marginTop: 8, lineHeight: 1.4 }}>{result.summary}</h2>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 24 }}>
+        {result.categories.map((c) => (
+          <div key={c.key} className="bg-surface-card">
+            <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 6 }}>{c.icon} {t.sajuCategoryTitle[c.key]}</div>
+            <div style={{ fontSize: 14, lineHeight: 1.75 }}>{c.text}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-card" style={{ marginTop: 16, textAlign: "center" }}>
+        <div style={{ fontSize: 13, color: "var(--sub)", fontWeight: 700, marginBottom: 8 }}>{t.sajuOneWordTitle(input.name)}</div>
+        <div style={{ fontSize: 17, fontWeight: 800, marginBottom: 12 }}>🐶 {result.oneWord}</div>
+        <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
+          {result.tags.map((tag) => (
+            <span key={tag} className="bg-chip" style={{ fontSize: 12, cursor: "default" }}>{tag}</span>
+          ))}
+        </div>
+      </div>
+
+      <div className="bg-surface-card" style={{ marginTop: 16 }}>
+        <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 6 }}>🔮 {t.sajuTodayTitle}</div>
+        <div style={{ fontSize: 14, lineHeight: 1.75 }}>{result.today}</div>
+      </div>
+
+      <button className="bg-btn" style={{ width: "100%", marginTop: 20, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+        onClick={() => setShareOpen(true)}>
+        <ShareIcon style={{ width: 16, height: 16 }} /> {t.sajuShareBtn}
+      </button>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 24 }}>
+        <div className="bg-surface-card" style={{ opacity: 0.6 }}>
+          <div style={{ fontWeight: 700, fontSize: 14 }}>💕 {t.sajuComingCompat}</div>
+          <div className="bg-sub" style={{ fontSize: 12, marginTop: 4 }}>{t.sajuComingSoon}</div>
+        </div>
+        <div className="bg-surface-card" style={{ opacity: 0.6 }}>
+          <div style={{ fontWeight: 700, fontSize: 14 }}>🔮 {t.sajuComingDaily}</div>
+          <div className="bg-sub" style={{ fontSize: 12, marginTop: 4 }}>{t.sajuComingSoon}</div>
+        </div>
+      </div>
+
+      <button type="button" className="bg-btn bg-btn-ghost" style={{ width: "100%", marginTop: 16 }} onClick={onRestart}>
+        {t.sajuRestartBtn}
+      </button>
+
+      <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 24, lineHeight: 1.6 }}>
+        {t.sajuDisclaimer}
+      </div>
+
+      <SajuShareModal open={shareOpen} onClose={() => setShareOpen(false)} result={result} name={input.name} lang={lang} />
+    </div>
+  );
+}
+
+function SajuPage({ defaultPet }) {
+  const t = useT();
+  const [input, setInput] = useState(null);
+  const [useDefault, setUseDefault] = useState(!!defaultPet);
+
+  if (input) {
+    return <SajuResultView input={input} onRestart={() => setInput(null)} />;
+  }
+
+  if (defaultPet && useDefault) {
+    return (
+      <div style={{ maxWidth: 480, margin: "0 auto" }}>
+        <div className="bg-card" style={{ textAlign: "center" }}>
+          <SajuIcon style={{ width: 40, height: 40, color: "var(--primary)", margin: "0 auto 14px" }} />
+          <h2 style={{ fontSize: 19, marginBottom: 6 }}>{t.sajuIntroTitle(defaultPet.profile.name)}</h2>
+          <p className="bg-sub" style={{ fontSize: 13, marginBottom: 22 }}>{t.sajuIntroSub}</p>
+          <button className="bg-btn" style={{ width: "100%", fontSize: 15 }}
+            onClick={() => setInput({
+              name: defaultPet.profile.name,
+              species: defaultPet.profile.species,
+              birthDate: defaultPet.profile.birthDate,
+              gender: defaultPet.profile.gender,
+              birthTime: "",
+              breed: defaultPet.profile.breedName,
+            })}>
+            {t.sajuGenerateBtn}
+          </button>
+          <button type="button" className="bg-btn bg-btn-ghost" style={{ width: "100%", marginTop: 10, fontSize: 13 }}
+            onClick={() => setUseDefault(false)}>
+            {t.sajuUseOtherInfo}
+          </button>
+        </div>
+        <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 20, lineHeight: 1.6 }}>
+          {t.sajuDisclaimer}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ maxWidth: 480, margin: "0 auto" }}>
+      <SajuInputForm defaultPet={null} onGenerate={setInput} />
+      <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 20, lineHeight: 1.6 }}>
+        {(useT()).sajuDisclaimer}
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   PetBTI 🐾 — 답변 기반 16가지 성격 유형 테스트 (참고용 재미 콘텐츠)
+   질문/유형 데이터와 계산 로직, UI를 분리해서 나중에 쉽게 수정할 수 있어요.
+   ============================================================ */
+const PETBTI_QUESTIONS = [
+  { id: "q1", axis: "EI", ko: "산책하다 처음 보는 강아지를 만났어요! 우리 아이는? 🐕", en: "You meet a new dog on a walk. What does your pet do?",
+    options: [
+      { ko: "먼저 다가가서 인사한다", en: "Goes over to say hi first", w: 2 },
+      { ko: "상대가 다가오면 인사한다", en: "Greets back if approached", w: 1 },
+      { ko: "보호자 옆에서 일단 지켜본다", en: "Watches from beside you first", w: -1 },
+      { ko: "가능한 한 지나가고 싶어 한다", en: "Would rather just walk past", w: -2 },
+    ] },
+  { id: "q2", axis: "EI", ko: "집에 처음 보는 손님이 찾아왔어요.", en: "A guest you've never met visits your home.",
+    options: [
+      { ko: "누구세요?! 바로 달려간다", en: "Who's this?! Runs right over", w: 2 },
+      { ko: "조금 지켜보다가 다가간다", en: "Watches a bit, then approaches", w: 1 },
+      { ko: "보호자 옆에서 관찰한다", en: "Observes from beside you", w: -1 },
+      { ko: "익숙해질 때까지 거리를 둔다", en: "Keeps distance until comfortable", w: -2 },
+    ] },
+  { id: "q8", axis: "EI", ko: "하루 중 가장 행복해 보이는 순간은?", en: "When do they seem happiest during the day?",
+    options: [
+      { ko: "사람이나 친구들과 함께 놀 때", en: "Playing with people or friends", w: 2 },
+      { ko: "새로운 냄새와 장소를 탐험할 때", en: "Exploring new smells and places", w: 1 },
+      { ko: "보호자와 둘이 붙어 있을 때", en: "Cuddled up just with you", w: -1 },
+      { ko: "자기만의 자리에서 편하게 쉴 때", en: "Relaxing alone in their own spot", w: -2 },
+    ] },
+  { id: "q3", axis: "SN", ko: "새로운 장난감을 사줬을 때는? 🧸", en: "You bring home a new toy.",
+    options: [
+      { ko: "바로 달려들어서 놀아본다", en: "Dives right in to play", w: 2 },
+      { ko: "냄새부터 꼼꼼하게 확인한다", en: "Sniffs it carefully first", w: 1 },
+      { ko: "보호자가 먼저 보여줘야 관심을 가진다", en: "Only gets interested once you show them", w: -1 },
+      { ko: "원래 좋아하던 장난감이 더 좋다", en: "Prefers their old favorite toy", w: -2 },
+    ] },
+  { id: "q4", axis: "SN", ko: "산책 코스가 갑자기 바뀌면?", en: "Your usual walking route suddenly changes.",
+    options: [
+      { ko: "새로운 길이라 더 신난다!", en: "Extra excited — a new route!", w: 2 },
+      { ko: "냄새 맡으며 열심히 탐색한다", en: "Sniffs around and explores eagerly", w: 1 },
+      { ko: "조금 당황하지만 잘 따라간다", en: "A little thrown off but follows along", w: -1 },
+      { ko: "익숙한 길로 가고 싶어 한다", en: "Wants to go the usual way", w: -2 },
+    ] },
+  { id: "q9", axis: "SN", ko: "집에 낯선 냄새(새 물건, 손님 냄새 등)가 나면?", en: "There's an unfamiliar smell at home (new item, a guest's scent, etc).",
+    options: [
+      { ko: "바로 찾아가서 냄새부터 맡아본다", en: "Goes straight to investigate", w: 2 },
+      { ko: "지나가면서 슬쩍 확인한다", en: "Checks it out in passing", w: 1 },
+      { ko: "별 관심 없이 하던 대로 지낸다", en: "Not too bothered, carries on as usual", w: -1 },
+      { ko: "익숙한 자기 자리에서 안정을 찾는다", en: "Settles into their familiar spot", w: -2 },
+    ] },
+  { id: "q5", axis: "TF", ko: "보호자가 다른 강아지를 예뻐하고 있다면? 💕", en: "You're petting another dog.",
+    options: [
+      { ko: "나도 끼어든다!", en: "Squeezes right in!", w: 2 },
+      { ko: "보호자에게 바로 관심을 요구한다", en: "Demands your attention right away", w: 1 },
+      { ko: "조금 떨어져서 지켜본다", en: "Watches from a bit of a distance", w: -1 },
+      { ko: "별로 신경 쓰지 않는다", en: "Doesn't seem to mind much", w: -2 },
+    ] },
+  { id: "q7", axis: "TF", ko: "보호자가 슬퍼 보인다면?", en: "You seem a little sad.",
+    options: [
+      { ko: "바로 옆으로 와서 붙어 있는다", en: "Comes right over and stays close", w: 2 },
+      { ko: "얼굴을 핥거나 애교를 부린다", en: "Gives kisses or extra affection", w: 1 },
+      { ko: "조금 떨어진 곳에서 지켜본다", en: "Keeps a small distance and watches", w: -1 },
+      { ko: "평소처럼 행동한다", en: "Behaves as usual", w: -2 },
+    ] },
+  { id: "q10", axis: "TF", ko: "실수로 물건을 넘어뜨리는 등 살짝 혼이 났을 때는?", en: "They get a gentle scolding for knocking something over.",
+    options: [
+      { ko: "금방 다가와서 애교로 화해를 청한다", en: "Comes right over asking to make up", w: 2 },
+      { ko: "보호자 눈치를 슬쩍 살핀다", en: "Quietly checks your reaction", w: 1 },
+      { ko: "잠깐 혼자 있다가 아무 일 없었단 듯 행동한다", en: "Takes a moment alone, then moves on", w: -1 },
+      { ko: "별로 신경 쓰지 않고 자기 할 일을 한다", en: "Barely fazed, goes about their business", w: -2 },
+    ] },
+  { id: "q6", axis: "JP", ko: "간식을 눈앞에 두고 기다려야 한다면? 🍖", en: "They have to wait for a treat right in front of them.",
+    options: [
+      { ko: "온몸으로 빨리 달라고 표현한다", en: "Expresses impatience with their whole body", w: 2 },
+      { ko: "눈을 뚫어져라 쳐다보며 기다린다", en: "Stares intently while waiting", w: 1 },
+      { ko: "얌전히 기다리는 편이다", en: "Waits fairly calmly", w: -1 },
+      { ko: "관심 없는 척하지만 사실 기다리고 있다", en: "Plays it cool but is definitely waiting", w: -2 },
+    ] },
+  { id: "q11", axis: "JP", ko: "평소와 다른 시간에 산책을 나가자고 하면?", en: "You suggest a walk at an unusual time.",
+    options: [
+      { ko: "시간 상관없이 무조건 신난다", en: "Excited no matter the time", w: 2 },
+      { ko: "약간 얼떨떨하지만 곧 적응한다", en: "A little confused but adjusts quickly", w: 1 },
+      { ko: "괜찮아 하면서도 평소 시간을 더 좋아한다", en: "Fine with it, but prefers the usual time", w: -1 },
+      { ko: "정해진 시간이 아니면 시큰둥하다", en: "Not too enthused outside the usual time", w: -2 },
+    ] },
+  { id: "q12", axis: "JP", ko: "주말에 보호자가 늦잠을 자면?", en: "You sleep in on the weekend.",
+    options: [
+      { ko: "일단 깨우러 간다", en: "Goes to wake you up", w: 2 },
+      { ko: "조금 기다리다가 슬쩍 깨운다", en: "Waits a bit, then nudges you awake", w: 1 },
+      { ko: "같이 뒹굴거리며 여유를 즐긴다", en: "Lounges right along with you", w: -1 },
+      { ko: "신경 안 쓰고 자기도 늘어져 있는다", en: "Doesn't mind, stays sleepy too", w: -2 },
+    ] },
+];
+
+const PETBTI_TYPES = {
+  ENFP: { ko: "핵인싸 모험대장", en: "The Adventure-Loving Social Star", emoji: "🐶" },
+  ENFJ: { ko: "모두의 사랑둥이", en: "Everyone's Sweetheart", emoji: "💕" },
+  INFP: { ko: "감성 가득 껌딱지", en: "The Sentimental Cuddle-Bug", emoji: "🌷" },
+  INFJ: { ko: "조용한 마음읽기 천재", en: "The Quiet Mind-Reader", emoji: "🌙" },
+  ESTP: { ko: "사고뭉치 행동대장", en: "The Mischief Captain", emoji: "⚡" },
+  ESFP: { ko: "관심받는 슈퍼스타", en: "The Attention-Loving Superstar", emoji: "🎉" },
+  ISTJ: { ko: "루틴을 사랑하는 모범생", en: "The Routine-Loving Star Pupil", emoji: "🧸" },
+  ISFJ: { ko: "집사바라기 순둥이", en: "The Devoted Sweet Soul", emoji: "💕" },
+  ENTP: { ko: "궁금한 건 못 참는 장난꾸러기", en: "The Can't-Resist-Curiosity Trickster", emoji: "🔍" },
+  ENTJ: { ko: "산책길의 리더", en: "The Walk-Route Leader", emoji: "🧭" },
+  INTP: { ko: "혼자만의 세계가 있는 관찰자", en: "The Thoughtful Observer", emoji: "🔭" },
+  INTJ: { ko: "조용히 계획하는 전략가", en: "The Quiet Strategist", emoji: "♟️" },
+  ESTJ: { ko: "규칙을 사랑하는 든든한 반장", en: "The Reliable Rule-Follower", emoji: "📋" },
+  ESFJ: { ko: "분위기 메이커 인기스타", en: "The Life-of-the-Party Favorite", emoji: "🎈" },
+  ISTP: { ko: "쿨한 마이웨이 탐험가", en: "The Cool Independent Explorer", emoji: "🛠️" },
+  ISFP: { ko: "자유로운 감성 예술가", en: "The Free-Spirited Artist", emoji: "🎨" },
+};
+
+const PETBTI_SUMMARY = {
+  ko: {
+    ENFP: "친구도 좋아! 산책도 좋아! 근데 집사가 제일 좋아! 💕", ENFJ: "가족 모두를 챙기는 다정한 마음을 가졌어요 💕",
+    INFP: "조용히, 하지만 깊이 사랑하는 감성파예요 🌷", INFJ: "말 안 해도 다 알아채는 눈치 100단이에요 🌙",
+    ESTP: "심심할 틈이 없게 만드는 에너자이저예요 ⚡", ESFP: "어디서든 시선을 사로잡는 타고난 스타예요 🎉",
+    ISTJ: "약속은 약속! 루틴을 지키는 든든한 아이예요 🧸", ISFJ: "보호자 옆이 세상에서 제일 좋은 자리예요 💕",
+    ENTP: "궁금한 건 절대 그냥 못 넘어가는 타입이에요 🔍", ENTJ: "산책길에서도 은근히 주도권을 잡는 편이에요 🧭",
+    INTP: "자기만의 세계가 확실한 관찰형이에요 🔭", INTJ: "조용하지만 다 계산하고 있는 전략가예요 ♟️",
+    ESTJ: "규칙과 루틴 속에서 제일 안정감을 느껴요 📋", ESFJ: "모두를 챙기는 분위기 메이커예요 🎈",
+    ISTP: "쿨하게 자기 할 일 하는 마이웨이 스타일이에요 🛠️", ISFP: "자유롭고 감성적인 예술가 기질이 있어요 🎨",
+  },
+  en: {
+    ENFP: "Loves friends, loves walks, but loves you most! 💕", ENFJ: "A warm heart that looks out for everyone 💕",
+    INFP: "Quiet but deeply, sincerely loving 🌷", INFJ: "Somehow always knows exactly how you feel 🌙",
+    ESTP: "Never a dull moment with this energizer ⚡", ESFP: "A natural-born star who draws every eye 🎉",
+    ISTJ: "A promise is a promise — routine's biggest fan 🧸", ISFJ: "Right by your side is their favorite place 💕",
+    ENTP: "Can't let a good mystery go uninvestigated 🔍", ENTJ: "Quietly takes the lead, even on walks 🧭",
+    INTP: "A thoughtful observer with their own little world 🔭", INTJ: "Quiet, but always thinking three steps ahead ♟️",
+    ESTJ: "Most at ease with clear rules and routine 📋", ESFJ: "The warm host who looks after everyone 🎈",
+    ISTP: "Cool, capable, and doing their own thing 🛠️", ISFP: "A free-spirited little artist at heart 🎨",
+  },
+};
+
+// 8개 성향 축별 한 문단 — 이 조각들을 섹션마다 조합해서 16유형 x 10섹션 결과를 만들어요
+const PETBTI_AXIS_TRAITS = {
+  ko: {
+    E: "사람이나 다른 동물을 만나면 먼저 다가가서 인사를 건네는 활발한 편이에요. 새로운 만남 자체를 즐거운 이벤트로 여기는 사교적인 성격이에요.",
+    I: "낯선 만남보다는 익숙한 사람, 익숙한 공간에서 훨씬 편안함을 느껴요. 처음엔 조심스럽게 지켜보다가 시간이 지나면 서서히 마음을 여는 신중한 스타일이에요.",
+    S: "눈앞의 냄새, 익숙한 산책길, 확실한 먹을거리처럼 지금 느껴지는 것들에 집중하는 편이에요. 확실하고 익숙한 것에서 안정감을 느껴요.",
+    N: "새로운 장소, 낯선 냄새, 처음 보는 물건에 유독 호기심이 반짝여요. '이건 또 뭐지?' 하며 탐험하는 걸 좋아하는 은근한 모험가 기질이 있어요.",
+    T: "자기만의 기준이 확실한 편이라, 하고 싶은 게 있으면 눈치 안 보고 밀고 나가는 뚝심이 있어요. 감정보다 '내가 원하는 것'이 우선인 마이웨이 스타일이에요.",
+    F: "보호자나 친구의 기분 변화를 은근히 잘 알아채는 편이에요. 곁에 있는 사람의 감정에 따라 자기 행동도 슬쩍 바뀌는 정 많은 타입이에요.",
+    J: "정해진 시간에 밥 먹고 정해진 코스로 산책하는 익숙한 루틴을 좋아해요. 갑작스러운 변화보다는 예측 가능한 하루를 훨씬 편안해해요.",
+    P: "계획보다는 그때그때 내키는 대로 움직이는 걸 좋아해요. 갑자기 상황이 바뀌어도 의외로 잘 적응하는 편이에요.",
+  },
+  en: {
+    E: "Quick to approach and greet new people or animals — a social soul who treats every new meeting as an exciting event.",
+    I: "Feels most at ease with familiar people and places, warming up carefully and gradually to anything new.",
+    S: "Tuned into what's right in front of them — familiar smells, routes, and treats — and finds comfort in the certain and known.",
+    N: "Lights up with curiosity around new places, smells, and objects — a bit of a low-key adventurer at heart.",
+    T: "Has a clear sense of what they want and pursues it with quiet confidence, independent of what others think.",
+    F: "Remarkably attuned to your mood, often adjusting their own behavior to match how the people around them are feeling.",
+    J: "Loves a predictable routine — set mealtimes, familiar walk routes — and feels most comfortable when the day goes as expected.",
+    P: "Prefers to go with the flow rather than stick to a plan, and adapts surprisingly well when things change suddenly.",
+  },
+};
+
+const PETBTI_SECTION_AXES = {
+  personality: [0, 1], bond: [2, 0], friends: [0, 2], play: [1, 3], walk: [1, 0],
+  food: [3, 2], alone: [0, 2], mischief: [3, 1], affection: [2, 0], hidden: [1, 3],
+};
+
+function petBtiScore(answers) {
+  const axisScores = { EI: 0, SN: 0, TF: 0, JP: 0 };
+  PETBTI_QUESTIONS.forEach((q) => {
+    const ansIdx = answers[q.id];
+    if (ansIdx === undefined) return;
+    axisScores[q.axis] += q.options[ansIdx].w;
+  });
+  const letter = (axis, pos, neg) => (axisScores[axis] >= 0 ? pos : neg);
+  const type = letter("EI", "E", "I") + letter("SN", "N", "S") + letter("TF", "F", "T") + letter("JP", "P", "J");
+  const norm = (v) => Math.round(((v + 6) / 12) * 100);
+  const stats = {
+    affection: norm(axisScores.TF),
+    curiosity: norm(axisScores.SN),
+    social: norm(axisScores.EI),
+    control: Math.round((norm(axisScores.TF) + norm(axisScores.JP)) / 2),
+    food: Math.max(5, Math.min(99, norm(axisScores.JP) + (hashString(JSON.stringify(answers) + "food") % 11 - 5))),
+  };
+  return { type, axisScores, stats };
+}
+
+function petBtiOppositeType(type) {
+  const flip = { E: "I", I: "E", S: "N", N: "S", T: "F", F: "T", J: "P", P: "J" };
+  return type.split("").map((c) => flip[c]).join("");
+}
+
+function petBtiSectionText(type, key, name, lang) {
+  const traits = PETBTI_AXIS_TRAITS[lang] || PETBTI_AXIS_TRAITS.ko;
+  const [i1, i2] = PETBTI_SECTION_AXES[key];
+  const letters = key === "hidden"
+    ? [petBtiOppositeType(type)[i1], petBtiOppositeType(type)[i2]]
+    : [type[i1], type[i2]];
+  const t1 = traits[letters[0]];
+  const t2 = traits[letters[1]];
+  return `${t1} ${t2}`;
+}
+
+function generatePetBtiResult(input, answers, lang) {
+  const { type, axisScores, stats } = petBtiScore(answers);
+  const nickname = PETBTI_TYPES[type];
+  const summary = (PETBTI_SUMMARY[lang] || PETBTI_SUMMARY.ko)[type];
+  const name = input.name;
+  const sections = ["personality", "bond", "friends", "play", "walk", "food", "alone", "mischief", "affection", "hidden"]
+    .map((key) => ({ key, text: petBtiSectionText(type, key, name, lang) }));
+  const seed = `${name}|${type}|${JSON.stringify(answers)}`;
+  const tagBanks = {
+    ko: ["#핵인싸", "#집콕러버", "#호기심대장", "#마이웨이", "#사랑교감러", "#루틴수호자", "#즉흥모험가", "#간식러버", "#애교쟁이", "#집사조종러", "#산책마니아", "#관찰형천재"],
+    en: ["#SocialStar", "#HomebodyHeart", "#CuriousOne", "#MyWayStyle", "#DeepBonder", "#RoutineKeeper", "#SpontaneousSoul", "#TreatLover", "#AffectionOverload", "#SecretlyInCharge", "#WalkFanatic", "#QuietObserver"],
+  };
+  const tagPool = tagBanks[lang] || tagBanks.ko;
+  const t1 = seededPick(seed, "tag1", tagPool);
+  let t2 = seededPick(seed, "tag2", tagPool);
+  while (t2 === t1) t2 = tagPool[(tagPool.indexOf(t2) + 1) % tagPool.length];
+  let t3 = seededPick(seed, "tag3", tagPool);
+  while (t3 === t1 || t3 === t2) t3 = tagPool[(tagPool.indexOf(t3) + 1) % tagPool.length];
+  const oneWordBank = {
+    ko: ["세상 모든 재미있는 일에 참견해야 직성이 풀리는 사랑둥이", "곁에 있는 것만으로 위로가 되는 다정한 아이", "은근한 매력으로 집안을 다스리는 작은 상전", "매일이 새로운 모험인 것처럼 사는 긍정 에너지"],
+    en: ["A sweetheart who has to be part of every fun thing happening", "Comforting simply by being near", "The tiny boss who quietly runs the household", "Living every day like a brand new adventure"],
+  };
+  const oneWord = seededPick(seed, "oneword", (oneWordBank[lang] || oneWordBank.ko));
+  const oppositeType = petBtiOppositeType(type);
+  const oppositeNickname = PETBTI_TYPES[oppositeType];
+  return { type, nickname, summary, sections, stats, tags: [t1, t2, t3], oneWord, oppositeType, oppositeNickname };
+}
+
+function PetBtiStatBar({ label, icon, value }) {
+  return (
+    <div style={{ marginBottom: 10 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 700, marginBottom: 4 }}>
+        <span>{icon} {label}</span><span style={{ color: "var(--primary)" }}>{value}</span>
+      </div>
+      <div style={{ background: "var(--surface)", borderRadius: 999, height: 10, overflow: "hidden" }}>
+        <div style={{ width: `${value}%`, height: "100%", background: "var(--primary)", borderRadius: 999 }} />
+      </div>
+    </div>
+  );
+}
+
+function PetBtiQuestionFlow({ onComplete }) {
+  const lang = useLang();
+  const t = useT();
+  const [step, setStep] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const q = PETBTI_QUESTIONS[step];
+  const progress = Math.round((step / PETBTI_QUESTIONS.length) * 100);
+
+  const choose = (idx) => {
+    const next = { ...answers, [q.id]: idx };
+    setAnswers(next);
+    if (step + 1 < PETBTI_QUESTIONS.length) {
+      setStep(step + 1);
+    } else {
+      onComplete(next);
+    }
+  };
+
+  return (
+    <div className="bg-card">
+      <div style={{ background: "var(--surface)", borderRadius: 999, height: 6, marginBottom: 18, overflow: "hidden" }}>
+        <div style={{ width: `${progress}%`, height: "100%", background: "var(--primary)", borderRadius: 999, transition: ".2s" }} />
+      </div>
+      <div className="bg-sub" style={{ fontSize: 12, marginBottom: 8 }}>{step + 1} / {PETBTI_QUESTIONS.length}</div>
+      <h3 style={{ fontSize: 17, marginBottom: 18, lineHeight: 1.5 }}>{lang === "en" ? q.en : q.ko}</h3>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {q.options.map((opt, idx) => (
+          <button key={idx} type="button" className="bg-btn bg-btn-ghost" style={{ textAlign: "left", padding: "14px 18px", fontSize: 14 }}
+            onClick={() => choose(idx)}>
+            {lang === "en" ? opt.en : opt.ko}
+          </button>
+        ))}
+      </div>
+      {step > 0 && (
+        <button type="button" className="bg-sub" style={{ background: "none", border: "none", marginTop: 16, fontSize: 12, cursor: "pointer" }}
+          onClick={() => setStep(step - 1)}>← {lang === "en" ? "Back" : "이전"}</button>
+      )}
+    </div>
+  );
+}
+
+async function renderPetBtiShareCard({ result, name, lang, t }) {
+  const canvas = document.createElement("canvas");
+  const W = 1000, H = 1400;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext("2d");
+
+  ctx.fillStyle = "#F1F3E9";
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = "#FFFFFF";
+  const pad = 50;
+  roundRect(ctx, pad, pad, W - pad * 2, H - pad * 2, 40);
+  ctx.fill();
+
+  try {
+    const logo = await loadImage(PETGROW_LOGO_DATA_URI);
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(pad + 80, pad + 80, 34, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(logo, pad + 46, pad + 46, 68, 68);
+    ctx.restore();
+  } catch {}
+  ctx.fillStyle = "#1C1C1C";
+  ctx.font = "bold 30px sans-serif";
+  ctx.fillText("Pet", pad + 128, pad + 90);
+  ctx.fillStyle = "#4F9D3C";
+  ctx.fillText("Grow", pad + 128 + ctx.measureText("Pet").width, pad + 90);
+
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#666666";
+  ctx.font = "24px sans-serif";
+  ctx.fillText(t.petBtiShareHeading(name), W / 2, pad + 190);
+
+  ctx.fillStyle = "#4F9D3C";
+  ctx.font = "bold 64px sans-serif";
+  ctx.fillText(result.type, W / 2, pad + 280);
+
+  ctx.fillStyle = "#1C1C1C";
+  ctx.font = "bold 38px sans-serif";
+  ctx.fillText(`${result.nickname.emoji} ${(lang === "en" ? result.nickname.en : result.nickname.ko)}`, W / 2, pad + 345);
+
+  ctx.font = "26px sans-serif";
+  ctx.fillStyle = "#666666";
+  wrapText(ctx, result.summary, W / 2, pad + 420, W - pad * 2 - 80, 36);
+
+  let y = pad + 560;
+  ctx.font = "bold 30px sans-serif";
+  ctx.fillStyle = "#4F9D3C";
+  result.tags.forEach((tag) => {
+    ctx.fillText(tag, W / 2, y);
+    y += 60;
+  });
+
+  ctx.font = "18px sans-serif";
+  ctx.fillStyle = "#999999";
+  ctx.fillText("petgrow.co.kr", W / 2, H - pad - 40);
+
+  ctx.textAlign = "left";
+  return canvas.toDataURL("image/png");
+}
+
+function PetBtiShareModal({ open, onClose, result, name, lang }) {
+  const t = useT();
+  const [dataUrl, setDataUrl] = useState(null);
+
+  useEffect(() => {
+    if (!open || !result) { setDataUrl(null); return; }
+    renderPetBtiShareCard({ result, name, lang, t }).then(setDataUrl);
+  }, [open, result, lang]);
+
+  const triggerDownloadLink = () => {
+    if (!dataUrl) return;
+    const a = document.createElement("a");
+    a.href = dataUrl;
+    a.download = `${name}-petgrow-petbti.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+  const handleShare = async () => {
+    if (!dataUrl) return;
+    try {
+      const blob = await (await fetch(dataUrl)).blob();
+      const file = new File([blob], `${name}-petgrow-petbti.png`, { type: "image/png" });
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: "PetGrow" });
+        return;
+      }
+    } catch {}
+    triggerDownloadLink();
+  };
+
+  return (
+    <Modal open={open} onClose={onClose} width={480}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+        <h3 style={{ fontSize: 18 }}>{t.petBtiShareTitle}</h3>
+        <button type="button" className="icon-btn" aria-label={t.cancel} onClick={onClose}>
+          <PlusIcon style={{ width: 16, height: 16, color: "var(--sub)", transform: "rotate(45deg)" }} />
+        </button>
+      </div>
+      {dataUrl ? (
+        <img src={dataUrl} alt="petbti share card" style={{ width: "100%", borderRadius: 16, marginBottom: 16, boxShadow: "0 8px 24px rgba(0,0,0,.12)" }} />
+      ) : (
+        <div className="bg-sub" style={{ textAlign: "center", padding: "60px 0" }}>{t.shareCardLoading}</div>
+      )}
+      <button className="bg-btn" style={{ width: "100%" }} onClick={handleShare}>{t.petBtiShareBtn}</button>
+    </Modal>
+  );
+}
+
+function PetBtiResultView({ input, result, lang, onRestart }) {
+  const t = useT();
+  const [shareOpen, setShareOpen] = useState(false);
+  const nickname = result.nickname;
+
+  return (
+    <div style={{ maxWidth: 640, margin: "0 auto" }}>
+      <div style={{ textAlign: "center", marginBottom: 8 }}>
+        <div style={{ fontSize: 13, color: "var(--sub)", fontWeight: 700 }}>{t.petBtiResultHeading(input.name)}</div>
+        <div style={{ fontSize: 34, fontWeight: 800, color: "var(--primary)", marginTop: 10 }}>{result.type}</div>
+        <div style={{ fontSize: 19, fontWeight: 800, marginTop: 4 }}>{nickname.emoji} {lang === "en" ? nickname.en : nickname.ko}</div>
+        <p style={{ fontSize: 15, marginTop: 12, color: "var(--text)" }}>{result.summary}</p>
+      </div>
+
+      <div className="bg-card" style={{ marginTop: 22 }}>
+        <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 14 }}>{t.petBtiStatsTitle}</div>
+        <PetBtiStatBar label={t.petBtiStatAffection} icon="💕" value={result.stats.affection} />
+        <PetBtiStatBar label={t.petBtiStatCuriosity} icon="👀" value={result.stats.curiosity} />
+        <PetBtiStatBar label={t.petBtiStatFood} icon="🍖" value={result.stats.food} />
+        <PetBtiStatBar label={t.petBtiStatSocial} icon="🐾" value={result.stats.social} />
+        <PetBtiStatBar label={t.petBtiStatControl} icon="😈" value={result.stats.control} />
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 16 }}>
+        {result.sections.map((s) => (
+          <div key={s.key} className="bg-surface-card">
+            <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 6 }}>
+              {PETBTI_SECTION_ICON[s.key]} {t.petBtiSectionTitle[s.key]}
+            </div>
+            <div style={{ fontSize: 14, lineHeight: 1.75 }}>{s.text}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-card" style={{ marginTop: 16, textAlign: "center" }}>
+        <div style={{ fontSize: 13, color: "var(--sub)", fontWeight: 700, marginBottom: 8 }}>{t.petBtiOneWordTitle(input.name)}</div>
+        <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 12 }}>🐶 {result.oneWord}</div>
+        <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
+          {result.tags.map((tag) => (
+            <span key={tag} className="bg-chip" style={{ fontSize: 12, cursor: "default" }}>{tag}</span>
+          ))}
+        </div>
+      </div>
+
+      <div className="bg-card" style={{ marginTop: 16 }}>
+        <div style={{ fontWeight: 800, fontSize: 15, marginBottom: 12 }}>{t.petBtiCompatTitle(input.name)}</div>
+        <div className="bg-surface-card" style={{ marginBottom: 10 }}>
+          <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 4 }}>
+            {result.oppositeType} {result.oppositeNickname.emoji} {lang === "en" ? result.oppositeNickname.en : result.oppositeNickname.ko}
+          </div>
+          <div style={{ fontSize: 13, lineHeight: 1.6 }}>{t.petBtiCompatGood(input.name)}</div>
+        </div>
+        <div className="bg-surface-card">
+          <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 4 }}>😂 {t.petBtiCompatChaosTitle}</div>
+          <div style={{ fontSize: 13, lineHeight: 1.6 }}>{t.petBtiCompatChaos(input.name)}</div>
+        </div>
+      </div>
+
+      <button className="bg-btn" style={{ width: "100%", marginTop: 20, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+        onClick={() => setShareOpen(true)}>
+        <ShareIcon style={{ width: 16, height: 16 }} /> {t.petBtiShareBtn}
+      </button>
+      <button type="button" className="bg-btn bg-btn-ghost" style={{ width: "100%", marginTop: 10 }} onClick={onRestart}>
+        {t.petBtiRestartBtn}
+      </button>
+
+      <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 24, lineHeight: 1.6 }}>
+        {t.petBtiDisclaimer}
+      </div>
+
+      <PetBtiShareModal open={shareOpen} onClose={() => setShareOpen(false)} result={result} name={input.name} lang={lang} />
+    </div>
+  );
+}
+
+const PETBTI_SECTION_ICON = {
+  personality: "🐾", bond: "💕", friends: "🐕", play: "🧸", walk: "🌳",
+  food: "🍖", alone: "🏠", mischief: "😈", affection: "💗", hidden: "✨",
+};
+
+function PetBtiPage({ defaultPet, pets, onUpdatePetBti }) {
+  const lang = useLang();
+  const t = useT();
+  const [selectedPetId, setSelectedPetId] = useState(defaultPet ? defaultPet.id : null);
+  const [phase, setPhase] = useState("intro"); // intro | quiz | result
+  const [liveResult, setLiveResult] = useState(null);
+
+  const selectedPet = (pets || []).find((p) => p.id === selectedPetId) || defaultPet;
+  const savedBti = selectedPet && selectedPet.petBti;
+
+  const handleComplete = (answers) => {
+    const input = { name: selectedPet.profile.name, species: selectedPet.profile.species, birthDate: selectedPet.profile.birthDate };
+    const result = generatePetBtiResult(input, answers, lang);
+    setLiveResult({ input, result, answers });
+    if (onUpdatePetBti) onUpdatePetBti(selectedPet.id, { type: result.type, answers, savedAt: new Date().toISOString() });
+    setPhase("result");
+  };
+
+  if (!selectedPet) {
+    return (
+      <div style={{ maxWidth: 480, margin: "0 auto", textAlign: "center" }} className="bg-card">
+        <PetBtiIcon style={{ width: 40, height: 40, color: "var(--primary)", margin: "0 auto 14px" }} />
+        <p className="bg-sub" style={{ fontSize: 14 }}>{t.petBtiNoPet}</p>
+      </div>
+    );
+  }
+
+  if (phase === "result" && liveResult) {
+    return (
+      <PetBtiResultView input={liveResult.input} result={liveResult.result} lang={lang}
+        onRestart={() => { setLiveResult(null); setPhase("intro"); }} />
+    );
+  }
+
+  if (phase === "quiz") {
+    return (
+      <div style={{ maxWidth: 480, margin: "0 auto" }}>
+        <PetBtiQuestionFlow onComplete={handleComplete} />
+      </div>
+    );
+  }
+
+  // intro
+  return (
+    <div style={{ maxWidth: 480, margin: "0 auto" }}>
+      {pets && pets.length > 1 && (
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16, justifyContent: "center" }}>
+          {pets.map((p) => (
+            <button key={p.id} type="button" className={`bg-chip ${p.id === selectedPetId ? "active" : ""}`}
+              onClick={() => setSelectedPetId(p.id)}>{p.profile.name}</button>
+          ))}
+        </div>
+      )}
+      <div className="bg-card" style={{ textAlign: "center" }}>
+        <PetBtiIcon style={{ width: 40, height: 40, color: "var(--primary)", margin: "0 auto 14px" }} />
+        <h2 style={{ fontSize: 19, marginBottom: 6 }}>{t.petBtiMainTitle}</h2>
+        <p className="bg-sub" style={{ fontSize: 13, marginBottom: 4, whiteSpace: "pre-line" }}>{t.petBtiMainDesc}</p>
+        {savedBti && (
+          <div className="bg-surface-card" style={{ margin: "16px 0", textAlign: "left" }}>
+            <div style={{ fontSize: 12, color: "var(--sub)", fontWeight: 700, marginBottom: 4 }}>{t.petBtiPreviousResult(selectedPet.profile.name)}</div>
+            <div style={{ fontWeight: 800, fontSize: 16 }}>
+              {savedBti.type} {PETBTI_TYPES[savedBti.type] && PETBTI_TYPES[savedBti.type].emoji} {PETBTI_TYPES[savedBti.type] && (lang === "en" ? PETBTI_TYPES[savedBti.type].en : PETBTI_TYPES[savedBti.type].ko)}
+            </div>
+          </div>
+        )}
+        <button className="bg-btn" style={{ width: "100%", fontSize: 15, marginTop: 14 }} onClick={() => setPhase("quiz")}>
+          {savedBti ? t.petBtiRestartBtn : t.petBtiStartBtn}
+        </button>
+      </div>
+      <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 20, lineHeight: 1.6 }}>
+        {t.petBtiDisclaimer}
+      </div>
+    </div>
+  );
+}
+
 function PetSwitcher({ species, pets, activePetId, onSelect, onAddNew }) {
   const t = useT();
   return (
@@ -3266,7 +4528,7 @@ function PetSwitcher({ species, pets, activePetId, onSelect, onAddNew }) {
 /* ============================================================
    ResultPage
    ============================================================ */
-function ResultPage({ pet, breedGroups, onAddRecord, onAddPhoto, onEditPhoto, onDeletePhoto, onEdit, onDelete, onUpdateProfileImage, onToggleVaccineItem }) {
+function ResultPage({ pet, breedGroups, onAddRecord, onDeleteRecord, onAddPhoto, onEditPhoto, onDeletePhoto, onEdit, onDelete, onUpdateProfileImage, onToggleVaccineItem }) {
   const lang = useLang();
   const t = useT();
   const { profile, records, photos } = pet;
@@ -3363,7 +4625,7 @@ function ResultPage({ pet, breedGroups, onAddRecord, onAddPhoto, onEditPhoto, on
         </div>
         <GrowthChartCard table={table} ageMonths={ageAtLatest} currentWeightKg={latest.weightKg} statusDiffGrams={latest.diffGrams} />
         <GrowthTableCard table={table} />
-        <RecordSection records={sortedRecords} onAddRecord={handleAddRecord} />
+        <RecordSection records={sortedRecords} onAddRecord={handleAddRecord} onDeleteRecord={onDeleteRecord} />
         <MilestoneBadges pet={pet} ageMonths={ageMonthsNow} />
         <PeerCompareCard profile={profile} latestWeightKg={latest.weightKg} ageAtLatest={ageAtLatest} />
         <PhotoAlbum birthDate={profile.birthDate} photos={photos} onAdd={onAddPhoto} onEdit={onEditPhoto} onDelete={onDeletePhoto} />
@@ -3794,10 +5056,13 @@ function AppInner({ lang, setLang }) {
   const [activeId, setActiveId] = useState({ dog: null, cat: null });
   const [mode, setMode] = useState("view"); // 'view' | 'onboarding' | 'edit'
   const [loaded, setLoaded] = useState(false);
+  const [welcomeBackOpen, setWelcomeBackOpen] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
   const [showTips, setShowTips] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [showAbout, setShowAbout] = useState(true);
+  const [showSaju, setShowSaju] = useState(false);
+  const [showPetBti, setShowPetBti] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null); // {id, name} | null
 
   useEffect(() => {
@@ -3848,6 +5113,13 @@ function AppInner({ lang, setLang }) {
       // 이미 등록해둔 반려동물이 있으면(재방문자) 소개 페이지를 건너뛰고 바로 정보 화면으로 보여줘요
       if (dogs.length > 0 || cats.length > 0) {
         setShowAbout(false);
+        // "다시 오셨군요" 환영 메시지는 하루에 한 번만 보여줘요
+        const today = new Date().toISOString().slice(0, 10);
+        const lastWelcome = await safeGet("bboggl:lastWelcomeDate");
+        if (lastWelcome !== today) {
+          setWelcomeBackOpen(true);
+          safeSet("bboggl:lastWelcomeDate", today);
+        }
       }
       setLoaded(true);
       // 앱(네이티브)에서 데이터 로딩이 끝나고 화면 준비가 되면 스플래시(흰 바탕 로고) 화면을 닫아요
@@ -3962,8 +5234,16 @@ function AppInner({ lang, setLang }) {
     const nextList = currentList.map((p) => (p.id === currentPet.id ? updater(p) : p));
     persistPets({ ...pets, [species]: nextList });
   };
+  // PetBTI는 현재 활성 반려동물이 아닌 다른 아이를 테스트할 수도 있어서, id로 특정 반려동물을 지정해 업데이트해요
+  const handleUpdatePetBti = (petId, petBti) => {
+    const nextList = currentList.map((p) => (p.id === petId ? { ...p, petBti } : p));
+    persistPets({ ...pets, [species]: nextList });
+  };
 
   const handleAddRecord = (record) => updateCurrentPet((p) => ({ ...p, records: [...p.records, record] }));
+  const handleDeleteRecord = (recordId) => updateCurrentPet((p) => ({
+    ...p, records: p.records.filter((r) => r.id !== recordId),
+  }));
   const handleAddPhoto = (date, dataUrl) => updateCurrentPet((p) => ({
     ...p, photos: [...p.photos, { id: `${Date.now()}`, date, dataUrl }],
   }));
@@ -3984,24 +5264,34 @@ function AppInner({ lang, setLang }) {
     <div className="bboggl-root" style={{ minHeight: "100vh" }}>
       <GlobalStyle />
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "20px 20px 0" }}>
-        <div style={{ display: "flex", gap: 8, alignItems: "center", justifyContent: "space-between", marginBottom: 12, flexWrap: "wrap" }}>
-          <button type="button" onClick={() => { setShowAbout(true); setShowTips(false); setShowPrivacy(false); scrollToTop(); }}
+        <div className="header-toprow" style={{ display: "flex", gap: 8, alignItems: "center", justifyContent: "space-between", marginBottom: 12, flexWrap: "wrap" }}>
+          <button type="button" onClick={() => { setShowAbout(true); setShowTips(false); setShowPrivacy(false); setShowSaju(false); setShowPetBti(false); scrollToTop(); }}
             style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-            <PetGrowLogo style={{ width: 22, height: 22 }} />
+            <PetGrowLogo className="header-logo" style={{ width: 22, height: 22 }} />
             <span style={{ fontSize: 15, fontWeight: 800, fontFamily: "'Jua',sans-serif" }}>
               <span style={{ color: "var(--text)" }}>Pet</span><span style={{ color: "var(--primary)" }}>Grow</span>
             </span>
           </button>
           <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
             <button type="button" className="bg-chip" style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 14px", height: 40,
-              ...(!showTips && !showPrivacy && !showAbout ? { background: "var(--primary)", color: "#fff", borderColor: "var(--primary)" } : {}) }}
-              onClick={() => { setShowTips(false); setShowPrivacy(false); setShowAbout(false); scrollToTop(); }}>
+              ...(!showTips && !showPrivacy && !showAbout && !showSaju && !showPetBti ? { background: "var(--primary)", color: "#fff", borderColor: "var(--primary)" } : {}) }}
+              onClick={() => { setShowTips(false); setShowPrivacy(false); setShowAbout(false); setShowSaju(false); setShowPetBti(false); scrollToTop(); }}>
               <PawIcon style={{ width: 16, height: 16 }} /> {t.myPetsNav}
             </button>
             <button type="button" className="bg-chip" style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 14px", height: 40,
               ...(showTips && !showPrivacy ? { background: "var(--primary)", color: "#fff", borderColor: "var(--primary)" } : {}) }}
-              onClick={() => { setShowTips(true); setShowPrivacy(false); setShowAbout(false); scrollToTop(); }}>
+              onClick={() => { setShowTips(true); setShowPrivacy(false); setShowAbout(false); setShowSaju(false); setShowPetBti(false); scrollToTop(); }}>
               <LightbulbIcon style={{ width: 16, height: 16 }} /> {t.tipsTitle}
+            </button>
+            <button type="button" className="bg-chip" style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 14px", height: 40,
+              ...(showSaju ? { background: "var(--primary)", color: "#fff", borderColor: "var(--primary)" } : {}) }}
+              onClick={() => { setShowTips(false); setShowPrivacy(false); setShowAbout(false); setShowSaju(true); setShowPetBti(false); scrollToTop(); }}>
+              <SajuIcon style={{ width: 16, height: 16 }} /> {t.sajuNav}
+            </button>
+            <button type="button" className="bg-chip" style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 14px", height: 40,
+              ...(showPetBti ? { background: "var(--primary)", color: "#fff", borderColor: "var(--primary)" } : {}) }}
+              onClick={() => { setShowTips(false); setShowPrivacy(false); setShowAbout(false); setShowSaju(false); setShowPetBti(true); scrollToTop(); }}>
+              <PetBtiIcon style={{ width: 16, height: 16 }} /> {t.petBtiNav}
             </button>
             <LangToggle lang={lang} onChange={setLang} />
             <button type="button" className="icon-btn" aria-label={t.helpAria}
@@ -4010,7 +5300,7 @@ function AppInner({ lang, setLang }) {
             </button>
           </div>
         </div>
-        {!showTips && !showPrivacy && !showAbout && (
+        {!showTips && !showPrivacy && !showAbout && !showSaju && !showPetBti && (
           <SpeciesTabBar species={species} dogCount={pets.dog.length} catCount={pets.cat.length}
             onChange={(s) => { setSpecies(s); setMode("view"); }} />
         )}
@@ -4022,6 +5312,14 @@ function AppInner({ lang, setLang }) {
         <AboutPage onStart={() => { setShowAbout(false); scrollToTop(); }} />
       ) : showTips ? (
         <TipsPage />
+      ) : showSaju ? (
+        <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 60px" }}>
+          <SajuPage defaultPet={currentPet} />
+        </div>
+      ) : showPetBti ? (
+        <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 60px" }}>
+          <PetBtiPage defaultPet={currentPet} pets={currentList} onUpdatePetBti={handleUpdatePetBti} />
+        </div>
       ) : showOnboarding ? (
         <OnboardingPage
           species={species}
@@ -4041,6 +5339,7 @@ function AppInner({ lang, setLang }) {
             pet={currentPet}
             breedGroups={breedGroups}
             onAddRecord={handleAddRecord}
+            onDeleteRecord={handleDeleteRecord}
             onAddPhoto={handleAddPhoto}
             onEditPhoto={handleEditPhoto}
             onDeletePhoto={handleDeletePhoto}
@@ -4085,6 +5384,11 @@ function AppInner({ lang, setLang }) {
           )}
         </div>
       )}
+      <AlertModal
+        open={welcomeBackOpen}
+        message={t.welcomeBackMsg((pets.dog[0] || pets.cat[0] || {}).profile?.name || "")}
+        onClose={() => setWelcomeBackOpen(false)}
+      />
     </div>
   );
 }
