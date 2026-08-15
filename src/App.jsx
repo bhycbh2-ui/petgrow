@@ -2446,9 +2446,8 @@ const GlobalStyle = () => (
     .mock-checklist-icon{width:36px; height:36px; border-radius:10px; background:var(--surface);
       display:flex; align-items:center; justify-content:center; flex-shrink:0;}
     .mock-checklist-text{font-size:14px; font-weight:600; color:var(--text);}
-    .landing-features{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:20px;}
+    .landing-features{display:grid; grid-template-columns:repeat(2,1fr); gap:18px; margin:24px auto 0; max-width:980px;}
     @media (min-width:680px){ .landing-features{grid-template-columns:repeat(3,1fr);} }
-    @media (min-width:960px){ .landing-features{grid-template-columns:repeat(4,1fr);} }
     @media (max-width:420px){ .landing-features{grid-template-columns:1fr;} }
     .landing-feature-card{background:#fff; border-radius:16px; padding:26px 20px; text-align:center;
       box-shadow:0 4px 14px rgba(0,0,0,.04); transition:transform .15s, box-shadow .15s;}
@@ -2469,16 +2468,12 @@ const GlobalStyle = () => (
     .landing-highlight-cta{margin-top:auto; border:2px solid var(--pg-green); color:var(--pg-green); background:none;
       border-radius:999px; padding:11px 26px; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit; transition:.15s;}
     .landing-highlight-cta:hover{background:var(--pg-green); color:#fff;}
-    .landing-community-wrap{display:grid; grid-template-columns:1.1fr 1fr; gap:44px; align-items:center; margin-top:24px;}
-    @media (max-width:820px){ .landing-community-wrap{grid-template-columns:1fr; gap:28px;} }
-    .landing-community-text{text-align:left;}
-    @media (max-width:820px){ .landing-community-text{text-align:center;} }
-    .landing-community-cta{margin:0;}
-    @media (max-width:820px){
-      .landing-community-cta{margin:24px auto 0; max-width:100%;}
-    }
-    .landing-community-desc{font-size:15px; color:#787774; line-height:1.8; margin:14px 0 24px;}
-    .cm-mock-feed{position:relative; max-width:340px; margin:0 auto; display:flex; flex-direction:column; gap:14px;}
+    .landing-community-wrap{display:flex; flex-direction:column; align-items:center; gap:28px; margin-top:22px;}
+    .landing-community-text{text-align:center; max-width:720px; margin:0 auto;}
+    .landing-community-cta{margin:22px auto 0;}
+    .landing-community-desc{font-size:15px; color:#787774; line-height:1.8; margin:10px auto 0; max-width:680px;}
+    .cm-mock-feed{width:100%; max-width:860px; margin:0 auto; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px;}
+    @media (max-width:680px){ .cm-mock-feed{grid-template-columns:1fr; max-width:420px; gap:14px;} }
     .cm-mock-card{background:#fff; border-radius:18px; padding:16px; box-shadow:0 8px 22px rgba(0,0,0,.06);
       border:1px solid #eef2ea; overflow:hidden;}
     .cm-mock-header{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
@@ -6320,7 +6315,7 @@ function AboutPage({ onStart, onNavigate }) {
               <CommunityMockCard Illust={IllustMyPets} name={t.landingMockPost1Name} breed={t.landingMockPost1Breed}
                 timeLabel={t.landingMockPost1Time} text={t.landingMockPost1Text} likeCount={24} commentCount={7} />
               <CommunityMockCard Illust={IllustPetBti} name={t.landingMockPost2Name} breed={t.landingMockPost2Breed}
-                timeLabel={t.landingMockPost2Time} text={t.landingMockPost2Text} likeCount={12} commentCount={3} dim />
+                timeLabel={t.landingMockPost2Time} text={t.landingMockPost2Text} likeCount={12} commentCount={3} />
             </div>
           </div>
         </div>
