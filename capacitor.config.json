@@ -3,7 +3,9 @@
   "appName": "PetGrow",
   "webDir": "dist",
   "server": {
-    "androidScheme": "https"
+    "androidScheme": "https",
+    "url": "https://www.petgrow.co.kr",
+    "cleartext": false
   },
   "plugins": {
     "SplashScreen": {

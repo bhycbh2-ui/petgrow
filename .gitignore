@@ -2,4 +2,8 @@ node_modules
 dist
 .env
 .env.local
-petgrow-release-key.jks
+
+# 서명키(keystore) — 절대 git에 올리면 안 되는 민감한 파일
+*.jks
+*.keystore
+key.properties

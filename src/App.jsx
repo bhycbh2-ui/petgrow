@@ -168,6 +168,14 @@ const STRINGS = {
     privacyFooter: "카카오 계정으로 로그인하면 등록한 우리 아이 정보는 로그인한 계정에 안전하게 저장되고, 다른 기기에서도 로그인만 하면 그대로 불러올 수 있어요.",
     cancel: "취소",
     helpAria: "이용 가이드 보기",
+    hamMenuAria: "메뉴 열기",
+    hamCloseAria: "메뉴 닫기",
+    hamNavHome: "홈",
+    hamNavMy: "MY",
+    hamNavSettings: "설정",
+    appTabPetInfo: "Pet정보",
+    appTabPetContent: "Pet콘텐츠",
+    contentTabAll: "전체",
     confirmDeleteTitle: "정말 삭제할까요?",
     confirmDeleteMsg: (name) => `${name}의 모든 기록·사진이 사라지고 되돌릴 수 없어요.`,
     confirmDeleteBtn: "삭제",
@@ -295,9 +303,17 @@ const STRINGS = {
     sajuComingCompat: "보호자와 궁합 보기",
     sajuComingDaily: "오늘의 운세 보기",
     sajuComingSoon: "곧 만나요! 준비 중이에요",
+    fortuneMood: "기분운", fortuneWalk: "산책운", fortuneSnack: "간식운", fortuneFriend: "친구운",
+    fortuneLuckyItem: "행운 아이템", fortuneLuckyTime: "행운 시간",
+    compatScoreLabel: (name) => `${name} ♥ 보호자 찰떡지수`,
+    compatPointsLabel: "서로 잘 맞는 점",
+    compatPetViewLabel: "우리 아이가 보호자를 바라보는 방식",
+    compatTipLabel: "보호자가 해주면 좋아하는 행동",
+    compatActivityLabel: "함께하면 좋은 활동",
     sajuRestartBtn: "다시 보기",
     sajuDisclaimer: "재미로 보는 PetGrow 콘텐츠예요 🐾 실제 성격이나 미래를 판단하는 자료가 아니에요.",
-    tipCategoryLabels: { all: "전체보기", dog: "강아지", cat: "고양이", health: "건강", life: "생활" },
+    tipCategoryLabels: { all: "전체보기", health: "건강", diet: "식단", behavior: "행동", walk: "산책", hygiene: "위생", vaccine: "예방접종", beginner: "초보보호자" },
+    tipSpeciesLabels: { all: "전체", dog: "🐶 강아지", cat: "🐱 고양이" },
     privacyFooterLink: "개인정보처리방침",
     guideSections: [
       { title: "1. 아이 등록하기", body: "이름·품종·생년월일·현재 체중을 입력하면 예상 성체 체중과 성장 그래프가 바로 나와요. 대표 사진도 등록할 수 있어요." },
@@ -513,6 +529,15 @@ const STRINGS = {
     communityComposeTitleTitle: "제목",
     communityComposeTitlePlaceholder: "제목을 입력해주세요",
     communityComposeTitleContent: "내용",
+    communityVisibilityLabel: "공개 범위",
+    communityVisibilityPublic: "🌎 전체공개",
+    communityVisibilityPublicDesc: "다른 보호자들이 볼 수 있어요.",
+    communityVisibilityPrivate: "🔒 비공개",
+    communityVisibilityPrivateDesc: "나만 볼 수 있어요.",
+    communityPrivateBadge: "🔒 비공개",
+    communityMyPostsFilterAll: "전체",
+    communityMyPostsFilterPublic: "🌎 전체공개",
+    communityMyPostsFilterPrivate: "🔒 비공개",
     communityComposeContentPlaceholder: "우리 아이 이야기를 들려주세요",
     communityComposePhotos: (n) => `사진 (최대 5장, ${n}/5)`,
     communityComposeSubmit: "등록하기",
@@ -558,6 +583,16 @@ const STRINGS = {
     loginContinueKakao: "카카오로 시작하기",
     termsFooterLink: "이용약관",
     loggedInGreeting: (name) => `${name}님, 안녕하세요`,
+    homeGreeting: (name) => `안녕하세요, ${name} 보호자님! 🐾`,
+    homeSubGreeting: "오늘도 우리 아이와 행복한 하루 보내세요.",
+    homePetCardBtn: "아이 정보 보기",
+    homeAddPetBtn: "우리 아이 등록하기",
+    homeServicesTitle: "PetGrow와 함께 성장해요",
+    homeCardGrowthDesc: "나이·체중·예방접종 등 우리 아이 성장 기록",
+    homeCardSajuDesc: "생년월일로 보는 우리 아이의 운세",
+    homeCardPetBtiDesc: "성격 유형 검사로 우리 아이 이해하기",
+    homeCardTipsDesc: "건강·식단·생활 등 유용한 정보 모음",
+    homeCardCommunityDesc: "보호자들과 소통하는 커뮤니티 공간",
     notifAria: "알림 보기",
     notifEmpty: "새로운 알림이 없어요",
     notifBirthdayToday: (name) => `${name}의 생일이에요! 🎉`,
@@ -626,7 +661,7 @@ const STRINGS = {
     landingFunTitle: "우리 아이를 더 알아가는 재미",
     landingSajuEyebrow: "Pet사주",
     landingSajuHighlightTitle: "우리 아이에게도 타고난 매력이 있을까요? 🔮",
-    landingSajuHighlightDesc: "우리 아이의 정보를 바탕으로 재미있게 만나보는 특별한 이야기예요.",
+    landingSajuHighlightDesc: "우리 아이의 정보로 만나는 특별한 이야기예요.",
     landingSajuHighlightCta: "Pet사주 만나보기",
     landingPetBtiEyebrow: "PetBTI",
     landingPetBtiHighlightTitle: "우리 아이의 진짜 성격은? 🐾",
@@ -665,6 +700,14 @@ const STRINGS = {
     privacyFooter: "Once you log in with Kakao, everything you register for your pet is safely saved to your account — log in on any device to pick up right where you left off.",
     cancel: "Cancel",
     helpAria: "Open the guide",
+    hamMenuAria: "Open menu",
+    hamCloseAria: "Close menu",
+    hamNavHome: "Home",
+    hamNavMy: "MY",
+    hamNavSettings: "Settings",
+    appTabPetInfo: "Pet Info",
+    appTabPetContent: "Content",
+    contentTabAll: "All",
     confirmDeleteTitle: "Delete this pet?",
     confirmDeleteMsg: (name) => `All of ${name}'s records and photos will be gone for good — this can't be undone.`,
     confirmDeleteBtn: "Delete",
@@ -792,9 +835,17 @@ const STRINGS = {
     sajuComingCompat: "Compatibility with you",
     sajuComingDaily: "Today's horoscope",
     sajuComingSoon: "Coming soon!",
+    fortuneMood: "Mood", fortuneWalk: "Walk", fortuneSnack: "Treats", fortuneFriend: "Friends",
+    fortuneLuckyItem: "Lucky item", fortuneLuckyTime: "Lucky time",
+    compatScoreLabel: (name) => `${name} ♥ Guardian match score`,
+    compatPointsLabel: "What clicks between you two",
+    compatPetViewLabel: "How your pet sees you",
+    compatTipLabel: "Things they love when you do them",
+    compatActivityLabel: "A great activity to share",
     sajuRestartBtn: "Try again",
     sajuDisclaimer: "A fun PetGrow feature 🐾 not a real assessment of personality or the future.",
-    tipCategoryLabels: { all: "All", dog: "Dogs", cat: "Cats", health: "Health", life: "Lifestyle" },
+    tipCategoryLabels: { all: "All", health: "Health", diet: "Diet", behavior: "Behavior", walk: "Walks", hygiene: "Hygiene", vaccine: "Vaccines", beginner: "New Owners" },
+    tipSpeciesLabels: { all: "All", dog: "🐶 Dogs", cat: "🐱 Cats" },
     privacyFooterLink: "Privacy Policy",
     guideSections: [
       { title: "1. Register your pet", body: "Enter a name, breed, birth date, and current weight to instantly see the predicted adult weight and growth chart. You can add a profile photo too." },
@@ -1014,6 +1065,15 @@ const STRINGS = {
     communityComposeTitleTitle: "Title",
     communityComposeTitlePlaceholder: "Enter a title",
     communityComposeTitleContent: "Content",
+    communityVisibilityLabel: "Visibility",
+    communityVisibilityPublic: "🌎 Public",
+    communityVisibilityPublicDesc: "Other guardians can see this.",
+    communityVisibilityPrivate: "🔒 Private",
+    communityVisibilityPrivateDesc: "Only you can see this.",
+    communityPrivateBadge: "🔒 Private",
+    communityMyPostsFilterAll: "All",
+    communityMyPostsFilterPublic: "🌎 Public",
+    communityMyPostsFilterPrivate: "🔒 Private",
     communityComposeContentPlaceholder: "Tell us about your pet",
     communityComposePhotos: (n) => `Photos (up to 5, ${n}/5)`,
     communityComposeSubmit: "Post",
@@ -1054,6 +1114,16 @@ const STRINGS = {
     communityImageInvalidType: "Only JPG, PNG, and WebP images are allowed.",
     communityUploadFailed: "Photo upload failed. Please try again.",
     loggedInGreeting: (name) => `Hi, ${name}`,
+    homeGreeting: (name) => `Hi ${name}, hello! 🐾`,
+    homeSubGreeting: "Hope you and your pet have a happy day today.",
+    homePetCardBtn: "View pet info",
+    homeAddPetBtn: "Register your pet",
+    homeServicesTitle: "Grow together with PetGrow",
+    homeCardGrowthDesc: "Age, weight, vaccines — your pet's growth records",
+    homeCardSajuDesc: "Your pet's fortune, based on their birth date",
+    homeCardPetBtiDesc: "Understand your pet through a personality test",
+    homeCardTipsDesc: "Handy info on health, diet, and daily life",
+    homeCardCommunityDesc: "A community space to connect with guardians",
     notifAria: "View notifications",
     notifEmpty: "No new notifications",
     notifBirthdayToday: (name) => `It's ${name}'s birthday! 🎉`,
@@ -1409,8 +1479,9 @@ function communityDeleteComment(id) {
 function communityReport(payload) {
   return apiJson("/api/community/reports", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
 }
-function communityMyActivity(type, page) {
-  return apiJson(`/api/community/my?type=${type}&page=${page || 1}`);
+function communityMyActivity(type, page, visibility) {
+  const vis = visibility ? `&visibility=${visibility}` : "";
+  return apiJson(`/api/community/my?type=${type}&page=${page || 1}${vis}`);
 }
 async function communityUploadImage(dataUrl) {
   const data = await apiJson("/api/community/upload", {
@@ -1507,6 +1578,27 @@ const MailIcon = (p) => (
 const TalkIcon = (p) => (
   <svg className="icon" viewBox="0 0 24 24" {...p}>
     <path d="M4 4h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H9l-4.4 3.3A1 1 0 0 1 3 19.5V5a1 1 0 0 1 1-1z" />
+  </svg>
+);
+const HamburgerIcon = (p) => (
+  <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" {...p}>
+    <line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" />
+  </svg>
+);
+const CloseIcon = (p) => (
+  <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" {...p}>
+    <line x1="5" y1="5" x2="19" y2="19" /><line x1="19" y1="5" x2="5" y2="19" />
+  </svg>
+);
+const HomeIcon = (p) => (
+  <svg className="icon" viewBox="0 0 24 24" {...p}>
+    <path d="M12 3l9 8h-3v9h-5v-6h-2v6H6v-9H3l9-8z" />
+  </svg>
+);
+const SettingsIcon = (p) => (
+  <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}>
+    <circle cx="12" cy="12" r="3" />
+    <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z" />
   </svg>
 );
 const KakaoIcon = (p) => (
@@ -1851,8 +1943,6 @@ function LoginScreen({ onGoTerms, onGoPrivacy }) {
         <KakaoIcon style={{ width: 20, height: 20 }} /> {t.loginContinueKakao}
       </button>
 
-      <p className="bg-sub" style={{ fontSize: 12, lineHeight: 1.6, marginTop: 18 }}>{t.loginGateBody}</p>
-
       <div style={{ display: "flex", justifyContent: "center", gap: 14, marginTop: 26 }}>
         <button type="button" onClick={onGoTerms}
           style={{ fontSize: 12, fontWeight: 700, color: "var(--sub)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
@@ -1881,6 +1971,59 @@ function AccountButton({ account, onOpen }) {
     <button type="button" className="account-btn" onClick={onOpen}>
       <UserIcon style={{ width: 16, height: 16 }} /> {t.accountLoginBtn}
     </button>
+  );
+}
+
+// 모바일 웹 전용 햄버거 메뉴 — 슬라이드 애니메이션, 오버레이, X 닫기, 바깥 터치 시 닫힘, 뒤 스크롤 잠금
+function HamburgerMenu({ open, onClose, view, onNavigate, onOpenAccount, account }) {
+  const t = useT();
+  useEffect(() => {
+    if (!open) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prevOverflow; };
+  }, [open]);
+
+  const homeKey = account ? "home" : "about";
+  const items = [
+    { key: homeKey, label: t.hamNavHome, Icon: HomeIcon },
+    { key: "pets", label: t.myPetsNav, Icon: PawIcon },
+    { key: "community", label: t.communityNav, Icon: TalkIcon },
+    { key: "saju", label: t.sajuNav, Icon: SajuIcon },
+    { key: "petbti", label: t.petBtiNav, Icon: PetBtiIcon },
+    { key: "tips", label: t.tipsTitle, Icon: LightbulbIcon },
+    { key: "guide", label: t.infoGuideTitle, Icon: HelpIcon },
+  ];
+
+  return (
+    <>
+      <div className={`ham-overlay ${open ? "open" : ""}`} onClick={onClose} aria-hidden={!open} />
+      <div className={`ham-panel ${open ? "open" : ""}`} role="dialog" aria-label={t.hamNavHome}>
+        <div className="ham-panel-header">
+          <span style={{ fontWeight: 800, fontFamily: "'Jua',sans-serif", fontSize: 16 }}>
+            <span style={{ color: "var(--text)" }}>Pet</span><span style={{ color: "var(--primary)" }}>Grow</span>
+          </span>
+          <button type="button" className="icon-btn" onClick={onClose} aria-label={t.hamCloseAria}>
+            <CloseIcon style={{ width: 18, height: 18 }} />
+          </button>
+        </div>
+        <nav className="ham-nav">
+          {items.map(({ key, label, Icon }) => (
+            <button key={key} type="button" className={`ham-nav-item ${view === key ? "active" : ""}`}
+              onClick={() => { onNavigate(key); onClose(); }}>
+              <Icon style={{ width: 18, height: 18 }} /> {label}
+            </button>
+          ))}
+          <div className="ham-divider" />
+          <button type="button" className="ham-nav-item" onClick={() => { onOpenAccount(); onClose(); }}>
+            <UserIcon style={{ width: 18, height: 18 }} /> {t.hamNavMy}
+          </button>
+          <button type="button" className="ham-nav-item" onClick={() => { onOpenAccount(); onClose(); }}>
+            <SettingsIcon style={{ width: 18, height: 18 }} /> {t.hamNavSettings}
+          </button>
+        </nav>
+      </div>
+    </>
   );
 }
 
@@ -2134,6 +2277,52 @@ const GlobalStyle = () => (
       backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); cursor:pointer; font-family:inherit;
       font-size:13px; font-weight:700; color:var(--text); white-space:nowrap; transition:background .15s,color .15s;}
     .tab-pill.active{background:var(--primary); color:#fff; border-color:var(--primary);}
+    /* 900px 기준: 이상은 PC 한 줄 메뉴, 미만은 모바일 상단바 + 햄버거 메뉴 */
+    .desktop-nav{display:none;}
+    .mobile-topbar{display:flex;}
+    @media (min-width:900px){ .desktop-nav{display:flex;} .mobile-topbar{display:none;} }
+    .desktop-nav-link{background:none; border:none; cursor:pointer; font-family:inherit; font-size:13.5px; font-weight:700;
+      color:var(--sub); padding:8px 9px; border-radius:10px; white-space:nowrap; transition:background .15s,color .15s;}
+    .desktop-nav-link:hover{background:var(--surface);}
+    .desktop-nav-link.active{color:var(--primary); background:var(--surface);}
+    .ham-overlay{position:fixed; inset:0; background:rgba(0,0,0,0); pointer-events:none; z-index:200; transition:background .25s;}
+    .ham-overlay.open{background:rgba(0,0,0,.4); pointer-events:auto;}
+    .ham-panel{position:fixed; top:0; left:0; bottom:0; width:78%; max-width:300px; background:#fff; z-index:201;
+      transform:translateX(-100%); transition:transform .25s ease; box-shadow:2px 0 24px rgba(0,0,0,.12);
+      display:flex; flex-direction:column; padding:18px 14px; overflow-y:auto;}
+    .ham-panel.open{transform:translateX(0);}
+    .ham-panel-header{display:flex; align-items:center; justify-content:space-between; padding:6px 6px 18px;}
+    .ham-nav{display:flex; flex-direction:column; gap:2px;}
+    .ham-nav-item{display:flex; align-items:center; gap:12px; background:none; border:none; cursor:pointer;
+      font-family:inherit; font-size:15px; font-weight:700; color:var(--text); text-align:left;
+      padding:13px 10px; border-radius:12px; transition:background .15s,color .15s;}
+    .ham-nav-item:hover{background:var(--surface);}
+    .ham-nav-item.active{background:var(--primary); color:#fff;}
+    .ham-divider{height:1px; background:var(--border); margin:10px 4px;}
+    .app-bottom-nav{position:fixed; left:0; right:0; bottom:0; z-index:150; background:#fff;
+      border-top:1px solid var(--border); display:flex; padding-bottom:env(safe-area-inset-bottom,0);
+      box-shadow:0 -4px 14px rgba(0,0,0,.04);}
+    .app-bottom-nav-item{flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
+      background:none; border:none; cursor:pointer; font-family:inherit; padding:9px 2px 8px; color:#9a9d95; font-size:10.5px; font-weight:700;}
+    .app-bottom-nav-item.active{color:var(--primary);}
+    .home-pet-card{display:flex; align-items:center; gap:14px; background:#fff; border:1px solid var(--border);
+      border-radius:18px; padding:16px 18px; cursor:pointer; text-align:left; width:100%; font-family:inherit;
+      box-shadow:0 3px 10px rgba(0,0,0,.03);}
+    .home-pet-card-empty{justify-content:center; gap:8px; color:var(--primary); font-weight:700; font-size:14px;
+      border-style:dashed; border-color:var(--primary);}
+    .home-pet-avatar{width:52px; height:52px; border-radius:50%; overflow:hidden; flex-shrink:0; background:var(--surface);
+      display:flex; align-items:center; justify-content:center;}
+    .home-pet-avatar img{width:100%; height:100%; object-fit:cover;}
+    .home-pet-name{font-weight:800; font-size:16px;}
+    .home-service-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px;}
+    @media (min-width:640px){ .home-service-grid{grid-template-columns:repeat(3,1fr);} }
+    .home-service-card{border:none; border-radius:18px; padding:18px 16px; text-align:left; cursor:pointer;
+      font-family:inherit; display:flex; flex-direction:column; align-items:flex-start; gap:8px; transition:transform .15s;}
+    .home-service-card:hover{transform:translateY(-2px);}
+    .home-service-illust{width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,.6);
+      display:flex; align-items:center; justify-content:center;}
+    .home-service-title{font-weight:800; font-size:14px; color:var(--pg-dark,#1C1C1C);}
+    .home-service-desc{font-size:12px; color:#6b6f66; line-height:1.5;}
     .cm-card{background:#fff; border-radius:18px; border:1px solid var(--border); overflow:hidden; cursor:pointer;
       transition:transform .12s, box-shadow .12s;}
     .cm-card:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,.06);}
@@ -2266,22 +2455,23 @@ const GlobalStyle = () => (
     .landing-highlight-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:20px;}
     @media (max-width:680px){ .landing-highlight-grid{grid-template-columns:1fr;} }
     .landing-highlight-card{background:#fff; border-radius:22px; padding:36px 30px; text-align:center;
-      box-shadow:0 6px 20px rgba(0,0,0,.05);}
+      box-shadow:0 6px 20px rgba(0,0,0,.05); display:flex; flex-direction:column; align-items:center;}
     .landing-highlight-illust{width:96px; height:96px; border-radius:26px; background:var(--pg-green-light);
       display:flex; align-items:center; justify-content:center; margin:0 auto 18px;}
     .landing-highlight-eyebrow{font-size:12px; font-weight:800; color:var(--pg-green); letter-spacing:.02em; margin-bottom:6px;}
     .landing-highlight-title{font-size:19px; font-weight:800; color:var(--pg-dark); margin-bottom:10px;}
-    .landing-highlight-desc{font-size:14px; color:#787774; line-height:1.7; margin-bottom:20px;}
-    .landing-highlight-cta{border:2px solid var(--pg-green); color:var(--pg-green); background:none;
+    .landing-highlight-desc{font-size:14px; color:#787774; line-height:1.7; margin-bottom:20px; flex:1;}
+    .landing-highlight-cta{margin-top:auto; border:2px solid var(--pg-green); color:var(--pg-green); background:none;
       border-radius:999px; padding:11px 26px; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit; transition:.15s;}
     .landing-highlight-cta:hover{background:var(--pg-green); color:#fff;}
     .landing-community-wrap{display:grid; grid-template-columns:1.1fr 1fr; gap:44px; align-items:center; margin-top:24px;}
-    @media (max-width:820px){ .landing-community-wrap{grid-template-columns:1fr;} }
+    @media (max-width:820px){ .landing-community-wrap{grid-template-columns:1fr; gap:28px;} }
     .landing-community-text{text-align:left;}
+    @media (max-width:820px){ .landing-community-text{text-align:center;} }
     .landing-community-desc{font-size:15px; color:#787774; line-height:1.8; margin:14px 0 24px;}
-    .cm-mock-feed{position:relative; max-width:340px; margin:0 auto;}
-    .cm-mock-card{background:#fff; border-radius:18px; padding:16px; box-shadow:0 10px 28px rgba(0,0,0,.08); position:relative; z-index:1;}
-    .cm-mock-card + .cm-mock-card{margin-top:-30px; z-index:0;}
+    .cm-mock-feed{position:relative; max-width:340px; margin:0 auto; display:flex; flex-direction:column; gap:14px;}
+    .cm-mock-card{background:#fff; border-radius:18px; padding:16px; box-shadow:0 8px 22px rgba(0,0,0,.06);
+      border:1px solid #eef2ea; overflow:hidden;}
     .cm-mock-header{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
     .cm-mock-avatar{width:34px; height:34px; border-radius:50%; background:var(--pg-green-light);
       display:flex; align-items:center; justify-content:center; flex-shrink:0;}
@@ -3773,163 +3963,163 @@ function parseTipsCsv(csvText) {
 }
 
 const TIPS_DATA = [
-  { id: "t1", category: "dog", featured: true,
+  { id: "t1", species: "dog", category: "walk", featured: true,
     title: { ko: "강아지 산책, 얼마나 해야 할까?", en: "How much should I walk my dog?" },
     summary: { ko: "견종과 체구에 따라 다르지만, 소형견은 하루 20~30분, 활동량 많은 중대형견은 하루 1시간 이상이 참고 기준이에요.", en: "It varies by breed and size, but small dogs generally do well with 20-30 minutes a day, while active medium-large breeds often need an hour or more." },
     body: { ko: "너무 어린 강아지(성장판이 닫히기 전)는 무리한 장거리 산책보다 짧고 자주 나가는 게 관절에 더 좋아요. 더운 날엔 아스팔트 온도를 손등으로 먼저 확인해보는 것도 좋아요.", en: "Very young puppies (before growth plates close) do better with short, frequent walks rather than long ones. On hot days, check the pavement temperature with the back of your hand before heading out." } },
-  { id: "t2", category: "cat", featured: true,
+  { id: "t2", species: "cat", category: "hygiene", featured: true,
     title: { ko: "고양이 화장실 관리 팁", en: "Litter box care tips" },
     summary: { ko: "깨끗한 화장실이 고양이 스트레스를 크게 줄여줘요. 고양이 수 + 1개의 화장실 개수를 참고해보세요.", en: "A clean litter box goes a long way in reducing stress. A common rule of thumb is one box per cat, plus one extra." },
     body: { ko: "모래는 하루 1~2회 배변만 치워주고, 전체 교체는 1~2주에 한 번이 일반적이에요. 화장실 위치를 자주 바꾸면 스트레스를 받을 수 있어요.", en: "Scoop solids once or twice a day, and do a full litter change roughly every 1-2 weeks. Moving the box around often can stress your cat out." } },
-  { id: "t3", category: "health", featured: true,
+  { id: "t3", species: "both", category: "health", featured: true,
     title: { ko: "여름철 반려동물 건강 관리", en: "Keeping pets healthy in summer" },
     summary: { ko: "더운 날엔 우리 아이도 열사병 위험이 있어요. 그늘·물·서늘한 실내 환경을 꼭 챙겨주세요.", en: "Pets are at risk of heatstroke on hot days too — always make sure they have shade, water, and a cool indoor space." },
     body: { ko: "헐떡임이 평소보다 심하거나 잇몸이 붉어지면 즉시 시원한 곳으로 옮기고 병원에 문의하세요. 차 안에 혼자 두는 건 아주 짧은 시간이라도 위험해요.", en: "If panting seems unusually heavy or the gums look red, move your pet somewhere cool right away and contact a vet. Never leave a pet alone in a car, even briefly." } },
-  { id: "t4", category: "dog", featured: false,
+  { id: "t4", species: "dog", category: "behavior", featured: false,
     title: { ko: "강아지가 꼬리를 흔드는 진짜 이유는?", en: "What tail wagging really means" },
     summary: { ko: "꼬리를 흔든다고 항상 반가운 건 아니에요. 흔드는 속도와 높이에 따라 감정이 달라요.", en: "A wagging tail doesn't always mean happiness — the speed and height can signal very different emotions." },
     body: { ko: "낮고 느린 꼬리 흔들기는 불안이나 경계일 수 있고, 높고 빠른 흔들기는 흥분·기쁨에 가까워요. 몸 전체 언어를 함께 보는 게 정확해요.", en: "A low, slow wag can signal anxiety or caution, while a high, fast wag is closer to excitement or joy. Reading the whole body helps you interpret it accurately." } },
-  { id: "t5", category: "cat", featured: false,
+  { id: "t5", species: "cat", category: "behavior", featured: false,
     title: { ko: "고양이가 골골거리는 이유", en: "Why cats purr" },
     summary: { ko: "기분 좋을 때뿐 아니라 아프거나 스트레스 받을 때도 골골거릴 수 있어요.", en: "Cats don't only purr when content — they may also purr when in pain or stressed." },
     body: { ko: "골골송은 자가 진정 효과가 있다는 연구도 있어요. 평소와 다르게 골골거림이 잦아지고 식욕이 줄었다면 건강 체크가 필요해요.", en: "Some research suggests purring may have a self-soothing effect. If purring becomes unusually frequent alongside reduced appetite, it's worth a health check." } },
-  { id: "t6", category: "health", featured: false,
+  { id: "t6", species: "both", category: "hygiene", featured: false,
     title: { ko: "양치, 얼마나 자주 해줘야 할까?", en: "How often should I brush my pet's teeth?" },
     summary: { ko: "이상적으로는 매일이지만, 주 2~3회만 꾸준히 해도 치석 예방에 큰 도움이 돼요.", en: "Daily is ideal, but even 2-3 times a week consistently makes a big difference in preventing tartar." },
     body: { ko: "반려동물용 치약을 사용하고, 사람용 치약은 절대 쓰지 마세요. 처음엔 손가락 칫솔로 천천히 적응시켜주는 게 좋아요.", en: "Use pet-specific toothpaste and never human toothpaste. Starting with a finger brush to help them get used to it slowly works well." } },
-  { id: "t7", category: "life", featured: false,
+  { id: "t7", species: "both", category: "hygiene", featured: false,
     title: { ko: "장마철 산책 후 발 관리", en: "Paw care after rainy-season walks" },
     summary: { ko: "젖은 발을 그대로 두면 습진이 생기기 쉬워요. 산책 후엔 발가락 사이까지 꼼꼼히 말려주세요.", en: "Leaving paws wet can lead to skin irritation. Dry thoroughly between the toes after every walk." },
     body: { ko: "마른 수건으로 먼저 물기를 제거하고, 발가락 사이 냄새나 붉어짐이 있는지 확인하는 습관을 들이면 좋아요.", en: "Pat dry with a towel first, and get in the habit of checking between the toes for odor or redness." } },
-  { id: "t8", category: "life", featured: false,
+  { id: "t8", species: "both", category: "beginner", featured: false,
     title: { ko: "이사 후 반려동물 적응시키기", en: "Helping your pet adjust after moving" },
     summary: { ko: "새 공간에 대한 불안은 자연스러운 반응이에요. 익숙한 담요·장난감을 먼저 놓아주세요.", en: "Anxiety about a new space is completely normal. Set out familiar blankets and toys first." },
     body: { ko: "며칠간은 방 하나만 먼저 개방하고 점차 넓혀가는 게 좋고, 사료·화장실 위치는 최대한 빨리 고정해주는 게 안정에 도움이 돼요.", en: "Opening up just one room at first and gradually expanding helps, and settling on a fixed spot for food and litter/potty as soon as possible aids adjustment." } },
-  { id: "t9", category: "dog", featured: false,
+  { id: "t9", species: "dog", category: "diet", featured: false,
     title: { ko: "초코릿, 왜 강아지에게 위험할까?", en: "Why chocolate is dangerous for dogs" },
     summary: { ko: "테오브로민 성분을 강아지는 잘 분해하지 못해서 소량도 위험할 수 있어요.", en: "Dogs can't metabolize theobromine well, so even a small amount can be dangerous." },
     body: { ko: "다크초콜릿일수록 더 위험해요. 섭취를 의심되면 양과 시간을 기록해두고 바로 동물병원에 연락하세요.", en: "Darker chocolate is more dangerous. If ingestion is suspected, note the amount and time, and contact a vet immediately." } },
-  { id: "t10", category: "cat", featured: false,
+  { id: "t10", species: "cat", category: "behavior", featured: false,
     title: { ko: "고양이 스크래처, 왜 필요할까?", en: "Why cats need a scratching post" },
     summary: { ko: "발톱 관리뿐 아니라 스트레스 해소와 영역 표시 본능이기도 해요.", en: "It's not just for claw maintenance — it's also a way to relieve stress and mark territory." },
     body: { ko: "가구를 긁는다면 혼내기보다 스크래처 위치를 잘 보이는 동선에 놓아주는 게 훨씬 효과적이에요.", en: "If they're scratching furniture, placing a scratching post along a visible, frequently-used path works far better than scolding." } },
-  { id: "t11", category: "health", featured: false,
+  { id: "t11", species: "both", category: "health", featured: false,
     title: { ko: "겨울철 관절 관리, 이렇게 도와주세요", en: "Supporting joints through winter" },
     summary: { ko: "추운 날씨는 관절 통증을 더 심하게 느끼게 할 수 있어요. 산책 전 가벼운 스트레칭이 도움이 돼요.", en: "Cold weather can make joint pain feel worse. A light warm-up before walks can help." },
     body: { ko: "미끄러운 바닥엔 매트를 깔아주고, 노령 반려동물은 산책 시간을 짧게 여러 번 나누는 게 좋아요.", en: "Add mats to slippery floors, and for senior pets, splitting walks into shorter, more frequent sessions helps." } },
-  { id: "t12", category: "life", featured: false,
+  { id: "t12", species: "both", category: "beginner", featured: false,
     title: { ko: "새 식구 소개, 천천히가 정답이에요", en: "Introducing a new pet — slow and steady wins" },
     summary: { ko: "기존 아이와 새 아이를 처음부터 한 공간에 두면 스트레스가 커질 수 있어요.", en: "Putting a resident pet and a newcomer together right away can cause a lot of stress." },
     body: { ko: "냄새 교환부터 시작해서 짧은 시간 함께 있어보는 식으로 점진적으로 늘려가는 게 안전해요.", en: "Start with scent-swapping, then gradually increase short supervised time together." } },
-  { id: "t13", category: "dog", featured: false,
+  { id: "t13", species: "dog", category: "behavior", featured: false,
     title: { ko: "강아지 사회화, 언제가 적기일까?", en: "The best window for puppy socialization" },
     summary: { ko: "생후 3~14주가 사회화에 특히 중요한 시기로 알려져 있어요.", en: "Weeks 3-14 are considered an especially important window for socialization." },
     body: { ko: "접종이 다 끝나지 않았어도 안는 상태로 다양한 소리·사람을 접하게 해주는 것부터 시작할 수 있어요.", en: "Even before vaccinations are complete, you can start by carrying them to safely expose them to different sounds and people." } },
-  { id: "t14", category: "cat", featured: false,
+  { id: "t14", species: "cat", category: "diet", featured: false,
     title: { ko: "고양이 물그릇, 이렇게 두면 더 잘 마셔요", en: "Placing water bowls cats actually use" },
     summary: { ko: "밥그릇과 물그릇을 붙여두면 오히려 안 마시는 고양이도 있어요.", en: "Some cats drink less when the water bowl sits right next to the food bowl." },
     body: { ko: "밥자리와 떨어진 조용한 곳에 물그릇을 여러 개 두면 음수량이 늘어나는 경우가 많아요.", en: "Placing several water bowls in quiet spots away from the food area often increases water intake." } },
-  { id: "t15", category: "dog", featured: false,
+  { id: "t15", species: "dog", category: "behavior", featured: false,
     title: { ko: "강아지 짖음, 무작정 혼내지 마세요", en: "Don't just scold a barking dog" },
     summary: { ko: "짖는 이유(불안·심심함·경계)를 먼저 파악하는 게 우선이에요.", en: "Figuring out why they're barking — anxiety, boredom, alertness — comes first." },
     body: { ko: "원인에 맞는 해결이 훨씬 효과적이에요. 불안 때문이라면 혼내는 게 오히려 불안을 키울 수 있어요.", en: "Matching the solution to the cause works far better — scolding an anxious dog can actually make the anxiety worse." } },
-  { id: "t16", category: "dog", featured: false,
+  { id: "t16", species: "dog", category: "behavior", featured: false,
     title: { ko: "강아지가 눈을 맞추는 건 신뢰의 표현", en: "Eye contact is a sign of trust" },
     summary: { ko: "강아지가 보호자와 눈을 맞추는 건 애정과 신뢰의 표현이에요.", en: "When a dog holds eye contact with you, it's a sign of affection and trust." },
     body: { ko: "낯선 개끼리는 눈맞춤이 위협으로 받아들여질 수 있지만, 보호자와의 눈맞춤은 옥시토신 분비를 늘린다는 연구도 있어요.", en: "Between unfamiliar dogs, eye contact can read as a threat — but eye contact with their own person has even been linked to a rise in oxytocin." } },
-  { id: "t17", category: "dog", featured: false,
+  { id: "t17", species: "dog", category: "hygiene", featured: false,
     title: { ko: "강아지 발톱, 얼마나 자주 깎아야 할까?", en: "How often to trim a dog's nails" },
     summary: { ko: "보통 3~4주에 한 번이 적당해요. 바닥에 딱딱 소리가 나면 깎을 때예요.", en: "Every 3-4 weeks is typical — if you hear clicking on hard floors, it's time." },
     body: { ko: "너무 짧게 자르면 혈관을 다칠 수 있어 조금씩 자주 다듬는 게 안전해요. 무서워하면 발만 만지는 연습부터 천천히 해보세요.", en: "Cutting too short can nick the quick, so small, frequent trims are safer. If they're nervous, start by just handling their paws to build comfort." } },
-  { id: "t18", category: "dog", featured: false,
+  { id: "t18", species: "dog", category: "behavior", featured: false,
     title: { ko: "강아지 배변 훈련, 이렇게 시작해보세요", en: "Getting started with potty training" },
     summary: { ko: "일정한 시간에 데리고 나가고, 성공했을 때 바로 칭찬해주는 게 핵심이에요.", en: "Taking them out at consistent times and praising success immediately is key." },
     body: { ko: "식사 후, 낮잠 후, 놀이 후는 배변 확률이 높은 타이밍이에요. 실수했을 때 혼내기보다 치우고 넘어가는 게 학습에 더 도움이 돼요.", en: "After meals, naps, or play are high-probability moments. When accidents happen, cleaning up calmly helps learning more than scolding does." } },
-  { id: "t19", category: "dog", featured: false,
+  { id: "t19", species: "dog", category: "walk", featured: false,
     title: { ko: "강아지와 자동차 이동, 이것만은 챙기세요", en: "Car safety essentials for dogs" },
     summary: { ko: "전용 카시트나 안전벨트를 사용하고, 창문을 너무 많이 열어두지 마세요.", en: "Use a pet seatbelt or carrier, and avoid opening windows too wide." },
     body: { ko: "머리를 창밖으로 내미는 건 눈·귀 부상 위험이 있어요. 멀미가 있다면 이동 전 공복 상태로 태우는 게 도움이 될 수 있어요.", en: "Letting them stick their head out risks eye and ear injury. If they get carsick, traveling on a lighter stomach can help." } },
-  { id: "t20", category: "dog", featured: false,
+  { id: "t20", species: "dog", category: "walk", featured: false,
     title: { ko: "산책 중 리드줄 매너, 왜 중요할까?", en: "Why leash manners matter on walks" },
     summary: { ko: "리드줄을 짧게 잡는 연습은 다른 사람·동물과의 안전한 산책을 위해 꼭 필요해요.", en: "Practicing a shorter, controlled leash helps keep walks safe around other people and animals." },
     body: { ko: "당기는 힘에 끌려다니기보다, 옆에서 걷는 연습을 짧은 구간부터 반복해보세요. 간식으로 옆자리를 보상해주면 훨씬 빨리 배워요.", en: "Rather than being pulled along, practice short stretches of walking beside you. Rewarding the position with treats speeds up learning a lot." } },
-  { id: "t21", category: "cat", featured: false,
+  { id: "t21", species: "cat", category: "behavior", featured: false,
     title: { ko: "고양이가 긁는 건 나쁜 버릇이 아니에요", en: "Scratching isn't bad behavior" },
     summary: { ko: "발톱 관리뿐 아니라 영역 표시, 스트레스 해소 목적도 있어요.", en: "Scratching serves nail care, territory marking, and stress relief all at once." },
     body: { ko: "가구를 긁는다면 혼내기보다 그 옆에 스크래처를 놔주는 게 훨씬 효과적이에요. 재질(골판지·마)을 여러 개 시도해보세요.", en: "If they're scratching furniture, placing a scratcher right next to it works better than scolding. Try a few materials — cardboard, sisal — to see what they prefer." } },
-  { id: "t22", category: "cat", featured: false,
+  { id: "t22", species: "cat", category: "hygiene", featured: false,
     title: { ko: "고양이 헤어볼, 빗질이 제일 쉬운 예방법", en: "Brushing is the easiest hairball prevention" },
     summary: { ko: "정기적인 빗질이 헤어볼을 줄이는 가장 간단한 방법이에요.", en: "Regular brushing is the simplest way to cut down on hairballs." },
     body: { ko: "장모종은 주 3~4회, 단모종도 주 1~2회 정도 빗겨주면 삼키는 털의 양이 크게 줄어요.", en: "Long-haired cats benefit from brushing 3-4 times a week, and short-haired cats once or twice — it noticeably reduces how much fur they swallow." } },
-  { id: "t23", category: "cat", featured: false,
+  { id: "t23", species: "cat", category: "behavior", featured: false,
     title: { ko: "고양이가 상자를 좋아하는 이유", en: "Why cats love boxes so much" },
     summary: { ko: "좁은 공간이 안정감을 주기 때문이에요. 스트레스 해소에도 도움이 돼요.", en: "Tight spaces feel safe to them, and can even help relieve stress." },
     body: { ko: "새로운 환경에 적응할 때 상자 하나만 놔줘도 훨씬 빨리 안정을 찾는 경우가 많아요.", en: "Just placing a box in a new environment often helps a cat settle in much faster." } },
-  { id: "t24", category: "cat", featured: false,
+  { id: "t24", species: "cat", category: "behavior", featured: false,
     title: { ko: "고양이 발톱 vs 가구, 평화롭게 공존하기", en: "Keeping claws and furniture at peace" },
     summary: { ko: "전용 스크래처를 가구 옆에 놔두면 자연스럽게 유도할 수 있어요.", en: "Placing a scratcher right beside furniture naturally redirects the habit." },
     body: { ko: "스크래처에 캣닢을 살짝 묻혀두면 관심을 끌기 더 쉬워요. 가구 커버는 임시방편일 뿐, 대체 공간을 만들어주는 게 근본적인 해결이에요.", en: "A little catnip on the scratcher helps grab their interest. Furniture covers are just a stopgap — giving them a real alternative is the lasting fix." } },
-  { id: "t25", category: "cat", featured: false,
+  { id: "t25", species: "cat", category: "diet", featured: false,
     title: { ko: "고양이 음수량 늘리는 법", en: "Getting your cat to drink more water" },
     summary: { ko: "정수기형 급수기를 써보면 물 섭취량이 늘어나는 경우가 많아요.", en: "A pet water fountain often increases how much a cat drinks." },
     body: { ko: "고양이는 본능적으로 흐르는 물을 더 신선하다고 느껴요. 습식 사료를 섞어주는 것도 수분 섭취에 도움이 돼요.", en: "Cats instinctively perceive moving water as fresher. Mixing in some wet food also helps boost hydration." } },
-  { id: "t26", category: "cat", featured: false,
+  { id: "t26", species: "cat", category: "behavior", featured: false,
     title: { ko: "고양이도 사회화가 필요해요", en: "Cats need socialization too" },
     summary: { ko: "강아지만큼 알려져있진 않지만, 고양이도 어릴 때 사회화가 중요해요.", en: "It's less talked about than with dogs, but early socialization matters for cats too." },
     body: { ko: "생후 2~7주가 특히 중요한 시기로 알려져 있어요. 다만 강아지보다 새로운 자극에는 더 천천히 적응시켜주는 게 좋아요.", en: "Weeks 2-7 are considered especially important. Compared to dogs, cats generally do better adjusting to new stimuli more gradually." } },
-  { id: "t27", category: "health", featured: false,
+  { id: "t27", species: "both", category: "vaccine", featured: false,
     title: { ko: "예방접종 스케줄을 놓쳤다면?", en: "Missed a vaccine appointment?" },
     summary: { ko: "너무 늦지 않았다면 처음부터 다시 할 필요 없이 이어서 진행할 수 있는 경우가 많아요.", en: "In many cases you can simply continue the schedule rather than starting over, if it hasn't been too long." },
     body: { ko: "정확한 판단은 병원마다 다를 수 있으니, 놓친 기간과 함께 수의사와 상담하는 게 가장 확실해요.", en: "The exact call can vary by clinic, so it's best to check with your vet and mention how much time has passed." } },
-  { id: "t28", category: "health", featured: false,
+  { id: "t28", species: "both", category: "diet", featured: false,
     title: { ko: "우리 아이 비만, 집에서 체크하는 법", en: "Checking for overweight at home" },
     summary: { ko: "위에서 봤을 때 허리 라인이 살짝 들어가 있는지 확인해보세요.", en: "Looking from above, check whether there's a slight waist tuck behind the ribs." },
     body: { ko: "갈비뼈가 만져지지 않을 정도로 지방이 있다면 체중 관리가 필요한 신호예요. 급격한 다이어트보다는 서서히 조절하는 게 안전해요.", en: "If the ribs are hard to feel under a layer of fat, it may be time for weight management. Gradual adjustment is safer than a sudden diet change." } },
-  { id: "t29", category: "health", featured: false,
+  { id: "t29", species: "both", category: "vaccine", featured: false,
     title: { ko: "심장사상충 예방, 매달 챙겨야 하는 이유", en: "Why heartworm prevention is monthly" },
     summary: { ko: "정기적인 예방이 치료보다 훨씬 안전하고 비용 부담도 적어요.", en: "Regular prevention is far safer and less costly than treatment after the fact." },
     body: { ko: "모기가 매개체라 실내에서만 지내도 완전히 안심할 수는 없어요. 계절과 상관없이 꾸준히 챙겨주는 게 좋아요.", en: "Since mosquitoes are the carrier, even indoor pets aren't fully risk-free. Year-round prevention is generally recommended." } },
-  { id: "t30", category: "health", featured: false,
+  { id: "t30", species: "both", category: "health", featured: false,
     title: { ko: "반려동물 구토, 병원에 가야 하는 신호", en: "When vomiting means a vet visit" },
     summary: { ko: "한 번의 구토는 크게 걱정 안 해도 되지만, 반복되거나 무기력함이 동반되면 병원에 문의하세요.", en: "A single episode usually isn't alarming, but repeated vomiting with lethargy warrants a call to the vet." },
     body: { ko: "구토물에 피가 섞이거나 색이 이상하다면 바로 병원을 찾는 게 좋아요. 24시간 이상 아무것도 못 먹는다면 지체하지 마세요.", en: "Blood or unusual coloring in vomit calls for an immediate visit. Don't wait if they can't keep anything down for over 24 hours." } },
-  { id: "t31", category: "health", featured: false,
+  { id: "t31", species: "both", category: "health", featured: false,
     title: { ko: "노령 반려동물, 건강검진은 얼마나 자주?", en: "Checkup frequency for senior pets" },
     summary: { ko: "7세 이상부터는 6개월에 한 번 정도 정기검진을 권장해요.", en: "From around age 7, a checkup roughly every 6 months is often recommended." },
     body: { ko: "노령기엔 증상이 없어도 혈액검사로 미리 발견되는 문제들이 많아요. 작은 변화(음수량, 활동량)도 기록해두면 진료에 도움이 돼요.", en: "In senior pets, bloodwork often catches issues before symptoms appear. Noting small changes in water intake or activity level helps at checkups too." } },
-  { id: "t32", category: "health", featured: false,
+  { id: "t32", species: "both", category: "behavior", featured: false,
     title: { ko: "반려동물 스트레스 신호, 놓치기 쉬운 것들", en: "Easy-to-miss signs of stress" },
     summary: { ko: "과도한 그루밍, 식욕 변화, 숨는 행동이 대표적인 신호예요.", en: "Excessive grooming, appetite changes, and hiding are common signals." },
     body: { ko: "환경 변화(이사, 새 가족, 새 반려동물) 직후엔 특히 눈여겨봐주세요. 며칠 이상 지속되면 병원 상담도 고려해보세요.", en: "Pay extra attention right after changes like moving, a new family member, or a new pet. If it lasts more than a few days, a vet visit is worth considering." } },
-  { id: "t33", category: "health", featured: false,
+  { id: "t33", species: "both", category: "health", featured: false,
     title: { ko: "중성화 수술, 시기가 궁금하다면", en: "Timing questions around spay/neuter" },
     summary: { ko: "보통 생후 6개월 전후를 권장하지만, 정확한 시기는 병원과 상담하는 게 가장 정확해요.", en: "Around 6 months is a common guideline, but your vet can give the most accurate timing." },
     body: { ko: "견종·체구·건강 상태에 따라 권장 시기가 달라질 수 있어요. 수술 전후 관리 방법도 함께 안내받는 게 좋아요.", en: "Recommended timing can vary by breed, size, and health. It's also worth asking about pre- and post-surgery care at the same time." } },
-  { id: "t34", category: "life", featured: false,
+  { id: "t34", species: "both", category: "beginner", featured: false,
     title: { ko: "이사할 때 반려동물 스트레스 줄이는 법", en: "Easing moving-day stress for pets" },
     summary: { ko: "익숙한 담요나 장난감을 함께 옮겨주면 새 공간 적응에 도움이 돼요.", en: "Bringing along a familiar blanket or toy helps them settle into the new space." },
     body: { ko: "이사 당일은 방 하나를 미리 정리해서 그 안에서 안정을 찾게 해주는 것도 좋은 방법이에요.", en: "On moving day, setting up one quiet room in advance for them to settle into can help a lot." } },
-  { id: "t35", category: "life", featured: false,
+  { id: "t35", species: "both", category: "walk", featured: false,
     title: { ko: "반려동물과 캠핑 갈 때 챙길 것들", en: "Camping checklist for pets" },
     summary: { ko: "리드줄, 물, 평소 먹던 사료, 배변봉투는 꼭 챙기세요.", en: "Leash, water, their regular food, and waste bags are must-haves." },
     body: { ko: "새로운 사료를 갑자기 주면 배탈이 날 수 있어 평소 먹던 걸 챙기는 게 안전해요. 밤에는 온도 변화에 대비한 담요도 유용해요.", en: "Switching food suddenly can upset their stomach, so their usual food is the safer choice. A blanket for cooler nights is handy too." } },
-  { id: "t36", category: "life", featured: false,
+  { id: "t36", species: "both", category: "beginner", featured: false,
     title: { ko: "인식표, 별거 아닌 것 같아도 꼭 필요해요", en: "Small ID tag, big peace of mind" },
     summary: { ko: "혹시 모를 미아 상황에 대비해 연락처가 적힌 인식표를 꼭 채워주세요.", en: "An ID tag with your contact info matters in case they ever get lost." },
     body: { ko: "내장형 마이크로칩과 함께 있으면 더 안전해요. 목걸이만으로는 벗겨질 수 있어 두 가지를 함께 준비하는 게 좋아요.", en: "Pairing it with a microchip adds an extra layer of safety, since collars can slip off — having both is the safer bet." } },
-  { id: "t37", category: "life", featured: false,
+  { id: "t37", species: "both", category: "walk", featured: false,
     title: { ko: "반려동물과 안전하게 겨울나기", en: "Getting through winter safely together" },
     summary: { ko: "산책 후 발바닥에 남은 제설제를 바로 닦아주는 게 좋아요.", en: "Wipe their paws right after walks to remove any de-icing salt." },
     body: { ko: "제설제는 발바닥 자극뿐 아니라 핥았을 때 배탈을 일으킬 수도 있어요. 발바닥용 보습제를 발라주는 것도 도움이 돼요.", en: "De-icing chemicals can irritate paws and cause stomach upset if licked. A paw balm can help protect against the cold too." } },
-  { id: "t38", category: "life", featured: false,
+  { id: "t38", species: "both", category: "hygiene", featured: false,
     title: { ko: "털갈이 시기, 빗질 횟수 늘려주세요", en: "Brush more during shedding season" },
     summary: { ko: "봄가을 털갈이 시기엔 평소보다 빗질 횟수를 늘려주는 게 좋아요.", en: "During spring and fall shedding, brushing more often than usual helps a lot." },
     body: { ko: "털을 미리 정리해주면 집안 청소도 수월해지고, 피부 트러블 예방에도 도움이 돼요.", en: "Regular brushing means less fur around the house, and it also helps prevent skin irritation." } },
-  { id: "t39", category: "life", featured: false,
+  { id: "t39", species: "both", category: "beginner", featured: false,
     title: { ko: "반려동물 혼자 두고 외출할 때 체크리스트", en: "Checklist before leaving them home alone" },
     summary: { ko: "너무 오랜 시간 혼자 두지 않도록 하고, 안전한 환경을 미리 점검해주세요.", en: "Avoid leaving them alone too long, and double-check the space is safe beforehand." },
     body: { ko: "삼킬 수 있는 작은 물건이나 전선은 미리 치워주세요. 물과 사료는 넉넉히, 실내 온도도 미리 확인하는 게 좋아요.", en: "Put away small swallowable items and loose cables. Leave plenty of water and food, and check the indoor temperature in advance." } },
-  { id: "t40", category: "life", featured: false,
+  { id: "t40", species: "both", category: "beginner", featured: false,
     title: { ko: "매일 짧게라도, 온전히 함께하는 시간", en: "A few focused minutes together, every day" },
     summary: { ko: "짧더라도 매일 온전히 집중해주는 시간이 유대감 형성에 큰 도움이 돼요.", en: "Even a short daily block of undivided attention does a lot for your bond." },
     body: { ko: "스킨십, 눈맞춤, 짧은 놀이만으로도 충분해요. 휴대폰을 잠깐 내려두는 것만으로도 아이는 그 차이를 느껴요.", en: "A little petting, eye contact, or brief play is enough. Just putting the phone down for a few minutes makes a difference they can feel." } },
@@ -3939,11 +4129,12 @@ function TipCard({ tip, lang, bookmarked, onToggleBookmark }) {
   const t = useT();
   const [open, setOpen] = useState(false);
   const categoryLabel = t.tipCategoryLabels[tip.category];
+  const speciesIcon = tip.species === "dog" ? "🐶" : tip.species === "cat" ? "🐱" : "🐾";
   return (
     <div className="bg-surface-card" style={{ padding: "16px 18px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
         <div style={{ flex: 1, cursor: "pointer" }} onClick={() => setOpen((o) => !o)}>
-          <span className="bg-sub" style={{ fontSize: 11, fontWeight: 700, color: "var(--primary)" }}>{categoryLabel}</span>
+          <span className="bg-sub" style={{ fontSize: 11, fontWeight: 700, color: "var(--primary)" }}>{speciesIcon} {categoryLabel}</span>
           <div style={{ fontWeight: 700, fontSize: 15, marginTop: 4 }}>{tip.title[lang]}</div>
           <div className="bg-sub" style={{ fontSize: 13, marginTop: 4, lineHeight: 1.5 }}>{tip.summary[lang]}</div>
         </div>
@@ -3968,6 +4159,7 @@ function TipsPage({ onClose }) {
   const t = useT();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
+  const [species, setSpecies] = useState("all");
   const [showBookmarked, setShowBookmarked] = useState(false);
   const [bookmarks, setBookmarks] = useState([]);
   const [tipsSource, setTipsSource] = useState(TIPS_DATA);
@@ -4005,6 +4197,7 @@ function TipsPage({ onClose }) {
   const filtered = tipsSource.filter((tip) => {
     if (showBookmarked && !bookmarks.includes(tip.id)) return false;
     if (category !== "all" && tip.category !== category) return false;
+    if (species !== "all" && tip.species !== "both" && tip.species !== species) return false;
     if (q && !(tip.title[lang].toLowerCase().includes(q) || tip.summary[lang].toLowerCase().includes(q))) return false;
     return true;
   });
@@ -4018,10 +4211,18 @@ function TipsPage({ onClose }) {
 
   const categories = [
     { id: "all", name: t.tipCategoryLabels.all },
-    { id: "dog", name: t.tipCategoryLabels.dog },
-    { id: "cat", name: t.tipCategoryLabels.cat },
     { id: "health", name: t.tipCategoryLabels.health },
-    { id: "life", name: t.tipCategoryLabels.life },
+    { id: "diet", name: t.tipCategoryLabels.diet },
+    { id: "behavior", name: t.tipCategoryLabels.behavior },
+    { id: "walk", name: t.tipCategoryLabels.walk },
+    { id: "hygiene", name: t.tipCategoryLabels.hygiene },
+    { id: "vaccine", name: t.tipCategoryLabels.vaccine },
+    { id: "beginner", name: t.tipCategoryLabels.beginner },
+  ];
+  const speciesOptions = [
+    { id: "all", name: t.tipSpeciesLabels.all },
+    { id: "dog", name: t.tipSpeciesLabels.dog },
+    { id: "cat", name: t.tipSpeciesLabels.cat },
   ];
 
   return (
@@ -4035,6 +4236,16 @@ function TipsPage({ onClose }) {
         <SearchIcon style={{ width: 16, height: 16, color: "var(--sub)", position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)" }} />
         <input className="bg-input" style={{ paddingLeft: 38 }} value={query} onChange={(e) => setQuery(e.target.value)}
           placeholder={t.tipSearchPlaceholder} />
+      </div>
+
+      {/* 동물 필터: 전체 | 🐶 강아지 | 🐱 고양이 */}
+      <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 6, marginBottom: 10 }}>
+        {speciesOptions.map((s) => (
+          <button key={s.id} className={`bg-chip ${species === s.id ? "active" : ""}`}
+            style={{ whiteSpace: "nowrap", flexShrink: 0 }} onClick={() => setSpecies(s.id)}>
+            {s.name}
+          </button>
+        ))}
       </div>
 
       <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 6, marginBottom: 20 }}>
@@ -4052,7 +4263,7 @@ function TipsPage({ onClose }) {
         </button>
       </div>
 
-      {!showBookmarked && !q && category === "all" && featured.length > 0 && (
+      {!showBookmarked && !q && category === "all" && species === "all" && featured.length > 0 && (
         <div style={{ marginBottom: 24 }}>
           <h3 style={{ fontSize: 15, marginBottom: 12 }}>{t.tipFeaturedTitle}</h3>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -4270,6 +4481,213 @@ const SAJU_TODAY = {
   ],
 };
 
+// ---- 오늘의 운세: petId(seed) + 오늘 날짜로 고정되는 결과 (새로고침해도 안 바뀌고, 날짜가 바뀌면 바뀜) ----
+const FORTUNE_DATA = {
+  ko: {
+    comment: [
+      (n) => `오늘 ${n}에게는 작은 행운이 여기저기 숨어있는 하루예요. 평소보다 조금 더 관심을 기울여보세요 🍀`,
+      (n) => `오늘은 ${n}가 유독 사랑스러운 표정을 많이 지을 수 있는 날이에요.`,
+      (n) => `${n}에게 오늘은 편안하고 평화로운 하루가 될 것 같아요.`,
+      (n) => `오늘따라 ${n}의 애교가 늘어날 수 있으니, 넉넉하게 받아주세요 💕`,
+      (n) => `${n}에게 오늘은 새로운 걸 시도해보기 좋은 기운이 흐르는 날이에요.`,
+      (n) => `오늘 ${n}는 평소보다 보호자 곁에 더 머무르고 싶어할 수 있어요.`,
+    ],
+    mood: [
+      (n) => "上上 — 기분이 아주 좋아요! 오늘은 뭘 해도 즐거운 하루예요.",
+      (n) => "上 — 컨디션이 좋은 편이에요. 산뜻한 하루가 될 거예요.",
+      (n) => "中上 — 평소처럼 안정적인 기분이에요.",
+      (n) => "中 — 무난하지만 살짝 늘어지고 싶은 기분이에요.",
+      (n) => "上 — 호기심이 넘치는 하루예요. 여기저기 관심이 많을 거예요.",
+    ],
+    walk: [
+      (n) => "산책운 최고! 평소보다 더 신나게 걸을 수 있는 날이에요.",
+      (n) => "짧고 여유로운 산책이 잘 맞는 날이에요.",
+      (n) => "새로운 길로 가보면 더 즐거워할 수 있어요.",
+      (n) => "오늘은 익숙한 동네 한 바퀴가 딱이에요.",
+      (n) => "산책 중 마음에 드는 냄새를 많이 만날 수 있는 날이에요.",
+    ],
+    snack: [
+      (n) => "간식운 상승! 오늘은 특별한 간식이 잘 어울려요 🍖",
+      (n) => "평소 좋아하던 간식이 유독 반가운 하루예요.",
+      (n) => "간식보다 스킨십이 더 반가운 날일 수 있어요.",
+      (n) => "적당한 간식 한 조각이 하루를 더 즐겁게 만들어줄 거예요.",
+      (n) => "새로운 맛에 도전해보기 좋은 간식운이에요.",
+    ],
+    friend: [
+      (n) => "친구운 좋음! 다른 아이들과 잘 어울릴 수 있는 날이에요.",
+      (n) => "오늘은 사람 친구들에게 더 마음이 가는 날이에요.",
+      (n) => "익숙한 친구와 함께면 더 즐거운 하루가 될 거예요.",
+      (n) => "새로운 친구를 만나도 낯가림 없이 잘 지낼 수 있어요.",
+      (n) => "오늘은 혼자만의 시간도 편안하게 느껴지는 날이에요.",
+    ],
+    luckyItem: [
+      () => "포근한 담요", () => "좋아하는 장난감", () => "간식 한 조각",
+      () => "보호자의 무릎", () => "햇살 드는 창가 자리", () => "새 장난감",
+    ],
+    luckyTime: [
+      () => "오전 10시", () => "오후 3시", () => "해질 무렵", () => "저녁 8시", () => "산책 다녀온 직후",
+    ],
+  },
+  en: {
+    comment: [
+      (n) => `Today has little pockets of luck scattered around for ${n}. Give a bit of extra attention today 🍀`,
+      (n) => `${n} might show off an especially sweet expression today.`,
+      (n) => `Today looks like a calm, peaceful day for ${n}.`,
+      (n) => `${n} might be extra affectionate today — enjoy it 💕`,
+      (n) => `There's a good energy today for ${n} to try something new.`,
+      (n) => `${n} might want to stay closer to you than usual today.`,
+    ],
+    mood: [
+      () => "Excellent — feeling great! Everything's fun today.",
+      () => "Good — in good spirits. Should be a bright day.",
+      () => "Steady — feeling calm and stable, as usual.",
+      () => "Mellow — fine, but craving a lazy day.",
+      () => "Curious — extra interested in everything around them today.",
+    ],
+    walk: [
+      () => "Walk luck is great — extra energetic steps today.",
+      () => "A short, relaxed walk suits today best.",
+      () => "A new route might make today's walk more exciting.",
+      () => "A familiar loop around the block is just right today.",
+      () => "Lots of good smells to discover on today's walk.",
+    ],
+    snack: [
+      () => "Treat luck is up — a special treat fits today 🍖",
+      () => "Their usual favorite treat feels extra welcome today.",
+      () => "Cuddles might beat treats in appeal today.",
+      () => "One small treat could make today even better.",
+      () => "Good day to try a new flavor.",
+    ],
+    friend: [
+      () => "Friend luck is good — plays well with others today.",
+      () => "Feeling drawn to their human friends today.",
+      () => "More fun with a familiar friend around today.",
+      () => "No shyness meeting someone new today.",
+      () => "Alone time feels comfortable today too.",
+    ],
+    luckyItem: [
+      () => "a cozy blanket", () => "their favorite toy", () => "a small treat",
+      () => "your lap", () => "a sunny window spot", () => "a brand-new toy",
+    ],
+    luckyTime: [
+      () => "10 AM", () => "3 PM", () => "sunset", () => "8 PM", () => "right after a walk",
+    ],
+  },
+};
+
+function generateDailyFortune(input, lang) {
+  const { name, birthDate, species, gender } = input;
+  const seed = `${name}|${birthDate}|${species}|${gender || ""}`;
+  const today = new Date().toISOString().slice(0, 10);
+  const dseed = seed + "|" + today;
+  const bank = FORTUNE_DATA[lang] || FORTUNE_DATA.ko;
+  const pick = (key) => seededPick(dseed, key, bank[key])(name);
+  return {
+    date: today,
+    comment: pick("comment"),
+    mood: pick("mood"),
+    walk: pick("walk"),
+    snack: pick("snack"),
+    friend: pick("friend"),
+    luckyItem: pick("luckyItem"),
+    luckyTime: pick("luckyTime"),
+  };
+}
+
+// ---- 보호자와의 궁합: 같은 아이는 같은 결과가 유지돼요 (날짜와 무관, petId 기준 고정) ----
+const COMPAT_DATA = {
+  ko: {
+    points: [
+      (n) => `보호자가 조용히 있고 싶을 때 ${josa(n, "은", "는")} 딱 알아채고 옆에서 조용히 함께 있어줘요.`,
+      (n) => `${n}의 씩씩한 에너지가 보호자의 하루에 활력을 더해줘요.`,
+      (n) => `잔잔한 걸 좋아하는 보호자와 느긋한 ${n}의 속도가 잘 맞아요.`,
+      (n) => `${n}는 보호자의 표정 변화를 누구보다 빨리 알아차리는 편이에요.`,
+      (n) => `서로 말이 없어도 어색하지 않은, 편안한 사이예요.`,
+      (n) => `${n}의 호기심과 보호자의 여유로움이 균형 있게 어우러져요.`,
+    ],
+    petView: [
+      (n) => `${n}에게 보호자는 세상에서 제일 안전한 존재예요.`,
+      (n) => `${n}는 보호자를 하루 중 가장 반가운 사람으로 생각해요.`,
+      (n) => `${n}의 눈에는 보호자가 하는 모든 일이 다 흥미로워 보여요.`,
+      (n) => `${n}에게 보호자는 언제나 돌아오는, 믿을 수 있는 존재예요.`,
+      (n) => `${n}는 보호자 옆에 있을 때 가장 편안함을 느껴요.`,
+    ],
+    guardianTip: [
+      (n) => `가끔은 하던 일을 멈추고 눈을 마주쳐 주는 것만으로도 ${n}에게는 큰 의미가 있어요.`,
+      (n) => `짧더라도 매일 함께하는 놀이 시간이 ${n}에게는 하루의 하이라이트예요.`,
+      (n) => `${n}가 다가올 때 잠깐이라도 반응해주면 유대감이 더 깊어져요.`,
+      (n) => `가끔 이름을 다정하게 불러주는 것만으로도 ${n}는 안정을 느껴요.`,
+      (n) => `${n}의 페이스에 맞춰 천천히 산책해주면 더 좋아할 거예요.`,
+    ],
+    activity: [
+      () => "짧은 실내 놀이 시간",
+      () => "함께하는 저녁 산책",
+      () => "가만히 옆에 앉아 쉬는 시간",
+      () => "새로운 장소로의 짧은 나들이",
+      () => "간식을 나눠 먹는 여유로운 시간",
+    ],
+    oneLiner: [
+      (n) => `${n}와 보호자는 말보다 마음으로 통하는 사이예요.`,
+      (n) => `함께 있는 것만으로 편안해지는, 그런 찰떡궁합이에요.`,
+      (n) => `서로를 있는 그대로 좋아해주는 사이예요.`,
+      (n) => `${n}에게 보호자는 이미 완벽한 짝꿍이에요.`,
+    ],
+  },
+  en: {
+    points: [
+      (n) => `${n} always seems to notice when you want some quiet time, and just settles in beside you.`,
+      (n) => `${n}'s upbeat energy adds a spark to your day.`,
+      (n) => `${n}'s easygoing pace matches well with your calmer moments.`,
+      (n) => `${n} tends to pick up on your mood faster than anyone else.`,
+      (n) => `You two are comfortable together even without saying a word.`,
+      (n) => `${n}'s curiosity and your easy calm balance each other out nicely.`,
+    ],
+    petView: [
+      (n) => `To ${n}, you're the safest place in the world.`,
+      (n) => `${n} thinks of you as the best part of their day.`,
+      (n) => `Everything you do looks interesting to ${n}.`,
+      (n) => `${n} sees you as someone who always comes back — someone to trust.`,
+      (n) => `${n} feels most at ease right next to you.`,
+    ],
+    guardianTip: [
+      (n) => `Even just pausing to make eye contact means a lot to ${n}.`,
+      (n) => `A short daily play session is the highlight of ${n}'s day.`,
+      (n) => `Responding when ${n} comes over, even briefly, deepens the bond.`,
+      (n) => `Just saying their name warmly now and then helps ${n} feel secure.`,
+      (n) => `Walking at ${n}'s own pace makes it even better for them.`,
+    ],
+    activity: [
+      () => "a short indoor play session",
+      () => "an evening walk together",
+      () => "just sitting quietly side by side",
+      () => "a short outing somewhere new",
+      () => "sharing a relaxed treat break",
+    ],
+    oneLiner: [
+      (n) => `${n} and you understand each other beyond words.`,
+      (n) => `The kind of match where just being together feels comfortable.`,
+      (n) => `A pair that likes each other exactly as they are.`,
+      (n) => `To ${n}, you're already the perfect match.`,
+    ],
+  },
+};
+
+function generateGuardianCompat(input, lang) {
+  const { name, birthDate, species, gender } = input;
+  const seed = `${name}|${birthDate}|${species}|${gender || ""}`;
+  const bank = COMPAT_DATA[lang] || COMPAT_DATA.ko;
+  const pick = (key) => seededPick(seed, "compat-" + key, bank[key])(name);
+  const percent = 82 + (hashString(seed + "::compat-pct") % 15); // 82~96 사이로 고정
+  return {
+    percent,
+    points: pick("points"),
+    petView: pick("petView"),
+    guardianTip: pick("guardianTip"),
+    activity: pick("activity"),
+    oneLiner: pick("oneLiner"),
+  };
+}
+
 function generateSajuResult(input, lang) {
   const { name, birthDate, species, gender } = input;
   const seed = `${name}|${birthDate}|${species}|${gender || ""}`;
@@ -4380,16 +4798,17 @@ function SajuInputForm({ defaultPet, onGenerate }) {
   );
 }
 
-async function renderSajuShareCard({ result, name, lang, t }) {
+async function renderSajuShareCard({ result, name, lang, t, petPhoto }) {
   const canvas = document.createElement("canvas");
-  const W = 1000, H = 1350;
+  const W = 1080, H = 1350;
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext("2d");
 
-  ctx.fillStyle = "#F1F3E9";
+  // Pet사주는 연보라/크림 톤의 부드러운 분위기로
+  ctx.fillStyle = "#F4F0FA";
   ctx.fillRect(0, 0, W, H);
   ctx.fillStyle = "#FFFFFF";
-  const pad = 50;
+  const pad = 54;
   roundRect(ctx, pad, pad, W - pad * 2, H - pad * 2, 40);
   ctx.fill();
 
@@ -4412,15 +4831,34 @@ async function renderSajuShareCard({ result, name, lang, t }) {
   ctx.textAlign = "center";
   ctx.fillStyle = "#666666";
   ctx.font = "24px sans-serif";
-  ctx.fillText(t.sajuShareHeading(name), W / 2, pad + 190);
+  ctx.fillText(t.sajuShareHeading(name), W / 2, pad + 180);
 
   ctx.fillStyle = "#1C1C1C";
   ctx.font = "bold 40px sans-serif";
-  wrapText(ctx, result.summary, W / 2, pad + 260, W - pad * 2 - 60, 52);
+  wrapText(ctx, result.summary, W / 2, pad + 250, W - pad * 2 - 60, 52);
 
-  let y = pad + 420;
+  // 반려동물 사진 (없으면 자연스럽게 생략)
+  let photoBottom = pad + 340;
+  if (petPhoto) {
+    try {
+      const img = await loadImage(petPhoto);
+      const cx = W / 2, cy = pad + 420, r = 96;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.strokeStyle = "#4F9D3C"; ctx.lineWidth = 5; ctx.stroke();
+      ctx.clip();
+      // object-fit: cover 방식으로 정사각형 크롭
+      const s = Math.min(img.width, img.height);
+      ctx.drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, cx - r, cy - r, r * 2, r * 2);
+      ctx.restore();
+      photoBottom = cy + r + 30;
+    } catch {}
+  }
+
+  let y = photoBottom + 60;
   ctx.font = "bold 26px sans-serif";
-  ctx.fillStyle = "#4F9D3C";
   result.categories.slice(0, 3).forEach((c) => {
     ctx.textAlign = "left";
     ctx.fillStyle = "#4F9D3C";
@@ -4429,17 +4867,17 @@ async function renderSajuShareCard({ result, name, lang, t }) {
     ctx.fillStyle = "#1C1C1C";
     ctx.font = "22px sans-serif";
     wrapText(ctx, c.text, pad + 90, y, W - pad * 2 - 130, 30, 2);
-    y += 150;
+    y += 140;
   });
 
   ctx.textAlign = "center";
   ctx.font = "bold 24px sans-serif";
   ctx.fillStyle = "#4F9D3C";
-  ctx.fillText(result.tags.join("   "), W / 2, y + 30);
+  ctx.fillText(result.tags.join("   "), W / 2, Math.min(y + 20, H - pad - 90));
 
   ctx.font = "18px sans-serif";
   ctx.fillStyle = "#999999";
-  ctx.fillText("petgrow.co.kr", W / 2, H - pad - 40);
+  ctx.fillText("PetGrow  |  petgrow.co.kr", W / 2, H - pad - 36);
 
   ctx.textAlign = "left";
   return canvas.toDataURL("image/png");
@@ -4464,14 +4902,14 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines = 3) {
   lines.forEach((l, i) => ctx.fillText(l.trim(), x, startY + i * lineHeight));
 }
 
-function SajuShareModal({ open, onClose, result, name, lang }) {
+function SajuShareModal({ open, onClose, result, name, lang, petPhoto }) {
   const t = useT();
   const [dataUrl, setDataUrl] = useState(null);
 
   useEffect(() => {
     if (!open || !result) { setDataUrl(null); return; }
-    renderSajuShareCard({ result, name, lang, t }).then(setDataUrl);
-  }, [open, result, lang]);
+    renderSajuShareCard({ result, name, lang, t, petPhoto }).then(setDataUrl);
+  }, [open, result, lang, petPhoto]);
 
   const triggerDownloadLink = () => {
     if (!dataUrl) return;
@@ -4512,6 +4950,86 @@ function SajuShareModal({ open, onClose, result, name, lang }) {
         <button className="bg-btn bg-btn-ghost" style={{ flex: 1 }} onClick={handleShare}>{t.sajuShareBtn}</button>
       </div>
     </Modal>
+  );
+}
+
+function DailyFortuneSection({ input, lang }) {
+  const t = useT();
+  const [open, setOpen] = useState(false);
+  const fortune = useMemo(() => generateDailyFortune(input, lang), [input, lang]);
+  const rows = [
+    [t.fortuneMood, fortune.mood],
+    [t.fortuneWalk, fortune.walk],
+    [t.fortuneSnack, fortune.snack],
+    [t.fortuneFriend, fortune.friend],
+    [t.fortuneLuckyItem, fortune.luckyItem],
+    [t.fortuneLuckyTime, fortune.luckyTime],
+  ];
+  return (
+    <div className="bg-surface-card">
+      <button type="button" onClick={() => setOpen((o) => !o)}
+        style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex", width: "100%", justifyContent: "space-between", alignItems: "center", fontFamily: "inherit" }}>
+        <span style={{ fontWeight: 700, fontSize: 14 }}>🔮 {t.sajuComingDaily}</span>
+        <span style={{ fontSize: 12, color: "var(--sub)" }}>{open ? "▲" : "▼"}</span>
+      </button>
+      {open && (
+        <div style={{ marginTop: 14 }}>
+          <div style={{ fontSize: 14, lineHeight: 1.75, marginBottom: 14 }}>{fortune.comment}</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {rows.map(([label, value]) => (
+              <div key={label} style={{ background: "#fff", borderRadius: 12, padding: "10px 12px" }}>
+                <div className="bg-sub" style={{ fontSize: 11, fontWeight: 700, marginBottom: 3 }}>{label}</div>
+                <div style={{ fontSize: 13, lineHeight: 1.5 }}>{value}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function GuardianCompatSection({ input, lang }) {
+  const t = useT();
+  const [open, setOpen] = useState(false);
+  const compat = useMemo(() => generateGuardianCompat(input, lang), [input, lang]);
+  return (
+    <div className="bg-surface-card">
+      <button type="button" onClick={() => setOpen((o) => !o)}
+        style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex", width: "100%", justifyContent: "space-between", alignItems: "center", fontFamily: "inherit" }}>
+        <span style={{ fontWeight: 700, fontSize: 14 }}>💕 {t.sajuComingCompat}</span>
+        <span style={{ fontSize: 12, color: "var(--sub)" }}>{open ? "▲" : "▼"}</span>
+      </button>
+      {open && (
+        <div style={{ marginTop: 14 }}>
+          <div style={{ textAlign: "center", marginBottom: 16 }}>
+            <div style={{ fontSize: 13, color: "var(--sub)", fontWeight: 700 }}>{t.compatScoreLabel(input.name)}</div>
+            <div style={{ fontSize: 32, fontWeight: 800, color: "var(--primary)" }}>{compat.percent}%</div>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div style={{ background: "#fff", borderRadius: 12, padding: "10px 12px" }}>
+              <div className="bg-sub" style={{ fontSize: 11, fontWeight: 700, marginBottom: 3 }}>{t.compatPointsLabel}</div>
+              <div style={{ fontSize: 13, lineHeight: 1.6 }}>{compat.points}</div>
+            </div>
+            <div style={{ background: "#fff", borderRadius: 12, padding: "10px 12px" }}>
+              <div className="bg-sub" style={{ fontSize: 11, fontWeight: 700, marginBottom: 3 }}>{t.compatPetViewLabel}</div>
+              <div style={{ fontSize: 13, lineHeight: 1.6 }}>{compat.petView}</div>
+            </div>
+            <div style={{ background: "#fff", borderRadius: 12, padding: "10px 12px" }}>
+              <div className="bg-sub" style={{ fontSize: 11, fontWeight: 700, marginBottom: 3 }}>{t.compatTipLabel}</div>
+              <div style={{ fontSize: 13, lineHeight: 1.6 }}>{compat.guardianTip}</div>
+            </div>
+            <div style={{ background: "#fff", borderRadius: 12, padding: "10px 12px" }}>
+              <div className="bg-sub" style={{ fontSize: 11, fontWeight: 700, marginBottom: 3 }}>{t.compatActivityLabel}</div>
+              <div style={{ fontSize: 13, lineHeight: 1.6 }}>{compat.activity}</div>
+            </div>
+          </div>
+          <div style={{ textAlign: "center", marginTop: 14, fontWeight: 700, fontSize: 13, color: "var(--primary-dark)" }}>
+            {compat.oneLiner}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -4558,14 +5076,8 @@ function SajuResultView({ input, onRestart }) {
       </button>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 24 }}>
-        <div className="bg-surface-card" style={{ opacity: 0.6 }}>
-          <div style={{ fontWeight: 700, fontSize: 14 }}>💕 {t.sajuComingCompat}</div>
-          <div className="bg-sub" style={{ fontSize: 12, marginTop: 4 }}>{t.sajuComingSoon}</div>
-        </div>
-        <div className="bg-surface-card" style={{ opacity: 0.6 }}>
-          <div style={{ fontWeight: 700, fontSize: 14 }}>🔮 {t.sajuComingDaily}</div>
-          <div className="bg-sub" style={{ fontSize: 12, marginTop: 4 }}>{t.sajuComingSoon}</div>
-        </div>
+        <GuardianCompatSection input={input} lang={lang} />
+        <DailyFortuneSection input={input} lang={lang} />
       </div>
 
       <button type="button" className="bg-btn bg-btn-ghost" style={{ width: "100%", marginTop: 16 }} onClick={onRestart}>
@@ -4576,7 +5088,7 @@ function SajuResultView({ input, onRestart }) {
         {t.sajuDisclaimer}
       </div>
 
-      <SajuShareModal open={shareOpen} onClose={() => setShareOpen(false)} result={result} name={input.name} lang={lang} />
+      <SajuShareModal open={shareOpen} onClose={() => setShareOpen(false)} result={result} name={input.name} lang={lang} petPhoto={input.profileImage} />
     </div>
   );
 }
@@ -4618,6 +5130,7 @@ function SajuPage({ pet, onGoRegister }) {
             gender: pet.profile.gender,
             birthTime: "",
             breed: pet.profile.breedName,
+            profileImage: pet.profile.profileImage || null,
           })}>
           {t.sajuGenerateBtn}
         </button>
@@ -4633,7 +5146,7 @@ function SajuPage({ pet, onGoRegister }) {
    PetBTI 🐾 — 답변 기반 16가지 성격 유형 테스트 (참고용 재미 콘텐츠)
    질문/유형 데이터와 계산 로직, UI를 분리해서 나중에 쉽게 수정할 수 있어요.
    ============================================================ */
-const PETBTI_QUESTIONS = [
+const PETBTI_QUESTIONS_DOG = [
   { id: "q1", axis: "EI", ko: "산책하다 처음 보는 강아지를 만났어요! 우리 아이는? 🐕", en: "You meet a new dog on a walk. What does your pet do?",
     options: [
       { ko: "먼저 다가가서 인사한다", en: "Goes over to say hi first", w: 2 },
@@ -4720,6 +5233,97 @@ const PETBTI_QUESTIONS = [
     ] },
 ];
 
+const PETBTI_QUESTIONS_CAT = [
+  { id: "c1", axis: "EI", ko: "낯선 손님이 집에 찾아왔어요.", en: "An unfamiliar visitor comes to your home.",
+    options: [
+      { ko: "누군지 확인하러 슬쩍 다가간다", en: "Sneaks over to check them out", w: 2 },
+      { ko: "숨어서 눈으로만 지켜본다", en: "Hides and just watches with its eyes", w: 1 },
+      { ko: "익숙한 자리로 피해서 쉰다", en: "Retreats to a familiar spot to rest", w: -1 },
+      { ko: "아예 안 보이는 곳으로 숨는다", en: "Disappears somewhere completely out of sight", w: -2 },
+    ] },
+  { id: "c2", axis: "EI", ko: "다른 강아지나 고양이를 마주쳤을 때는?", en: "They come across another dog or cat.",
+    options: [
+      { ko: "먼저 다가가서 냄새를 맡아본다", en: "Approaches first to sniff them out", w: 2 },
+      { ko: "거리를 두고 가만히 관찰한다", en: "Keeps distance and simply observes", w: 1 },
+      { ko: "슬쩍 피해서 다른 곳으로 간다", en: "Quietly slips away elsewhere", w: -1 },
+      { ko: "하악질하거나 잔뜩 경계한다", en: "Hisses or gets very defensive", w: -2 },
+    ] },
+  { id: "c3", axis: "EI", ko: "갑자기 큰 소리(청소기, 초인종 등)가 나면?", en: "A sudden loud noise happens (vacuum, doorbell, etc).",
+    options: [
+      { ko: "소리 난 곳으로 다가가서 확인한다", en: "Goes over to check out the source", w: 2 },
+      { ko: "귀만 쫑긋하고 자리에서 지켜본다", en: "Ears perk up, watches from where it is", w: 1 },
+      { ko: "다른 방으로 자리를 옮긴다", en: "Moves to another room", w: -1 },
+      { ko: "바로 숨을 곳부터 찾는다", en: "Immediately looks for a hiding spot", w: -2 },
+    ] },
+  { id: "c4", axis: "SN", ko: "집에 새로운 물건(가구, 상자 등)이 생기면?", en: "A new object (furniture, a box, etc) appears at home.",
+    options: [
+      { ko: "바로 다가가서 냄새부터 맡는다", en: "Goes right over to sniff it first", w: 2 },
+      { ko: "주변을 빙빙 돌며 살펴본다", en: "Circles around, checking it out", w: 1 },
+      { ko: "시간을 두고 천천히 다가간다", en: "Approaches slowly, taking its time", w: -1 },
+      { ko: "관심 없이 하던 대로 지낸다", en: "Ignores it, carries on as usual", w: -2 },
+    ] },
+  { id: "c5", axis: "SN", ko: "새 장난감을 줬을 때는? 🧶", en: "You give them a new toy.",
+    options: [
+      { ko: "바로 달려들어 사냥하듯 논다", en: "Pounces on it right away, like hunting", w: 2 },
+      { ko: "앞발로 툭툭 건드려본다", en: "Pokes at it with a paw first", w: 1 },
+      { ko: "몇 번 보다가 흥미를 잃는다", en: "Looks a couple times, then loses interest", w: -1 },
+      { ko: "원래 쓰던 장난감만 찾는다", en: "Just goes for the old favorite toy", w: -2 },
+    ] },
+  { id: "c6", axis: "SN", ko: "캣타워나 높은 곳이 생기면?", en: "A cat tower or high spot becomes available.",
+    options: [
+      { ko: "제일 높은 곳부터 바로 올라간다", en: "Climbs straight to the very top", w: 2 },
+      { ko: "낮은 곳부터 차근차근 올라가본다", en: "Works up from the lower steps", w: 1 },
+      { ko: "지켜보다가 나중에 슬쩍 올라간다", en: "Watches, then climbs up later on its own", w: -1 },
+      { ko: "높은 곳보다 바닥이 더 편하다", en: "Prefers staying on the ground", w: -2 },
+    ] },
+  { id: "c7", axis: "TF", ko: "보호자가 쓰다듬어 줄 때 반응은? 🤲", en: "How do they react when you pet them?",
+    options: [
+      { ko: "골골거리며 몸을 비빈다", en: "Purrs and rubs against you", w: 2 },
+      { ko: "가만히 있으며 즐기는 편이다", en: "Stays still and seems to enjoy it", w: 1 },
+      { ko: "잠깐만 허락하고 자리를 뜬다", en: "Allows it briefly, then moves on", w: -1 },
+      { ko: "손이 오면 슬쩍 피한다", en: "Dodges away when a hand comes near", w: -2 },
+    ] },
+  { id: "c8", axis: "TF", ko: "보호자가 외출 후 집에 돌아왔을 때는?", en: "You come home after being out.",
+    options: [
+      { ko: "현관까지 마중 나와 반긴다", en: "Comes to greet you right at the door", w: 2 },
+      { ko: "다가와서 몸을 비비며 인사한다", en: "Comes over and rubs against you in greeting", w: 1 },
+      { ko: "있던 자리에서 슬쩍 쳐다본다", en: "Glances over from wherever it was", w: -1 },
+      { ko: "별 반응 없이 하던 일을 계속한다", en: "Barely reacts, keeps doing its own thing", w: -2 },
+    ] },
+  { id: "c9", axis: "TF", ko: "우리 아이만의 애정 표현 방식은?", en: "How do they show affection in their own way?",
+    options: [
+      { ko: "무릎 위에 올라와 딱 붙어 있는다", en: "Climbs right onto your lap and stays close", w: 2 },
+      { ko: "옆에 나란히 앉아 함께 시간을 보낸다", en: "Sits right beside you to spend time together", w: 1 },
+      { ko: "가끔 다가와 얼굴을 부빈다", en: "Comes by now and then for a head bump", w: -1 },
+      { ko: "적당한 거리를 두는 게 편하다", en: "Prefers keeping a comfortable distance", w: -2 },
+    ] },
+  { id: "c10", axis: "JP", ko: "혼자 있는 시간이 길어지면?", en: "They spend a long stretch of time alone.",
+    options: [
+      { ko: "심심해하며 보호자를 기다린다", en: "Gets bored and waits for you", w: 2 },
+      { ko: "적당히 놀다가 낮잠을 잔다", en: "Plays a bit, then naps", w: 1 },
+      { ko: "자기만의 루틴대로 잘 지낸다", en: "Sticks to its own routine just fine", w: -1 },
+      { ko: "오히려 혼자만의 시간을 즐긴다", en: "Actually seems to enjoy the alone time", w: -2 },
+    ] },
+  { id: "c11", axis: "JP", ko: "잠자는 장소를 정할 때는?", en: "When it comes to picking a spot to sleep.",
+    options: [
+      { ko: "그때그때 내키는 곳에서 잔다", en: "Sleeps wherever feels right in the moment", w: 2 },
+      { ko: "몇 군데를 옮겨 다니며 잔다", en: "Rotates between a few favorite spots", w: 1 },
+      { ko: "정해둔 자리를 주로 고수한다", en: "Mostly sticks to one set spot", w: -1 },
+      { ko: "항상 똑같은 자리에서만 잔다", en: "Always sleeps in exactly the same spot", w: -2 },
+    ] },
+  { id: "c12", axis: "JP", ko: "밥 시간이 평소보다 늦어지면?", en: "Mealtime runs later than usual.",
+    options: [
+      { ko: "바로 다가와서 적극적으로 재촉한다", en: "Comes right over, actively demanding food", w: 2 },
+      { ko: "근처를 맴돌며 신호를 보낸다", en: "Hovers nearby, giving hints", w: 1 },
+      { ko: "조용히 기다리는 편이다", en: "Tends to wait quietly", w: -1 },
+      { ko: "늦어져도 크게 신경 쓰지 않는다", en: "Doesn't seem too bothered either way", w: -2 },
+    ] },
+];
+
+function petBtiQuestionsFor(species) {
+  return species === "cat" ? PETBTI_QUESTIONS_CAT : PETBTI_QUESTIONS_DOG;
+}
+
 const PETBTI_TYPES = {
   ENFP: { ko: "핵인싸 모험대장", en: "The Adventure-Loving Social Star", emoji: "🐶" },
   ENFJ: { ko: "모두의 사랑둥이", en: "Everyone's Sweetheart", emoji: "💕" },
@@ -4791,9 +5395,9 @@ const PETBTI_SECTION_AXES = {
   food: [3, 2], alone: [0, 2], mischief: [3, 1], affection: [2, 0], hidden: [1, 3],
 };
 
-function petBtiScore(answers) {
+function petBtiScore(answers, questions) {
   const axisScores = { EI: 0, SN: 0, TF: 0, JP: 0 };
-  PETBTI_QUESTIONS.forEach((q) => {
+  (questions || PETBTI_QUESTIONS_DOG).forEach((q) => {
     const ansIdx = answers[q.id];
     if (ansIdx === undefined) return;
     axisScores[q.axis] += q.options[ansIdx].w;
@@ -4873,7 +5477,7 @@ function petBtiSectionText(type, key, name, lang, stats) {
 }
 
 function generatePetBtiResult(input, answers, lang) {
-  const { type, axisScores, stats } = petBtiScore(answers);
+  const { type, axisScores, stats } = petBtiScore(answers, petBtiQuestionsFor(input.species));
   const nickname = PETBTI_TYPES[type];
   const summary = (PETBTI_SUMMARY[lang] || PETBTI_SUMMARY.ko)[type];
   const name = input.name;
@@ -4913,18 +5517,19 @@ function PetBtiStatBar({ label, icon, value }) {
   );
 }
 
-function PetBtiQuestionFlow({ onComplete }) {
+function PetBtiQuestionFlow({ species, onComplete }) {
   const lang = useLang();
   const t = useT();
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
-  const q = PETBTI_QUESTIONS[step];
-  const progress = Math.round((step / PETBTI_QUESTIONS.length) * 100);
+  const questions = petBtiQuestionsFor(species);
+  const q = questions[step];
+  const progress = Math.round((step / questions.length) * 100);
 
   const choose = (idx) => {
     const next = { ...answers, [q.id]: idx };
     setAnswers(next);
-    if (step + 1 < PETBTI_QUESTIONS.length) {
+    if (step + 1 < questions.length) {
       setStep(step + 1);
     } else {
       onComplete(next);
@@ -4936,7 +5541,7 @@ function PetBtiQuestionFlow({ onComplete }) {
       <div style={{ background: "var(--surface)", borderRadius: 999, height: 6, marginBottom: 18, overflow: "hidden" }}>
         <div style={{ width: `${progress}%`, height: "100%", background: "var(--primary)", borderRadius: 999, transition: ".2s" }} />
       </div>
-      <div className="bg-sub" style={{ fontSize: 12, marginBottom: 8 }}>{step + 1} / {PETBTI_QUESTIONS.length}</div>
+      <div className="bg-sub" style={{ fontSize: 12, marginBottom: 8 }}>{step + 1} / {questions.length}</div>
       <h3 style={{ fontSize: 17, marginBottom: 18, lineHeight: 1.5 }}>{lang === "en" ? q.en : q.ko}</h3>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {q.options.map((opt, idx) => (
@@ -4954,16 +5559,16 @@ function PetBtiQuestionFlow({ onComplete }) {
   );
 }
 
-async function renderPetBtiShareCard({ result, name, lang, t }) {
+async function renderPetBtiShareCard({ result, name, lang, t, petPhoto }) {
   const canvas = document.createElement("canvas");
-  const W = 1000, H = 1400;
+  const W = 1080, H = 1350;
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext("2d");
 
-  ctx.fillStyle = "#F1F3E9";
+  ctx.fillStyle = "#EAF3FA";
   ctx.fillRect(0, 0, W, H);
   ctx.fillStyle = "#FFFFFF";
-  const pad = 50;
+  const pad = 54;
   roundRect(ctx, pad, pad, W - pad * 2, H - pad * 2, 40);
   ctx.fill();
 
@@ -4982,48 +5587,68 @@ async function renderPetBtiShareCard({ result, name, lang, t }) {
   ctx.fillText("Pet", pad + 128, pad + 90);
   ctx.fillStyle = "#4F9D3C";
   ctx.fillText("Grow", pad + 128 + ctx.measureText("Pet").width, pad + 90);
+  ctx.fillStyle = "#999999";
+  ctx.font = "22px sans-serif";
+  ctx.fillText("· PetBTI", pad + 128 + ctx.measureText("Grow").width + 138, pad + 90);
 
   ctx.textAlign = "center";
   ctx.fillStyle = "#666666";
   ctx.font = "24px sans-serif";
-  ctx.fillText(t.petBtiShareHeading(name), W / 2, pad + 190);
+  ctx.fillText(t.petBtiShareHeading(name), W / 2, pad + 175);
 
   ctx.fillStyle = "#4F9D3C";
-  ctx.font = "bold 64px sans-serif";
-  ctx.fillText(result.type, W / 2, pad + 280);
-
+  ctx.font = "bold 58px sans-serif";
+  ctx.fillText(`${result.type} ${result.nickname.emoji}`, W / 2, pad + 255);
   ctx.fillStyle = "#1C1C1C";
-  ctx.font = "bold 38px sans-serif";
-  ctx.fillText(`${result.nickname.emoji} ${(lang === "en" ? result.nickname.en : result.nickname.ko)}`, W / 2, pad + 345);
+  ctx.font = "bold 36px sans-serif";
+  ctx.fillText((lang === "en" ? result.nickname.en : result.nickname.ko), W / 2, pad + 310);
+
+  let photoBottom = pad + 400;
+  if (petPhoto) {
+    try {
+      const img = await loadImage(petPhoto);
+      const cx = W / 2, cy = pad + 420, r = 92;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.strokeStyle = "#4F9D3C"; ctx.lineWidth = 5; ctx.stroke();
+      ctx.clip();
+      const s = Math.min(img.width, img.height);
+      ctx.drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, cx - r, cy - r, r * 2, r * 2);
+      ctx.restore();
+      photoBottom = cy + r + 26;
+    } catch {}
+  }
 
   ctx.font = "26px sans-serif";
   ctx.fillStyle = "#666666";
-  wrapText(ctx, result.summary, W / 2, pad + 420, W - pad * 2 - 80, 36);
+  wrapText(ctx, result.summary, W / 2, photoBottom + 50, W - pad * 2 - 80, 36);
 
-  let y = pad + 560;
+  let y = photoBottom + 190;
   ctx.font = "bold 30px sans-serif";
   ctx.fillStyle = "#4F9D3C";
   result.tags.forEach((tag) => {
     ctx.fillText(tag, W / 2, y);
-    y += 60;
+    y += 56;
   });
 
   ctx.font = "18px sans-serif";
   ctx.fillStyle = "#999999";
-  ctx.fillText("petgrow.co.kr", W / 2, H - pad - 40);
+  ctx.fillText("PetGrow  |  petgrow.co.kr", W / 2, H - pad - 36);
 
   ctx.textAlign = "left";
   return canvas.toDataURL("image/png");
 }
 
-function PetBtiShareModal({ open, onClose, result, name, lang }) {
+function PetBtiShareModal({ open, onClose, result, name, lang, petPhoto }) {
   const t = useT();
   const [dataUrl, setDataUrl] = useState(null);
 
   useEffect(() => {
     if (!open || !result) { setDataUrl(null); return; }
-    renderPetBtiShareCard({ result, name, lang, t }).then(setDataUrl);
-  }, [open, result, lang]);
+    renderPetBtiShareCard({ result, name, lang, t, petPhoto }).then(setDataUrl);
+  }, [open, result, lang, petPhoto]);
 
   const triggerDownloadLink = () => {
     if (!dataUrl) return;
@@ -5135,7 +5760,7 @@ function PetBtiResultView({ input, result, lang, onRestart }) {
         {t.petBtiDisclaimer}
       </div>
 
-      <PetBtiShareModal open={shareOpen} onClose={() => setShareOpen(false)} result={result} name={input.name} lang={lang} />
+      <PetBtiShareModal open={shareOpen} onClose={() => setShareOpen(false)} result={result} name={input.name} lang={lang} petPhoto={input.profileImage} />
     </div>
   );
 }
@@ -5154,7 +5779,7 @@ function PetBtiPage({ pet, onUpdatePetBti, onGoRegister }) {
   const savedBti = pet && pet.petBti;
 
   const handleComplete = (answers) => {
-    const input = { name: pet.profile.name, species: pet.profile.species, birthDate: pet.profile.birthDate };
+    const input = { name: pet.profile.name, species: pet.profile.species, birthDate: pet.profile.birthDate, profileImage: pet.profile.profileImage || null };
     const result = generatePetBtiResult(input, answers, lang);
     setLiveResult({ input, result, answers });
     if (onUpdatePetBti) onUpdatePetBti(pet.id, { type: result.type, answers, savedAt: new Date().toISOString() });
@@ -5183,7 +5808,7 @@ function PetBtiPage({ pet, onUpdatePetBti, onGoRegister }) {
   if (phase === "quiz") {
     return (
       <div style={{ maxWidth: 480, margin: "0 auto" }}>
-        <PetBtiQuestionFlow onComplete={handleComplete} />
+        <PetBtiQuestionFlow species={pet.profile.species} onComplete={handleComplete} />
       </div>
     );
   }
@@ -5884,12 +6509,8 @@ function AboutPage({ onStart, onNavigate }) {
   const go = (v) => (onNavigate ? onNavigate(v) : onStart());
   return (
     <div className="landing-root">
-      <div className="landing-wrap" style={{ paddingTop: 24 }}>
-        <IntroVideo />
-      </div>
-
       {/* HERO */}
-      <section className="landing-section landing-hero-section">
+      <section className="landing-section landing-hero-section" style={{ paddingTop: 40 }}>
         <div className="landing-wrap">
           <div className="landing-logo-badge about-logo-float">
             <PetGrowLogo style={{ width: 116, height: 116 }} />
@@ -6115,6 +6736,122 @@ function MigrationModal({ open, onSkip, onConfirm, loading }) {
 /* ============================================================
    정보가이드 — 전체 기능 안내 탭 (요청서 15번)
    ============================================================ */
+/* ============================================================
+   홈 화면 (로그인 사용자 대시보드) — 참고 이미지의 인사말+반려동물 카드+서비스 카드 구성을 반영
+   ============================================================ */
+function HomeServiceCard({ Illust, bg, title, desc, onClick }) {
+  return (
+    <button type="button" className="home-service-card" style={{ background: bg }} onClick={onClick}>
+      <div className="home-service-illust"><Illust style={{ width: 34, height: 34 }} /></div>
+      <div className="home-service-title">{title}</div>
+      <div className="home-service-desc">{desc}</div>
+    </button>
+  );
+}
+
+function HomePage({ account, firstPet, lang, onGoPets, onGoView }) {
+  const t = useT();
+  return (
+    <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 60px" }}>
+      <h1 style={{ fontSize: 21, marginBottom: 4 }}>{t.homeGreeting(account.name)}</h1>
+      <p className="bg-sub" style={{ fontSize: 14, marginBottom: 22 }}>{t.homeSubGreeting}</p>
+
+      {firstPet ? (
+        <div className="home-pet-card" onClick={onGoPets}>
+          <span className="home-pet-avatar">
+            {firstPet.profile.profileImage ? (
+              <img src={firstPet.profile.profileImage} alt="" />
+            ) : (
+              <span style={{ fontSize: 26 }}>{firstPet.species === "cat" ? "🐱" : "🐶"}</span>
+            )}
+          </span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div className="home-pet-name">{firstPet.profile.name}</div>
+            <div className="bg-sub" style={{ fontSize: 13 }}>
+              {[firstPet.profile.breedName, petAgeLabel(firstPet.profile.birthDate, lang)].filter(Boolean).join(" · ")}
+            </div>
+          </div>
+          <button type="button" className="bg-btn bg-btn-ghost" style={{ fontSize: 12, padding: "8px 14px", flexShrink: 0 }} onClick={onGoPets}>
+            {t.homePetCardBtn}
+          </button>
+        </div>
+      ) : (
+        <button type="button" className="home-pet-card home-pet-card-empty" onClick={onGoPets}>
+          <PlusIcon style={{ width: 20, height: 20, color: "var(--primary)" }} />
+          <span>{t.homeAddPetBtn}</span>
+        </button>
+      )}
+
+      <h2 style={{ fontSize: 17, marginTop: 30, marginBottom: 14 }}>{t.homeServicesTitle}</h2>
+      <div className="home-service-grid">
+        <HomeServiceCard Illust={IllustGrowth} bg="#EAF6E4" title={t.landingCardGrowthTitle.replace(/^\S+\s/, "")} desc={t.homeCardGrowthDesc} onClick={onGoPets} />
+        <HomeServiceCard Illust={IllustSaju} bg="#F1ECFA" title={t.landingCardSajuTitle.replace(/^\S+\s/, "")} desc={t.homeCardSajuDesc} onClick={() => onGoView("saju")} />
+        <HomeServiceCard Illust={IllustPetBti} bg="#E9F1FB" title={t.landingCardPetBtiTitle.replace(/^\S+\s/, "")} desc={t.homeCardPetBtiDesc} onClick={() => onGoView("petbti")} />
+        <HomeServiceCard Illust={IllustTips} bg="#FBF3DC" title={t.landingCardTipsTitle.replace(/^\S+\s/, "")} desc={t.homeCardTipsDesc} onClick={() => onGoView("tips")} />
+        <HomeServiceCard Illust={IllustCommunity} bg="#FBE9EF" title={t.landingCardCommunityTitle.replace(/^\S+\s/, "")} desc={t.homeCardCommunityDesc} onClick={() => onGoView("community")} />
+      </div>
+    </div>
+  );
+}
+
+// 모바일 "앱"(Capacitor 네이티브) 전용 하단 5탭 — 웹에서는 렌더되지 않아요
+function AppBottomNav({ active, onNavigate }) {
+  const t = useT();
+  const items = [
+    { key: "home", label: t.hamNavHome, Icon: HomeIcon },
+    { key: "pets", label: t.appTabPetInfo, Icon: PawIcon },
+    { key: "content", label: t.appTabPetContent, Icon: LightbulbIcon },
+    { key: "community", label: t.communityNav, Icon: TalkIcon },
+    { key: "my", label: t.hamNavMy, Icon: UserIcon },
+  ];
+  return (
+    <nav className="app-bottom-nav">
+      {items.map(({ key, label, Icon }) => (
+        <button key={key} type="button" className={`app-bottom-nav-item ${active === key ? "active" : ""}`} onClick={() => onNavigate(key)}>
+          <Icon style={{ width: 21, height: 21 }} />
+          <span>{label}</span>
+        </button>
+      ))}
+    </nav>
+  );
+}
+
+// Pet콘텐츠 (전체 | Pet사주 | PetBTI | Pet꿀팁) — 앱 하단탭에서만 진입하는 통합 콘텐츠 허브
+function PetContentPage({ subTab, onSubTabChange, allPets, featurePet, onSelectFeaturePet, onGoRegister, onUpdatePetBti }) {
+  const t = useT();
+  return (
+    <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 90px" }}>
+      <div className="tab-bar" style={{ marginBottom: 16 }}>
+        <button type="button" className={`tab-pill ${subTab === "all" ? "active" : ""}`} onClick={() => onSubTabChange("all")}>{t.contentTabAll}</button>
+        <button type="button" className={`tab-pill ${subTab === "saju" ? "active" : ""}`} onClick={() => onSubTabChange("saju")}>{t.sajuNav}</button>
+        <button type="button" className={`tab-pill ${subTab === "petbti" ? "active" : ""}`} onClick={() => onSubTabChange("petbti")}>{t.petBtiNav}</button>
+        <button type="button" className={`tab-pill ${subTab === "tips" ? "active" : ""}`} onClick={() => onSubTabChange("tips")}>{t.tipsTitle}</button>
+      </div>
+
+      {subTab === "all" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <HomeServiceCard Illust={IllustSaju} bg="#F1ECFA" title={t.sajuNav} desc={t.homeCardSajuDesc} onClick={() => onSubTabChange("saju")} />
+          <HomeServiceCard Illust={IllustPetBti} bg="#E9F1FB" title={t.petBtiNav} desc={t.homeCardPetBtiDesc} onClick={() => onSubTabChange("petbti")} />
+          <HomeServiceCard Illust={IllustTips} bg="#FBF3DC" title={t.tipsTitle} desc={t.homeCardTipsDesc} onClick={() => onSubTabChange("tips")} />
+        </div>
+      )}
+      {subTab === "saju" && (
+        <>
+          <PetPicker pets={allPets} activeId={featurePet?.id} onSelect={onSelectFeaturePet} />
+          <SajuPage pet={featurePet} onGoRegister={onGoRegister} />
+        </>
+      )}
+      {subTab === "petbti" && (
+        <>
+          <PetPicker pets={allPets} activeId={featurePet?.id} onSelect={onSelectFeaturePet} />
+          <PetBtiPage pet={featurePet} onUpdatePetBti={onUpdatePetBti} onGoRegister={onGoRegister} />
+        </>
+      )}
+      {subTab === "tips" && <TipsPage />}
+    </div>
+  );
+}
+
 function InfoGuidePage() {
   const t = useT();
   return (
@@ -6267,7 +7004,10 @@ function PostCard({ post, lang, onOpen }) {
       {post.images && post.images[0] && <img src={post.images[0]} alt="" className="cm-card-img" />}
       <div className="cm-card-body">
         <CmPetLine pet={post.pet} lang={lang} right={<span className="bg-sub" style={{ fontSize: 11 }}>{timeAgoLabel(post.createdAt, lang)}</span>} />
-        <span className="cm-cat-chip">{t.communityCategoryLabels[post.category]}</span>
+        <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
+          <span className="cm-cat-chip" style={{ marginBottom: 0 }}>{t.communityCategoryLabels[post.category]}</span>
+          {post.visibility === "private" && <span className="cm-cat-chip" style={{ marginBottom: 0, background: "#f0f0f0", color: "#777" }}>{t.communityPrivateBadge}</span>}
+        </div>
         <div className="cm-title">{post.title}</div>
         <div className="cm-content-preview">{post.content}</div>
         <div className="cm-meta-row">
@@ -6312,6 +7052,7 @@ function PostComposer({ pets, initialPost, onCancel, onSaved }) {
   const [title, setTitle] = useState(initialPost ? initialPost.title : "");
   const [content, setContent] = useState(initialPost ? initialPost.content : "");
   const [images, setImages] = useState(initialPost ? initialPost.images : []);
+  const [visibility, setVisibility] = useState(initialPost ? initialPost.visibility : "public");
   const [uploading, setUploading] = useState(false);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -6344,9 +7085,9 @@ function PostComposer({ pets, initialPost, onCancel, onSaved }) {
     try {
       const pet = pets.find((p) => p.id === petId);
       if (isEdit) {
-        await communityUpdatePost(initialPost.id, { category, title: title.trim(), content: content.trim(), imageUrls: images });
+        await communityUpdatePost(initialPost.id, { category, title: title.trim(), content: content.trim(), imageUrls: images, visibility });
       } else {
-        await communityCreatePost({ pet: petSnapshot(pet), category, title: title.trim(), content: content.trim(), imageUrls: images });
+        await communityCreatePost({ pet: petSnapshot(pet), category, title: title.trim(), content: content.trim(), imageUrls: images, visibility });
       }
       onSaved();
     } catch {
@@ -6386,6 +7127,20 @@ function PostComposer({ pets, initialPost, onCancel, onSaved }) {
         <label className="bg-label" style={{ marginTop: 14 }}>{t.communityComposePhotos(images.length)}</label>
         <ImagePickerGrid images={images} onAdd={handleAddImage} onRemove={handleRemoveImage} uploading={uploading} />
         {errors.images && <div className="field-error">{errors.images}</div>}
+
+        <label className="bg-label" style={{ marginTop: 14 }}>{t.communityVisibilityLabel}</label>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button type="button" className={`bg-chip ${visibility === "public" ? "active" : ""}`} style={{ flex: 1, textAlign: "left" }}
+            onClick={() => setVisibility("public")}>
+            <div>{t.communityVisibilityPublic}</div>
+            <div className="bg-sub" style={{ fontSize: 11, fontWeight: 400 }}>{t.communityVisibilityPublicDesc}</div>
+          </button>
+          <button type="button" className={`bg-chip ${visibility === "private" ? "active" : ""}`} style={{ flex: 1, textAlign: "left" }}
+            onClick={() => setVisibility("private")}>
+            <div>{t.communityVisibilityPrivate}</div>
+            <div className="bg-sub" style={{ fontSize: 11, fontWeight: 400 }}>{t.communityVisibilityPrivateDesc}</div>
+          </button>
+        </div>
         {errors.submit && <div className="field-error">{errors.submit}</div>}
 
         <div style={{ display: "flex", gap: 8, marginTop: 22 }}>
@@ -6860,12 +7615,15 @@ function AppInner({ lang, setLang }) {
 
   // 'about' | 'pets' | 'saju' | 'petbti' | 'tips' | 'guide' | 'privacy' | 'terms'
   const [view, setView] = useState("about");
-  const GATED_VIEWS = ["pets", "saju", "petbti", "tips", "guide", "community"];
+  const GATED_VIEWS = ["home", "pets", "saju", "petbti", "tips", "guide", "community", "content"];
 
   // ---- 계정(카카오 로그인) ----
   const [account, setAccount] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [accountModalOpen, setAccountModalOpen] = useState(false);
+  const [hamOpen, setHamOpen] = useState(false);
+  const [contentSubTab, setContentSubTab] = useState("all");
+  const isNativeApp = Capacitor.isNativePlatform();
   const [deleteAccountConfirmOpen, setDeleteAccountConfirmOpen] = useState(false);
   const [deletingAccount, setDeletingAccount] = useState(false);
   const [pendingMigration, setPendingMigration] = useState(null); // { dogs, cats } | null
@@ -6892,7 +7650,7 @@ function AppInner({ lang, setLang }) {
       setAccount(me);
       setAuthChecked(true);
       if (me && (loginResult === "success")) {
-        setView("pets");
+        setView("home");
       }
 
       const dogsKey = "bboggl:dogs";
@@ -6954,8 +7712,8 @@ function AppInner({ lang, setLang }) {
         } catch {}
       }
 
+      if (me && view === "about") setView("home");
       if (dogs.length > 0 || cats.length > 0) {
-        if (view === "about") setView("pets");
         const today = new Date().toISOString().slice(0, 10);
         const lastWelcome = await safeGet("bboggl:lastWelcomeDate", me);
         if (lastWelcome !== today) {
@@ -7150,47 +7908,71 @@ function AppInner({ lang, setLang }) {
   const effectiveView = needsLogin ? "login" : view;
 
   return (
-    <div className="bboggl-root" style={{ minHeight: "100vh" }}>
+    <div className="bboggl-root" style={{ minHeight: "100vh", paddingBottom: isNativeApp ? 74 : 0 }}>
       <GlobalStyle />
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "20px 20px 0" }}>
-        <div className="header-toprow" style={{ display: "flex", gap: 8, alignItems: "center", justifyContent: "space-between", marginBottom: 12, flexWrap: "wrap" }}>
-          <button type="button" onClick={() => goView("about")}
-            style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-            <PetGrowLogo className="header-logo" style={{ width: 22, height: 22 }} />
-            <span style={{ fontSize: 15, fontWeight: 800, fontFamily: "'Jua',sans-serif" }}>
-              <span style={{ color: "var(--text)" }}>Pet</span><span style={{ color: "var(--primary)" }}>Grow</span>
-            </span>
-          </button>
-          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-            <LangToggle lang={lang} onChange={setLang} />
-            <button type="button" className="icon-btn" aria-label={t.helpAria} onClick={() => setGuideOpen(true)}>
-              <HelpIcon style={{ width: 18, height: 18, color: "var(--primary)" }} />
-            </button>
-            <AccountButton account={account} onOpen={() => (account ? setAccountModalOpen(true) : goView("pets"))} />
-          </div>
-        </div>
+      <div style={{ maxWidth: 900, margin: "0 auto", padding: "16px 20px 0" }}>
+        {!isNativeApp && (
+          <>
+            {/* PC: 한 줄 상단 메뉴 (900px 이상) */}
+            <div className="desktop-nav" style={{ alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                <button type="button" onClick={() => goView(account ? "home" : "about")}
+                  style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0, flexShrink: 0 }}>
+                  <PetGrowLogo style={{ width: 24, height: 24 }} />
+                  <span style={{ fontSize: 16, fontWeight: 800, fontFamily: "'Jua',sans-serif" }}>
+                    <span style={{ color: "var(--text)" }}>Pet</span><span style={{ color: "var(--primary)" }}>Grow</span>
+                  </span>
+                </button>
+                <nav style={{ display: "flex", alignItems: "center", gap: 2 }}>
+                  <button type="button" className={`desktop-nav-link ${view === "pets" ? "active" : ""}`} onClick={() => goView("pets")}>{t.myPetsNav}</button>
+                  <button type="button" className={`desktop-nav-link ${view === "community" ? "active" : ""}`} onClick={() => goView("community")}>{t.communityNav}</button>
+                  <button type="button" className={`desktop-nav-link ${view === "saju" ? "active" : ""}`} onClick={() => goView("saju")}>{t.sajuNav}</button>
+                  <button type="button" className={`desktop-nav-link ${view === "petbti" ? "active" : ""}`} onClick={() => goView("petbti")}>{t.petBtiNav}</button>
+                  <button type="button" className={`desktop-nav-link ${view === "tips" ? "active" : ""}`} onClick={() => goView("tips")}>{t.tipsTitle}</button>
+                  <button type="button" className={`desktop-nav-link ${view === "guide" ? "active" : ""}`} onClick={() => goView("guide")}>{t.infoGuideTitle}</button>
+                </nav>
+              </div>
+              <div style={{ display: "flex", gap: 10, alignItems: "center", flexShrink: 0 }}>
+                <LangToggle lang={lang} onChange={setLang} />
+                <AccountButton account={account} onOpen={() => (account ? setAccountModalOpen(true) : goView("pets"))} />
+              </div>
+            </div>
 
-        {/* 메뉴: 우리 아이 → Pet사주 → PetBTI → Pet꿀팁 → 정보가이드 (요청서 9번) — 반투명 가로 탭 */}
-        <div className="tab-bar" style={{ marginBottom: 14 }}>
-          <button type="button" className={`tab-pill ${view === "pets" ? "active" : ""}`} onClick={() => goView("pets")}>
-            <PawIcon style={{ width: 15, height: 15 }} /> {t.myPetsNav}
-          </button>
-          <button type="button" className={`tab-pill ${view === "community" ? "active" : ""}`} onClick={() => goView("community")}>
-            <TalkIcon style={{ width: 15, height: 15 }} /> {t.communityNav}
-          </button>
-          <button type="button" className={`tab-pill ${view === "saju" ? "active" : ""}`} onClick={() => goView("saju")}>
-            <SajuIcon style={{ width: 15, height: 15 }} /> {t.sajuNav}
-          </button>
-          <button type="button" className={`tab-pill ${view === "petbti" ? "active" : ""}`} onClick={() => goView("petbti")}>
-            <PetBtiIcon style={{ width: 15, height: 15 }} /> {t.petBtiNav}
-          </button>
-          <button type="button" className={`tab-pill ${view === "tips" ? "active" : ""}`} onClick={() => goView("tips")}>
-            <LightbulbIcon style={{ width: 15, height: 15 }} /> {t.tipsTitle}
-          </button>
-          <button type="button" className={`tab-pill ${view === "guide" ? "active" : ""}`} onClick={() => goView("guide")}>
-            <HelpIcon style={{ width: 15, height: 15 }} /> {t.infoGuideTitle}
-          </button>
-        </div>
+            {/* 모바일 웹: ☰ | 로고 | KO/EN | 로그인/프로필 (900px 미만) */}
+            <div className="mobile-topbar" style={{ alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 14 }}>
+              <button type="button" className="icon-btn" aria-label={t.hamMenuAria} onClick={() => setHamOpen(true)}>
+                <HamburgerIcon style={{ width: 20, height: 20 }} />
+              </button>
+              <button type="button" onClick={() => goView(account ? "home" : "about")}
+                style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+                <PetGrowLogo style={{ width: 21, height: 21 }} />
+                <span style={{ fontSize: 15, fontWeight: 800, fontFamily: "'Jua',sans-serif" }}>
+                  <span style={{ color: "var(--text)" }}>Pet</span><span style={{ color: "var(--primary)" }}>Grow</span>
+                </span>
+              </button>
+              <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                <LangToggle lang={lang} onChange={setLang} />
+                <AccountButton account={account} onOpen={() => (account ? setAccountModalOpen(true) : goView("pets"))} />
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* 앱(Capacitor 네이티브): 하단 5탭이 내비게이션을 담당하므로 상단은 로고 한 줄만 */}
+        {isNativeApp && (
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <PetGrowLogo style={{ width: 21, height: 21 }} />
+              <span style={{ fontSize: 15, fontWeight: 800, fontFamily: "'Jua',sans-serif" }}>
+                <span style={{ color: "var(--text)" }}>Pet</span><span style={{ color: "var(--primary)" }}>Grow</span>
+              </span>
+            </span>
+            <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+              <LangToggle lang={lang} onChange={setLang} />
+              <AccountButton account={account} onOpen={() => (account ? setAccountModalOpen(true) : goView("pets"))} />
+            </div>
+          </div>
+        )}
 
         {effectiveView === "pets" && (
           <SpeciesTabBar species={species} dogCount={pets.dog.length} catCount={pets.cat.length}
@@ -7206,6 +7988,13 @@ function AppInner({ lang, setLang }) {
         <TermsContent />
       ) : effectiveView === "about" ? (
         <AboutPage onStart={() => goView("pets")} onNavigate={(v) => goView(v)} />
+      ) : effectiveView === "home" ? (
+        <HomePage account={account} firstPet={allPets[0] || null} lang={lang}
+          onGoPets={() => goView("pets")} onGoView={(v) => goView(v)} />
+      ) : effectiveView === "content" ? (
+        <PetContentPage subTab={contentSubTab} onSubTabChange={setContentSubTab}
+          allPets={allPets} featurePet={featurePet} onSelectFeaturePet={setFeaturePetId}
+          onUpdatePetBti={handleUpdatePetBti} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} />
       ) : effectiveView === "guide" ? (
         <InfoGuidePage />
       ) : effectiveView === "community" ? (
@@ -7253,31 +8042,44 @@ function AppInner({ lang, setLang }) {
         </>
       )}
 
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 40px" }}>
-        <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", lineHeight: 1.6 }}>
-          {t.privacyFooter}
+      {effectiveView !== "login" && (
+        <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 40px" }}>
+          <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", lineHeight: 1.6 }}>
+            {t.privacyFooter}
+          </div>
+          <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 10 }}>
+            help.petgrow@gmail.com
+          </div>
+          <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 2 }}>
+            Copyright ⓒ PetGrow. All rights reserved.
+          </div>
+          <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 10 }}>
+            <button type="button" onClick={() => goView("terms")}
+              style={{ fontSize: 11, fontWeight: 700, color: "var(--primary)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+              {t.termsFooterLink}
+            </button>
+            <button type="button" onClick={() => goView("privacy")}
+              style={{ fontSize: 11, fontWeight: 700, color: "var(--primary)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+              {t.privacyFooterLink}
+            </button>
+            <a href="mailto:help.petgrow@gmail.com" style={{ fontSize: 11, fontWeight: 700, color: "var(--primary)", textDecoration: "none" }}>
+              {t.contactBtn}
+            </a>
+          </div>
         </div>
-        <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 10 }}>
-          help.petgrow@gmail.com
-        </div>
-        <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 2 }}>
-          Copyright ⓒ PetGrow. All rights reserved.
-        </div>
-        <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 10 }}>
-          <button type="button" onClick={() => goView("terms")}
-            style={{ fontSize: 11, fontWeight: 700, color: "var(--primary)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-            {t.termsFooterLink}
-          </button>
-          <button type="button" onClick={() => goView("privacy")}
-            style={{ fontSize: 11, fontWeight: 700, color: "var(--primary)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-            {t.privacyFooterLink}
-          </button>
-          <a href="mailto:help.petgrow@gmail.com" style={{ fontSize: 11, fontWeight: 700, color: "var(--primary)", textDecoration: "none" }}>
-            {t.contactBtn}
-          </a>
-        </div>
-      </div>
+      )}
 
+      {isNativeApp && (
+        <AppBottomNav
+          active={view === "home" ? "home" : view === "pets" ? "pets" : view === "content" ? "content" : view === "community" ? "community" : ""}
+          onNavigate={(key) => {
+            if (key === "my") { account ? setAccountModalOpen(true) : goView("pets"); return; }
+            goView(key);
+          }}
+        />
+      )}
+      <HamburgerMenu open={hamOpen} onClose={() => setHamOpen(false)} view={view} onNavigate={goView}
+        account={account} onOpenAccount={() => (account ? setAccountModalOpen(true) : goView("pets"))} />
       <GuideModal open={guideOpen} onClose={() => setGuideOpen(false)} />
       <ConfirmModal
         open={!!deleteTarget}
