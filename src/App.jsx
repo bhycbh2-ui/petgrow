@@ -6448,7 +6448,7 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
   return (
     <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 60px" }}>
       <div className="home-hero-copy">
-        <h1>{t.homeGreeting(account.name)}</h1>
+        <h1>{account?.name ? t.homeGreeting(account.name) : (lang === "en" ? "Welcome to PetGrow! 🐾" : "PetGrow에 오신 걸 환영해요! 🐾")}</h1>
         <p className="bg-sub">{t.homeSubGreeting}</p>
       </div>
 

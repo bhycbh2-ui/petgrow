@@ -11,7 +11,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 // PWA: 서비스워커 등록 (오프라인 캐싱 + 홈화면 추가 지원)
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js?v=20", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=21", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });
