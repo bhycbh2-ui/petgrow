@@ -1991,7 +1991,7 @@ function HamburgerMenu({ open, onClose, view, onNavigate, onOpenAccount, account
   const homeKey = account ? "home" : "about";
   const items = [
     { key: homeKey, label: t.hamNavHome, Icon: HomeIcon },
-    ...(account ? [{ key: "about", label: t.aboutNav, Icon: InfoIcon }] : []),
+    { key: "about", label: t.aboutNav, Icon: InfoIcon },
     { key: "pets", label: t.myPetsNav, Icon: PawIcon },
     { key: "community", label: t.communityNav, Icon: TalkIcon },
     { key: "saju", label: t.sajuNav, Icon: SajuIcon },
@@ -2310,6 +2310,7 @@ const GlobalStyle = () => (
     .app-bottom-nav-item{flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
       background:none; border:none; cursor:pointer; font-family:inherit; padding:9px 2px 8px; color:#9a9d95; font-size:10.5px; font-weight:700;}
     .app-bottom-nav-item.active{color:var(--primary);}
+    .home-pet-list{display:flex; flex-direction:column; gap:10px; width:100%; max-width:760px; margin:0 auto;}
     .home-pet-card{display:flex; align-items:center; gap:14px; background:#fff; border:1px solid var(--border);
       border-radius:18px; padding:16px 18px; cursor:pointer; text-align:left; width:100%; max-width:760px; margin-left:auto; margin-right:auto; font-family:inherit;
       box-shadow:0 3px 10px rgba(0,0,0,.03);}
@@ -6191,11 +6192,12 @@ function IntroVideo() {
         ref={videoRef}
         className="intro-video"
         src="/intro-video.mp4"
+        poster="/intro-video-poster.webp"
         autoPlay
         muted
         loop
         playsInline
-        preload="metadata"
+        preload="none"
       />
       <button type="button" className={`intro-video-sound-btn ${muted ? "pulse" : ""}`} onClick={toggleSound}
         aria-label={muted ? t.introVideoUnmute : t.introVideoMute}>
@@ -6479,7 +6481,7 @@ function HomeServiceCard({ Illust, bg, title, desc, onClick }) {
   );
 }
 
-function HomePage({ account, firstPet, lang, onGoPets, onGoView }) {
+function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
   const t = useT();
   const introVideoRef = useRef(null);
   const [introMuted, setIntroMuted] = useState(true);
@@ -6505,23 +6507,31 @@ function HomePage({ account, firstPet, lang, onGoPets, onGoView }) {
         <p className="bg-sub">{t.homeSubGreeting}</p>
       </div>
 
-      {firstPet ? (
-        <div className="home-pet-card" onClick={onGoPets}>
-          <span className="home-pet-avatar">
-            {firstPet.profile.profileImage ? (
-              <img src={firstPet.profile.profileImage} alt="" />
-            ) : (
-              <span style={{ fontSize: 26 }}>{firstPet.species === "cat" ? "🐱" : "🐶"}</span>
-            )}
-          </span>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div className="home-pet-name">{firstPet.profile.name}</div>
-            <div className="bg-sub" style={{ fontSize: 13 }}>
-              {[firstPet.profile.breedName, petAgeLabel(firstPet.profile.birthDate, lang)].filter(Boolean).join(" · ")}
+      {pets.length ? (
+        <div className="home-pet-list">
+          {pets.map((pet) => (
+            <div className="home-pet-card" key={pet.id} onClick={onGoPets}>
+              <span className="home-pet-avatar">
+                {pet.profile.profileImage ? (
+                  <img src={pet.profile.profileImage} alt={`${pet.profile.name || "반려동물"} 프로필`} loading="lazy" />
+                ) : (
+                  <span style={{ fontSize: 26 }}>{pet.species === "cat" ? "🐱" : "🐶"}</span>
+                )}
+              </span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div className="home-pet-name">{pet.profile.name}</div>
+                <div className="bg-sub" style={{ fontSize: 13 }}>
+                  {[pet.profile.breedName, petAgeLabel(pet.profile.birthDate, lang)].filter(Boolean).join(" · ")}
+                </div>
+              </div>
+              <button type="button" className="bg-btn bg-btn-ghost" style={{ fontSize: 12, padding: "8px 14px", flexShrink: 0 }} onClick={onGoPets}>
+                {t.homePetCardBtn}
+              </button>
             </div>
-          </div>
-          <button type="button" className="bg-btn bg-btn-ghost" style={{ fontSize: 12, padding: "8px 14px", flexShrink: 0 }} onClick={onGoPets}>
-            {t.homePetCardBtn}
+          ))}
+          <button type="button" className="home-pet-card home-pet-card-empty" onClick={onGoPets}>
+            <PlusIcon style={{ width: 20, height: 20, color: "var(--primary)" }} />
+            <span>{t.homeAddPetBtn}</span>
           </button>
         </div>
       ) : (
@@ -6539,11 +6549,12 @@ function HomePage({ account, firstPet, lang, onGoPets, onGoView }) {
           <video
             ref={introVideoRef}
             src="/intro-video.mp4"
+            poster="/intro-video-poster.webp"
             autoPlay
             muted
             loop
             playsInline
-            preload="metadata"
+            preload="none"
             style={{ display: "block", width: "100%", height: "auto" }}
           />
           <button
@@ -7772,7 +7783,7 @@ function AppInner({ lang, setLang }) {
             {/* PC: 한 줄 상단 메뉴 (900px 이상) */}
             <div className="desktop-nav" style={{ alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                <button type="button" onClick={() => goView(account ? "home" : "about")}
+                <button type="button" onClick={() => goView("about")}
                   style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0, flexShrink: 0 }}>
                   <PetGrowLogo style={{ width: 24, height: 24 }} />
                   <span style={{ fontSize: 16, fontWeight: 800, fontFamily: "'Jua',sans-serif" }}>
@@ -7780,13 +7791,13 @@ function AppInner({ lang, setLang }) {
                   </span>
                 </button>
                 <nav style={{ display: "flex", alignItems: "center", gap: 2 }}>
+                  <button type="button" className={`desktop-nav-link ${view === "about" ? "active" : ""}`} onClick={() => goView("about")}>{t.aboutNav}</button>
                   <button type="button" className={`desktop-nav-link ${view === "pets" ? "active" : ""}`} onClick={() => goView("pets")}>{t.myPetsNav}</button>
                   <button type="button" className={`desktop-nav-link ${view === "community" ? "active" : ""}`} onClick={() => goView("community")}>{t.communityNav}</button>
                   <button type="button" className={`desktop-nav-link ${view === "saju" ? "active" : ""}`} onClick={() => goView("saju")}>{t.sajuNav}</button>
                   <button type="button" className={`desktop-nav-link ${view === "petbti" ? "active" : ""}`} onClick={() => goView("petbti")}>{t.petBtiNav}</button>
                   <button type="button" className={`desktop-nav-link ${view === "tips" ? "active" : ""}`} onClick={() => goView("tips")}>{t.tipsTitle}</button>
                   <button type="button" className={`desktop-nav-link ${view === "guide" ? "active" : ""}`} onClick={() => goView("guide")}>{t.infoGuideTitle}</button>
-                  {account && <button type="button" className={`desktop-nav-link ${view === "about" ? "active" : ""}`} onClick={() => goView("about")}>{t.aboutNav}</button>}
                   {account && <button type="button" className={`desktop-nav-link ${view === "my" ? "active" : ""}`} onClick={() => goView("my")}>{t.hamNavMy}</button>}
                 </nav>
               </div>
@@ -7801,7 +7812,7 @@ function AppInner({ lang, setLang }) {
               <button type="button" className="icon-btn" aria-label={t.hamMenuAria} onClick={() => setHamOpen(true)}>
                 <HamburgerIcon style={{ width: 20, height: 20 }} />
               </button>
-              <button type="button" onClick={() => goView(account ? "home" : "about")}
+              <button type="button" onClick={() => goView("about")}
                 style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
                 <PetGrowLogo style={{ width: 21, height: 21 }} />
                 <span style={{ fontSize: 15, fontWeight: 800, fontFamily: "'Jua',sans-serif" }}>
@@ -7847,7 +7858,7 @@ function AppInner({ lang, setLang }) {
       ) : effectiveView === "about" ? (
         <AboutPage onStart={() => goView("pets")} onNavigate={(v) => goView(v)} />
       ) : effectiveView === "home" ? (
-        <HomePage account={account} firstPet={allPets[0] || null} lang={lang}
+        <HomePage account={account} pets={allPets} lang={lang}
           onGoPets={() => goView("pets")} onGoView={(v) => goView(v)} />
       ) : effectiveView === "content" ? (
         <PetContentPage subTab={contentSubTab} onSubTabChange={setContentSubTab}
