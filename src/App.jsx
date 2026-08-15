@@ -171,7 +171,7 @@ const STRINGS = {
     hamMenuAria: "메뉴 열기",
     hamCloseAria: "메뉴 닫기",
     hamNavHome: "홈",
-    aboutNav: "PetGrow 소개",
+    aboutNav: "소개",
     hamNavMy: "MY",
     hamNavSettings: "설정",
     appTabPetInfo: "Pet정보",
@@ -6141,49 +6141,14 @@ function LandingPage({ onEnter }) {
 /* ============================================================
    소개 페이지 — 로고를 누르면 보이는 사업 설명 화면 (히어로 + 단계 + 기능 쇼케이스 + 신뢰 배지)
    ============================================================ */
-// 소개 페이지 맨 위 자동재생 영상 — 처음엔 음소거, 버튼으로 소리 켤 수 있어요
+// 소개 페이지 영상 — 자동재생하지 않고 사용자가 직접 재생해요.
 function IntroVideo() {
-  const t = useT();
   const videoRef = useRef(null);
-  const [muted, setMuted] = useState(true);
-  const [userMuted, setUserMuted] = useState(false); // 사용자가 직접 소리를 껐다면, 자동 켜기를 다시 하지 않음
-  const DEFAULT_VOLUME = 0.5; // 노래가 너무 크게 들리지 않도록 기본 볼륨을 낮춰둬요
+  const DEFAULT_VOLUME = 0.5;
 
   useEffect(() => {
     if (videoRef.current) videoRef.current.volume = DEFAULT_VOLUME;
   }, []);
-
-  const toggleSound = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    v.volume = DEFAULT_VOLUME;
-    v.muted = !v.muted;
-    setUserMuted(v.muted);
-    if (!v.muted) v.play().catch(() => {});
-    setMuted(v.muted);
-  };
-
-  // 페이지 아무 곳이나 처음 한 번 클릭/터치하면 자동으로 소리를 켜줘요
-  // (브라우저 정책상 사용자 동작 없이는 소리 있는 자동재생이 불가능해서, 이 방법이 가장 빨라요)
-  useEffect(() => {
-    const unmuteOnFirstInteraction = () => {
-      const v = videoRef.current;
-      if (v && !userMuted) {
-        v.volume = DEFAULT_VOLUME;
-        v.muted = false;
-        v.play().catch(() => {});
-        setMuted(false);
-      }
-    };
-    document.addEventListener("click", unmuteOnFirstInteraction, { once: true });
-    document.addEventListener("touchstart", unmuteOnFirstInteraction, { once: true });
-    document.addEventListener("scroll", unmuteOnFirstInteraction, { once: true, passive: true });
-    return () => {
-      document.removeEventListener("click", unmuteOnFirstInteraction);
-      document.removeEventListener("touchstart", unmuteOnFirstInteraction);
-      document.removeEventListener("scroll", unmuteOnFirstInteraction);
-    };
-  }, [userMuted]);
 
   return (
     <div className="intro-video-wrap about-fade">
@@ -6192,16 +6157,11 @@ function IntroVideo() {
         className="intro-video"
         src="/intro-video.mp4"
         poster="/intro-video-poster.webp"
-        autoPlay
-        muted
+        controls
         loop
         playsInline
-        preload="none"
+        preload="metadata"
       />
-      <button type="button" className={`intro-video-sound-btn ${muted ? "pulse" : ""}`} onClick={toggleSound}
-        aria-label={muted ? t.introVideoUnmute : t.introVideoMute}>
-        {muted ? <SoundOffIcon style={{ width: 18, height: 18 }} /> : <SoundOnIcon style={{ width: 18, height: 18 }} />}
-      </button>
     </div>
   );
 }
@@ -7469,7 +7429,8 @@ function AppInner({ lang, setLang }) {
       const me = await fetchMe();
       setAccount(me);
       setAuthChecked(true);
-      if (me && (loginResult === "success")) {
+      // 로그인된 사용자는 새로 접속하거나 새로고침해도 홈에서 시작해요.
+      if (me) {
         setView("home");
       }
 
