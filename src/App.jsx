@@ -7582,12 +7582,27 @@ function AppInner({ lang, setLang }) {
         }
       }
       setLoaded(true);
-      if (Capacitor.isNativePlatform()) {
-        SplashScreen.hide().catch(() => {});
-      }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // 네이티브 앱의 정적 시작 화면이 준비되면 바로 웹 스플래시로 넘겨
+  // 회전 로딩 애니메이션이 실제 초기화가 끝날 때까지 보이도록 해요.
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+    const timer = window.setTimeout(() => {
+      SplashScreen.hide().catch(() => {});
+    }, 80);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  // 앱 데이터와 로그인 확인이 모두 끝난 뒤 웹/모바일/PWA/앱 공통 스플래시를 페이드아웃해요.
+  useEffect(() => {
+    if (!loaded || !authChecked) return;
+    if (typeof window.__hidePetGrowSplash === "function") {
+      window.__hidePetGrowSplash();
+    }
+  }, [loaded, authChecked]);
 
   // AdMob 하단 배너 광고 — 실제 안드로이드/iOS 앱에서만 동작해요 (웹사이트는 그냥 넘어가요)
   useEffect(() => {

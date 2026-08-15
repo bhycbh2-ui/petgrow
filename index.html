@@ -2,15 +2,170 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content="PetGrow - 반려동물 성장, 과학적인 계산으로 더 건강하게" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="icon" href="/icon-192.png" />
     <link rel="apple-touch-icon" href="/icon-192.png" />
-    <meta name="theme-color" content="#7fa66b" />
+    <meta name="theme-color" content="#ffffff" />
     <title>PetGrow</title>
+
+    <!--
+      PetGrow 초기 스플래시
+      React가 내려받아지기 전부터 먼저 표시되기 때문에 접속 직후의 빈 흰 화면을 가려줍니다.
+      앱/모바일 웹/웹앱(PWA)/데스크톱 홈페이지에서 동일한 디자인을 사용합니다.
+    -->
+    <style>
+      html,
+      body,
+      #root {
+        min-height: 100%;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      #petgrow-initial-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483647;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        min-height: 100dvh;
+        padding: max(24px, env(safe-area-inset-top)) 24px max(24px, env(safe-area-inset-bottom));
+        background: #ffffff;
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 280ms ease, visibility 280ms ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      #petgrow-initial-splash.petgrow-splash--hide {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .petgrow-splash__content {
+        width: min(72vw, 320px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transform: translateY(-2vh);
+      }
+
+      .petgrow-splash__logo {
+        display: block;
+        width: min(64vw, 286px);
+        height: auto;
+        aspect-ratio: 1 / 1;
+        object-fit: contain;
+        user-select: none;
+        -webkit-user-drag: none;
+      }
+
+      .petgrow-splash__spinner {
+        width: 26px;
+        height: 26px;
+        box-sizing: border-box;
+        margin-top: clamp(18px, 3.2vh, 30px);
+        border: 3px solid rgba(88, 166, 40, 0.18);
+        border-top-color: #58a628;
+        border-right-color: #58a628;
+        border-radius: 50%;
+        animation: petgrow-spin 820ms linear infinite;
+      }
+
+      .petgrow-splash__text {
+        margin: 12px 0 0;
+        color: #4b4b4b;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", Arial, sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 1.4;
+        letter-spacing: -0.02em;
+        text-align: center;
+        white-space: nowrap;
+      }
+
+      @keyframes petgrow-spin {
+        to { transform: rotate(360deg); }
+      }
+
+      @media (orientation: landscape) and (max-height: 600px) {
+        .petgrow-splash__content {
+          width: min(38vw, 240px);
+          transform: none;
+        }
+        .petgrow-splash__logo {
+          width: min(34vh, 210px);
+        }
+        .petgrow-splash__spinner {
+          width: 22px;
+          height: 22px;
+          margin-top: 10px;
+        }
+        .petgrow-splash__text {
+          margin-top: 8px;
+          font-size: 12px;
+        }
+      }
+
+      @media (min-width: 900px) {
+        .petgrow-splash__content {
+          width: 320px;
+        }
+        .petgrow-splash__logo {
+          width: 280px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        #petgrow-initial-splash {
+          transition-duration: 120ms;
+        }
+        .petgrow-splash__spinner {
+          animation-duration: 1400ms;
+        }
+      }
+    </style>
+    <script>
+      // 너무 빠르게 번쩍이는 느낌을 막기 위한 최소 노출 시간(0.65초)
+      window.__petgrowSplashShownAt = performance.now();
+      window.__hidePetGrowSplash = function () {
+        var elapsed = performance.now() - window.__petgrowSplashShownAt;
+        var wait = Math.max(0, 650 - elapsed);
+        window.setTimeout(function () {
+          var splash = document.getElementById('petgrow-initial-splash');
+          if (!splash || splash.classList.contains('petgrow-splash--hide')) return;
+          splash.classList.add('petgrow-splash--hide');
+          window.setTimeout(function () {
+            if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
+          }, 320);
+        }, wait);
+      };
+    </script>
   </head>
   <body>
+    <div id="petgrow-initial-splash" role="status" aria-live="polite" aria-label="PetGrow 불러오는 중">
+      <div class="petgrow-splash__content">
+        <img
+          class="petgrow-splash__logo"
+          src="/petgrow-splash-logo.webp"
+          alt="PetGrow"
+          width="720"
+          height="720"
+          fetchpriority="high"
+          decoding="sync"
+        />
+        <div class="petgrow-splash__spinner" aria-hidden="true"></div>
+        <p class="petgrow-splash__text">PetGrow 불러오는 중...</p>
+      </div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

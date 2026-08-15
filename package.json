@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "cap:sync": "vite build && npx cap sync",
     "cap:ios": "vite build && npx cap sync ios && npx cap open ios",
-    "cap:android": "vite build && npx cap sync android && npx cap open android"
+    "cap:android": "vite build && npx capacitor-assets generate --android && npx cap sync android && npx cap open android"
   },
   "dependencies": {
     "react": "^18.3.1",
