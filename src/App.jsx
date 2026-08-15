@@ -6483,34 +6483,6 @@ function HomePage({ account, firstPet, lang, onGoPets, onGoView }) {
       <h1 style={{ fontSize: 21, marginBottom: 4 }}>{t.homeGreeting(account.name)}</h1>
       <p className="bg-sub" style={{ fontSize: 14, marginBottom: 18 }}>{t.homeSubGreeting}</p>
 
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: "4px 0 24px" }}>
-        <div style={{ position: "relative", width: "min(100%, 560px)", borderRadius: 22, overflow: "hidden", boxShadow: "0 12px 34px rgba(49, 91, 36, 0.12)", background: "#fff" }}>
-          <video
-            ref={introVideoRef}
-            src="/intro-video.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            style={{ display: "block", width: "100%", height: "auto" }}
-          />
-          <button
-            type="button"
-            onClick={toggleIntroSound}
-            aria-label={introMuted ? "영상 소리 켜기" : "영상 소리 끄기"}
-            title={introMuted ? "소리 켜기 (50%)" : "소리 끄기"}
-            style={{
-              position: "absolute", right: 12, bottom: 12, border: "1px solid rgba(255,255,255,.7)",
-              borderRadius: 999, padding: "8px 12px", background: "rgba(24,24,24,.66)", color: "#fff",
-              fontSize: 12, fontWeight: 700, cursor: "pointer", backdropFilter: "blur(6px)"
-            }}
-          >
-            {introMuted ? "🔇 소리 켜기" : "🔊 50%"}
-          </button>
-        </div>
-      </div>
-
       {firstPet ? (
         <div className="home-pet-card" onClick={onGoPets}>
           <span className="home-pet-avatar">
@@ -6537,7 +6509,38 @@ function HomePage({ account, firstPet, lang, onGoPets, onGoView }) {
         </button>
       )}
 
-      <h2 style={{ fontSize: 17, marginTop: 30, marginBottom: 14 }}>{t.homeServicesTitle}</h2>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: "22px 0 20px" }}>
+        <div style={{ fontSize: 14, fontWeight: 800, color: "var(--pg-dark)", marginBottom: 10, textAlign: "center" }}>
+          PetGrow와 함께하는 반려생활 🐾
+        </div>
+        <div style={{ position: "relative", width: "min(92vw, 580px)", maxWidth: "100%", borderRadius: 20, overflow: "hidden", boxShadow: "0 10px 28px rgba(49, 91, 36, 0.10)", background: "#fff" }}>
+          <video
+            ref={introVideoRef}
+            src="/intro-video.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            style={{ display: "block", width: "100%", height: "auto" }}
+          />
+          <button
+            type="button"
+            onClick={toggleIntroSound}
+            aria-label={introMuted ? "영상 소리 켜기" : "영상 소리 끄기"}
+            title={introMuted ? "소리 켜기 (50%)" : "소리 끄기"}
+            style={{
+              position: "absolute", right: 10, bottom: 10, border: "1px solid rgba(255,255,255,.7)",
+              borderRadius: 999, padding: "7px 10px", background: "rgba(24,24,24,.62)", color: "#fff",
+              fontSize: 11, fontWeight: 700, cursor: "pointer", backdropFilter: "blur(6px)"
+            }}
+          >
+            {introMuted ? "🔇 소리" : "🔊 50%"}
+          </button>
+        </div>
+      </div>
+
+      <h2 style={{ fontSize: 17, marginTop: 24, marginBottom: 14 }}>{t.homeServicesTitle}</h2>
       <div className="home-service-grid">
         <HomeServiceCard Illust={IllustGrowth} bg="#EAF6E4" title={t.homeCardGrowthTitle} desc={t.homeCardGrowthDesc} onClick={onGoPets} />
         <HomeServiceCard Illust={IllustSaju} bg="#F1ECFA" title={t.landingCardSajuTitle.replace(/^\S+\s/, "")} desc={t.homeCardSajuDesc} onClick={() => onGoView("saju")} />
