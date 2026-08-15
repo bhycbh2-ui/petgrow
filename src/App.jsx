@@ -1901,17 +1901,19 @@ const TERMS_SECTIONS_EN = [
   { title: "Addendum", body: "These Terms take effect on August 15, 2026.\nLast updated: August 15, 2026." },
 ];
 
-function LegalContent({ title, intro, sections, contactExtra }) {
+function LegalContent({ title, intro, sections, contactExtra, showLogo = false }) {
   const t = useT();
   return (
     <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 60px" }}>
-      <button type="button" onClick={() => { window.location.href = "/"; }}
-        style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0, marginBottom: 20 }}>
-        <PetGrowLogo style={{ width: 22, height: 22 }} />
-        <span style={{ fontSize: 15, fontWeight: 800, fontFamily: "'Jua',sans-serif" }}>
-          <span style={{ color: "var(--text)" }}>Pet</span><span style={{ color: "var(--primary)" }}>Grow</span>
-        </span>
-      </button>
+      {showLogo && (
+        <button type="button" onClick={() => { window.location.href = "/"; }}
+          style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0, marginBottom: 20 }}>
+          <PetGrowLogo style={{ width: 22, height: 22 }} />
+          <span style={{ fontSize: 15, fontWeight: 800, fontFamily: "'Jua',sans-serif" }}>
+            <span style={{ color: "var(--text)" }}>Pet</span><span style={{ color: "var(--primary)" }}>Grow</span>
+          </span>
+        </button>
+      )}
       <h1 style={{ fontSize: 22, marginBottom: 6 }}>{title}</h1>
       {intro && <p className="bg-sub" style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 28 }}>{intro}</p>}
       <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
@@ -1935,11 +1937,11 @@ function LegalContent({ title, intro, sections, contactExtra }) {
   );
 }
 
-function PrivacyContent() {
+function PrivacyContent({ showLogo = false }) {
   const lang = useLang();
   const t = useT();
   const sections = lang === "en" ? PRIVACY_SECTIONS_EN : PRIVACY_SECTIONS_KO;
-  return <LegalContent title={t.privacyTitle} intro={t.privacyIntro} sections={sections} />;
+  return <LegalContent title={t.privacyTitle} intro={t.privacyIntro} sections={sections} showLogo={showLogo} />;
 }
 
 function TermsContent() {
@@ -1955,7 +1957,7 @@ function PrivacyPage() {
     <div className="bboggl-root" style={{ minHeight: "100vh" }}>
       <GlobalStyle />
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 0 0" }}>
-        <PrivacyContent />
+        <PrivacyContent showLogo />
       </div>
     </div>
   );
