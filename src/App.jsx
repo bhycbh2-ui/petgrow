@@ -1720,10 +1720,10 @@ const PetGrowLogo = ({ style, className }) => (
 /* ============================================================
    범용 모달 / 확인창 / 가이드
    ============================================================ */
-function Modal({ open, onClose, children, width = 420 }) {
+function Modal({ open, onClose, children, width = 420, closeOnBackdrop = true }) {
   if (!open) return null;
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={closeOnBackdrop ? onClose : undefined}>
       <div className="modal-card" style={{ maxWidth: width }} onClick={(e) => e.stopPropagation()}>
         {children}
       </div>
@@ -2746,8 +2746,8 @@ const GlobalStyle = () => (
       justify-content:center; padding:16px; padding-top:max(16px, env(safe-area-inset-top));
       padding-bottom:max(16px, env(safe-area-inset-bottom)); z-index:100;}
     .modal-card{background:#fff; border-radius:28px; padding:24px; width:100%; box-shadow:0 24px 48px rgba(91,74,79,.25);
-      max-height:85vh; max-height:85dvh; overflow-y:auto; -webkit-overflow-scrolling:touch;}
-    .album-edit-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}.album-edit-modal-head h3{font-size:20px;margin:3px 0 0}.album-edit-preview{width:100%;aspect-ratio:4/3;border-radius:18px;overflow:hidden;background:#f3f5ef;margin-bottom:16px;border:1px solid #e5e0d6}.album-edit-preview img{width:100%;height:100%;object-fit:cover;display:block}.album-edit-file-btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:46px;cursor:pointer;position:relative}.album-edit-file-btn input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}.album-edit-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:20px}@media(max-width:560px){.album-edit-actions{grid-template-columns:1fr}.album-edit-modal-head h3{font-size:18px}}
+      max-height:85vh; max-height:85dvh; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch;}
+    .album-edit-modal{position:relative;isolation:isolate}.album-edit-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}.album-edit-modal-head h3{font-size:20px;margin:3px 0 0}.album-edit-preview{width:100%;aspect-ratio:4/3;border-radius:18px;overflow:hidden;background:#f3f5ef;margin-bottom:16px;border:1px solid #e5e0d6;contain:paint}.album-edit-preview img{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;user-select:none}.album-edit-file-btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:46px;cursor:pointer;position:relative}.album-edit-file-btn input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}.album-edit-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:20px}@media(max-width:560px){.album-edit-actions{grid-template-columns:1fr}.album-edit-modal-head h3{font-size:18px}}
     .guide-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px 20px;}
     @media (max-width:560px){ .guide-grid{grid-template-columns:1fr;} }
     .combobox-wrap{position:relative;}
@@ -3517,7 +3517,7 @@ function PhotoTile({ photo, birthDate, onEdit, onDelete, onOpenSlideshow }) {
         </div>
       </div>
 
-      <Modal open={editOpen} onClose={() => !busy && setEditOpen(false)} width={390}>
+      <Modal open={editOpen} onClose={() => !busy && setEditOpen(false)} width={390} closeOnBackdrop={false}>
         <div className="album-edit-modal">
           <div className="album-edit-modal-head">
             <div>
@@ -7933,18 +7933,21 @@ function CommunityFeed({ pets, lang, onOpenPost, onWrite, onMyActivity }) {
     return () => clearTimeout(timer);
   }, [searchInput]);
 
-  const loadPage = async (nextPage, replace) => {
+  const loadPage = async (nextPage) => {
     setLoading(true);
     try {
       const res = await communityListPosts({ category, sort, search, page: nextPage });
-      setPosts((prev) => (replace ? res.posts : [...prev, ...res.posts]));
-      setHasMore(res.hasMore);
+      setPosts(res.posts || []);
+      setHasMore(!!res.hasMore);
       setPage(nextPage);
+      if (nextPage > 1 && typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
     } catch {}
     setLoading(false);
   };
 
-  useEffect(() => { loadPage(1, true); }, [category, sort, search]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { loadPage(1); }, [category, sort, search]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 60px" }}>
@@ -8009,10 +8012,21 @@ function CommunityFeed({ pets, lang, onOpenPost, onWrite, onMyActivity }) {
         </div>
       )}
 
-      {hasMore && (
-        <div style={{ textAlign: "center", marginTop: 20 }}>
-          <button type="button" className="bg-btn bg-btn-ghost" disabled={loading} onClick={() => loadPage(page + 1, false)}>
-            {loading ? t.communityLoading : t.communityLoadMore}
+      {(page > 1 || hasMore) && (
+        <div className="cm-pagination" style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 8, marginTop: 22, flexWrap: "wrap" }}>
+          <button type="button" className="bg-btn bg-btn-ghost" style={{ minWidth: 72 }} disabled={loading || page <= 1} onClick={() => loadPage(page - 1)}>
+            {lang === "en" ? "Previous" : "이전"}
+          </button>
+          {Array.from({ length: Math.min(5, page + (hasMore ? 1 : 0)) }, (_, i) => {
+            const startPage = Math.max(1, page - 2);
+            return startPage + i;
+          }).filter((n) => n <= page || hasMore).map((n) => (
+            <button key={n} type="button" className={`bg-chip ${page === n ? "active" : ""}`} disabled={loading} onClick={() => loadPage(n)}>
+              {n}
+            </button>
+          ))}
+          <button type="button" className="bg-btn bg-btn-ghost" style={{ minWidth: 72 }} disabled={loading || !hasMore} onClick={() => loadPage(page + 1)}>
+            {lang === "en" ? "Next" : "다음"}
           </button>
         </div>
       )}
