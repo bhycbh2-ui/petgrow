@@ -47,22 +47,19 @@ export function ensureSchema() {
           category text not null,
           title text not null,
           content text not null,
-          visibility text not null default 'public',
           like_count integer not null default 0,
           comment_count integer not null default 0,
           is_hidden boolean not null default false,
+          is_public boolean not null default true,
           created_at timestamptz not null default now(),
           updated_at timestamptz not null default now()
         )
       `;
+      await sql`alter table pg_posts add column if not exists is_public boolean not null default true`;
       await sql`create index if not exists idx_pg_posts_created on pg_posts(created_at desc)`;
       await sql`create index if not exists idx_pg_posts_likes on pg_posts(like_count desc, created_at desc)`;
       await sql`create index if not exists idx_pg_posts_category on pg_posts(category)`;
       await sql`create index if not exists idx_pg_posts_user on pg_posts(user_id)`;
-      // pg_posts가 이미 배포되어 있었다면(visibility 컬럼 도입 전) 여기서 안전하게 추가해줘요.
-      // 기존 게시글은 전부 자동으로 'public'을 유지해요 (요청서: 기존 게시글은 안전하게 public으로 유지).
-      await sql`alter table pg_posts add column if not exists visibility text not null default 'public'`;
-      await sql`create index if not exists idx_pg_posts_visibility on pg_posts(visibility)`;
 
       await sql`
         create table if not exists pg_post_images (
@@ -85,6 +82,7 @@ export function ensureSchema() {
           pet_photo text,
           content text not null,
           is_hidden boolean not null default false,
+          is_public boolean not null default true,
           created_at timestamptz not null default now()
         )
       `;

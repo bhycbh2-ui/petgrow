@@ -15,7 +15,6 @@ function shapePost(row, viewerId, images, likedByMe) {
   return {
     id: row.id,
     isOwner: viewerId ? row.user_id === viewerId : false,
-    visibility: row.visibility,
     pet: {
       id: row.pet_id,
       name: row.pet_name,
@@ -31,6 +30,7 @@ function shapePost(row, viewerId, images, likedByMe) {
     likeCount: row.like_count,
     commentCount: row.comment_count,
     likedByMe: !!likedByMe,
+    isPublic: row.is_public !== false,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -79,11 +79,10 @@ export async function listPosts({ category, sort, search, page, pageSize, viewer
   const orderClause = sort === "popular" ? sql`order by like_count desc, created_at desc` : sql`order by created_at desc`;
 
   // limit+1 개를 가져와서 다음 페이지가 더 있는지 판단해요 (COUNT 쿼리 없이 가벼운 무한스크롤 지원)
-  // 비공개(private) 게시글은 일반 피드/인기글/검색 그 어디에도 노출되지 않아요 — 작성자 본인이 보더라도 마찬가지예요.
   const { rows } = await sql`
     select * from pg_posts
     where is_hidden = false
-      and visibility = 'public'
+      and (is_public = true or (${viewerId}::text is not null and user_id = ${viewerId}))
       and (${cat}::text is null or category = ${cat})
       and (${term}::text is null or title ilike ${term} or content ilike ${term})
     ${orderClause}
@@ -102,25 +101,21 @@ export async function listPosts({ category, sort, search, page, pageSize, viewer
 
 export async function getPostById(id, viewerId) {
   await ensureSchema();
-  const { rows } = await sql`select * from pg_posts where id = ${id} and is_hidden = false`;
+  const { rows } = await sql`select * from pg_posts where id = ${id} and is_hidden = false and (is_public = true or (${viewerId}::text is not null and user_id = ${viewerId}))`;
   if (!rows[0]) return null;
-  // 비공개 글은 작성자 본인만 조회할 수 있어요. 다른 회원에게는 "존재하지 않는 글"과 동일하게 취급해서
-  // 비공개 글이 있다는 사실 자체도 노출되지 않도록 해요 (직접 URL 접근·API 조회 모두 차단).
-  if (rows[0].visibility === "private" && rows[0].user_id !== viewerId) return null;
   const [imgMap, liked] = await Promise.all([imagesForPosts([id]), likedPostIds(viewerId, [id])]);
   return shapePost(rows[0], viewerId, imgMap[id], liked.has(id));
 }
 
-export async function createPost({ userId, pet, category, title, content, imageUrls, visibility }) {
+export async function createPost({ userId, pet, category, title, content, imageUrls, isPublic = true }) {
   await ensureSchema();
   if (!CATEGORIES.includes(category)) throw new Error("invalid category");
   if (!pet || !pet.id) throw new Error("pet is required");
-  const vis = visibility === "private" ? "private" : "public";
   const id = newId();
   await sql`
-    insert into pg_posts (id, user_id, pet_id, pet_name, pet_species, pet_breed, pet_birth_date, pet_photo, category, title, content, visibility)
+    insert into pg_posts (id, user_id, pet_id, pet_name, pet_species, pet_breed, pet_birth_date, pet_photo, category, title, content, is_public)
     values (${id}, ${userId}, ${pet.id}, ${pet.name}, ${pet.species}, ${pet.breed || null}, ${pet.birthDate || null}, ${pet.photo || null},
-      ${category}, ${title}, ${content}, ${vis})
+      ${category}, ${title}, ${content}, ${isPublic !== false})
   `;
   const urls = (imageUrls || []).slice(0, 5);
   for (let i = 0; i < urls.length; i++) {
@@ -129,12 +124,18 @@ export async function createPost({ userId, pet, category, title, content, imageU
   return getPostById(id, userId);
 }
 
-export async function updatePost({ id, userId, category, title, content, imageUrls, visibility }) {
+export async function updatePost({ id, userId, category, title, content, imageUrls, isPublic }) {
   await ensureSchema();
-  if (!CATEGORIES.includes(category)) throw new Error("invalid category");
-  const vis = visibility === "private" ? "private" : "public";
+  if (category != null && !CATEGORIES.includes(category)) throw new Error("invalid category");
+  const current = await sql`select * from pg_posts where id = ${id} and user_id = ${userId}`;
+  if (!current.rows[0]) return null;
+  const row = current.rows[0];
+  const nextCategory = category ?? row.category;
+  const nextTitle = title ?? row.title;
+  const nextContent = content ?? row.content;
+  const nextPublic = typeof isPublic === "boolean" ? isPublic : row.is_public;
   const { rows } = await sql`
-    update pg_posts set category = ${category}, title = ${title}, content = ${content}, visibility = ${vis}, updated_at = now()
+    update pg_posts set category = ${nextCategory}, title = ${nextTitle}, content = ${nextContent}, is_public = ${nextPublic}, updated_at = now()
     where id = ${id} and user_id = ${userId}
     returning id
   `;
@@ -167,11 +168,6 @@ export async function deletePost({ id, userId }) {
 
 export async function toggleLike({ postId, userId }) {
   await ensureSchema();
-  const { rows: postRows } = await sql`select user_id, visibility from pg_posts where id = ${postId} and is_hidden = false`;
-  if (!postRows[0]) throw new Error("post not found");
-  if (postRows[0].visibility === "private" && postRows[0].user_id !== userId) {
-    throw new Error("not allowed"); // 비공개 글은 좋아요 대상이 될 수 없어요
-  }
   const inserted = await sql`
     insert into pg_likes (user_id, post_id) values (${userId}, ${postId})
     on conflict do nothing
@@ -188,9 +184,6 @@ export async function toggleLike({ postId, userId }) {
 
 export async function listComments(postId, viewerId) {
   await ensureSchema();
-  const { rows: postRows } = await sql`select user_id, visibility from pg_posts where id = ${postId} and is_hidden = false`;
-  if (!postRows[0]) return [];
-  if (postRows[0].visibility === "private" && postRows[0].user_id !== viewerId) return [];
   const { rows } = await sql`
     select * from pg_comments where post_id = ${postId} and is_hidden = false order by created_at asc
   `;
@@ -200,11 +193,8 @@ export async function listComments(postId, viewerId) {
 export async function addComment({ postId, userId, pet, content }) {
   await ensureSchema();
   const id = newId();
-  const { rows: postRows } = await sql`select id, user_id, visibility from pg_posts where id = ${postId} and is_hidden = false`;
+  const { rows: postRows } = await sql`select id from pg_posts where id = ${postId} and is_hidden = false`;
   if (!postRows[0]) throw new Error("post not found");
-  if (postRows[0].visibility === "private" && postRows[0].user_id !== userId) {
-    throw new Error("not allowed"); // 비공개 글은 댓글 대상이 될 수 없어요
-  }
   await sql`
     insert into pg_comments (id, post_id, user_id, pet_id, pet_name, pet_photo, content)
     values (${id}, ${postId}, ${userId}, ${pet?.id || null}, ${pet?.name || "PetGrow"}, ${pet?.photo || null}, ${content})
@@ -239,14 +229,12 @@ export async function createReport({ reporterUserId, targetType, targetId, reaso
   return { reported: inserted.rows.length > 0, alreadyReported: inserted.rows.length === 0 };
 }
 
-export async function getMyPosts(userId, page, pageSize, visibilityFilter) {
+export async function getMyPosts(userId, page, pageSize) {
   await ensureSchema();
   const p = Math.max(1, page || 1);
   const size = Math.min(30, Math.max(1, pageSize || 10));
-  const vf = visibilityFilter === "public" || visibilityFilter === "private" ? visibilityFilter : null;
   const { rows } = await sql`
     select * from pg_posts where user_id = ${userId}
-      and (${vf}::text is null or visibility = ${vf})
     order by created_at desc limit ${size + 1} offset ${(p - 1) * size}
   `;
   const hasMore = rows.length > size;

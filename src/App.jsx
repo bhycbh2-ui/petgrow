@@ -303,17 +303,9 @@ const STRINGS = {
     sajuComingCompat: "보호자와 궁합 보기",
     sajuComingDaily: "오늘의 운세 보기",
     sajuComingSoon: "곧 만나요! 준비 중이에요",
-    fortuneMood: "기분운", fortuneWalk: "산책운", fortuneSnack: "간식운", fortuneFriend: "친구운",
-    fortuneLuckyItem: "행운 아이템", fortuneLuckyTime: "행운 시간",
-    compatScoreLabel: (name) => `${name} ♥ 보호자 찰떡지수`,
-    compatPointsLabel: "서로 잘 맞는 점",
-    compatPetViewLabel: "우리 아이가 보호자를 바라보는 방식",
-    compatTipLabel: "보호자가 해주면 좋아하는 행동",
-    compatActivityLabel: "함께하면 좋은 활동",
     sajuRestartBtn: "다시 보기",
     sajuDisclaimer: "재미로 보는 PetGrow 콘텐츠예요 🐾 실제 성격이나 미래를 판단하는 자료가 아니에요.",
-    tipCategoryLabels: { all: "전체보기", health: "건강", diet: "식단", behavior: "행동", walk: "산책", hygiene: "위생", vaccine: "예방접종", beginner: "초보보호자" },
-    tipSpeciesLabels: { all: "전체", dog: "🐶 강아지", cat: "🐱 고양이" },
+    tipCategoryLabels: { all: "전체보기", dog: "강아지", cat: "고양이", health: "건강", life: "생활" },
     privacyFooterLink: "개인정보처리방침",
     guideSections: [
       { title: "1. 아이 등록하기", body: "이름·품종·생년월일·현재 체중을 입력하면 예상 성체 체중과 성장 그래프가 바로 나와요. 대표 사진도 등록할 수 있어요." },
@@ -529,15 +521,6 @@ const STRINGS = {
     communityComposeTitleTitle: "제목",
     communityComposeTitlePlaceholder: "제목을 입력해주세요",
     communityComposeTitleContent: "내용",
-    communityVisibilityLabel: "공개 범위",
-    communityVisibilityPublic: "🌎 전체공개",
-    communityVisibilityPublicDesc: "다른 보호자들이 볼 수 있어요.",
-    communityVisibilityPrivate: "🔒 비공개",
-    communityVisibilityPrivateDesc: "나만 볼 수 있어요.",
-    communityPrivateBadge: "🔒 비공개",
-    communityMyPostsFilterAll: "전체",
-    communityMyPostsFilterPublic: "🌎 전체공개",
-    communityMyPostsFilterPrivate: "🔒 비공개",
     communityComposeContentPlaceholder: "우리 아이 이야기를 들려주세요",
     communityComposePhotos: (n) => `사진 (최대 5장, ${n}/5)`,
     communityComposeSubmit: "등록하기",
@@ -549,6 +532,11 @@ const STRINGS = {
     communityBack: "뒤로",
     communityEditBtn: "수정",
     communityDeleteBtn: "삭제",
+    communityVisibilityPublic: "공개",
+    communityVisibilityPrivate: "비공개",
+    communityMakePrivate: "비공개로 전환",
+    communityMakePublic: "공개로 전환",
+    communityVisibilityChanged: "공개 설정이 변경됐어요.",
     communityDeleteConfirmTitle: "게시글을 삭제할까요?",
     communityDeleteConfirmBody: "삭제하면 되돌릴 수 없어요.",
     communityCommentsTitle: "댓글",
@@ -574,6 +562,13 @@ const STRINGS = {
     communityMyEmptyPosts: "아직 작성한 글이 없어요.",
     communityMyEmptyComments: "아직 작성한 댓글이 없어요.",
     communityMyEmptyLikes: "아직 좋아요한 글이 없어요.",
+    myPageTitle: "MY",
+    myPageAccountTitle: "내 계정",
+    myPagePetsTitle: "등록한 우리 아이",
+    myPagePetsCount: (n) => `${n}마리`,
+    myPageActivityTitle: "Pet톡 내 활동",
+    myPageSettingsBtn: "계정 설정",
+    myPageManagePetsBtn: "우리 아이 관리",
     communityImageTooMany: "사진은 최대 5장까지 등록할 수 있어요.",
     communityImageInvalidType: "JPG, PNG, WebP 형식의 사진만 등록할 수 있어요.",
     communityUploadFailed: "사진 업로드에 실패했어요. 잠시 후 다시 시도해주세요.",
@@ -691,7 +686,7 @@ const STRINGS = {
     landingTierTrial2: "성장 예측 · 그래프 · 기록 · 또래 비교",
     landingTierTrial3: "참고 정보 가이드",
     landingTierMemberName: "회원",
-    landingTierMemberPrice: "무료 · 휴대폰 번호로 로그인",
+    landingTierMemberPrice: "무료 · 카카오 간편로그인",
     landingTierMember1: "반려동물 최대 10마리 등록",
     landingTierMember2: "체험판의 모든 기능 포함",
     landingTierMember3: "성장앨범(사진) 등록·슬라이드쇼",
@@ -835,17 +830,9 @@ const STRINGS = {
     sajuComingCompat: "Compatibility with you",
     sajuComingDaily: "Today's horoscope",
     sajuComingSoon: "Coming soon!",
-    fortuneMood: "Mood", fortuneWalk: "Walk", fortuneSnack: "Treats", fortuneFriend: "Friends",
-    fortuneLuckyItem: "Lucky item", fortuneLuckyTime: "Lucky time",
-    compatScoreLabel: (name) => `${name} ♥ Guardian match score`,
-    compatPointsLabel: "What clicks between you two",
-    compatPetViewLabel: "How your pet sees you",
-    compatTipLabel: "Things they love when you do them",
-    compatActivityLabel: "A great activity to share",
     sajuRestartBtn: "Try again",
     sajuDisclaimer: "A fun PetGrow feature 🐾 not a real assessment of personality or the future.",
-    tipCategoryLabels: { all: "All", health: "Health", diet: "Diet", behavior: "Behavior", walk: "Walks", hygiene: "Hygiene", vaccine: "Vaccines", beginner: "New Owners" },
-    tipSpeciesLabels: { all: "All", dog: "🐶 Dogs", cat: "🐱 Cats" },
+    tipCategoryLabels: { all: "All", dog: "Dogs", cat: "Cats", health: "Health", life: "Lifestyle" },
     privacyFooterLink: "Privacy Policy",
     guideSections: [
       { title: "1. Register your pet", body: "Enter a name, breed, birth date, and current weight to instantly see the predicted adult weight and growth chart. You can add a profile photo too." },
@@ -1065,15 +1052,6 @@ const STRINGS = {
     communityComposeTitleTitle: "Title",
     communityComposeTitlePlaceholder: "Enter a title",
     communityComposeTitleContent: "Content",
-    communityVisibilityLabel: "Visibility",
-    communityVisibilityPublic: "🌎 Public",
-    communityVisibilityPublicDesc: "Other guardians can see this.",
-    communityVisibilityPrivate: "🔒 Private",
-    communityVisibilityPrivateDesc: "Only you can see this.",
-    communityPrivateBadge: "🔒 Private",
-    communityMyPostsFilterAll: "All",
-    communityMyPostsFilterPublic: "🌎 Public",
-    communityMyPostsFilterPrivate: "🔒 Private",
     communityComposeContentPlaceholder: "Tell us about your pet",
     communityComposePhotos: (n) => `Photos (up to 5, ${n}/5)`,
     communityComposeSubmit: "Post",
@@ -1085,6 +1063,11 @@ const STRINGS = {
     communityBack: "Back",
     communityEditBtn: "Edit",
     communityDeleteBtn: "Delete",
+    communityVisibilityPublic: "Public",
+    communityVisibilityPrivate: "Private",
+    communityMakePrivate: "Make private",
+    communityMakePublic: "Make public",
+    communityVisibilityChanged: "Post visibility updated.",
     communityDeleteConfirmTitle: "Delete this post?",
     communityDeleteConfirmBody: "This can't be undone.",
     communityCommentsTitle: "Comments",
@@ -1110,6 +1093,13 @@ const STRINGS = {
     communityMyEmptyPosts: "You haven't posted anything yet.",
     communityMyEmptyComments: "You haven't commented on anything yet.",
     communityMyEmptyLikes: "You haven't liked anything yet.",
+    myPageTitle: "MY",
+    myPageAccountTitle: "My account",
+    myPagePetsTitle: "My pets",
+    myPagePetsCount: (n) => `${n} pets`,
+    myPageActivityTitle: "My Pet Talk activity",
+    myPageSettingsBtn: "Account settings",
+    myPageManagePetsBtn: "Manage pets",
     communityImageTooMany: "You can add up to 5 photos.",
     communityImageInvalidType: "Only JPG, PNG, and WebP images are allowed.",
     communityUploadFailed: "Photo upload failed. Please try again.",
@@ -1222,7 +1212,7 @@ const STRINGS = {
     landingTierTrial2: "Growth prediction, chart, records, peer comparison",
     landingTierTrial3: "Reference info guide",
     landingTierMemberName: "Member",
-    landingTierMemberPrice: "Free · log in with phone number",
+    landingTierMemberPrice: "Free · Kakao Login",
     landingTierMember1: "Register up to 10 pets",
     landingTierMember2: "Everything in Trial, plus:",
     landingTierMember3: "Growth album (photos) & slideshow",
@@ -1450,41 +1440,45 @@ function communityListPosts({ category, sort, search, page }) {
     search: search || "",
     page: String(page || 1),
   });
-  return apiJson(`/api/community/posts?${params}`);
+  return apiJson(`/api/community?action=posts&${params}`);
 }
 function communityGetPost(id) {
-  return apiJson(`/api/community/posts/${id}`);
+  return apiJson(`/api/community?action=post&id=${encodeURIComponent(id)}`);
 }
 function communityCreatePost(payload) {
-  return apiJson("/api/community/posts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+  return apiJson("/api/community?action=posts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
 }
 function communityUpdatePost(id, payload) {
-  return apiJson(`/api/community/posts/${id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+  return apiJson(`/api/community?action=post&id=${encodeURIComponent(id)}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
 }
 function communityDeletePost(id) {
-  return apiJson(`/api/community/posts/${id}`, { method: "DELETE" });
+  return apiJson(`/api/community?action=post&id=${encodeURIComponent(id)}`, { method: "DELETE" });
+}
+function communitySetPostVisibility(id, isPublic) {
+  return apiJson(`/api/community?action=post&id=${encodeURIComponent(id)}`, {
+    method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ isPublic: !!isPublic })
+  });
 }
 function communityToggleLike(id) {
-  return apiJson(`/api/community/posts/${id}/like`, { method: "POST" });
+  return apiJson(`/api/community?action=like&id=${encodeURIComponent(id)}`, { method: "POST" });
 }
 function communityListComments(postId) {
-  return apiJson(`/api/community/posts/${postId}/comments`);
+  return apiJson(`/api/community?action=comments&postId=${encodeURIComponent(postId)}`);
 }
 function communityAddComment(postId, payload) {
-  return apiJson(`/api/community/posts/${postId}/comments`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+  return apiJson(`/api/community?action=comments&postId=${encodeURIComponent(postId)}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
 }
 function communityDeleteComment(id) {
-  return apiJson(`/api/community/comments/${id}`, { method: "DELETE" });
+  return apiJson(`/api/community?action=comment&id=${encodeURIComponent(id)}`, { method: "DELETE" });
 }
 function communityReport(payload) {
-  return apiJson("/api/community/reports", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+  return apiJson("/api/community?action=report", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
 }
-function communityMyActivity(type, page, visibility) {
-  const vis = visibility ? `&visibility=${visibility}` : "";
-  return apiJson(`/api/community/my?type=${type}&page=${page || 1}${vis}`);
+function communityMyActivity(type, page) {
+  return apiJson(`/api/community?action=my&type=${encodeURIComponent(type)}&page=${page || 1}`);
 }
 async function communityUploadImage(dataUrl) {
-  const data = await apiJson("/api/community/upload", {
+  const data = await apiJson("/api/community?action=upload", {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ dataUrl }),
   });
   return data.url;
@@ -1757,11 +1751,11 @@ function GuideModal({ open, onClose }) {
    ============================================================ */
 const PRIVACY_SECTIONS_KO = [
   { title: "1. 개인정보의 처리 목적", body: "PetGrow는 카카오 간편로그인을 통한 회원 식별·계정 관리, 로그인 유지, 반려동물 정보 저장 및 기기 간 동기화, PetBTI 등 서비스 결과 저장·다시보기, 고객 문의, 서비스 안정성·품질 개선, 광고 제공 및 성과 측정, 부정 이용 방지, 회원탈퇴 및 개인정보 삭제 처리를 위하여 필요한 범위에서 개인정보를 처리할 수 있습니다." },
-  { title: "2. 처리하는 개인정보 항목", body: "가. 카카오 간편로그인\n- 카카오가 제공하는 사용자 고유 식별정보\n- 닉네임, 프로필 이미지 등은 실제로 동의받아 제공받고 서비스에서 사용하는 경우에만 처리\n- 이메일 등 추가 정보는 실제 구현상 필요한 경우에만 동의를 받아 처리\n\n나. 반려동물 및 서비스 정보\n- 반려동물 이름, 종류, 품종, 생년월일, 성별, 현재 체중 및 성장 관련 정보\n- 반려동물 프로필 사진\n- PetBTI 결과 및 검사일\n- Pet사주, 오늘의 운세, 보호자 궁합 등 저장이 필요한 서비스 정보\n\n다. 자동으로 처리될 수 있는 정보\n- IP 주소, 기기·운영체제·브라우저 또는 앱 정보\n- 접속 및 서비스 이용기록, 오류·보안 관련 기록\n- 광고 식별정보 및 광고 상호작용 정보\n\nPetGrow는 서비스 제공에 필요하지 않은 전화번호, 성별, 생일, 친구목록 등의 개인정보를 불필요하게 요청하지 않는 것을 원칙으로 합니다." },
+  { title: "2. 처리하는 개인정보 항목", body: "가. 카카오 간편로그인\n- 카카오가 제공하는 사용자 고유 식별정보\n- 닉네임, 프로필 이미지 등은 실제로 동의받아 제공받고 서비스에서 사용하는 경우에만 처리\n- 이메일 등 추가 정보는 실제 구현상 필요한 경우에만 동의를 받아 처리\n\n나. 반려동물 및 서비스 정보\n- 반려동물 이름, 종류, 품종, 생년월일, 성별, 현재 체중 및 성장 관련 정보\n- 반려동물 프로필 사진\n- PetBTI 결과 및 검사일\n- Pet사주 등 저장이 필요한 서비스 정보\n\n다. 자동으로 처리될 수 있는 정보\n- IP 주소, 기기·운영체제·브라우저 또는 앱 정보\n- 접속 및 서비스 이용기록, 오류·보안 관련 기록\n- 광고 식별정보 및 광고 상호작용 정보\n\nPetGrow는 서비스 제공에 필요하지 않은 전화번호, 성별, 생일, 친구목록 등의 개인정보를 불필요하게 요청하지 않는 것을 원칙으로 합니다." },
   { title: "3. 개인정보의 저장 방식", body: "로그인 후 이용자가 등록하거나 생성한 정보는 단순히 '이 기기' 또는 '이 브라우저'에만 저장되는 구조를 원칙으로 하지 않으며, 로그인한 PetGrow 계정에 연결하여 서버 또는 클라우드 저장소에 저장·동기화될 수 있습니다. 동일한 카카오 계정으로 로그인하면 지원되는 다른 기기 또는 웹 환경에서 저장된 정보를 불러올 수 있습니다. 로그인 기능 도입 이전의 기존 기기 저장정보는 이용자의 선택에 따라 계정으로 이전될 수 있습니다." },
   { title: "4. 개인정보의 처리 및 보유기간", body: "회원계정 및 계정에 연결된 개인정보는 원칙적으로 회원탈퇴 시까지 보유·이용합니다. 회원탈퇴 시 관계 법령에 따라 별도로 보관할 필요가 있는 정보를 제외하고 계정 및 관련 개인정보를 삭제합니다. 외부 인증·광고·호스팅 사업자가 자체적으로 처리하는 정보는 해당 사업자의 정책 및 실제 처리 구조에 따를 수 있습니다." },
   { title: "5. 카카오 간편로그인", body: "PetGrow는 이용 편의를 위해 카카오 간편로그인을 제공할 수 있습니다. 로그인 과정에서 카카오의 동의 화면을 통해 이용자가 동의한 범위의 정보만 PetGrow에 제공될 수 있습니다. 처리 목적은 회원 식별, 계정 생성·관리, 사용자별 데이터 저장·동기화, 회원탈퇴 및 고객지원 등입니다." },
-  { title: "6. 반려동물 정보 및 프로필 사진", body: "이용자가 등록한 반려동물 정보와 프로필 사진은 해당 PetGrow 계정과 연결하여 저장될 수 있으며, 우리 아이, 성장정보, Pet사주, PetBTI, 오늘의 운세, 보호자 궁합 등 반려동물별 기능 제공에 이용될 수 있습니다." },
+  { title: "6. 반려동물 정보 및 프로필 사진", body: "이용자가 등록한 반려동물 정보와 프로필 사진은 해당 PetGrow 계정과 연결하여 저장될 수 있으며, 우리 아이, 성장정보, Pet사주, PetBTI 등 반려동물별 기능 제공에 이용될 수 있습니다." },
   { title: "7. 기존 기기 저장정보의 계정 이전", body: "카카오 간편로그인 도입 이전에 기기 또는 브라우저에 저장되어 있던 반려동물 정보가 있는 경우 이용자의 선택과 동의에 따라 로그인 계정으로 이전할 수 있습니다. 서버 저장이 정상 완료되기 전에 기존 데이터를 임의로 삭제하지 않도록 운영합니다." },
   { title: "8. 개인정보의 제3자 제공·처리위탁 및 국외 이전", body: "PetGrow는 이용자의 개인정보를 임의로 판매하지 않습니다. 제3자 제공, 처리위탁 또는 국외 이전이 발생하는 경우 실제 데이터 흐름, 제공자, 처리 목적, 항목, 보유기간 및 관련 법령상 고지·동의 필요 여부를 확인하여 본 방침에 반영합니다. 실제 사용하는 DB, Storage 및 호스팅 사업자는 최종 배포 구조에 맞추어 구체적으로 기재합니다.\n\n현재 PetGrow는 회원 데이터 저장을 위해 Vercel(호스팅 및 서버리스 인프라), Vercel Postgres(데이터베이스, Neon 기반), Vercel Blob(Pet톡 게시글 사진 저장)을 사용하고 있으며, 이 과정에서 이용자의 반려동물 정보 및 Pet톡 게시물 등이 해당 사업자의 서버(국외 소재 가능)에 저장·처리될 수 있습니다." },
   { title: "9. 외부 서비스", body: "PetGrow는 서비스 운영을 위해 카카오(간편로그인), Google AdMob(광고), 데이터베이스·파일 저장·호스팅 제공업체 등을 사용할 수 있습니다. Google은 간편로그인 제공자가 아니라 광고 등 실제 사용하는 서비스의 제공자로만 기재합니다. 외부 사업자가 자체적으로 처리하는 개인정보에는 해당 사업자의 개인정보처리방침이 적용될 수 있습니다." },
@@ -1771,19 +1765,19 @@ const PRIVACY_SECTIONS_KO = [
   { title: "13. 회원탈퇴 및 계정 삭제", body: "회원은 언제든지 PetGrow의 계정 또는 설정 메뉴에서 회원탈퇴를 요청할 수 있습니다. 탈퇴 완료 시 법령상 별도 보관 의무가 있는 경우를 제외하고 계정과 연결된 개인정보 및 서비스 데이터를 삭제합니다.\n\n계정 삭제 안내: https://www.petgrow.co.kr/delete-account" },
   { title: "14. 아동의 개인정보", body: "PetGrow는 아동의 개인정보를 의도적으로 수집하는 것을 목적으로 하지 않습니다. 향후 아동을 대상으로 하는 기능을 제공하거나 아동의 개인정보를 처리하게 되는 경우 관련 법령 및 앱 마켓 정책에서 요구하는 보호조치를 적용합니다." },
   { title: "15. 개인정보의 안전성 확보조치", body: "PetGrow는 인증정보 및 비밀키 보호, 사용자별 데이터 접근권한 제한, 불필요한 접근 최소화, 서비스 보안 점검 등 합리적으로 필요한 기술적·관리적 보호조치를 적용하도록 노력합니다." },
-  { title: "16. Pet톡(커뮤니티) 서비스와 개인정보", body: "PetGrow는 회원 간 반려동물 정보를 공유하는 커뮤니티 기능 'Pet톡'을 제공합니다. Pet톡 이용과 관련하여 다음 정보가 처리됩니다.\n- 게시글, 댓글, 좋아요 및 신고 내역\n- 게시글에 첨부한 사진(최대 5장)\n- 게시글·댓글에 표시되는 반려동물 정보(반려동물 이름, 품종, 생년월일 기반 나이, 프로필 사진)\n\n회원의 카카오 식별정보, 이메일 등 회원 개인정보는 다른 회원에게 공개되지 않으며, Pet톡에는 회원이 선택한 반려동물의 이름·품종·나이·프로필 사진만 표시됩니다. 게시글 작성자 본인 여부는 서버에서만 확인하며 다른 회원에게 노출되지 않습니다." },
+  { title: "16. Pet톡(커뮤니티) 서비스와 개인정보", body: "PetGrow는 회원 간 반려동물 정보를 공유하는 커뮤니티 기능 'Pet톡'을 제공합니다. Pet톡 이용과 관련하여 다음 정보가 처리됩니다.\n- 게시글, 댓글, 좋아요 및 신고 내역\n- 게시글에 첨부한 사진(최대 5장)\n- 게시글·댓글에 표시되는 반려동물 정보(반려동물 이름, 품종, 생년월일 기반 나이, 프로필 사진)\n\n회원의 카카오 식별정보, 이메일 등 회원 개인정보는 다른 회원에게 공개되지 않으며, Pet톡에는 회원이 선택한 반려동물의 이름·품종·나이·프로필 사진만 표시됩니다. 작성자는 게시글 상세 화면에서 게시글을 공개 또는 비공개로 전환할 수 있으며, 비공개 게시글은 작성자 본인에게만 제공됩니다. 게시글 작성자 본인 여부는 서버에서만 확인하며 다른 회원에게 노출되지 않습니다." },
   { title: "17. Pet톡 게시물의 보유기간 및 삭제", body: "Pet톡의 게시글·댓글·좋아요·신고 내역은 게시글/댓글이 삭제되거나 회원이 탈퇴할 때까지 보유됩니다. 회원은 본인이 작성한 게시글과 댓글을 언제든지 직접 삭제할 수 있습니다. 회원탈퇴 시 해당 회원이 작성한 모든 게시글·댓글·좋아요 기록은 즉시 삭제되며, 첨부된 사진 파일도 함께 삭제됩니다. 신고 내역은 신고한 회원이 탈퇴하는 경우 함께 삭제됩니다.\n\nPetGrow는 신고된 게시물에 대해 운영자가 확인 후 게시글·댓글을 숨기거나 삭제할 수 있습니다." },
   { title: "18. Pet톡 이미지 저장", body: "Pet톡에 첨부하는 사진은 Vercel Blob(파일 저장 서비스)에 저장되며, 데이터베이스에는 사진의 저장 위치(URL)만 저장됩니다. 업로드 시 허용된 이미지 형식(JPG/PNG/WebP) 및 용량 제한이 적용되며, 게시글이 삭제되면 저장된 사진 파일도 함께 삭제됩니다." },
   { title: "19. 개인정보 관련 문의", body: "서비스명: PetGrow\n문의 이메일: help.petgrow@gmail.com" },
-  { title: "20. 개인정보처리방침의 변경", body: "서비스 기능, 개인정보 처리 방식, 외부 서비스 또는 관련 법령·정책 변경에 따라 본 개인정보처리방침이 변경될 수 있습니다. 중요한 변경사항은 PetGrow 웹사이트 또는 애플리케이션을 통해 안내합니다.\n\n시행일: 카카오 간편로그인 기능이 실제 서비스에 적용되는 날" },
+  { title: "20. 개인정보처리방침의 변경", body: "서비스 기능, 개인정보 처리 방식, 외부 서비스 또는 관련 법령·정책 변경에 따라 본 개인정보처리방침이 변경될 수 있습니다. 중요한 변경사항은 PetGrow 웹사이트 또는 애플리케이션을 통해 안내합니다.\n\n최종 업데이트: 2026년 8월 15일\n시행일: 2026년 8월 15일" },
 ];
 const PRIVACY_SECTIONS_EN = [
   { title: "1. Purpose of Processing", body: "PetGrow may process personal information to the extent necessary for: member identification and account management via Kakao Login; keeping you logged in; storing and syncing pet information across devices; saving and re-viewing results such as PetBTI; customer support; improving service stability and quality; delivering ads and measuring ad performance; preventing fraud; and processing account deletion and related data removal." },
-  { title: "2. Categories of Personal Information Processed", body: "a. Kakao Login\n- The unique user identifier provided by Kakao\n- Nickname and profile image are only processed where actually consented to and used by the service\n- Additional info such as email is only requested with consent where actually needed\n\nb. Pet & service information\n- Pet name, species, breed, birth date, sex, current weight, and growth-related information\n- Pet profile photo\n- PetBTI results and test date\n- Saju, daily fortune, and guardian-compatibility results that need to be saved\n\nc. Information that may be processed automatically\n- IP address, device/OS/browser or app info\n- Access and usage logs, error/security logs\n- Advertising identifiers and ad interaction data\n\nPetGrow's principle is not to request phone number, gender, birthday, friend list, or other information not needed for the service." },
+  { title: "2. Categories of Personal Information Processed", body: "a. Kakao Login\n- The unique user identifier provided by Kakao\n- Nickname and profile image are only processed where actually consented to and used by the service\n- Additional info such as email is only requested with consent where actually needed\n\nb. Pet & service information\n- Pet name, species, breed, birth date, sex, current weight, and growth-related information\n- Pet profile photo\n- PetBTI results and test date\n- Saju and other service results that need to be saved\n\nc. Information that may be processed automatically\n- IP address, device/OS/browser or app info\n- Access and usage logs, error/security logs\n- Advertising identifiers and ad interaction data\n\nPetGrow's principle is not to request phone number, gender, birthday, friend list, or other information not needed for the service." },
   { title: "3. How Information Is Stored", body: "Information you register or create after logging in is not simply stored on 'this device' or 'this browser' — it is linked to your logged-in PetGrow account and may be stored/synced on our servers or cloud storage. Logging in with the same Kakao account lets you retrieve your saved information on other supported devices or the web. Data stored locally before Kakao Login was introduced may be migrated to your account with a separate process." },
   { title: "4. Retention Period", body: "Member accounts and connected personal information are generally retained until account deletion. Upon deletion, the account and related personal information are deleted except where retention is required by law. Information processed by external authentication, advertising, or hosting providers follows those providers' own policies and actual processing structure." },
   { title: "5. Kakao Login", body: "PetGrow may provide Kakao Login for convenience. During login, only the information you consent to on Kakao's consent screen is provided to PetGrow. It is processed for member identification, account creation/management, per-user data storage/sync, account deletion, and customer support." },
-  { title: "6. Pet Information and Profile Photos", body: "Pet information and profile photos you register may be stored linked to your PetGrow account, and used to provide pet-specific features such as My Pets, growth info, Saju, PetBTI, daily fortune, and guardian compatibility." },
+  { title: "6. Pet Information and Profile Photos", body: "Pet information and profile photos you register may be stored linked to your PetGrow account, and used to provide pet-specific features such as My Pets, growth info, Saju, and PetBTI." },
   { title: "7. Migrating Existing Device Data", body: "If pet information was stored on your device or browser before Kakao Login was introduced, it may be migrated to your logged-in account with your choice and consent. We do not arbitrarily delete existing data before the server-side save is confirmed successful." },
   { title: "8. Third-Party Provision, Outsourcing, and Overseas Transfer", body: "PetGrow does not arbitrarily sell your personal information. Where third-party provision, outsourcing, or overseas transfer occurs, we reflect the actual data flow, provider, purpose, items, retention period, and any notice/consent required by law in this policy. The actual DB, storage, and hosting providers used are specified according to the final deployment structure.\n\nPetGrow currently uses Vercel (hosting and serverless infrastructure), Vercel Postgres (database, powered by Neon), and Vercel Blob (storage for Pet Talk post photos) to store member data; in this process, pet information and Pet Talk posts etc. may be stored and processed on these providers' servers, which may be located overseas." },
   { title: "9. External Services", body: "PetGrow may use Kakao (login), Google AdMob (advertising), and database/storage/hosting providers to operate the service. Google is listed only as the provider of services actually used, such as advertising — not as a login provider. Personal information processed by external providers on their own may be subject to those providers' own privacy policies." },
@@ -1793,11 +1787,11 @@ const PRIVACY_SECTIONS_EN = [
   { title: "13. Account Withdrawal and Deletion", body: "You may request account withdrawal at any time from PetGrow's account/settings menu. Upon completion, personal information and service data linked to the account are deleted except where separate retention is legally required.\n\nAccount deletion info: https://www.petgrow.co.kr/delete-account" },
   { title: "14. Children's Personal Information", body: "PetGrow does not intend to intentionally collect children's personal information. If PetGrow offers features aimed at children or processes children's personal information in the future, it will apply the protective measures required by applicable law and app marketplace policy." },
   { title: "15. Security Measures", body: "PetGrow strives to apply reasonably necessary technical and managerial safeguards, including protecting authentication credentials and secret keys, limiting per-user data access, minimizing unnecessary access, and conducting security checks." },
-  { title: "16. Pet Talk (Community) and Personal Information", body: "PetGrow provides 'Pet Talk,' a community feature for sharing pet information between members. The following is processed in connection with Pet Talk:\n- Posts, comments, likes, and reports\n- Photos attached to posts (up to 5 per post)\n- Pet information shown on posts/comments (pet name, breed, age derived from birth date, profile photo)\n\nA member's Kakao identifier, email, and other personal information are never shown to other members. Only the name, breed, age, and profile photo of the pet the member chooses are shown on Pet Talk. Whether a member is the author of a post is checked only on the server and is never exposed to other members." },
+  { title: "16. Pet Talk (Community) and Personal Information", body: "PetGrow provides 'Pet Talk,' a community feature for sharing pet information between members. The following is processed in connection with Pet Talk:\n- Posts, comments, likes, and reports\n- Photos attached to posts (up to 5 per post)\n- Pet information shown on posts/comments (pet name, breed, age derived from birth date, profile photo)\n\nA member's Kakao identifier, email, and other personal information are never shown to other members. Only the name, breed, age, and profile photo of the pet the member chooses are shown on Pet Talk. Authors can switch their own post between public and private on the post detail screen; private posts are available only to the author. Whether a member is the author of a post is checked only on the server and is never exposed to other members." },
   { title: "17. Retention and Deletion of Pet Talk Content", body: "Posts, comments, likes, and reports on Pet Talk are retained until the post/comment is deleted or the member withdraws. Members can delete their own posts and comments at any time. Upon account withdrawal, all posts, comments, and likes by that member are deleted immediately, along with any attached photo files. Report records are deleted if the reporting member withdraws.\n\nPetGrow may hide or delete reported posts/comments after operator review." },
   { title: "18. Pet Talk Image Storage", body: "Photos attached to Pet Talk posts are stored in Vercel Blob (a file storage service); only the storage location (URL) is stored in the database. Uploads are restricted to allowed image formats (JPG/PNG/WebP) and a size limit, and stored photo files are deleted when a post is deleted." },
   { title: "19. Contact", body: "Service: PetGrow\nContact email: help.petgrow@gmail.com" },
-  { title: "20. Changes to This Policy", body: "This policy may change due to changes in service features, how personal information is processed, external services, or applicable laws/policies. Material changes will be announced via the PetGrow website or app.\n\nEffective date: the day Kakao Login is applied to the live service." },
+  { title: "20. Changes to This Policy", body: "This policy may change due to changes in service features, how personal information is processed, external services, or applicable laws/policies. Material changes will be announced via the PetGrow website or app.\n\nLast updated: August 15, 2026\nEffective date: August 15, 2026" },
 ];
 
 const TERMS_SECTIONS_KO = [
@@ -1807,25 +1801,25 @@ const TERMS_SECTIONS_KO = [
   { title: "제4조 (회원가입 및 이용계약)", body: "이용자가 카카오 간편로그인 등 PetGrow가 제공하는 인증 절차를 완료하고 필요한 약관 및 개인정보 관련 절차에 동의하면 이용계약이 성립할 수 있습니다." },
   { title: "제5조 (카카오 간편로그인)", body: "① PetGrow는 회원 편의를 위해 카카오의 외부 인증 서비스를 이용한 간편로그인을 제공할 수 있습니다.\n② 회원은 카카오 계정을 이용하여 PetGrow에 로그인할 수 있습니다.\n③ 카카오 서비스의 장애, 정책 변경 또는 이용자의 카카오 계정 상태에 따라 로그인이 일시적으로 제한될 수 있습니다.\n④ 카카오 인증 서비스 자체에 대해서는 카카오의 이용약관 및 개인정보처리방침이 적용될 수 있습니다." },
   { title: "제6조 (계정 및 로그인 상태 관리)", body: "회원은 자신의 카카오 계정을 안전하게 관리해야 합니다. PetGrow의 주요 기능은 로그인한 회원에게 제공될 수 있으며, 로그아웃 시 서버에 저장된 계정 데이터는 삭제되지 않습니다. 동일한 카카오 계정으로 다시 로그인하면 저장된 정보를 불러올 수 있습니다." },
-  { title: "제7조 (서비스 제공)", body: "PetGrow는 우리 아이 등록·관리, 성장 예상 및 성장정보, Pet사주, 오늘의 운세, 보호자와 궁합, PetBTI, Pet꿀팁, 정보가이드, 계정별 데이터 저장 및 기기 간 동기화 등의 서비스를 제공할 수 있습니다." },
+  { title: "제7조 (서비스 제공)", body: "PetGrow는 우리 아이 등록·관리, 성장 예상 및 성장정보, Pet사주, PetBTI, Pet꿀팁, 정보가이드, Pet톡 커뮤니티, MY(계정·활동 관리), 계정별 데이터 저장 및 기기 간 동기화 등의 서비스를 제공할 수 있습니다." },
   { title: "제8조 (데이터 저장 및 동기화)", body: "로그인 회원이 등록한 반려동물 정보와 일부 서비스 결과는 회원 계정에 연결하여 서버 또는 클라우드 저장소에 저장될 수 있습니다. 따라서 서비스 내에서 '이 기기에만 저장', '이 브라우저에만 저장'되는 것으로 안내하지 않습니다. 동일한 카카오 계정으로 로그인하면 지원되는 다른 기기 또는 웹 환경에서 저장된 정보를 불러올 수 있습니다. 다만 카카오 간편로그인 도입 이전의 기존 로컬 데이터는 별도의 이전 절차가 적용될 수 있습니다." },
   { title: "제9조 (이용자의 의무)", body: "이용자는 타인의 계정·정보 도용, 시스템의 정상 운영 방해, 취약점 악용, 불법적인 데이터 수집, PetGrow 또는 제3자의 권리 침해, 관계 법령 위반 등의 행위를 해서는 안 됩니다." },
   { title: "제10조 (서비스 이용 제한)", body: "이용자가 본 약관 또는 관계 법령을 위반하거나 서비스의 안정적인 운영을 방해하는 경우 PetGrow는 필요한 범위에서 서비스 이용을 제한하거나 이용계약을 해지할 수 있습니다." },
   { title: "제11조 (회원탈퇴 및 이용계약 해지)", body: "회원은 언제든지 서비스 내 회원탈퇴 기능을 통해 이용계약을 해지할 수 있습니다. 회원탈퇴가 완료되면 관계 법령에 따라 별도로 보관해야 하는 정보가 있는 경우를 제외하고 회원계정 및 계정과 연결된 개인정보와 저장정보를 삭제합니다." },
   { title: "제12조 (반려동물 관련 정보 및 계산 결과)", body: "PetGrow의 성장 예상, 체중 계산 및 기타 반려동물 관련 정보는 일반적인 자료와 이용자가 입력한 정보를 기반으로 제공되는 참고용 정보이며 실제 결과를 보장하지 않습니다." },
   { title: "제13조 (건강 관련 정보)", body: "PetGrow에서 제공하는 건강, 식단, 영양 및 관리 정보는 일반적인 참고정보이며 수의사의 진료, 진단 또는 처방을 대신하지 않습니다. 반려동물에게 이상 증상이나 응급상황이 있는 경우 수의사 또는 동물병원의 진료를 받아야 합니다." },
-  { title: "제14조 (Pet사주·PetBTI 등 재미 콘텐츠)", body: "Pet사주, 오늘의 운세, 보호자 궁합 및 PetBTI 등은 재미와 참고를 위한 콘텐츠이며 과학적 진단, 의학적 판단 또는 미래 결과를 보장하는 자료가 아닙니다." },
+  { title: "제14조 (Pet사주·PetBTI 등 재미 콘텐츠)", body: "Pet사주 및 PetBTI 등은 재미와 참고를 위한 콘텐츠이며 과학적 진단, 의학적 판단 또는 미래 결과를 보장하는 자료가 아닙니다." },
   { title: "제15조 (광고 및 외부 서비스)", body: "PetGrow는 서비스 운영을 위해 광고 및 카카오 인증, Google AdMob 등 외부 서비스를 이용할 수 있습니다. Google은 간편로그인 수단으로 제공하지 않으며, 실제 사용하는 광고 등 외부 서비스에 대해서만 해당 제공자의 이용약관 및 개인정보처리방침이 적용될 수 있습니다." },
   { title: "제16조 (개인정보 보호)", body: "회원의 개인정보 처리에 관한 사항은 PetGrow 개인정보처리방침에 따릅니다." },
   { title: "제17조 (지식재산권)", body: "PetGrow가 직접 제작한 로고, 디자인, 문구, 프로그램 및 콘텐츠에 대한 권리는 PetGrow 또는 정당한 권리자에게 귀속됩니다. 이용자는 권리자의 허락 없이 이를 영리 목적으로 복제·배포·판매 또는 변형해서는 안 됩니다." },
   { title: "제18조 (Pet톡 게시물의 작성 및 책임)", body: "① \"Pet톡\"이란 회원이 등록한 반려동물을 중심으로 사진과 글을 공유하는 PetGrow의 커뮤니티 기능을 말합니다.\n② 회원은 Pet톡에 게시글·댓글(이하 \"게시물\")을 작성할 때 자신이 등록한 반려동물 중 하나를 선택하여 함께 표시할 수 있습니다.\n③ 게시물의 내용에 대한 책임은 작성자 본인에게 있으며, 회원은 다음 각 호에 해당하는 게시물을 작성해서는 안 됩니다.\n1. 광고·홍보성 게시물\n2. 욕설·비방 등 타인을 모욕하거나 명예를 훼손하는 게시물\n3. 음란하거나 부적절한 콘텐츠\n4. 동물학대를 조장하거나 미화하는 콘텐츠\n5. 타인의 개인정보를 노출하는 게시물\n6. 허위 사실이나 반려동물에게 위험할 수 있는 정보를 사실인 것처럼 유포하는 게시물\n7. 동일하거나 유사한 내용을 반복적으로 게시(도배)하는 행위\n8. 그 밖에 관계 법령 또는 본 약관을 위반하는 게시물\n④ 건강·식단 카테고리에 게시되는 내용은 회원 개인의 경험이나 의견이며, PetGrow가 직접 작성하거나 검증한 전문 의료정보가 아닙니다. 반려동물의 건강 문제는 반드시 수의사와 상담해야 합니다." },
-  { title: "제19조 (게시물의 저작권 및 이용허락)", body: "① 회원이 Pet톡에 게시한 글과 사진의 저작권은 원칙적으로 해당 게시물을 작성한 회원 본인에게 귀속됩니다.\n② 회원은 게시물을 PetGrow 서비스 내에서 게시·전시·전송하는 데 필요한 범위에서 PetGrow에게 무상으로 이용을 허락한 것으로 봅니다. 이는 게시물의 저작권을 PetGrow에 양도하는 것이 아닙니다.\n③ PetGrow는 게시물을 서비스 운영 목적을 벗어나 회원의 동의 없이 상업적으로 이용하지 않습니다." },
+  { title: "제19조 (게시물의 저작권 및 이용허락)", body: "① 회원이 Pet톡에 게시한 글과 사진의 저작권은 원칙적으로 해당 게시물을 작성한 회원 본인에게 귀속됩니다.\n② 회원은 게시물을 PetGrow 서비스 내에서 게시·전시·전송하는 데 필요한 범위에서 PetGrow에게 무상으로 이용을 허락한 것으로 봅니다. 이는 게시물의 저작권을 PetGrow에 양도하는 것이 아닙니다.\n③ PetGrow는 게시물을 서비스 운영 목적을 벗어나 회원의 동의 없이 상업적으로 이용하지 않습니다.\n④ 회원은 자신이 작성한 Pet톡 게시글을 공개 또는 비공개로 전환할 수 있으며, 비공개 게시글은 작성자 본인에게만 표시됩니다." },
   { title: "제20조 (신고 및 게시물 관리)", body: "① 회원은 다른 회원의 게시물이 제18조 제3항 각 호에 해당한다고 판단되는 경우 서비스 내 신고 기능을 통해 신고할 수 있습니다.\n② 타인의 권리(저작권, 초상권, 개인정보 등)를 침해하는 게시물을 발견한 경우 help.petgrow@gmail.com으로 침해 사실을 구체적으로 알려 삭제 등 조치를 요청할 수 있습니다.\n③ PetGrow는 신고가 접수되거나 제18조 제3항을 위반한 것으로 확인되는 게시물에 대해 사전 통지 없이 게시물을 숨기거나 삭제할 수 있고, 반복적으로 위반하는 회원의 서비스 이용을 제한할 수 있습니다.\n④ 신고 내용 및 처리 이력은 서비스 운영 및 부정 이용 방지 목적으로 보관될 수 있습니다." },
   { title: "제21조 (회원탈퇴와 게시물)", body: "회원탈퇴 시 해당 회원이 Pet톡에 작성한 게시글·댓글·좋아요 기록 및 첨부 사진은 계정 삭제와 동시에 즉시 삭제되며, 삭제된 게시물은 복구할 수 없습니다. 다른 회원이 그 게시글에 남긴 댓글도 게시글과 함께 삭제됩니다." },
   { title: "제22조 (서비스 변경 및 종료)", body: "PetGrow는 서비스 개선이나 기술적·운영상 필요에 따라 서비스의 전부 또는 일부를 변경할 수 있습니다. 중요한 변경 또는 서비스 종료가 예정된 경우 가능한 범위에서 사전에 안내합니다." },
   { title: "제23조 (책임의 제한)", body: "천재지변, 통신장애, 카카오 인증 서비스 장애 또는 PetGrow가 합리적으로 통제하기 어려운 사유로 서비스 이용에 문제가 발생한 경우 관련 법령에서 허용하는 범위에서 책임이 제한될 수 있습니다. 본 조는 관련 법령상 PetGrow가 부담해야 하는 책임을 부당하게 배제하는 것으로 해석되지 않습니다." },
   { title: "제24조 (분쟁 해결 및 준거법)", body: "본 약관은 대한민국 법령을 준거법으로 합니다. PetGrow와 이용자 사이에 분쟁이 발생하는 경우 상호 원만한 해결을 위해 노력하며 관할법원은 관계 법령에서 정하는 바에 따릅니다." },
-  { title: "부칙", body: "본 약관은 카카오 간편로그인 기능이 실제 서비스에 적용되는 날부터 시행합니다." },
+  { title: "부칙", body: "본 약관은 2026년 8월 15일부터 시행합니다.\n최종 업데이트: 2026년 8월 15일" },
 ];
 const TERMS_SECTIONS_EN = [
   { title: "Article 1 (Purpose)", body: "These Terms set out the conditions of use for the website, mobile application, and related services provided by PetGrow, and the rights, obligations, and responsibilities of PetGrow and users." },
@@ -1834,25 +1828,25 @@ const TERMS_SECTIONS_EN = [
   { title: "Article 4 (Membership and Service Agreement)", body: "A service agreement may be formed once a user completes an authentication procedure provided by PetGrow (such as Kakao Login) and agrees to the required terms and personal-information procedures." },
   { title: "Article 5 (Kakao Login)", body: "① PetGrow may provide Kakao Login, using Kakao's external authentication service, for member convenience.\n② Members may log in to PetGrow using their Kakao account.\n③ Login may be temporarily limited due to Kakao service outages, policy changes, or the status of a user's Kakao account.\n④ Kakao's own Terms of Service and Privacy Policy may apply to the Kakao authentication service itself." },
   { title: "Article 6 (Account and Login Session Management)", body: "Members must securely manage their own Kakao account. PetGrow's core features may be provided to logged-in members, and account data stored on the server is not deleted upon logout. Logging in again with the same Kakao account lets you retrieve your saved information." },
-  { title: "Article 7 (Provision of Service)", body: "PetGrow may provide services including registering/managing pets, growth prediction and growth info, Saju, daily fortune, guardian compatibility, PetBTI, Pet Tips, the info guide, and per-account data storage and cross-device sync." },
+  { title: "Article 7 (Provision of Service)", body: "PetGrow may provide services including registering/managing pets, growth prediction and growth info, Saju, PetBTI, Pet Tips, the info guide, Pet Talk community, MY account/activity management, and per-account data storage and cross-device sync." },
   { title: "Article 8 (Data Storage and Sync)", body: "Pet information and certain service results registered by a logged-in member may be stored on our servers or cloud storage, linked to the member's account. Accordingly, the service does not describe data as being stored 'only on this device' or 'only in this browser.' Logging in with the same Kakao account lets you retrieve saved information on other supported devices or the web. Local data predating Kakao Login may be subject to a separate migration process." },
   { title: "Article 9 (User Obligations)", body: "Users must not impersonate or misuse another person's account or information, interfere with normal system operation, exploit vulnerabilities, unlawfully collect data, infringe the rights of PetGrow or third parties, or violate applicable law." },
   { title: "Article 10 (Restriction of Service Use)", body: "If a user violates these Terms or applicable law, or interferes with the stable operation of the service, PetGrow may restrict use of the service or terminate the service agreement to the necessary extent." },
   { title: "Article 11 (Withdrawal and Termination)", body: "Members may terminate the service agreement at any time via the in-service account withdrawal feature. Upon completion, the member account and connected personal information and stored data are deleted, except for information that must be separately retained under applicable law." },
   { title: "Article 12 (Pet-Related Information and Calculated Results)", body: "PetGrow's growth predictions, weight calculations, and other pet-related information are reference information based on general data and information entered by the user, and do not guarantee actual outcomes." },
   { title: "Article 13 (Health-Related Information)", body: "Health, diet, nutrition, and care information provided by PetGrow is general reference information and does not replace examination, diagnosis, or treatment by a veterinarian. If your pet shows abnormal symptoms or an emergency, please see a veterinarian or animal hospital." },
-  { title: "Article 14 (Saju, PetBTI, and Other Entertainment Content)", body: "Saju, daily fortune, guardian compatibility, and PetBTI are content for entertainment and reference purposes, and are not scientific diagnosis, medical judgment, or a guarantee of future outcomes." },
+  { title: "Article 14 (Saju, PetBTI, and Other Entertainment Content)", body: "Saju and PetBTI are content for entertainment and reference purposes, and are not scientific diagnosis, medical judgment, or a guarantee of future outcomes." },
   { title: "Article 15 (Advertising and External Services)", body: "PetGrow may use external services such as advertising, Kakao authentication, and Google AdMob to operate the service. Google is not provided as a login method; the terms and privacy policy of external providers apply only to services actually used, such as advertising." },
   { title: "Article 16 (Protection of Personal Information)", body: "Matters regarding processing of members' personal information follow the PetGrow Privacy Policy." },
   { title: "Article 17 (Intellectual Property)", body: "Rights to logos, designs, text, programs, and content created directly by PetGrow belong to PetGrow or its rightful owners. Users must not reproduce, distribute, sell, or modify these for commercial purposes without the rights holder's permission." },
   { title: "Article 18 (Posting and Responsibility on Pet Talk)", body: "① \"Pet Talk\" means PetGrow's community feature for sharing photos and posts centered on a member's registered pet.\n② When posting or commenting on Pet Talk (\"Content\"), members may select one of their registered pets to display alongside it.\n③ Members are responsible for their own Content and must not post Content that:\n1. Is advertising or promotional in nature\n2. Insults or defames others, including abusive language\n3. Is sexual or otherwise inappropriate\n4. Promotes or glorifies animal abuse\n5. Exposes another person's personal information\n6. Spreads false or potentially dangerous information as if it were fact\n7. Repeats the same or similar content excessively (spam)\n8. Otherwise violates applicable law or these Terms\n④ Content in the Health & Diet category reflects individual members' experience or opinions, not professional medical information written or verified by PetGrow. Always consult a veterinarian for your pet's health issues." },
-  { title: "Article 19 (Copyright and License to Content)", body: "① Copyright in text and photos a member posts on Pet Talk belongs, in principle, to that member.\n② By posting, a member grants PetGrow a free license to display, exhibit, and transmit the Content to the extent necessary to operate the service within PetGrow. This is not a transfer of copyright to PetGrow.\n③ PetGrow will not use Content commercially beyond the purpose of operating the service without the member's consent." },
+  { title: "Article 19 (Copyright and License to Content)", body: "① Copyright in text and photos a member posts on Pet Talk belongs, in principle, to that member.\n② By posting, a member grants PetGrow a free license to display, exhibit, and transmit the Content to the extent necessary to operate the service within PetGrow. This is not a transfer of copyright to PetGrow.\n③ PetGrow will not use Content commercially beyond the purpose of operating the service without the member's consent.\n④ Members may switch their own Pet Talk posts between public and private; private posts are shown only to the author." },
   { title: "Article 20 (Reports and Content Moderation)", body: "① Members may report another member's Content believed to violate Article 18(3) using the in-service report feature.\n② If you find Content that infringes your rights (copyright, likeness, personal information, etc.), you may contact help.petgrow@gmail.com with specifics to request removal or other action.\n③ PetGrow may hide or delete reported Content, or Content confirmed to violate Article 18(3), without prior notice, and may restrict the service access of members who repeatedly violate these Terms.\n④ Report content and handling history may be retained for service operation and fraud-prevention purposes." },
   { title: "Article 21 (Account Withdrawal and Content)", body: "Upon account withdrawal, that member's Pet Talk posts, comments, likes, and attached photos are deleted immediately along with the account, and cannot be recovered. Other members' comments on a deleted post are also deleted along with that post." },
   { title: "Article 22 (Changes to and Discontinuation of Service)", body: "PetGrow may change all or part of the service for improvement or operational/technical reasons. Where a material change or discontinuation is planned, PetGrow will provide advance notice where reasonably possible." },
   { title: "Article 23 (Limitation of Liability)", body: "Where an issue arises from force majeure, communication failure, a Kakao authentication service outage, or a cause PetGrow cannot reasonably control, PetGrow's liability may be limited to the extent permitted by applicable law. This article shall not be construed as unfairly excluding liability that PetGrow must bear under applicable law." },
   { title: "Article 24 (Dispute Resolution and Governing Law)", body: "These Terms are governed by the laws of the Republic of Korea. PetGrow and users will make good-faith efforts to resolve disputes amicably, and jurisdiction follows applicable law." },
-  { title: "Addendum", body: "These Terms take effect on the day Kakao Login is applied to the live service." },
+  { title: "Addendum", body: "These Terms take effect on August 15, 2026.\nLast updated: August 15, 2026." },
 ];
 
 function LegalContent({ title, intro, sections, contactExtra }) {
@@ -2015,7 +2009,7 @@ function HamburgerMenu({ open, onClose, view, onNavigate, onOpenAccount, account
             </button>
           ))}
           <div className="ham-divider" />
-          <button type="button" className="ham-nav-item" onClick={() => { onOpenAccount(); onClose(); }}>
+          <button type="button" className={`ham-nav-item ${view === "my" ? "active" : ""}`} onClick={() => { onNavigate("my"); onClose(); }}>
             <UserIcon style={{ width: 18, height: 18 }} /> {t.hamNavMy}
           </button>
           <button type="button" className="ham-nav-item" onClick={() => { onOpenAccount(); onClose(); }}>
@@ -3963,163 +3957,163 @@ function parseTipsCsv(csvText) {
 }
 
 const TIPS_DATA = [
-  { id: "t1", species: "dog", category: "walk", featured: true,
+  { id: "t1", category: "dog", featured: true,
     title: { ko: "강아지 산책, 얼마나 해야 할까?", en: "How much should I walk my dog?" },
     summary: { ko: "견종과 체구에 따라 다르지만, 소형견은 하루 20~30분, 활동량 많은 중대형견은 하루 1시간 이상이 참고 기준이에요.", en: "It varies by breed and size, but small dogs generally do well with 20-30 minutes a day, while active medium-large breeds often need an hour or more." },
     body: { ko: "너무 어린 강아지(성장판이 닫히기 전)는 무리한 장거리 산책보다 짧고 자주 나가는 게 관절에 더 좋아요. 더운 날엔 아스팔트 온도를 손등으로 먼저 확인해보는 것도 좋아요.", en: "Very young puppies (before growth plates close) do better with short, frequent walks rather than long ones. On hot days, check the pavement temperature with the back of your hand before heading out." } },
-  { id: "t2", species: "cat", category: "hygiene", featured: true,
+  { id: "t2", category: "cat", featured: true,
     title: { ko: "고양이 화장실 관리 팁", en: "Litter box care tips" },
     summary: { ko: "깨끗한 화장실이 고양이 스트레스를 크게 줄여줘요. 고양이 수 + 1개의 화장실 개수를 참고해보세요.", en: "A clean litter box goes a long way in reducing stress. A common rule of thumb is one box per cat, plus one extra." },
     body: { ko: "모래는 하루 1~2회 배변만 치워주고, 전체 교체는 1~2주에 한 번이 일반적이에요. 화장실 위치를 자주 바꾸면 스트레스를 받을 수 있어요.", en: "Scoop solids once or twice a day, and do a full litter change roughly every 1-2 weeks. Moving the box around often can stress your cat out." } },
-  { id: "t3", species: "both", category: "health", featured: true,
+  { id: "t3", category: "health", featured: true,
     title: { ko: "여름철 반려동물 건강 관리", en: "Keeping pets healthy in summer" },
     summary: { ko: "더운 날엔 우리 아이도 열사병 위험이 있어요. 그늘·물·서늘한 실내 환경을 꼭 챙겨주세요.", en: "Pets are at risk of heatstroke on hot days too — always make sure they have shade, water, and a cool indoor space." },
     body: { ko: "헐떡임이 평소보다 심하거나 잇몸이 붉어지면 즉시 시원한 곳으로 옮기고 병원에 문의하세요. 차 안에 혼자 두는 건 아주 짧은 시간이라도 위험해요.", en: "If panting seems unusually heavy or the gums look red, move your pet somewhere cool right away and contact a vet. Never leave a pet alone in a car, even briefly." } },
-  { id: "t4", species: "dog", category: "behavior", featured: false,
+  { id: "t4", category: "dog", featured: false,
     title: { ko: "강아지가 꼬리를 흔드는 진짜 이유는?", en: "What tail wagging really means" },
     summary: { ko: "꼬리를 흔든다고 항상 반가운 건 아니에요. 흔드는 속도와 높이에 따라 감정이 달라요.", en: "A wagging tail doesn't always mean happiness — the speed and height can signal very different emotions." },
     body: { ko: "낮고 느린 꼬리 흔들기는 불안이나 경계일 수 있고, 높고 빠른 흔들기는 흥분·기쁨에 가까워요. 몸 전체 언어를 함께 보는 게 정확해요.", en: "A low, slow wag can signal anxiety or caution, while a high, fast wag is closer to excitement or joy. Reading the whole body helps you interpret it accurately." } },
-  { id: "t5", species: "cat", category: "behavior", featured: false,
+  { id: "t5", category: "cat", featured: false,
     title: { ko: "고양이가 골골거리는 이유", en: "Why cats purr" },
     summary: { ko: "기분 좋을 때뿐 아니라 아프거나 스트레스 받을 때도 골골거릴 수 있어요.", en: "Cats don't only purr when content — they may also purr when in pain or stressed." },
     body: { ko: "골골송은 자가 진정 효과가 있다는 연구도 있어요. 평소와 다르게 골골거림이 잦아지고 식욕이 줄었다면 건강 체크가 필요해요.", en: "Some research suggests purring may have a self-soothing effect. If purring becomes unusually frequent alongside reduced appetite, it's worth a health check." } },
-  { id: "t6", species: "both", category: "hygiene", featured: false,
+  { id: "t6", category: "health", featured: false,
     title: { ko: "양치, 얼마나 자주 해줘야 할까?", en: "How often should I brush my pet's teeth?" },
     summary: { ko: "이상적으로는 매일이지만, 주 2~3회만 꾸준히 해도 치석 예방에 큰 도움이 돼요.", en: "Daily is ideal, but even 2-3 times a week consistently makes a big difference in preventing tartar." },
     body: { ko: "반려동물용 치약을 사용하고, 사람용 치약은 절대 쓰지 마세요. 처음엔 손가락 칫솔로 천천히 적응시켜주는 게 좋아요.", en: "Use pet-specific toothpaste and never human toothpaste. Starting with a finger brush to help them get used to it slowly works well." } },
-  { id: "t7", species: "both", category: "hygiene", featured: false,
+  { id: "t7", category: "life", featured: false,
     title: { ko: "장마철 산책 후 발 관리", en: "Paw care after rainy-season walks" },
     summary: { ko: "젖은 발을 그대로 두면 습진이 생기기 쉬워요. 산책 후엔 발가락 사이까지 꼼꼼히 말려주세요.", en: "Leaving paws wet can lead to skin irritation. Dry thoroughly between the toes after every walk." },
     body: { ko: "마른 수건으로 먼저 물기를 제거하고, 발가락 사이 냄새나 붉어짐이 있는지 확인하는 습관을 들이면 좋아요.", en: "Pat dry with a towel first, and get in the habit of checking between the toes for odor or redness." } },
-  { id: "t8", species: "both", category: "beginner", featured: false,
+  { id: "t8", category: "life", featured: false,
     title: { ko: "이사 후 반려동물 적응시키기", en: "Helping your pet adjust after moving" },
     summary: { ko: "새 공간에 대한 불안은 자연스러운 반응이에요. 익숙한 담요·장난감을 먼저 놓아주세요.", en: "Anxiety about a new space is completely normal. Set out familiar blankets and toys first." },
     body: { ko: "며칠간은 방 하나만 먼저 개방하고 점차 넓혀가는 게 좋고, 사료·화장실 위치는 최대한 빨리 고정해주는 게 안정에 도움이 돼요.", en: "Opening up just one room at first and gradually expanding helps, and settling on a fixed spot for food and litter/potty as soon as possible aids adjustment." } },
-  { id: "t9", species: "dog", category: "diet", featured: false,
+  { id: "t9", category: "dog", featured: false,
     title: { ko: "초코릿, 왜 강아지에게 위험할까?", en: "Why chocolate is dangerous for dogs" },
     summary: { ko: "테오브로민 성분을 강아지는 잘 분해하지 못해서 소량도 위험할 수 있어요.", en: "Dogs can't metabolize theobromine well, so even a small amount can be dangerous." },
     body: { ko: "다크초콜릿일수록 더 위험해요. 섭취를 의심되면 양과 시간을 기록해두고 바로 동물병원에 연락하세요.", en: "Darker chocolate is more dangerous. If ingestion is suspected, note the amount and time, and contact a vet immediately." } },
-  { id: "t10", species: "cat", category: "behavior", featured: false,
+  { id: "t10", category: "cat", featured: false,
     title: { ko: "고양이 스크래처, 왜 필요할까?", en: "Why cats need a scratching post" },
     summary: { ko: "발톱 관리뿐 아니라 스트레스 해소와 영역 표시 본능이기도 해요.", en: "It's not just for claw maintenance — it's also a way to relieve stress and mark territory." },
     body: { ko: "가구를 긁는다면 혼내기보다 스크래처 위치를 잘 보이는 동선에 놓아주는 게 훨씬 효과적이에요.", en: "If they're scratching furniture, placing a scratching post along a visible, frequently-used path works far better than scolding." } },
-  { id: "t11", species: "both", category: "health", featured: false,
+  { id: "t11", category: "health", featured: false,
     title: { ko: "겨울철 관절 관리, 이렇게 도와주세요", en: "Supporting joints through winter" },
     summary: { ko: "추운 날씨는 관절 통증을 더 심하게 느끼게 할 수 있어요. 산책 전 가벼운 스트레칭이 도움이 돼요.", en: "Cold weather can make joint pain feel worse. A light warm-up before walks can help." },
     body: { ko: "미끄러운 바닥엔 매트를 깔아주고, 노령 반려동물은 산책 시간을 짧게 여러 번 나누는 게 좋아요.", en: "Add mats to slippery floors, and for senior pets, splitting walks into shorter, more frequent sessions helps." } },
-  { id: "t12", species: "both", category: "beginner", featured: false,
+  { id: "t12", category: "life", featured: false,
     title: { ko: "새 식구 소개, 천천히가 정답이에요", en: "Introducing a new pet — slow and steady wins" },
     summary: { ko: "기존 아이와 새 아이를 처음부터 한 공간에 두면 스트레스가 커질 수 있어요.", en: "Putting a resident pet and a newcomer together right away can cause a lot of stress." },
     body: { ko: "냄새 교환부터 시작해서 짧은 시간 함께 있어보는 식으로 점진적으로 늘려가는 게 안전해요.", en: "Start with scent-swapping, then gradually increase short supervised time together." } },
-  { id: "t13", species: "dog", category: "behavior", featured: false,
+  { id: "t13", category: "dog", featured: false,
     title: { ko: "강아지 사회화, 언제가 적기일까?", en: "The best window for puppy socialization" },
     summary: { ko: "생후 3~14주가 사회화에 특히 중요한 시기로 알려져 있어요.", en: "Weeks 3-14 are considered an especially important window for socialization." },
     body: { ko: "접종이 다 끝나지 않았어도 안는 상태로 다양한 소리·사람을 접하게 해주는 것부터 시작할 수 있어요.", en: "Even before vaccinations are complete, you can start by carrying them to safely expose them to different sounds and people." } },
-  { id: "t14", species: "cat", category: "diet", featured: false,
+  { id: "t14", category: "cat", featured: false,
     title: { ko: "고양이 물그릇, 이렇게 두면 더 잘 마셔요", en: "Placing water bowls cats actually use" },
     summary: { ko: "밥그릇과 물그릇을 붙여두면 오히려 안 마시는 고양이도 있어요.", en: "Some cats drink less when the water bowl sits right next to the food bowl." },
     body: { ko: "밥자리와 떨어진 조용한 곳에 물그릇을 여러 개 두면 음수량이 늘어나는 경우가 많아요.", en: "Placing several water bowls in quiet spots away from the food area often increases water intake." } },
-  { id: "t15", species: "dog", category: "behavior", featured: false,
+  { id: "t15", category: "dog", featured: false,
     title: { ko: "강아지 짖음, 무작정 혼내지 마세요", en: "Don't just scold a barking dog" },
     summary: { ko: "짖는 이유(불안·심심함·경계)를 먼저 파악하는 게 우선이에요.", en: "Figuring out why they're barking — anxiety, boredom, alertness — comes first." },
     body: { ko: "원인에 맞는 해결이 훨씬 효과적이에요. 불안 때문이라면 혼내는 게 오히려 불안을 키울 수 있어요.", en: "Matching the solution to the cause works far better — scolding an anxious dog can actually make the anxiety worse." } },
-  { id: "t16", species: "dog", category: "behavior", featured: false,
+  { id: "t16", category: "dog", featured: false,
     title: { ko: "강아지가 눈을 맞추는 건 신뢰의 표현", en: "Eye contact is a sign of trust" },
     summary: { ko: "강아지가 보호자와 눈을 맞추는 건 애정과 신뢰의 표현이에요.", en: "When a dog holds eye contact with you, it's a sign of affection and trust." },
     body: { ko: "낯선 개끼리는 눈맞춤이 위협으로 받아들여질 수 있지만, 보호자와의 눈맞춤은 옥시토신 분비를 늘린다는 연구도 있어요.", en: "Between unfamiliar dogs, eye contact can read as a threat — but eye contact with their own person has even been linked to a rise in oxytocin." } },
-  { id: "t17", species: "dog", category: "hygiene", featured: false,
+  { id: "t17", category: "dog", featured: false,
     title: { ko: "강아지 발톱, 얼마나 자주 깎아야 할까?", en: "How often to trim a dog's nails" },
     summary: { ko: "보통 3~4주에 한 번이 적당해요. 바닥에 딱딱 소리가 나면 깎을 때예요.", en: "Every 3-4 weeks is typical — if you hear clicking on hard floors, it's time." },
     body: { ko: "너무 짧게 자르면 혈관을 다칠 수 있어 조금씩 자주 다듬는 게 안전해요. 무서워하면 발만 만지는 연습부터 천천히 해보세요.", en: "Cutting too short can nick the quick, so small, frequent trims are safer. If they're nervous, start by just handling their paws to build comfort." } },
-  { id: "t18", species: "dog", category: "behavior", featured: false,
+  { id: "t18", category: "dog", featured: false,
     title: { ko: "강아지 배변 훈련, 이렇게 시작해보세요", en: "Getting started with potty training" },
     summary: { ko: "일정한 시간에 데리고 나가고, 성공했을 때 바로 칭찬해주는 게 핵심이에요.", en: "Taking them out at consistent times and praising success immediately is key." },
     body: { ko: "식사 후, 낮잠 후, 놀이 후는 배변 확률이 높은 타이밍이에요. 실수했을 때 혼내기보다 치우고 넘어가는 게 학습에 더 도움이 돼요.", en: "After meals, naps, or play are high-probability moments. When accidents happen, cleaning up calmly helps learning more than scolding does." } },
-  { id: "t19", species: "dog", category: "walk", featured: false,
+  { id: "t19", category: "dog", featured: false,
     title: { ko: "강아지와 자동차 이동, 이것만은 챙기세요", en: "Car safety essentials for dogs" },
     summary: { ko: "전용 카시트나 안전벨트를 사용하고, 창문을 너무 많이 열어두지 마세요.", en: "Use a pet seatbelt or carrier, and avoid opening windows too wide." },
     body: { ko: "머리를 창밖으로 내미는 건 눈·귀 부상 위험이 있어요. 멀미가 있다면 이동 전 공복 상태로 태우는 게 도움이 될 수 있어요.", en: "Letting them stick their head out risks eye and ear injury. If they get carsick, traveling on a lighter stomach can help." } },
-  { id: "t20", species: "dog", category: "walk", featured: false,
+  { id: "t20", category: "dog", featured: false,
     title: { ko: "산책 중 리드줄 매너, 왜 중요할까?", en: "Why leash manners matter on walks" },
     summary: { ko: "리드줄을 짧게 잡는 연습은 다른 사람·동물과의 안전한 산책을 위해 꼭 필요해요.", en: "Practicing a shorter, controlled leash helps keep walks safe around other people and animals." },
     body: { ko: "당기는 힘에 끌려다니기보다, 옆에서 걷는 연습을 짧은 구간부터 반복해보세요. 간식으로 옆자리를 보상해주면 훨씬 빨리 배워요.", en: "Rather than being pulled along, practice short stretches of walking beside you. Rewarding the position with treats speeds up learning a lot." } },
-  { id: "t21", species: "cat", category: "behavior", featured: false,
+  { id: "t21", category: "cat", featured: false,
     title: { ko: "고양이가 긁는 건 나쁜 버릇이 아니에요", en: "Scratching isn't bad behavior" },
     summary: { ko: "발톱 관리뿐 아니라 영역 표시, 스트레스 해소 목적도 있어요.", en: "Scratching serves nail care, territory marking, and stress relief all at once." },
     body: { ko: "가구를 긁는다면 혼내기보다 그 옆에 스크래처를 놔주는 게 훨씬 효과적이에요. 재질(골판지·마)을 여러 개 시도해보세요.", en: "If they're scratching furniture, placing a scratcher right next to it works better than scolding. Try a few materials — cardboard, sisal — to see what they prefer." } },
-  { id: "t22", species: "cat", category: "hygiene", featured: false,
+  { id: "t22", category: "cat", featured: false,
     title: { ko: "고양이 헤어볼, 빗질이 제일 쉬운 예방법", en: "Brushing is the easiest hairball prevention" },
     summary: { ko: "정기적인 빗질이 헤어볼을 줄이는 가장 간단한 방법이에요.", en: "Regular brushing is the simplest way to cut down on hairballs." },
     body: { ko: "장모종은 주 3~4회, 단모종도 주 1~2회 정도 빗겨주면 삼키는 털의 양이 크게 줄어요.", en: "Long-haired cats benefit from brushing 3-4 times a week, and short-haired cats once or twice — it noticeably reduces how much fur they swallow." } },
-  { id: "t23", species: "cat", category: "behavior", featured: false,
+  { id: "t23", category: "cat", featured: false,
     title: { ko: "고양이가 상자를 좋아하는 이유", en: "Why cats love boxes so much" },
     summary: { ko: "좁은 공간이 안정감을 주기 때문이에요. 스트레스 해소에도 도움이 돼요.", en: "Tight spaces feel safe to them, and can even help relieve stress." },
     body: { ko: "새로운 환경에 적응할 때 상자 하나만 놔줘도 훨씬 빨리 안정을 찾는 경우가 많아요.", en: "Just placing a box in a new environment often helps a cat settle in much faster." } },
-  { id: "t24", species: "cat", category: "behavior", featured: false,
+  { id: "t24", category: "cat", featured: false,
     title: { ko: "고양이 발톱 vs 가구, 평화롭게 공존하기", en: "Keeping claws and furniture at peace" },
     summary: { ko: "전용 스크래처를 가구 옆에 놔두면 자연스럽게 유도할 수 있어요.", en: "Placing a scratcher right beside furniture naturally redirects the habit." },
     body: { ko: "스크래처에 캣닢을 살짝 묻혀두면 관심을 끌기 더 쉬워요. 가구 커버는 임시방편일 뿐, 대체 공간을 만들어주는 게 근본적인 해결이에요.", en: "A little catnip on the scratcher helps grab their interest. Furniture covers are just a stopgap — giving them a real alternative is the lasting fix." } },
-  { id: "t25", species: "cat", category: "diet", featured: false,
+  { id: "t25", category: "cat", featured: false,
     title: { ko: "고양이 음수량 늘리는 법", en: "Getting your cat to drink more water" },
     summary: { ko: "정수기형 급수기를 써보면 물 섭취량이 늘어나는 경우가 많아요.", en: "A pet water fountain often increases how much a cat drinks." },
     body: { ko: "고양이는 본능적으로 흐르는 물을 더 신선하다고 느껴요. 습식 사료를 섞어주는 것도 수분 섭취에 도움이 돼요.", en: "Cats instinctively perceive moving water as fresher. Mixing in some wet food also helps boost hydration." } },
-  { id: "t26", species: "cat", category: "behavior", featured: false,
+  { id: "t26", category: "cat", featured: false,
     title: { ko: "고양이도 사회화가 필요해요", en: "Cats need socialization too" },
     summary: { ko: "강아지만큼 알려져있진 않지만, 고양이도 어릴 때 사회화가 중요해요.", en: "It's less talked about than with dogs, but early socialization matters for cats too." },
     body: { ko: "생후 2~7주가 특히 중요한 시기로 알려져 있어요. 다만 강아지보다 새로운 자극에는 더 천천히 적응시켜주는 게 좋아요.", en: "Weeks 2-7 are considered especially important. Compared to dogs, cats generally do better adjusting to new stimuli more gradually." } },
-  { id: "t27", species: "both", category: "vaccine", featured: false,
+  { id: "t27", category: "health", featured: false,
     title: { ko: "예방접종 스케줄을 놓쳤다면?", en: "Missed a vaccine appointment?" },
     summary: { ko: "너무 늦지 않았다면 처음부터 다시 할 필요 없이 이어서 진행할 수 있는 경우가 많아요.", en: "In many cases you can simply continue the schedule rather than starting over, if it hasn't been too long." },
     body: { ko: "정확한 판단은 병원마다 다를 수 있으니, 놓친 기간과 함께 수의사와 상담하는 게 가장 확실해요.", en: "The exact call can vary by clinic, so it's best to check with your vet and mention how much time has passed." } },
-  { id: "t28", species: "both", category: "diet", featured: false,
+  { id: "t28", category: "health", featured: false,
     title: { ko: "우리 아이 비만, 집에서 체크하는 법", en: "Checking for overweight at home" },
     summary: { ko: "위에서 봤을 때 허리 라인이 살짝 들어가 있는지 확인해보세요.", en: "Looking from above, check whether there's a slight waist tuck behind the ribs." },
     body: { ko: "갈비뼈가 만져지지 않을 정도로 지방이 있다면 체중 관리가 필요한 신호예요. 급격한 다이어트보다는 서서히 조절하는 게 안전해요.", en: "If the ribs are hard to feel under a layer of fat, it may be time for weight management. Gradual adjustment is safer than a sudden diet change." } },
-  { id: "t29", species: "both", category: "vaccine", featured: false,
+  { id: "t29", category: "health", featured: false,
     title: { ko: "심장사상충 예방, 매달 챙겨야 하는 이유", en: "Why heartworm prevention is monthly" },
     summary: { ko: "정기적인 예방이 치료보다 훨씬 안전하고 비용 부담도 적어요.", en: "Regular prevention is far safer and less costly than treatment after the fact." },
     body: { ko: "모기가 매개체라 실내에서만 지내도 완전히 안심할 수는 없어요. 계절과 상관없이 꾸준히 챙겨주는 게 좋아요.", en: "Since mosquitoes are the carrier, even indoor pets aren't fully risk-free. Year-round prevention is generally recommended." } },
-  { id: "t30", species: "both", category: "health", featured: false,
+  { id: "t30", category: "health", featured: false,
     title: { ko: "반려동물 구토, 병원에 가야 하는 신호", en: "When vomiting means a vet visit" },
     summary: { ko: "한 번의 구토는 크게 걱정 안 해도 되지만, 반복되거나 무기력함이 동반되면 병원에 문의하세요.", en: "A single episode usually isn't alarming, but repeated vomiting with lethargy warrants a call to the vet." },
     body: { ko: "구토물에 피가 섞이거나 색이 이상하다면 바로 병원을 찾는 게 좋아요. 24시간 이상 아무것도 못 먹는다면 지체하지 마세요.", en: "Blood or unusual coloring in vomit calls for an immediate visit. Don't wait if they can't keep anything down for over 24 hours." } },
-  { id: "t31", species: "both", category: "health", featured: false,
+  { id: "t31", category: "health", featured: false,
     title: { ko: "노령 반려동물, 건강검진은 얼마나 자주?", en: "Checkup frequency for senior pets" },
     summary: { ko: "7세 이상부터는 6개월에 한 번 정도 정기검진을 권장해요.", en: "From around age 7, a checkup roughly every 6 months is often recommended." },
     body: { ko: "노령기엔 증상이 없어도 혈액검사로 미리 발견되는 문제들이 많아요. 작은 변화(음수량, 활동량)도 기록해두면 진료에 도움이 돼요.", en: "In senior pets, bloodwork often catches issues before symptoms appear. Noting small changes in water intake or activity level helps at checkups too." } },
-  { id: "t32", species: "both", category: "behavior", featured: false,
+  { id: "t32", category: "health", featured: false,
     title: { ko: "반려동물 스트레스 신호, 놓치기 쉬운 것들", en: "Easy-to-miss signs of stress" },
     summary: { ko: "과도한 그루밍, 식욕 변화, 숨는 행동이 대표적인 신호예요.", en: "Excessive grooming, appetite changes, and hiding are common signals." },
     body: { ko: "환경 변화(이사, 새 가족, 새 반려동물) 직후엔 특히 눈여겨봐주세요. 며칠 이상 지속되면 병원 상담도 고려해보세요.", en: "Pay extra attention right after changes like moving, a new family member, or a new pet. If it lasts more than a few days, a vet visit is worth considering." } },
-  { id: "t33", species: "both", category: "health", featured: false,
+  { id: "t33", category: "health", featured: false,
     title: { ko: "중성화 수술, 시기가 궁금하다면", en: "Timing questions around spay/neuter" },
     summary: { ko: "보통 생후 6개월 전후를 권장하지만, 정확한 시기는 병원과 상담하는 게 가장 정확해요.", en: "Around 6 months is a common guideline, but your vet can give the most accurate timing." },
     body: { ko: "견종·체구·건강 상태에 따라 권장 시기가 달라질 수 있어요. 수술 전후 관리 방법도 함께 안내받는 게 좋아요.", en: "Recommended timing can vary by breed, size, and health. It's also worth asking about pre- and post-surgery care at the same time." } },
-  { id: "t34", species: "both", category: "beginner", featured: false,
+  { id: "t34", category: "life", featured: false,
     title: { ko: "이사할 때 반려동물 스트레스 줄이는 법", en: "Easing moving-day stress for pets" },
     summary: { ko: "익숙한 담요나 장난감을 함께 옮겨주면 새 공간 적응에 도움이 돼요.", en: "Bringing along a familiar blanket or toy helps them settle into the new space." },
     body: { ko: "이사 당일은 방 하나를 미리 정리해서 그 안에서 안정을 찾게 해주는 것도 좋은 방법이에요.", en: "On moving day, setting up one quiet room in advance for them to settle into can help a lot." } },
-  { id: "t35", species: "both", category: "walk", featured: false,
+  { id: "t35", category: "life", featured: false,
     title: { ko: "반려동물과 캠핑 갈 때 챙길 것들", en: "Camping checklist for pets" },
     summary: { ko: "리드줄, 물, 평소 먹던 사료, 배변봉투는 꼭 챙기세요.", en: "Leash, water, their regular food, and waste bags are must-haves." },
     body: { ko: "새로운 사료를 갑자기 주면 배탈이 날 수 있어 평소 먹던 걸 챙기는 게 안전해요. 밤에는 온도 변화에 대비한 담요도 유용해요.", en: "Switching food suddenly can upset their stomach, so their usual food is the safer choice. A blanket for cooler nights is handy too." } },
-  { id: "t36", species: "both", category: "beginner", featured: false,
+  { id: "t36", category: "life", featured: false,
     title: { ko: "인식표, 별거 아닌 것 같아도 꼭 필요해요", en: "Small ID tag, big peace of mind" },
     summary: { ko: "혹시 모를 미아 상황에 대비해 연락처가 적힌 인식표를 꼭 채워주세요.", en: "An ID tag with your contact info matters in case they ever get lost." },
     body: { ko: "내장형 마이크로칩과 함께 있으면 더 안전해요. 목걸이만으로는 벗겨질 수 있어 두 가지를 함께 준비하는 게 좋아요.", en: "Pairing it with a microchip adds an extra layer of safety, since collars can slip off — having both is the safer bet." } },
-  { id: "t37", species: "both", category: "walk", featured: false,
+  { id: "t37", category: "life", featured: false,
     title: { ko: "반려동물과 안전하게 겨울나기", en: "Getting through winter safely together" },
     summary: { ko: "산책 후 발바닥에 남은 제설제를 바로 닦아주는 게 좋아요.", en: "Wipe their paws right after walks to remove any de-icing salt." },
     body: { ko: "제설제는 발바닥 자극뿐 아니라 핥았을 때 배탈을 일으킬 수도 있어요. 발바닥용 보습제를 발라주는 것도 도움이 돼요.", en: "De-icing chemicals can irritate paws and cause stomach upset if licked. A paw balm can help protect against the cold too." } },
-  { id: "t38", species: "both", category: "hygiene", featured: false,
+  { id: "t38", category: "life", featured: false,
     title: { ko: "털갈이 시기, 빗질 횟수 늘려주세요", en: "Brush more during shedding season" },
     summary: { ko: "봄가을 털갈이 시기엔 평소보다 빗질 횟수를 늘려주는 게 좋아요.", en: "During spring and fall shedding, brushing more often than usual helps a lot." },
     body: { ko: "털을 미리 정리해주면 집안 청소도 수월해지고, 피부 트러블 예방에도 도움이 돼요.", en: "Regular brushing means less fur around the house, and it also helps prevent skin irritation." } },
-  { id: "t39", species: "both", category: "beginner", featured: false,
+  { id: "t39", category: "life", featured: false,
     title: { ko: "반려동물 혼자 두고 외출할 때 체크리스트", en: "Checklist before leaving them home alone" },
     summary: { ko: "너무 오랜 시간 혼자 두지 않도록 하고, 안전한 환경을 미리 점검해주세요.", en: "Avoid leaving them alone too long, and double-check the space is safe beforehand." },
     body: { ko: "삼킬 수 있는 작은 물건이나 전선은 미리 치워주세요. 물과 사료는 넉넉히, 실내 온도도 미리 확인하는 게 좋아요.", en: "Put away small swallowable items and loose cables. Leave plenty of water and food, and check the indoor temperature in advance." } },
-  { id: "t40", species: "both", category: "beginner", featured: false,
+  { id: "t40", category: "life", featured: false,
     title: { ko: "매일 짧게라도, 온전히 함께하는 시간", en: "A few focused minutes together, every day" },
     summary: { ko: "짧더라도 매일 온전히 집중해주는 시간이 유대감 형성에 큰 도움이 돼요.", en: "Even a short daily block of undivided attention does a lot for your bond." },
     body: { ko: "스킨십, 눈맞춤, 짧은 놀이만으로도 충분해요. 휴대폰을 잠깐 내려두는 것만으로도 아이는 그 차이를 느껴요.", en: "A little petting, eye contact, or brief play is enough. Just putting the phone down for a few minutes makes a difference they can feel." } },
@@ -4129,12 +4123,11 @@ function TipCard({ tip, lang, bookmarked, onToggleBookmark }) {
   const t = useT();
   const [open, setOpen] = useState(false);
   const categoryLabel = t.tipCategoryLabels[tip.category];
-  const speciesIcon = tip.species === "dog" ? "🐶" : tip.species === "cat" ? "🐱" : "🐾";
   return (
     <div className="bg-surface-card" style={{ padding: "16px 18px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
         <div style={{ flex: 1, cursor: "pointer" }} onClick={() => setOpen((o) => !o)}>
-          <span className="bg-sub" style={{ fontSize: 11, fontWeight: 700, color: "var(--primary)" }}>{speciesIcon} {categoryLabel}</span>
+          <span className="bg-sub" style={{ fontSize: 11, fontWeight: 700, color: "var(--primary)" }}>{categoryLabel}</span>
           <div style={{ fontWeight: 700, fontSize: 15, marginTop: 4 }}>{tip.title[lang]}</div>
           <div className="bg-sub" style={{ fontSize: 13, marginTop: 4, lineHeight: 1.5 }}>{tip.summary[lang]}</div>
         </div>
@@ -4159,7 +4152,6 @@ function TipsPage({ onClose }) {
   const t = useT();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
-  const [species, setSpecies] = useState("all");
   const [showBookmarked, setShowBookmarked] = useState(false);
   const [bookmarks, setBookmarks] = useState([]);
   const [tipsSource, setTipsSource] = useState(TIPS_DATA);
@@ -4197,7 +4189,6 @@ function TipsPage({ onClose }) {
   const filtered = tipsSource.filter((tip) => {
     if (showBookmarked && !bookmarks.includes(tip.id)) return false;
     if (category !== "all" && tip.category !== category) return false;
-    if (species !== "all" && tip.species !== "both" && tip.species !== species) return false;
     if (q && !(tip.title[lang].toLowerCase().includes(q) || tip.summary[lang].toLowerCase().includes(q))) return false;
     return true;
   });
@@ -4211,18 +4202,10 @@ function TipsPage({ onClose }) {
 
   const categories = [
     { id: "all", name: t.tipCategoryLabels.all },
+    { id: "dog", name: t.tipCategoryLabels.dog },
+    { id: "cat", name: t.tipCategoryLabels.cat },
     { id: "health", name: t.tipCategoryLabels.health },
-    { id: "diet", name: t.tipCategoryLabels.diet },
-    { id: "behavior", name: t.tipCategoryLabels.behavior },
-    { id: "walk", name: t.tipCategoryLabels.walk },
-    { id: "hygiene", name: t.tipCategoryLabels.hygiene },
-    { id: "vaccine", name: t.tipCategoryLabels.vaccine },
-    { id: "beginner", name: t.tipCategoryLabels.beginner },
-  ];
-  const speciesOptions = [
-    { id: "all", name: t.tipSpeciesLabels.all },
-    { id: "dog", name: t.tipSpeciesLabels.dog },
-    { id: "cat", name: t.tipSpeciesLabels.cat },
+    { id: "life", name: t.tipCategoryLabels.life },
   ];
 
   return (
@@ -4236,16 +4219,6 @@ function TipsPage({ onClose }) {
         <SearchIcon style={{ width: 16, height: 16, color: "var(--sub)", position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)" }} />
         <input className="bg-input" style={{ paddingLeft: 38 }} value={query} onChange={(e) => setQuery(e.target.value)}
           placeholder={t.tipSearchPlaceholder} />
-      </div>
-
-      {/* 동물 필터: 전체 | 🐶 강아지 | 🐱 고양이 */}
-      <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 6, marginBottom: 10 }}>
-        {speciesOptions.map((s) => (
-          <button key={s.id} className={`bg-chip ${species === s.id ? "active" : ""}`}
-            style={{ whiteSpace: "nowrap", flexShrink: 0 }} onClick={() => setSpecies(s.id)}>
-            {s.name}
-          </button>
-        ))}
       </div>
 
       <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 6, marginBottom: 20 }}>
@@ -4263,7 +4236,7 @@ function TipsPage({ onClose }) {
         </button>
       </div>
 
-      {!showBookmarked && !q && category === "all" && species === "all" && featured.length > 0 && (
+      {!showBookmarked && !q && category === "all" && featured.length > 0 && (
         <div style={{ marginBottom: 24 }}>
           <h3 style={{ fontSize: 15, marginBottom: 12 }}>{t.tipFeaturedTitle}</h3>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -4480,213 +4453,6 @@ const SAJU_TODAY = {
     (n) => `However busy today is, try to fit in a short walk or play session with ${n} — those few minutes go a long way.`,
   ],
 };
-
-// ---- 오늘의 운세: petId(seed) + 오늘 날짜로 고정되는 결과 (새로고침해도 안 바뀌고, 날짜가 바뀌면 바뀜) ----
-const FORTUNE_DATA = {
-  ko: {
-    comment: [
-      (n) => `오늘 ${n}에게는 작은 행운이 여기저기 숨어있는 하루예요. 평소보다 조금 더 관심을 기울여보세요 🍀`,
-      (n) => `오늘은 ${n}가 유독 사랑스러운 표정을 많이 지을 수 있는 날이에요.`,
-      (n) => `${n}에게 오늘은 편안하고 평화로운 하루가 될 것 같아요.`,
-      (n) => `오늘따라 ${n}의 애교가 늘어날 수 있으니, 넉넉하게 받아주세요 💕`,
-      (n) => `${n}에게 오늘은 새로운 걸 시도해보기 좋은 기운이 흐르는 날이에요.`,
-      (n) => `오늘 ${n}는 평소보다 보호자 곁에 더 머무르고 싶어할 수 있어요.`,
-    ],
-    mood: [
-      (n) => "上上 — 기분이 아주 좋아요! 오늘은 뭘 해도 즐거운 하루예요.",
-      (n) => "上 — 컨디션이 좋은 편이에요. 산뜻한 하루가 될 거예요.",
-      (n) => "中上 — 평소처럼 안정적인 기분이에요.",
-      (n) => "中 — 무난하지만 살짝 늘어지고 싶은 기분이에요.",
-      (n) => "上 — 호기심이 넘치는 하루예요. 여기저기 관심이 많을 거예요.",
-    ],
-    walk: [
-      (n) => "산책운 최고! 평소보다 더 신나게 걸을 수 있는 날이에요.",
-      (n) => "짧고 여유로운 산책이 잘 맞는 날이에요.",
-      (n) => "새로운 길로 가보면 더 즐거워할 수 있어요.",
-      (n) => "오늘은 익숙한 동네 한 바퀴가 딱이에요.",
-      (n) => "산책 중 마음에 드는 냄새를 많이 만날 수 있는 날이에요.",
-    ],
-    snack: [
-      (n) => "간식운 상승! 오늘은 특별한 간식이 잘 어울려요 🍖",
-      (n) => "평소 좋아하던 간식이 유독 반가운 하루예요.",
-      (n) => "간식보다 스킨십이 더 반가운 날일 수 있어요.",
-      (n) => "적당한 간식 한 조각이 하루를 더 즐겁게 만들어줄 거예요.",
-      (n) => "새로운 맛에 도전해보기 좋은 간식운이에요.",
-    ],
-    friend: [
-      (n) => "친구운 좋음! 다른 아이들과 잘 어울릴 수 있는 날이에요.",
-      (n) => "오늘은 사람 친구들에게 더 마음이 가는 날이에요.",
-      (n) => "익숙한 친구와 함께면 더 즐거운 하루가 될 거예요.",
-      (n) => "새로운 친구를 만나도 낯가림 없이 잘 지낼 수 있어요.",
-      (n) => "오늘은 혼자만의 시간도 편안하게 느껴지는 날이에요.",
-    ],
-    luckyItem: [
-      () => "포근한 담요", () => "좋아하는 장난감", () => "간식 한 조각",
-      () => "보호자의 무릎", () => "햇살 드는 창가 자리", () => "새 장난감",
-    ],
-    luckyTime: [
-      () => "오전 10시", () => "오후 3시", () => "해질 무렵", () => "저녁 8시", () => "산책 다녀온 직후",
-    ],
-  },
-  en: {
-    comment: [
-      (n) => `Today has little pockets of luck scattered around for ${n}. Give a bit of extra attention today 🍀`,
-      (n) => `${n} might show off an especially sweet expression today.`,
-      (n) => `Today looks like a calm, peaceful day for ${n}.`,
-      (n) => `${n} might be extra affectionate today — enjoy it 💕`,
-      (n) => `There's a good energy today for ${n} to try something new.`,
-      (n) => `${n} might want to stay closer to you than usual today.`,
-    ],
-    mood: [
-      () => "Excellent — feeling great! Everything's fun today.",
-      () => "Good — in good spirits. Should be a bright day.",
-      () => "Steady — feeling calm and stable, as usual.",
-      () => "Mellow — fine, but craving a lazy day.",
-      () => "Curious — extra interested in everything around them today.",
-    ],
-    walk: [
-      () => "Walk luck is great — extra energetic steps today.",
-      () => "A short, relaxed walk suits today best.",
-      () => "A new route might make today's walk more exciting.",
-      () => "A familiar loop around the block is just right today.",
-      () => "Lots of good smells to discover on today's walk.",
-    ],
-    snack: [
-      () => "Treat luck is up — a special treat fits today 🍖",
-      () => "Their usual favorite treat feels extra welcome today.",
-      () => "Cuddles might beat treats in appeal today.",
-      () => "One small treat could make today even better.",
-      () => "Good day to try a new flavor.",
-    ],
-    friend: [
-      () => "Friend luck is good — plays well with others today.",
-      () => "Feeling drawn to their human friends today.",
-      () => "More fun with a familiar friend around today.",
-      () => "No shyness meeting someone new today.",
-      () => "Alone time feels comfortable today too.",
-    ],
-    luckyItem: [
-      () => "a cozy blanket", () => "their favorite toy", () => "a small treat",
-      () => "your lap", () => "a sunny window spot", () => "a brand-new toy",
-    ],
-    luckyTime: [
-      () => "10 AM", () => "3 PM", () => "sunset", () => "8 PM", () => "right after a walk",
-    ],
-  },
-};
-
-function generateDailyFortune(input, lang) {
-  const { name, birthDate, species, gender } = input;
-  const seed = `${name}|${birthDate}|${species}|${gender || ""}`;
-  const today = new Date().toISOString().slice(0, 10);
-  const dseed = seed + "|" + today;
-  const bank = FORTUNE_DATA[lang] || FORTUNE_DATA.ko;
-  const pick = (key) => seededPick(dseed, key, bank[key])(name);
-  return {
-    date: today,
-    comment: pick("comment"),
-    mood: pick("mood"),
-    walk: pick("walk"),
-    snack: pick("snack"),
-    friend: pick("friend"),
-    luckyItem: pick("luckyItem"),
-    luckyTime: pick("luckyTime"),
-  };
-}
-
-// ---- 보호자와의 궁합: 같은 아이는 같은 결과가 유지돼요 (날짜와 무관, petId 기준 고정) ----
-const COMPAT_DATA = {
-  ko: {
-    points: [
-      (n) => `보호자가 조용히 있고 싶을 때 ${josa(n, "은", "는")} 딱 알아채고 옆에서 조용히 함께 있어줘요.`,
-      (n) => `${n}의 씩씩한 에너지가 보호자의 하루에 활력을 더해줘요.`,
-      (n) => `잔잔한 걸 좋아하는 보호자와 느긋한 ${n}의 속도가 잘 맞아요.`,
-      (n) => `${n}는 보호자의 표정 변화를 누구보다 빨리 알아차리는 편이에요.`,
-      (n) => `서로 말이 없어도 어색하지 않은, 편안한 사이예요.`,
-      (n) => `${n}의 호기심과 보호자의 여유로움이 균형 있게 어우러져요.`,
-    ],
-    petView: [
-      (n) => `${n}에게 보호자는 세상에서 제일 안전한 존재예요.`,
-      (n) => `${n}는 보호자를 하루 중 가장 반가운 사람으로 생각해요.`,
-      (n) => `${n}의 눈에는 보호자가 하는 모든 일이 다 흥미로워 보여요.`,
-      (n) => `${n}에게 보호자는 언제나 돌아오는, 믿을 수 있는 존재예요.`,
-      (n) => `${n}는 보호자 옆에 있을 때 가장 편안함을 느껴요.`,
-    ],
-    guardianTip: [
-      (n) => `가끔은 하던 일을 멈추고 눈을 마주쳐 주는 것만으로도 ${n}에게는 큰 의미가 있어요.`,
-      (n) => `짧더라도 매일 함께하는 놀이 시간이 ${n}에게는 하루의 하이라이트예요.`,
-      (n) => `${n}가 다가올 때 잠깐이라도 반응해주면 유대감이 더 깊어져요.`,
-      (n) => `가끔 이름을 다정하게 불러주는 것만으로도 ${n}는 안정을 느껴요.`,
-      (n) => `${n}의 페이스에 맞춰 천천히 산책해주면 더 좋아할 거예요.`,
-    ],
-    activity: [
-      () => "짧은 실내 놀이 시간",
-      () => "함께하는 저녁 산책",
-      () => "가만히 옆에 앉아 쉬는 시간",
-      () => "새로운 장소로의 짧은 나들이",
-      () => "간식을 나눠 먹는 여유로운 시간",
-    ],
-    oneLiner: [
-      (n) => `${n}와 보호자는 말보다 마음으로 통하는 사이예요.`,
-      (n) => `함께 있는 것만으로 편안해지는, 그런 찰떡궁합이에요.`,
-      (n) => `서로를 있는 그대로 좋아해주는 사이예요.`,
-      (n) => `${n}에게 보호자는 이미 완벽한 짝꿍이에요.`,
-    ],
-  },
-  en: {
-    points: [
-      (n) => `${n} always seems to notice when you want some quiet time, and just settles in beside you.`,
-      (n) => `${n}'s upbeat energy adds a spark to your day.`,
-      (n) => `${n}'s easygoing pace matches well with your calmer moments.`,
-      (n) => `${n} tends to pick up on your mood faster than anyone else.`,
-      (n) => `You two are comfortable together even without saying a word.`,
-      (n) => `${n}'s curiosity and your easy calm balance each other out nicely.`,
-    ],
-    petView: [
-      (n) => `To ${n}, you're the safest place in the world.`,
-      (n) => `${n} thinks of you as the best part of their day.`,
-      (n) => `Everything you do looks interesting to ${n}.`,
-      (n) => `${n} sees you as someone who always comes back — someone to trust.`,
-      (n) => `${n} feels most at ease right next to you.`,
-    ],
-    guardianTip: [
-      (n) => `Even just pausing to make eye contact means a lot to ${n}.`,
-      (n) => `A short daily play session is the highlight of ${n}'s day.`,
-      (n) => `Responding when ${n} comes over, even briefly, deepens the bond.`,
-      (n) => `Just saying their name warmly now and then helps ${n} feel secure.`,
-      (n) => `Walking at ${n}'s own pace makes it even better for them.`,
-    ],
-    activity: [
-      () => "a short indoor play session",
-      () => "an evening walk together",
-      () => "just sitting quietly side by side",
-      () => "a short outing somewhere new",
-      () => "sharing a relaxed treat break",
-    ],
-    oneLiner: [
-      (n) => `${n} and you understand each other beyond words.`,
-      (n) => `The kind of match where just being together feels comfortable.`,
-      (n) => `A pair that likes each other exactly as they are.`,
-      (n) => `To ${n}, you're already the perfect match.`,
-    ],
-  },
-};
-
-function generateGuardianCompat(input, lang) {
-  const { name, birthDate, species, gender } = input;
-  const seed = `${name}|${birthDate}|${species}|${gender || ""}`;
-  const bank = COMPAT_DATA[lang] || COMPAT_DATA.ko;
-  const pick = (key) => seededPick(seed, "compat-" + key, bank[key])(name);
-  const percent = 82 + (hashString(seed + "::compat-pct") % 15); // 82~96 사이로 고정
-  return {
-    percent,
-    points: pick("points"),
-    petView: pick("petView"),
-    guardianTip: pick("guardianTip"),
-    activity: pick("activity"),
-    oneLiner: pick("oneLiner"),
-  };
-}
 
 function generateSajuResult(input, lang) {
   const { name, birthDate, species, gender } = input;
@@ -4953,86 +4719,6 @@ function SajuShareModal({ open, onClose, result, name, lang, petPhoto }) {
   );
 }
 
-function DailyFortuneSection({ input, lang }) {
-  const t = useT();
-  const [open, setOpen] = useState(false);
-  const fortune = useMemo(() => generateDailyFortune(input, lang), [input, lang]);
-  const rows = [
-    [t.fortuneMood, fortune.mood],
-    [t.fortuneWalk, fortune.walk],
-    [t.fortuneSnack, fortune.snack],
-    [t.fortuneFriend, fortune.friend],
-    [t.fortuneLuckyItem, fortune.luckyItem],
-    [t.fortuneLuckyTime, fortune.luckyTime],
-  ];
-  return (
-    <div className="bg-surface-card">
-      <button type="button" onClick={() => setOpen((o) => !o)}
-        style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex", width: "100%", justifyContent: "space-between", alignItems: "center", fontFamily: "inherit" }}>
-        <span style={{ fontWeight: 700, fontSize: 14 }}>🔮 {t.sajuComingDaily}</span>
-        <span style={{ fontSize: 12, color: "var(--sub)" }}>{open ? "▲" : "▼"}</span>
-      </button>
-      {open && (
-        <div style={{ marginTop: 14 }}>
-          <div style={{ fontSize: 14, lineHeight: 1.75, marginBottom: 14 }}>{fortune.comment}</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            {rows.map(([label, value]) => (
-              <div key={label} style={{ background: "#fff", borderRadius: 12, padding: "10px 12px" }}>
-                <div className="bg-sub" style={{ fontSize: 11, fontWeight: 700, marginBottom: 3 }}>{label}</div>
-                <div style={{ fontSize: 13, lineHeight: 1.5 }}>{value}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function GuardianCompatSection({ input, lang }) {
-  const t = useT();
-  const [open, setOpen] = useState(false);
-  const compat = useMemo(() => generateGuardianCompat(input, lang), [input, lang]);
-  return (
-    <div className="bg-surface-card">
-      <button type="button" onClick={() => setOpen((o) => !o)}
-        style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex", width: "100%", justifyContent: "space-between", alignItems: "center", fontFamily: "inherit" }}>
-        <span style={{ fontWeight: 700, fontSize: 14 }}>💕 {t.sajuComingCompat}</span>
-        <span style={{ fontSize: 12, color: "var(--sub)" }}>{open ? "▲" : "▼"}</span>
-      </button>
-      {open && (
-        <div style={{ marginTop: 14 }}>
-          <div style={{ textAlign: "center", marginBottom: 16 }}>
-            <div style={{ fontSize: 13, color: "var(--sub)", fontWeight: 700 }}>{t.compatScoreLabel(input.name)}</div>
-            <div style={{ fontSize: 32, fontWeight: 800, color: "var(--primary)" }}>{compat.percent}%</div>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <div style={{ background: "#fff", borderRadius: 12, padding: "10px 12px" }}>
-              <div className="bg-sub" style={{ fontSize: 11, fontWeight: 700, marginBottom: 3 }}>{t.compatPointsLabel}</div>
-              <div style={{ fontSize: 13, lineHeight: 1.6 }}>{compat.points}</div>
-            </div>
-            <div style={{ background: "#fff", borderRadius: 12, padding: "10px 12px" }}>
-              <div className="bg-sub" style={{ fontSize: 11, fontWeight: 700, marginBottom: 3 }}>{t.compatPetViewLabel}</div>
-              <div style={{ fontSize: 13, lineHeight: 1.6 }}>{compat.petView}</div>
-            </div>
-            <div style={{ background: "#fff", borderRadius: 12, padding: "10px 12px" }}>
-              <div className="bg-sub" style={{ fontSize: 11, fontWeight: 700, marginBottom: 3 }}>{t.compatTipLabel}</div>
-              <div style={{ fontSize: 13, lineHeight: 1.6 }}>{compat.guardianTip}</div>
-            </div>
-            <div style={{ background: "#fff", borderRadius: 12, padding: "10px 12px" }}>
-              <div className="bg-sub" style={{ fontSize: 11, fontWeight: 700, marginBottom: 3 }}>{t.compatActivityLabel}</div>
-              <div style={{ fontSize: 13, lineHeight: 1.6 }}>{compat.activity}</div>
-            </div>
-          </div>
-          <div style={{ textAlign: "center", marginTop: 14, fontWeight: 700, fontSize: 13, color: "var(--primary-dark)" }}>
-            {compat.oneLiner}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
 function SajuResultView({ input, onRestart }) {
   const lang = useLang();
   const t = useT();
@@ -5065,20 +4751,10 @@ function SajuResultView({ input, onRestart }) {
         </div>
       </div>
 
-      <div className="bg-surface-card" style={{ marginTop: 16 }}>
-        <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 6 }}>🔮 {t.sajuTodayTitle}</div>
-        <div style={{ fontSize: 14, lineHeight: 1.75 }}>{result.today}</div>
-      </div>
-
       <button className="bg-btn" style={{ width: "100%", marginTop: 20, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
         onClick={() => setShareOpen(true)}>
         <ShareIcon style={{ width: 16, height: 16 }} /> {t.sajuShareBtn}
       </button>
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 24 }}>
-        <GuardianCompatSection input={input} lang={lang} />
-        <DailyFortuneSection input={input} lang={lang} />
-      </div>
 
       <button type="button" className="bg-btn bg-btn-ghost" style={{ width: "100%", marginTop: 16 }} onClick={onRestart}>
         {t.sajuRestartBtn}
@@ -6557,8 +6233,6 @@ function AboutPage({ onStart, onNavigate }) {
             <LandingFeatureCard Illust={IllustGrowth} title={t.landingCardGrowthTitle} desc={t.landingCardGrowthDesc} />
             <LandingFeatureCard Illust={IllustSaju} title={t.landingCardSajuTitle} desc={t.landingCardSajuDesc} />
             <LandingFeatureCard Illust={IllustPetBti} title={t.landingCardPetBtiTitle} desc={t.landingCardPetBtiDesc} />
-            <LandingFeatureCard Illust={IllustFortune} title={t.landingCardFortuneTitle} desc={t.landingCardFortuneDesc} />
-            <LandingFeatureCard Illust={IllustCompat} title={t.landingCardCompatTitle} desc={t.landingCardCompatDesc} />
             <LandingFeatureCard Illust={IllustTips} title={t.landingCardTipsTitle} desc={t.landingCardTipsDesc} />
             <LandingFeatureCard Illust={IllustCommunity} title={t.landingCardCommunityTitle} desc={t.landingCardCommunityDesc} />
           </div>
@@ -6626,7 +6300,7 @@ function AboutPage({ onStart, onNavigate }) {
             <div className="cm-mock-feed">
               <CommunityMockCard Illust={IllustMyPets} name={t.landingMockPost1Name} breed={t.landingMockPost1Breed}
                 timeLabel={t.landingMockPost1Time} text={t.landingMockPost1Text} likeCount={24} commentCount={7} />
-              <CommunityMockCard Illust={IllustCompat} name={t.landingMockPost2Name} breed={t.landingMockPost2Breed}
+              <CommunityMockCard Illust={IllustPetBti} name={t.landingMockPost2Name} breed={t.landingMockPost2Breed}
                 timeLabel={t.landingMockPost2Time} text={t.landingMockPost2Text} likeCount={12} commentCount={3} dim />
             </div>
           </div>
@@ -7004,10 +6678,14 @@ function PostCard({ post, lang, onOpen }) {
       {post.images && post.images[0] && <img src={post.images[0]} alt="" className="cm-card-img" />}
       <div className="cm-card-body">
         <CmPetLine pet={post.pet} lang={lang} right={<span className="bg-sub" style={{ fontSize: 11 }}>{timeAgoLabel(post.createdAt, lang)}</span>} />
-        <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
-          <span className="cm-cat-chip" style={{ marginBottom: 0 }}>{t.communityCategoryLabels[post.category]}</span>
-          {post.visibility === "private" && <span className="cm-cat-chip" style={{ marginBottom: 0, background: "#f0f0f0", color: "#777" }}>{t.communityPrivateBadge}</span>}
-        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
+        <span className="cm-cat-chip" style={{ marginBottom: 0 }}>{t.communityCategoryLabels[post.category]}</span>
+        {post.isOwner && (
+          <span className="cm-cat-chip" style={{ marginBottom: 0, background: post.isPublic ? "#EAF6E4" : "#F1F1F1", color: post.isPublic ? "var(--primary)" : "var(--sub)" }}>
+            {post.isPublic ? `🌐 ${t.communityVisibilityPublic}` : `🔒 ${t.communityVisibilityPrivate}`}
+          </span>
+        )}
+      </div>
         <div className="cm-title">{post.title}</div>
         <div className="cm-content-preview">{post.content}</div>
         <div className="cm-meta-row">
@@ -7052,7 +6730,6 @@ function PostComposer({ pets, initialPost, onCancel, onSaved }) {
   const [title, setTitle] = useState(initialPost ? initialPost.title : "");
   const [content, setContent] = useState(initialPost ? initialPost.content : "");
   const [images, setImages] = useState(initialPost ? initialPost.images : []);
-  const [visibility, setVisibility] = useState(initialPost ? initialPost.visibility : "public");
   const [uploading, setUploading] = useState(false);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -7085,9 +6762,9 @@ function PostComposer({ pets, initialPost, onCancel, onSaved }) {
     try {
       const pet = pets.find((p) => p.id === petId);
       if (isEdit) {
-        await communityUpdatePost(initialPost.id, { category, title: title.trim(), content: content.trim(), imageUrls: images, visibility });
+        await communityUpdatePost(initialPost.id, { category, title: title.trim(), content: content.trim(), imageUrls: images });
       } else {
-        await communityCreatePost({ pet: petSnapshot(pet), category, title: title.trim(), content: content.trim(), imageUrls: images, visibility });
+        await communityCreatePost({ pet: petSnapshot(pet), category, title: title.trim(), content: content.trim(), imageUrls: images });
       }
       onSaved();
     } catch {
@@ -7127,20 +6804,6 @@ function PostComposer({ pets, initialPost, onCancel, onSaved }) {
         <label className="bg-label" style={{ marginTop: 14 }}>{t.communityComposePhotos(images.length)}</label>
         <ImagePickerGrid images={images} onAdd={handleAddImage} onRemove={handleRemoveImage} uploading={uploading} />
         {errors.images && <div className="field-error">{errors.images}</div>}
-
-        <label className="bg-label" style={{ marginTop: 14 }}>{t.communityVisibilityLabel}</label>
-        <div style={{ display: "flex", gap: 8 }}>
-          <button type="button" className={`bg-chip ${visibility === "public" ? "active" : ""}`} style={{ flex: 1, textAlign: "left" }}
-            onClick={() => setVisibility("public")}>
-            <div>{t.communityVisibilityPublic}</div>
-            <div className="bg-sub" style={{ fontSize: 11, fontWeight: 400 }}>{t.communityVisibilityPublicDesc}</div>
-          </button>
-          <button type="button" className={`bg-chip ${visibility === "private" ? "active" : ""}`} style={{ flex: 1, textAlign: "left" }}
-            onClick={() => setVisibility("private")}>
-            <div>{t.communityVisibilityPrivate}</div>
-            <div className="bg-sub" style={{ fontSize: 11, fontWeight: 400 }}>{t.communityVisibilityPrivateDesc}</div>
-          </button>
-        </div>
         {errors.submit && <div className="field-error">{errors.submit}</div>}
 
         <div style={{ display: "flex", gap: 8, marginTop: 22 }}>
@@ -7273,6 +6936,7 @@ function PostDetail({ postId, pets, account, onBack, onDeleted, onEdit }) {
   const [commentDeleteTarget, setCommentDeleteTarget] = useState(null);
   const [reportTarget, setReportTarget] = useState(null); // { type, id } | null
   const [liking, setLiking] = useState(false);
+  const [changingVisibility, setChangingVisibility] = useState(false);
 
   const load = async () => {
     try {
@@ -7325,6 +6989,16 @@ function PostDetail({ postId, pets, account, onBack, onDeleted, onEdit }) {
     onDeleted();
   };
 
+  const toggleVisibility = async () => {
+    if (changingVisibility || !post.isOwner) return;
+    setChangingVisibility(true);
+    try {
+      const updated = await communitySetPostVisibility(postId, !post.isPublic);
+      setPost(updated);
+    } catch {}
+    setChangingVisibility(false);
+  };
+
   return (
     <div style={{ maxWidth: 640, margin: "0 auto", padding: "0 20px 60px" }}>
       <button type="button" onClick={onBack}
@@ -7335,7 +7009,14 @@ function PostDetail({ postId, pets, account, onBack, onDeleted, onEdit }) {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
         <CmPetLine pet={post.pet} lang={lang} right={<span className="bg-sub" style={{ fontSize: 11 }}>{timeAgoLabel(post.createdAt, lang)}</span>} />
       </div>
-      <span className="cm-cat-chip">{t.communityCategoryLabels[post.category]}</span>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
+        <span className="cm-cat-chip" style={{ marginBottom: 0 }}>{t.communityCategoryLabels[post.category]}</span>
+        {post.isOwner && (
+          <span className="cm-cat-chip" style={{ marginBottom: 0, background: post.isPublic ? "#EAF6E4" : "#F1F1F1", color: post.isPublic ? "var(--primary)" : "var(--sub)" }}>
+            {post.isPublic ? `🌐 ${t.communityVisibilityPublic}` : `🔒 ${t.communityVisibilityPrivate}`}
+          </span>
+        )}
+      </div>
       {post.category === "health" && (
         <div className="bg-surface-card" style={{ fontSize: 11, color: "var(--sub)", marginBottom: 12 }}>{t.communityHealthNotice}</div>
       )}
@@ -7356,9 +7037,12 @@ function PostDetail({ postId, pets, account, onBack, onDeleted, onEdit }) {
       </div>
 
       {post.isOwner && (
-        <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
-          <button type="button" className="bg-btn bg-btn-ghost" style={{ flex: 1 }} onClick={onEdit}>{t.communityEditBtn}</button>
-          <button type="button" className="bg-btn bg-btn-ghost" style={{ flex: 1, color: "#C0392B" }} onClick={() => setDeleteConfirmOpen(true)}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,minmax(0,1fr))", gap: 8, marginBottom: 20 }}>
+          <button type="button" className="bg-btn bg-btn-ghost" onClick={onEdit}>{t.communityEditBtn}</button>
+          <button type="button" className="bg-btn bg-btn-ghost" disabled={changingVisibility} onClick={toggleVisibility}>
+            {post.isPublic ? t.communityMakePrivate : t.communityMakePublic}
+          </button>
+          <button type="button" className="bg-btn bg-btn-ghost" style={{ color: "#C0392B" }} onClick={() => setDeleteConfirmOpen(true)}>
             {t.communityDeleteBtn}
           </button>
         </div>
@@ -7475,7 +7159,7 @@ function CommunityFeed({ pets, lang, onOpenPost, onWrite }) {
   );
 }
 
-function MyActivityPage({ lang, onOpenPost }) {
+function MyActivityPage({ lang, onOpenPost, embedded = false }) {
   const t = useT();
   const [tab, setTab] = useState("posts"); // posts | comments | likes
   const [items, setItems] = useState([]);
@@ -7499,8 +7183,8 @@ function MyActivityPage({ lang, onOpenPost }) {
   const emptyText = tab === "posts" ? t.communityMyEmptyPosts : tab === "comments" ? t.communityMyEmptyComments : t.communityMyEmptyLikes;
 
   return (
-    <div style={{ maxWidth: 640, margin: "0 auto", padding: "0 20px 60px" }}>
-      <h1 style={{ fontSize: 20, marginBottom: 16 }}>{t.communityMyActivityNav}</h1>
+    <div style={embedded ? { maxWidth: 640, margin: "0 auto" } : { maxWidth: 640, margin: "0 auto", padding: "0 20px 60px" }}>
+      {!embedded && <h1 style={{ fontSize: 20, marginBottom: 16 }}>{t.communityMyActivityNav}</h1>}
       <div style={{ display: "flex", gap: 8, marginBottom: 18 }}>
         <button type="button" className={`bg-chip ${tab === "posts" ? "active" : ""}`} onClick={() => setTab("posts")}>{t.communityMyPostsTab}</button>
         <button type="button" className={`bg-chip ${tab === "comments" ? "active" : ""}`} onClick={() => setTab("comments")}>{t.communityMyCommentsTab}</button>
@@ -7531,6 +7215,58 @@ function MyActivityPage({ lang, onOpenPost }) {
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost }) {
+  const t = useT();
+  return (
+    <div style={{ maxWidth: 760, margin: "0 auto", padding: "0 20px 70px" }}>
+      <h1 style={{ fontSize: 22, marginBottom: 18 }}>{t.myPageTitle}</h1>
+      <div className="bg-card" style={{ marginBottom: 18 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          {account?.profileImage ? (
+            <img src={account.profileImage} alt="" style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover" }} />
+          ) : (
+            <div style={{ width: 52, height: 52, borderRadius: "50%", background: "var(--surface)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <UserIcon style={{ width: 24, height: 24, color: "var(--primary)" }} />
+            </div>
+          )}
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 12, color: "var(--sub)", fontWeight: 700 }}>{t.myPageAccountTitle}</div>
+            <div style={{ fontSize: 17, fontWeight: 800, marginTop: 2 }}>{account?.name || "PetGrow"}</div>
+            <div className="bg-sub" style={{ fontSize: 11, marginTop: 2 }}>{t.accountKakaoTag}</div>
+          </div>
+          <button type="button" className="bg-btn bg-btn-ghost" style={{ fontSize: 12 }} onClick={onOpenAccount}>{t.myPageSettingsBtn}</button>
+        </div>
+      </div>
+
+      <div className="bg-card" style={{ marginBottom: 18 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 800 }}>{t.myPagePetsTitle}</div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: "var(--primary)", marginTop: 4 }}>{t.myPagePetsCount(allPets.length)}</div>
+          </div>
+          <button type="button" className="bg-btn bg-btn-ghost" onClick={onGoPets}>{t.myPageManagePetsBtn}</button>
+        </div>
+        {allPets.length > 0 && (
+          <div style={{ display: "flex", gap: 8, overflowX: "auto", marginTop: 14, paddingBottom: 2 }}>
+            {allPets.slice(0, 10).map((pet) => (
+              <div key={pet.id} style={{ minWidth: 110, background: "var(--surface)", borderRadius: 16, padding: 10 }}>
+                <CmPetAvatar pet={petSnapshot(pet)} size={34} />
+                <div style={{ fontSize: 12, fontWeight: 800, marginTop: 6 }}>{pet.profile.name}</div>
+                <div className="bg-sub" style={{ fontSize: 10, marginTop: 2 }}>{petAgeLabel(pet.profile.birthDate, lang)}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="bg-card">
+        <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 14 }}>{t.myPageActivityTitle}</div>
+        <MyActivityPage lang={lang} onOpenPost={onOpenPost} embedded />
+      </div>
     </div>
   );
 }
@@ -7615,7 +7351,7 @@ function AppInner({ lang, setLang }) {
 
   // 'about' | 'pets' | 'saju' | 'petbti' | 'tips' | 'guide' | 'privacy' | 'terms'
   const [view, setView] = useState("about");
-  const GATED_VIEWS = ["home", "pets", "saju", "petbti", "tips", "guide", "community", "content"];
+  const GATED_VIEWS = ["home", "pets", "saju", "petbti", "tips", "guide", "community", "content", "my"];
 
   // ---- 계정(카카오 로그인) ----
   const [account, setAccount] = useState(null);
@@ -7930,6 +7666,7 @@ function AppInner({ lang, setLang }) {
                   <button type="button" className={`desktop-nav-link ${view === "petbti" ? "active" : ""}`} onClick={() => goView("petbti")}>{t.petBtiNav}</button>
                   <button type="button" className={`desktop-nav-link ${view === "tips" ? "active" : ""}`} onClick={() => goView("tips")}>{t.tipsTitle}</button>
                   <button type="button" className={`desktop-nav-link ${view === "guide" ? "active" : ""}`} onClick={() => goView("guide")}>{t.infoGuideTitle}</button>
+                  {account && <button type="button" className={`desktop-nav-link ${view === "my" ? "active" : ""}`} onClick={() => goView("my")}>{t.hamNavMy}</button>}
                 </nav>
               </div>
               <div style={{ display: "flex", gap: 10, alignItems: "center", flexShrink: 0 }}>
@@ -7999,6 +7736,10 @@ function AppInner({ lang, setLang }) {
         <InfoGuidePage />
       ) : effectiveView === "community" ? (
         <CommunityPage allPets={allPets} account={account} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} />
+      ) : effectiveView === "my" ? (
+        <MyPage account={account} allPets={allPets} lang={lang}
+          onOpenAccount={() => setAccountModalOpen(true)} onGoPets={() => goView("pets")}
+          onOpenPost={() => goView("community")} />
       ) : effectiveView === "tips" ? (
         <TipsPage />
       ) : effectiveView === "saju" ? (
@@ -8044,9 +7785,6 @@ function AppInner({ lang, setLang }) {
 
       {effectiveView !== "login" && (
         <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 40px" }}>
-          <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", lineHeight: 1.6 }}>
-            {t.privacyFooter}
-          </div>
           <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 10 }}>
             help.petgrow@gmail.com
           </div>
@@ -8071,11 +7809,8 @@ function AppInner({ lang, setLang }) {
 
       {isNativeApp && (
         <AppBottomNav
-          active={view === "home" ? "home" : view === "pets" ? "pets" : view === "content" ? "content" : view === "community" ? "community" : ""}
-          onNavigate={(key) => {
-            if (key === "my") { account ? setAccountModalOpen(true) : goView("pets"); return; }
-            goView(key);
-          }}
+          active={view === "home" ? "home" : view === "pets" ? "pets" : view === "content" ? "content" : view === "community" ? "community" : view === "my" ? "my" : ""}
+          onNavigate={(key) => goView(key)}
         />
       )}
       <HamburgerMenu open={hamOpen} onClose={() => setHamOpen(false)} view={view} onNavigate={goView}
