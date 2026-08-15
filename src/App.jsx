@@ -7643,16 +7643,70 @@ function AppInner({ lang, setLang }) {
 
   // ---- 로그인 / 로그아웃 / 회원탈퇴 ----
   const handleLogout = async () => {
+    // 로그아웃 후 전체 페이지를 강제로 새로고침하면 PWA/캐시 환경에서
+    // 빈 화면이 남을 수 있어요. 세션을 종료한 뒤 React 상태를 즉시
+    // 비로그인 홈으로 전환해서 웹/모바일 웹 모두 안정적으로 복귀시켜요.
     await apiLogout();
-    window.location.href = "/";
+    setAccountModalOpen(false);
+    setAccount(null);
+    setPendingMigration(null);
+    setFeaturePetId(null);
+    setMode("view");
+
+    // 로그인 계정의 클라우드 반려동물 데이터가 화면에 잠깐 남지 않도록
+    // 게스트용 로컬 데이터로 다시 채우고, 없으면 빈 목록으로 시작해요.
+    try {
+      const guestDogs = (await localGet("bboggl:dogs")) || (await localGet("bboggl:dogs:guest")) || [];
+      const guestCats = (await localGet("bboggl:cats")) || (await localGet("bboggl:cats:guest")) || [];
+      const guestActive = (await localGet("bboggl:activeIds")) || (await localGet("bboggl:activeIds:guest")) || {};
+      setPets({ dog: guestDogs, cat: guestCats });
+      setActiveId({
+        dog: guestActive.dog || guestDogs[0]?.id || null,
+        cat: guestActive.cat || guestCats[0]?.id || null,
+      });
+    } catch {
+      setPets({ dog: [], cat: [] });
+      setActiveId({ dog: null, cat: null });
+    }
+
+    setView("home");
+    scrollToTop();
+
+    // 주소창에 로그인 콜백 파라미터 등이 남아 있더라도 홈 URL로 정리해요.
+    if (window.location.pathname !== "/" || window.location.search) {
+      window.history.replaceState({}, "", "/");
+    }
   };
   const handleConfirmDeleteAccount = async () => {
     setDeletingAccount(true);
     const ok = await apiDeleteAccount();
     setDeletingAccount(false);
-    if (ok) {
-      window.location.href = "/?accountDeleted=1";
-    }
+    if (!ok) return;
+
+    // 회원탈퇴 API가 성공하면 서버 세션 쿠키도 함께 만료돼요.
+    // 로그아웃과 마찬가지로 전체 페이지를 강제 새로고침하지 않고
+    // React 상태를 바로 비로그인 홈으로 전환해 PWA/모바일 웹의 흰 화면을 방지해요.
+    setAccountModalOpen(false);
+    setAccount(null);
+    setPendingMigration(null);
+    setFeaturePetId(null);
+    setMode("view");
+    setPets({ dog: [], cat: [] });
+    setActiveId({ dog: null, cat: null });
+
+    // 과거 버전에서 브라우저에 남았을 수 있는 계정 관련 로컬 데이터도 정리해요.
+    // 탈퇴 후 예전 반려동물 정보가 다시 보이는 일을 막습니다.
+    try {
+      [
+        "bboggl:dogs", "bboggl:cats", "bboggl:activeIds",
+        "bboggl:dogs:guest", "bboggl:cats:guest", "bboggl:activeIds:guest",
+        "bboggl:photos", "bboggl:profile", "bboggl:records"
+      ].forEach((key) => window.localStorage.removeItem(key));
+    } catch {}
+
+    setView("home");
+    scrollToTop();
+    window.history.replaceState({}, "", "/");
   };
   const handleConfirmMigration = async () => {
     if (!pendingMigration) return;
