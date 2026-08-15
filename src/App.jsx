@@ -1735,6 +1735,48 @@ function AlertModal({ open, message, onClose }) {
   );
 }
 
+// 앱 업데이트 안내 — 웹에서는 표시하지 않고, Capacitor 앱에서만 동작해요.
+// 새 APK/AAB를 만들 때 capacitor.config.json의 ?app_version= 값도 함께 올려주세요.
+function compareVersions(a, b) {
+  const pa = String(a || "0").split(".").map((v) => parseInt(v, 10) || 0);
+  const pb = String(b || "0").split(".").map((v) => parseInt(v, 10) || 0);
+  const len = Math.max(pa.length, pb.length);
+  for (let i = 0; i < len; i += 1) {
+    const av = pa[i] || 0;
+    const bv = pb[i] || 0;
+    if (av > bv) return 1;
+    if (av < bv) return -1;
+  }
+  return 0;
+}
+
+function UpdateModal({ open, config, onLater }) {
+  if (!config) return null;
+  const force = !!config.force;
+  const openStore = () => {
+    const url = config.playStoreUrl || "https://play.google.com/store/apps/details?id=kr.co.petgrow.app";
+    const opened = window.open(url, "_blank", "noopener,noreferrer");
+    if (!opened) window.location.href = url;
+  };
+  return (
+    <Modal open={open} onClose={force ? () => {} : onLater} width={380}>
+      <div style={{ textAlign: "center" }}>
+        <div style={{ fontSize: 42, lineHeight: 1, marginBottom: 12 }}>🐾</div>
+        <h3 style={{ fontSize: 19, marginBottom: 10 }}>{config.title || "새로운 버전이 출시됐어요"}</h3>
+        <p className="bg-sub" style={{ fontSize: 14, lineHeight: 1.7, margin: "0 0 20px" }}>
+          {config.message || "더 안정적인 PetGrow를 위해 최신 버전으로 업데이트해주세요."}
+        </p>
+        <div style={{ display: "flex", gap: 8 }}>
+          {!force && (
+            <button className="bg-btn bg-btn-ghost" style={{ flex: 1 }} onClick={onLater}>나중에</button>
+          )}
+          <button className="bg-btn" style={{ flex: 1 }} onClick={openStore}>업데이트</button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
 function GuideModal({ open, onClose }) {
   const t = useT();
   return (
@@ -7407,9 +7449,40 @@ function AppInner({ lang, setLang }) {
   const [pendingMigration, setPendingMigration] = useState(null); // { dogs, cats } | null
   const [migrating, setMigrating] = useState(false);
   const [loginToast, setLoginToast] = useState(null); // "success" | "error" | null
+  const [updateConfig, setUpdateConfig] = useState(null);
+  const [updateOpen, setUpdateOpen] = useState(false);
 
   // Pet사주 / 오늘의운세 / 보호자궁합 / PetBTI 에서 강아지·고양이 구분 없이 아이를 선택하기 위한 상태
   const [featurePetId, setFeaturePetId] = useState(null);
+
+  // Play 스토어 업데이트가 실제 공개된 뒤 public/app-update.json의 enabled를 true로 바꾸면
+  // 구버전 앱에서 업데이트 팝업이 표시돼요. 웹 브라우저에서는 표시되지 않습니다.
+  useEffect(() => {
+    if (!isNativeApp) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/app-update.json?t=${Date.now()}`, { cache: "no-store" });
+        if (!res.ok) return;
+        const cfg = await res.json();
+        if (!cfg?.enabled || cancelled) return;
+
+        const params = new URLSearchParams(window.location.search);
+        const currentVersion = params.get("app_version");
+        const needsUpdate = currentVersion
+          ? compareVersions(currentVersion, cfg.latestVersion) < 0
+          : cfg.legacyNeedsUpdate !== false;
+
+        if (needsUpdate && !cancelled) {
+          setUpdateConfig(cfg);
+          setUpdateOpen(true);
+        }
+      } catch (e) {
+        console.warn("App update check skipped:", e);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [isNativeApp]);
 
   useEffect(() => {
     (async () => {
@@ -7960,6 +8033,11 @@ function AppInner({ lang, setLang }) {
           )}
         </div>
       )}
+      <UpdateModal
+        open={updateOpen}
+        config={updateConfig}
+        onLater={() => setUpdateOpen(false)}
+      />
       <AlertModal
         open={welcomeBackOpen}
         message={t.welcomeBackMsg((pets.dog[0] || pets.cat[0] || {}).profile?.name || "")}
