@@ -2747,6 +2747,7 @@ const GlobalStyle = () => (
       padding-bottom:max(16px, env(safe-area-inset-bottom)); z-index:100;}
     .modal-card{background:#fff; border-radius:28px; padding:24px; width:100%; box-shadow:0 24px 48px rgba(91,74,79,.25);
       max-height:85vh; max-height:85dvh; overflow-y:auto; -webkit-overflow-scrolling:touch;}
+    .album-edit-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}.album-edit-modal-head h3{font-size:20px;margin:3px 0 0}.album-edit-preview{width:100%;aspect-ratio:4/3;border-radius:18px;overflow:hidden;background:#f3f5ef;margin-bottom:16px;border:1px solid #e5e0d6}.album-edit-preview img{width:100%;height:100%;object-fit:cover;display:block}.album-edit-file-btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:46px;cursor:pointer;position:relative}.album-edit-file-btn input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}.album-edit-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:20px}@media(max-width:560px){.album-edit-actions{grid-template-columns:1fr}.album-edit-modal-head h3{font-size:18px}}
     .guide-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px 20px;}
     @media (max-width:560px){ .guide-grid{grid-template-columns:1fr;} }
     .combobox-wrap{position:relative;}
@@ -3453,37 +3454,101 @@ function AddPhotoCard({ onAdd }) {
 
 function PhotoTile({ photo, birthDate, onEdit, onDelete, onOpenSlideshow }) {
   const t = useT();
-  const inputRef = useRef(null);
-  const handleChange = async (e) => {
+  const lang = useLang();
+  const [editOpen, setEditOpen] = useState(false);
+  const [editDate, setEditDate] = useState(photo.date);
+  const [replacementDataUrl, setReplacementDataUrl] = useState(null);
+  const [replacementName, setReplacementName] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (editOpen) {
+      setEditDate(photo.date);
+      setReplacementDataUrl(null);
+      setReplacementName("");
+      setError("");
+    }
+  }, [editOpen, photo.date]);
+
+  const handleReplacement = async (e) => {
     const file = e.target.files && e.target.files[0];
+    e.target.value = "";
     if (!file) return;
+    setBusy(true);
+    setError("");
     try {
       const dataUrl = await fileToCompressedDataUrl(file);
-      onEdit(photo.id, dataUrl);
+      setReplacementDataUrl(dataUrl);
+      setReplacementName(file.name || (lang === "ko" ? "선택한 사진" : "Selected photo"));
     } catch {
-      alert(t.photoSaveError);
+      setError(t.photoSaveError);
+    } finally {
+      setBusy(false);
     }
-    e.target.value = "";
   };
+
+  const handleSave = () => {
+    if (!editDate) {
+      setError(t.photoErrDate);
+      return;
+    }
+    onEdit(photo.id, { date: editDate, dataUrl: replacementDataUrl || photo.dataUrl });
+    setEditOpen(false);
+  };
+
   const months = monthsBetween(new Date(birthDate), new Date(photo.date));
   const ageText = months < 1 ? t.ageUnder1Month : t.ageAbout(Math.round(months));
 
   return (
-    <div className="photo-tile" onClick={onOpenSlideshow}>
-      <img src={photo.dataUrl} alt={photo.date} />
-      <span className="tile-label">{photo.date} · {ageText}</span>
-      <div className="tile-actions">
-        <button type="button" className="tile-btn" aria-label={t.photoEditAria}
-          onClick={(e) => { e.stopPropagation(); inputRef.current && inputRef.current.click(); }}>
-          <EditIcon />
-        </button>
-        <button type="button" className="tile-btn" aria-label={t.photoDeleteAria}
-          onClick={(e) => { e.stopPropagation(); onDelete(photo.id); }}>
-          <TrashIcon />
-        </button>
+    <>
+      <div className="photo-tile" onClick={onOpenSlideshow}>
+        <img src={photo.dataUrl} alt={photo.date} />
+        <span className="tile-label">{photo.date} · {ageText}</span>
+        <div className="tile-actions">
+          <button type="button" className="tile-btn" aria-label={t.photoEditAria}
+            onClick={(e) => { e.stopPropagation(); setEditOpen(true); }}>
+            <EditIcon />
+          </button>
+          <button type="button" className="tile-btn" aria-label={t.photoDeleteAria}
+            onClick={(e) => { e.stopPropagation(); onDelete(photo.id); }}>
+            <TrashIcon />
+          </button>
+        </div>
       </div>
-      <input ref={inputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleChange} />
-    </div>
+
+      <Modal open={editOpen} onClose={() => !busy && setEditOpen(false)} width={390}>
+        <div className="album-edit-modal">
+          <div className="album-edit-modal-head">
+            <div>
+              <div className="my-page-kicker">GROWTH ALBUM</div>
+              <h3>{lang === "ko" ? "성장앨범 수정" : "Edit growth album"}</h3>
+            </div>
+            <button type="button" className="menu-help-close" onClick={() => setEditOpen(false)} disabled={busy}>×</button>
+          </div>
+
+          <div className="album-edit-preview">
+            <img src={replacementDataUrl || photo.dataUrl} alt="preview" />
+          </div>
+
+          <label className="bg-label">{t.photoDateLabel}</label>
+          <input type="date" className="bg-input" value={editDate} onChange={(e) => setEditDate(e.target.value)} />
+
+          <label className="bg-label" style={{ marginTop: 14 }}>{lang === "ko" ? "사진 교체" : "Replace photo"}</label>
+          <label className="bg-btn bg-btn-ghost album-edit-file-btn">
+            {busy ? (lang === "ko" ? "사진 준비 중..." : "Preparing...") : (lang === "ko" ? "다른 사진 선택" : "Choose another photo")}
+            <input type="file" accept="image/*" onChange={handleReplacement} disabled={busy} />
+          </label>
+          {replacementName && <div className="bg-sub" style={{ fontSize: 11, marginTop: 7 }}>{replacementName}</div>}
+          {error && <div className="form-alert" style={{ marginTop: 12 }}><span>{error}</span></div>}
+
+          <div className="album-edit-actions">
+            <button type="button" className="bg-btn bg-btn-ghost" onClick={() => setEditOpen(false)} disabled={busy}>{t.cancel}</button>
+            <button type="button" className="bg-btn" onClick={handleSave} disabled={busy}>{lang === "ko" ? "수정 저장" : "Save changes"}</button>
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 }
 
@@ -8487,8 +8552,9 @@ function AppInner({ lang, setLang }) {
     const stamp = Date.now();
     return { ...p, photos: [...p.photos, ...list.map((dataUrl, index) => ({ id: `${stamp}-${index}`, date, dataUrl }))] };
   });
-  const handleEditPhoto = (photoId, dataUrl) => updateCurrentPet((p) => ({
-    ...p, photos: p.photos.map((ph) => (ph.id === photoId ? { ...ph, dataUrl } : ph)),
+  const handleEditPhoto = (photoId, changes) => updateCurrentPet((p) => ({
+    ...p,
+    photos: p.photos.map((ph) => (ph.id === photoId ? { ...ph, ...(changes || {}) } : ph)),
   }));
   const handleDeletePhoto = (photoId) => updateCurrentPet((p) => ({
     ...p, photos: p.photos.filter((ph) => ph.id !== photoId),
