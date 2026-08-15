@@ -24,7 +24,7 @@ const ALLOWED_MIME = {
   "image/png": "png",
   "image/webp": "webp",
 };
-const MAX_BYTES = 8 * 1024 * 1024;
+const MAX_BYTES = 4 * 1024 * 1024;
 
 function requireUser(req, res) {
   const uid = getSessionUserId(req);
@@ -197,7 +197,11 @@ export default async function handler(req, res) {
       const buffer = Buffer.from(match[2], "base64");
       if (buffer.length > MAX_BYTES) return res.status(413).json({ error: "image is too large" });
       const filename = `community/${uid}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-      const blob = await put(filename, buffer, { access: "public", contentType: mime });
+      if (!process.env.BLOB_READ_WRITE_TOKEN) {
+        console.error("community upload: BLOB_READ_WRITE_TOKEN is missing");
+        return res.status(503).json({ error: "image storage is not configured" });
+      }
+      const blob = await put(filename, buffer, { access: "public", contentType: mime, token: process.env.BLOB_READ_WRITE_TOKEN });
       return res.status(200).json({ url: blob.url });
     }
 

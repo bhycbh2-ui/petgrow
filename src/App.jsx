@@ -2440,9 +2440,18 @@ const GlobalStyle = () => (
     .home-service-title{font-weight:800; font-size:19px; color:var(--pg-dark,#1C1C1C); align-self:end;}
     .home-service-desc{font-size:14px; color:#64685f; line-height:1.65; align-self:start;}
     @media(max-width:560px){.home-service-card{grid-template-columns:56px 1fr; min-height:116px; padding:18px 17px; border-radius:21px; column-gap:14px}.home-service-illust{width:56px;height:56px;border-radius:17px}.home-service-title{font-size:18px}.home-service-desc{font-size:13px}.home-service-card::after{right:12px;top:10px;font-size:20px}}
-    .cm-card{background:#fff; border-radius:18px; border:1px solid var(--border); overflow:hidden; cursor:pointer;
-      transition:transform .12s, box-shadow .12s;}
-    .cm-card:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,.06);}
+    .cm-card{background:#fff; border-radius:18px; border:1px solid #e2ddd2; overflow:hidden; cursor:pointer;
+      transition:transform .12s, box-shadow .12s; box-shadow:0 5px 16px rgba(52,45,35,.055);}
+    .cm-card:hover{transform:translateY(-2px); box-shadow:0 10px 24px rgba(0,0,0,.075);}
+    .cm-card-body{background:#fff;}
+    .cm-detail-body-card{background:#fff;border:1px solid #e5dfd4;border-radius:20px;padding:18px 18px 16px;margin:10px 0 14px;box-shadow:0 6px 18px rgba(52,45,35,.055);}
+    .cm-detail-body-card h1{color:#22201d;}
+    .cm-detail-content{font-size:14px;line-height:1.85;white-space:pre-line;color:#302e2a;margin:0;}
+    .cm-owner-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:20px;}
+    .cm-owner-action-btn{min-height:44px;border:1px solid #e3ddd1;background:#fff;border-radius:16px;color:#3f3c37;font-family:inherit;font-size:12.5px;font-weight:750;line-height:1.25;padding:10px 8px;cursor:pointer;box-shadow:0 3px 8px rgba(52,45,35,.035);}
+    .cm-owner-action-btn.danger{color:#c0392b;}
+    .cm-owner-action-btn:disabled{opacity:.55;cursor:default;}
+    @media(max-width:560px){.cm-detail-body-card{padding:16px 15px;border-radius:18px}.cm-owner-actions{gap:7px}.cm-owner-action-btn{font-size:12px;min-height:42px;padding:8px 5px}}
     .cm-card-img{width:100%; aspect-ratio:4/3; object-fit:cover; background:var(--surface); display:block;}
     .cm-card-body{padding:14px 16px 16px;}
     .cm-pet-row{display:flex; align-items:center; gap:8px; margin-bottom:8px;}
@@ -6607,7 +6616,7 @@ function AboutPage({ onStart, onNavigate }) {
         </div>
       </section>
 
-      {/* 핵심 기능 8개 한눈에 보기 */}
+      {/* 핵심 기능 한눈에 보기 */}
       <section className="landing-section">
         <div className="landing-wrap">
           <h2 className="landing-section-title" style={{ marginBottom: 6 }}>{t.landingCoreFeaturesTitle}</h2>
@@ -6619,7 +6628,6 @@ function AboutPage({ onStart, onNavigate }) {
             <LandingFeatureCard Illust={IllustPetBti} title={t.landingCardPetBtiTitle} desc={t.landingCardPetBtiDesc} />
             <LandingFeatureCard Illust={IllustTips} title={t.landingCardTipsTitle} desc={t.landingCardTipsDesc} />
             <LandingFeatureCard Illust={IllustCommunity} title={t.landingCardCommunityTitle} desc={t.landingCardCommunityDesc} />
-            <LandingFeatureCard Illust={UserIcon} title={lang === "en" ? "👤 MY" : "👤 MY"} desc={lang === "en" ? "Manage your profile nickname, pets, and Pet Talk activity in one place." : "닉네임·계정 설정, 등록한 아이와 Pet톡 활동을 한곳에서 관리해요."} />
           </div>
         </div>
       </section>
@@ -7122,7 +7130,7 @@ function ImagePickerGrid({ images, onAdd, onRemove, uploading }) {
           {uploading ? "..." : <PlusIcon style={{ width: 22, height: 22 }} />}
         </button>
       )}
-      <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" style={{ display: "none" }}
+      <input ref={fileRef} type="file" accept="image/*" style={{ display: "none" }}
         onChange={(e) => { const f = e.target.files && e.target.files[0]; if (f) onAdd(f); e.target.value = ""; }} />
     </div>
   );
@@ -7144,16 +7152,23 @@ function PostComposer({ pets, initialPost, onCancel, onSaved }) {
 
   const handleAddImage = async (file) => {
     if (images.length >= 5) { setErrors((e) => ({ ...e, images: t.communityImageTooMany })); return; }
-    if (!["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(file.type)) {
+    // iPhone 사진은 HEIC/HEIF로 전달되는 경우가 있어 원본 MIME만으로 차단하지 않아요.
+    // 브라우저가 읽을 수 있는 이미지라면 canvas에서 JPEG로 변환·축소한 뒤 서버에 업로드합니다.
+    if (!file || !(file.type || "").startsWith("image/")) {
       setErrors((e) => ({ ...e, images: t.communityImageInvalidType })); return;
     }
     setErrors((e) => ({ ...e, images: "" }));
     setUploading(true);
     try {
-      const dataUrl = await fileToCompressedDataUrl(file, 1600, 0.82);
-      const url = await communityUploadImage(dataUrl);
+      const dataUrl = await fileToCompressedDataUrl(file, 1280, 0.76);
+      // Vercel 요청 본문 제한에 여유를 두기 위해 base64가 지나치게 크면 한 번 더 축소해요.
+      const uploadDataUrl = dataUrl.length > 2_500_000
+        ? await fileToCompressedDataUrl(file, 960, 0.68)
+        : dataUrl;
+      const url = await communityUploadImage(uploadDataUrl);
       setImages((prev) => [...prev, url]);
-    } catch {
+    } catch (err) {
+      console.error("community image upload failed", err);
       setErrors((e) => ({ ...e, images: t.communityUploadFailed }));
     }
     setUploading(false);
@@ -7442,9 +7457,11 @@ function PostDetail({ postId, pets, account, onBack, onDeleted, onEdit }) {
       {post.category === "health" && (
         <div className="bg-surface-card" style={{ fontSize: 11, color: "var(--sub)", marginBottom: 12 }}>{t.communityHealthNotice}</div>
       )}
-      <h1 style={{ fontSize: 19, marginBottom: 10 }}>{post.title}</h1>
-      {post.images.length > 0 && <div style={{ marginBottom: 14 }}><PhotoCarousel images={post.images} /></div>}
-      <p style={{ fontSize: 14, lineHeight: 1.8, whiteSpace: "pre-line" }}>{post.content}</p>
+      <div className="cm-detail-body-card">
+        <h1 style={{ fontSize: 19, marginBottom: 10 }}>{post.title}</h1>
+        {post.images.length > 0 && <div style={{ marginBottom: 14 }}><PhotoCarousel images={post.images} /></div>}
+        <p className="cm-detail-content">{post.content}</p>
+      </div>
 
       <div className="cm-action-row">
         <button type="button" className={`cm-action-btn ${post.likedByMe ? "liked" : ""}`} onClick={toggleLikeNow}>
@@ -7459,12 +7476,12 @@ function PostDetail({ postId, pets, account, onBack, onDeleted, onEdit }) {
       </div>
 
       {post.isOwner && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,minmax(0,1fr))", gap: 8, marginBottom: 20 }}>
-          <button type="button" className="bg-btn bg-btn-ghost" onClick={onEdit}>{t.communityEditBtn}</button>
-          <button type="button" className="bg-btn bg-btn-ghost" disabled={changingVisibility} onClick={toggleVisibility}>
+        <div className="cm-owner-actions">
+          <button type="button" className="cm-owner-action-btn" onClick={onEdit}>{t.communityEditBtn}</button>
+          <button type="button" className="cm-owner-action-btn" disabled={changingVisibility} onClick={toggleVisibility}>
             {post.isPublic ? t.communityMakePrivate : t.communityMakePublic}
           </button>
-          <button type="button" className="bg-btn bg-btn-ghost" style={{ color: "#C0392B" }} onClick={() => setDeleteConfirmOpen(true)}>
+          <button type="button" className="cm-owner-action-btn danger" onClick={() => setDeleteConfirmOpen(true)}>
             {t.communityDeleteBtn}
           </button>
         </div>
