@@ -1989,7 +1989,7 @@ function HamburgerMenu({ open, onClose, view, onNavigate, onOpenAccount, account
   }, [open]);
 
   const items = [
-    ...(account ? [{ key: "home", label: t.hamNavHome, Icon: HomeIcon }] : []),
+    { key: "home", label: t.hamNavHome, Icon: HomeIcon },
     { key: "about", label: t.aboutNav, Icon: InfoIcon },
     { key: "pets", label: t.myPetsNav, Icon: PawIcon },
     { key: "community", label: t.communityNav, Icon: TalkIcon },
@@ -7394,8 +7394,8 @@ function AppInner({ lang, setLang }) {
   const [deleteTarget, setDeleteTarget] = useState(null); // {id, name} | null
 
   // 'about' | 'pets' | 'saju' | 'petbti' | 'tips' | 'guide' | 'privacy' | 'terms'
-  const [view, setView] = useState("about");
-  const GATED_VIEWS = ["home", "pets", "saju", "petbti", "tips", "guide", "community", "content", "my"];
+  const [view, setView] = useState("home");
+  const GATED_VIEWS = ["pets", "saju", "petbti", "tips", "guide", "community", "content", "my"];
 
   // ---- 계정(카카오 로그인) ----
   const [account, setAccount] = useState(null);
@@ -7705,7 +7705,7 @@ function AppInner({ lang, setLang }) {
                   </span>
                 </button>
                 <nav style={{ display: "flex", alignItems: "center", gap: 2 }}>
-                  {account && <button type="button" className={`desktop-nav-link ${view === "home" ? "active" : ""}`} onClick={() => goView("home")}>{t.hamNavHome}</button>}
+                  <button type="button" className={`desktop-nav-link ${view === "home" ? "active" : ""}`} onClick={() => goView("home")}>{t.hamNavHome}</button>
                   <button type="button" className={`desktop-nav-link ${view === "about" ? "active" : ""}`} onClick={() => goView("about")}>{t.aboutNav}</button>
                   <button type="button" className={`desktop-nav-link ${view === "pets" ? "active" : ""}`} onClick={() => goView("pets")}>{t.myPetsNav}</button>
                   <button type="button" className={`desktop-nav-link ${view === "community" ? "active" : ""}`} onClick={() => goView("community")}>{t.communityNav}</button>
