@@ -2297,6 +2297,7 @@ const GlobalStyle = () => (
     .pet-switcher{display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; margin-bottom:18px;}
     .add-photo-row{display:flex; gap:8px; align-items:flex-end; flex-wrap:wrap; max-width:100%;}
     .add-photo-field{flex:1 1 140px; min-width:0; max-width:100%;}
+    .album-photo-add-btn{width:100%;height:42px;min-height:42px;white-space:nowrap;line-height:1.1;padding:0 14px;display:flex;align-items:center;justify-content:center;}
     @media (max-width:480px){
       .add-photo-row{flex-direction:column; align-items:stretch;}
       .add-photo-field{flex-basis:auto; width:100%; max-width:100%; overflow:hidden;}
@@ -3441,9 +3442,8 @@ function AddPhotoCard({ onAdd }) {
         <div className="add-photo-field"><label className="bg-label">{t.photoDateLabel}</label><input type="date" className="bg-input" value={date} onChange={(e) => setDate(e.target.value)} /></div>
         <div className="add-photo-field" style={{ flex: 1 }}>
           <label className="bg-label">{t.photoLabel}</label>
-          <button type="button" className="bg-btn" style={{ width: "100%", height: 42 }} disabled={isAdding} onClick={() => inputRef.current && inputRef.current.click()}>{isAdding ? (lang === "ko" ? "사진 추가 중..." : "Adding photos...") : (lang === "ko" ? "사진 추가" : "Add photos")}</button>
+          <button type="button" className="bg-btn album-photo-add-btn" disabled={isAdding} onClick={() => inputRef.current && inputRef.current.click()}>{isAdding ? (lang === "ko" ? "추가 중..." : "Adding...") : (lang === "ko" ? "사진 추가" : "Add photos")}</button>
           <input ref={inputRef} type="file" accept="image/*" multiple style={{ display: "none" }} onChange={handlePick} />
-          <div className="bg-sub" style={{ marginTop: 6, fontSize: 11 }}>{lang === "ko" ? "여러 장을 한 번에 선택할 수 있어요. 선택하면 바로 성장앨범에 추가돼요." : "Select multiple photos at once. They are added immediately."}</div>
         </div>
       </div>
       <AlertModal open={alertPopup} message={alert} onClose={() => setAlertPopup(false)} />
