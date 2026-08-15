@@ -6624,6 +6624,15 @@ function InfoGuidePage() {
    ============================================================ */
 function DeleteAccountPage() {
   const t = useT();
+
+  // /delete-account is a standalone public page, so it must not wait for AppInner's
+  // authentication/data initialization before dismissing the common startup splash.
+  useEffect(() => {
+    if (typeof window !== "undefined" && typeof window.__hidePetGrowSplash === "function") {
+      window.__hidePetGrowSplash();
+    }
+  }, []);
+
   const [account, setAccount] = useState(null);
   const [checked, setChecked] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
