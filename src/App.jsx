@@ -6439,6 +6439,8 @@ function HomeServiceCard({ Illust, bg, title, desc, onClick }) {
 
 function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
   const t = useT();
+  // 비로그인 상태에서는 브라우저에 남아 있는 이전 반려동물 정보를 홈에 노출하지 않아요.
+  const visiblePets = account ? pets : [];
 
   return (
     <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 60px" }}>
@@ -6447,9 +6449,9 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
         <p className="bg-sub">{t.homeSubGreeting}</p>
       </div>
 
-      {pets.length ? (
+      {visiblePets.length ? (
         <div className="home-pet-list">
-          {pets.map((pet) => (
+          {visiblePets.map((pet) => (
             <div className="home-pet-card" key={pet.id} onClick={onGoPets}>
               <span className="home-pet-avatar">
                 {pet.profile.profileImage ? (
@@ -6488,6 +6490,7 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
         <HomeServiceCard Illust={IllustPetBti} bg="#E9F1FB" title={t.landingCardPetBtiTitle.replace(/^\S+\s/, "")} desc={t.homeCardPetBtiDesc} onClick={() => onGoView("petbti")} />
         <HomeServiceCard Illust={IllustTips} bg="#FBF3DC" title={t.landingCardTipsTitle.replace(/^\S+\s/, "")} desc={t.homeCardTipsDesc} onClick={() => onGoView("tips")} />
         <HomeServiceCard Illust={IllustCommunity} bg="#FBE9EF" title={t.landingCardCommunityTitle.replace(/^\S+\s/, "")} desc={t.homeCardCommunityDesc} onClick={() => onGoView("community")} />
+        <HomeServiceCard Illust={InfoIcon} bg="#EEF5EC" title={t.aboutNav} desc={lang === "en" ? "See PetGrow features and services at a glance" : "PetGrow의 기능과 서비스를 한눈에 보기"} onClick={() => onGoView("about")} />
       </div>
     </div>
   );
@@ -7468,6 +7471,13 @@ function AppInner({ lang, setLang }) {
       dogs = (dogs || []).map((p) => ({ ...p, photos: normalizePhotos(p.photos, p.profile.birthDate) }));
       cats = (cats || []).map((p) => ({ ...p, photos: normalizePhotos(p.photos, p.profile.birthDate) }));
 
+      // 비로그인 상태에서는 과거 localStorage 데이터를 화면 상태에 올리지 않아요.
+      // 데이터 자체는 삭제하지 않아, 이후 로그인 시 기존 데이터 이전 안내에 사용할 수 있어요.
+      if (!me) {
+        dogs = [];
+        cats = [];
+      }
+
       setPets({ dog: dogs, cat: cats });
       setActiveId({
         dog: (actives && actives.dog) || (dogs[0] && dogs[0].id) || null,
@@ -7648,21 +7658,10 @@ function AppInner({ lang, setLang }) {
     setFeaturePetId(null);
     setMode("view");
 
-    // 로그인 계정의 클라우드 반려동물 데이터가 화면에 잠깐 남지 않도록
-    // 게스트용 로컬 데이터로 다시 채우고, 없으면 빈 목록으로 시작해요.
-    try {
-      const guestDogs = (await localGet("bboggl:dogs")) || (await localGet("bboggl:dogs:guest")) || [];
-      const guestCats = (await localGet("bboggl:cats")) || (await localGet("bboggl:cats:guest")) || [];
-      const guestActive = (await localGet("bboggl:activeIds")) || (await localGet("bboggl:activeIds:guest")) || {};
-      setPets({ dog: guestDogs, cat: guestCats });
-      setActiveId({
-        dog: guestActive.dog || guestDogs[0]?.id || null,
-        cat: guestActive.cat || guestCats[0]?.id || null,
-      });
-    } catch {
-      setPets({ dog: [], cat: [] });
-      setActiveId({ dog: null, cat: null });
-    }
+    // 로그아웃 즉시 화면의 반려동물 상태를 비워 개인정보가 남아 보이지 않게 해요.
+    // 기존 localStorage 데이터는 삭제하지 않고 보관해, 다음 로그인 때 이전 안내에 사용할 수 있어요.
+    setPets({ dog: [], cat: [] });
+    setActiveId({ dog: null, cat: null });
 
     setView("home");
     scrollToTop();
