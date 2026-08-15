@@ -4145,7 +4145,47 @@ function petBtiOppositeType(type) {
   return type.split("").map((c) => flip[c]).join("");
 }
 
-function petBtiSectionText(type, key, name, lang) {
+// 같은 유형이라도 실제 답변 점수(능력치)에 따라 문장이 조금 더 달라지도록 하는 보정 문구
+const PETBTI_STAT_FLAVOR = {
+  ko: {
+    personality: {
+      high: (n, statVal) => statVal.affection >= 65 ? `특히 ${n}는 애정 표현이 유독 풍부한 편이라, 이 성격이 더 다정하게 느껴질 거예요.` : "",
+      low: (n, statVal) => statVal.affection < 35 ? `다만 ${n}는 표현이 담백한 편이라, 애정이 없다기보단 조용히 마음을 전하는 스타일이에요.` : "",
+    },
+    affection: {
+      high: (n, s) => s.affection >= 70 ? `애교 지수가 꽤 높은 편이라, 하루에도 몇 번씩 애정 표현을 받을 수 있을 거예요 💕` : "",
+      low: (n, s) => s.affection < 30 ? `애정 표현이 은근한 편이라, 잘 살펴보면 작은 신호들 속에 마음이 담겨있을 거예요.` : "",
+    },
+    food: {
+      high: (n, s) => s.food >= 70 ? `먹을 것 앞에서는 유독 진심이 되는 편이라, 간식 시간이 하루 중 제일 신나는 순간일 수 있어요 🍖` : "",
+      low: (n, s) => s.food < 30 ? `의외로 먹을 것에 크게 연연하지 않는 편이라, 간식보다 다른 것에 더 마음이 가는 타입일 수 있어요.` : "",
+    },
+    alone: {
+      high: (n, s) => s.control >= 65 ? `혼자서도 은근히 자기만의 페이스를 지키는, 독립심 있는 모습을 보일 거예요.` : "",
+      low: (n, s) => s.control < 35 ? `다만 보호자가 안 보이면 은근히 기다리는 모습을 보일 수도 있어요.` : "",
+    },
+  },
+  en: {
+    personality: {
+      high: (n, s) => s.affection >= 65 ? `${n} in particular shows a lot of affection, which makes this side even warmer.` : "",
+      low: (n, s) => s.affection < 35 ? `${n} tends to express things subtly — not less loving, just quieter about it.` : "",
+    },
+    affection: {
+      high: (n, s) => s.affection >= 70 ? `Their affection meter runs high, so expect love shown several times a day 💕` : "",
+      low: (n, s) => s.affection < 30 ? `Affection shows up in quieter ways — look closely and you'll spot the small signals.` : "",
+    },
+    food: {
+      high: (n, s) => s.food >= 70 ? `Gets especially serious around food — treat time might be the highlight of their day 🍖` : "",
+      low: (n, s) => s.food < 30 ? `Surprisingly unbothered by food — other things tend to grab their attention more.` : "",
+    },
+    alone: {
+      high: (n, s) => s.control >= 65 ? `Even alone, they tend to keep to their own independent pace.` : "",
+      low: (n, s) => s.control < 35 ? `That said, they might quietly wait around when you're out of sight.` : "",
+    },
+  },
+};
+
+function petBtiSectionText(type, key, name, lang, stats) {
   const traits = PETBTI_AXIS_TRAITS[lang] || PETBTI_AXIS_TRAITS.ko;
   const [i1, i2] = PETBTI_SECTION_AXES[key];
   const letters = key === "hidden"
@@ -4153,7 +4193,12 @@ function petBtiSectionText(type, key, name, lang) {
     : [type[i1], type[i2]];
   const t1 = traits[letters[0]];
   const t2 = traits[letters[1]];
-  return `${t1} ${t2}`;
+  const flavorSet = (PETBTI_STAT_FLAVOR[lang] || PETBTI_STAT_FLAVOR.ko)[key];
+  let flavor = "";
+  if (flavorSet && stats) {
+    flavor = flavorSet.high(name, stats) || flavorSet.low(name, stats) || "";
+  }
+  return [t1, t2, flavor].filter(Boolean).join(" ");
 }
 
 function generatePetBtiResult(input, answers, lang) {
@@ -4162,7 +4207,7 @@ function generatePetBtiResult(input, answers, lang) {
   const summary = (PETBTI_SUMMARY[lang] || PETBTI_SUMMARY.ko)[type];
   const name = input.name;
   const sections = ["personality", "bond", "friends", "play", "walk", "food", "alone", "mischief", "affection", "hidden"]
-    .map((key) => ({ key, text: petBtiSectionText(type, key, name, lang) }));
+    .map((key) => ({ key, text: petBtiSectionText(type, key, name, lang, stats) }));
   const seed = `${name}|${type}|${JSON.stringify(answers)}`;
   const tagBanks = {
     ko: ["#핵인싸", "#집콕러버", "#호기심대장", "#마이웨이", "#사랑교감러", "#루틴수호자", "#즉흥모험가", "#간식러버", "#애교쟁이", "#집사조종러", "#산책마니아", "#관찰형천재"],
