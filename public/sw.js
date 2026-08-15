@@ -1,33 +1,48 @@
-const CACHE_NAME = "petgrow-cache-v2";
-const CORE_ASSETS = ["/", "/manifest.json", "/icon-192.png", "/icon-512.png"];
+// PetGrow service worker v20
+// HTML/JS는 브라우저가 항상 최신 배포를 받도록 런타임 캐시에서 제외합니다.
+const CACHE_NAME = "petgrow-static-v20";
+const STATIC_ASSETS = ["/manifest.json", "/icon-192.png", "/icon-512.png"];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(CORE_ASSETS))
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS)));
   self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+      Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))
     )
   );
   self.clients.claim();
 });
 
-// network-first: 온라인이면 최신을, 오프라인이면 캐시를 보여줘요
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+
   const url = new URL(event.request.url);
-  // API와 동영상은 캐시하지 않아 로그인/커뮤니티 최신 상태와 초기 로딩을 가볍게 유지해요.
+  if (url.origin !== self.location.origin) return;
   if (url.pathname.startsWith("/api/") || event.request.destination === "video") return;
+
+  // 문서와 Vite JS/CSS 번들은 캐시하지 않음: 오래된 index.html + 새 번들 불일치 방지
+  if (
+    event.request.mode === "navigate" ||
+    event.request.destination === "document" ||
+    event.request.destination === "script" ||
+    event.request.destination === "style"
+  ) {
+    event.respondWith(fetch(event.request, { cache: "no-store" }));
+    return;
+  }
+
+  // 아이콘/이미지 등 정적 자산만 network-first로 캐시
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        if (response && response.ok) {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+        }
         return response;
       })
       .catch(() => caches.match(event.request))
