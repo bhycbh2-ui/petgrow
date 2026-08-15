@@ -197,12 +197,22 @@ export default async function handler(req, res) {
       const buffer = Buffer.from(match[2], "base64");
       if (buffer.length > MAX_BYTES) return res.status(413).json({ error: "image is too large" });
       const filename = `community/${uid}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-      if (!process.env.BLOB_READ_WRITE_TOKEN) {
-        console.error("community upload: BLOB_READ_WRITE_TOKEN is missing");
-        return res.status(503).json({ error: "image storage is not configured" });
+      // Vercel Blob이 연결돼 있으면 Blob을 우선 사용합니다.
+      // Storage가 아직 연결되지 않았거나 일시적으로 실패한 경우에는 압축된 data URL 자체를
+      // pg_post_images.storage_url에 저장할 수 있도록 반환해 사진 게시 기능이 막히지 않게 합니다.
+      if (process.env.BLOB_READ_WRITE_TOKEN) {
+        try {
+          const blob = await put(filename, buffer, { access: "public", contentType: mime, token: process.env.BLOB_READ_WRITE_TOKEN });
+          return res.status(200).json({ url: blob.url, storage: "blob" });
+        } catch (blobErr) {
+          console.error("community blob upload failed; using inline fallback", blobErr);
+        }
+      } else {
+        console.warn("community upload: BLOB_READ_WRITE_TOKEN missing; using inline fallback");
       }
-      const blob = await put(filename, buffer, { access: "public", contentType: mime, token: process.env.BLOB_READ_WRITE_TOKEN });
-      return res.status(200).json({ url: blob.url });
+      // 클라이언트에서 이미 720px 수준까지 압축하므로 DB 대체 저장 크기도 제한합니다.
+      if (dataUrl.length > 1_200_000) return res.status(413).json({ error: "image is too large" });
+      return res.status(200).json({ url: dataUrl, storage: "inline" });
     }
 
     return res.status(405).json({ error: "method not allowed" });

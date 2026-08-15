@@ -330,10 +330,10 @@ const STRINGS = {
       { title: "Pet사주", body: "등록한 우리 아이의 정보를 바탕으로 성격·궁합·행운 같은 재미있는 사주 콘텐츠를 볼 수 있어요. 결과는 참고와 재미를 위한 것이에요." },
             { title: "PetBTI", body: "몇 가지 질문에 답하면 우리 아이만의 16가지 성격 유형이 나와요. 강아지와 고양이 각각에 맞는 질문으로 진행돼요." },
       { title: "PetBTI 결과 저장", body: "완료한 결과는 자동으로 저장돼서 'PetBTI 결과 보기'로 언제든 다시 볼 수 있고, '다시 검사하기'로 새로 진행할 수도 있어요." },
-      { title: "Pet정보", body: "건강관리·식단영양·행동훈련·성장생활·안전상식 다섯 카테고리, 총 50개의 꿀팁을 확인할 수 있어요. 검색창에서는 전체 꿀팁을 대상으로 검색돼요." },
+      { title: "Pet정보", body: "강아지·고양이·건강·생활·식단·훈련·안전·미용 8개 영역, 총 160개의 Pet정보를 확인할 수 있어요. 웹과 모바일 모두 20개씩 페이지로 나뉘며 검색은 전체 정보를 대상으로 해요." },
       { title: "Pet톡", body: "우리 아이 사진과 일상을 다른 보호자와 나누는 커뮤니티예요. 일상·자랑·질문·건강·정보공유·산책·훈련·용품추천·자유수다로 분류해서 글을 남기고 좋아요·댓글을 주고받을 수 있어요." },
-      { title: "닉네임 · 내 활동", body: "계정 설정에서 Pet톡에 표시할 닉네임을 변경할 수 있어요. MY와 Pet톡의 내 활동에서는 내가 작성한 글·댓글·좋아요를 확인할 수 있어요." },
-      { title: "검색", body: "Pet정보 화면 상단 검색창에 원하는 키워드를 입력하면 현재 페이지가 아닌 전체 50개 꿀팁 중에서 찾아줘요." },
+      { title: "닉네임 · 내 활동", body: "계정 설정에서 Pet톡에 표시할 닉네임을 변경할 수 있어요. 회원정보와 Pet톡의 내 활동에서는 내가 작성한 글·댓글·좋아요를 확인할 수 있어요." },
+      { title: "검색", body: "Pet정보 화면 상단 검색창에 원하는 키워드를 입력하면 현재 페이지가 아닌 전체 160개 정보에서 찾아줘요." },
       { title: "로그아웃", body: "우측 상단 계정 버튼을 누르면 로그아웃할 수 있어요. 로그아웃해도 서버에 저장된 정보는 삭제되지 않고, 다시 로그인하면 그대로 남아있어요." },
       { title: "회원탈퇴", body: "계정 설정에서 회원탈퇴를 진행하면 반려동물 정보·사진·PetBTI 결과·Pet톡 게시글과 댓글 등 계정에 연결된 데이터가 함께 삭제돼요. 삭제 후에는 복구할 수 없어요." },
     ],
@@ -529,7 +529,7 @@ const STRINGS = {
     communityComposeTitleCategory: "카테고리",
     communityComposeVisibility: "공개 설정",
     communityComposeVisibilityPublicHelp: "모든 PetGrow 이용자가 볼 수 있어요.",
-    communityComposeVisibilityPrivateHelp: "나만 볼 수 있어요. MY 페이지에서는 확인할 수 있어요.",
+    communityComposeVisibilityPrivateHelp: "나만 볼 수 있어요. 회원정보의 Pet톡 내 활동에서 확인할 수 있어요.",
     communityComposeTitleTitle: "제목",
     communityComposeTitlePlaceholder: "제목을 입력해주세요",
     communityComposeTitleContent: "내용",
@@ -870,8 +870,8 @@ const STRINGS = {
       { title: "Saju", body: "Fun Saju-style content — personality, compatibility, luck — generated from your registered pet's info, for entertainment and reference." },
             { title: "PetBTI", body: "Answer a few questions to get your pet's 16-type personality result, with questions tailored separately for dogs and cats." },
       { title: "Saving PetBTI results", body: "Your completed result is saved automatically — revisit it anytime with 'View PetBTI result', or take the test again." },
-      { title: "Pet Tips", body: "50 tips across five categories — health, diet & nutrition, behavior & training, growth & lifestyle, and safety. Search looks across all 50, not just the current page." },
-      { title: "Search", body: "Type a keyword into the search box on the Pet Tips screen to search across all 50 tips, not just the page you're on." },
+      { title: "Pet Tips", body: "160 Pet info articles across 8 categories, shown 20 per page on both web and mobile. Search works across the full collection." },
+      { title: "Search", body: "Type a keyword to search across all 160 Pet info articles, not just the current page." },
       { title: "Logging out", body: "Tap the account button in the top right to log out. Your data stays safely saved on the server and comes right back when you log in again." },
       { title: "Deleting your account", body: "Deleting your account from account settings removes all data linked to it — pet info, photos, and PetBTI results included. This can't be undone." },
     ],
@@ -1223,7 +1223,7 @@ const STRINGS = {
     landingMockPost2Name: "Nabi", landingMockPost2Breed: "Korean Shorthair", landingMockPost2Time: "1h ago",
     landingMockPost2Text: "Napping in the sun... do not disturb 🐱",
     landingTipsGuideTitle: "Pet Tips · Info Guide",
-    landingTipsGuideDesc: "50 tips across health, diet, behavior, growth, and lifestyle — plus a full info guide to PetGrow from start to finish.",
+    landingTipsGuideDesc: "160 Pet info articles across 8 categories, organized into pages of 20 for easier browsing.",
     landingTipsTeaserLabel: "Browse Pet Tips",
     landingGuideTeaserLabel: "How to use",
     landingFinalCtaLine1: "Today, with your pet —",
@@ -2251,14 +2251,14 @@ const GlobalStyle = () => (
     .bg-btn-ghost:hover{box-shadow:0 5px 0 var(--border);}
     .bg-btn-ghost:active{box-shadow:0 1px 0 var(--border);}
     .icon{width:22px;height:22px;fill:currentColor;stroke:none;flex-shrink:0;}
-    .bg-card{background:var(--bg); border:2px solid var(--border); border-radius:26px; padding:22px;}
+    .bg-card{background:#fff; border:1.5px solid #E2DDCF; border-radius:26px; padding:22px; box-shadow:0 7px 20px rgba(54,48,38,.045);}
     .result-columns{display:flex; flex-direction:column; gap:16px;}
     .result-block{display:flex; flex-direction:column;}
     @media (min-width:900px){
       .result-columns{display:block; column-count:2; column-gap:20px;}
       .result-columns > *{break-inside:avoid; -webkit-column-break-inside:avoid; margin-bottom:16px; display:block; width:100%;}
     }
-    .bg-surface-card{background:var(--surface); border-radius:22px; padding:20px;}
+    .bg-surface-card{background:#F2F5EC; border:1px solid #E3E7DA; border-radius:22px; padding:20px;}
     .bg-input{width:100%; max-width:100%; min-width:0; box-sizing:border-box; padding:12px 16px; border:2px solid var(--border); border-radius:18px; font-family:inherit;
       font-size:14px; background:#fff; color:var(--text);}
     .bg-input:focus{outline:none; border-color:var(--primary);}
@@ -2451,7 +2451,7 @@ const GlobalStyle = () => (
     .cm-owner-action-btn{min-height:44px;border:1px solid #e3ddd1;background:#fff;border-radius:16px;color:#3f3c37;font-family:inherit;font-size:12.5px;font-weight:750;line-height:1.25;padding:10px 8px;cursor:pointer;box-shadow:0 3px 8px rgba(52,45,35,.035);}
     .cm-owner-action-btn.danger{color:#c0392b;}
     .cm-owner-action-btn:disabled{opacity:.55;cursor:default;}
-    @media(max-width:560px){.cm-detail-body-card{padding:16px 15px;border-radius:18px}.cm-owner-actions{gap:7px}.cm-owner-action-btn{font-size:12px;min-height:42px;padding:8px 5px}}
+    @media(max-width:560px){.cm-detail-body-card{padding:17px 16px;border-radius:18px;background:#fff}.cm-owner-actions{gap:6px}.cm-owner-action-btn{font-size:11px;min-height:38px;padding:7px 4px;border-radius:13px}.cm-action-row{margin:14px 0}.cm-detail-content{font-size:14px;line-height:1.9}}
     .cm-card-img{width:100%; aspect-ratio:4/3; object-fit:cover; background:var(--surface); display:block;}
     .cm-card-body{padding:14px 16px 16px;}
     .cm-pet-row{display:flex; align-items:center; gap:8px; margin-bottom:8px;}
@@ -2732,6 +2732,15 @@ const GlobalStyle = () => (
     .cm-my-activity-btn:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(0,0,0,.06);}
     @media(max-width:560px){.cm-sort-row{align-items:center}.cm-my-activity-btn{padding:9px 11px}.bboggl-root{font-size:16px;-webkit-text-size-adjust:100%;text-size-adjust:100%}.bg-btn,.bg-chip,.tab-pill,input,textarea,select{font-size:16px}.app-bottom-nav-item{font-size:10.5px}}
     @media(prefers-reduced-motion:reduce){.bboggl-root *, .bboggl-root *::before,.bboggl-root *::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;}}
+    /* 2026-08-16 가독성 개선: 바깥 배경과 실제 콘텐츠 영역을 확실히 분리 */
+    .bboggl-root{background:#F8F5ED;}
+    .bg-card,.my-member-summary,.my-activity-card{background:#fff;}
+    .my-page-head{border:1px solid #E2E6D8;box-shadow:0 8px 22px rgba(55,68,48,.055);}
+    .my-member-summary,.my-activity-card{border:1px solid #E3DED2!important;box-shadow:0 6px 18px rgba(52,45,35,.045);}
+    .cm-detail-body-card{background:#fff!important;border-color:#DDD8CC;box-shadow:0 8px 22px rgba(52,45,35,.065);}
+    .cm-comment-row{background:#fff;border:1px solid #ECE7DC;border-radius:14px;padding:11px 12px;margin-bottom:8px;}
+    .cm-card{border-color:#DED9CD;box-shadow:0 6px 18px rgba(52,45,35,.055);}
+    @media(max-width:700px){.bg-card{padding:18px;border-radius:22px}.bg-surface-card{padding:16px;border-radius:18px}}
     .modal-overlay{position:fixed; inset:0; background:rgba(91,74,79,.45); display:flex; align-items:center;
       justify-content:center; padding:16px; padding-top:max(16px, env(safe-area-inset-top));
       padding-bottom:max(16px, env(safe-area-inset-bottom)); z-index:100;}
@@ -3407,67 +3416,35 @@ function fileToCompressedDataUrl(file, maxDim = 1280, quality = 0.82) {
 
 function AddPhotoCard({ onAdd }) {
   const t = useT();
+  const lang = useLang();
   const inputRef = useRef(null);
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
-  const [pendingFile, setPendingFile] = useState(null);
-  const [errors, setErrors] = useState({});
+  const [isAdding, setIsAdding] = useState(false);
   const [alert, setAlert] = useState("");
   const [alertPopup, setAlertPopup] = useState(false);
-
-  const handlePick = (e) => {
-    const file = e.target.files && e.target.files[0];
-    if (file) setPendingFile(file);
-    e.target.value = "";
-  };
-
-  const handleAdd = async () => {
-    const next = {};
-    if (!date) next.date = t.photoErrDate;
-    if (!pendingFile) next.photo = t.photoErrPhoto;
-    if (Object.keys(next).length > 0) {
-      setErrors(next);
-      setAlert(t.formAlertMissing);
-      setAlertPopup(true);
-      return;
-    }
-    setErrors({});
-    setAlert("");
+  const handlePick = async (e) => {
+    const files = Array.from(e.target.files || []); e.target.value = "";
+    if (!files.length) return;
+    if (!date) { setAlert(t.photoErrDate); setAlertPopup(true); return; }
+    setIsAdding(true); setAlert("");
     try {
-      const dataUrl = await fileToCompressedDataUrl(pendingFile);
-      onAdd(date, dataUrl);
-      setPendingFile(null);
-    } catch {
-      setAlert(t.photoSaveError);
-      setAlertPopup(true);
-    }
+      const dataUrls = [];
+      for (const file of files) dataUrls.push(await fileToCompressedDataUrl(file));
+      onAdd(date, dataUrls);
+    } catch { setAlert(t.photoSaveError); setAlertPopup(true); }
+    finally { setIsAdding(false); }
   };
-
   return (
     <div className="bg-surface-card">
-      {alert && (
-        <div className="form-alert">
-          <BellIcon style={{ width: 16, height: 16, color: "var(--primary)", marginTop: 1 }} />
-          <span>{alert}</span>
-        </div>
-      )}
+      {alert && <div className="form-alert"><BellIcon style={{ width: 16, height: 16, color: "var(--primary)", marginTop: 1 }} /><span>{alert}</span></div>}
       <div className="add-photo-row">
-        <div className="add-photo-field">
-          <label className="bg-label">{t.photoDateLabel}</label>
-          <input type="date" className={`bg-input ${errors.date ? "invalid" : ""}`} value={date} onChange={(e) => setDate(e.target.value)} />
-          {errors.date && <div className="field-error">{errors.date}</div>}
-        </div>
-        <div className="add-photo-field">
+        <div className="add-photo-field"><label className="bg-label">{t.photoDateLabel}</label><input type="date" className="bg-input" value={date} onChange={(e) => setDate(e.target.value)} /></div>
+        <div className="add-photo-field" style={{ flex: 1 }}>
           <label className="bg-label">{t.photoLabel}</label>
-          <button type="button" className={`bg-btn bg-btn-ghost ${errors.photo ? "invalid" : ""}`} style={{ width: "100%", textAlign: "center" }}
-            onClick={() => inputRef.current && inputRef.current.click()}>
-            {pendingFile ? pendingFile.name.slice(0, 16) : t.photoPickBtn}
-          </button>
-          <input ref={inputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handlePick} />
-          {errors.photo && <div className="field-error">{errors.photo}</div>}
+          <button type="button" className="bg-btn" style={{ width: "100%", height: 42 }} disabled={isAdding} onClick={() => inputRef.current && inputRef.current.click()}>{isAdding ? (lang === "ko" ? "사진 추가 중..." : "Adding photos...") : (lang === "ko" ? "사진 추가" : "Add photos")}</button>
+          <input ref={inputRef} type="file" accept="image/*" multiple style={{ display: "none" }} onChange={handlePick} />
+          <div className="bg-sub" style={{ marginTop: 6, fontSize: 11 }}>{lang === "ko" ? "여러 장을 한 번에 선택할 수 있어요. 선택하면 바로 성장앨범에 추가돼요." : "Select multiple photos at once. They are added immediately."}</div>
         </div>
-        <button className="bg-btn" style={{ height: 42 }} onClick={handleAdd}>
-          {t.photoAddBtn}
-        </button>
       </div>
       <AlertModal open={alertPopup} message={alert} onClose={() => setAlertPopup(false)} />
     </div>
@@ -4471,6 +4448,327 @@ const TIPS_DATA = [
     title: { ko: "미용 후 행동 변화 살피기", en: "미용 후 행동 변화 살피기" },
     summary: { ko: "미용 후 계속 핥거나 걷는 모습이 이상하면 피부 자극이나 발톱 상태를 확인해주세요.", en: "미용 후 계속 핥거나 걷는 모습이 이상하면 피부 자극이나 발톱 상태를 확인해주세요." },
     body: { ko: "미용 후 계속 핥거나 걷는 모습이 이상하면 피부 자극이나 발톱 상태를 확인해주세요. 아이마다 나이·체형·건강 상태가 다르므로 이상이 있거나 판단이 어려우면 수의사 또는 전문가와 상담해주세요.", en: "미용 후 계속 핥거나 걷는 모습이 이상하면 피부 자극이나 발톱 상태를 확인해주세요." } },
+  { id: "t91", category: "dog", featured: false,
+    title: { ko: "강아지 하품, 졸려서만 하는 건 아니에요", en: "Dog yawning can mean more than sleepiness" },
+    summary: { ko: "낯선 상황이나 긴장될 때 하품으로 스스로 진정하는 경우도 있어요.", en: "Dogs may yawn to calm themselves in unfamiliar or tense situations." },
+    body: { ko: "하품이 반복되면서 귀가 뒤로 젖거나 몸을 피한다면 피곤함보다 스트레스 신호일 수 있어요. 잠시 거리를 두고 편안한 환경을 만들어주세요.", en: "Repeated yawning with pinned-back ears or avoidance can signal stress. Give your dog space and a calmer environment." } },
+  { id: "t92", category: "dog", featured: false,
+    title: { ko: "산책 중 냄새 맡기는 것도 중요한 활동이에요", en: "Sniffing is an important part of walks" },
+    summary: { ko: "냄새 탐색은 강아지에게 단순한 멈춤이 아니라 두뇌 활동이에요.", en: "Sniffing is mental enrichment, not just stopping." },
+    body: { ko: "매번 빠르게 걷기보다 안전한 곳에서는 충분히 냄새를 맡게 해주세요. 짧은 산책도 탐색 시간이 포함되면 만족도가 높아질 수 있어요.", en: "Let your dog explore scents in safe areas. Even a short walk can be satisfying when it includes time to sniff." } },
+  { id: "t93", category: "dog", featured: false,
+    title: { ko: "강아지가 앞발로 툭툭 건드리는 이유", en: "Why dogs tap you with a paw" },
+    summary: { ko: "관심·놀이·요구 표현일 수 있지만 상황을 함께 봐야 해요.", en: "It can be a request for attention, play, or something they want." },
+    body: { ko: "밥시간이나 놀이 직전에 반복된다면 원하는 것을 알려주는 행동일 수 있어요. 매번 즉시 반응하기보다 차분한 행동을 했을 때 원하는 것을 제공해보세요.", en: "Look at the context. Reward calm behavior rather than responding instantly every time your dog paws at you." } },
+  { id: "t94", category: "dog", featured: false,
+    title: { ko: "강아지 수면 시간은 생각보다 길어요", en: "Dogs need more sleep than many people expect" },
+    summary: { ko: "성견도 하루의 절반 가까이를 자거나 쉬며 보낼 수 있어요.", en: "Adult dogs can spend much of the day sleeping or resting." },
+    body: { ko: "활동 후 충분히 쉴 수 있는 조용한 공간을 마련해주세요. 평소보다 지나치게 많이 자거나 반대로 잠을 전혀 못 자는 변화가 지속되면 건강 상태도 살펴보세요.", en: "Provide a quiet place to rest. A persistent, sudden change in sleep patterns can be worth discussing with a veterinarian." } },
+  { id: "t95", category: "dog", featured: false,
+    title: { ko: "강아지 귀 모양도 감정을 알려줘요", en: "Dog ears can reveal emotion" },
+    summary: { ko: "귀가 앞으로 향하는지 뒤로 젖는지에 따라 긴장도와 관심 상태를 짐작할 수 있어요.", en: "Ear position can offer clues about attention and tension." },
+    body: { ko: "귀만 단독으로 판단하지 말고 꼬리·눈·몸의 긴장도를 함께 보세요. 같은 귀 모양도 상황에 따라 의미가 달라질 수 있어요.", en: "Read ear position together with the tail, eyes, and overall body posture because the meaning changes with context." } },
+  { id: "t96", category: "dog", featured: false,
+    title: { ko: "비 오는 날 산책이 어렵다면 실내 노즈워크", en: "Try indoor scent games on rainy days" },
+    summary: { ko: "간식을 찾는 짧은 놀이도 에너지 해소에 도움이 돼요.", en: "Short treat-finding games can provide mental exercise." },
+    body: { ko: "수건이나 노즈워크 매트에 간식을 숨기고 쉬운 단계부터 시작하세요. 삼킬 수 있는 작은 물건은 사용하지 않는 것이 좋아요.", en: "Hide treats in a towel or snuffle mat and start easy. Avoid small objects that could be swallowed." } },
+  { id: "t97", category: "dog", featured: false,
+    title: { ko: "강아지가 몸을 털어내는 행동의 의미", en: "Why dogs shake off when they are not wet" },
+    summary: { ko: "물기가 없어도 긴장된 상황이 끝난 뒤 몸을 털 수 있어요.", en: "Dogs may shake their bodies after a tense interaction as a reset behavior." },
+    body: { ko: "낯선 사람을 만났거나 훈련이 끝난 직후 몸을 턴다면 긴장을 해소하는 전환 행동일 수 있어요. 이런 신호를 알면 휴식 타이밍을 잡기 쉬워요.", en: "A shake-off after training or meeting someone new can signal release of tension and may be a good cue for a break." } },
+  { id: "t98", category: "dog", featured: false,
+    title: { ko: "강아지 장난감은 종류를 바꿔가며 보여주세요", en: "Rotate dog toys to keep them interesting" },
+    summary: { ko: "늘 같은 장난감보다 일부만 꺼내 순환하면 흥미를 유지하기 쉬워요.", en: "Rotating a few toys at a time can make familiar toys feel new again." },
+    body: { ko: "모든 장난감을 항상 두기보다 3~4개씩 번갈아 제공해보세요. 손상된 장난감은 삼킴 사고를 막기 위해 바로 치워주세요.", en: "Offer a small selection and swap them regularly. Remove damaged toys promptly to reduce swallowing hazards." } },
+  { id: "t99", category: "dog", featured: false,
+    title: { ko: "강아지 발 핥기가 늘었다면 원인을 살펴보세요", en: "Frequent paw licking deserves attention" },
+    summary: { ko: "심심함뿐 아니라 피부 자극·알레르기·통증 때문일 수도 있어요.", en: "Paw licking can come from boredom, irritation, allergies, or pain." },
+    body: { ko: "한쪽 발만 집중적으로 핥거나 붉어짐·냄새·상처가 보이면 단순 습관으로 넘기지 마세요. 반복되면 수의사에게 확인받는 것이 좋아요.", en: "If your dog focuses on one paw or you see redness, odor, or sores, consider veterinary advice rather than assuming it is a habit." } },
+  { id: "t100", category: "dog", featured: false,
+    title: { ko: "강아지와 인사할 땐 먼저 다가가게 해주세요", en: "Let dogs choose to approach when greeting" },
+    summary: { ko: "낯선 사람이 위에서 손을 내미는 행동은 부담이 될 수 있어요.", en: "A hand reaching down from above can feel intimidating to some dogs." },
+    body: { ko: "정면으로 다가가거나 머리를 바로 쓰다듬기보다 옆으로 서서 강아지가 스스로 가까이 오도록 기다리는 편이 좋아요.", en: "Stand slightly sideways and allow the dog to approach voluntarily before attempting gentle contact." } },
+  { id: "t101", category: "cat", featured: false,
+    title: { ko: "고양이가 천천히 눈을 깜빡이는 이유", en: "Why cats slow-blink" },
+    summary: { ko: "편안함과 신뢰를 표현하는 행동으로 알려져 있어요.", en: "Slow blinking is commonly associated with relaxation and trust." },
+    body: { ko: "고양이가 편안한 자세로 천천히 눈을 감았다 뜬다면 보호자도 부드럽게 천천히 깜빡여보세요. 억지로 눈을 맞추는 것보다 부담이 적어요.", en: "If your cat looks relaxed, try a gentle slow blink back instead of holding an intense stare." } },
+  { id: "t102", category: "cat", featured: false,
+    title: { ko: "고양이 물그릇과 밥그릇은 떨어뜨려 놓아도 좋아요", en: "Try separating food and water bowls" },
+    summary: { ko: "먹는 곳과 물 마시는 곳을 분리하면 음수량이 늘어나는 고양이도 있어요.", en: "Some cats drink more when water is placed away from food." },
+    body: { ko: "여러 위치에 깨끗한 물을 두고 어떤 그릇을 선호하는지 관찰해보세요. 넓고 얕은 그릇을 편하게 느끼는 아이도 많아요.", en: "Offer clean water in several locations and observe preferences. Many cats also like wide, shallow bowls." } },
+  { id: "t103", category: "cat", featured: false,
+    title: { ko: "고양이 높은 곳은 안전기지 역할을 해요", en: "High places can be safe zones for cats" },
+    summary: { ko: "캣타워나 선반처럼 주변을 내려다볼 수 있는 공간이 안정감을 줄 수 있어요.", en: "Elevated spaces can help cats feel secure while observing their surroundings." },
+    body: { ko: "높은 공간은 올라가고 내려오는 동선이 안전해야 해요. 노령묘라면 중간 발판을 두어 점프 부담을 줄여주세요.", en: "Make climbing routes stable and add intermediate steps for older cats to reduce jumping strain." } },
+  { id: "t104", category: "cat", featured: false,
+    title: { ko: "고양이 놀이의 끝에는 잡는 경험을 주세요", en: "Let cats finish play with a catch" },
+    summary: { ko: "레이저만 계속 쫓고 끝나면 사냥 행동이 완결되지 않아 답답할 수 있어요.", en: "Chasing a laser without catching anything can be frustrating." },
+    body: { ko: "레이저를 사용했다면 마지막에는 실제 장난감이나 간식으로 연결해 잡는 경험을 만들어주세요. 짧고 집중적인 놀이가 좋아요.", en: "End laser play by directing the cat to a physical toy or small treat so the hunting sequence has a clear finish." } },
+  { id: "t105", category: "cat", featured: false,
+    title: { ko: "고양이 수염은 좁은 그릇에서 불편할 수 있어요", en: "Some cats prefer bowls that do not touch their whiskers" },
+    summary: { ko: "수염이 그릇 가장자리에 계속 닿는 것을 싫어하는 고양이도 있어요.", en: "Repeated whisker contact with bowl edges can bother some cats." },
+    body: { ko: "식사할 때 자꾸 사료를 밖으로 꺼내 먹거나 그릇을 피한다면 넓고 낮은 식기를 시험해보세요.", en: "If your cat pulls food out of the bowl, try a wider, shallower dish." } },
+  { id: "t106", category: "cat", featured: false,
+    title: { ko: "고양이가 갑자기 숨어 있는 시간이 늘었다면", en: "A sudden increase in hiding can be meaningful" },
+    summary: { ko: "환경 변화뿐 아니라 통증이나 컨디션 저하의 신호일 수도 있어요.", en: "More hiding can reflect stress, discomfort, or illness." },
+    body: { ko: "평소와 다르게 장시간 숨고 식욕·배변·활동량 변화까지 동반된다면 스트레스만으로 단정하지 말고 건강 상태를 확인해주세요.", en: "If hiding comes with changes in appetite, litter-box use, or activity, consider a veterinary check." } },
+  { id: "t107", category: "cat", featured: false,
+    title: { ko: "고양이 이동장은 평소에도 열어두세요", en: "Keep the cat carrier out between trips" },
+    summary: { ko: "병원 가는 날에만 꺼내면 이동장 자체가 긴장 신호가 될 수 있어요.", en: "A carrier used only for vet visits can become a strong stress cue." },
+    body: { ko: "평소 방 한쪽에 담요와 간식을 넣어 편안한 숨숨집처럼 사용하면 이동장 적응에 도움이 돼요.", en: "Leave it open with bedding or treats so it becomes a familiar resting place." } },
+  { id: "t108", category: "cat", featured: false,
+    title: { ko: "고양이 꼬리가 부풀었다면 거리를 주세요", en: "Give space when a cat puffs up its tail" },
+    summary: { ko: "강한 놀람이나 두려움·흥분 상태에서 꼬리 털이 크게 부풀 수 있어요.", en: "A puffed tail often accompanies strong fear, surprise, or arousal." },
+    body: { ko: "이때 안거나 만지려고 하기보다 도망갈 공간을 확보하고 주변 자극을 줄여주세요. 진정될 시간을 주는 것이 좋아요.", en: "Reduce stimulation and give the cat room to retreat rather than trying to pick it up." } },
+  { id: "t109", category: "cat", featured: false,
+    title: { ko: "고양이 장난감 끈은 사용 후 치워주세요", en: "Put string toys away after play" },
+    summary: { ko: "실·리본·끈은 재미있지만 혼자 가지고 놀다 삼킬 위험이 있어요.", en: "String and ribbon toys can be dangerous if swallowed." },
+    body: { ko: "보호자가 지켜보는 놀이에만 사용하고 끝나면 손이 닿지 않는 곳에 보관하세요. 끈을 삼킨 것 같다면 억지로 잡아당기지 마세요.", en: "Use them only with supervision, store them afterward, and do not pull on string if you suspect your cat swallowed it." } },
+  { id: "t110", category: "cat", featured: false,
+    title: { ko: "다묘 가정은 자원을 여러 곳에 나눠주세요", en: "Spread resources around in multi-cat homes" },
+    summary: { ko: "화장실·물·밥·숨는 곳이 한곳에 몰리면 경쟁과 긴장이 생길 수 있어요.", en: "Crowding litter boxes, food, water, and resting places can increase competition." },
+    body: { ko: "고양이들이 서로 피해서 이용할 수 있도록 자원을 떨어진 위치에 배치하세요. 갈등이 있으면 수직 공간도 충분히 마련해주세요.", en: "Place resources in separate locations and provide enough vertical space so cats can avoid each other when needed." } },
+  { id: "t111", category: "health", featured: false,
+    title: { ko: "평소 호흡수를 알아두면 변화가 보여요", en: "Know your pet’s normal resting breathing rate" },
+    summary: { ko: "편안히 자는 동안의 호흡수를 가끔 확인해두면 평소 기준을 알기 쉬워요.", en: "Occasionally checking breathing during restful sleep can help you notice changes." },
+    body: { ko: "운동 직후가 아닌 깊이 쉬는 상태에서 가슴 움직임을 관찰하세요. 갑자기 호흡이 빠르거나 힘들어 보이면 즉시 진료가 필요한 경우가 있어요.", en: "Observe when your pet is fully at rest. Labored or suddenly rapid breathing can require prompt veterinary care." } },
+  { id: "t112", category: "health", featured: false,
+    title: { ko: "잇몸 색깔도 건강 신호가 될 수 있어요", en: "Gum color can offer health clues" },
+    summary: { ko: "평소 잇몸의 색을 알아두면 급격한 변화를 알아채는 데 도움이 돼요.", en: "Knowing your pet’s usual gum color can help you spot sudden changes." },
+    body: { ko: "잇몸이 매우 창백하거나 파랗게 보이거나 출혈이 지속되면 응급 상황일 수 있어요. 평소 정상 색을 사진으로 기록해두는 것도 좋아요.", en: "Very pale, blue, or persistently bleeding gums may be urgent. A reference photo of normal gums can be useful." } },
+  { id: "t113", category: "health", featured: false,
+    title: { ko: "물 마시는 양이 갑자기 늘면 기록해보세요", en: "Track a sudden increase in thirst" },
+    summary: { ko: "날씨나 활동량 때문일 수도 있지만 질환의 초기 신호일 수도 있어요.", en: "Heat and exercise can increase drinking, but persistent changes may signal illness." },
+    body: { ko: "며칠 이상 평소보다 현저히 많이 마시고 소변량도 함께 늘었다면 급수량과 배뇨 횟수를 기록해 병원 상담 때 알려주세요.", en: "If drinking and urination stay noticeably higher for several days, record them and discuss the pattern with a veterinarian." } },
+  { id: "t114", category: "health", featured: false,
+    title: { ko: "귀를 자주 긁고 냄새가 난다면 확인이 필요해요", en: "Frequent ear scratching and odor need attention" },
+    summary: { ko: "귀 염증이나 피부 문제로 불편할 수 있어요.", en: "Ear inflammation or skin problems may cause discomfort." },
+    body: { ko: "검은 분비물·붉어짐·심한 냄새·고개 흔들기가 함께 보이면 면봉으로 깊게 청소하기보다 병원에서 원인을 확인하세요.", en: "If you see discharge, redness, strong odor, or head shaking, avoid deep cleaning and seek veterinary advice." } },
+  { id: "t115", category: "health", featured: false,
+    title: { ko: "절뚝임은 사라져도 반복되면 체크하세요", en: "Repeated limping is worth checking" },
+    summary: { ko: "잠깐 괜찮아 보여도 관절·발바닥·근육 문제일 수 있어요.", en: "Even intermittent limping can reflect paw, joint, or muscle problems." },
+    body: { ko: "언제부터 어느 다리를 저는지, 운동 후 심해지는지 영상을 남기면 진료에 도움이 됩니다. 심한 통증이나 체중을 못 싣는 경우는 빨리 확인하세요.", en: "Record which leg is affected and when it worsens. Video can help your veterinarian, especially if the limp is not constant." } },
+  { id: "t116", category: "health", featured: false,
+    title: { ko: "갑작스러운 체중 변화는 숫자로 확인하세요", en: "Track unexpected weight changes" },
+    summary: { ko: "눈대중보다 정기적인 체중 기록이 변화를 빨리 알아채는 데 도움이 돼요.", en: "Regular weighing catches trends that are easy to miss by sight." },
+    body: { ko: "같은 조건에서 주기적으로 체중을 재고 식사량과 함께 기록해보세요. 이유 없는 감소나 빠른 증가는 건강 검진이 필요할 수 있어요.", en: "Weigh under similar conditions and log food intake. Unexplained loss or rapid gain can warrant a veterinary exam." } },
+  { id: "t117", category: "health", featured: false,
+    title: { ko: "눈을 자꾸 찡그리거나 한쪽만 감는다면", en: "Squinting can indicate eye pain" },
+    summary: { ko: "눈 통증이나 이물·각막 문제 가능성이 있어 빠른 확인이 중요해요.", en: "Repeatedly closing one eye can be caused by irritation, injury, or corneal problems." },
+    body: { ko: "눈을 비비거나 눈물이 많아지고 충혈까지 있다면 집에서 안약을 임의로 사용하지 말고 진료를 받아주세요.", en: "If squinting comes with rubbing, tearing, or redness, avoid using unprescribed eye drops and seek veterinary care." } },
+  { id: "t118", category: "health", featured: false,
+    title: { ko: "배변 상태도 건강 기록의 일부예요", en: "Stool changes are useful health information" },
+    summary: { ko: "횟수·형태·색의 변화가 소화기 상태를 알려줄 수 있어요.", en: "Frequency, form, and color can provide clues about digestive health." },
+    body: { ko: "평소와 다른 설사·변비가 지속되거나 혈액·검은 변이 보이면 사진과 횟수를 기록하고 병원에 상담하세요.", en: "If diarrhea, constipation, blood, or black stool persists, record the pattern and seek veterinary advice." } },
+  { id: "t119", category: "health", featured: false,
+    title: { ko: "약은 사람용을 임의로 주면 안 돼요", en: "Never give human medicine without veterinary guidance" },
+    summary: { ko: "사람에게 흔한 진통제도 반려동물에게 매우 위험할 수 있어요.", en: "Common human medications can be dangerous to pets." },
+    body: { ko: "증상이 비슷해 보여도 사람 약이나 다른 동물의 처방약을 주지 마세요. 약을 잘못 먹었다면 제품명·용량을 확인해 즉시 병원에 연락하세요.", en: "Do not share prescriptions or give over-the-counter human medicine unless a veterinarian specifically directs you." } },
+  { id: "t120", category: "health", featured: false,
+    title: { ko: "기침과 헛구역질은 영상으로 남겨보세요", en: "Record coughing episodes on video" },
+    summary: { ko: "짧게 나타나는 증상은 병원에서 재현되지 않을 수 있어 영상이 도움이 돼요.", en: "Short episodes may not occur during a clinic visit, so video can be useful." },
+    body: { ko: "기침의 빈도·시간대·운동과의 관계를 함께 기록하세요. 호흡곤란이나 잇몸 색 변화가 있으면 지체하지 말고 진료받으세요.", en: "Note timing, frequency, and relation to exercise. Breathing difficulty or gum-color changes require prompt care." } },
+  { id: "t121", category: "life", featured: false,
+    title: { ko: "여행 전 가까운 동물병원을 미리 찾아두세요", en: "Find a nearby vet before traveling" },
+    summary: { ko: "낯선 지역에서는 응급 상황 때 병원을 찾는 데 시간이 걸릴 수 있어요.", en: "Locating veterinary care takes longer in an unfamiliar place." },
+    body: { ko: "숙소 근처 일반 병원과 24시간 응급 병원 위치·전화번호를 미리 저장해두면 이동 중 문제가 생겼을 때 도움이 됩니다.", en: "Save the address and phone number of a regular clinic and an emergency hospital near your destination." } },
+  { id: "t122", category: "life", featured: false,
+    title: { ko: "집 안 미끄러운 바닥은 보행에 부담이 될 수 있어요", en: "Reduce slippery flooring at home" },
+    summary: { ko: "특히 어린 아이나 노령 반려동물은 미끄럼 방지 매트가 도움이 돼요.", en: "Slippery surfaces can be difficult for puppies, seniors, and pets with joint problems." },
+    body: { ko: "자주 뛰거나 방향을 바꾸는 동선부터 매트를 깔아주세요. 발바닥 털과 발톱 길이도 미끄러움에 영향을 줄 수 있어요.", en: "Add non-slip mats along common routes and keep nails and paw hair appropriately trimmed." } },
+  { id: "t123", category: "life", featured: false,
+    title: { ko: "손님이 많은 날엔 쉴 공간을 따로 마련해요", en: "Provide a quiet retreat when guests visit" },
+    summary: { ko: "사람을 좋아하는 반려동물도 계속되는 자극에 지칠 수 있어요.", en: "Even social pets can become overwhelmed by constant stimulation." },
+    body: { ko: "조용한 방이나 익숙한 방석을 준비하고 스스로 물러날 수 있게 해주세요. 아이가 쉬는 공간에서는 손님이 따라가지 않도록 알려주세요.", en: "Set up a familiar, quiet resting area and ask guests to leave the pet alone when it retreats there." } },
+  { id: "t124", category: "life", featured: false,
+    title: { ko: "에어컨 바람을 직접 오래 맞지 않게 해주세요", en: "Avoid constant direct air-conditioning" },
+    summary: { ko: "여름 실내 온도 관리가 중요하지만 차가운 바람이 계속 몸에 닿지 않게 해요.", en: "Cooling is important in summer, but pets should be able to move away from cold airflow." },
+    body: { ko: "스스로 시원한 곳과 따뜻한 곳을 선택할 수 있도록 여러 휴식 공간을 마련하고 실내외 온도 차가 너무 크지 않도록 관리하세요.", en: "Provide several resting spots so your pet can choose a comfortable temperature." } },
+  { id: "t125", category: "life", featured: false,
+    title: { ko: "반려동물 물건도 정기적으로 세척해요", en: "Clean pet bedding and toys regularly" },
+    summary: { ko: "방석·담요·장난감에는 털과 침, 먼지가 쌓이기 쉬워요.", en: "Bedding and toys collect hair, saliva, and dust." },
+    body: { ko: "세탁 가능한 제품은 표시 방법에 맞게 주기적으로 세척하고 충분히 말려주세요. 세제가 남지 않도록 잘 헹구는 것도 중요해요.", en: "Wash according to care instructions, rinse thoroughly, and let items dry completely before reuse." } },
+  { id: "t126", category: "life", featured: false,
+    title: { ko: "새 가구를 들였을 땐 냄새 탐색 시간을 주세요", en: "Give pets time to inspect new furniture" },
+    summary: { ko: "환경 변화에 민감한 아이는 새 물건만으로도 긴장할 수 있어요.", en: "New smells and objects can be stressful for sensitive pets." },
+    body: { ko: "억지로 가까이 데려가기보다 멀리서 탐색하도록 두고 익숙한 담요나 장난감을 주변에 두면 적응에 도움이 될 수 있어요.", en: "Let your pet approach at its own pace and keep familiar bedding or toys nearby." } },
+  { id: "t127", category: "life", featured: false,
+    title: { ko: "정전이나 재난 상황용 이동 준비를 해두세요", en: "Prepare a pet emergency kit" },
+    summary: { ko: "이동장·리드줄·사료·물·약·기록을 한곳에 준비하면 급할 때 도움이 돼요.", en: "Keeping a carrier, leash, food, water, medication, and records together saves time in an emergency." },
+    body: { ko: "반려동물 사진과 등록번호, 복용 중인 약 정보도 휴대폰과 종이에 함께 보관해두세요. 정기적으로 유통기한을 확인하세요.", en: "Include recent photos, identification details, and medication information, and check expiration dates regularly." } },
+  { id: "t128", category: "life", featured: false,
+    title: { ko: "향이 강한 제품은 반려동물 반응을 살펴요", en: "Watch reactions to strongly scented products" },
+    summary: { ko: "향초·디퓨저·강한 세정제 냄새를 불편해하는 아이가 있을 수 있어요.", en: "Candles, diffusers, and cleaners can bother sensitive pets." },
+    body: { ko: "새 제품을 사용할 때 재채기·기침·회피 행동이 나타나는지 관찰하고 충분히 환기하세요. 제품 성분의 안전성도 확인하는 것이 좋아요.", en: "Ventilate well and watch for sneezing, coughing, or avoidance when introducing a new scented product." } },
+  { id: "t129", category: "life", featured: false,
+    title: { ko: "하루 루틴은 완벽한 시간보다 예측 가능성이 중요해요", en: "Predictable routines can help pets feel secure" },
+    summary: { ko: "식사·산책·놀이가 어느 정도 일정하면 반려동물이 하루를 예측하기 쉬워요.", en: "Meals, walks, and play do not need exact clock times, but a consistent pattern is helpful." },
+    body: { ko: "매일 정확히 같은 시각일 필요는 없지만 큰 흐름을 비슷하게 유지해보세요. 일정 변화가 있을 땐 활동을 조금씩 조정하는 편이 좋아요.", en: "Keep the general flow of the day predictable and introduce major schedule changes gradually when possible." } },
+  { id: "t130", category: "life", featured: false,
+    title: { ko: "사진과 함께 작은 일상 기록을 남겨보세요", en: "Keep simple daily notes with photos" },
+    summary: { ko: "체중뿐 아니라 식욕·활동·특이 행동을 적어두면 변화를 알아보기 쉬워요.", en: "Short notes about appetite, activity, and unusual behavior can make changes easier to notice." },
+    body: { ko: "매일 길게 적을 필요 없이 한두 문장과 사진이면 충분해요. 건강 상담이 필요할 때 과거 상태를 비교하는 자료가 될 수도 있어요.", en: "A sentence or two is enough and can provide useful context if you later need veterinary advice." } },
+  { id: "t131", category: "food", featured: false,
+    title: { ko: "사료 계량컵보다 저울이 더 정확해요", en: "A kitchen scale is more precise than a scoop" },
+    summary: { ko: "같은 한 컵이라도 사료 알갱이 크기와 담는 방식에 따라 무게가 달라질 수 있어요.", en: "The weight of a cup of kibble varies with size and how it is filled." },
+    body: { ko: "체중 관리가 필요하다면 주방 저울로 하루 급여량을 g 단위로 재어 나누는 방법이 더 일정해요.", en: "For accurate portion control, weigh the daily amount in grams and divide it into meals." } },
+  { id: "t132", category: "food", featured: false,
+    title: { ko: "습식과 건식은 열량 차이를 확인하세요", en: "Check calories when switching between wet and dry food" },
+    summary: { ko: "같은 부피라도 제품마다 칼로리가 크게 다를 수 있어요.", en: "Foods with similar volume can have very different calorie density." },
+    body: { ko: "급여 형태를 바꿀 때 포장지의 kcal 표시를 확인하고 단순히 같은 양으로 바꾸지 마세요. 필요한 열량은 아이마다 다릅니다.", en: "Compare kcal information on the label rather than replacing one type with the same volume of another." } },
+  { id: "t133", category: "food", featured: false,
+    title: { ko: "간식도 하루 총 급여량에 포함해 계산해요", en: "Count treats as part of daily calories" },
+    summary: { ko: "훈련 간식을 자주 주는 날은 생각보다 열량이 빠르게 늘 수 있어요.", en: "Training treats can add up quickly." },
+    body: { ko: "훈련용 간식은 작은 크기로 나누고 그날 먹은 간식량이 많다면 주식 급여량을 전문가 지침에 따라 조절해보세요.", en: "Use very small pieces and consider total treat intake when planning the day’s food." } },
+  { id: "t134", category: "food", featured: false,
+    title: { ko: "사료 보관은 원래 포장째 밀폐 용기에", en: "Store kibble in its original bag inside a sealed container" },
+    summary: { ko: "포장지에는 유통기한·로트번호가 있고 내부 코팅이 제품 보관에 맞게 설계돼 있어요.", en: "The original packaging carries batch information and is designed for food storage." },
+    body: { ko: "사료를 봉지째 밀폐 용기에 넣고 서늘하고 건조한 곳에 보관하면 정보도 보존하고 공기 노출도 줄일 수 있어요.", en: "Place the whole bag in an airtight container in a cool, dry location." } },
+  { id: "t135", category: "food", featured: false,
+    title: { ko: "개봉한 습식 사료는 오래 두지 마세요", en: "Do not leave opened wet food out for long" },
+    summary: { ko: "남은 제품은 냉장 보관하고 제조사 안내 기간 안에 사용하는 것이 좋아요.", en: "Refrigerate leftovers and follow the manufacturer’s storage guidance." },
+    body: { ko: "급여 후 실온에 오래 남은 음식은 버리고 그릇을 세척해주세요. 냉장 음식은 너무 차갑지 않게 조절해주는 아이도 있어요.", en: "Discard food left at room temperature too long and wash the bowl after feeding." } },
+  { id: "t136", category: "food", featured: false,
+    title: { ko: "새 단백질 간식도 알레르기 반응을 관찰하세요", en: "Introduce new protein treats one at a time" },
+    summary: { ko: "새로운 재료를 먹인 뒤 피부·귀·소화기 변화가 나타나는지 살펴보세요.", en: "Watch for skin, ear, or digestive changes after a new ingredient." },
+    body: { ko: "여러 새 음식을 동시에 주면 원인을 찾기 어려워요. 하나씩 소량으로 도입하고 이상이 있으면 중단한 뒤 상담하세요.", en: "Introducing one new food at a time makes it easier to identify a possible reaction." } },
+  { id: "t137", category: "food", featured: false,
+    title: { ko: "식사 직후 격한 운동은 피해주세요", en: "Avoid intense exercise immediately after meals" },
+    summary: { ko: "특히 큰 체형의 강아지는 식전·식후 격한 활동을 피하는 것이 안전해요.", en: "A calm period around meals is especially important for large dogs." },
+    body: { ko: "식사 후에는 편안하게 쉬게 하고 산책이나 격한 놀이 시간은 여유를 두세요. 아이의 건강 상태에 맞는 운동 시점은 수의사와 상담할 수 있어요.", en: "Allow time to rest after eating before vigorous play or exercise." } },
+  { id: "t138", category: "food", featured: false,
+    title: { ko: "고양이는 장시간 굶지 않게 주의하세요", en: "Do not ignore prolonged appetite loss in cats" },
+    summary: { ko: "식사를 거의 하지 않는 상태가 이어지는 것은 단순한 입맛 문제로 넘기면 안 돼요.", en: "A cat that barely eats for an extended period needs attention." },
+    body: { ko: "평소 먹던 양보다 크게 줄거나 하루 이상 거의 먹지 않는다면 특히 과체중 고양이는 빠르게 병원에 상담하는 것이 좋아요.", en: "A marked drop in intake, especially in an overweight cat, should be discussed promptly with a veterinarian." } },
+  { id: "t139", category: "food", featured: false,
+    title: { ko: "물 섭취를 늘리려면 여러 방법을 시험해보세요", en: "Try different safe ways to encourage drinking" },
+    summary: { ko: "그릇 위치·재질·수온·정수기 선호는 아이마다 달라요.", en: "Pets vary in their preferences for bowl location, material, and water temperature." },
+    body: { ko: "물을 자주 갈고 여러 장소에 두거나 습식 급여를 활용하는 등 안전한 방법을 하나씩 시험해보세요. 갑작스러운 과음은 건강 확인이 필요해요.", en: "Offer fresh water in several spots or use wet food when appropriate, while monitoring sudden excessive thirst." } },
+  { id: "t140", category: "food", featured: false,
+    title: { ko: "치료식은 건강한 다른 아이와 나눠 먹이지 않기", en: "Keep prescription diets for the intended pet" },
+    summary: { ko: "처방·치료 목적 사료는 특정 질환과 영양 조건에 맞춰져 있어요.", en: "Therapeutic diets are formulated for specific medical and nutritional needs." },
+    body: { ko: "다묘·다견 가정에서는 식사 공간을 분리해 서로의 사료를 바꿔 먹지 않도록 관리하세요. 치료식 변경은 담당 수의사와 상의하세요.", en: "In multi-pet homes, feed separately so pets do not swap food, and discuss diet changes with the treating veterinarian." } },
+  { id: "t141", category: "training", featured: false,
+    title: { ko: "보상은 아이가 정말 좋아하는 것으로 골라요", en: "Use rewards your pet truly values" },
+    summary: { ko: "칭찬·간식·장난감 중 무엇이 동기부여가 되는지는 아이마다 달라요.", en: "Food, toys, praise, and access to activities motivate different pets differently." },
+    body: { ko: "집에서는 사료 한 알로도 잘 되지만 밖에서는 더 좋은 보상이 필요할 수 있어요. 환경에 따라 보상의 가치를 조절해보세요.", en: "A reward that works at home may be too weak outdoors, so adjust reward value to the environment." } },
+  { id: "t142", category: "training", featured: false,
+    title: { ko: "한 번에 한 가지 행동만 알려주세요", en: "Teach one new behavior at a time" },
+    summary: { ko: "여러 신호를 동시에 배우면 기준이 헷갈릴 수 있어요.", en: "Too many new cues at once can make criteria confusing." },
+    body: { ko: "새 행동이 안정적으로 나오기 전에는 비슷한 새 과제를 너무 많이 추가하지 말고 짧은 성공을 반복해주세요.", en: "Build a reliable response to one behavior before adding several similar new tasks." } },
+  { id: "t143", category: "training", featured: false,
+    title: { ko: "훈련은 잘될 때 짧게 끝내는 것도 기술이에요", en: "End training while it is still going well" },
+    summary: { ko: "지치기 직전까지 반복하기보다 성공한 순간 종료하면 다음 훈련 기대감이 남아요.", en: "Stopping after a good repetition can preserve motivation." },
+    body: { ko: "1~3분처럼 짧은 세션을 여러 번 나눠도 충분해요. 집중력이 떨어지기 전에 쉬는 것이 효율적입니다.", en: "Several one-to-three-minute sessions can be more effective than one long session." } },
+  { id: "t144", category: "training", featured: false,
+    title: { ko: "문 앞 기다리기는 안전 습관으로 연결돼요", en: "Doorway waiting is a useful safety skill" },
+    summary: { ko: "현관이나 차 문이 열릴 때 바로 뛰어나가지 않는 연습은 사고 예방에 도움이 돼요.", en: "Teaching a pause before going through an open door can reduce escape risk." },
+    body: { ko: "처음에는 조용한 실내문에서 시작해 문이 열려도 기다리면 보상하고, 성공률이 높아진 뒤 실제 현관으로 난이도를 올리세요.", en: "Start at an easy indoor doorway and gradually practice in more realistic settings." } },
+  { id: "t145", category: "training", featured: false,
+    title: { ko: "리콜 훈련에서 이름을 혼내는 신호로 쓰지 마세요", en: "Keep recall cues positive" },
+    summary: { ko: "불렀을 때 자주 혼나면 보호자에게 오는 행동이 약해질 수 있어요.", en: "If coming when called often leads to scolding, recall can weaken." },
+    body: { ko: "호출 후에는 가능한 한 좋은 일이 생기게 하고, 당장 잡아야 하는 상황 외에는 쫓아가며 반복해서 부르는 것을 줄여보세요.", en: "Pair coming to you with good outcomes and avoid repeatedly chasing and calling when possible." } },
+  { id: "t146", category: "training", featured: false,
+    title: { ko: "산책 줄 당김은 멈춤과 방향 전환부터", en: "Work on leash pulling with pauses and direction changes" },
+    summary: { ko: "계속 당긴 상태로 앞으로 가면 당기기가 이동 방법으로 학습될 수 있어요.", en: "Moving forward while the leash stays tight can reinforce pulling." },
+    body: { ko: "줄이 느슨해졌을 때 다시 움직이고, 필요하면 조용히 방향을 바꿔 보호자 쪽에 집중하도록 연습하세요.", en: "Resume walking when the leash loosens and use calm direction changes to regain attention." } },
+  { id: "t147", category: "training", featured: false,
+    title: { ko: "낯선 소리에 적응할 땐 아주 작은 강도부터", en: "Introduce scary sounds at very low intensity" },
+    summary: { ko: "무서워하는 소리를 크게 반복하는 것은 오히려 공포를 키울 수 있어요.", en: "Repeated high-intensity exposure can worsen fear." },
+    body: { ko: "충분히 편안한 거리와 작은 음량에서 간식·놀이와 연결하고 불안 신호가 보이면 즉시 난이도를 낮추세요.", en: "Pair a low-level version of the sound with something positive and reduce intensity if stress appears." } },
+  { id: "t148", category: "training", featured: false,
+    title: { ko: "손 대기 연습은 관리와 진료에도 도움이 돼요", en: "Cooperative handling helps with care" },
+    summary: { ko: "발·귀·입 주변을 편안하게 만질 수 있으면 일상 관리가 쉬워져요.", en: "Comfort with gentle touching of paws, ears, and mouth can make grooming and exams easier." },
+    body: { ko: "아주 짧게 만지고 보상하는 것부터 시작해 아이가 피하지 않는 범위에서 시간을 늘려주세요. 억지로 붙잡고 버티게 하지 마세요.", en: "Start with brief touches followed by rewards and increase duration only while your pet remains comfortable." } },
+  { id: "t149", category: "training", featured: false,
+    title: { ko: "두려움이 큰 행동 문제는 전문가 도움을 받아요", en: "Seek professional help for severe fear or aggression" },
+    summary: { ko: "공격·공황처럼 안전과 관련된 문제는 단순 반복 훈련만으로 해결하려 하지 않는 게 좋아요.", en: "Safety-related behavior problems deserve individualized support." },
+    body: { ko: "먼저 의학적 원인을 확인하고, 보상 기반 훈련을 사용하는 수의행동 전문가나 자격 있는 트레이너에게 맞춤 계획을 받아보세요.", en: "Rule out medical causes and work with a qualified reward-based behavior professional." } },
+  { id: "t150", category: "training", featured: false,
+    title: { ko: "훈련 기록을 남기면 진도가 보여요", en: "Keep simple training notes" },
+    summary: { ko: "성공 횟수와 어려웠던 환경을 적으면 다음 난이도를 정하기 쉬워요.", en: "Recording success and difficult contexts makes progress easier to see." },
+    body: { ko: "매일 길게 쓰지 않아도 장소·행동·성공률을 간단히 메모하세요. 같은 단계에서 계속 막힌다면 기준을 더 쉽게 조정해보세요.", en: "Note the location, behavior, and rough success rate, and make the next step easier if progress stalls." } },
+  { id: "t151", category: "safety", featured: false,
+    title: { ko: "엘리베이터 문에 리드줄이 끼지 않게 주의하세요", en: "Keep leashes clear of elevator doors" },
+    summary: { ko: "보호자와 반려동물이 문 양쪽에 갈리면 매우 위험할 수 있어요.", en: "A leash caught in closing doors can create a serious emergency." },
+    body: { ko: "엘리베이터를 타고 내릴 때는 리드줄을 짧게 잡고 아이가 보호자 가까이에 있는지 확인한 뒤 이동하세요.", en: "Keep the leash short and confirm your pet is beside you before the elevator doors close." } },
+  { id: "t152", category: "safety", featured: false,
+    title: { ko: "차량 이동 시 이동장이나 안전장치를 사용해요", en: "Use a secure restraint in the car" },
+    summary: { ko: "차 안에서 자유롭게 움직이면 급정거나 사고 때 크게 다칠 수 있어요.", en: "Unrestrained pets can be injured during sudden stops or crashes." },
+    body: { ko: "종류와 체형에 맞는 고정 가능한 이동장이나 차량용 하네스를 사용하고 앞좌석 에어백 바로 앞에는 두지 않는 것이 좋아요.", en: "Use a properly secured carrier or vehicle harness appropriate for your pet and avoid airbag deployment zones." } },
+  { id: "t153", category: "safety", featured: false,
+    title: { ko: "뜨거운 조리기구와 인덕션 주변을 막아주세요", en: "Block access to hot cooking surfaces" },
+    summary: { ko: "고양이나 작은 강아지가 올라가 화상을 입거나 스위치를 건드릴 수 있어요.", en: "Pets can jump onto hot stoves or accidentally activate controls." },
+    body: { ko: "조리 후 잔열이 남은 동안 접근을 막고, 외출 전에는 조리기구 전원이 꺼졌는지 확인하세요.", en: "Restrict access while surfaces are hot and check appliances before leaving home." } },
+  { id: "t154", category: "safety", featured: false,
+    title: { ko: "낚싯바늘·바늘·실은 잠금 보관하세요", en: "Lock away needles, hooks, and thread" },
+    summary: { ko: "날카로운 도구와 실은 삼킴과 장 손상 위험이 커요.", en: "Sharp objects and string can cause severe internal injury if swallowed." },
+    body: { ko: "재봉도구나 낚시용품을 사용한 뒤 즉시 닫힌 수납함에 넣고, 삼킨 것이 의심되면 입에서 보이는 실도 함부로 당기지 마세요.", en: "Store sewing and fishing supplies securely and seek veterinary help if ingestion is suspected." } },
+  { id: "t155", category: "safety", featured: false,
+    title: { ko: "반려동물에게 위험한 식물을 확인하세요", en: "Check whether houseplants are pet-safe" },
+    summary: { ko: "백합처럼 일부 식물은 특히 고양이에게 매우 위험할 수 있어요.", en: "Some plants, including certain lilies, are especially dangerous to cats." },
+    body: { ko: "새 화분이나 꽃다발을 들이기 전 반려동물에게 안전한 종인지 확인하고, 위험 식물은 단순히 높은 곳에 두는 것보다 집 안에 들이지 않는 편이 안전해요.", en: "Verify plants before bringing them home and avoid keeping highly toxic species in pet-accessible households." } },
+  { id: "t156", category: "safety", featured: false,
+    title: { ko: "목욕 중에는 욕조에 혼자 두지 마세요", en: "Never leave a pet alone in a bath" },
+    summary: { ko: "얕은 물에서도 미끄러지거나 당황해 사고가 날 수 있어요.", en: "Even shallow water can be risky if a pet slips or panics." },
+    body: { ko: "필요한 수건과 용품을 미리 준비해 목욕 도중 자리를 비우지 않도록 하고 바닥에는 미끄럼 방지 매트를 사용하세요.", en: "Prepare supplies in advance, stay within reach, and use a non-slip surface." } },
+  { id: "t157", category: "safety", featured: false,
+    title: { ko: "문 닫힘 사고를 막기 위해 위치를 확인해요", en: "Check where your pet is before closing doors" },
+    summary: { ko: "작은 반려동물은 문 뒤나 틈에 있어도 눈에 잘 띄지 않을 수 있어요.", en: "Small pets can be hard to see near hinges or behind doors." },
+    body: { ko: "방문·현관문·자동문을 닫기 전 아이의 위치를 습관적으로 확인하고 문이 세게 닫히지 않도록 도어스토퍼도 활용하세요.", en: "Make a habit of checking position before closing doors and use door stops where helpful." } },
+  { id: "t158", category: "safety", featured: false,
+    title: { ko: "야간 산책에는 시인성을 높여주세요", en: "Increase visibility on night walks" },
+    summary: { ko: "어두운 길에서는 운전자와 자전거가 반려동물을 늦게 발견할 수 있어요.", en: "Drivers and cyclists may notice pets late in dark conditions." },
+    body: { ko: "반사 소재 리드줄·하네스나 작은 안전등을 활용하고 보호자도 밝은 색 또는 반사 장비를 착용하면 좋아요.", en: "Use reflective gear or a small safety light for both the pet and handler." } },
+  { id: "t159", category: "safety", featured: false,
+    title: { ko: "수영을 잘해도 물가에서는 감독이 필요해요", en: "Supervise pets around water even if they can swim" },
+    summary: { ko: "피로·급류·미끄러운 출구 때문에 스스로 나오지 못할 수 있어요.", en: "Fatigue, currents, and slippery exits can turn swimming into an emergency." },
+    body: { ko: "수영장이나 계곡에서는 반려동물용 구명조끼를 고려하고 물에서 나온 뒤 귀·피부를 말려주세요. 혼자 물가에 접근하지 않게 관리하세요.", en: "Consider a pet life jacket and never allow unsupervised access to pools or natural water." } },
+  { id: "t160", category: "safety", featured: false,
+    title: { ko: "택배 상자와 비닐 포장재는 바로 정리해요", en: "Dispose of packaging materials promptly" },
+    summary: { ko: "끈·비닐·완충재는 삼킴이나 질식 위험이 있어요.", en: "Plastic wrap, string, and packing materials can cause choking or ingestion hazards." },
+    body: { ko: "택배를 뜯은 뒤 포장끈과 비닐을 바닥에 두지 말고 즉시 닫힌 쓰레기통이나 수납함에 정리해주세요.", en: "Put packaging away immediately after opening deliveries and use a closed bin." } },
+  { id: "t161", category: "grooming", featured: false,
+    title: { ko: "빗은 털 길이와 타입에 맞게 골라요", en: "Choose grooming tools for coat type" },
+    summary: { ko: "모든 털에 같은 빗을 쓰면 피부를 자극하거나 엉킨 털을 놓칠 수 있어요.", en: "Different coat types need different brushes and combs." },
+    body: { ko: "장모·이중모·곱슬털 등 모질에 맞는 도구를 사용하고 처음에는 힘을 약하게 주세요. 빗질 후 피부가 붉어지는지 확인하세요.", en: "Use tools suited to coat length and texture, apply gentle pressure, and check the skin for irritation afterward." } },
+  { id: "t162", category: "grooming", featured: false,
+    title: { ko: "엉킨 털은 젖기 전에 먼저 확인하세요", en: "Check mats before bathing" },
+    summary: { ko: "심하게 엉킨 털은 물에 젖으면 더 단단해질 수 있어요.", en: "Tangles can tighten when they get wet." },
+    body: { ko: "목욕 전 겨드랑이·귀 뒤·목줄 주변처럼 잘 엉키는 부위를 살펴보고 피부 가까운 매트는 가위로 무리하게 자르지 말고 전문가 도움을 받으세요.", en: "Inspect common matting areas before a bath and seek professional help for mats close to the skin rather than cutting blindly." } },
+  { id: "t163", category: "grooming", featured: false,
+    title: { ko: "드라이어 온도는 손으로 먼저 확인해요", en: "Check dryer temperature with your hand first" },
+    summary: { ko: "뜨거운 바람을 한곳에 오래 대면 피부에 자극이나 화상을 줄 수 있어요.", en: "Hot air held in one place can irritate or burn the skin." },
+    body: { ko: "미지근한 바람을 움직이며 사용하고 소리에 민감한 아이는 낮은 세기부터 천천히 적응시켜주세요.", en: "Use warm, moving airflow and introduce the sound gradually for noise-sensitive pets." } },
+  { id: "t164", category: "grooming", featured: false,
+    title: { ko: "발톱 깎는 날을 한 번에 끝내지 않아도 돼요", en: "You do not have to trim every nail in one session" },
+    summary: { ko: "발 만지는 것을 힘들어한다면 하루에 한두 개만 깎아도 괜찮아요.", en: "For pets uncomfortable with nail handling, one or two nails at a time is fine." },
+    body: { ko: "발을 만지고 보상하는 연습부터 시작하고 긴장하기 전에 멈춰주세요. 혈관이 보이지 않는 검은 발톱은 특히 조금씩 자르는 것이 안전해요.", en: "Build comfort gradually and take very small cuts, especially on dark nails where the quick is hard to see." } },
+  { id: "t165", category: "grooming", featured: false,
+    title: { ko: "귀 냄새를 향으로 덮으려 하지 마세요", en: "Do not mask unusual ear odor with fragrance" },
+    summary: { ko: "평소와 다른 강한 냄새는 염증이나 감염 신호일 수 있어요.", en: "A new strong odor can be a sign of inflammation or infection." },
+    body: { ko: "향이 강한 제품을 넣기보다 분비물·붉어짐·긁는 행동을 확인하고 문제가 지속되면 진료받으세요.", en: "Check for discharge, redness, or scratching and seek veterinary care if the problem persists." } },
+  { id: "t166", category: "grooming", featured: false,
+    title: { ko: "목욕 횟수는 피부와 생활환경에 맞춰요", en: "Adjust bathing frequency to the individual pet" },
+    summary: { ko: "너무 잦은 목욕은 일부 아이의 피부 장벽을 건조하게 만들 수 있어요.", en: "Over-bathing can dry the skin of some pets." },
+    body: { ko: "정해진 횟수보다 피부 상태·오염 정도·수의사 권고를 기준으로 조절하고 반려동물용 제품을 사용하세요.", en: "Base frequency on coat, lifestyle, skin condition, and veterinary advice, and use pet-specific products." } },
+  { id: "t167", category: "grooming", featured: false,
+    title: { ko: "눈 주변 털은 시야를 가리지 않게 관리해요", en: "Keep facial hair from irritating the eyes" },
+    summary: { ko: "털이 눈을 계속 찌르면 눈물과 자극이 늘 수 있어요.", en: "Hair that repeatedly touches the eyes can increase tearing and irritation." },
+    body: { ko: "얼굴 미용은 갑작스러운 움직임 때문에 위험할 수 있으니 익숙하지 않다면 전문 미용사에게 맡기는 것이 안전해요.", en: "Because pets can move suddenly, seek professional grooming help if you are not confident trimming near the eyes." } },
+  { id: "t168", category: "grooming", featured: false,
+    title: { ko: "산책 후 발 세척은 완전히 말리는 것까지", en: "Dry paws thoroughly after cleaning" },
+    summary: { ko: "발을 씻은 뒤 습기가 남으면 발가락 사이 피부가 자극될 수 있어요.", en: "Moisture left between the toes can irritate the skin." },
+    body: { ko: "오염이 심하지 않으면 가볍게 닦고, 씻었다면 발가락 사이까지 부드럽게 말려주세요. 붉어짐이나 냄새도 함께 확인하세요.", en: "After washing, gently dry between the toes and check for redness, odor, or small injuries." } },
+  { id: "t169", category: "grooming", featured: false,
+    title: { ko: "고양이 빗질은 짧은 성공으로 끝내세요", en: "Keep cat brushing sessions short and positive" },
+    summary: { ko: "싫어하기 시작한 뒤에도 계속하면 빗 자체를 피하게 될 수 있어요.", en: "Continuing after a cat becomes uncomfortable can create avoidance." },
+    body: { ko: "좋아하는 부위에서 몇 번만 빗고 보상하며 끝내는 방식으로 시작하세요. 꼬리를 세게 잡거나 배를 억지로 빗지 마세요.", en: "Start with a few gentle strokes in preferred areas, reward, and stop before irritation builds." } },
+  { id: "t170", category: "grooming", featured: false,
+    title: { ko: "미용 전후 사진은 피부 변화 비교에 도움돼요", en: "Photos can help track skin changes around grooming" },
+    summary: { ko: "털이 길 때 보이지 않던 피부 상태를 미용 후 확인할 수 있어요.", en: "Grooming may reveal areas that were hidden under the coat." },
+    body: { ko: "점·혹·붉은 부위처럼 눈에 띄는 곳은 사진으로 기록해두고 크기나 색이 변하면 병원에 상담하세요.", en: "Photograph notable lumps, spots, or redness so changes in size or color are easier to notice over time." } },
+
 ];
 
 function TipCard({ tip, lang, bookmarked, onToggleBookmark }) {
@@ -4511,6 +4809,8 @@ function TipsPage({ onClose }) {
   const [showBookmarked, setShowBookmarked] = useState(false);
   const [bookmarks, setBookmarks] = useState([]);
   const [tipsSource, setTipsSource] = useState(TIPS_DATA);
+  const [page, setPage] = useState(1);
+  const ITEMS_PER_PAGE = 20;
 
   useEffect(() => {
     (async () => {
@@ -4548,6 +4848,14 @@ function TipsPage({ onClose }) {
     if (q && !(tip.title[lang].toLowerCase().includes(q) || tip.summary[lang].toLowerCase().includes(q))) return false;
     return true;
   });
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+  const currentPage = Math.min(page, totalPages);
+  const pagedTips = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
+  useEffect(() => {
+    setPage(1);
+  }, [query, category, showBookmarked]);
+
   // 매일 조금씩 바뀌는 "오늘의 추천" — 날짜 기반으로 자동 로테이션돼요 (별도 관리 필요 없음)
   const featured = useMemo(() => {
     const dayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
@@ -4596,7 +4904,7 @@ function TipsPage({ onClose }) {
         </button>
       </div>
 
-      {!showBookmarked && !q && category === "all" && featured.length > 0 && (
+      {!showBookmarked && !q && category === "all" && currentPage === 1 && featured.length > 0 && (
         <div style={{ marginBottom: 24 }}>
           <h3 style={{ fontSize: 15, marginBottom: 12 }}>{t.tipFeaturedTitle}</h3>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -4611,11 +4919,31 @@ function TipsPage({ onClose }) {
         {showBookmarked ? t.tipBookmarkedFilter : t.tipAllTitle}
       </h3>
       {filtered.length > 0 ? (
-        <div className="result-columns">
-          {filtered.map((tip) => (
-            <TipCard key={tip.id} tip={tip} lang={lang} bookmarked={bookmarks.includes(tip.id)} onToggleBookmark={toggleBookmark} />
-          ))}
-        </div>
+        <>
+          <div className="result-columns">
+            {pagedTips.map((tip) => (
+              <TipCard key={tip.id} tip={tip} lang={lang} bookmarked={bookmarks.includes(tip.id)} onToggleBookmark={toggleBookmark} />
+            ))}
+          </div>
+          {totalPages > 1 && (
+            <nav aria-label={lang === "ko" ? "Pet정보 페이지" : "Pet info pages"} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, flexWrap: "wrap", marginTop: 26 }}>
+              <button type="button" className="bg-chip" disabled={currentPage === 1} onClick={() => { setPage((p) => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: "smooth" }); }} style={{ opacity: currentPage === 1 ? .45 : 1 }}>
+                {lang === "ko" ? "이전" : "Prev"}
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+                <button key={n} type="button" className={`bg-chip ${n === currentPage ? "active" : ""}`} aria-current={n === currentPage ? "page" : undefined} onClick={() => { setPage(n); window.scrollTo({ top: 0, behavior: "smooth" }); }} style={{ minWidth: 40, justifyContent: "center" }}>
+                  {n}
+                </button>
+              ))}
+              <button type="button" className="bg-chip" disabled={currentPage === totalPages} onClick={() => { setPage((p) => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: "smooth" }); }} style={{ opacity: currentPage === totalPages ? .45 : 1 }}>
+                {lang === "ko" ? "다음" : "Next"}
+              </button>
+            </nav>
+          )}
+          <div className="bg-sub" style={{ textAlign: "center", marginTop: 10, fontSize: 12 }}>
+            {lang === "ko" ? `총 ${filtered.length}개 · ${currentPage}/${totalPages} 페이지 · 페이지당 최대 20개` : `${filtered.length} items · Page ${currentPage}/${totalPages} · Up to 20 per page`}
+          </div>
+        </>
       ) : (
         <div className="bg-sub" style={{ textAlign: "center", padding: "30px 0", fontSize: 13 }}>{t.tipEmptyResult}</div>
       )}
@@ -7160,16 +7488,20 @@ function PostComposer({ pets, initialPost, onCancel, onSaved }) {
     setErrors((e) => ({ ...e, images: "" }));
     setUploading(true);
     try {
-      const dataUrl = await fileToCompressedDataUrl(file, 1280, 0.76);
-      // Vercel 요청 본문 제한에 여유를 두기 위해 base64가 지나치게 크면 한 번 더 축소해요.
-      const uploadDataUrl = dataUrl.length > 2_500_000
-        ? await fileToCompressedDataUrl(file, 960, 0.68)
-        : dataUrl;
+      let uploadDataUrl = await fileToCompressedDataUrl(file, 1280, 0.74);
+      // 서버리스 요청/DB 대체 저장 모두 안정적으로 처리되도록 단계적으로 압축해요.
+      if (uploadDataUrl.length > 1_600_000) uploadDataUrl = await fileToCompressedDataUrl(file, 960, 0.64);
+      if (uploadDataUrl.length > 900_000) uploadDataUrl = await fileToCompressedDataUrl(file, 720, 0.56);
       const url = await communityUploadImage(uploadDataUrl);
       setImages((prev) => [...prev, url]);
     } catch (err) {
       console.error("community image upload failed", err);
-      setErrors((e) => ({ ...e, images: t.communityUploadFailed }));
+      const msg = String(err?.message || "");
+      const friendly = msg.includes("too large") ? "사진 용량이 너무 커요. 다른 사진을 선택해주세요."
+        : msg.includes("unauthenticated") ? "로그인 상태를 확인한 뒤 다시 시도해주세요."
+        : msg.includes("invalid") ? "이 사진 형식을 읽지 못했어요. JPG 또는 PNG 사진으로 다시 시도해주세요."
+        : t.communityUploadFailed;
+      setErrors((e) => ({ ...e, images: friendly }));
     }
     setUploading(false);
   };
@@ -8150,9 +8482,11 @@ function AppInner({ lang, setLang }) {
   const handleDeleteRecord = (recordId) => updateCurrentPet((p) => ({
     ...p, records: p.records.filter((r) => r.id !== recordId),
   }));
-  const handleAddPhoto = (date, dataUrl) => updateCurrentPet((p) => ({
-    ...p, photos: [...p.photos, { id: `${Date.now()}`, date, dataUrl }],
-  }));
+  const handleAddPhoto = (date, dataUrls) => updateCurrentPet((p) => {
+    const list = Array.isArray(dataUrls) ? dataUrls : [dataUrls];
+    const stamp = Date.now();
+    return { ...p, photos: [...p.photos, ...list.map((dataUrl, index) => ({ id: `${stamp}-${index}`, date, dataUrl }))] };
+  });
   const handleEditPhoto = (photoId, dataUrl) => updateCurrentPet((p) => ({
     ...p, photos: p.photos.map((ph) => (ph.id === photoId ? { ...ph, dataUrl } : ph)),
   }));

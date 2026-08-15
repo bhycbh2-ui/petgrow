@@ -167,7 +167,7 @@ export async function updatePost({ id, userId, category, title, content, imageUr
     const existing = await sql`select storage_url from pg_post_images where post_id = ${id}`;
     const keep = new Set(imageUrls);
     const toRemove = existing.rows.map((r) => r.storage_url).filter((u) => !keep.has(u));
-    await Promise.all(toRemove.map((u) => blobDel(u).catch(() => {})));
+    await Promise.all(toRemove.filter((u) => /^https?:\/\//i.test(u || "")).map((u) => blobDel(u).catch(() => {})));
     await sql`delete from pg_post_images where post_id = ${id}`;
     const urls = imageUrls.slice(0, 5);
     for (let i = 0; i < urls.length; i++) {
@@ -183,7 +183,7 @@ export async function deletePost({ id, userId }) {
   const { rows } = await sql`select storage_url from pg_post_images where post_id = ${id}`;
   const { rowCount } = await sql`delete from pg_posts where id = ${id} and user_id = ${userId}`;
   if (rowCount > 0) {
-    await Promise.all(rows.map((r) => blobDel(r.storage_url)));
+    await Promise.all(rows.filter((r) => /^https?:\/\//i.test(r.storage_url || "")).map((r) => blobDel(r.storage_url).catch(() => {})));
   }
   return rowCount > 0;
 }
@@ -336,5 +336,5 @@ export async function deleteAllBlobsForUser(userId) {
     join pg_posts p on p.id = i.post_id
     where p.user_id = ${userId}
   `;
-  await Promise.all(rows.map((r) => blobDel(r.storage_url)));
+  await Promise.all(rows.filter((r) => /^https?:\/\//i.test(r.storage_url || "")).map((r) => blobDel(r.storage_url).catch(() => {})));
 }
