@@ -171,6 +171,7 @@ const STRINGS = {
     hamMenuAria: "메뉴 열기",
     hamCloseAria: "메뉴 닫기",
     hamNavHome: "홈",
+    aboutNav: "PetGrow 소개",
     hamNavMy: "MY",
     hamNavSettings: "설정",
     appTabPetInfo: "Pet정보",
@@ -702,6 +703,7 @@ const STRINGS = {
     hamMenuAria: "Open menu",
     hamCloseAria: "Close menu",
     hamNavHome: "Home",
+    aboutNav: "About PetGrow",
     hamNavMy: "MY",
     hamNavSettings: "Settings",
     appTabPetInfo: "Pet Info",
@@ -1989,6 +1991,7 @@ function HamburgerMenu({ open, onClose, view, onNavigate, onOpenAccount, account
   const homeKey = account ? "home" : "about";
   const items = [
     { key: homeKey, label: t.hamNavHome, Icon: HomeIcon },
+    ...(account ? [{ key: "about", label: t.aboutNav, Icon: InfoIcon }] : []),
     { key: "pets", label: t.myPetsNav, Icon: PawIcon },
     { key: "community", label: t.communityNav, Icon: TalkIcon },
     { key: "saju", label: t.sajuNav, Icon: SajuIcon },
@@ -2308,7 +2311,7 @@ const GlobalStyle = () => (
       background:none; border:none; cursor:pointer; font-family:inherit; padding:9px 2px 8px; color:#9a9d95; font-size:10.5px; font-weight:700;}
     .app-bottom-nav-item.active{color:var(--primary);}
     .home-pet-card{display:flex; align-items:center; gap:14px; background:#fff; border:1px solid var(--border);
-      border-radius:18px; padding:16px 18px; cursor:pointer; text-align:left; width:100%; font-family:inherit;
+      border-radius:18px; padding:16px 18px; cursor:pointer; text-align:left; width:100%; max-width:760px; margin-left:auto; margin-right:auto; font-family:inherit;
       box-shadow:0 3px 10px rgba(0,0,0,.03);}
     .home-pet-card-empty{justify-content:center; gap:8px; color:var(--primary); font-weight:700; font-size:14px;
       border-style:dashed; border-color:var(--primary);}
@@ -2538,6 +2541,11 @@ const GlobalStyle = () => (
     .landing-section{padding:36px 0;}
     .landing-section-white{background:#fff;}
     .landing-hero-section{padding-top:44px; padding-bottom:20px;}
+    .home-hero-copy{text-align:center; max-width:680px; margin:0 auto 20px;}
+    .home-hero-copy h1{font-size:23px; margin:0 0 7px; line-height:1.35;}
+    .home-hero-copy .bg-sub{font-size:14px; margin:0; line-height:1.65;}
+    .about-video-shell{width:min(92vw, 580px); max-width:100%; margin:24px auto 28px;}
+    .about-video-label{text-align:center; font-size:14px; font-weight:800; color:var(--pg-dark); margin-bottom:10px;}
     .intro-video-wrap{position:relative; width:100%; aspect-ratio:16/9; border-radius:24px; overflow:hidden;
       box-shadow:0 16px 40px rgba(28,28,28,.12); background:#000;}
     .intro-video{width:100%; height:100%; object-fit:cover; display:block;}
@@ -2556,7 +2564,13 @@ const GlobalStyle = () => (
     .landing-step-desc{font-size:12px; color:#8a8f86; line-height:1.6;}
     .landing-footer{background:var(--pg-dark);}
     .landing-footer-text{text-align:center; color:rgba(255,255,255,.55); font-size:11px; margin-top:10px; line-height:1.7;}
-    @media (max-width:680px){ .landing-steps{grid-template-columns:1fr;} .landing-pricing{grid-template-columns:1fr;}
+    @media (max-width:680px){
+      .home-hero-copy{padding:0 8px; margin-bottom:18px;}
+      .home-hero-copy h1{font-size:21px;}
+      .about-video-shell{width:92%; margin:20px auto 24px;}
+      .intro-video-wrap{display:block !important; width:100% !important; border-radius:18px;}
+      .intro-video{display:block !important; width:100% !important; height:100% !important; object-fit:cover;}
+      .landing-steps{grid-template-columns:1fr;} .landing-pricing{grid-template-columns:1fr;}
       .landing-showcase-row{grid-template-columns:1fr; gap:20px;}
       .landing-showcase-row.reverse .landing-showcase-media, .landing-showcase-row.reverse .landing-showcase-text{order:unset;}
       .landing-showcase{gap:36px;}
@@ -6235,6 +6249,12 @@ function AboutPage({ onStart, onNavigate }) {
             {t.landingHeadline1}<br className="mobile-br" /> <span className="hl">{t.landingHeadlineHighlight}</span>{t.landingHeadline2}
           </h1>
           <p className="landing-subtitle about-fade" style={{ animationDelay: ".22s" }}>{t.landingSubtitle}</p>
+
+          <div className="about-video-shell about-fade" style={{ animationDelay: ".28s" }}>
+            <div className="about-video-label">PetGrow와 함께하는 반려생활 🐾</div>
+            <IntroVideo />
+          </div>
+
           <button className="landing-cta about-fade" style={{ animationDelay: ".34s", fontSize: 17, padding: "18px 46px" }} onClick={onStart}>
             {t.landingCta}
           </button>
@@ -6480,8 +6500,10 @@ function HomePage({ account, firstPet, lang, onGoPets, onGoView }) {
 
   return (
     <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 60px" }}>
-      <h1 style={{ fontSize: 21, marginBottom: 4 }}>{t.homeGreeting(account.name)}</h1>
-      <p className="bg-sub" style={{ fontSize: 14, marginBottom: 18 }}>{t.homeSubGreeting}</p>
+      <div className="home-hero-copy">
+        <h1>{t.homeGreeting(account.name)}</h1>
+        <p className="bg-sub">{t.homeSubGreeting}</p>
+      </div>
 
       {firstPet ? (
         <div className="home-pet-card" onClick={onGoPets}>
@@ -7764,6 +7786,7 @@ function AppInner({ lang, setLang }) {
                   <button type="button" className={`desktop-nav-link ${view === "petbti" ? "active" : ""}`} onClick={() => goView("petbti")}>{t.petBtiNav}</button>
                   <button type="button" className={`desktop-nav-link ${view === "tips" ? "active" : ""}`} onClick={() => goView("tips")}>{t.tipsTitle}</button>
                   <button type="button" className={`desktop-nav-link ${view === "guide" ? "active" : ""}`} onClick={() => goView("guide")}>{t.infoGuideTitle}</button>
+                  {account && <button type="button" className={`desktop-nav-link ${view === "about" ? "active" : ""}`} onClick={() => goView("about")}>{t.aboutNav}</button>}
                   {account && <button type="button" className={`desktop-nav-link ${view === "my" ? "active" : ""}`} onClick={() => goView("my")}>{t.hamNavMy}</button>}
                 </nav>
               </div>
