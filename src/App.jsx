@@ -9125,7 +9125,15 @@ function AdminReportsPage({ onBack }) {
   const [tab,setTab]=useState("dashboard");
   const [unlocked,setUnlocked]=useState(false);
 
-  useEffect(()=>{adminStatus().then(setStatus).catch(e=>window.alert(e.message));},[]);
+  useEffect(()=>{
+    // 관리자 센터를 열 때마다 이전 PIN 인증을 폐기해 매번 PIN을 다시 요구합니다.
+    sessionStorage.removeItem("petgrow_admin_token");
+    setUnlocked(false);
+    adminStatus().then(setStatus).catch(e=>window.alert(e.message));
+    return () => {
+      sessionStorage.removeItem("petgrow_admin_token");
+    };
+  },[]);
 
   const loadAll=async()=>{
     setLoading(true);
@@ -9145,13 +9153,17 @@ function AdminReportsPage({ onBack }) {
       sessionStorage.setItem("petgrow_admin_token",r.token);
       setPin(""); setUnlocked(true);
       await loadAll();
-    }catch(e){window.alert(e.message)}
+    }catch(e){
+      sessionStorage.removeItem("petgrow_admin_token");
+      setUnlocked(false);
+      window.alert(e.message);
+    }
   };
   const bootstrap=async()=>{
     if(!/^\d{6}$/.test(setupPin)){window.alert("PIN은 숫자 6자리로 입력해 주세요.");return}
     try{
       await adminBootstrap(setupCode,setupPin);
-      window.alert("현재 로그인 계정이 관리자로 등록됐어요. 다시 로그인하면 관리자 센터가 표시돼요.");
+      window.alert("관리자 등록이 완료됐어요. 앞으로 관리자 센터에 들어갈 때마다 설정한 6자리 PIN을 입력해야 해요.");
       setStatus({adminExists:true,isAdmin:true});
     }catch(e){window.alert(e.message)}
   };
@@ -9201,7 +9213,7 @@ function AdminReportsPage({ onBack }) {
       </p>
     </div>
   </div>;
-  if(!unlocked)return <div className="admin-reports-page"><button className="bg-btn bg-btn-ghost" onClick={onBack}>← 회원정보</button><div className="bg-card" style={{maxWidth:520,margin:"18px auto"}}><h2>🔐 관리자 PIN</h2><p>관리자 기능을 사용하려면 6자리 PIN을 입력하세요. 인증 토큰은 10분 후 만료되고, 5회 오류 시 15분 잠깁니다.</p><input className="bg-input" type="password" inputMode="numeric" maxLength={6} value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,""))} placeholder="PIN 6자리"/><button className="bg-btn" disabled={pin.length!==6} onClick={unlock}>관리자 센터 열기</button></div></div>;
+  if(!unlocked)return <div className="admin-reports-page"><button className="bg-btn bg-btn-ghost" onClick={onBack}>← 회원정보</button><div className="bg-card" style={{maxWidth:520,margin:"18px auto"}}><h2>🔐 관리자 PIN</h2><p>관리자 기능을 사용하려면 설정한 6자리 PIN을 입력하세요. 관리자 센터를 열 때마다 PIN을 다시 확인하며, 인증은 최대 10분 후 만료되고 5회 오류 시 15분 잠깁니다.</p><input className="bg-input" type="password" inputMode="numeric" maxLength={6} value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,""))} placeholder="PIN 6자리"/><button className="bg-btn" disabled={pin.length!==6} onClick={unlock}>관리자 센터 열기</button></div></div>;
 
   const c=stats?.cards||{};
   const pageNames={home:"홈",about:"소개",pets:"우리 아이",community:"Pet톡",saju:"Pet사주",petbti:"PetBTI",tips:"Pet정보",my:"회원정보",login:"로그인",terms:"이용약관",privacy:"개인정보처리방침",admin:"관리자"};
