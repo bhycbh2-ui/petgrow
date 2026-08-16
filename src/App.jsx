@@ -2132,20 +2132,44 @@ function LoginScreen({ onGoTerms, onGoPrivacy }) {
   const [termsOk, setTermsOk] = useState(false);
   const [privacyOk, setPrivacyOk] = useState(false);
   const [marketingOk, setMarketingOk] = useState(false);
+  const [consentCompleted, setConsentCompleted] = useState(false);
+  const [consentChecked, setConsentChecked] = useState(false);
   const [detail, setDetail] = useState(null);
+
+  // 현재 약관 버전에 이미 필수 동의를 완료한 이용자는 다시 체크하지 않도록 해요.
+  // 약관/개인정보처리방침의 중요한 내용이 바뀌어 CONSENT_VERSION을 올리면 자동으로 재동의를 받습니다.
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(CONSENT_STORAGE_KEY);
+      const saved = raw ? JSON.parse(raw) : null;
+      const valid = saved?.version === CONSENT_VERSION && saved?.terms === true && saved?.privacy === true;
+      if (valid) {
+        setTermsOk(true);
+        setPrivacyOk(true);
+        setMarketingOk(!!saved.marketing);
+        setConsentCompleted(true);
+      }
+    } catch {}
+    setConsentChecked(true);
+  }, []);
+
   const allChecked = termsOk && privacyOk && marketingOk;
   const setAll = (checked) => { setTermsOk(checked); setPrivacyOk(checked); setMarketingOk(checked); };
   const startLogin = () => {
-    if (!termsOk || !privacyOk) {
+    if (!consentCompleted && (!termsOk || !privacyOk)) {
       window.alert("필수 약관과 개인정보 수집·이용에 동의해 주세요.");
       return;
     }
-    try {
-      localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify({
-        version: CONSENT_VERSION, terms: true, privacy: true, marketing: !!marketingOk,
-        agreedAt: new Date().toISOString()
-      }));
-    } catch {}
+    // 최초 동의이거나 현재 화면에서 동의 내용을 변경한 경우에만 현재 버전으로 저장합니다.
+    if (!consentCompleted) {
+      try {
+        localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify({
+          version: CONSENT_VERSION, terms: true, privacy: true, marketing: !!marketingOk,
+          agreedAt: new Date().toISOString()
+        }));
+        setConsentCompleted(true);
+      } catch {}
+    }
     goToKakaoLogin();
   };
   return (
@@ -2156,18 +2180,22 @@ function LoginScreen({ onGoTerms, onGoPrivacy }) {
       </h2>
       <p className="bg-sub" style={{ fontSize: 14, lineHeight: 1.6, marginBottom: 22 }}>{t.loginTagline}</p>
 
-      <div className="consent-box">
-        <label className="consent-all"><input type="checkbox" checked={allChecked} onChange={e=>setAll(e.target.checked)}/><strong>전체 동의</strong></label>
-        <div className="consent-divider"/>
-        <label className="consent-row"><input type="checkbox" checked={termsOk} onChange={e=>setTermsOk(e.target.checked)}/><span><b>[필수]</b> 이용약관 동의</span><button type="button" onClick={(e)=>{e.preventDefault();setDetail("terms")}}>보기</button></label>
-        <label className="consent-row"><input type="checkbox" checked={privacyOk} onChange={e=>setPrivacyOk(e.target.checked)}/><span><b>[필수]</b> 개인정보 수집·이용 동의</span><button type="button" onClick={(e)=>{e.preventDefault();setDetail("privacy")}}>보기</button></label>
-        <label className="consent-row"><input type="checkbox" checked={marketingOk} onChange={e=>setMarketingOk(e.target.checked)}/><span><em>[선택]</em> 광고·마케팅 정보 수신 동의</span><button type="button" onClick={(e)=>{e.preventDefault();setDetail("marketing")}}>보기</button></label>
-      </div>
+      {consentChecked && !consentCompleted && <>
+        <div className="consent-box">
+          <label className="consent-all"><input type="checkbox" checked={allChecked} onChange={e=>setAll(e.target.checked)}/><strong>전체 동의</strong></label>
+          <div className="consent-divider"/>
+          <label className="consent-row"><input type="checkbox" checked={termsOk} onChange={e=>setTermsOk(e.target.checked)}/><span><b>[필수]</b> 이용약관 동의</span><button type="button" onClick={(e)=>{e.preventDefault();setDetail("terms")}}>보기</button></label>
+          <label className="consent-row"><input type="checkbox" checked={privacyOk} onChange={e=>setPrivacyOk(e.target.checked)}/><span><b>[필수]</b> 개인정보 수집·이용 동의</span><button type="button" onClick={(e)=>{e.preventDefault();setDetail("privacy")}}>보기</button></label>
+          <label className="consent-row"><input type="checkbox" checked={marketingOk} onChange={e=>setMarketingOk(e.target.checked)}/><span><em>[선택]</em> 광고·마케팅 정보 수신 동의</span><button type="button" onClick={(e)=>{e.preventDefault();setDetail("marketing")}}>보기</button></label>
+        </div>
+        <p className="bg-sub" style={{fontSize:11,lineHeight:1.5,marginTop:-4,marginBottom:10}}>선택 동의는 거부해도 PetGrow 기본 서비스를 이용할 수 있어요.</p>
+      </>}
 
-      <button type="button" className="kakao-login-btn" onClick={startLogin}>
+      {consentChecked && consentCompleted && <div className="consent-complete-note">✓ 필수 약관 동의 완료 · 다음 로그인부터는 다시 묻지 않아요.</div>}
+
+      <button type="button" className="kakao-login-btn" onClick={startLogin} disabled={!consentChecked}>
         <KakaoIcon style={{ width: 20, height: 20 }} /> {t.loginContinueKakao}
       </button>
-      <p className="bg-sub" style={{fontSize:11,lineHeight:1.5,marginTop:10}}>선택 동의는 거부해도 PetGrow 기본 서비스를 이용할 수 있어요.</p>
 
       <div style={{ display: "flex", justifyContent: "center", gap: 14, marginTop: 18 }}>
         <button type="button" onClick={onGoTerms} style={{ fontSize: 12, fontWeight: 700, color: "var(--sub)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>{t.termsFooterLink}</button>
@@ -2645,6 +2673,7 @@ const GlobalStyle = () => (
     .kakao-login-btn:active{filter:brightness(0.93);}
     .consent-box{margin:0 0 14px;text-align:left;border:1px solid #e3e9e3;background:#fff;border-radius:16px;padding:14px 15px;box-shadow:0 4px 14px rgba(49,74,56,.05)}
     .consent-all,.consent-row{display:flex;align-items:center;gap:9px;font-size:13px;line-height:1.45;cursor:pointer}.consent-all{padding:2px 0 8px}.consent-row{padding:7px 0}.consent-row input,.consent-all input{width:17px;height:17px;accent-color:var(--primary);flex:0 0 auto}.consent-row span{flex:1}.consent-row b{color:#347455}.consent-row em{font-style:normal;color:#7c877f}.consent-row button,.consent-view-btn{border:0;background:none;color:var(--primary);font:inherit;font-size:11px;font-weight:800;text-decoration:underline;cursor:pointer;padding:4px}.consent-divider{height:1px;background:#edf1ed;margin:0 0 4px}.consent-detail-text{text-align:left;white-space:pre-line;font-size:13px;line-height:1.7;color:var(--text);margin:14px 0 20px}.support-public-toggle .consent-view-btn{margin-left:auto;align-self:center;flex:0 0 auto}
+    .consent-complete-note{margin:0 0 12px;padding:10px 12px;border:1px solid #dce9df;background:#f5faf6;border-radius:12px;color:#4c7359;font-size:11px;font-weight:700;line-height:1.5;text-align:center}
     .tab-bar{display:flex; gap:6px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; padding-bottom:2px;}
     .tab-bar::-webkit-scrollbar{display:none;}
     .tab-pill{flex:0 0 auto; display:flex; align-items:center; gap:6px; padding:0 16px; height:40px;
