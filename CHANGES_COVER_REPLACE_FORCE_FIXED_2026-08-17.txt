@@ -1,0 +1,7 @@
+PetGrow Pet음악 커버 교체 강제 수정
+- 관리자센터에서 새 커버 선택 즉시 미리보기
+- 커버 저장은 압축 이미지 -> admin-save 경로로 처리
+- Vercel Blob 저장 가능 시 새 Blob URL 저장
+- Blob 저장 실패 시 압축 data URL을 cover_url에 저장하는 fallback
+- 저장 후 관리자 목록을 새로 불러와 새 커버 즉시 반영
+- 음원 교체 로직은 기존 유지
