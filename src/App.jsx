@@ -192,7 +192,7 @@ const STRINGS = {
     tipsTitle: "Pet정보",
     nearbyNav: "내 주변 Pet",
     nearbyTitle: "내 주변 Pet",
-    nearbySubtitle: "현재 위치에서 가까운 동물병원·동물약국·펫샵·미용·호텔을 한눈에 찾아보세요.",
+    nearbySubtitle: "검색한 주소 주변의 동물병원·동물약국·펫샵·미용·호텔을 찾아보고, 내 위치에서의 거리도 함께 확인해보세요.",
     nearbyLocateBtn: "내 위치 찾기",
     nearbySearchPlaceholder: "지역명으로 검색 (예: 강동구 천호동)",
     myPetsNav: "우리 아이",
@@ -334,7 +334,7 @@ const STRINGS = {
       { title: "Pet사주", body: "등록한 우리 아이 정보를 바탕으로 성격과 특징을 재미로 살펴보는 콘텐츠예요. 실제 성격이나 미래를 판단하는 자료가 아니라 가볍게 즐기는 콘텐츠로 이용해 주세요." },
       { title: "Pet정보", body: "강아지·고양이·건강·생활·식단·영양·훈련·안전·미용·위생 등 카테고리별 반려생활 정보를 확인할 수 있어요. 목록은 페이지 단위로 나뉘고 검색과 즐겨찾기를 이용할 수 있으며, 정보는 지속적으로 추가·점검돼요." },
       { title: "Pet음악", body: "강아지·고양이 음악을 재생하고 반복재생할 수 있어요. 인기 TOP5와 내가 좋아요 누른 음악을 따로 확인할 수 있고, 좋아요·댓글을 이용할 수 있어요. 본인 댓글은 수정·삭제할 수 있고 다른 이용자의 댓글은 신고할 수 있어요." },
-      { title: "내 주변 Pet", body: "위치 권한을 허용하면 현재 위치를 기준으로 동물병원·동물약국·펫샵·용품점·미용실·유치원·호텔 등 주변 시설을 거리순으로 찾아요. 지도에서 내 위치와 업체 위치를 확인하고 상호명·업종·주소·전화번호·거리를 볼 수 있어요. 로그인 회원은 별점·후기·좋아요를 남길 수 있고 본인 후기는 수정·삭제, 다른 후기는 신고할 수 있어요. 위치 좌표는 주변 검색에만 사용하고 계정에 저장하지 않아요." },
+      { title: "내 주변 Pet", body: "주소를 검색하면 해당 주소 주변의 동물병원·동물약국·펫샵·용품점·미용실·유치원·호텔 등을 찾아요. 위치 권한을 허용하면 지도에 내 현재 위치도 함께 표시하고, 각 업체까지 내 위치 기준 거리를 확인할 수 있어요. 로그인 회원은 별점·후기·좋아요를 남길 수 있고 본인 후기는 수정·삭제, 다른 후기는 신고할 수 있어요. 현재 위치 좌표는 거리 표시와 지도 표시를 위해 일시적으로 사용하며 계정에 저장하지 않아요." },
       { title: "Pet톡", body: "일상·자랑·질문·건강·정보공유·산책·훈련·용품추천·자유수다 카테고리로 반려생활 이야기를 나누는 커뮤니티예요. 게시글과 댓글에 좋아요를 남길 수 있고, 본인이 작성한 글·댓글은 수정·삭제, 다른 이용자의 글·댓글은 신고할 수 있어요." },
       { title: "회원정보 · 내 활동", body: "닉네임과 계정 정보를 관리하고, 내가 작성한 Pet톡 활동과 내가 좋아요 누른 Pet음악 등 계정 기준 활동을 한곳에서 확인할 수 있어요." },
       { title: "고객지원", body: "공지사항, 공개 피드백, 내 문의, 문의하기를 이용할 수 있어요. 문의 공개 체크를 해제하면 운영진만 볼 수 있어요." },
@@ -668,8 +668,8 @@ const STRINGS = {
     landingCardCompatDesc: "나와 우리 아이는 얼마나 잘 맞을까요? 보호자와 반려동물의 재미있는 궁합 결과를 확인해요.",
     landingCardTipsTitle: "💡 Pet정보",
     landingCardNearbyTitle: "📍 내 주변 Pet",
-    landingCardNearbyDesc: "내 위치에서 가까운 병원·약국·펫샵·미용·호텔을 거리순으로 찾아봐요.",
-    homeCardNearbyDesc: "현재 위치와 업체까지의 거리, 주소, 전화번호를 지도와 함께 확인해요.",
+    landingCardNearbyDesc: "검색한 주소 주변의 병원·약국·펫샵·미용·호텔을 찾아보고 내 위치 거리도 확인해요.",
+    homeCardNearbyDesc: "검색한 주소 주변 업체와 내 현재 위치, 업체까지의 거리를 지도에서 함께 확인해요.",
     landingCardTipsDesc: "반려생활에 필요한 정보를 쉽고 빠르게. 건강, 식단, 행동, 성장, 생활 정보를 확인해요.",
     landingCardCommunityTitle: "💬 Pet톡",
     landingCardCommunityDesc: "우리 아이 이야기를 함께 나눠요. 다른 보호자들과 반려동물의 일상과 사진, 질문과 정보를 공유하는 커뮤니티예요.",
@@ -2005,7 +2005,7 @@ const PRIVACY_SECTIONS_KO = [
   { title: "6. 반려동물 정보 및 프로필 사진", body: "이용자가 등록한 반려동물 정보와 프로필 사진은 해당 PetGrow 계정과 연결하여 저장될 수 있으며, 우리 아이, 성장정보, Pet사주(기본 Pet사주·오늘의 펫운세·보호자 궁합), PetBTI 등 반려동물별 기능 제공에 이용될 수 있습니다." },
   { title: "7. 기존 기기 저장정보의 계정 이전", body: "카카오 간편로그인 도입 이전에 기기 또는 브라우저에 저장되어 있던 반려동물 정보가 있는 경우 이용자의 선택과 동의에 따라 로그인 계정으로 이전할 수 있습니다. 서버 저장이 정상 완료되기 전에 기존 데이터를 임의로 삭제하지 않도록 운영합니다." },
   { title: "8. 개인정보의 제3자 제공·처리위탁 및 국외 이전", body: "PetGrow는 이용자의 개인정보를 임의로 판매하지 않습니다. 제3자 제공, 처리위탁 또는 국외 이전이 발생하는 경우 실제 데이터 흐름, 제공자, 처리 목적, 항목, 보유기간 및 관련 법령상 고지·동의 필요 여부를 확인하여 본 방침에 반영합니다. 실제 사용하는 DB, Storage 및 호스팅 사업자는 최종 배포 구조에 맞추어 구체적으로 기재합니다.\n\n현재 PetGrow는 회원 데이터 저장을 위해 Vercel(호스팅 및 서버리스 인프라), Vercel Postgres(데이터베이스, Neon 기반), Vercel Blob(Pet톡 게시글 사진 및 Pet음악 음원·커버 이미지 저장)을 사용하고 있으며, 이 과정에서 이용자의 반려동물 정보 및 Pet톡 게시물 등이 해당 사업자의 서버(국외 소재 가능)에 저장·처리될 수 있습니다." },
-  { title: "9. 위치기반 주변 시설 안내", body: "PetGrow의 '내 주변 Pet'은 이용자가 위치 권한을 허용하면 기기 또는 브라우저가 제공하는 현재 위치 좌표를 주변 동물병원·동물약국·펫샵·용품점·미용·호텔·유치원 등 장소 검색에 일시적으로 사용합니다. 현재 위치 좌표는 주변 검색 요청을 처리하는 동안에만 이용하며 PetGrow 회원 계정 또는 장소 후기 DB에 별도로 저장하지 않습니다. 위치 권한을 허용하지 않아도 지역명을 직접 입력해 검색할 수 있으며, 위치 권한은 언제든 기기 또는 브라우저 설정에서 철회할 수 있습니다. 장소명·주소·전화번호·업종·거리 등 업체 정보는 카카오 장소검색 등 외부 장소정보를 검색 시점에 불러오므로 PetGrow가 매주 별도로 갱신하는 정보가 아니며 실제 영업정보와 차이가 있을 수 있습니다." },
+  { title: "9. 위치기반 주변 시설 안내", body: "PetGrow의 '내 주변 Pet'은 이용자가 위치 권한을 허용하면 기기 또는 브라우저가 제공하는 현재 위치 좌표를 주변 동물병원·동물약국·펫샵·용품점·미용·호텔·유치원 등 장소 검색에 일시적으로 사용합니다. 현재 위치 좌표는 주변 검색 요청을 처리하는 동안에만 이용하며 PetGrow 회원 계정 또는 장소 후기 DB에 별도로 저장하지 않습니다. 위치 권한 허용 여부와 관계없이 주소를 직접 입력해 검색할 수 있으며, 위치 권한은 언제든 기기 또는 브라우저 설정에서 철회할 수 있습니다. 장소명·주소·전화번호·업종·거리 등 업체 정보는 카카오 장소검색 등 외부 장소정보를 검색 시점에 불러오므로 PetGrow가 매주 별도로 갱신하는 정보가 아니며 실제 영업정보와 차이가 있을 수 있습니다." },
   { title: "10. 외부 서비스 및 광고", body: "PetGrow는 서비스 운영을 위해 카카오(간편로그인), Google AdMob/Google Mobile Ads SDK(앱 광고), 데이터베이스·파일 저장·호스팅 제공업체 등을 사용할 수 있습니다. Google은 간편로그인 제공자가 아니라 광고 등 실제 사용하는 서비스의 제공자로만 기재합니다. Google Mobile Ads SDK는 광고 제공, 분석 및 부정행위 방지를 위해 IP 주소, 이용 상호작용, 진단정보, 기기·계정 식별자 등을 자동으로 처리할 수 있습니다. 개인 맞춤형 광고 여부와 광고 관련 선택권은 적용되는 지역의 법령, Google의 동의 관리 도구 설정 및 이용자의 기기·계정 설정에 따라 달라질 수 있습니다. 외부 사업자가 자체적으로 처리하는 개인정보에는 해당 사업자의 개인정보처리방침이 적용될 수 있습니다." },
   { title: "10. 쿠키·광고 식별자 및 이용자 선택권", body: "웹 서비스는 로그인 유지, 서비스 제공, 이용 현황 분석 또는 광고 제공 등을 위해 쿠키 및 유사 기술을 사용할 수 있습니다. 모바일 앱에서는 광고 ID 등 기기 식별자가 광고 SDK에 의해 사용될 수 있습니다. 이용자는 브라우저의 쿠키 설정, Android의 광고 개인정보 보호/광고 ID 설정 등 기기에서 제공하는 방법을 통해 일부 광고 관련 식별정보의 사용을 제한하거나 광고 ID를 재설정·삭제할 수 있습니다. 관련 법령상 동의가 필요한 지역에는 Google의 개인정보 보호 메시지 또는 동의 관리 절차가 표시될 수 있습니다. 일부 설정을 제한하면 맞춤형 광고가 제한되거나 서비스 일부 기능에 차이가 생길 수 있습니다." },
   { title: "11. 개인정보의 파기", body: "개인정보 처리 목적이 달성되거나 회원이 탈퇴한 경우 관계 법령상 보관 의무가 있는 정보를 제외하고 개인정보를 삭제합니다. 삭제 대상에는 PetGrow 계정, 카카오 인증 관련 식별정보, 반려동물 정보, 프로필 사진, 저장된 검사 및 서비스 결과, Pet톡에 작성한 게시글·댓글·좋아요 기록 및 첨부 사진 등이 포함될 수 있습니다." },
@@ -2061,7 +2061,7 @@ const TERMS_SECTIONS_KO = [
   { title: "제13조 (건강 관련 정보)", body: "PetGrow에서 제공하는 건강, 식단, 영양 및 관리 정보는 일반적인 참고정보이며 수의사의 진료, 진단 또는 처방을 대신하지 않습니다. 반려동물에게 이상 증상이나 응급상황이 있는 경우 수의사 또는 동물병원의 진료를 받아야 합니다." },
   { title: "제14조 (Pet사주·PetBTI 등 재미 콘텐츠)", body: "기본 Pet사주, 오늘의 펫운세, 보호자 궁합 및 PetBTI는 재미와 참고를 위한 콘텐츠이며 과학적 진단, 의학적 판단, 성격 진단 또는 미래 결과를 보장하는 자료가 아닙니다. 보호자 궁합을 위해 입력한 보호자 이름과 생년월일은 현재 구현상 결과 계산에만 일시적으로 사용되며 PetGrow 서버 또는 계정에 저장되지 않습니다." },
   { title: "제14조의2 (Pet음악)", body: "① PetGrow는 강아지·고양이 등을 위한 음원 재생, 1곡 반복·전체 반복, 좋아요, 댓글 및 인기순위 기능을 제공할 수 있으며, 인스트루멘탈·보컬 여부와 휴식·수면·놀이·자연 등 음악 특성 태그를 표시할 수 있습니다.\n② Pet음악은 서비스 내 스트리밍 재생을 원칙으로 하며 별도의 음원 다운로드 기능을 제공하지 않을 수 있습니다. 이용자는 서비스에서 제공되는 음원을 무단 추출·복제·재판매 또는 재배포해서는 안 됩니다.\n③ 즐겨찾기·좋아요·댓글 등 이용자 반응은 개인화된 이용 편의 제공 및 서비스 개선에 활용될 수 있습니다. 댓글에는 Pet톡 게시물과 동일하게 타인의 권리 침해, 불법·유해 콘텐츠 등 금지행위 기준이 적용될 수 있습니다.\n④ PetGrow가 직접 등록하는 음원은 서비스 운영에 필요한 이용 권한을 확인한 범위에서 제공하는 것을 원칙으로 합니다." },
-  { title: "제14조의3 (내 주변 Pet 및 장소 이용후기)", body: "① PetGrow는 이용자의 현재 위치 또는 직접 입력한 지역을 기준으로 동물병원·동물약국·펫샵·용품점·미용·호텔·유치원 등 주변 반려동물 관련 장소를 검색해 안내할 수 있습니다. 장소명·업종·주소·전화번호·거리 등 장소정보는 외부 장소정보 제공자의 검색 결과를 기반으로 하며 PetGrow가 해당 업체의 영업상태·서비스 품질·정보 정확성을 보증하지 않습니다.\n② 현재 위치는 이용자가 위치 권한을 허용한 경우에만 주변 검색을 위해 일시적으로 사용하며, PetGrow는 현재 구현상 정확한 현재 위치 좌표를 회원 계정이나 장소 후기 DB에 저장하지 않습니다.\n③ 회원은 장소별로 1~5점의 별점과 간단한 이용후기를 작성하고 다른 후기의 좋아요 또는 신고 기능을 이용할 수 있습니다. 후기 내용에 대한 책임은 작성자에게 있으며 욕설·비속어·음란·혐오 표현, 타인의 개인정보, 광고·도배, 허위 또는 권리침해 내용 등 부적절한 내용을 작성해서는 안 됩니다.\n④ PetGrow는 일부 금지 표현과 개인정보 노출을 자동 필터링할 수 있으나 모든 부적절한 내용을 완전히 탐지하는 것을 보장하지 않습니다. 신고된 후기는 운영진 검토 후 숨김 또는 신고 종결 처리될 수 있으며 신고만으로 자동 삭제되지 않습니다.\n⑤ 장소 이용후기는 회원 개인의 경험과 의견이며 해당 업체 또는 PetGrow의 공식 평가·보증이 아닙니다. 진료·건강 관련 판단은 반드시 수의사 등 전문가의 안내를 확인해야 합니다." },
+  { title: "제14조의3 (내 주변 Pet 및 장소 이용후기)", body: "① PetGrow는 이용자가 직접 입력한 주소를 기준으로 동물병원·동물약국·펫샵·용품점·미용·호텔·유치원 등 주변 반려동물 관련 장소를 검색해 안내할 수 있습니다. 위치 권한을 허용한 경우 현재 위치는 지도 표시와 각 장소까지의 거리 계산에 사용할 수 있습니다. 장소명·업종·주소·전화번호·거리 등 장소정보는 외부 장소정보 제공자의 검색 결과를 기반으로 하며 PetGrow가 해당 업체의 영업상태·서비스 품질·정보 정확성을 보증하지 않습니다.\n② 현재 위치는 이용자가 위치 권한을 허용한 경우에만 지도 표시와 장소까지의 거리 계산을 위해 일시적으로 사용하며, PetGrow는 현재 구현상 정확한 현재 위치 좌표를 회원 계정이나 장소 후기 DB에 저장하지 않습니다.\n③ 회원은 장소별로 1~5점의 별점과 간단한 이용후기를 작성하고 다른 후기의 좋아요 또는 신고 기능을 이용할 수 있습니다. 후기 내용에 대한 책임은 작성자에게 있으며 욕설·비속어·음란·혐오 표현, 타인의 개인정보, 광고·도배, 허위 또는 권리침해 내용 등 부적절한 내용을 작성해서는 안 됩니다.\n④ PetGrow는 일부 금지 표현과 개인정보 노출을 자동 필터링할 수 있으나 모든 부적절한 내용을 완전히 탐지하는 것을 보장하지 않습니다. 신고된 후기는 운영진 검토 후 숨김 또는 신고 종결 처리될 수 있으며 신고만으로 자동 삭제되지 않습니다.\n⑤ 장소 이용후기는 회원 개인의 경험과 의견이며 해당 업체 또는 PetGrow의 공식 평가·보증이 아닙니다. 진료·건강 관련 판단은 반드시 수의사 등 전문가의 안내를 확인해야 합니다." },
   { title: "제15조 (광고 및 외부 서비스)", body: "① PetGrow는 서비스의 유지·운영을 위해 직접광고, 제휴광고 및 Google AdMob 등 외부 광고 서비스를 제공할 수 있습니다.\n② Google Mobile Ads SDK 사용 시 광고 제공, 분석 및 부정행위 방지를 위해 IP 주소, 앱 실행·탭·동영상 조회 등 이용 상호작용, 앱/SDK 진단정보, Android 광고 ID·App Set ID 등 기기 또는 계정 식별자가 Google에 의해 자동으로 처리될 수 있습니다. 구체적인 처리 범위는 앱 버전, SDK 설정 및 이용자의 기기 설정에 따라 달라질 수 있습니다.\n③ 개인 맞춤형 광고가 제공되는 경우 적용 법령과 Google의 동의 관리 절차에 따라 필요한 안내·동의 또는 선택권을 제공합니다. 이용자는 기기 설정에서 광고 ID를 재설정·삭제하거나 광고 개인정보 보호 관련 설정을 변경할 수 있습니다.\n④ PetGrow는 직접광고의 노출·클릭 및 광고 표시 요청·성공·오류 등의 집계 통계를 운영할 수 있습니다. PetGrow 관리자 화면의 자체 통계는 Google AdMob의 실제 광고 노출수·클릭수·수익 보고서와 구분됩니다.\n⑤ 외부 광고 서비스에는 해당 제공자의 이용약관 및 개인정보처리방침이 적용될 수 있습니다." },
   { title: "제16조 (개인정보 보호 및 광고·제휴 문의)", body: "① 회원 및 이용자의 개인정보 처리에 관한 사항은 PetGrow 개인정보처리방침에 따릅니다.\n② 이용자가 광고·제휴 문의 기능을 사용하는 경우 회사/브랜드명, 담당자명, 이메일, 문의 내용과 선택 입력한 연락처·광고 유형·예산 등의 정보가 상담 및 제휴 검토를 위해 처리될 수 있습니다.\n③ 광고·제휴 문의 정보는 상담 목적 달성 후 삭제하는 것을 원칙으로 하며, 이용자는 help.petgrow@gmail.com을 통해 관련 정보의 열람·정정·삭제를 요청할 수 있습니다." },
   { title: "제17조 (지식재산권)", body: "PetGrow가 직접 제작한 로고, 디자인, 문구, 프로그램 및 콘텐츠에 대한 권리는 PetGrow 또는 정당한 권리자에게 귀속됩니다. 이용자는 권리자의 허락 없이 이를 영리 목적으로 복제·배포·판매 또는 변형해서는 안 됩니다." },
@@ -2266,7 +2266,7 @@ function LoginScreen({ onGoTerms, onGoPrivacy }) {
 
       <Modal open={!!detail} onClose={()=>setDetail(null)} width={520}>
         {detail==="terms" && <><h3>이용약관 동의</h3><p className="consent-detail-text">PetGrow의 회원가입, 서비스 이용, 계정 및 데이터 저장·동기화, Pet톡 운영, 광고 및 외부서비스 등에 관한 이용약관에 동의합니다.</p><button className="bg-btn" onClick={()=>{setTermsOk(true);setDetail(null)}}>동의하고 닫기</button></>}
-        {detail==="privacy" && <><h3>개인정보 수집·이용 동의</h3><div className="consent-detail-text"><b>수집 항목</b><br/>카카오 사용자 고유 식별정보, 실제 동의받아 제공되는 닉네임·프로필 이미지, 반려동물 이름·종류·품종·생년월일·성별·현재 체중·프로필 사진, PetBTI 결과 및 저장되는 서비스 정보, 내 주변 Pet 후기·별점·좋아요·신고 기록. 현재 위치 좌표는 주변 장소 검색에 일시적으로 사용하며 계정에 저장하지 않습니다.<br/><br/><b>이용 목적</b><br/>회원 식별·계정 관리, 반려동물 프로필 및 PetGrow 서비스 제공, 계정별 데이터 저장·동기화<br/><br/><b>보유 기간</b><br/>회원 탈퇴 시까지 또는 처리 목적 달성 시까지. 관계 법령상 보관 의무가 있는 경우 해당 기간 동안 보관할 수 있습니다.<br/><br/><b>동의 거부권</b><br/>동의를 거부할 수 있으나 필수 정보이므로 회원 서비스 이용이 제한될 수 있습니다.</div><button className="bg-btn" onClick={()=>{setPrivacyOk(true);setDetail(null)}}>동의하고 닫기</button></>}
+        {detail==="privacy" && <><h3>개인정보 수집·이용 동의</h3><div className="consent-detail-text"><b>수집 항목</b><br/>카카오 사용자 고유 식별정보, 실제 동의받아 제공되는 닉네임·프로필 이미지, 반려동물 이름·종류·품종·생년월일·성별·현재 체중·프로필 사진, PetBTI 결과 및 저장되는 서비스 정보, 내 주변 Pet 후기·별점·좋아요·신고 기록. 현재 위치 좌표는 지도 표시와 장소까지의 거리 계산에 일시적으로 사용하며 계정에 저장하지 않습니다.<br/><br/><b>이용 목적</b><br/>회원 식별·계정 관리, 반려동물 프로필 및 PetGrow 서비스 제공, 계정별 데이터 저장·동기화<br/><br/><b>보유 기간</b><br/>회원 탈퇴 시까지 또는 처리 목적 달성 시까지. 관계 법령상 보관 의무가 있는 경우 해당 기간 동안 보관할 수 있습니다.<br/><br/><b>동의 거부권</b><br/>동의를 거부할 수 있으나 필수 정보이므로 회원 서비스 이용이 제한될 수 있습니다.</div><button className="bg-btn" onClick={()=>{setPrivacyOk(true);setDetail(null)}}>동의하고 닫기</button></>}
         {detail==="marketing" && <><h3>광고·마케팅 정보 수신 동의 (선택)</h3><div className="consent-detail-text">PetGrow의 이벤트, 새 기능, 제휴 또는 프로모션 관련 안내를 받을 수 있도록 선택 동의를 받습니다. 동의하지 않아도 기본 서비스 이용에는 제한이 없습니다. 실제 마케팅 발송 기능을 운영하는 경우 동의한 범위에서만 이용합니다.</div><button className="bg-btn" onClick={()=>{setMarketingOk(true);setDetail(null)}}>동의하고 닫기</button></>}
       </Modal>
     </div>
@@ -4618,7 +4618,7 @@ const GlobalStyle = () => (
   .nearby-map-card{padding:0;overflow:hidden;position:relative;z-index:0;isolation:isolate;contain:paint}
   body .leaflet-container{isolation:isolate;} .nearby-map-card{transform:translateZ(0)}.nearby-map-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #EDF1ED}.nearby-map-head>div{display:flex;flex-direction:column;gap:2px}.nearby-map-head small{color:var(--sub)}.nearby-live-pill{font-size:11px;font-weight:850;color:#397447;background:#EDF7EF;border-radius:999px;padding:7px 9px}
   .nearby-map{height:410px;position:relative;z-index:0;overflow:hidden;background:linear-gradient(145deg,#EEF5EF,#F8FBF8)}.nearby-map-card .leaflet-container{position:relative!important;z-index:0!important;width:100%;height:100%;}.nearby-map-card .leaflet-control-container,.nearby-map-card .leaflet-pane{max-width:100%;}.nearby-map-card .leaflet-popup-pane{z-index:700;}.nearby-map-card .leaflet-control{z-index:800;}.nearby-map-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:7px;color:#607067;padding:20px}.nearby-map-fallback .icon{width:38px;color:#4F8A5B}.nearby-map-fallback span{font-size:12px;max-width:390px;line-height:1.6}
-  .nearby-me-pin{display:grid;place-items:center;position:relative}.nearby-me-pin span{width:18px;height:18px;border-radius:50%;background:#4F8A5B;border:4px solid #fff;box-shadow:0 0 0 9px rgba(79,138,91,.18),0 3px 12px rgba(44,83,53,.28);animation:nearbyPulse 1.8s ease-out infinite}.nearby-me-pin b{margin-top:10px;background:#26372C;color:#fff;border-radius:999px;padding:5px 8px;font-size:10px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+  .nearby-search-pin{display:grid;place-items:center;position:relative}.nearby-search-pin span{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#fff;border:3px solid #7B8790;color:#59656E;font-size:13px;font-weight:900;box-shadow:0 3px 12px rgba(44,54,61,.2)}.nearby-search-pin b{margin-top:8px;background:#5C6770;color:#fff;border-radius:999px;padding:5px 8px;font-size:10px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.12)}.nearby-me-pin{display:grid;place-items:center;position:relative}.nearby-me-pin span{width:18px;height:18px;border-radius:50%;background:#4F8A5B;border:4px solid #fff;box-shadow:0 0 0 9px rgba(79,138,91,.18),0 3px 12px rgba(44,83,53,.28);animation:nearbyPulse 1.8s ease-out infinite}.nearby-me-pin b{margin-top:10px;background:#26372C;color:#fff;border-radius:999px;padding:5px 8px;font-size:10px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.15)}
   @keyframes nearbyPulse{0%{box-shadow:0 0 0 0 rgba(79,138,91,.3),0 3px 12px rgba(44,83,53,.28)}70%{box-shadow:0 0 0 14px rgba(79,138,91,0),0 3px 12px rgba(44,83,53,.28)}100%{box-shadow:0 0 0 0 rgba(79,138,91,0),0 3px 12px rgba(44,83,53,.28)}}
   .nearby-map-marker{width:34px;height:40px;border:0;background:#fff;border-radius:16px 16px 16px 3px;transform:rotate(-45deg);box-shadow:0 6px 16px rgba(35,54,40,.2);display:grid;place-items:center;cursor:pointer}.nearby-map-marker span{transform:rotate(45deg);width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#4F8A5B;color:#fff;font-size:11px;font-weight:900}
   .nearby-message{margin:10px 0;padding:11px 13px;border-radius:12px;background:#FFF8E8;color:#8A6920;font-size:12px}
@@ -9069,7 +9069,7 @@ function AboutPage({ onStart, onNavigate }) {
       <section className="landing-section landing-section-white">
         <div className="landing-wrap">
           <h2 className="landing-section-title" style={{ marginBottom: 6 }}>{lang === "en" ? "Nearby Pet" : "내 주변 Pet"}</h2>
-          <p style={{ textAlign:"center",color:"#89928C",fontSize:15,maxWidth:620,margin:"0 auto 18px" }}>{lang === "en" ? "Find nearby veterinary hospitals, pharmacies, pet shops, grooming salons and daycare/hotels from your current location." : "현재 위치를 기준으로 가까운 동물병원·동물약국·펫샵·미용·유치원/호텔을 거리순으로 찾고 PetGrow 회원 후기도 확인해요."}</p>
+          <p style={{ textAlign:"center",color:"#89928C",fontSize:15,maxWidth:620,margin:"0 auto 18px" }}>{lang === "en" ? "Search pet places around an address and also see the distance from your current location." : "검색한 주소 주변의 동물병원·동물약국·펫샵·미용·유치원/호텔을 찾고, 지도에서 내 위치와 업체까지의 거리도 확인해요."}</p>
           <div className="landing-mini-teaser"><button type="button" className="landing-mini-teaser-item" onClick={() => go("nearby")}><span className="landing-mini-teaser-icon"><MapPinIcon style={{width:20,height:20}}/></span><span className="landing-mini-teaser-label">{lang === "en" ? "Find nearby pet places" : "내 주변 Pet 찾기"}</span></button></div>
         </div>
       </section>
@@ -9215,7 +9215,7 @@ function NearbyPetPage(){
     if(mapRef.current) mapRef.current.innerHTML="";
   },[]);
 
-  const loadMap=async(center,places)=>{
+  const loadMap=async(center,places,userPos=pos,showSearchPin=true)=>{
     if(!mapRef.current)return;
     if(!window.L){
       if(!document.getElementById("petgrow-leaflet-css")){
@@ -9235,14 +9235,18 @@ function NearbyPetPage(){
     if(!map.__petgrowTiles){L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(map);map.__petgrowTiles=true;}
     map.setView(c,14);
     overlays.current.forEach(o=>{try{map.removeLayer(o)}catch{}});overlays.current=[];
-    const meIcon=L.divIcon({className:"petgrow-leaflet-me",html:'<div class="nearby-me-pin"><span></span><b>내 위치</b></div>',iconSize:[64,52],iconAnchor:[32,36]});
-    const me=L.marker(c,{icon:meIcon,zIndexOffset:1000}).addTo(map);overlays.current.push(me);
+    if(showSearchPin){const searchIcon=L.divIcon({className:"petgrow-leaflet-search",html:'<div class="nearby-search-pin"><span>⌖</span><b>검색 주소</b></div>',iconSize:[72,52],iconAnchor:[36,36]});
+    const searchMarker=L.marker(c,{icon:searchIcon,zIndexOffset:900}).addTo(map);overlays.current.push(searchMarker);}
+    if(userPos&&Number.isFinite(Number(userPos.lat))&&Number.isFinite(Number(userPos.lng))){
+      const meIcon=L.divIcon({className:"petgrow-leaflet-me",html:'<div class="nearby-me-pin"><span></span><b>내 위치</b></div>',iconSize:[64,52],iconAnchor:[32,36]});
+      const me=L.marker([userPos.lat,userPos.lng],{icon:meIcon,zIndexOffset:1000}).addTo(map);overlays.current.push(me);
+    }
     const bounds=L.latLngBounds([c]);
     places.forEach((p,i)=>{
       const icon=L.divIcon({className:"petgrow-leaflet-place",html:`<button type="button" class="nearby-map-marker nearby-map-marker--${p.typeKey||"other"}"><span>${p.typeIcon||"🐾"}</span><i>${i+1}</i></button>`,iconSize:[44,50],iconAnchor:[22,46]});
       const m=L.marker([p.lat,p.lng],{icon}).addTo(map);
       m.on("click",()=>{setSelected(p);document.getElementById(`nearby-place-${p.id}`)?.scrollIntoView({behavior:"smooth",block:"center"});});
-      const popup=`<div style="min-width:200px"><div style="font-size:11px;font-weight:800;color:#4F8A5B;margin-bottom:5px">${String(p.typeIcon||"🐾")} ${String(p.typeLabel||"반려동물 관련")}</div><b style="font-size:14px">${String(p.name||"").replace(/[<>&]/g,"")}</b><div style="margin-top:5px;font-size:12px;font-weight:800;color:#4F8A5B">${p.distance==null?"":p.distance<1000?`${p.distance}m`:`${(p.distance/1000).toFixed(1)}km`}</div><div style="margin-top:4px;font-size:11px;line-height:1.45">${String(p.address||"").replace(/[<>&]/g,"")}</div>${p.phone?`<div style="margin-top:4px;font-size:11px">☎ ${String(p.phone).replace(/[<>&]/g,"")}</div>`:""}</div>`;
+      const popup=`<div style="min-width:200px"><div style="font-size:11px;font-weight:800;color:#4F8A5B;margin-bottom:5px">${String(p.typeIcon||"🐾")} ${String(p.typeLabel||"반려동물 관련")}</div><b style="font-size:14px">${String(p.name||"").replace(/[<>&]/g,"")}</b><div style="margin-top:5px;font-size:12px;font-weight:800;color:#4F8A5B">${p.userDistance!=null?`내 위치에서 ${p.userDistance<1000?`${p.userDistance}m`:`${(p.userDistance/1000).toFixed(1)}km`}`:(p.distance==null?"":`검색 주소에서 ${p.distance<1000?`${p.distance}m`:`${(p.distance/1000).toFixed(1)}km`}`)}</div><div style="margin-top:4px;font-size:11px;line-height:1.45">${String(p.address||"").replace(/[<>&]/g,"")}</div>${p.phone?`<div style="margin-top:4px;font-size:11px">☎ ${String(p.phone).replace(/[<>&]/g,"")}</div>`:""}</div>`;
       m.bindPopup(popup);overlays.current.push(m);bounds.extend([p.lat,p.lng]);
     });
     if(places.length){const close=places.filter(p=>Number(p.distance)<=1000);if(close.length){const b2=L.latLngBounds([[center.lat,center.lng]]);close.slice(0,12).forEach(p=>b2.extend([p.lat,p.lng]));map.fitBounds(b2.pad(.16),{maxZoom:16,padding:[28,28]});}else{map.setView([center.lat,center.lng],14);}}
@@ -9264,6 +9268,7 @@ function NearbyPetPage(){
   const fetchNearbyCategory=async(nextCat,coords,manualArea)=>{
     const q=new URLSearchParams({category:nextCat});
     if(coords){q.set("lat",coords.lat);q.set("lng",coords.lng);}
+    if(pos){q.set("userLat",pos.lat);q.set("userLng",pos.lng);}
     if(manualArea.trim())q.set("area",manualArea.trim());
     const r=await fetch(`/api/nearby?${q}`);const j=await r.json();
     if(!r.ok) throw new Error(j.error||"주변 정보를 불러오지 못했어요.");
@@ -9275,7 +9280,7 @@ function NearbyPetPage(){
     const cached=nearbyCache.current.get(cacheKey);
     if(cached){
       setItems(cached.items||[]);setSelected(cached.items?.[0]||null);setSearchRadius(Number(cached.searchRadius)||1000);setWithin1km(Number(cached.within1km)||0);
-      if(coords)loadMap(coords,cached.items||[]).catch(()=>{});
+      if(cached.searchCenter)loadMap(cached.searchCenter,cached.items||[],pos).catch(()=>{});
       if(!background)return;
     }
     const seq=++requestSeq.current;
@@ -9290,47 +9295,40 @@ function NearbyPetPage(){
         for(const x of good){nearbyCache.current.set(`${coords?`${Number(coords.lat).toFixed(4)},${Number(coords.lng).toFixed(4)}`:manualArea.trim()}|${x.key}`,x.data);}
         const merged=mergeNearbyRows(good.map(x=>x.data.items||[]));
         const within=merged.filter(x=>Number(x.distance)<=1000).length;
-        j={items:within?merged.filter(x=>Number(x.distance)<=1000):merged,within1km:within,searchRadius:within?1000:Math.max(1000,...good.map(x=>Number(x.data.searchRadius)||1000))};
+        j={items:within?merged.filter(x=>Number(x.distance)<=1000):merged,within1km:within,searchRadius:within?1000:Math.max(1000,...good.map(x=>Number(x.data.searchRadius)||1000)),searchCenter:good[0]?.data?.searchCenter||null};
       }else j=await fetchNearbyCategory(nextCat,coords,manualArea);
       nearbyCache.current.set(cacheKey,j);
       if(seq!==requestSeq.current && !background)return;
       setItems(j.items||[]);setSelected(j.items?.[0]||null);if(Number(j.searchRadius))setSearchRadius(Number(j.searchRadius));setWithin1km(Number(j.within1km)||0);
-      if(coords)loadMap(coords,j.items||[]).catch(()=>{});
+      if(j.searchCenter)loadMap(j.searchCenter,j.items||[],pos).catch(()=>{});
       if(!(j.items||[]).length)setMsg("검색 결과가 없어요. 다른 카테고리나 지역명으로 검색해보세요.");
     }catch(e){if(!cached)setMsg(e.message)}finally{if(seq===requestSeq.current)setLoading(false)}
   };
   const locate=()=>{
-    if(!navigator.geolocation){setMsg("이 기기에서는 현재 위치를 사용할 수 없어요. 지역명으로 검색해주세요.");return;}
-    setLoading(true);setMsg("현재 위치를 정밀하게 확인하고 있어요…");
-    let best=null, finished=false, sampleCount=0;
-    const finish=(watchId)=>{
-      if(finished||!best)return;finished=true;
-      try{navigator.geolocation.clearWatch(watchId);}catch{}
-      const c={lat:best.coords.latitude,lng:best.coords.longitude};
-      setPositionAccuracy(Math.round(Number(best.coords.accuracy)||0));
-      setPos(c);setArea("");setMsg("");search(cat,c,"");
-    };
-    let watchId=null;
-    const timer=window.setTimeout(()=>finish(watchId),4200);
-    watchId=navigator.geolocation.watchPosition(
+    if(!navigator.geolocation){setMsg("이 기기에서는 현재 위치를 사용할 수 없어요. 주소 검색은 그대로 이용할 수 있어요.");return;}
+    setMsg("지도에 내 위치를 표시하고 있어요…");
+    navigator.geolocation.getCurrentPosition(
       p=>{
-        sampleCount++;
-        if(!best || Number(p.coords.accuracy||1e9)<Number(best.coords.accuracy||1e9))best=p;
-        if(Number(p.coords.accuracy||1e9)<=45 || sampleCount>=3){window.clearTimeout(timer);finish(watchId);}
+        const c={lat:p.coords.latitude,lng:p.coords.longitude};
+        setPositionAccuracy(Math.round(Number(p.coords.accuracy)||0));
+        setPos(c);setMsg("");
+        if(items.length){
+          const updated=items.map(x=>({...x,userDistance:calcClientDistance(c.lat,c.lng,Number(x.lat),Number(x.lng))})).sort((a,b)=>(a.distance??1e12)-(b.distance??1e12));
+          setItems(updated);
+          const mc=mapObj.current?.getCenter?.();if(mc)loadMap({lat:mc.lat,lng:mc.lng},updated,c).catch(()=>{});
+        } else { loadMap(c,[],c,false).catch(()=>{}); }
       },
       err=>{
-        window.clearTimeout(timer);try{if(watchId!=null)navigator.geolocation.clearWatch(watchId);}catch{}
-        if(best){finish(watchId);return;}
-        setLoading(false);
-        if(err?.code===1) setMsg("위치 권한이 꺼져 있어요. 브라우저 또는 앱 설정에서 위치를 허용하거나 아래에서 지역명을 검색해주세요.");
-        else setMsg("현재 위치를 확인하지 못했어요. 다시 시도하거나 아래에서 지역명을 검색해주세요.");
+        if(err?.code===1)setMsg("위치 권한이 꺼져 있어요. 주소 검색은 사용할 수 있고, 권한을 허용하면 지도에 내 위치와 업체까지의 거리가 표시돼요.");
+        else setMsg("현재 위치를 확인하지 못했어요. 주소 검색은 그대로 이용할 수 있어요.");
       },
-      {enableHighAccuracy:true,timeout:5000,maximumAge:0}
+      {enableHighAccuracy:true,timeout:5000,maximumAge:60000}
     );
   };
+  const calcClientDistance=(a,b,c,d)=>{const rad=Math.PI/180,R=6371000,x=(c-a)*rad,y=(d-b)*rad,aa=Math.sin(x/2)**2+Math.cos(a*rad)*Math.cos(c*rad)*Math.sin(y/2)**2;return Math.round(2*R*Math.asin(Math.sqrt(aa)));};
+  useEffect(()=>{ if(!locationRequested.current){locationRequested.current=true;locate();} },[]);
   useEffect(()=>{
-    if(pos)search(cat,pos,"",{background:false});
-    else if(area.trim())search(cat,null,area,{background:false});
+    if(area.trim())search(cat,null,area,{background:false});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[cat]);
   const cats=[["all","전체"],["hospital","동물병원"],["pharmacy","동물약국"],["shop","펫샵·용품"],["grooming","펫미용"],["hotel","호텔·유치원"]];
@@ -9350,23 +9348,23 @@ function NearbyPetPage(){
 
   return <div className="nearby-page">
     <section className="nearby-hero bg-card">
-      <div><span className="nearby-eyebrow">PETGROW LOCAL</span><h1>{t.nearbyTitle}</h1><p>{t.nearbySubtitle}</p><small className="nearby-search-help">📍 지역명을 비워두고 검색하면 현재 위치 권한을 요청해 가까운 곳을 찾아요.</small></div>
+      <div><span className="nearby-eyebrow">PETGROW LOCAL</span><h1>{t.nearbyTitle}</h1><p>{t.nearbySubtitle}</p><small className="nearby-search-help">📍 주소를 검색하면 해당 주소 주변 장소가 표시돼요. 위치를 허용하면 지도에 내 위치와 업체까지의 거리도 함께 보여요.</small></div>
     </section>
-    <div className="nearby-search-row"><input className="bg-input" value={area} onChange={e=>setArea(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"){if(area.trim())search(cat,null,area);else locate();}}} placeholder="지역명 입력 또는 비워두고 현재 위치 검색"/><button className="bg-btn" onClick={()=>area.trim()?search(cat,null,area):locate()}>{loading?"검색 중…":"검색"}</button></div>
+    <div className="nearby-search-row"><input className="bg-input" value={area} onChange={e=>setArea(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"){if(area.trim())search(cat,null,area);else setMsg("검색할 주소를 입력해 주세요.");}}} placeholder="주소 입력 (예: 서울 강동구 천호대로 123)"/><button className="bg-btn" onClick={()=>area.trim()?search(cat,null,area):setMsg("검색할 주소를 입력해 주세요.")}>{loading?"검색 중…":"검색"}</button></div>
     <ResponsiveCategoryMenu className="nearby-responsive-categories" primaryCount={3} items={cats.map(([id,label])=>({id,label}))} activeId={cat} onSelect={setCat} lang={"ko"} />
     <section className="nearby-map-card bg-card">
-      <div className="nearby-map-head"><div><b>{pos?"현재 위치 기준":"지역 검색"}</b><small>{pos?`민트색 원이 내 현재 위치예요${positionAccuracy?` · 위치 오차 약 ±${positionAccuracy}m`:""}`:"위치 권한 없이도 지역명으로 검색할 수 있어요"}</small></div>{pos&&<span className="nearby-live-pill">● LIVE 위치</span>}</div>
-      <div ref={mapRef} className="nearby-map"><div className="nearby-map-fallback"><MapPinIcon/><b>내 위치 지도를 준비하고 있어요</b><span>위치 허용 후 주변 업체가 지도에 표시됩니다.</span></div></div>
+      <div className="nearby-map-head"><div><b>검색 주소 기준</b><small>{pos?`검색 결과는 주소 기준 · 민트색 표시는 내 위치${positionAccuracy?` · 위치 오차 약 ±${positionAccuracy}m`:""}`:"검색 결과는 주소 기준 · 위치 권한을 허용하면 내 위치도 함께 표시돼요"}</small></div>{pos&&<span className="nearby-live-pill">● 내 위치 표시</span>}</div>
+      <div ref={mapRef} className="nearby-map"><div className="nearby-map-fallback"><MapPinIcon/><b>주소를 검색해 주세요</b><span>검색한 주소 주변 업체가 지도에 표시되고, 위치 허용 시 내 위치도 함께 표시됩니다.</span></div></div>
     </section>
     {msg&&<div className="nearby-message">{msg}</div>}
-    <div className="nearby-results-head"><div><h2>가까운 곳</h2><span>{items.length}곳</span></div><small>{pos ? `1km 이내 ${within1km}곳 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`} · 거리순` : "거리순으로 정렬돼요"}</small></div>
+    <div className="nearby-results-head"><div><h2>검색 주소 주변</h2><span>{items.length}곳</span></div><small>{`검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`} · 주소 기준 가까운 순`}{pos?" · 카드의 거리는 내 위치 기준":""}</small></div>
     <div className="nearby-list">
       {loading&&!items.length?<div className="bg-card nearby-empty">주변 Pet 정보를 찾는 중…</div>:
       items.map((p,i)=><article id={`nearby-place-${p.id}`} key={p.id} className={`bg-card nearby-place ${selected?.id===p.id?"selected":""}`} onClick={()=>setSelected(p)}>
         <div className="nearby-rank">{i+1}</div>
         <div className="nearby-place-main">
           <div className="nearby-type-row"><span className={`nearby-type-badge nearby-type-${p.typeKey||"other"}`}>{p.typeIcon||"🐾"} {p.typeLabel||"반려동물 관련"}</span></div>
-          <div className="nearby-place-title"><h3>{p.name}</h3><strong>{fmt(p.distance)}</strong></div>
+          <div className="nearby-place-title"><h3>{p.name}</h3><strong>{pos?`내 위치에서 ${fmt(p.userDistance ?? p.distance)}`:`주소에서 ${fmt(p.distance)}`}</strong></div>
           <div className="nearby-place-meta">{p.address&&<span>📍 {p.address}</span>}{p.phone&&<span>☎ {p.phone}</span>}</div>
           <small>{p.category}</small>
         </div>

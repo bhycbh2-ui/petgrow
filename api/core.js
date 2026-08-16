@@ -312,7 +312,7 @@ async function fetchPublicNearby(type, region, refLat, refLng, kakaoKey) {
 async function handleNearby(req, res) {
   if (req.method !== "GET") return res.status(405).json({ error: "method not allowed" });
   const key = process.env.KAKAO_REST_API_KEY;
-  const { lat, lng, category = "all", area = "" } = req.query || {};
+  const { lat, lng, userLat, userLng, category = "all", area = "" } = req.query || {};
   const keywords = {
     all: ["동물병원", "24시 동물병원", "동물약국", "반려동물용품", "펫샵", "애견미용", "고양이미용", "반려동물 미용", "애견호텔", "반려동물 호텔", "반려동물 유치원", "애견유치원"],
     hospital: ["동물병원", "24시 동물병원", "동물의료센터", "동물메디컬센터"],
@@ -322,8 +322,10 @@ async function handleNearby(req, res) {
     hotel: ["애견호텔", "반려동물 호텔", "반려동물 유치원", "애견유치원", "펫호텔"]
   };
   const qs = keywords[category] || keywords.all;
-  const nLat = Number(lat), nLng = Number(lng);
-  const hasCoord = Number.isFinite(nLat) && Number.isFinite(nLng) && Math.abs(nLat) <= 90 && Math.abs(nLng) <= 180;
+  let nLat = Number(lat), nLng = Number(lng);
+  let hasCoord = Number.isFinite(nLat) && Number.isFinite(nLng) && Math.abs(nLat) <= 90 && Math.abs(nLng) <= 180;
+  const uLat=Number(userLat),uLng=Number(userLng);
+  const hasUserCoord=Number.isFinite(uLat)&&Number.isFinite(uLng)&&Math.abs(uLat)<=90&&Math.abs(uLng)<=180;
   const all = [];
   let kakaoOk = false;
   let kakaoStatus = null;
@@ -343,6 +345,21 @@ async function handleNearby(req, res) {
     const aa=Math.sin(x/2)**2+Math.cos(a*rad)*Math.cos(c*rad)*Math.sin(y/2)**2;
     return Math.round(2*R*Math.asin(Math.sqrt(aa)));
   };
+
+  // 주소 검색은 입력한 주소를 중심점으로 삼습니다. 현재 위치는 검색 기준이 아니라 거리 표시용입니다.
+  if(!hasCoord && key && String(area||"").trim()){
+    try{
+      const au=new URL("https://dapi.kakao.com/v2/local/search/address.json");
+      au.searchParams.set("query",String(area).trim());
+      const ar=await fetch(au,{headers:{Authorization:`KakaoAK ${key}`}});
+      if(ar.ok){const aj=await ar.json();const d=aj.documents?.[0];if(d){nLat=Number(d.y);nLng=Number(d.x);hasCoord=Number.isFinite(nLat)&&Number.isFinite(nLng);}}
+      if(!hasCoord){
+        const ku=new URL("https://dapi.kakao.com/v2/local/search/keyword.json");ku.searchParams.set("query",String(area).trim());ku.searchParams.set("size","1");
+        const kr=await fetch(ku,{headers:{Authorization:`KakaoAK ${key}`}});if(kr.ok){const kj=await kr.json();const d=kj.documents?.[0];if(d){nLat=Number(d.y);nLng=Number(d.x);hasCoord=Number.isFinite(nLat)&&Number.isFinite(nLng);}}
+      }
+    }catch(e){console.warn("address geocode failed",e?.message)}
+  }
+  if(String(area||"").trim() && !hasCoord) return res.status(400).json({error:"주소를 찾지 못했어요. 도로명주소나 동·구 이름을 조금 더 정확히 입력해 주세요."});
 
   // 카카오: 좌표 반경 + 거리순. 페이지 1~3까지 조회해서 가까운 업체 누락을 줄입니다.
   const fetchKakaoAtRadius = async (radius) => {
@@ -527,9 +544,10 @@ async function handleNearby(req, res) {
   const within1km=items.filter(x=>Number(x.distance)<=1000).length;
   // 1km 결과가 있으면 사용자에게는 1km 결과만 노출합니다.
   const visibleItems = within1km > 0 ? items.filter(x=>Number(x.distance)<=1000) : items.filter(x=>Number(x.distance)<=Number(searchRadius||5000));
+  if(hasUserCoord){ for(const x of visibleItems){x.userDistance=calcDistance(uLat,uLng,Number(x.lat),Number(x.lng));} }
   res.setHeader("Cache-Control", "s-maxage=20, stale-while-revalidate=40");
   const sourceSet=[...new Set(visibleItems.map(x=>x.source).filter(Boolean))];
-  return res.status(200).json({ items: visibleItems.slice(0, 100), searchRadius: within1km > 0 ? 1000 : searchRadius, within1km, source: sourceSet.join("+")||"fallback", publicDataConnected: visibleItems.some(x=>x.source==="public"), kakaoStatus });
+  return res.status(200).json({ items: visibleItems.slice(0, 100), searchRadius: within1km > 0 ? 1000 : searchRadius, within1km, searchCenter: hasCoord?{lat:nLat,lng:nLng}:null, source: sourceSet.join("+")||"fallback", publicDataConnected: visibleItems.some(x=>x.source==="public"), kakaoStatus });
 }
 
 export default async function handler(req, res) {
