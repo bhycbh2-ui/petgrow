@@ -16,15 +16,8 @@
       앱/모바일 웹/웹앱(PWA)/데스크톱 홈페이지에서 동일한 디자인을 사용합니다.
     -->
     <style>
-      html,
-      body,
-      #root {
-        min-height: 100%;
-      }
-
-      body {
-        margin: 0;
-      }
+      html, body, #root { min-height: 100%; }
+      body { margin: 0; background: #F8FAF7; }
 
       #petgrow-initial-splash {
         position: fixed;
@@ -36,11 +29,37 @@
         box-sizing: border-box;
         min-height: 100dvh;
         padding: max(24px, env(safe-area-inset-top)) 24px max(24px, env(safe-area-inset-bottom));
-        background: #ffffff;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 50% 34%, rgba(237,245,238,.82) 0%, rgba(248,250,247,0) 38%),
+          linear-gradient(180deg, #FCFDFC 0%, #F8FAF7 100%);
         opacity: 1;
         visibility: visible;
-        transition: opacity 280ms ease, visibility 280ms ease;
+        transition: opacity 320ms ease, visibility 320ms ease;
         -webkit-tap-highlight-color: transparent;
+      }
+
+      #petgrow-initial-splash::before,
+      #petgrow-initial-splash::after {
+        content: "";
+        position: absolute;
+        bottom: -6vh;
+        width: 60vw;
+        height: 24vh;
+        border-radius: 50% 50% 0 0;
+        pointer-events: none;
+      }
+
+      #petgrow-initial-splash::before {
+        left: -18vw;
+        background: rgba(226,235,225,.55);
+        transform: rotate(4deg);
+      }
+
+      #petgrow-initial-splash::after {
+        right: -20vw;
+        background: rgba(236,243,235,.72);
+        transform: rotate(-5deg);
       }
 
       #petgrow-initial-splash.petgrow-splash--hide {
@@ -49,8 +68,23 @@
         pointer-events: none;
       }
 
+
+      .petgrow-runners{position:absolute;left:0;right:0;bottom:max(6vh,42px);height:70px;overflow:hidden;pointer-events:none;z-index:1}
+      .petgrow-runners:after{content:"";position:absolute;left:7%;right:7%;bottom:6px;height:1px;background:linear-gradient(90deg,transparent,rgba(79,138,91,.18),transparent)}
+      .petgrow-runner{position:absolute;left:-90px;bottom:7px;width:62px;height:50px;filter:drop-shadow(0 5px 8px rgba(34,48,39,.08));will-change:transform}
+      .petgrow-runner svg{width:100%;height:100%}
+      .petgrow-runner--dog{animation:petgrow-run-dog 5.2s linear infinite}
+      .petgrow-runner--cat{animation:petgrow-run-cat 5.2s linear 1.05s infinite}
+      .petgrow-runner__body{transform-origin:50% 70%;animation:petgrow-run-bob .38s ease-in-out infinite alternate}
+      @keyframes petgrow-run-dog{from{transform:translate3d(-100px,0,0)}to{transform:translate3d(calc(100vw + 170px),0,0)}}
+      @keyframes petgrow-run-cat{from{transform:translate3d(-130px,0,0) scale(.82)}to{transform:translate3d(calc(100vw + 190px),0,0) scale(.82)}}
+      @keyframes petgrow-run-bob{from{transform:translateY(1px) rotate(-1deg)}to{transform:translateY(-3px) rotate(1.4deg)}}
+      @media(min-width:900px){.petgrow-runners{height:82px}.petgrow-runner{width:70px;height:58px}}
+
       .petgrow-splash__content {
-        width: min(72vw, 320px);
+        position: relative;
+        z-index: 2;
+        width: min(78vw, 320px);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -58,112 +92,222 @@
         transform: translateY(-2vh);
       }
 
+      .petgrow-splash__logo-wrap {
+        width: clamp(108px, 28vw, 148px);
+        aspect-ratio: 1 / 1;
+        display: grid;
+        place-items: center;
+        animation: petgrow-logo-in 520ms cubic-bezier(.2,.75,.2,1) both;
+      }
+
       .petgrow-splash__logo {
         display: block;
-        width: min(64vw, 286px);
-        height: auto;
-        aspect-ratio: 1 / 1;
+        width: 100%;
+        height: 100%;
         object-fit: contain;
         user-select: none;
         -webkit-user-drag: none;
+        filter: drop-shadow(0 5px 12px rgba(34,48,39,.06));
       }
 
-      .petgrow-splash__spinner {
-        width: 26px;
-        height: 26px;
-        box-sizing: border-box;
-        margin-top: clamp(18px, 3.2vh, 30px);
-        border: 3px solid rgba(88, 166, 40, 0.18);
-        border-top-color: #58a628;
-        border-right-color: #58a628;
-        border-radius: 50%;
-        animation: petgrow-spin 820ms linear infinite;
-      }
-
-      .petgrow-splash__text {
-        margin: 12px 0 0;
-        color: #4b4b4b;
+      .petgrow-splash__tagline {
+        margin: 10px 0 0;
+        color: #5F6B63;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", Arial, sans-serif;
-        font-size: 13px;
-        font-weight: 500;
-        line-height: 1.4;
-        letter-spacing: -0.02em;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.5;
+        letter-spacing: -0.03em;
         text-align: center;
-        white-space: nowrap;
       }
 
-      @keyframes petgrow-spin {
-        to { transform: rotate(360deg); }
+      .petgrow-splash__progress {
+        width: min(54vw, 184px);
+        height: 5px;
+        margin-top: clamp(34px, 5vh, 46px);
+        overflow: hidden;
+        border-radius: 999px;
+        background: #E2E9E3;
+        box-shadow: inset 0 1px 2px rgba(34,48,39,.04);
       }
+
+      .petgrow-splash__progress-bar {
+        display: block;
+        width: 12%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #A9C8AE 0%, #4F8A5B 100%);
+        animation: petgrow-progress 1150ms cubic-bezier(.22,.72,.25,1) forwards;
+      }
+
+      .petgrow-splash__status {
+        margin: 13px 0 0;
+        color: #4D5C52;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", Arial, sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.45;
+        letter-spacing: -0.025em;
+        text-align: center;
+      }
+
+      .petgrow-splash__dots {
+        display: flex;
+        gap: 7px;
+        margin-top: 18px;
+      }
+      .petgrow-splash__dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #D2DDD4;
+        animation: petgrow-dot 1.15s ease-in-out infinite;
+      }
+      .petgrow-splash__dot:nth-child(2) { animation-delay: .14s; }
+      .petgrow-splash__dot:nth-child(3) { animation-delay: .28s; }
+
+      @keyframes petgrow-logo-in {
+        from { opacity: 0; transform: translateY(8px) scale(.96); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+      @keyframes petgrow-progress {
+        0% { width: 12%; }
+        48% { width: 62%; }
+        100% { width: 90%; }
+      }
+      @keyframes petgrow-dot {
+        0%, 55%, 100% { background: #D2DDD4; transform: scale(.86); }
+        25% { background: #4F8A5B; transform: scale(1); }
+      }
+
 
       @media (orientation: landscape) and (max-height: 600px) {
-        .petgrow-splash__content {
-          width: min(38vw, 240px);
-          transform: none;
-        }
-        .petgrow-splash__logo {
-          width: min(34vh, 210px);
-        }
-        .petgrow-splash__spinner {
-          width: 22px;
-          height: 22px;
-          margin-top: 10px;
-        }
-        .petgrow-splash__text {
-          margin-top: 8px;
-          font-size: 12px;
-        }
+        .petgrow-splash__content { transform: none; }
+        .petgrow-splash__logo-wrap { width: 94px; }
+        .petgrow-splash__tagline { margin-top: 5px; font-size: 11px; }
+        .petgrow-splash__progress { margin-top: 16px; width: 150px; }
+        .petgrow-splash__status { margin-top: 8px; }
+        .petgrow-splash__dots { margin-top: 10px; }
       }
 
       @media (min-width: 900px) {
-        .petgrow-splash__content {
-          width: 320px;
-        }
-        .petgrow-splash__logo {
-          width: 280px;
-        }
+        .petgrow-splash__logo-wrap { width: 132px; }
+        .petgrow-splash__progress { width: 190px; }
       }
 
       @media (prefers-reduced-motion: reduce) {
-        #petgrow-initial-splash {
-          transition-duration: 120ms;
-        }
-        .petgrow-splash__spinner {
-          animation-duration: 1400ms;
-        }
+        #petgrow-initial-splash { transition-duration: 120ms; }
+        .petgrow-splash__logo-wrap,
+        .petgrow-splash__progress-bar,
+        .petgrow-splash__dot,
+        .petgrow-runner { animation-duration: 1ms; animation-iteration-count: 1; }
+        .petgrow-splash__progress-bar { width: 90%; }
       }
     </style>
     <script>
-      // 너무 빠르게 번쩍이는 느낌을 막기 위한 최소 노출 시간(0.65초)
+      // PetGrow 로딩 화면: 너무 짧게 번쩍이지 않도록 약 1.15초간 유지합니다.
       window.__petgrowSplashShownAt = performance.now();
+      window.__petgrowSplashSoundPlayed = false;
+
+      window.__playPetGrowSplashSound = function () {
+        if (window.__petgrowSplashSoundPlayed) return;
+        var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+        var isApp = /(?:^|[?&])app_version=/i.test(location.search);
+        if (!isMobile && !isApp) return;
+
+        try {
+          var AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return;
+          var ctx = new AudioCtx();
+          if (ctx.state === 'suspended') ctx.resume().catch(function(){});
+          var now = ctx.currentTime;
+          var gain = ctx.createGain();
+          gain.gain.setValueAtTime(0.0001, now);
+          gain.gain.exponentialRampToValueAtTime(0.045, now + 0.025);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.42);
+          gain.connect(ctx.destination);
+
+          [659.25, 783.99].forEach(function(freq, index) {
+            var osc = ctx.createOscillator();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + index * 0.07);
+            osc.connect(gain);
+            osc.start(now + index * 0.07);
+            osc.stop(now + 0.44);
+          });
+          window.__petgrowSplashSoundPlayed = true;
+          window.setTimeout(function(){ try { ctx.close(); } catch(e){} }, 700);
+        } catch (e) {}
+      };
+
+      // 브라우저/웹뷰의 자동재생 정책에 따라 첫 시도는 무음일 수 있습니다.
+      // 가능한 환경에서는 즉시 재생하고, 차단된 경우 첫 터치 때 한 번 더 시도합니다.
+      window.setTimeout(window.__playPetGrowSplashSound, 80);
+      document.addEventListener('touchstart', window.__playPetGrowSplashSound, { once: true, passive: true });
+
       window.__hidePetGrowSplash = function () {
         var elapsed = performance.now() - window.__petgrowSplashShownAt;
-        var wait = Math.max(0, 650 - elapsed);
+        var wait = Math.max(0, 1150 - elapsed);
         window.setTimeout(function () {
           var splash = document.getElementById('petgrow-initial-splash');
           if (!splash || splash.classList.contains('petgrow-splash--hide')) return;
-          splash.classList.add('petgrow-splash--hide');
+          var bar = splash.querySelector('.petgrow-splash__progress-bar');
+          if (bar) bar.style.width = '100%';
           window.setTimeout(function () {
-            if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
-          }, 320);
+            splash.classList.add('petgrow-splash--hide');
+            window.setTimeout(function () {
+              if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
+            }, 360);
+          }, 120);
         }, wait);
       };
     </script>
   </head>
   <body>
     <div id="petgrow-initial-splash" role="status" aria-live="polite" aria-label="PetGrow 불러오는 중">
+      <div class="petgrow-runners" aria-hidden="true">
+        <div class="petgrow-runner petgrow-runner--dog">
+          <svg viewBox="0 0 72 54"><g class="petgrow-runner__body">
+            <path d="M19 27c3-9 12-14 24-12 8 1 13 6 14 13 5 0 8 3 8 6 0 4-4 6-9 6H28c-9 0-14-5-9-13Z" fill="#E6C58F"/>
+            <circle cx="19" cy="22" r="10" fill="#E6C58F"/><path d="M12 16c-7 1-8 10-4 15 4-3 8-7 10-13Z" fill="#C99E63"/>
+            <circle cx="21" cy="20" r="1.6" fill="#223027"/><circle cx="26" cy="24" r="1.8" fill="#223027"/>
+            <path d="M30 39l-4 10M42 40l3 9M53 38l7 8" stroke="#B58A50" stroke-width="4" stroke-linecap="round"/>
+            <path d="M57 28c8 0 10-5 7-8" fill="none" stroke="#B58A50" stroke-width="4" stroke-linecap="round"/>
+          </g></svg>
+        </div>
+        <div class="petgrow-runner petgrow-runner--cat">
+          <svg viewBox="0 0 72 54"><g class="petgrow-runner__body">
+            <path d="M21 29c2-8 10-13 22-13 10 0 16 5 16 14 0 7-7 10-17 10H29c-8 0-12-4-8-11Z" fill="#8F9891"/>
+            <circle cx="20" cy="23" r="9" fill="#8F9891"/><path d="M14 17l2-8 5 7M22 16l6-7 1 9" fill="#8F9891"/>
+            <circle cx="18" cy="22" r="1.4" fill="#223027"/><circle cx="23" cy="22" r="1.4" fill="#223027"/>
+            <path d="M30 39l-5 9M43 40l4 8M53 38l7 7" stroke="#69736C" stroke-width="3.5" stroke-linecap="round"/>
+            <path d="M57 27c9-8 14-5 13 1-1 6-9 7-12 4" fill="none" stroke="#69736C" stroke-width="3.5" stroke-linecap="round"/>
+          </g></svg>
+        </div>
+      </div>
+
       <div class="petgrow-splash__content">
-        <img
-          class="petgrow-splash__logo"
-          src="/petgrow-splash-logo.webp"
-          alt="PetGrow"
-          width="720"
-          height="720"
-          fetchpriority="high"
-          decoding="sync"
-        />
-        <div class="petgrow-splash__spinner" aria-hidden="true"></div>
-        <p class="petgrow-splash__text">PetGrow 불러오는 중...</p>
+        <div class="petgrow-splash__logo-wrap">
+          <img
+            class="petgrow-splash__logo"
+            src="/petgrow-splash-logo.webp"
+            alt="PetGrow"
+            width="384"
+            height="384"
+            fetchpriority="high"
+            decoding="sync"
+          />
+        </div>
+        <p class="petgrow-splash__tagline">우리 아이의 건강한 성장을 함께</p>
+        <div class="petgrow-splash__progress" aria-hidden="true">
+          <span class="petgrow-splash__progress-bar"></span>
+        </div>
+        <p class="petgrow-splash__status">잠시만 기다려주세요</p>
+        <div class="petgrow-splash__dots" aria-hidden="true">
+          <span class="petgrow-splash__dot"></span>
+          <span class="petgrow-splash__dot"></span>
+          <span class="petgrow-splash__dot"></span>
+        </div>
       </div>
     </div>
     <div id="root"></div>

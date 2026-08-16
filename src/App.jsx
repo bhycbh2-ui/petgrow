@@ -1931,7 +1931,7 @@ const TERMS_SECTIONS_EN = [
 function LegalContent({ title, intro, sections, contactExtra, showLogo = false }) {
   const t = useT();
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 60px" }}>
+    <div className="legal-page-shell">
       {showLogo && (
         <button type="button" onClick={() => { window.location.href = "/"; }}
           style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0, marginBottom: 20 }}>
@@ -1941,14 +1941,17 @@ function LegalContent({ title, intro, sections, contactExtra, showLogo = false }
           </span>
         </button>
       )}
-      <h1 style={{ fontSize: 22, marginBottom: 6 }}>{title}</h1>
-      {intro && <p className="bg-sub" style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 28 }}>{intro}</p>}
-      <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
-        {sections.map((s) => (
-          <div key={s.title}>
-            <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 6 }}>{s.title}</div>
-            <div className="bg-sub" style={{ fontSize: 13, lineHeight: 1.8, color: "var(--text)", whiteSpace: "pre-line" }}>{s.body}</div>
-          </div>
+      <h1 className="legal-page-title">{title}</h1>
+      {intro && <p className="legal-page-intro">{intro}</p>}
+      <div className="legal-section-list">
+        {sections.map((s, index) => (
+          <section className="legal-section-card" key={s.title}>
+            <div className="legal-section-number">{String(index + 1).padStart(2, "0")}</div>
+            <div className="legal-section-content">
+              <div className="legal-section-title">{s.title}</div>
+              <div className="legal-section-body">{s.body}</div>
+            </div>
+          </section>
         ))}
       </div>
       {contactExtra}
@@ -2604,8 +2607,10 @@ const GlobalStyle = () => (
     .cm-mock-name{font-size:13px; font-weight:800; color:var(--pg-dark);}
     .cm-mock-breed{font-weight:600; color:#98A19B;}
     .cm-mock-time{font-size:11px; color:#adb0a8; margin-top:1px;}
-    .cm-mock-photo{width:100%; aspect-ratio:16/9; border-radius:12px; background:var(--pg-green-light);
-      display:flex; align-items:center; justify-content:center; margin-bottom:10px;}
+    .cm-mock-photo{width:100%; aspect-ratio:1.52/1; border-radius:14px; background:var(--pg-green-light);
+      display:flex; align-items:center; justify-content:center; margin-bottom:12px; overflow:hidden;}
+    .cm-mock-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+    @media (min-width:900px){.cm-mock-feed{max-width:980px;gap:26px}.cm-mock-card{padding:18px}.cm-mock-photo{min-height:270px}}
     .cm-mock-text{font-size:13px; color:#5F6B63; margin-bottom:8px; line-height:1.5;}
     .cm-mock-meta{font-size:12px; color:#98A19B; font-weight:700;}
     .landing-final-cta{background:var(--pg-dark); border-radius:32px; padding:56px 32px; text-align:center; position:relative; overflow:hidden;}
@@ -2847,6 +2852,18 @@ const GlobalStyle = () => (
     .app-bottom-nav{border-color:#E2E9E3;box-shadow:0 -4px 18px rgba(34,48,39,.045);}
     .landing-hero-section{background:linear-gradient(120deg,#F8FAF7,#EDF5EE,#F8FAF7);}
     .pet-result-page{background:linear-gradient(180deg,#FCFDFC 0%,#F6FAF7 100%);border-color:#E2E9E3;}
+
+    /* PetGrow 약관/개인정보 페이지 세이지 통일 */
+    .legal-page-shell{max-width:900px;margin:0 auto;padding:0 20px 64px;background:transparent}
+    .legal-page-title{font-size:clamp(25px,4vw,32px);margin:0 0 10px;color:#223027;letter-spacing:-.03em}
+    .legal-page-intro{font-size:13px;line-height:1.75;color:#68736B;margin:0 0 24px;padding:18px 20px;background:#F1F5F1;border:1px solid #E2E9E3;border-radius:16px}
+    .legal-section-list{display:flex;flex-direction:column;gap:12px}
+    .legal-section-card{display:flex;gap:14px;background:#fff;border:1px solid #E2E9E3;border-radius:18px;padding:20px 22px;box-shadow:0 7px 22px rgba(34,48,39,.035)}
+    .legal-section-number{width:34px;height:34px;flex:0 0 34px;border-radius:11px;background:#EDF5EE;color:#3D704A;display:grid;place-items:center;font-size:11px;font-weight:900}
+    .legal-section-content{min-width:0;flex:1}
+    .legal-section-title{font-size:15px;font-weight:800;color:#223027;margin:4px 0 8px}
+    .legal-section-body{font-size:13px;line-height:1.85;color:#5F6B63;white-space:pre-line;word-break:keep-all}
+    @media(max-width:600px){.legal-page-shell{padding:0 14px 46px}.legal-section-card{padding:17px 16px;gap:12px}.legal-section-number{width:30px;height:30px;flex-basis:30px}.legal-section-body{font-size:12.5px}}
 `}</style>
 );
 
@@ -5020,7 +5037,7 @@ function TipsPage({ onClose }) {
   ];
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 60px" }}>
+    <div className="legal-page-shell">
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18 }}>
         <LightbulbIcon style={{ width: 22, height: 22, color: "var(--primary)" }} />
         <h1 style={{ fontSize: 18 }}>{t.tipsTitle}</h1>
@@ -6759,7 +6776,7 @@ function LandingHighlightCard({ Illust, eyebrow, title, desc, ctaLabel, onClick 
 }
 
 // Pet톡 소개 영역에 쓰는 가상 피드 카드 (실제 회원 데이터 아님, 소개페이지 전용 목업)
-function CommunityMockCard({ Illust, name, breed, timeLabel, text, likeCount, commentCount, dim }) {
+function CommunityMockCard({ Illust, photoSrc, name, breed, timeLabel, text, likeCount, commentCount, dim }) {
   return (
     <div className="cm-mock-card" style={dim ? { opacity: 0.55, transform: "scale(0.96)" } : undefined}>
       <div className="cm-mock-header">
@@ -6769,7 +6786,9 @@ function CommunityMockCard({ Illust, name, breed, timeLabel, text, likeCount, co
           <div className="cm-mock-time">{timeLabel}</div>
         </div>
       </div>
-      <div className="cm-mock-photo"><Illust style={{ width: 46, height: 46 }} /></div>
+      <div className="cm-mock-photo">
+        {photoSrc ? <img src={photoSrc} alt={`${name} Pet톡 게시글 예시`} loading="lazy" /> : <Illust style={{ width: 46, height: 46 }} />}
+      </div>
       <div className="cm-mock-text">{text}</div>
       <div className="cm-mock-meta">♡ {likeCount} 　💬 {commentCount}</div>
     </div>
@@ -7162,9 +7181,9 @@ function AboutPage({ onStart, onNavigate }) {
               </button>
             </div>
             <div className="cm-mock-feed">
-              <CommunityMockCard Illust={IllustMyPets} name={t.landingMockPost1Name} breed={t.landingMockPost1Breed}
+              <CommunityMockCard Illust={IllustMyPets} photoSrc="/pettalk-demo-dog.webp" name={t.landingMockPost1Name} breed={t.landingMockPost1Breed}
                 timeLabel={t.landingMockPost1Time} text={t.landingMockPost1Text} likeCount={24} commentCount={7} />
-              <CommunityMockCard Illust={IllustPetBti} name={t.landingMockPost2Name} breed={t.landingMockPost2Breed}
+              <CommunityMockCard Illust={IllustPetBti} photoSrc="/pettalk-demo-cat.webp" name={t.landingMockPost2Name} breed={t.landingMockPost2Breed}
                 timeLabel={t.landingMockPost2Time} text={t.landingMockPost2Text} likeCount={12} commentCount={3} />
             </div>
           </div>
@@ -7290,7 +7309,7 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
   const visiblePets = account ? pets : [];
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 60px" }}>
+    <div className="legal-page-shell">
       <div className="home-hero-copy">
         <h1>{account?.name ? t.homeGreeting(account.name) : (lang === "en" ? "Welcome to PetGrow! 🐾" : "PetGrow에 오신 걸 환영해요! 🐾")}</h1>
         <p className="bg-sub">{t.homeSubGreeting}</p>
@@ -8028,7 +8047,7 @@ function CommunityFeed({ pets, lang, onOpenPost, onWrite, onMyActivity }) {
   useEffect(() => { loadPage(1); }, [category, sort, search]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 60px" }}>
+    <div className="legal-page-shell">
       <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
         <input type="text" className="cm-search-input" value={searchInput} onChange={(e) => setSearchInput(e.target.value)}
           placeholder={t.communitySearchPlaceholder} />
@@ -8844,12 +8863,12 @@ function AppInner({ lang, setLang }) {
       ) : effectiveView === "tips" ? (
         <TipsPage />
       ) : effectiveView === "saju" ? (
-        <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 60px" }}>
+        <div className="legal-page-shell">
           <PetPicker pets={allPets} activeId={featurePet?.id} onSelect={setFeaturePetId} />
           <SajuPage pet={featurePet} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} />
         </div>
       ) : effectiveView === "petbti" ? (
-        <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 60px" }}>
+        <div className="legal-page-shell">
           <PetPicker pets={allPets} activeId={featurePet?.id} onSelect={setFeaturePetId} />
           <PetBtiPage pet={featurePet} onUpdatePetBti={handleUpdatePetBti} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} />
         </div>
