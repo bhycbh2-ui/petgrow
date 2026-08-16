@@ -205,7 +205,39 @@ function isMaskedPublicAddress(v) {
 function publicRegionFallback(region) {
   return [region?.province, region?.district, region?.dong].filter(Boolean).join(" ").trim();
 }
-async function fetchPublicNearby(type, region, refLat, refLng) {
+async function resolvePublicPlaceWithKakao(kakaoKey, row, type, region, refLat, refLng) {
+  if (!kakaoKey) return null;
+  const name=String(pickField(row,["BPLC_NM","bplcNm","사업장명","BPLCNM","사업장명칭","업소명"])||"").trim();
+  const road=String(pickField(row,["ROAD_NM_ADDR","roadNmAddr","도로명전체주소","RDNWHLADDR","도로명주소"])||"").trim();
+  const lot=String(pickField(row,["LOTNO_ADDR","lotnoAddr","소재지전체주소","SITEWHLADDR","지번주소"])||"").trim();
+  const district=String(region?.district||"").trim();
+  const candidates=[];
+  try {
+    // 1) 공개데이터의 도로명/지번주소가 있으면 카카오 주소검색으로 좌표를 복구합니다.
+    for (const addr of [road,lot].filter(Boolean)) {
+      const clean=addr.replace(/\*{2,}[^,)]*/g,"").replace(/\s+/g," ").trim();
+      if (!clean || clean.length < 5) continue;
+      const u=new URL("https://dapi.kakao.com/v2/local/search/address.json");
+      u.searchParams.set("query",clean);
+      const r=await fetch(u,{headers:{Authorization:`KakaoAK ${kakaoKey}`}});
+      if(r.ok){const j=await r.json();for(const d of j.documents||[]){const lat=Number(d.y),lng=Number(d.x);if(Number.isFinite(lat)&&Number.isFinite(lng))candidates.push({lat,lng,address:d.road_address?.address_name||d.address?.address_name||clean,roadAddress:d.road_address?.address_name||"",phone:"",url:"",name:"",score:0});}}
+      if(candidates.length) break;
+    }
+    // 2) 주소 좌표가 없으면 공식 상호명 + 구 이름으로 장소검색합니다. 좌표 0인 신규 병원도 이 경로로 복구됩니다.
+    if (!candidates.length && name) {
+      const u=new URL("https://dapi.kakao.com/v2/local/search/keyword.json");
+      u.searchParams.set("query",[district,name].filter(Boolean).join(" "));
+      u.searchParams.set("size","10");
+      if(Number.isFinite(refLat)&&Number.isFinite(refLng)){u.searchParams.set("x",String(refLng));u.searchParams.set("y",String(refLat));u.searchParams.set("radius","5000");u.searchParams.set("sort","distance");}
+      const r=await fetch(u,{headers:{Authorization:`KakaoAK ${kakaoKey}`}});
+      if(r.ok){const j=await r.json();const nn=v=>String(v||"").replace(/[^0-9A-Za-z가-힣]/g,"").toLowerCase();const target=nn(name);for(const d of j.documents||[]){const lat=Number(d.y),lng=Number(d.x);if(!Number.isFinite(lat)||!Number.isFinite(lng))continue;const dn=nn(d.place_name);const score=dn===target?0:(dn.includes(target)||target.includes(dn)?1:2);candidates.push({lat,lng,address:d.road_address_name||d.address_name||road||lot,roadAddress:d.road_address_name||"",phone:d.phone||"",url:d.place_url||"",name:d.place_name||"",score});}}
+    }
+  } catch {}
+  if(!candidates.length)return null;
+  candidates.sort((a,b)=>a.score-b.score || ((Number.isFinite(refLat)&&Number.isFinite(refLng))?Math.hypot(a.lat-refLat,a.lng-refLng)-Math.hypot(b.lat-refLat,b.lng-refLng):0));
+  return candidates[0];
+}
+async function fetchPublicNearby(type, region, refLat, refLng, kakaoKey) {
   const cfg=PUBLIC_NEARBY_SOURCES[type];
   if(!cfg)return [];
   const serviceKey=String(process.env[cfg.env]||"").trim();
@@ -218,11 +250,12 @@ async function fetchPublicNearby(type, region, refLat, refLng) {
   try {
     const base=`https://apis.data.go.kr/1741000/${cfg.base}/info`;
     const pageSize=1000;
-    // 도로명주소만 조회하면 지번주소만 있는 업체가 빠질 수 있으므로 두 주소 필드를 각각 조회해 합칩니다.
-    const addrFields=queryAddr?["ROAD_NM_ADDR","LOTNO_ADDR"]:[null];
+    // 공식 명세에서 지원하는 ROAD_NM_ADDR 조건으로 시·군·구 후보를 충분히 가져옵니다.
+    // 영업상태 01을 함께 요청해 폐업 데이터 때문에 페이지가 소모되는 것도 줄입니다.
+    const addrFields=queryAddr?["ROAD_NM_ADDR"]:[null];
     for(const addrField of addrFields){
-      for(let page=1;page<=5;page++){
-        const tail=[`pageNo=${page}`,`numOfRows=${pageSize}`,`returnType=json`];
+      for(let page=1;page<=10;page++){
+        const tail=[`pageNo=${page}`,`numOfRows=${pageSize}`,`returnType=json`,`cond%5BSALS_STTS_CD%3A%3AEQ%5D=01`];
         if(addrField&&queryAddr)tail.push(`cond%5B${addrField}%3A%3ALIKE%5D=${encodeURIComponent(queryAddr)}`);
         const url=`${base}?serviceKey=${serviceKey}&${tail.join("&")}`;
         const r=await fetch(url,{headers:{Accept:"application/json"}});
@@ -255,17 +288,22 @@ async function fetchPublicNearby(type, region, refLat, refLng) {
     const road=String(pickField(row,["ROAD_NM_ADDR","roadNmAddr","도로명전체주소","RDNWHLADDR","도로명주소"] )||"").trim();
     const lot=String(pickField(row,["LOTNO_ADDR","lotnoAddr","소재지전체주소","SITEWHLADDR","지번주소"] )||"").trim();
     const rawAddress=road||lot;
-    const coord=publicCoordToWgs84(row,refLat,refLng);
+    let coord=publicCoordToWgs84(row,refLat,refLng);
+    let enriched=null;
+    // 일부 공식 인허가 데이터는 좌표가 0/공란입니다. 이 경우 상호명·주소를 이용해 카카오에서 좌표를 복구합니다.
+    if(!coord) enriched=await resolvePublicPlaceWithKakao(kakaoKey,row,type,region,refLat,refLng);
+    if(!coord && enriched) coord={lat:enriched.lat,lng:enriched.lng};
     if(!coord)continue;
     const phone=String(pickField(row,["TELNO","telno","전화번호","SITETEL","SITE_TELNO","전화번호정보"] )||"").trim();
+    const displayAddress=(enriched?.address || (!isMaskedPublicAddress(rawAddress)?rawAddress:regionText) || "").trim();
     out.push({
       id:`public-${type}-${String(pickField(row,["MNG_NO","mngNo","관리번호","MANAGE_NO"])||name+rawAddress).replace(/[^0-9A-Za-z가-힣]/g,"").slice(0,80)}`,
-      sourceId:String(pickField(row,["MNG_NO","mngNo","관리번호","MANAGE_NO"])||""),name,phone,
-      address:isMaskedPublicAddress(rawAddress)?regionText:rawAddress,
-      roadAddress:isMaskedPublicAddress(road)?"":road,
-      rawPublicAddress:rawAddress,addressMasked:isMaskedPublicAddress(rawAddress),
+      sourceId:String(pickField(row,["MNG_NO","mngNo","관리번호","MANAGE_NO"])||""),name:enriched?.name||name,phone:enriched?.phone||phone,
+      address:displayAddress,
+      roadAddress:enriched?.roadAddress||(!isMaskedPublicAddress(road)?road:""),
+      rawPublicAddress:rawAddress,addressMasked:isMaskedPublicAddress(rawAddress)&&!enriched?.address,
       category:cfg.label,typeKey:type,typeLabel:cfg.label,typeIcon:cfg.icon,lat:coord.lat,lng:coord.lng,
-      distance:null,url:"",source:"public",official:true,status:status||"영업"
+      distance:null,url:enriched?.url||"",source:"public",official:true,status:status||"영업"
     });
   }
   return out;
@@ -378,7 +416,7 @@ async function handleNearby(req, res) {
     const region = await kakaoRegionForCoord(key, nLat, nLng);
     const publicTypes = category === "all" ? ["hospital","pharmacy","grooming","hotel","shop"] : (PUBLIC_NEARBY_SOURCES[category] ? [category] : []);
     if (publicTypes.length) {
-      const publicBatches = await Promise.all(publicTypes.map(t => fetchPublicNearby(t, region, nLat, nLng)));
+      const publicBatches = await Promise.all(publicTypes.map(t => fetchPublicNearby(t, region, nLat, nLng, key)));
       for (const row of publicBatches.flat()) { row.distance = calcDistance(nLat,nLng,Number(row.lat),Number(row.lng)); all.push(row); }
     }
 

@@ -4343,12 +4343,16 @@ const GlobalStyle = () => (
   }
 
  /* 관리자 PIN 화면: 카드와 하단 안내를 한 덩어리처럼 중앙 배치 */
- .admin-gate-page,.admin-pin-page{min-height:calc(100vh - 170px)!important;display:flex!important;flex-direction:column!important;justify-content:center!important;padding-top:12px!important;padding-bottom:18px!important}
- .admin-gate-page footer,.admin-pin-page footer{margin-top:28px!important}
- body:has(.admin-gate) footer{margin-top:34px!important;margin-bottom:20px!important}
+ .admin-gate-page,.admin-pin-page{min-height:auto!important;display:flex!important;flex-direction:column!important;justify-content:flex-start!important;padding-top:clamp(28px,7vh,72px)!important;padding-bottom:8px!important}
+ .admin-gate-page footer,.admin-pin-page footer{margin-top:14px!important}
+ body:has(.admin-gate) footer{margin-top:14px!important;margin-bottom:16px!important}
  .admin-gate{margin-top:0!important;margin-bottom:0!important}
- @media(min-width:769px){body:has(.admin-gate) .app-footer,body:has(.admin-gate) footer{transform:translateY(-40px)}}
- @media(max-width:768px){body:has(.admin-gate) footer{margin-top:24px!important}.admin-gate{width:calc(100% - 24px)!important;margin-left:auto!important;margin-right:auto!important}}
+ body:has(.admin-gate) main,body:has(.admin-gate) .main-content{padding-bottom:0!important}
+ body:has(.admin-gate) .app-footer,body:has(.admin-gate) footer{padding-top:0!important}
+ .admin-entry-root{min-height:auto!important}
+ .admin-entry-root .admin-reports-page:has(.admin-gate){padding-bottom:8px!important}
+ @media(min-width:769px){body:has(.admin-gate) .app-footer,body:has(.admin-gate) footer{transform:none!important}}
+ @media(max-width:768px){body:has(.admin-gate) footer{margin-top:12px!important}.admin-gate{width:calc(100% - 24px)!important;margin-left:auto!important;margin-right:auto!important}}
 
  .ad-operation-tip{margin:10px 0 14px;padding:10px 12px;border-radius:11px;background:#f3f8f4;color:#52665a;font-size:10.5px;line-height:1.55}
  .ad-preview-wrap{margin-top:18px;border:1px solid #dfe8e1;border-radius:18px;padding:15px;background:#fbfdfb}
@@ -9320,7 +9324,7 @@ function NearbyPetPage(){
         <div className="nearby-place-main">
           <div className="nearby-type-row"><span className={`nearby-type-badge nearby-type-${p.typeKey||"other"}`}>{p.typeIcon||"🐾"} {p.typeLabel||"반려동물 관련"}</span></div>
           <div className="nearby-place-title"><h3>{p.name}</h3><strong>{fmt(p.distance)}</strong></div>
-          <div className="nearby-place-meta"><span>📍 {p.address||"주소 정보 없음"}</span>{p.phone&&<span>☎ {p.phone}</span>}</div>
+          <div className="nearby-place-meta">{p.address&&<span>📍 {p.address}</span>}{p.phone&&<span>☎ {p.phone}</span>}</div>
           <small>{p.category}</small>
         </div>
         <div className="nearby-place-actions">{p.phone&&<a href={`tel:${p.phone}`} onClick={e=>e.stopPropagation()}>전화</a>}{p.url&&<a href={p.url} target="_blank" rel="noreferrer" onClick={e=>e.stopPropagation()}>카카오맵</a>}</div>
@@ -11297,7 +11301,7 @@ function AppInner({ lang, setLang }) {
   const showOnboarding = mode === "onboarding" || mode === "edit" || (mode === "view" && !currentPet);
 
   return (
-    <div className={`bboggl-root ${!isNativeApp ? "petgrow-web-layout" : ""}`} style={{ minHeight: "100vh", paddingBottom: isNativeApp ? 74 : 0 }}>
+    <div className={`bboggl-root ${!isNativeApp ? "petgrow-web-layout" : ""} ${effectiveView === "admin" ? "admin-entry-root" : ""}`} style={{ minHeight: effectiveView === "admin" ? "auto" : "100vh", paddingBottom: isNativeApp ? 74 : 0 }}>
       <GlobalStyle />
       {!isNativeApp && (
         <aside className="petgrow-sidebar">
