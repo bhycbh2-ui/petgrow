@@ -29,6 +29,18 @@ export default async function handler(req,res){
    if(placement==="promo_modal" && String(b.network||"direct")!=="direct")return res.status(400).json({error:"프로모션 모달에는 Google 광고를 사용할 수 없어요. 직접광고만 등록해 주세요."});await sql`insert into pg_direct_ads(id,name,placement,image_url,target_url,starts_at,ends_at,active,priority,created_by) values(${id},${clean(b.name,100)},${placement},${clean(b.imageUrl,500)},${clean(b.targetUrl,500)},${b.startsAt||null},${b.endsAt||null},${!!b.active},${Number(b.priority)||0},${au.u}) on conflict(id) do update set name=excluded.name,placement=excluded.placement,image_url=excluded.image_url,target_url=excluded.target_url,starts_at=excluded.starts_at,ends_at=excluded.ends_at,active=excluded.active,priority=excluded.priority,updated_at=now()`;
    await logAdmin(au.u,"DIRECT_AD_SAVE",null,null,{id,placement:b.placement});return res.status(200).json({ok:true,id});
   }
+  if(a==="admin-toggle"&&req.method==="POST"){
+   const {id,active}=req.body||{};
+   await sql`update pg_direct_ads set active=${!!active},updated_at=now() where id=${id}`;
+   await logAdmin(au.u,"DIRECT_AD_TOGGLE",null,null,{id,active:!!active});
+   return res.status(200).json({ok:true});
+  }
+  if(a==="admin-delete"&&req.method==="POST"){
+   const {id}=req.body||{};
+   await sql`delete from pg_direct_ads where id=${id}`;
+   await logAdmin(au.u,"DIRECT_AD_DELETE",null,null,{id});
+   return res.status(200).json({ok:true});
+  }
   if(a==="admin-list"&&req.method==="GET"){const {rows}=await sql`select * from pg_direct_ads order by created_at desc`;return res.status(200).json({items:rows});}
   return res.status(405).json({error:"지원하지 않는 요청이에요."});
  }catch(e){console.error("ads api",e);return res.status(500).json({error:"광고 요청 처리 중 오류가 발생했어요."})}

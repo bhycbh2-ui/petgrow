@@ -1535,6 +1535,17 @@ function adminApi(action, options={}) { const tok=sessionStorage.getItem("petgro
 function adminStatus(){return adminApi("status");}
 function adminHealth(){return adminApi("health");}
 function adsApi(action,options={}){return apiJson(`/api/ads?action=${action}`,options);}
+
+function adminAdsRequest(action,options={}){
+  const token=sessionStorage.getItem("petgrow_admin_token")||"";
+  return adsApi(action,{...options,headers:{...(options.headers||{}),"X-PetGrow-Admin-Token":token}});
+}
+function adminListDirectAds(){return adminAdsRequest("admin-list");}
+function adminListAdInquiries(){return adminAdsRequest("admin-inquiries");}
+function adminSaveDirectAd(payload){return adminAdsRequest("admin-save",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});}
+function adminToggleDirectAd(id,active){return adminAdsRequest("admin-toggle",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id,active})});}
+function adminDeleteDirectAd(id){return adminAdsRequest("admin-delete",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id})});}
+function adminSetAdInquiryStatus(id,status){return adminAdsRequest("admin-inquiry-status",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id,status})});}
 function submitAdInquiry(payload){return adsApi("inquiry",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});}
 function supportApi(action,options={}){return apiJson(`/api/support?action=${action}`,options);}
 function supportNotices(page=1){return supportApi(`notices&page=${page}`);}
@@ -1557,11 +1568,12 @@ function adminVerify(pin){return adminApi("verify",{method:"POST",headers:{"Cont
 function adminListReports(){return adminApi("reports");}
 function adminRestrictUser(payload){return adminApi("restrict",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});}
 function adminUnblockUser(userId,reportId){return adminApi("unblock",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId,reportId})});}
+function adminResolveReport(reportId){return adminApi("resolve",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({reportId})});}
 function adminStats(){return adminApi("stats");}
 
 function adminRestrict(targetUserId,duration,reportId){return adminApi("restrict",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({targetUserId,duration,reportId})});}
 function adminUnblock(targetUserId,reportId){return adminApi("unblock",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({targetUserId,reportId})});}
-function adminResolveReport(reportId){return adminApi("resolve",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({reportId})});}
+
 function adminLogs(){return adminApi("logs");}
 
 function getAnonymousAnalyticsSessionId() {
@@ -4090,6 +4102,35 @@ const GlobalStyle = () => (
  .admin-adops-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.ad-policy-safe,.ad-policy-warn{margin-top:10px;padding:10px 12px;border-radius:12px;font-size:12px}.ad-policy-safe{background:#edf7ef;color:#39734a}.ad-policy-warn{background:#fff7e8;color:#805f18}
  .service-health-wrap{display:flex;flex-direction:column;gap:12px}.service-health-hero{display:flex;align-items:center;gap:14px;padding:18px;border:1px solid #dfe8e1;border-radius:20px;background:#f5faf6}.service-health-hero.warning{background:#fff9ec;border-color:#f0deb4}.service-health-hero.down{background:#fff2f1;border-color:#efcecb}.service-health-dot{font-size:28px}.service-health-hero>div:nth-child(2){flex:1}.service-health-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.service-health-card{text-align:center;padding:15px!important}.service-health-card strong{display:block;font-size:21px;color:#39734a}.service-health-card span{font-size:11px;color:#707b73}
  @media(max-width:760px){.admin-adops-grid{grid-template-columns:1fr}.service-health-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.service-health-hero{align-items:flex-start;flex-wrap:wrap}.service-health-hero button{width:100%}}
+
+  .admin-hero-toolbar{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:16px!important}
+  .admin-exit-btn{flex:0 0 auto!important;width:auto!important;min-width:112px!important;margin:0!important}
+  .admin-adops-page{display:flex;flex-direction:column;gap:12px}
+  .admin-direct-ad-form{display:flex;flex-direction:column;gap:12px}
+  .admin-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .admin-form-grid label{display:flex;flex-direction:column;gap:5px;font-size:11px;color:#6d786f}
+  .admin-grid-span-2{grid-column:1/-1}
+  .admin-checkbox-field{flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;padding:0 4px}
+  .admin-save-ad-btn{width:min(100%,280px)!important;align-self:flex-end}
+  .admin-direct-ad-list,.admin-ad-inquiry-list{display:flex;flex-direction:column}
+  .admin-direct-ad-row,.admin-ad-inquiry-row{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;padding:13px 0;border-top:1px solid #e8eee9}
+  .admin-direct-ad-row:first-child,.admin-ad-inquiry-row:first-child{border-top:0}
+  .admin-direct-ad-row>div:first-child,.admin-ad-inquiry-row>div:first-child{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .admin-direct-ad-row small,.admin-ad-inquiry-row small{font-size:10.5px;color:#7b867e}
+  .admin-ad-inquiry-row p{font-size:12px;line-height:1.6;margin-top:5px;white-space:pre-wrap}
+  .admin-direct-ad-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+  .admin-direct-ad-actions button,.admin-ad-inquiry-row select{min-height:36px;border:1px solid #dce5de;background:#fff;border-radius:10px;padding:0 10px}
+  .admin-direct-ad-actions .danger{color:#bd3d34}
+  @media(max-width:760px){
+    .admin-hero-toolbar{align-items:flex-start!important;flex-direction:column!important}
+    .admin-exit-btn{align-self:flex-end!important;margin-top:-48px!important}
+    .admin-form-grid{grid-template-columns:1fr}
+    .admin-grid-span-2{grid-column:auto}
+    .admin-save-ad-btn{width:100%!important}
+    .admin-direct-ad-row,.admin-ad-inquiry-row{flex-direction:column}
+    .admin-direct-ad-actions{justify-content:flex-start;width:100%}
+    .admin-ad-inquiry-row select{width:100%}
+  }
 `}</style>
 );
 
@@ -9487,10 +9528,10 @@ function SupportPage({account,onBack}){
 function AdminReportsPage({onBack}){
  const [status,setStatus]=useState(null),[pin,setPin]=useState(""),[setupCode,setSetupCode]=useState(""),[setupPin,setSetupPin]=useState("");
  const [unlocked,setUnlocked]=useState(false),[tab,setTab]=useState("dashboard"),[stats,setStats]=useState(null),[health,setHealth]=useState(null),[reports,setReports]=useState([]),[logs,setLogs]=useState([]);
- const [admins,setAdmins]=useState([]),[query,setQuery]=useState(""),[found,setFound]=useState([]),[inq,setInq]=useState([]),[reply,setReply]=useState({}),[notice,setNotice]=useState({title:"",body:"",category:"notice",pinned:false,popup:false});
+ const [admins,setAdmins]=useState([]),[directAds,setDirectAds]=useState([]),[adInquiries,setAdInquiries]=useState([]),[adForm,setAdForm]=useState({name:"",placement:"banner",imageUrl:"",targetUrl:"",startsAt:"",endsAt:"",active:false,priority:0}),[query,setQuery]=useState(""),[found,setFound]=useState([]),[inq,setInq]=useState([]),[reply,setReply]=useState({}),[notice,setNotice]=useState({title:"",body:"",category:"notice",pinned:false,popup:false});
  useEffect(()=>{sessionStorage.removeItem("petgrow_admin_token");adminStatus().then(setStatus).catch(e=>window.alert(e.message));return()=>sessionStorage.removeItem("petgrow_admin_token")},[]);
  const role=status?.role,can=x=>role==="superadmin"||role==="operator"||role===x;
- const load=async()=>{const tasks=[];if(can("dashboard")){tasks.push(adminStats().then(setStats));tasks.push(adminHealth().then(setHealth));}if(can("report"))tasks.push(adminListReports().then(x=>setReports(x.reports||[])));if(can("logs"))tasks.push(adminLogs().then(x=>setLogs(x.logs||[])));if(role==="superadmin")tasks.push(adminListAdmins().then(x=>setAdmins(x.admins||[])));if(role==="superadmin"||role==="operator")tasks.push(adminSupportInquiries().then(x=>setInq(x.items||[])));await Promise.allSettled(tasks);setUnlocked(true)};
+ const load=async()=>{const tasks=[];if(can("dashboard")){tasks.push(adminStats().then(setStats));tasks.push(adminHealth().then(setHealth));}if(can("report"))tasks.push(adminListReports().then(x=>setReports(x.reports||[])));if(can("logs"))tasks.push(adminLogs().then(x=>setLogs(x.logs||[])));if(role==="superadmin")tasks.push(adminListAdmins().then(x=>setAdmins(x.admins||[])));if(role==="superadmin"||role==="operator"||role==="ads"){tasks.push(adminListDirectAds().then(x=>setDirectAds(x.items||[])));tasks.push(adminListAdInquiries().then(x=>setAdInquiries(x.items||[])));}if(role==="superadmin"||role==="operator")tasks.push(adminSupportInquiries().then(x=>setInq(x.items||[])));await Promise.allSettled(tasks);setUnlocked(true)};
  const unlock=async()=>{try{const r=await adminVerify(pin);sessionStorage.setItem("petgrow_admin_token",r.token);setStatus(s=>({...s,role:r.role,roleLabel:r.roleLabel}));setPin("");await load()}catch(e){if(e.message==="PIN_SETUP_REQUIRED"){setStatus(s=>({...s,pinSetupRequired:true}))}else window.alert(e.message)}};
  const setNewPin=async()=>{if(!/^\d{6}$/.test(setupPin))return window.alert("PIN은 숫자 6자리로 입력해 주세요.");try{await adminSetPin(setupPin);setStatus(s=>({...s,pinSetupRequired:false}));setSetupPin("");window.alert("관리자 PIN을 설정했어요.")}catch(e){window.alert(e.message)}};
  const bootstrap=async()=>{if(!/^\d{6}$/.test(setupPin))return window.alert("PIN은 숫자 6자리로 입력해 주세요.");try{await adminBootstrap(setupCode,setupPin);setStatus({adminExists:true,isAdmin:true,role:"superadmin",roleLabel:"최고관리자"});setSetupPin("");setSetupCode("");window.alert("최고관리자 등록이 완료됐어요.")}catch(e){window.alert(e.message)}};
@@ -9507,7 +9548,10 @@ function AdminReportsPage({onBack}){
  role==="report"?[["reports","신고관리"]]:[["ads","광고운영"]];
  const c=stats?.cards||{};
  return <div className="admin-reports-page">
-   <div className="admin-hero"><div><small>{status.roleLabel}</small><h1>PetGrow 관리자 센터</h1></div><button className="bg-btn bg-btn-ghost" onClick={onBack}>나가기</button></div>
+   <div className="admin-hero admin-hero-toolbar">
+  <div><small>{status.roleLabel}</small><h1>PetGrow 관리자 센터</h1><p className="bg-sub">서비스 운영·신고·문의·광고를 한 곳에서 관리해요.</p></div>
+  <button className="bg-btn bg-btn-ghost admin-exit-btn" onClick={onBack}>← 회원정보</button>
+</div>
    <div className="admin-tabs">{tabs.map(([k,l])=><button key={k} className={tab===k?"active":""} onClick={()=>setTab(k)}>{l}</button>)}</div>
    {tab==="dashboard"&&<div className="admin-stat-grid">{[["미처리 신고",c.openReports||0],["답변대기 문의",c.waitingInquiries||0],["이용제한 중",c.restricted||0],["오늘 방문",c.todaySessions||0],["현재 접속 추정",c.onlineSessions5m||0],["7일 활성회원",c.active7d||0],["7일 신규회원",c.new7d||0],["오늘 Pet톡 글",c.postsToday||0]].map(([a,b])=><div className="admin-stat-card" key={a}><strong>{b}</strong><small>{a}</small></div>)}</div>}
    {tab==="service"&&<div className="service-health-wrap">
@@ -9517,18 +9561,64 @@ function AdminReportsPage({onBack}){
  </div>}{tab==="reports"&&<div className="admin-report-list">{reports.length?reports.map(r=><div className="bg-card admin-report-card" key={r.id}><div><b>{r.postTitle}</b><small>{r.authorNickname} · 신고자 {r.reporterNickname}</small></div><p>{r.targetContent}</p><p><b>신고사유:</b> {r.reason} {r.detail}</p><div className="admin-report-actions"><button onClick={()=>restrict(r,"1d")}>1일</button><button onClick={()=>restrict(r,"7d")}>7일</button><button onClick={()=>restrict(r,"30d")}>30일</button><button onClick={()=>restrict(r,"permanent")}>영구 제한</button><button onClick={()=>unblock(r)}>제한 해제</button><button onClick={()=>resolve(r)}>검토 완료</button></div></div>):<div className="bg-card">신고가 없어요.</div>}</div>}
    {tab==="inquiries"&&<div className="admin-report-list">{inq.length?inq.map(x=><div className="bg-card admin-report-card" key={x.id}><b>{x.title}</b><small>{x.nickname} · {x.is_public?"공개":"비공개"} · {x.status}</small><p>{x.body}</p><textarea className="bg-input support-textarea" value={reply[x.id]??x.admin_reply??""} onChange={e=>setReply({...reply,[x.id]:e.target.value})}/><button className="bg-btn" onClick={async()=>{if(!window.confirm("이 답변을 등록할까요?"))return;try{await adminReplyInquiry(x.id,reply[x.id]??x.admin_reply??"");window.alert("답변을 등록했어요.");await load()}catch(e){window.alert(e.message)}}}>답변 등록</button></div>):<div className="bg-card">문의가 없어요.</div>}</div>}
    {tab==="notices"&&<div className="bg-card admin-notice-form"><h2>공지 작성</h2><input className="bg-input" placeholder="공지 제목" value={notice.title} onChange={e=>setNotice({...notice,title:e.target.value})}/><textarea className="bg-input support-textarea" placeholder="공지 내용" value={notice.body} onChange={e=>setNotice({...notice,body:e.target.value})}/><label><input type="checkbox" checked={notice.pinned} onChange={e=>setNotice({...notice,pinned:e.target.checked})}/> 중요공지 상단 고정</label><label><input type="checkbox" checked={notice.popup} onChange={e=>setNotice({...notice,popup:e.target.checked})}/> 팝업 공지</label><button className="bg-btn" onClick={async()=>{if(!window.confirm("이 공지를 게시할까요?"))return;try{await adminCreateNotice(notice);setNotice({title:"",body:"",category:"notice",pinned:false,popup:false});window.alert("공지를 게시했어요.")}catch(e){window.alert(e.message)}}}>공지 게시</button></div>}
-   {tab==="ads"&&<div className="admin-adops-grid">
-  <div className="bg-card">
-    <h2>📣 Google 광고</h2>
-    <p><b>웹:</b> AdSense · <b>앱:</b> AdMob</p>
-    <p className="bg-sub">Google 광고는 Google에서 허용한 광고 단위/형식으로만 사용해요. PetGrow 프로모션 모달에는 AdSense/AdMob 광고 코드를 넣지 않습니다.</p>
-    <div className="ad-policy-safe">✅ Google 광고 → 일반 콘텐츠 영역의 정식 광고 슬롯</div>
+   {tab==="ads"&&<div className="admin-adops-page">
+  <div className="admin-adops-grid">
+    <div className="bg-card">
+      <h2>📣 Google 광고</h2>
+      <p><b>웹:</b> AdSense · <b>앱:</b> AdMob</p>
+      <p className="bg-sub">승인 후 광고 단위 ID를 연결하는 영역이에요. Google 광고는 정식 광고 슬롯에서만 사용하고 프로모션 모달에는 넣지 않아요.</p>
+      <div className="ad-policy-safe">✅ Google 광고 → AdSense/AdMob 정식 광고 슬롯</div>
+    </div>
+    <div className="bg-card">
+      <h2>🤝 직접광고 / 제휴</h2>
+      <p>업체와 직접 계약한 광고는 배너 또는 사이트 내부 프로모션 모달로 운영할 수 있어요.</p>
+      <div className="ad-policy-safe">✅ 배너 · 직접광고 프로모션 모달</div>
+      <div className="ad-policy-warn">⚠️ 프로모션 모달에는 Google 광고 코드를 사용하지 않아요.</div>
+    </div>
   </div>
+
+  <div className="bg-card admin-direct-ad-form">
+    <h2>➕ 직접광고 등록</h2>
+    <p className="bg-sub">광고명, 소재 URL, 이동 링크, 기간을 입력해서 배너/프로모션을 등록해요.</p>
+    <div className="admin-form-grid">
+      <input className="bg-input" placeholder="광고명 *" value={adForm.name} onChange={e=>setAdForm({...adForm,name:e.target.value})}/>
+      <select className="bg-input" value={adForm.placement} onChange={e=>setAdForm({...adForm,placement:e.target.value})}><option value="banner">배너</option><option value="promo_modal">프로모션 모달</option></select>
+      <input className="bg-input admin-grid-span-2" placeholder="광고 이미지 URL" value={adForm.imageUrl} onChange={e=>setAdForm({...adForm,imageUrl:e.target.value})}/>
+      <input className="bg-input admin-grid-span-2" placeholder="클릭 시 이동 URL" value={adForm.targetUrl} onChange={e=>setAdForm({...adForm,targetUrl:e.target.value})}/>
+      <label><span>시작일</span><input className="bg-input" type="datetime-local" value={adForm.startsAt} onChange={e=>setAdForm({...adForm,startsAt:e.target.value})}/></label>
+      <label><span>종료일</span><input className="bg-input" type="datetime-local" value={adForm.endsAt} onChange={e=>setAdForm({...adForm,endsAt:e.target.value})}/></label>
+      <label><span>우선순위</span><input className="bg-input" type="number" min="0" max="99" value={adForm.priority} onChange={e=>setAdForm({...adForm,priority:Number(e.target.value)||0})}/></label>
+      <label className="admin-checkbox-field"><input type="checkbox" checked={adForm.active} onChange={e=>setAdForm({...adForm,active:e.target.checked})}/><span>등록 즉시 ON</span></label>
+    </div>
+    <button className="bg-btn admin-save-ad-btn" onClick={async()=>{
+      if(!adForm.name.trim())return window.alert("광고명을 입력해 주세요.");
+      if(!window.confirm(`${adForm.placement==="promo_modal"?"프로모션 모달":"배너"} 광고를 등록할까요?`))return;
+      try{
+        await adminSaveDirectAd({...adForm,network:"direct"});
+        setAdForm({name:"",placement:"banner",imageUrl:"",targetUrl:"",startsAt:"",endsAt:"",active:false,priority:0});
+        setDirectAds((await adminListDirectAds()).items||[]);
+        window.alert("직접광고를 등록했어요.");
+      }catch(e){window.alert(e.message||"광고 등록에 실패했어요.")}
+    }}>광고 등록</button>
+  </div>
+
   <div className="bg-card">
-    <h2>🤝 직접광고 / 제휴</h2>
-    <p>업체와 PetGrow가 직접 계약한 배너·제휴·프로모션을 관리하는 영역이에요.</p>
-    <div className="ad-policy-safe">✅ 배너 광고 · 사이트 내부 프로모션 모달 사용 가능</div>
-    <div className="ad-policy-warn">⚠️ 프로모션 모달은 Google 광고가 아닌 직접광고만 사용</div>
+    <h2>🗂️ 등록된 직접광고</h2>
+    {directAds.length===0?<p className="bg-sub">등록된 직접광고가 아직 없어요.</p>:<div className="admin-direct-ad-list">{directAds.map(a=><div className="admin-direct-ad-row" key={a.id}>
+      <div><b>{a.name}</b><small>{a.placement==="promo_modal"?"프로모션 모달":"배너"} · 우선순위 {a.priority||0}</small><small>{a.starts_at?new Date(a.starts_at).toLocaleString("ko-KR"):"즉시"} ~ {a.ends_at?new Date(a.ends_at).toLocaleString("ko-KR"):"종료일 없음"}</small></div>
+      <div className="admin-direct-ad-actions">
+        <button onClick={async()=>{if(!window.confirm(`${a.name} 광고를 ${a.active?"OFF":"ON"} 할까요?`))return;try{await adminToggleDirectAd(a.id,!a.active);setDirectAds((await adminListDirectAds()).items||[])}catch(e){window.alert(e.message)}}}>{a.active?"ON → OFF":"OFF → ON"}</button>
+        <button className="danger" onClick={async()=>{if(!window.confirm(`${a.name} 광고를 삭제할까요?`))return;try{await adminDeleteDirectAd(a.id);setDirectAds((await adminListDirectAds()).items||[])}catch(e){window.alert(e.message)}}}>삭제</button>
+      </div>
+    </div>)}</div>}
+  </div>
+
+  <div className="bg-card">
+    <h2>📨 광고 문의</h2>
+    {adInquiries.length===0?<p className="bg-sub">접수된 광고 문의가 없어요.</p>:<div className="admin-ad-inquiry-list">{adInquiries.map(q=><div className="admin-ad-inquiry-row" key={q.id}>
+      <div><b>{q.company_name}</b><small>{q.contact_name} · {q.email}{q.phone?` · ${q.phone}`:""}</small><small>{q.campaign_type} · 예산 {q.budget||"미정"} · {new Date(q.created_at).toLocaleString("ko-KR")}</small><p>{q.message}</p></div>
+      <select value={q.status} onChange={async e=>{const status=e.target.value;if(!window.confirm(`문의 상태를 '${status}'로 변경할까요?`))return;try{await adminSetAdInquiryStatus(q.id,status);setAdInquiries((await adminListAdInquiries()).items||[])}catch(err){window.alert(err.message)}}}><option value="new">신규</option><option value="contacted">연락함</option><option value="closed">종료</option></select>
+    </div>)}</div>}
   </div>
 </div>}
    {tab==="logs"&&<div className="admin-log-list">{logs.map((l,i)=><div className="admin-log-row" key={l.id||i}><div><b>{l.action}</b><small>{l.admin_nickname}{l.target_nickname?` → ${l.target_nickname}`:""}</small></div><span>{new Date(l.created_at).toLocaleString("ko-KR")}</span></div>)}</div>}

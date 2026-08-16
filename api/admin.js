@@ -10,7 +10,19 @@ const roleLabel=r=>({superadmin:"최고관리자",operator:"운영관리자",rep
 export default async function handler(req,res){
  await ensureSchema();const u=user(req,res);if(!u)return;const a=String(req.query.action||"status");
  try{
-  if(a==="status"&&req.method==="GET"){const role=await getAdminRole(u);return res.status(200).json({adminExists:await adminExists(),isAdmin:!!role,role,roleLabel:roleLabel(role),recoveryAvailable:!!(process.env.ADMIN_SETUP_CODE||process.env.PETGROW_ADMIN_SETUP_CODE)});}
+  if(a==="status"&&req.method==="GET"){
+    let role=await getAdminRole(u);
+    if(role && role!=="superadmin"){
+      const {rows:superRows}=await sql`select count(*)::int n from pg_admins where role='superadmin'`;
+      const {rows:allRows}=await sql`select count(*)::int n from pg_admins`;
+      if((superRows[0]?.n||0)===0 && (allRows[0]?.n||0)===1){
+        await sql`update pg_admins set role='superadmin' where user_id=${u}`;
+        await logAdmin(u,"AUTO_PROMOTE_SUPERADMIN",u,null,{from:role,to:"superadmin"});
+        role="superadmin";
+      }
+    }
+    return res.status(200).json({adminExists:await adminExists(),isAdmin:!!role,role,roleLabel:roleLabel(role),recoveryAvailable:!!(process.env.ADMIN_SETUP_CODE||process.env.PETGROW_ADMIN_SETUP_CODE)});
+  }
   if(a==="bootstrap"&&req.method==="POST"){
     if(await adminExists())return res.status(409).json({error:"관리자가 이미 등록되어 있어요."});
     const {setupCode,pin}=req.body||{},secret=process.env.ADMIN_SETUP_CODE||process.env.PETGROW_ADMIN_SETUP_CODE;
