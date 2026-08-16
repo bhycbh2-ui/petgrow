@@ -15,6 +15,13 @@ export default async function handler(req,res){
    await sql`insert into pg_ad_inquiries(id,company_name,contact_name,email,phone,campaign_type,budget,message) values(${crypto.randomUUID()},${company},${name},${email},${clean(b.phone,30)},${clean(b.campaignType,30)||"banner"},${clean(b.budget,50)},${msg})`;
    return res.status(200).json({ok:true});
   }
+  if(a==="track"&&req.method==="POST"){
+   const b=req.body||{},id=clean(b.id,80),type=String(b.type||"");
+   if(!id||!["impression","click"].includes(type))return res.status(400).json({error:"잘못된 광고 이벤트예요."});
+   if(type==="impression")await sql`update pg_direct_ads set impressions=impressions+1 where id=${id} and active=true`;
+   else await sql`update pg_direct_ads set clicks=clicks+1 where id=${id} and active=true`;
+   return res.status(200).json({ok:true});
+  }
   if(a==="active"&&req.method==="GET"){
    const {rows}=await sql`select id,name,placement,image_url,target_url from pg_direct_ads where active=true and (starts_at is null or starts_at<=now()) and (ends_at is null or ends_at>=now()) order by priority desc,created_at desc limit 20`;
    return res.status(200).json({ads:rows});

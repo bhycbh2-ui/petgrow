@@ -1535,6 +1535,7 @@ function adminApi(action, options={}) { const tok=sessionStorage.getItem("petgro
 function adminStatus(){return adminApi("status");}
 function adminHealth(){return adminApi("health");}
 function adsApi(action,options={}){return apiJson(`/api/ads?action=${action}`,options);}
+function adTrack(id,type){return adsApi("track",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id,type})});}
 
 function adminAdsRequest(action,options={}){
   const token=sessionStorage.getItem("petgrow_admin_token")||"";
@@ -1548,6 +1549,7 @@ function adminDeleteDirectAd(id){return adminAdsRequest("admin-delete",{method:"
 function adminSetAdInquiryStatus(id,status){return adminAdsRequest("admin-inquiry-status",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id,status})});}
 function submitAdInquiry(payload){return adsApi("inquiry",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});}
 function supportApi(action,options={}){return apiJson(`/api/support?action=${action}`,options);}
+function getPopupNotice(){return supportApi("notices").then(r=>({items:(r.items||r.notices||[]).filter(x=>x.popup)}));}
 function supportNotices(page=1){return supportApi(`notices&page=${page}`);}
 function supportInquiries(page=1,mine=false){return supportApi(`inquiries&page=${page}&mine=${mine?1:0}`);}
 function supportCreateInquiry(payload){return supportApi("inquiry-create",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});}
@@ -4131,6 +4133,24 @@ const GlobalStyle = () => (
     .admin-direct-ad-actions{justify-content:flex-start;width:100%}
     .admin-ad-inquiry-row select{width:100%}
   }
+
+  .admin-pin-input{
+    -webkit-text-security:disc;
+    text-security:disc;
+    letter-spacing:.28em!important;
+    font-variant-numeric:tabular-nums;
+  }
+
+ .footer-ad-inquiry{border:0;background:transparent;text-decoration:underline;font-size:11px;color:#718078;cursor:pointer;margin-left:8px}
+ .notice-popup-backdrop,.direct-ad-modal-backdrop{position:fixed;inset:0;z-index:120;background:rgba(25,35,29,.42);display:flex;align-items:center;justify-content:center;padding:18px}
+ .notice-popup-card,.direct-ad-modal{position:relative;width:min(460px,100%);max-height:min(650px,85vh);overflow:auto;background:#fff;border-radius:22px;padding:22px;box-shadow:0 20px 60px rgba(20,45,28,.25)}
+ .notice-popup-x{position:absolute;right:12px;top:10px;border:0;background:transparent;font-size:26px;line-height:1;cursor:pointer;color:#66736a}
+ .notice-popup-badge{display:inline-flex;padding:5px 9px;border-radius:999px;background:#edf6ef;color:#426e50;font-size:10px;font-weight:800}.notice-popup-card h2{padding-right:30px}.notice-popup-content{white-space:pre-wrap;font-size:13px;line-height:1.7;color:#49534c}
+ .notice-popup-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:18px}.notice-popup-actions button{border:1px solid #dce5de;background:#fff;border-radius:10px;padding:9px 12px}.notice-popup-actions .primary{background:#426e50;color:#fff;border-color:#426e50}
+ .public-ad-banner{max-width:1120px;margin:10px auto;padding:0 16px;text-align:right}.public-ad-banner>button{display:block;width:100%;border:0;background:#f4f7f4;border-radius:16px;overflow:hidden;padding:0;cursor:pointer}.public-ad-banner img{display:block;width:100%;max-height:150px;object-fit:cover}.public-ad-banner span{display:block;padding:22px;text-align:center}.public-ad-banner small,.direct-ad-modal>small{font-size:9px;color:#879087}
+ .direct-ad-creative{display:block;width:100%;border:0;background:#f4f7f4;border-radius:14px;overflow:hidden;padding:0;cursor:pointer;margin-top:7px}.direct-ad-creative img{display:block;width:100%;height:auto}.direct-ad-creative strong{display:block;padding:30px}
+ .ad-metrics{display:flex;gap:7px;flex-wrap:wrap;margin-top:6px}.ad-metrics span{background:#f3f7f4;border-radius:8px;padding:4px 7px;font-size:9.5px;color:#6a776e}.ad-metrics b{color:#426e50}
+ @media(max-width:600px){.notice-popup-card,.direct-ad-modal{border-radius:18px;padding:18px}.notice-popup-actions{flex-direction:column}.notice-popup-actions button{width:100%}.public-ad-banner{padding:0 10px}}
 `}</style>
 );
 
@@ -8263,7 +8283,7 @@ function LandingPage({ onEnter }) {
             </button>
           </div>
         </div>
-      </footer>
+      <button className="footer-ad-inquiry" onClick={()=>window.dispatchEvent(new CustomEvent("petgrow:navigate",{detail:"ad-inquiry"}))}>광고·제휴 문의</button></footer>
       <PrivacyModal open={privacyOpen} onClose={() => setPrivacyOpen(false)} />
     </div>
   );
@@ -9477,6 +9497,45 @@ function MyActivityPage({ lang, onOpenPost, embedded = false }) {
 
 
 
+
+function PublicNoticePopup(){
+ const [notice,setNotice]=useState(null);
+ useEffect(()=>{let live=true;getPopupNotice().then(r=>{
+   if(!live)return;
+   const list=(r.items||[]).sort((a,b)=>(Number(b.pinned)-Number(a.pinned))||new Date(b.created_at)-new Date(a.created_at));
+   const n=list[0]; if(!n)return;
+   const key=`petgrow_notice_hide_${n.id}_${new Date().toISOString().slice(0,10)}`;
+   if(localStorage.getItem(key)!=="1")setNotice(n);
+ }).catch(()=>{});return()=>{live=false}},[]);
+ if(!notice)return null;
+ const hideToday=()=>{const key=`petgrow_notice_hide_${notice.id}_${new Date().toISOString().slice(0,10)}`;localStorage.setItem(key,"1");setNotice(null)};
+ return <div className="notice-popup-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)setNotice(null)}}>
+   <div className="notice-popup-card" onMouseDown={e=>e.stopPropagation()}>
+     <button className="notice-popup-x" onClick={()=>setNotice(null)}>×</button>
+     <div className="notice-popup-badge">{notice.pinned?"중요 공지":"공지사항"}</div>
+     <h2>{notice.title}</h2><div className="notice-popup-content">{notice.content}</div>
+     <div className="notice-popup-actions"><button onClick={hideToday}>오늘 하루 보지 않기</button><button className="primary" onClick={()=>setNotice(null)}>확인</button></div>
+   </div>
+ </div>;
+}
+
+
+function PublicDirectAds(){
+ const [banner,setBanner]=useState(null),[modal,setModal]=useState(null);
+ useEffect(()=>{let live=true;adsApi("active").then(r=>{
+   if(!live)return;const items=r.items||[];
+   const b=items.find(x=>x.placement==="banner");
+   const m=items.find(x=>x.placement==="promo_modal");
+   if(b){setBanner(b);adTrack(b.id,"impression").catch(()=>{})}
+   if(m&&!sessionStorage.getItem(`petgrow_ad_seen_${m.id}`)){sessionStorage.setItem(`petgrow_ad_seen_${m.id}`,"1");setModal(m);adTrack(m.id,"impression").catch(()=>{})}
+ }).catch(()=>{});return()=>{live=false}},[]);
+ const go=a=>{adTrack(a.id,"click").catch(()=>{});if(a.target_url)window.open(a.target_url,"_blank","noopener,noreferrer")};
+ return <>
+  {banner&&<div className="public-ad-banner"><button onClick={()=>go(banner)}>{banner.image_url?<img src={banner.image_url} alt={banner.name||"광고"}/>:<span>{banner.name}</span>}</button><small>광고</small></div>}
+  {modal&&<div className="direct-ad-modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)setModal(null)}}><div className="direct-ad-modal" onMouseDown={e=>e.stopPropagation()}><button className="notice-popup-x" onClick={()=>setModal(null)}>×</button><small>광고</small><button className="direct-ad-creative" onClick={()=>go(modal)}>{modal.image_url?<img src={modal.image_url} alt={modal.name||"프로모션"}/>:<strong>{modal.name}</strong>}</button></div></div>}
+ </>;
+}
+
 function AdInquiryPage({onBack}){
  const [f,setF]=useState({companyName:"",contactName:"",email:"",phone:"",campaignType:"banner",budget:"",message:""});
  const submit=async()=>{if(!window.confirm("광고 문의를 전송할까요?"))return;try{await submitAdInquiry(f);window.alert("광고 문의가 접수됐어요. 확인 후 연락드릴게요.");setF({companyName:"",contactName:"",email:"",phone:"",campaignType:"banner",budget:"",message:""})}catch(e){window.alert(e.message)}};
@@ -9532,17 +9591,29 @@ function AdminReportsPage({onBack}){
  useEffect(()=>{sessionStorage.removeItem("petgrow_admin_token");adminStatus().then(setStatus).catch(e=>window.alert(e.message));return()=>sessionStorage.removeItem("petgrow_admin_token")},[]);
  const role=status?.role,can=x=>role==="superadmin"||role==="operator"||role===x;
  const load=async()=>{const tasks=[];if(can("dashboard")){tasks.push(adminStats().then(setStats));tasks.push(adminHealth().then(setHealth));}if(can("report"))tasks.push(adminListReports().then(x=>setReports(x.reports||[])));if(can("logs"))tasks.push(adminLogs().then(x=>setLogs(x.logs||[])));if(role==="superadmin")tasks.push(adminListAdmins().then(x=>setAdmins(x.admins||[])));if(role==="superadmin"||role==="operator"||role==="ads"){tasks.push(adminListDirectAds().then(x=>setDirectAds(x.items||[])));tasks.push(adminListAdInquiries().then(x=>setAdInquiries(x.items||[])));}if(role==="superadmin"||role==="operator")tasks.push(adminSupportInquiries().then(x=>setInq(x.items||[])));await Promise.allSettled(tasks);setUnlocked(true)};
- const unlock=async()=>{try{const r=await adminVerify(pin);sessionStorage.setItem("petgrow_admin_token",r.token);setStatus(s=>({...s,role:r.role,roleLabel:r.roleLabel}));setPin("");await load()}catch(e){if(e.message==="PIN_SETUP_REQUIRED"){setStatus(s=>({...s,pinSetupRequired:true}))}else window.alert(e.message)}};
+ const unlock=async()=>{
+   const enteredPin=pin;
+   setPin("");
+   try{
+     const r=await adminVerify(enteredPin);
+     sessionStorage.setItem("petgrow_admin_token",r.token);
+     setStatus(s=>({...s,role:r.role,roleLabel:r.roleLabel}));
+     await load();
+   }catch(e){
+     if(e.message==="PIN_SETUP_REQUIRED")setStatus(s=>({...s,pinSetupRequired:true}));
+     else window.alert(e.message);
+   }
+ };
  const setNewPin=async()=>{if(!/^\d{6}$/.test(setupPin))return window.alert("PIN은 숫자 6자리로 입력해 주세요.");try{await adminSetPin(setupPin);setStatus(s=>({...s,pinSetupRequired:false}));setSetupPin("");window.alert("관리자 PIN을 설정했어요.")}catch(e){window.alert(e.message)}};
  const bootstrap=async()=>{if(!/^\d{6}$/.test(setupPin))return window.alert("PIN은 숫자 6자리로 입력해 주세요.");try{await adminBootstrap(setupCode,setupPin);setStatus({adminExists:true,isAdmin:true,role:"superadmin",roleLabel:"최고관리자"});setSetupPin("");setSetupCode("");window.alert("최고관리자 등록이 완료됐어요.")}catch(e){window.alert(e.message)}};
  const restrict=async(r,d)=>{const lab={ "1d":"1일","7d":"7일","30d":"30일",permanent:"영구"}[d];if(!window.confirm(`${r.authorNickname} 계정을 ${lab} 이용제한할까요?\n확인 시 즉시 Pet톡 글/댓글 작성이 제한됩니다.`))return;try{await adminRestrict(r.targetUserId,d,r.id);window.alert("이용제한을 적용했어요.");await load()}catch(e){window.alert(e.message)}};
  const unblock=async r=>{if(!window.confirm(`${r.authorNickname} 계정의 이용제한을 해제할까요?`))return;try{await adminUnblock(r.targetUserId,r.id);window.alert("제한을 해제했어요.");await load()}catch(e){window.alert(e.message)}};
  const resolve=async r=>{if(!window.confirm("이 신고를 검토 완료 처리할까요?"))return;try{await adminResolveReport(r.id);await load()}catch(e){window.alert(e.message)}};
  if(!status)return <div className="bg-card admin-gate">관리자 정보를 확인하는 중...</div>;
- if(!status.adminExists)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>🛡️ 최초 관리자 등록</h2><input className="bg-input" type="password" placeholder="ADMIN_SETUP_CODE" value={setupCode} onChange={e=>setSetupCode(e.target.value)}/><input className="bg-input" inputMode="numeric" maxLength={6} placeholder="관리자 PIN 6자리" value={setupPin} onChange={e=>setSetupPin(e.target.value.replace(/\D/g,"").slice(0,6))}/><button className="bg-btn" onClick={bootstrap}>현재 계정을 최고관리자로 등록</button></div></div>;
+ if(!status.adminExists)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>🛡️ 최초 관리자 등록</h2><input className="bg-input" type="password" placeholder="ADMIN_SETUP_CODE" value={setupCode} onChange={e=>setSetupCode(e.target.value)}/><input className="bg-input admin-pin-input" type="text" inputMode="numeric" pattern="[0-9]*" maxLength={6} autoComplete="off" data-lpignore="true" data-1p-ignore="true" spellCheck={false} name="petgrow-admin-pin-create" placeholder="관리자 PIN 6자리" value={setupPin} onChange={e=>setSetupPin(e.target.value.replace(/\D/g,"").slice(0,6))}/><button className="bg-btn" onClick={bootstrap}>현재 계정을 최고관리자로 등록</button></div></div>;
  if(!status.isAdmin)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>관리자 전용</h2><p>현재 계정에는 관리자 권한이 없어요.</p><button className="bg-btn bg-btn-ghost" onClick={onBack}>돌아가기</button></div></div>;
- if(status.pinSetupRequired)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>🔐 관리자 PIN 최초 설정</h2><p>본인만 사용할 숫자 6자리 PIN을 설정하세요.</p><input className="bg-input" inputMode="numeric" maxLength={6} value={setupPin} onChange={e=>setSetupPin(e.target.value.replace(/\D/g,"").slice(0,6))}/><button className="bg-btn" onClick={setNewPin}>PIN 설정</button></div></div>;
- if(!unlocked)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>🔐 {status.roleLabel||"관리자"} PIN</h2><input className="bg-input" inputMode="numeric" type="password" maxLength={6} value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,"").slice(0,6))} placeholder="PIN 6자리"/><button className="bg-btn admin-open-center-btn" disabled={pin.length!==6} onClick={unlock}>관리자 센터 열기</button></div></div>;
+ if(status.pinSetupRequired)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>🔐 관리자 PIN 최초 설정</h2><p>본인만 사용할 숫자 6자리 PIN을 설정하세요.</p><input className="bg-input admin-pin-input" type="text" inputMode="numeric" pattern="[0-9]*" maxLength={6} autoComplete="off" data-lpignore="true" data-1p-ignore="true" spellCheck={false} name="petgrow-admin-pin-setup" value={setupPin} onChange={e=>setSetupPin(e.target.value.replace(/\D/g,"").slice(0,6))}/><button className="bg-btn" onClick={setNewPin}>PIN 설정</button></div></div>;
+ if(!unlocked)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>🔐 {status.roleLabel||"관리자"} PIN</h2><input className="bg-input admin-pin-input" type="text" inputMode="numeric" pattern="[0-9]*" maxLength={6} autoComplete="off" data-lpignore="true" data-1p-ignore="true" spellCheck={false} name="petgrow-admin-pin-entry" value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,"").slice(0,6))} placeholder="PIN 6자리"/><button className="bg-btn admin-open-center-btn" disabled={pin.length!==6} onClick={unlock}>관리자 센터 열기</button></div></div>;
  const tabs=role==="superadmin"?[["dashboard","대시보드"],["service","서비스상태"],["reports","신고관리"],["inquiries","문의관리"],["notices","공지관리"],["ads","광고운영"],["logs","운영로그"],["admins","관리자관리"]]:
  role==="operator"?[["dashboard","대시보드"],["service","서비스상태"],["reports","신고관리"],["inquiries","문의관리"],["notices","공지관리"],["ads","광고운영"],["logs","운영로그"]]:
  role==="report"?[["reports","신고관리"]]:[["ads","광고운영"]];
@@ -9605,7 +9676,7 @@ function AdminReportsPage({onBack}){
   <div className="bg-card">
     <h2>🗂️ 등록된 직접광고</h2>
     {directAds.length===0?<p className="bg-sub">등록된 직접광고가 아직 없어요.</p>:<div className="admin-direct-ad-list">{directAds.map(a=><div className="admin-direct-ad-row" key={a.id}>
-      <div><b>{a.name}</b><small>{a.placement==="promo_modal"?"프로모션 모달":"배너"} · 우선순위 {a.priority||0}</small><small>{a.starts_at?new Date(a.starts_at).toLocaleString("ko-KR"):"즉시"} ~ {a.ends_at?new Date(a.ends_at).toLocaleString("ko-KR"):"종료일 없음"}</small></div>
+      <div><b>{a.name}</b><small>{a.placement==="promo_modal"?"프로모션 모달":"배너"} · 우선순위 {a.priority||0}</small><small>{a.starts_at?new Date(a.starts_at).toLocaleString("ko-KR"):"즉시"} ~ {a.ends_at?new Date(a.ends_at).toLocaleString("ko-KR"):"종료일 없음"}</small><div className="ad-metrics"><span>노출 <b>{Number(a.impressions||0).toLocaleString()}</b></span><span>클릭 <b>{Number(a.clicks||0).toLocaleString()}</b></span><span>CTR <b>{Number(a.impressions||0)>0?((Number(a.clicks||0)/Number(a.impressions))*100).toFixed(1):"0.0"}%</b></span></div></div>
       <div className="admin-direct-ad-actions">
         <button onClick={async()=>{if(!window.confirm(`${a.name} 광고를 ${a.active?"OFF":"ON"} 할까요?`))return;try{await adminToggleDirectAd(a.id,!a.active);setDirectAds((await adminListDirectAds()).items||[])}catch(e){window.alert(e.message)}}}>{a.active?"ON → OFF":"OFF → ON"}</button>
         <button className="danger" onClick={async()=>{if(!window.confirm(`${a.name} 광고를 삭제할까요?`))return;try{await adminDeleteDirectAd(a.id);setDirectAds((await adminListDirectAds()).items||[])}catch(e){window.alert(e.message)}}}>삭제</button>
@@ -10482,6 +10553,8 @@ function AppInner({ lang, setLang }) {
         onConfirm={confirmDeletePet}
         onCancel={() => setDeleteTarget(null)}
       />
+      <PublicNoticePopup/>
+      <PublicDirectAds/>
       <AccountModal
         open={accountModalOpen}
         onClose={() => setAccountModalOpen(false)}

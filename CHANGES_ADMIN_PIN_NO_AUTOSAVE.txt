@@ -1,0 +1,8 @@
+관리자 PIN 자동저장/자동완성 방지
+- 관리자 PIN 3종(최초등록/새 관리자 최초설정/센터 입장)을 HTML password credential에서 제외
+- type=text + numeric 키패드 + CSS 마스킹으로 화면에는 PIN이 가려져 보임
+- autocomplete=off, LastPass/1Password 제외 힌트
+- PIN은 숫자 6자리만 허용
+- 관리자센터 PIN 인증을 누르는 즉시 화면 state의 PIN을 먼저 비움
+- ADMIN_SETUP_CODE는 별도의 보안 비밀값이므로 기존 password 표시 유지
+- 서버의 PIN 해시 저장/검증 구조는 변경하지 않음

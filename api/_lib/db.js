@@ -240,6 +240,9 @@ export function ensureSchema() {
           updated_at timestamptz not null default now()
         )
       `;
+      await sql`alter table pg_direct_ads add column if not exists impressions bigint not null default 0`;
+      await sql`alter table pg_direct_ads add column if not exists clicks bigint not null default 0`;
+
 
       await sql`
         create table if not exists pg_admin_audit_logs (
