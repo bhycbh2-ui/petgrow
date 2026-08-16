@@ -1557,7 +1557,6 @@ function adminVerify(pin){return adminApi("verify",{method:"POST",headers:{"Cont
 function adminListReports(){return adminApi("reports");}
 function adminRestrictUser(payload){return adminApi("restrict",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});}
 function adminUnblockUser(userId,reportId){return adminApi("unblock",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId,reportId})});}
-function adminResolveReport(reportId){return adminApi("resolve",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({reportId})});}
 function adminStats(){return adminApi("stats");}
 
 function adminRestrict(targetUserId,duration,reportId){return adminApi("restrict",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({targetUserId,duration,reportId})});}
