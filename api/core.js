@@ -1,6 +1,6 @@
-import { getSessionUserId } from "./_lib/session.js";
-import { getUserById, getState, setState, logServiceHealth } from "./_lib/db.js";
-import { isAdminUserId } from "./_lib/admin.js";
+import { getSessionUserId } from "../server_lib/session.js";
+import { getUserById, getState, setState, logServiceHealth } from "../server_lib/db.js";
+import { isAdminUserId } from "../server_lib/admin.js";
 
 async function handleMe(req, res) {
   const uid = getSessionUserId(req);

@@ -1,5 +1,5 @@
 import { put } from "@vercel/blob";
-import { getSessionUserId } from "./_lib/session.js";
+import { getSessionUserId } from "../server_lib/session.js";
 import {
   listPosts,
   createPost,
@@ -17,8 +17,8 @@ import {
   getReportContext,
   getCommunityRestriction,
   CATEGORIES,
-} from "./_lib/community.js";
-import { validateCommunityText } from "./_lib/contentPolicy.js";
+} from "../server_lib/community.js";
+import { validateCommunityText } from "../server_lib/contentPolicy.js";
 
 const REPORT_REASONS = ["ad", "abuse", "sexual", "animal_abuse", "privacy", "misinformation", "spam", "other"];
 const ALLOWED_MIME = {

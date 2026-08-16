@@ -1,9 +1,9 @@
 import crypto from "crypto";
 import { sql } from "@vercel/postgres";
-import { getSessionUserId } from "./_lib/session.js";
-import { ensureSchema,getUserById,getServiceHealthSummary } from "./_lib/db.js";
-import { adminExists,isAdminUserId,hashPin,verifyPin,issueToken,verifyToken,logAdmin,getAdminRole,roleCan } from "./_lib/admin.js";
-import { getReportContext } from "./_lib/community.js";
+import { getSessionUserId } from "../server_lib/session.js";
+import { ensureSchema,getUserById,getServiceHealthSummary } from "../server_lib/db.js";
+import { adminExists,isAdminUserId,hashPin,verifyPin,issueToken,verifyToken,logAdmin,getAdminRole,roleCan } from "../server_lib/admin.js";
+import { getReportContext } from "../server_lib/community.js";
 function user(req,res){const u=getSessionUserId(req);if(!u){res.status(401).json({error:"로그인이 필요해요."});return null}return u}
 async function auth(req,res,u,cap){const role=await getAdminRole(u);if(!role||!verifyToken(req.headers["x-petgrow-admin-token"],u)){res.status(403).json({error:"관리자 PIN 인증이 필요해요."});return null}if(cap&&!roleCan(role,cap)){res.status(403).json({error:"이 관리자 기능에 대한 권한이 없어요."});return null}return role}
 const roleLabel=r=>({superadmin:"최고관리자",operator:"운영관리자",report:"신고관리자",ads:"광고관리자"}[r]||r);

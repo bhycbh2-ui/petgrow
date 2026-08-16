@@ -1,8 +1,8 @@
 import crypto from "crypto";
 import { sql } from "@vercel/postgres";
-import { ensureSchema,getUserById } from "./_lib/db.js";
-import { getSessionUserId } from "./_lib/session.js";
-import { getAdminRole,roleCan,verifyToken } from "./_lib/admin.js";
+import { ensureSchema,getUserById } from "../server_lib/db.js";
+import { getSessionUserId } from "../server_lib/session.js";
+import { getAdminRole,roleCan,verifyToken } from "../server_lib/admin.js";
 
 const clean=(v,n=4000)=>String(v||"").trim().slice(0,n);
 const pageOf=(v)=>Math.max(1,parseInt(v||"1",10)||1);

@@ -1,9 +1,9 @@
 import crypto from "crypto";
 import { put } from "@vercel/blob";
 import { sql } from "@vercel/postgres";
-import { ensureSchema } from "./_lib/db.js";
-import { getSessionUserId } from "./_lib/session.js";
-import { getAdminRole, verifyToken, roleCan, logAdmin } from "./_lib/admin.js";
+import { ensureSchema } from "../server_lib/db.js";
+import { getSessionUserId } from "../server_lib/session.js";
+import { getAdminRole, verifyToken, roleCan, logAdmin } from "../server_lib/admin.js";
 
 const MAX_AUDIO_BYTES = 12 * 1024 * 1024;
 const MAX_COVER_BYTES = 4 * 1024 * 1024;

@@ -1,9 +1,9 @@
 import crypto from "crypto";
 import {sql} from "@vercel/postgres";
-import {ensureSchema} from "./_lib/db.js";
-import {getSessionUserId} from "./_lib/session.js";
-import {getAdminRole,roleCan} from "./_lib/admin.js";
-import {verifyToken,logAdmin} from "./_lib/admin.js";
+import {ensureSchema} from "../server_lib/db.js";
+import {getSessionUserId} from "../server_lib/session.js";
+import {getAdminRole,roleCan} from "../server_lib/admin.js";
+import {verifyToken,logAdmin} from "../server_lib/admin.js";
 const clean=(v,n=1000)=>String(v||"").trim().slice(0,n);
 async function allowed(req,cap="ads"){const u=getSessionUserId(req),r=await getAdminRole(u);return u&&r&&roleCan(r,cap)&&verifyToken(req.headers["x-petgrow-admin-token"],u)?{u,r}:null}
 export default async function handler(req,res){

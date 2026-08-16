@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import { sql } from "@vercel/postgres";
-import { ensureSchema } from "./_lib/db.js";
+import { ensureSchema } from "../server_lib/db.js";
 
 const ALLOWED_EVENTS = new Set(["session", "heartbeat", "pageview", "ad_request", "ad_ready", "ad_error"]);
 const ALLOWED_PLATFORMS = new Set(["web", "android", "ios"]);

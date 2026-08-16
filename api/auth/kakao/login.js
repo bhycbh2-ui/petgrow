@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { BASE_URL, OAUTH_STATE_COOKIE } from "../../_lib/config.js";
+import { BASE_URL, OAUTH_STATE_COOKIE } from "../../../server_lib/config.js";
 
 // 카카오 Developers > 내 애플리케이션 > 카카오 로그인 > Redirect URI 에 아래 콜백 주소를 등록해야 해요:
 //   https://www.petgrow.co.kr/api/auth/kakao/callback

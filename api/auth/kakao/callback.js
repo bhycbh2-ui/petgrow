@@ -1,6 +1,6 @@
-import { BASE_URL, OAUTH_STATE_COOKIE, SESSION_COOKIE, SESSION_MAX_AGE } from "../../_lib/config.js";
-import { parseCookies, signSession } from "../../_lib/session.js";
-import { findOrCreateUserByKakaoId } from "../../_lib/db.js";
+import { BASE_URL, OAUTH_STATE_COOKIE, SESSION_COOKIE, SESSION_MAX_AGE } from "../../../server_lib/config.js";
+import { parseCookies, signSession } from "../../../server_lib/session.js";
+import { findOrCreateUserByKakaoId } from "../../../server_lib/db.js";
 
 export default async function handler(req, res) {
   const { code, state, error } = req.query;
