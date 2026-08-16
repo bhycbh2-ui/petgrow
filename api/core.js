@@ -170,8 +170,8 @@ function pickField(row, names) {
   return "";
 }
 function publicCoordToWgs84(row, refLat, refLng) {
-  const xRaw = Number(pickField(row,["CRDNT_X","crdntX","X","x","좌표X","좌표정보x(epsg5174)"]));
-  const yRaw = Number(pickField(row,["CRDNT_Y","crdntY","Y","y","좌표Y","좌표정보y(epsg5174)"]));
+  const xRaw = Number(pickField(row,["CRD_INFO_X","crdInfoX","CRDNT_X","crdntX","X","x","좌표X","좌표정보x(epsg5174)"]));
+  const yRaw = Number(pickField(row,["CRD_INFO_Y","crdInfoY","CRDNT_Y","crdntY","Y","y","좌표Y","좌표정보y(epsg5174)"]));
   if (!Number.isFinite(xRaw) || !Number.isFinite(yRaw)) return null;
   const candidates=[];
   for (const pair of [[xRaw,yRaw],[yRaw,xRaw]]) {
@@ -228,8 +228,8 @@ async function fetchPublicNearby(type, region, refLat, refLng) {
   } catch(e){console.warn("public nearby failed",type,e?.message);return [];}
   const out=[];
   for(const row of rows){
-    const status=String(pickField(row,["SALS_STTS_NM","salesStatusName","영업상태명","TRDSTATENM","영업상태"] )||"");
-    const statusCode=String(pickField(row,["SALS_STTS_CD","salesStatusCode","영업상태구분코드","TRDSTATEGBN"] )||"");
+    const status=String(pickField(row,["DTL_SALS_STTS_NM","dtlSalsSttsNm","SALS_STTS_NM","salesStatusName","영업상태명","TRDSTATENM","영업상태"] )||"");
+    const statusCode=String(pickField(row,["DTL_SALS_STTS_CD","dtlSalsSttsCd","SALS_STTS_CD","salesStatusCode","영업상태구분코드","TRDSTATEGBN"] )||"");
     if(/폐업|취소|말소|휴업|중지/.test(status))continue;
     if(statusCode && !["01","1","정상","영업"].includes(statusCode) && /02|03|04/.test(statusCode))continue;
     const name=String(pickField(row,["BPLC_NM","bplcNm","사업장명","BPLCNM","사업장명칭","업소명"] )||"").trim();
