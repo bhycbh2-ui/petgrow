@@ -4595,6 +4595,17 @@ const GlobalStyle = () => (
     }
   }
 
+  /* ===== 2026-08-17 interaction polish ===== */
+  .nearby-search-help{display:block;margin-top:8px;color:#5f7665;font-size:12px;line-height:1.5;font-weight:700}
+  .cm-search-actions{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;margin-bottom:14px;align-items:center}
+  .cm-search-btn,.cm-write-btn{display:flex!important;align-items:center;justify-content:center;gap:5px;white-space:nowrap}
+  .my-activity-stack{display:grid;gap:10px;margin-top:12px}.my-menu-card-wide{width:100%;display:flex}.my-accordion-panel{margin:0 0 4px!important;animation:petgrow-soft-in .16s ease-out both}
+  .my-liked-music-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #edf2ee}.my-liked-music-row img,.my-liked-music-row>span{width:44px;height:44px;border-radius:11px;object-fit:cover;display:grid;place-items:center;background:#eef6f0}.my-liked-music-row b{display:block;font-size:13px}.my-liked-music-row small{display:block;color:var(--sub);font-size:10px;margin-top:3px}
+  .tip-answer-panel{margin-top:12px;padding:14px 15px;border:1px solid #e7eee8;border-radius:12px;background:#fff;color:var(--text);font-size:13px;line-height:1.75;box-shadow:0 3px 12px rgba(48,75,56,.045)}
+  .admin-entry-root .admin-reports-page:has(.admin-gate){min-height:calc(100dvh - 250px)!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:24px 16px!important}.admin-entry-root .admin-gate{margin:auto!important;width:min(520px,calc(100% - 12px))!important}
+  body:has(.admin-gate) footer{margin:18px auto 14px!important;text-align:center!important;max-width:680px!important}
+  @media(max-width:768px){.cm-search-actions{grid-template-columns:minmax(0,1fr) auto}.cm-write-btn{grid-column:1/-1;width:100%}.nearby-responsive-categories .responsive-category-primary{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.nearby-responsive-categories .responsive-category-primary .bg-chip{min-width:0;padding:9px 5px!important;font-size:11px!important;justify-content:center}.nearby-responsive-categories .responsive-category-more-panel{grid-template-columns:repeat(3,minmax(0,1fr))!important}.my-menu-grid-top{margin-bottom:10px}.admin-entry-root .admin-reports-page:has(.admin-gate){min-height:calc(100dvh - 290px)!important;padding-top:18px!important;padding-bottom:18px!important}}
+
   /* ===== 내 주변 Pet ===== */
   .nearby-page{max-width:980px;margin:0 auto;padding:22px 20px 48px}
   .nearby-hero{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:24px 26px;background:linear-gradient(135deg,#F4FAF5,#FFFFFF);overflow:hidden;position:relative}
@@ -6778,9 +6789,7 @@ function TipCard({ tip, lang, bookmarked, onToggleBookmark }) {
         </button>
       </div>
       {open && (
-        <div style={{ marginTop: 10, paddingTop: 10, borderTop: "1px solid var(--border)", fontSize: 13, lineHeight: 1.7 }}>
-          {tip.body[lang]}
-        </div>
+        <div className="tip-answer-panel">{tip.body[lang]}</div>
       )}
     </div>
   );
@@ -9188,6 +9197,8 @@ function NearbyPetPage(){
   const [editingRating,setEditingRating]=useState(5);
   const [editingText,setEditingText]=useState("");
   const locationRequested=useRef(false);
+  const nearbyCache=useRef(new Map());
+  const requestSeq=useRef(0);
 
   const loadReviews=async(place)=>{
     if(!place?.id){setReviews({items:[],summary:{count:0,avg:0}});return;}
@@ -9238,19 +9249,55 @@ function NearbyPetPage(){
     window.setTimeout(()=>map.invalidateSize(),60);
   };
 
-  const search=async(nextCat=cat,coords=pos,manualArea=area)=>{
+  const mergeNearbyRows=(groups)=>{
+    const seen=new Map();
+    const rank={public:0,kakao:1,osm:2,nominatim:3};
+    const norm=v=>String(v||"").replace(/[^0-9A-Za-z가-힣]/g,"").toLowerCase();
+    for(const row of groups.flat().filter(Boolean)){
+      const key=`${norm(row.name)}|${Number(row.lat||0).toFixed(4)}|${Number(row.lng||0).toFixed(4)}`;
+      const prev=seen.get(key);
+      if(!prev || (rank[row.source]??9)<(rank[prev.source]??9)) seen.set(key,{...prev,...row});
+      else if(prev){ if(!prev.phone&&row.phone)prev.phone=row.phone;if(!prev.address&&row.address)prev.address=row.address;if(!prev.url&&row.url)prev.url=row.url; }
+    }
+    return [...seen.values()].sort((a,b)=>(Number(a.distance)||1e12)-(Number(b.distance)||1e12));
+  };
+  const fetchNearbyCategory=async(nextCat,coords,manualArea)=>{
+    const q=new URLSearchParams({category:nextCat});
+    if(coords){q.set("lat",coords.lat);q.set("lng",coords.lng);}
+    if(manualArea.trim())q.set("area",manualArea.trim());
+    const r=await fetch(`/api/nearby?${q}`);const j=await r.json();
+    if(!r.ok) throw new Error(j.error||"주변 정보를 불러오지 못했어요.");
+    return j;
+  };
+  const search=async(nextCat=cat,coords=pos,manualArea=area,{background=false}={})=>{
     if(!coords&&!manualArea.trim()) return;
-    setLoading(true);setMsg("");
+    const cacheKey=`${coords?`${Number(coords.lat).toFixed(4)},${Number(coords.lng).toFixed(4)}`:manualArea.trim()}|${nextCat}`;
+    const cached=nearbyCache.current.get(cacheKey);
+    if(cached){
+      setItems(cached.items||[]);setSelected(cached.items?.[0]||null);setSearchRadius(Number(cached.searchRadius)||1000);setWithin1km(Number(cached.within1km)||0);
+      if(coords)loadMap(coords,cached.items||[]).catch(()=>{});
+      if(!background)return;
+    }
+    const seq=++requestSeq.current;
+    if(!background&&!cached)setLoading(true);setMsg("");
     try{
-      const q=new URLSearchParams({category:nextCat});
-      if(coords){q.set("lat",coords.lat);q.set("lng",coords.lng);}
-      if(manualArea.trim())q.set("area",manualArea.trim());
-      const r=await fetch(`/api/nearby?${q}`);const j=await r.json();
-      if(!r.ok) throw new Error(j.error||"주변 정보를 불러오지 못했어요.");
+      let j;
+      if(nextCat==="all"){
+        // '전체'는 각 카테고리를 실제로 각각 조회해 합칩니다. 개별 탭에서 보이는 장소가 전체에서 빠지지 않게 해요.
+        const keys=["hospital","pharmacy","shop","grooming","hotel"];
+        const settled=await Promise.allSettled(keys.map(k=>fetchNearbyCategory(k,coords,manualArea)));
+        const good=settled.map((x,i)=>x.status==="fulfilled"?{key:keys[i],data:x.value}:null).filter(Boolean);
+        for(const x of good){nearbyCache.current.set(`${coords?`${Number(coords.lat).toFixed(4)},${Number(coords.lng).toFixed(4)}`:manualArea.trim()}|${x.key}`,x.data);}
+        const merged=mergeNearbyRows(good.map(x=>x.data.items||[]));
+        const within=merged.filter(x=>Number(x.distance)<=1000).length;
+        j={items:within?merged.filter(x=>Number(x.distance)<=1000):merged,within1km:within,searchRadius:within?1000:Math.max(1000,...good.map(x=>Number(x.data.searchRadius)||1000))};
+      }else j=await fetchNearbyCategory(nextCat,coords,manualArea);
+      nearbyCache.current.set(cacheKey,j);
+      if(seq!==requestSeq.current && !background)return;
       setItems(j.items||[]);setSelected(j.items?.[0]||null);if(Number(j.searchRadius))setSearchRadius(Number(j.searchRadius));setWithin1km(Number(j.within1km)||0);
       if(coords)loadMap(coords,j.items||[]).catch(()=>{});
-      if(!(j.items||[]).length)setMsg("검색 결과가 없어요. 검색 범위나 지역명을 바꿔보세요.");
-    }catch(e){setMsg(e.message)}finally{setLoading(false)}
+      if(!(j.items||[]).length)setMsg("검색 결과가 없어요. 다른 카테고리나 지역명으로 검색해보세요.");
+    }catch(e){if(!cached)setMsg(e.message)}finally{if(seq===requestSeq.current)setLoading(false)}
   };
   const locate=()=>{
     if(!navigator.geolocation){setMsg("이 기기에서는 현재 위치를 사용할 수 없어요. 지역명으로 검색해주세요.");return;}
@@ -9282,13 +9329,10 @@ function NearbyPetPage(){
     );
   };
   useEffect(()=>{
-    if(locationRequested.current) return;
-    locationRequested.current=true;
-    const timer=window.setTimeout(()=>locate(),220);
-    return()=>window.clearTimeout(timer);
+    if(pos)search(cat,pos,"",{background:false});
+    else if(area.trim())search(cat,null,area,{background:false});
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
-  useEffect(()=>{if(pos)search(cat,pos,"");},[cat]);
+  },[cat]);
   const cats=[["all","전체"],["hospital","동물병원"],["pharmacy","동물약국"],["shop","펫샵·용품"],["grooming","펫미용"],["hotel","호텔·유치원"]];
   const fmt=d=>d==null?"거리 확인 불가":Number(d)<1000?`${Math.max(0,Math.round(Number(d)))}m`:`${(Number(d)/1000).toFixed(1)}km`;
   const submitReview=async()=>{
@@ -9306,11 +9350,10 @@ function NearbyPetPage(){
 
   return <div className="nearby-page">
     <section className="nearby-hero bg-card">
-      <div><span className="nearby-eyebrow">PETGROW LOCAL</span><h1>{t.nearbyTitle}</h1><p>{t.nearbySubtitle}</p></div>
-      <button className="nearby-locate-btn" onClick={locate}><MapPinIcon/>{t.nearbyLocateBtn}</button>
+      <div><span className="nearby-eyebrow">PETGROW LOCAL</span><h1>{t.nearbyTitle}</h1><p>{t.nearbySubtitle}</p><small className="nearby-search-help">📍 지역명을 비워두고 검색하면 현재 위치 권한을 요청해 가까운 곳을 찾아요.</small></div>
     </section>
-    <div className="nearby-search-row"><input className="bg-input" value={area} onChange={e=>setArea(e.target.value)} onKeyDown={e=>e.key==="Enter"&&search(cat,null,area)} placeholder={t.nearbySearchPlaceholder}/><button className="bg-btn" onClick={()=>search(cat,null,area)}>검색</button></div>
-    <div className="nearby-cats">{cats.map(([k,l])=><button key={k} className={cat===k?"active":""} onClick={()=>{setCat(k);if(!pos&&area.trim())search(k,null,area)}}>{l}</button>)}</div>
+    <div className="nearby-search-row"><input className="bg-input" value={area} onChange={e=>setArea(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"){if(area.trim())search(cat,null,area);else locate();}}} placeholder="지역명 입력 또는 비워두고 현재 위치 검색"/><button className="bg-btn" onClick={()=>area.trim()?search(cat,null,area):locate()}>{loading?"검색 중…":"검색"}</button></div>
+    <ResponsiveCategoryMenu className="nearby-responsive-categories" primaryCount={3} items={cats.map(([id,label])=>({id,label}))} activeId={cat} onSelect={setCat} lang={"ko"} />
     <section className="nearby-map-card bg-card">
       <div className="nearby-map-head"><div><b>{pos?"현재 위치 기준":"지역 검색"}</b><small>{pos?`민트색 원이 내 현재 위치예요${positionAccuracy?` · 위치 오차 약 ±${positionAccuracy}m`:""}`:"위치 권한 없이도 지역명으로 검색할 수 있어요"}</small></div>{pos&&<span className="nearby-live-pill">● LIVE 위치</span>}</div>
       <div ref={mapRef} className="nearby-map"><div className="nearby-map-fallback"><MapPinIcon/><b>내 위치 지도를 준비하고 있어요</b><span>위치 허용 후 주변 업체가 지도에 표시됩니다.</span></div></div>
@@ -10084,10 +10127,6 @@ function CommunityFeed({ pets, lang, onOpenPost, onWrite, onMyActivity }) {
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setSearch(searchInput), 350);
-    return () => clearTimeout(timer);
-  }, [searchInput]);
 
   const loadPage = async (nextPage) => {
     setLoading(true);
@@ -10107,12 +10146,10 @@ function CommunityFeed({ pets, lang, onOpenPost, onWrite, onMyActivity }) {
 
   return (
     <div className="legal-page-shell">
-      <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
-        <input type="text" className="cm-search-input" value={searchInput} onChange={(e) => setSearchInput(e.target.value)}
-          placeholder={t.communitySearchPlaceholder} />
-        <button type="button" className="bg-btn" style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: 6 }} onClick={onWrite}>
-          <PlusIcon style={{ width: 14, height: 14 }} /> {t.communityWriteBtn}
-        </button>
+      <div className="cm-search-actions">
+        <input type="text" className="cm-search-input" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} onKeyDown={(e)=>{if(e.key==="Enter")setSearch(searchInput.trim());}} placeholder={t.communitySearchPlaceholder} />
+        <button type="button" className="bg-btn bg-btn-ghost cm-search-btn" onClick={()=>setSearch(searchInput.trim())}><SearchIcon style={{width:14,height:14}}/> 검색</button>
+        <button type="button" className="bg-btn cm-write-btn" onClick={onWrite}><PlusIcon style={{ width: 14, height: 14 }} /> {t.communityWriteBtn}</button>
       </div>
 
       <ResponsiveCategoryMenu
@@ -10657,31 +10694,19 @@ function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost, o
         <span className="my-page-head-icon" style={{ fontSize: 30 }}>🐶</span>
       </div>
 
-      <div className="my-menu-grid">
-        {menuItems.map((item, i) => (
-          <button key={item.key} type="button" className={`my-menu-card ${item.cls}${item.open ? " is-open" : ""}`} onClick={item.action} style={{ animationDelay: `${i * 70}ms` }}>
-            <span className="my-menu-card-icon">{item.icon}</span>
-            <span className="my-menu-card-copy"><strong>{item.title}</strong><small>{item.desc}</small></span>
-            <span className="my-menu-card-arrow">{item.open ? "⌃" : "›"}</span>
+      <div className="my-menu-grid my-menu-grid-top">
+        {menuItems.slice(0,2).map((item, i) => (
+          <button key={item.key} type="button" className={`my-menu-card ${item.cls}`} onClick={item.action} style={{ animationDelay: `${i * 70}ms` }}>
+            <span className="my-menu-card-icon">{item.icon}</span><span className="my-menu-card-copy"><strong>{item.title}</strong><small>{item.desc}</small></span><span className="my-menu-card-arrow">›</span>
           </button>
         ))}
       </div>
-
-      {openActivity === "pettalk" && (
-        <div id="my-pettalk-activity" className="bg-card my-activity-card my-accordion-panel" style={{marginBottom:14}}>
-          <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 6 }}>{t.myPageActivityTitle}</div>
-          <div className="bg-sub" style={{ fontSize: 12, marginBottom: 14 }}>{lang === "en" ? "Your Pet Talk history stays together here." : "내 Pet톡 활동을 탭별로 확인해보세요."}</div>
-          <MyActivityPage lang={lang} onOpenPost={onOpenPost} embedded />
-        </div>
-      )}
-
-      {openActivity === "music" && (
-        <div id="my-liked-music" className="bg-card my-activity-card my-accordion-panel" style={{marginBottom:14}}>
-          <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 6 }}>❤️ {lang === "en" ? "Liked Pet Music" : "내가 좋아요 누른 Pet음악"}</div>
-          <div className="bg-sub" style={{ fontSize: 12, marginBottom: 12 }}>{lang === "en" ? "Music you liked is saved to your account." : "좋아요한 음악을 계정 기준으로 모아볼 수 있어요."}</div>
-          {likedMusicLoading && !likedMusicLoaded ? <div className="bg-sub" style={{fontSize:12,padding:"8px 0"}}>좋아요한 음악을 불러오는 중...</div> : likedMusic.length ? <div style={{display:"grid",gap:8}}>{likedMusic.slice(0,20).map(x=><div key={x.id} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:"1px solid #edf2ee"}}>{x.cover_url?<img src={x.cover_url} alt="" loading="lazy" style={{width:44,height:44,borderRadius:11,objectFit:"cover"}}/>:<span style={{width:44,height:44,borderRadius:11,display:"grid",placeItems:"center",background:"#eef6f0"}}>🎵</span>}<div style={{minWidth:0}}><b style={{fontSize:13}}>{x.title}</b><div className="bg-sub" style={{fontSize:10}}>{x.species==="dog"?"강아지":x.species==="cat"?"고양이":"공용"} · ♥ {Number(x.like_count)||0}</div></div></div>)}</div> : <div className="bg-sub" style={{fontSize:12,padding:"8px 0"}}>아직 좋아요한 Pet음악이 없어요.</div>}
-        </div>
-      )}
+      <div className="my-activity-stack">
+        <button type="button" className={`my-menu-card my-menu-purple my-menu-card-wide${openActivity==="pettalk"?" is-open":""}`} onClick={togglePetTalkActivity}><span className="my-menu-card-icon">💬</span><span className="my-menu-card-copy"><strong>{lang==="en"?"Pet Talk activity":"Pet톡 내 활동"}</strong><small>{lang==="en"?"Tap to view your posts, comments and likes.":"눌러서 내가 작성한 글·댓글·좋아요를 확인해요."}</small></span><span className="my-menu-card-arrow">{openActivity==="pettalk"?"⌃":"›"}</span></button>
+        {openActivity === "pettalk" && <div id="my-pettalk-activity" className="bg-card my-activity-card my-accordion-panel"><div style={{fontSize:15,fontWeight:800,marginBottom:6}}>{t.myPageActivityTitle}</div><MyActivityPage lang={lang} onOpenPost={onOpenPost} embedded /></div>}
+        <button type="button" className={`my-menu-card my-menu-mint my-menu-card-wide${openActivity==="music"?" is-open":""}`} onClick={toggleLikedMusic}><span className="my-menu-card-icon">❤️</span><span className="my-menu-card-copy"><strong>{lang==="en"?"Liked Pet Music":"내가 좋아요 누른 Pet음악"}</strong><small>{lang==="en"?"Tap to see all music you liked.":"눌러서 좋아요한 음악을 확인해요."}</small></span><span className="my-menu-card-arrow">{openActivity==="music"?"⌃":"›"}</span></button>
+        {openActivity === "music" && <div id="my-liked-music" className="bg-card my-activity-card my-accordion-panel"><div style={{fontSize:15,fontWeight:800,marginBottom:8}}>❤️ {lang==="en"?"Liked Pet Music":"내가 좋아요 누른 Pet음악"}</div>{likedMusicLoading&&!likedMusicLoaded?<div className="bg-sub">좋아요한 음악을 불러오는 중...</div>:likedMusic.length?<div style={{display:"grid",gap:8}}>{likedMusic.slice(0,20).map(x=><div key={x.id} className="my-liked-music-row">{x.cover_url?<img src={x.cover_url} alt="" loading="lazy"/>:<span>🎵</span>}<div><b>{x.title}</b><small>{x.species==="dog"?"강아지":x.species==="cat"?"고양이":"공용"} · ♥ {Number(x.like_count)||0}</small></div></div>)}</div>:<div className="bg-sub">아직 좋아요한 Pet음악이 없어요.</div>}</div>}
+      </div>
 
       {adminEntry && (!adminEntry.adminExists || adminEntry.isAdmin || adminEntry.recoveryAvailable) && (
         <button type="button" className="my-admin-below-activity" onClick={onOpenAdmin}>
@@ -11433,7 +11458,7 @@ function AppInner({ lang, setLang }) {
       ) : effectiveView === "support" ? (
         <SupportPage account={account} onBack={() => goView("my")} />
       ) : effectiveView === "ad-inquiry" ? (
-        <AdInquiryPage onBack={() => goView("my")} />
+        <AdInquiryPage onBack={() => goView("home")} />
       ) : effectiveView === "tips" ? (
         <TipsPage />
       ) : effectiveView === "saju" ? (
