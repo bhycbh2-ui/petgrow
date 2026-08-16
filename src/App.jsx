@@ -3097,6 +3097,10 @@ const GlobalStyle = () => (
       .desktop-nav-link{padding:0 8px;font-size:12.5px;gap:5px}
       .desktop-nav-link .icon{width:15px;height:15px}
     }
+
+.petgrow-sidebar{display:none}
+@media(min-width:900px){.petgrow-web-layout{padding-left:236px;background:#FAFCFA}.petgrow-web-layout .desktop-nav-shell{display:none!important}.petgrow-web-layout .petgrow-page-top{max-width:1180px!important}.petgrow-web-layout>div[style*="max-width: 900"]{max-width:1180px!important}.petgrow-sidebar{display:flex;position:fixed;z-index:180;left:14px;top:14px;bottom:14px;width:208px;flex-direction:column;padding:16px 13px 14px;background:rgba(255,255,255,.96);border:1px solid #E2E9E3;border-radius:26px;box-shadow:0 14px 42px rgba(34,48,39,.09);backdrop-filter:blur(20px)}.petgrow-sidebar-brand{display:flex;align-items:center;gap:10px;width:100%;padding:5px 6px 16px;margin-bottom:10px;background:none;border:0;border-bottom:1px solid #EDF1ED;cursor:pointer;text-align:left}.petgrow-sidebar-brand img{width:50px;height:50px;object-fit:contain}.petgrow-sidebar-brand>span{display:flex;flex-direction:column;gap:4px}.petgrow-sidebar-brand strong{font-family:'Jua',sans-serif;font-size:20px;color:#223027}.petgrow-sidebar-brand strong b{color:#4F8A5B;font-weight:inherit}.petgrow-sidebar-brand small{font-size:8px;font-weight:700;color:#98A19B;white-space:nowrap}.petgrow-sidebar-nav{display:flex;flex-direction:column;gap:5px;flex:1}.petgrow-sidebar-nav button{position:relative;width:100%;height:46px;display:flex;align-items:center;gap:12px;padding:0 13px;background:transparent;border:1px solid transparent;border-radius:15px;color:#5F6B63;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;transition:.18s}.petgrow-sidebar-nav button .icon{width:19px;height:19px}.petgrow-sidebar-nav button:hover{background:#F4F8F4;color:#3D704A;transform:translateX(2px)}.petgrow-sidebar-nav button.active{background:linear-gradient(90deg,#EAF3EB,#F2F7F2);border-color:#DDE8DF;color:#356A43}.petgrow-sidebar-nav button.active:before{content:"";position:absolute;left:-4px;width:4px;height:22px;border-radius:9px;background:#5A9766}.petgrow-sidebar-bottom{display:flex;flex-wrap:wrap;gap:8px;padding-top:12px;border-top:1px solid #EDF1ED}.petgrow-sidebar-message{width:100%;padding:11px 12px;border-radius:15px;background:#F0F6F0;color:#3D704A;font-size:11px;font-weight:800}.petgrow-sidebar-bottom .lang-toggle{flex:1}.petgrow-sidebar-bottom .account-btn{height:38px;max-width:96px;padding:0 10px;font-size:11px}}
+@media(min-width:900px) and (max-width:1120px){.petgrow-web-layout{padding-left:204px}.petgrow-sidebar{left:10px;top:10px;bottom:10px;width:180px;padding:12px 10px}.petgrow-sidebar-brand small{display:none}.petgrow-sidebar-brand img{width:43px;height:43px}.petgrow-sidebar-brand strong{font-size:17px}.petgrow-sidebar-nav button{font-size:12.5px;gap:9px;padding:0 10px}}
 `}</style>
 );
 
@@ -8995,9 +8999,24 @@ function AppInner({ lang, setLang }) {
   const effectiveView = needsLogin ? "login" : view;
 
   return (
-    <div className="bboggl-root" style={{ minHeight: "100vh", paddingBottom: isNativeApp ? 74 : 0 }}>
+    <div className={`bboggl-root ${!isNativeApp ? "petgrow-web-layout" : ""}`} style={{ minHeight: "100vh", paddingBottom: isNativeApp ? 74 : 0 }}>
       <GlobalStyle />
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "16px 20px 0" }}>
+      {!isNativeApp && (
+        <aside className="petgrow-sidebar">
+          <button type="button" className="petgrow-sidebar-brand" onClick={() => goView("home")}><img src="/petgrow-splash-logo.png" alt="" /><span><strong>Pet<b>Grow</b></strong><small>{lang === "en" ? "Healthy growth, together" : "우리 아이의 건강한 성장을 함께"}</small></span></button>
+          <nav className="petgrow-sidebar-nav">
+            <button className={view === "home" ? "active" : ""} onClick={() => goView("home")}><HomeIcon /><span>{t.hamNavHome}</span></button>
+            <button className={view === "about" ? "active" : ""} onClick={() => goView("about")}><InfoIcon /><span>{t.aboutNav}</span></button>
+            <button className={view === "pets" ? "active" : ""} onClick={() => goView("pets")}><HeartOutlineIcon /><span>{t.myPetsNav}</span></button>
+            <button className={view === "community" ? "active" : ""} onClick={() => goView("community")}><TalkIcon /><span>{t.communityNav}</span></button>
+            <button className={view === "saju" ? "active" : ""} onClick={() => goView("saju")}><SajuIcon /><span>{t.sajuNav}</span></button>
+            <button className={view === "petbti" ? "active" : ""} onClick={() => goView("petbti")}><PetBtiIcon /><span>{t.petBtiNav}</span></button>
+            <button className={view === "tips" ? "active" : ""} onClick={() => goView("tips")}><LightbulbIcon /><span>{t.tipsTitle}</span></button>
+          </nav>
+          <div className="petgrow-sidebar-bottom"><div className="petgrow-sidebar-message">♡ <span>{lang === "en" ? "A happier day with your pet" : "우리 아이와 더 행복한 하루"}</span></div><LangToggle lang={lang} onChange={setLang} /><AccountButton account={account} onOpen={() => (account ? setAccountModalOpen(true) : goView("pets"))} /></div>
+        </aside>
+      )}
+      <div className="petgrow-page-top" style={{ maxWidth: 900, margin: "0 auto", padding: "16px 20px 0" }}>
         {!isNativeApp && (
           <>
             {/* PC: 프리미엄 글래스 상단 메뉴 (900px 이상) */}
