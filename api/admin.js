@@ -58,6 +58,7 @@ export default async function handler(req,res){
       active:()=>sql`select count(*) filter(where last_login_at>=now()-interval '7 days')::int d7 from pg_users`,
       reports:()=>sql`select count(*) filter(where status='open')::int open,count(*) filter(where status='resolved' and reviewed_at>=now()-interval '7 days')::int done7 from pg_reports`,
       nearbyReports:()=>sql`select count(*) filter(where status='open')::int open,count(*) filter(where status='resolved' and reviewed_at>=now()-interval '7 days')::int done7 from pg_place_review_reports`,
+      musicReports:()=>sql`select count(*) filter(where status='open')::int open,count(*) filter(where status='resolved' and reviewed_at>=now()-interval '7 days')::int done7 from pg_music_comment_reports`,
       restrictions:()=>sql`select count(*)::int n from pg_community_restrictions where permanent=true or restricted_until>now()`,
       sessions:()=>sql`select count(*) filter(where day=(now() at time zone 'Asia/Seoul')::date)::int today,count(*) filter(where last_seen>now()-interval '5 minutes')::int online from pg_analytics_sessions`,
       community:()=>sql`select (select count(*)::int from pg_posts where created_at>=(now() at time zone 'Asia/Seoul')::date) posts_today,(select count(*)::int from pg_comments where created_at>=(now() at time zone 'Asia/Seoul')::date) comments_today`,
@@ -87,7 +88,7 @@ export default async function handler(req,res){
     settled.forEach((x,i)=>{const k=ent[i][0];if(x.status==="fulfilled")q[k]=x.value.rows[0]||{};else warnings.push(`${k} 통계를 불러오지 못했어요.`)});
     const menuRows=settled[ent.findIndex(([k])=>k==="menuUsage")]?.status==="fulfilled" ? settled[ent.findIndex(([k])=>k==="menuUsage")].value.rows : [];
     const platformRows=settled[ent.findIndex(([k])=>k==="platformUsage")]?.status==="fulfilled" ? settled[ent.findIndex(([k])=>k==="platformUsage")].value.rows : [];
-    return res.status(200).json({warnings,cards:{totalMembers:q.members?.total||0,new7d:q.members?.new7||0,active7d:q.active?.d7||0,openReports:(q.reports?.open||0)+(q.nearbyReports?.open||0),resolvedReports7d:(q.reports?.done7||0)+(q.nearbyReports?.done7||0),restricted:q.restrictions?.n||0,todaySessions:q.sessions?.today||0,onlineSessions5m:q.sessions?.online||0,postsToday:q.community?.posts_today||0,commentsToday:q.community?.comments_today||0,waitingInquiries:q.inquiries?.waiting||0},menuUsage:menuRows,platformUsage:platformRows});
+    return res.status(200).json({warnings,cards:{totalMembers:q.members?.total||0,new7d:q.members?.new7||0,active7d:q.active?.d7||0,openReports:(q.reports?.open||0)+(q.nearbyReports?.open||0)+(q.musicReports?.open||0),resolvedReports7d:(q.reports?.done7||0)+(q.nearbyReports?.done7||0)+(q.musicReports?.done7||0),restricted:q.restrictions?.n||0,todaySessions:q.sessions?.today||0,onlineSessions5m:q.sessions?.online||0,postsToday:q.community?.posts_today||0,commentsToday:q.community?.comments_today||0,waitingInquiries:q.inquiries?.waiting||0},menuUsage:menuRows,platformUsage:platformRows});
   }
   if(a==="report-summary"&&req.method==="GET"){
     const period=["daily","weekly","monthly"].includes(String(req.query.period||""))?String(req.query.period):"daily";
@@ -104,7 +105,7 @@ export default async function handler(req,res){
       sql`select (select count(*)::int from pg_posts where created_at>=${start} and created_at<${end}) posts,(select count(*)::int from pg_comments where created_at>=${start} and created_at<${end}) comments`,
       sql`select coalesce(sum(play_count),0)::int plays,(select count(*)::int from pg_music_likes where created_at>=${start} and created_at<${end}) likes,(select count(*)::int from pg_music_comments where created_at>=${start} and created_at<${end}) comments from pg_music_tracks where active=true`,
       sql`select count(*)::int reviews,coalesce(round(avg(rating)::numeric,1),0) avg_rating from pg_place_reviews where created_at>=${start} and created_at<${end} and status='visible'`,
-      sql`select ((select count(*) from pg_reports where created_at>=${start} and created_at<${end})+(select count(*) from pg_place_review_reports where created_at>=${start} and created_at<${end}))::int reports`,
+      sql`select ((select count(*) from pg_reports where created_at>=${start} and created_at<${end})+(select count(*) from pg_place_review_reports where created_at>=${start} and created_at<${end})+(select count(*) from pg_music_comment_reports where created_at>=${start} and created_at<${end}))::int reports`,
       sql`select dimension,sum(count)::int count from pg_daily_metrics where metric='pageview' and day>=${start} and day<${end} group by dimension order by count desc limit 8`,
       sql`select platform,count(*)::int count from pg_analytics_sessions where day>=${start} and day<${end} group by platform order by count desc`
     ]);
