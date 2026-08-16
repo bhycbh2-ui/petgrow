@@ -149,9 +149,17 @@ async function handleNearby(req, res) {
   let kakaoOk = false;
   let kakaoStatus = null;
 
-  // 1) 카카오 장소검색을 우선 사용합니다. 한 키워드 실패가 전체 검색을 막지 않게 처리합니다.
-  if (key) {
-    for (const kw of qs) {
+  // 1) 카카오 장소검색: 1km를 먼저 찾고 결과가 적을 때만 3km → 5km로 자동 확장합니다.
+  //    가까운 장소를 놓치지 않으면서 불필요하게 먼 장소가 먼저 섞이는 문제를 줄입니다.
+  let searchRadius = hasCoord ? 1000 : null;
+  const uniqueCount = (rows) => {
+    const set = new Set();
+    for (const x of rows) set.add(`${String(x.name||"").replace(/\s/g,"").toLowerCase()}|${String(x.address||"").replace(/\s/g,"").toLowerCase()}`);
+    return set.size;
+  };
+  const fetchKakaoAtRadius = async (radius) => {
+    if (!key) return [];
+    const batches = await Promise.all(qs.map(async (kw) => {
       try {
         const u = new URL("https://dapi.kakao.com/v2/local/search/keyword.json");
         u.searchParams.set("query", area ? `${area} ${kw}` : kw);
@@ -159,22 +167,36 @@ async function handleNearby(req, res) {
         u.searchParams.set("page", "1");
         if (hasCoord) {
           u.searchParams.set("x", String(nLng)); u.searchParams.set("y", String(nLat));
-          u.searchParams.set("radius", "20000"); u.searchParams.set("sort", "distance");
+          u.searchParams.set("radius", String(radius)); u.searchParams.set("sort", "distance");
         }
         const r = await fetch(u, { headers: { Authorization: `KakaoAK ${key}` } });
         kakaoStatus = r.status;
-        if (!r.ok) continue;
+        if (!r.ok) return [];
         kakaoOk = true;
         const j = await r.json();
-        for (const d of j.documents || []) {
+        return (j.documents || []).map((d) => {
           const type = placeType(d.category_name, kw);
-          all.push({
+          return {
             id: d.id, sourceId:d.id, name: d.place_name, phone: d.phone || "", address: d.road_address_name || d.address_name || "",
             roadAddress: d.road_address_name || "", category: d.category_name || "", typeKey:type.key, typeLabel:type.label, typeIcon:type.icon,
             lat: Number(d.y), lng: Number(d.x), distance: d.distance ? Number(d.distance) : null, url: d.place_url || "", source:"kakao"
-          });
-        }
-      } catch (e) { console.warn("kakao nearby keyword failed", kw, e?.message); }
+          };
+        });
+      } catch (e) { console.warn("kakao nearby keyword failed", kw, e?.message); return []; }
+    }));
+    return batches.flat();
+  };
+
+  if (key) {
+    if (hasCoord) {
+      for (const radius of [1000, 3000, 5000]) {
+        searchRadius = radius;
+        all.push(...await fetchKakaoAtRadius(radius));
+        // 1km에서 충분히 나오면 더 넓은 범위를 호출하지 않습니다.
+        if (uniqueCount(all) >= 10) break;
+      }
+    } else {
+      all.push(...await fetchKakaoAtRadius(5000));
     }
   }
 
@@ -182,12 +204,12 @@ async function handleNearby(req, res) {
   //    키 설정/일시 장애 때문에 '내 위치만 나오고 0곳'이 되는 상황을 줄이는 안전장치입니다.
   if (hasCoord && all.length === 0) {
     try {
-      const typeFilter = category === "hospital" ? 'nwr(around:12000,LAT,LNG)["amenity"="veterinary"];' :
-        category === "shop" ? 'nwr(around:12000,LAT,LNG)["shop"="pet"];' :
-        category === "grooming" ? 'nwr(around:12000,LAT,LNG)["shop"="pet_grooming"];' :
-        category === "hotel" ? 'nwr(around:12000,LAT,LNG)["amenity"="animal_boarding"];' :
-        category === "pharmacy" ? 'nwr(around:12000,LAT,LNG)["name"~"동물약국",i];' :
-        'nwr(around:12000,LAT,LNG)["amenity"="veterinary"];nwr(around:12000,LAT,LNG)["shop"="pet"];nwr(around:12000,LAT,LNG)["shop"="pet_grooming"];nwr(around:12000,LAT,LNG)["amenity"="animal_boarding"];nwr(around:12000,LAT,LNG)["name"~"동물병원|동물약국|펫|애견|애묘|반려동물",i];';
+      const typeFilter = category === "hospital" ? 'nwr(around:5000,LAT,LNG)["amenity"="veterinary"];' :
+        category === "shop" ? 'nwr(around:5000,LAT,LNG)["shop"="pet"];' :
+        category === "grooming" ? 'nwr(around:5000,LAT,LNG)["shop"="pet_grooming"];' :
+        category === "hotel" ? 'nwr(around:5000,LAT,LNG)["amenity"="animal_boarding"];' :
+        category === "pharmacy" ? 'nwr(around:5000,LAT,LNG)["name"~"동물약국",i];' :
+        'nwr(around:5000,LAT,LNG)["amenity"="veterinary"];nwr(around:5000,LAT,LNG)["shop"="pet"];nwr(around:5000,LAT,LNG)["shop"="pet_grooming"];nwr(around:5000,LAT,LNG)["amenity"="animal_boarding"];nwr(around:5000,LAT,LNG)["name"~"동물병원|동물약국|펫|애견|애묘|반려동물",i];';
       const body = `[out:json][timeout:10];(${typeFilter.replaceAll('LAT',String(nLat)).replaceAll('LNG',String(nLng))});out center tags 60;`;
       const or = await fetch("https://overpass-api.de/api/interpreter", { method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"}, body:`data=${encodeURIComponent(body)}` });
       if (or.ok) {
@@ -209,7 +231,7 @@ async function handleNearby(req, res) {
   // 3) Overpass가 일시적으로 응답하지 않는 경우 Nominatim의 bounded 검색으로 한 번 더 보완합니다.
   if (hasCoord && all.length === 0) {
     try {
-      const delta = 0.14;
+      const delta = 0.05;
       const viewbox = `${nLng-delta},${nLat+delta},${nLng+delta},${nLat-delta}`;
       const fallbackTerms = category === "hospital" ? ["동물병원","veterinary"] : category === "pharmacy" ? ["동물약국"] : category === "shop" ? ["펫샵","pet shop"] : category === "grooming" ? ["애견미용","pet grooming"] : category === "hotel" ? ["애견호텔","반려동물 유치원"] : ["동물병원","펫샵","애견미용","애견호텔","동물약국"];
       for (const term of fallbackTerms) {
@@ -252,7 +274,7 @@ async function handleNearby(req, res) {
   }
   items.sort((a, b) => (a.distance ?? 1e12) - (b.distance ?? 1e12));
   res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=180");
-  return res.status(200).json({ items: items.slice(0, 60), source: kakaoOk ? (items.some(x=>x.source!=="kakao")?"kakao+fallback":"kakao") : (items[0]?.source||"fallback"), kakaoStatus });
+  return res.status(200).json({ items: items.slice(0, 60), searchRadius, source: kakaoOk ? (items.some(x=>x.source!=="kakao")?"kakao+fallback":"kakao") : (items[0]?.source||"fallback"), kakaoStatus });
 }
 
 export default async function handler(req, res) {

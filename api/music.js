@@ -68,7 +68,7 @@ async function ensureStarterTracks(){
   for (const track of tracks) {
     await sql`insert into pg_music_tracks(id,title,description,species,vocal_type,mood,cover_url,audio_url,active,created_by)
       values(${track.id},${track.title},${track.description},${track.species},${track.vocalType},${track.mood},${track.cover},${track.audio},true,null)
-      on conflict(id) do update set title=excluded.title,description=excluded.description,species=excluded.species,vocal_type=excluded.vocal_type,mood=excluded.mood,cover_url=excluded.cover_url,audio_url=excluded.audio_url,active=true,updated_at=now()`;
+      on conflict(id) do nothing`;
   }
   await sql`insert into pg_app_meta(key,value) values(${seedKey},'done') on conflict(key) do update set value='done',updated_at=now()`;
 }
@@ -99,6 +99,11 @@ export default async function handler(req,res){
       }
       const total=countRows?.[0]?.n||0;
       return res.status(200).json({items:rows,top5:topRows,total,page,pages:Math.max(1,Math.ceil(total/pageSize))});
+    }
+    if(action==="liked" && req.method==="GET"){
+      const uid=getSessionUserId(req); if(!uid)return res.status(200).json({items:[]});
+      const {rows}=await sql`select t.*,true liked from pg_music_likes l join pg_music_tracks t on t.id=l.track_id where l.user_id=${uid} and t.active=true order by l.created_at desc limit 100`;
+      return res.status(200).json({items:rows});
     }
     if(action==="play" && req.method==="POST"){
       const id=String(req.body?.id||""); if(!id)return res.status(400).json({error:"곡 정보가 없어요."});

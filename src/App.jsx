@@ -4609,7 +4609,7 @@ const GlobalStyle = () => (
   .nearby-results-head{display:flex;align-items:flex-end;justify-content:space-between;margin:18px 2px 10px}.nearby-results-head>div{display:flex;align-items:center;gap:8px}.nearby-results-head h2{margin:0;font-size:20px}.nearby-results-head span{font-size:11px;background:#EDF5EE;color:#4F8A5B;border-radius:999px;padding:4px 7px;font-weight:800}.nearby-results-head small{color:var(--sub)}
   .nearby-list{display:grid;gap:10px}.nearby-place{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;padding:16px;transition:.18s ease;cursor:pointer}.nearby-place:hover,.nearby-place.selected{border-color:#9FC4A6;box-shadow:0 10px 24px rgba(61,99,70,.09);transform:translateY(-1px)}.nearby-rank{width:30px;height:30px;border-radius:10px;background:#EFF6F0;color:#4F8A5B;display:grid;place-items:center;font-size:12px;font-weight:900}.nearby-place-title{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.nearby-place-title h3{font-size:16px;margin:0;letter-spacing:-.03em}.nearby-place-title strong{color:#4F8A5B;font-size:13px;white-space:nowrap}.nearby-place-meta{display:grid;gap:4px;margin-top:7px;font-size:12.5px;color:#56645B;line-height:1.5}.nearby-place-main>small{display:block;color:#89948C;margin-top:6px;font-size:10.5px}.nearby-place-actions{display:flex;gap:6px}.nearby-place-actions a{border-radius:10px;padding:8px 10px;background:#F1F6F2;color:#426F4B;text-decoration:none;font-size:11px;font-weight:800}.nearby-empty{text-align:center;padding:34px;color:var(--sub)}.nearby-disclaimer{font-size:11px;color:#8B948E;line-height:1.6;margin:14px 4px}
   .nearby-type-row{margin-bottom:6px}.nearby-type-badge{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:5px 9px;font-size:10.5px;font-weight:900;border:1px solid transparent}.nearby-type-hospital{background:#EEF4FF;color:#3765A5;border-color:#D7E5FA}.nearby-type-pharmacy{background:#F2F0FF;color:#6552A7;border-color:#E3DDF9}.nearby-type-shop{background:#FFF4E8;color:#A36328;border-color:#F7DFC3}.nearby-type-grooming{background:#FFF0F5;color:#A45170;border-color:#F5D4E0}.nearby-type-hotel{background:#EEF8F2;color:#3F7B51;border-color:#D5EBD9}.nearby-type-other{background:#F1F4F1;color:#617067;border-color:#E1E7E2}.nearby-map-marker{position:relative}.nearby-map-marker i{position:absolute;right:-6px;top:-6px;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:#26372C;color:#fff;font-style:normal;font-size:9px;font-weight:900}.nearby-map-marker span{font-size:15px}.nearby-review-panel{margin-top:18px;padding:18px}.nearby-review-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.nearby-review-head h2{font-size:18px;margin:8px 0 4px}.nearby-review-head p{margin:0;color:var(--sub);font-size:12px}.nearby-review-head p b{color:#D99528}.nearby-review-compose{margin-top:14px;padding:14px;border-radius:16px;background:#F8FBF8;border:1px solid #E4ECE5}.nearby-stars{display:flex;gap:4px;margin-bottom:9px}.nearby-stars button{border:0;background:transparent;color:#D9DDD9;font-size:24px;padding:0;cursor:pointer}.nearby-stars button.active{color:#F0B43E}.nearby-review-compose textarea{min-height:86px;resize:vertical}.nearby-review-compose-foot{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:9px}.nearby-review-compose-foot small{color:var(--sub);font-size:10.5px}.nearby-review-list{display:grid;gap:9px;margin-top:14px}.nearby-review-item{padding:13px 14px;border:1px solid #E4EAE5;border-radius:15px;background:#fff;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}.nearby-review-item:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(61,99,70,.06)}.nearby-review-item.mine{border-color:#CFE2D3;background:linear-gradient(180deg,#fff,#FBFDFB)}.nearby-review-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px}.nearby-review-meta>b{font-size:12px;display:inline-flex;align-items:center;gap:5px}.nearby-review-meta b em{font-style:normal;font-size:9px;color:#4F8A5B;background:#EAF4EC;border-radius:999px;padding:3px 6px}.nearby-review-meta span{color:#E0A62E;letter-spacing:.04em}.nearby-review-meta small{margin-left:auto;color:#919A94}.nearby-review-item p{font-size:12.5px;line-height:1.65;margin:9px 0;color:#4E5B52;white-space:pre-wrap}.nearby-review-actions{display:flex;gap:6px}.nearby-review-actions button{border:1px solid #E0E8E1;background:#FAFCFA;border-radius:9px;padding:6px 9px;font-size:10.5px;font-weight:800;color:#657168;cursor:pointer}.nearby-review-actions button.liked{background:#FFF0F4;border-color:#F2CDD8;color:#CC5470}.nearby-review-actions button.danger{color:#A65353;background:#FFF8F8;border-color:#F0DADA}.nearby-review-edit{margin:10px 0;padding:12px;border-radius:13px;background:#F7FAF7;border:1px solid #E1EAE2}.nearby-review-edit textarea{min-height:82px;resize:vertical}.nearby-review-edit-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:8px}.nearby-review-edit-actions .bg-btn{min-width:74px;padding:8px 12px}.nearby-review-empty{text-align:center;padding:22px;color:var(--sub);font-size:12px}
-  .admin-menu-analytics{margin-top:14px;padding:18px}.admin-menu-analytics-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:14px}.admin-menu-analytics-head h3{margin:0;font-size:18px}.admin-menu-analytics-head small{color:var(--sub)}.admin-menu-row{display:grid;grid-template-columns:110px 1fr 72px;gap:10px;align-items:center;margin:10px 0}.admin-menu-name{font-size:12px;font-weight:800}.admin-menu-bar{height:9px;background:#EDF1ED;border-radius:999px;overflow:hidden}.admin-menu-bar i{display:block;height:100%;background:linear-gradient(90deg,#9FC4A6,#4F8A5B);border-radius:inherit}.admin-menu-value{text-align:right;font-size:11px;color:#657269}.admin-menu-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#315B39;font-weight:850}
+  .admin-menu-analytics{margin-top:14px;padding:18px}.admin-menu-analytics-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:14px}.admin-menu-analytics-head h3{margin:0;font-size:18px}.admin-menu-analytics-head small{color:var(--sub)}.admin-menu-row{display:grid;grid-template-columns:110px 1fr 72px;gap:10px;align-items:center;margin:10px 0}.admin-menu-name{font-size:12px;font-weight:800}.admin-menu-bar{height:9px;background:#EDF1ED;border-radius:999px;overflow:hidden}.admin-menu-bar i{display:block;height:100%;background:linear-gradient(90deg,#9FC4A6,#4F8A5B);border-radius:inherit}.admin-menu-value{text-align:right;font-size:11px;color:#657269}.admin-menu-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#315B39;font-weight:850}.admin-menu-period-chip{flex:0 0 auto!important;min-width:54px!important;width:auto!important;height:32px!important;padding:0 11px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;font-size:11px!important;line-height:1!important;white-space:nowrap!important}.my-accordion-panel{overflow:hidden;animation:myAccordionIn .2s ease both}.my-menu-card.is-open{box-shadow:0 0 0 2px rgba(79,138,91,.14),0 9px 22px rgba(60,70,55,.07);transform:translateY(-1px)}@keyframes myAccordionIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}.admin-report-period{margin-top:10px;padding:10px 12px;border-radius:12px;background:#F4F8F4;border:1px solid #E0EAE2;font-size:12px;color:#536158;font-weight:750}.admin-report-period b{color:#315B39}.admin-reporting-tabs button:disabled{opacity:.55;cursor:wait}@media(max-width:700px){.admin-menu-analytics-head{align-items:flex-start!important}.admin-menu-analytics-head>div{min-width:0;flex:1}.admin-menu-analytics-head small{display:block;font-size:11px;line-height:1.45;word-break:keep-all}.admin-menu-period-chip{min-width:50px!important;height:29px!important;padding:0 9px!important;font-size:10px!important}.admin-menu-row{grid-template-columns:82px 1fr 62px!important;gap:7px!important}.admin-menu-name{font-size:11px!important}.admin-menu-value{font-size:10px!important}}
   @media(max-width:700px){.nearby-page{padding:12px 12px 36px}.nearby-hero{padding:18px;display:grid}.nearby-hero h1{font-size:25px}.nearby-locate-btn{width:100%;justify-content:center}.nearby-map{height:330px}.nearby-place{grid-template-columns:auto 1fr}.nearby-place-actions{grid-column:2;justify-content:flex-start}.nearby-place-title{display:block}.nearby-place-title strong{display:block;margin-top:3px}.nearby-review-head{display:grid}.nearby-review-head .bg-btn{width:100%}.nearby-review-compose-foot{align-items:flex-start;flex-direction:column}.nearby-review-compose-foot .bg-btn{width:100%}.nearby-review-meta small{margin-left:0;width:100%}.admin-menu-row{grid-template-columns:82px 1fr 60px}}
 
 
@@ -9170,6 +9170,7 @@ function NearbyPetPage(){
   const [area,setArea]=useState("");
   const [loading,setLoading]=useState(false);
   const [msg,setMsg]=useState("");
+  const [searchRadius,setSearchRadius]=useState(1000);
   const [selected,setSelected]=useState(null);
   const [reviews,setReviews]=useState({items:[],summary:{count:0,avg:0}});
   const [reviewOpen,setReviewOpen]=useState(false);
@@ -9231,7 +9232,7 @@ function NearbyPetPage(){
       if(manualArea.trim())q.set("area",manualArea.trim());
       const r=await fetch(`/api/nearby?${q}`);const j=await r.json();
       if(!r.ok) throw new Error(j.error||"주변 정보를 불러오지 못했어요.");
-      setItems(j.items||[]);setSelected(j.items?.[0]||null);
+      setItems(j.items||[]);setSelected(j.items?.[0]||null);if(Number(j.searchRadius))setSearchRadius(Number(j.searchRadius));
       if(coords)loadMap(coords,j.items||[]).catch(()=>{});
       if(!(j.items||[]).length)setMsg("검색 결과가 없어요. 검색 범위나 지역명을 바꿔보세요.");
     }catch(e){setMsg(e.message)}finally{setLoading(false)}
@@ -9258,7 +9259,7 @@ function NearbyPetPage(){
   },[]);
   useEffect(()=>{if(pos)search(cat,pos,"");},[cat]);
   const cats=[["all","전체"],["hospital","동물병원"],["pharmacy","동물약국"],["shop","펫샵·용품"],["grooming","펫미용"],["hotel","호텔·유치원"]];
-  const fmt=d=>d==null?"거리 확인 불가":d<1000?`${d}m`:`${(d/1000).toFixed(1)}km`;
+  const fmt=d=>d==null?"거리 확인 불가":Number(d)<1000?`${Math.max(0,Math.round(Number(d)))}m`:`${(Number(d)/1000).toFixed(1)}km`;
   const submitReview=async()=>{
     if(!selected)return;
     const text=reviewText.trim();if(!text)return window.alert("간단한 이용후기를 입력해 주세요.");
@@ -9284,7 +9285,7 @@ function NearbyPetPage(){
       <div ref={mapRef} className="nearby-map"><div className="nearby-map-fallback"><MapPinIcon/><b>내 위치 지도를 준비하고 있어요</b><span>위치 허용 후 주변 업체가 지도에 표시됩니다.</span></div></div>
     </section>
     {msg&&<div className="nearby-message">{msg}</div>}
-    <div className="nearby-results-head"><div><h2>가까운 곳</h2><span>{items.length}곳</span></div><small>거리순으로 정렬돼요</small></div>
+    <div className="nearby-results-head"><div><h2>가까운 곳</h2><span>{items.length}곳</span></div><small>{pos ? `현재 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`} 범위 · 거리순` : "거리순으로 정렬돼요"}</small></div>
     <div className="nearby-list">
       {loading&&!items.length?<div className="bg-card nearby-empty">주변 Pet 정보를 찾는 중…</div>:
       items.map((p,i)=><article id={`nearby-place-${p.id}`} key={p.id} className={`bg-card nearby-place ${selected?.id===p.id?"selected":""}`} onClick={()=>setSelected(p)}>
@@ -10310,7 +10311,7 @@ function AdminMusicPanel(){
   const pickAudio=e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>12*1024*1024){window.alert("음원 파일은 12MB 이하로 올려주세요.");e.target.value="";return;}setForm(x=>({...x,audioFile:f}))};
   const pickCover=e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>4*1024*1024){window.alert("커버 이미지는 4MB 이하로 올려주세요.");e.target.value="";return;}setForm(x=>({...x,coverFile:f}))};
   const uploadDirect=async(file,kind)=>{const {upload}=await import("@vercel/blob/client");const ext=(file.name.split(".").pop()||(kind==="cover"?"jpg":"mp3")).toLowerCase();const path=`petmusic/${kind==="cover"?"covers/":""}${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;return await upload(path,file,{access:"public",handleUploadUrl:"/api/music?action=upload",clientPayload:JSON.stringify({adminToken:sessionStorage.getItem("petgrow_admin_token")||"",kind})})};
-  const save=async()=>{if(!form.title.trim())return window.alert("노래 제목을 입력해 주세요.");if(!editing&&!form.audioFile)return window.alert("음원 파일을 선택해 주세요.");if(!editing&&!form.coverFile)return window.alert("커버 이미지를 선택해 주세요.");setBusy(true);try{let audioUrl=editing?.audio_url||form.audioUrl||"",coverUrl=editing?.cover_url||form.coverUrl||"";if(form.audioFile){setUploadStage("음원을 빠르게 업로드하는 중…");try{audioUrl=(await uploadDirect(form.audioFile,"audio")).url}catch{setUploadStage("음원을 안전하게 업로드하는 중…");const d=await fileToDataUrl(form.audioFile);const r=await adminMusicSave({title:form.title,description:form.description,species:form.species,vocalType:form.vocalType,mood:form.mood,active:form.active,id:editing?.id||undefined,audioDataUrl:d,audioUrl,coverUrl});audioUrl=r.audioUrl||audioUrl;}}if(form.coverFile){setUploadStage("새 커버 이미지를 적용하는 중…");const d=await fileToCompressedDataUrl(form.coverFile,900,.84);const r=await adminMusicSave({title:form.title,description:form.description,species:form.species,vocalType:form.vocalType,mood:form.mood,active:form.active,id:editing?.id||undefined,coverDataUrl:d,audioUrl,coverUrl});coverUrl=r.coverUrl||coverUrl;}setUploadStage("등록 정보를 저장하는 중…");await adminMusicSave({title:form.title,description:form.description,species:form.species,vocalType:form.vocalType,mood:form.mood,active:form.active,id:editing?.id||undefined,audioUrl,coverUrl});window.alert(editing?"Pet음악을 수정했어요.":"Pet음악을 등록했어요.");setEditing(null);setForm(blank);await load()}catch(e){window.alert(e.message)}finally{setBusy(false);setUploadStage("")}};
+  const save=async()=>{if(!form.title.trim())return window.alert("노래 제목을 입력해 주세요.");if(!editing&&!form.audioFile)return window.alert("음원 파일을 선택해 주세요.");if(!editing&&!form.coverFile)return window.alert("커버 이미지를 선택해 주세요.");setBusy(true);try{let audioUrl=editing?.audio_url||form.audioUrl||"",coverUrl=editing?.cover_url||form.coverUrl||"";if(form.audioFile){setUploadStage("음원을 빠르게 업로드하는 중…");try{audioUrl=(await uploadDirect(form.audioFile,"audio")).url}catch{setUploadStage("음원을 안전하게 업로드하는 중…");const d=await fileToDataUrl(form.audioFile);const r=await adminMusicSave({title:form.title,description:form.description,species:form.species,vocalType:form.vocalType,mood:form.mood,active:form.active,id:editing?.id||undefined,audioDataUrl:d,audioUrl,coverUrl});audioUrl=r.audioUrl||audioUrl;}}if(form.coverFile){setUploadStage("새 커버 이미지를 업로드하는 중…");try{coverUrl=(await uploadDirect(form.coverFile,"cover")).url}catch{setUploadStage("새 커버 이미지를 안전하게 적용하는 중…");const d=await fileToCompressedDataUrl(form.coverFile,760,.78);const r=await adminMusicSave({title:form.title,description:form.description,species:form.species,vocalType:form.vocalType,mood:form.mood,active:form.active,id:editing?.id||undefined,coverDataUrl:d,audioUrl,coverUrl});coverUrl=r.coverUrl||coverUrl;}}setUploadStage("등록 정보를 저장하는 중…");await adminMusicSave({title:form.title,description:form.description,species:form.species,vocalType:form.vocalType,mood:form.mood,active:form.active,id:editing?.id||undefined,audioUrl,coverUrl});window.alert(editing?"Pet음악을 수정했어요.":"Pet음악을 등록했어요.");setEditing(null);setForm(blank);await load()}catch(e){window.alert(e.message)}finally{setBusy(false);setUploadStage("")}};
   const edit=x=>{setEditing(x);setForm({title:x.title||"",description:x.description||"",species:x.species||"all",vocalType:x.vocal_type||"instrumental",mood:x.mood||"relax",active:x.active!==false,audioFile:null,coverFile:null,audioUrl:x.audio_url||"",coverUrl:x.cover_url||""});window.scrollTo({top:0,behavior:"smooth"});};
   return <div className="admin-report-list"><div className="bg-card"><h2>🎵 Pet음악 관리</h2><p className="bg-sub">음원·제목·커버 이미지를 등록하면 사용자 Pet음악 메뉴에 연결돼요. 보컬 여부와 분위기 태그도 지정할 수 있고, 업로드일은 자동 기록되며 좋아요·댓글·재생수로 인기 TOP5가 계산됩니다.</p><div className="admin-music-form" style={{marginTop:14}}><input className="bg-input" placeholder="노래 제목" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/><select className="bg-input" value={form.species} onChange={e=>setForm({...form,species:e.target.value})}><option value="all">🐾 공용</option><option value="dog">🐶 강아지</option><option value="cat">🐱 고양이</option></select><select className="bg-input" value={form.vocalType} onChange={e=>setForm({...form,vocalType:e.target.value})}><option value="instrumental">🎼 인스트루멘탈</option><option value="vocal">🎤 보컬 있음</option></select><select className="bg-input" value={form.mood} onChange={e=>setForm({...form,mood:e.target.value})}><option value="relax">😌 휴식</option><option value="sleep">🌙 수면</option><option value="play">🐾 놀이</option><option value="nature">🌿 자연</option></select><textarea className="bg-input support-textarea full" placeholder="간단한 설명 (선택)" value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/><label className="bg-card" style={{padding:12}}><b style={{fontSize:12}}>음원 파일 {editing?"(교체할 때만 선택)":""}</b><input type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/mp4,audio/aac" onChange={pickAudio} style={{display:"block",marginTop:8,width:"100%"}}/><small className="bg-sub">MP3/WAV/M4A · 최대 12MB</small></label><label className="bg-card" style={{padding:12}}><b style={{fontSize:12}}>커버 이미지 {editing?"(새 사진을 선택하면 교체)":""}</b>{editing&&form.coverUrl&&<img src={form.coverUrl} alt="현재 커버" style={{display:"block",width:72,height:72,objectFit:"cover",borderRadius:14,marginTop:8,border:"1px solid var(--border)"}}/>}<input type="file" accept="image/jpeg,image/png,image/webp" onChange={pickCover} style={{display:"block",marginTop:8,width:"100%"}}/><small className="bg-sub">{form.coverFile?`새 커버 선택됨: ${form.coverFile.name}`:"정사각형 이미지 권장 · JPG/PNG/WebP"}</small></label><label className="full" style={{fontSize:12,fontWeight:700}}><input type="checkbox" checked={form.active} onChange={e=>setForm({...form,active:e.target.checked})}/> 사용자에게 공개</label><div className="full" style={{display:"flex",gap:8}}><button className="bg-btn" disabled={busy} onClick={save}>{busy?(uploadStage||"업로드 중…"):editing?"수정 저장":"음악 등록"}</button>{editing&&<button className="bg-btn bg-btn-ghost" onClick={()=>{setEditing(null);setForm(blank)}}>취소</button>}</div></div></div><div className="bg-card"><h3>등록된 음악 {items.length}곡</h3><div className="admin-music-list">{items.length?items.map(x=><div className="admin-music-row" key={x.id}>{x.cover_url?<img className="admin-music-thumb" src={x.cover_url} alt=""/>:<div className="admin-music-thumb">🎵</div>}<div><b>{x.title}</b><small>{x.species==="dog"?"강아지":x.species==="cat"?"고양이":"공용"} · {x.vocal_type==="vocal"?"보컬":"인스트루멘탈"} · {({relax:"휴식",sleep:"수면",play:"놀이",nature:"자연"}[x.mood]||"휴식")} · {new Date(x.created_at).toLocaleDateString("ko-KR")} · ▶ {Number(x.play_count)||0} · ♥ {Number(x.like_count)||0} · 💬 {Number(x.comment_count)||0}</small></div><div className="admin-music-actions"><button onClick={()=>edit(x)}>수정</button><button onClick={async()=>{await adminMusicToggle(x.id,!x.active);await load()}}>{x.active?"비공개":"공개"}</button><button onClick={async()=>{if(!window.confirm(`'${x.title}' 음악을 삭제할까요?`))return;await adminMusicDelete(x.id);await load()}}>삭제</button></div></div>):<p className="bg-sub">등록된 음악이 없어요.</p>}</div></div></div>;
 }
@@ -10410,8 +10411,16 @@ function AdminReportsPage({onBack}){
  const resolveMusicComment=async r=>{if(!window.confirm("이 음악 댓글 신고를 문제없음으로 처리할까요? 댓글은 계속 공개됩니다."))return;try{await adminResolveMusicCommentReport(r.id);await loadAll()}catch(e){window.alert(e.message)}};
 
  const loadReport=async(period=reportPeriod)=>{
-   setReportPeriod(period);setReportLoading(true);
-   try{setReportData(await adminReportSummary(period));}catch(e){window.alert(e.message)}finally{setReportLoading(false)}
+   setReportPeriod(period);setReportData(null);setReportLoading(true);
+   try{const next=await adminReportSummary(period);setReportData(next);}catch(e){window.alert(e.message)}finally{setReportLoading(false)}
+ };
+ const reportRangeLabel=(data)=>{
+   if(!data?.start||!data?.end)return "";
+   const start=String(data.start).slice(0,10);
+   const endDate=new Date(`${String(data.end).slice(0,10)}T00:00:00`);endDate.setDate(endDate.getDate()-1);
+   const end=`${endDate.getFullYear()}-${String(endDate.getMonth()+1).padStart(2,"0")}-${String(endDate.getDate()).padStart(2,"0")}`;
+   const kind={daily:"전날",weekly:"최근 7일 · 오늘 제외",monthly:"지난달"}[data.period]||"집계 기간";
+   return `${start} ~ ${end} · ${kind}`;
  };
  useEffect(()=>{if(unlocked&&tab==="reporting"&&!reportData&&!reportLoading)loadReport("daily");},[unlocked,tab]);
  const reportText=()=>{
@@ -10453,12 +10462,12 @@ function AdminReportsPage({onBack}){
    {tab==="dashboard"&&<>
      <div className="admin-stat-grid">{[["미처리 신고",c.openReports||0],["답변대기 문의",c.waitingInquiries||0],["이용제한 중",c.restricted||0],["오늘 방문",c.todaySessions||0],["현재 접속 추정",c.onlineSessions5m||0],["7일 활성회원",c.active7d||0],["7일 신규회원",c.new7d||0],["오늘 Pet톡 글",c.postsToday||0]].map(([a,b])=><div className="admin-stat-card" key={a}><strong>{b}</strong><small>{a}</small></div>)}</div>
      <div className="bg-card admin-menu-analytics">
-       <div className="admin-menu-analytics-head"><div><h3>메뉴 이용 통계</h3><small>페이지 진입 기준 · 오늘 / 7일 / 30일 이용량을 확인해요.</small></div><span className="bg-chip active">30일</span></div>
+       <div className="admin-menu-analytics-head"><div><h3>메뉴 이용 통계</h3><small>페이지 진입 기준 · 오늘 / 7일 / 30일 이용량을 확인해요.</small></div><span className="bg-chip active admin-menu-period-chip">30일</span></div>
        {(()=>{const labels={home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"회원정보",support:"고객지원",admin:"관리자"};const rows=(stats?.menuUsage||[]).filter(x=>labels[x.dimension]);const max=Math.max(1,...rows.map(x=>Number(x.d30)||0));return rows.length?<><div className="admin-menu-top">🏆 가장 자주 이용 <span>{labels[rows[0]?.dimension]||rows[0]?.dimension}</span></div>{rows.map((x,i)=><div className="admin-menu-row" key={x.dimension}><div className="admin-menu-name">{i<3?["🥇 ","🥈 ","🥉 "][i]:""}{labels[x.dimension]||x.dimension}</div><div className="admin-menu-bar"><i style={{width:`${Math.max(3,Math.round((Number(x.d30)||0)/max*100))}%`}}/></div><div className="admin-menu-value"><b>{Number(x.d30)||0}회</b><br/><small>7일 {Number(x.d7)||0} · 오늘 {Number(x.today)||0}</small></div></div>)}</>:<div className="bg-sub" style={{padding:"10px 0"}}>아직 메뉴 이용 데이터가 충분하지 않아요. 배포 후 방문부터 자동 집계됩니다.</div>})()}
      </div>
    </>}
    {tab==="reporting"&&<div className="admin-reporting-page">
-     <div className="bg-card admin-reporting-head"><div><h2>📊 운영 보고서</h2><p className="bg-sub">기간별 핵심 수치만 빠르게 확인해요.</p></div><div className="admin-reporting-tabs">{[["daily","일일보고"],["weekly","주간보고"],["monthly","월간보고"]].map(([k,l])=><button className={reportPeriod===k?"active":""} key={k} onClick={()=>loadReport(k)}>{l}</button>)}</div></div>
+     <div className="bg-card admin-reporting-head"><div><h2>📊 운영 보고서</h2><p className="bg-sub">일일은 어제, 주간은 오늘을 제외한 최근 7일, 월간은 지난달 전체를 집계해요.</p>{reportData&&<div className="admin-report-period">집계기간 <b>{reportRangeLabel(reportData)}</b></div>}</div><div className="admin-reporting-tabs">{[["daily","일일보고"],["weekly","주간보고"],["monthly","월간보고"]].map(([k,l])=><button type="button" disabled={reportLoading} className={reportPeriod===k?"active":""} key={k} onClick={()=>loadReport(k)}>{l}</button>)}</div></div>
      {!reportData&&!reportLoading?<div className="bg-card admin-report-empty"><b>보고서 종류를 선택해 주세요.</b><p className="bg-sub">일일보고는 어제, 주간보고는 최근 7일(오늘 제외), 월간보고는 지난달 기준이에요.</p><button className="bg-btn" onClick={()=>loadReport("daily")}>일일보고 불러오기</button></div>:reportLoading?<div className="bg-card admin-report-empty">보고서를 계산하는 중...</div>:<>{(()=>{const r=reportData?.summary||{};return <><div className="admin-report-kpi-grid">{[["방문 세션",r.sessions||0,"👥"],["신규 회원",r.newMembers||0,"✨"],["Pet톡 글",r.posts||0,"💬"],["Pet톡 댓글",r.comments||0,"🗨️"],["음악 좋아요",r.musicLikes||0,"♥"],["음악 댓글",r.musicComments||0,"🎵"],["주변 Pet 후기",r.placeReviews||0,"📍"],["신고 접수",r.reports||0,"🚨"]].map(([l,v,ic])=><div className="bg-card admin-report-kpi" key={l}><span>{ic}</span><strong>{v}</strong><small>{l}</small></div>)}</div><div className="admin-reporting-grid"><div className="bg-card"><h3>🏆 이용 메뉴 TOP</h3>{(reportData.topMenus||[]).length?(reportData.topMenus||[]).slice(0,8).map((x,i)=><div className="admin-report-rank" key={x.dimension}><b>{i+1}. {({home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"회원정보",support:"고객지원",admin:"관리자센터"}[x.dimension]||x.dimension)}</b><span>{Number(x.count)||0}회</span></div>):<p className="bg-sub">집계 데이터가 없어요.</p>}</div><div className="bg-card"><h3>📱 접속 환경</h3>{(reportData.platforms||[]).length?(reportData.platforms||[]).map(x=><div className="admin-report-rank" key={x.platform}><b>{{web:"웹사이트",mobile_web:"모바일 웹",pwa:"PWA",android:"Android 앱",ios:"iOS 앱"}[x.platform]||x.platform}</b><span>{Number(x.count)||0}</span></div>):<p className="bg-sub">집계 데이터가 없어요.</p>}<hr/><p className="bg-sub">내 주변 Pet 후기 평균 <b>★ {r.placeAvgRating||0}</b></p></div></div></>})()}</>}
    </div>}
    {tab==="service"&&<div className="service-health-wrap">
@@ -10560,60 +10569,89 @@ function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost, o
   const t = useT();
   const [adminEntry, setAdminEntry] = useState(null);
   const [likedMusic, setLikedMusic] = useState([]);
+  const [likedMusicLoaded, setLikedMusicLoaded] = useState(false);
+  const [likedMusicLoading, setLikedMusicLoading] = useState(false);
+  const [openActivity, setOpenActivity] = useState(null); // "pettalk" | "music" | null
+
+  const loadLikedMusic = async (force = false) => {
+    if (!account) { setLikedMusic([]); setLikedMusicLoaded(true); return; }
+    if (likedMusicLoading || (likedMusicLoaded && !force)) return;
+    setLikedMusicLoading(true);
+    try {
+      const r = await musicLiked();
+      setLikedMusic(r.items || []);
+      setLikedMusicLoaded(true);
+    } catch (e) {
+      console.warn("Liked music load skipped:", e);
+    } finally {
+      setLikedMusicLoading(false);
+    }
+  };
+
   useEffect(() => {
-    let alive=true;
-    if(!account){setLikedMusic([]);return()=>{alive=false}}
-    musicLiked().then(r=>{if(alive)setLikedMusic(r.items||[])}).catch(()=>{});
-    return()=>{alive=false};
-  },[account?.id]);
+    setLikedMusic([]);
+    setLikedMusicLoaded(false);
+    setOpenActivity(null);
+  }, [account?.id]);
+
   useEffect(() => {
     let alive = true;
     if (!account) { setAdminEntry(null); return () => { alive = false; }; }
-    adminStatus().then((s) => { if (alive) setAdminEntry(s); }).catch(() => { if (alive) setAdminEntry(null); });
+    adminStatus().then((st) => { if (alive) setAdminEntry(st); }).catch(() => { if (alive) setAdminEntry(null); });
     return () => { alive = false; };
   }, [account?.id]);
-  const goActivity = () => {
-    const el = document.getElementById("my-pettalk-activity");
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  const togglePetTalkActivity = () => setOpenActivity((v) => v === "pettalk" ? null : "pettalk");
+  const toggleLikedMusic = () => {
+    const willOpen = openActivity !== "music";
+    setOpenActivity(willOpen ? "music" : null);
+    if (willOpen) loadLikedMusic(true);
   };
+
   const menuItems = [
     { key: "edit", icon: "✏️", title: lang === "en" ? "Edit info" : "정보 수정", desc: lang === "en" ? "Change the nickname shown in Pet Talk and manage your account." : "Pet톡에 보이는 닉네임과 계정 정보를 수정해요.", cls: "my-menu-pink", action: onOpenAccount },
     { key: "pets", icon: "🐾", title: lang === "en" ? "Manage pets" : "반려동물 관리", desc: lang === "en" ? `Manage ${allPets.length} registered pet(s).` : `등록한 아이 ${allPets.length}마리의 정보와 성장기록을 관리해요.`, cls: "my-menu-blue", action: onGoPets },
-    { key: "activity", icon: "💬", title: lang === "en" ? "Pet Talk activity" : "Pet톡 내 활동", desc: lang === "en" ? "See your posts, comments and likes in one place." : "내가 작성한 글·댓글·좋아요를 한곳에서 확인해요.", cls: "my-menu-purple", action: goActivity },
-    { key: "likedmusic", icon: "❤️", title: lang === "en" ? "Liked Pet Music" : "내가 좋아요 누른 Pet음악", desc: lang === "en" ? "See all music you liked." : "좋아요한 음악을 계정 기준으로 한곳에서 확인해요.", cls: "my-menu-mint", action: () => document.getElementById("my-liked-music")?.scrollIntoView({ behavior: "smooth", block: "start" }) },
+    { key: "activity", icon: "💬", title: lang === "en" ? "Pet Talk activity" : "Pet톡 내 활동", desc: lang === "en" ? "Tap to view your posts, comments and likes." : "눌러서 내가 작성한 글·댓글·좋아요를 확인해요.", cls: "my-menu-purple", action: togglePetTalkActivity, open: openActivity === "pettalk" },
+    { key: "likedmusic", icon: "❤️", title: lang === "en" ? "Liked Pet Music" : "내가 좋아요 누른 Pet음악", desc: lang === "en" ? "Tap to see all music you liked." : "눌러서 좋아요한 음악을 확인해요.", cls: "my-menu-mint", action: toggleLikedMusic, open: openActivity === "music" },
   ];
+
   return (
     <div style={{ maxWidth: 760, margin: "0 auto", padding: "0 20px 70px" }}>
       <div className="my-page-head">
         <div>
-          <div className="my-page-kicker">{lang === "en" ? "MY PETGROW" : "MY PETGROW"}</div>
+          <div className="my-page-kicker">MY PETGROW</div>
           <h1>{lang === "en" ? "Member info" : "회원정보"}</h1>
-          <p style={{ whiteSpace: "nowrap", fontSize: 13 }}>{lang === "en" ? "Manage your profile, pets, and Pet Talk activity." : "회원정보부터 우리 아이와 Pet톡 활동까지 한곳에서 관리해요."}</p>
+          <p style={{ fontSize: 13 }}>{lang === "en" ? "Manage your profile, pets, and activity." : "회원정보부터 우리 아이와 활동까지 한곳에서 관리해요."}</p>
         </div>
         <span className="my-page-head-icon" style={{ fontSize: 30 }}>🐶</span>
       </div>
 
       <div className="my-menu-grid">
         {menuItems.map((item, i) => (
-          <button key={item.key} type="button" className={`my-menu-card ${item.cls}`} onClick={item.action} style={{ animationDelay: `${i * 70}ms` }}>
+          <button key={item.key} type="button" className={`my-menu-card ${item.cls}${item.open ? " is-open" : ""}`} onClick={item.action} style={{ animationDelay: `${i * 70}ms` }}>
             <span className="my-menu-card-icon">{item.icon}</span>
             <span className="my-menu-card-copy"><strong>{item.title}</strong><small>{item.desc}</small></span>
-            <span className="my-menu-card-arrow">›</span>
+            <span className="my-menu-card-arrow">{item.open ? "⌃" : "›"}</span>
           </button>
         ))}
       </div>
 
-      <div id="my-liked-music" className="bg-card my-activity-card" style={{marginBottom:14}}>
-        <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 6 }}>❤️ {lang === "en" ? "Liked Pet Music" : "내가 좋아요 누른 Pet음악"}</div>
-        <div className="bg-sub" style={{ fontSize: 12, marginBottom: 12 }}>{lang === "en" ? "Music you liked is saved to your account." : "좋아요한 음악을 계정 기준으로 모아볼 수 있어요."}</div>
-        {likedMusic.length?<div style={{display:"grid",gap:8}}>{likedMusic.slice(0,20).map(x=><div key={x.id} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:"1px solid #edf2ee"}}>{x.cover_url?<img src={x.cover_url} alt="" loading="lazy" style={{width:44,height:44,borderRadius:11,objectFit:"cover"}}/>:<span style={{width:44,height:44,borderRadius:11,display:"grid",placeItems:"center",background:"#eef6f0"}}>🎵</span>}<div style={{minWidth:0}}><b style={{fontSize:13}}>{x.title}</b><div className="bg-sub" style={{fontSize:10}}>{x.species==="dog"?"강아지":x.species==="cat"?"고양이":"공용"} · ♥ {Number(x.like_count)||0}</div></div></div>)}</div>:<div className="bg-sub" style={{fontSize:12,padding:"8px 0"}}>아직 좋아요한 Pet음악이 없어요.</div>}
-      </div>
+      {openActivity === "pettalk" && (
+        <div id="my-pettalk-activity" className="bg-card my-activity-card my-accordion-panel" style={{marginBottom:14}}>
+          <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 6 }}>{t.myPageActivityTitle}</div>
+          <div className="bg-sub" style={{ fontSize: 12, marginBottom: 14 }}>{lang === "en" ? "Your Pet Talk history stays together here." : "내 Pet톡 활동을 탭별로 확인해보세요."}</div>
+          <MyActivityPage lang={lang} onOpenPost={onOpenPost} embedded />
+        </div>
+      )}
 
-      <div id="my-pettalk-activity" className="bg-card my-activity-card">
-        <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 6 }}>{t.myPageActivityTitle}</div>
-        <div className="bg-sub" style={{ fontSize: 12, marginBottom: 14 }}>{lang === "en" ? "Your Pet Talk history stays together here." : "내 Pet톡 활동을 탭별로 편하게 확인해보세요."}</div>
-        <MyActivityPage lang={lang} onOpenPost={onOpenPost} embedded />
-      </div>
+      {openActivity === "music" && (
+        <div id="my-liked-music" className="bg-card my-activity-card my-accordion-panel" style={{marginBottom:14}}>
+          <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 6 }}>❤️ {lang === "en" ? "Liked Pet Music" : "내가 좋아요 누른 Pet음악"}</div>
+          <div className="bg-sub" style={{ fontSize: 12, marginBottom: 12 }}>{lang === "en" ? "Music you liked is saved to your account." : "좋아요한 음악을 계정 기준으로 모아볼 수 있어요."}</div>
+          {likedMusicLoading && !likedMusicLoaded ? <div className="bg-sub" style={{fontSize:12,padding:"8px 0"}}>좋아요한 음악을 불러오는 중...</div> : likedMusic.length ? <div style={{display:"grid",gap:8}}>{likedMusic.slice(0,20).map(x=><div key={x.id} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:"1px solid #edf2ee"}}>{x.cover_url?<img src={x.cover_url} alt="" loading="lazy" style={{width:44,height:44,borderRadius:11,objectFit:"cover"}}/>:<span style={{width:44,height:44,borderRadius:11,display:"grid",placeItems:"center",background:"#eef6f0"}}>🎵</span>}<div style={{minWidth:0}}><b style={{fontSize:13}}>{x.title}</b><div className="bg-sub" style={{fontSize:10}}>{x.species==="dog"?"강아지":x.species==="cat"?"고양이":"공용"} · ♥ {Number(x.like_count)||0}</div></div></div>)}</div> : <div className="bg-sub" style={{fontSize:12,padding:"8px 0"}}>아직 좋아요한 Pet음악이 없어요.</div>}
+        </div>
+      )}
+
       {adminEntry && (!adminEntry.adminExists || adminEntry.isAdmin || adminEntry.recoveryAvailable) && (
         <button type="button" className="my-admin-below-activity" onClick={onOpenAdmin}>
           <span>🛡️</span><div><b>{adminEntry.isAdmin ? "관리자센터" : (adminEntry.adminExists ? "관리자 등록/복구" : "최초 관리자 등록")}</b><small>{adminEntry.isAdmin ? "통계·신고·보고서·운영 기능을 관리해요." : "관리자 권한을 안전하게 연결해요."}</small></div><em>›</em>

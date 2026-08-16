@@ -46,3 +46,7 @@ PetGrow 통합 수정사항 (2026-08-16)
 
 --- design refresh ---
 2026-08-16: unified PetGrow visual system: softer sage green, warm neutral background, modern low-elevation cards, less chunky button shadows, consistent PetTalk colors, refined navigation/inputs/mobile bottom bar. No feature or data-flow changes.
+
+- 내 주변 Pet: 1km 우선 검색, 부족 시 3km/5km 자동 확장
+- 거리 표시: 1km 미만 m, 1km 이상 km
+- 카카오 키워드 검색 병렬 처리로 응답 지연 완화
