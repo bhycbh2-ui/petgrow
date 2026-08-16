@@ -2864,6 +2864,239 @@ const GlobalStyle = () => (
     .legal-section-title{font-size:15px;font-weight:800;color:#223027;margin:4px 0 8px}
     .legal-section-body{font-size:13px;line-height:1.85;color:#5F6B63;white-space:pre-line;word-break:keep-all}
     @media(max-width:600px){.legal-page-shell{padding:0 14px 46px}.legal-section-card{padding:17px 16px;gap:12px}.legal-section-number{width:30px;height:30px;flex-basis:30px}.legal-section-body{font-size:12.5px}}
+
+    /* ============================================================
+       PetGrow Premium Navigation 2026
+       ============================================================ */
+    .desktop-nav-shell{
+      position:sticky;
+      top:10px;
+      z-index:120;
+      width:100%;
+      min-height:68px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      padding:10px 12px 10px 14px;
+      margin-bottom:22px;
+      background:rgba(255,255,255,.88);
+      border:1px solid rgba(226,233,227,.92);
+      border-radius:22px;
+      box-shadow:0 10px 34px rgba(34,48,39,.07);
+      backdrop-filter:blur(18px) saturate(135%);
+      -webkit-backdrop-filter:blur(18px) saturate(135%);
+    }
+    .desktop-brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background:none;
+      border:0;
+      cursor:pointer;
+      padding:4px 10px 4px 4px;
+      flex:0 0 auto;
+      border-right:1px solid #E9EEE9;
+    }
+    .desktop-brand-logo{
+      width:42px;
+      height:42px;
+      object-fit:contain;
+      display:block;
+      border-radius:12px;
+    }
+    .desktop-brand-copy{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      line-height:1;
+      min-width:86px;
+    }
+    .desktop-brand-name{
+      font-family:'Jua','Gowun Dodum',sans-serif;
+      font-size:19px;
+      letter-spacing:-.02em;
+      color:#223027;
+    }
+    .desktop-brand-name b{color:#4F8A5B;font-weight:inherit}
+    .desktop-brand-tagline{
+      margin-top:5px;
+      font-size:8.5px;
+      font-weight:700;
+      color:#98A19B;
+      letter-spacing:-.02em;
+      white-space:nowrap;
+    }
+    .desktop-nav-links{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:3px;
+      flex:1 1 auto;
+      min-width:0;
+    }
+    .desktop-nav-link{
+      position:relative;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      height:42px;
+      padding:0 11px;
+      border:1px solid transparent;
+      border-radius:14px;
+      background:transparent;
+      color:#5F6B63;
+      font-size:13px;
+      font-weight:800;
+      letter-spacing:-.025em;
+      transition:background .18s ease,color .18s ease,border-color .18s ease,transform .18s ease,box-shadow .18s ease;
+    }
+    .desktop-nav-link .icon{
+      width:17px;
+      height:17px;
+      color:currentColor;
+      fill:currentColor;
+      flex:0 0 auto;
+    }
+    .desktop-nav-link:hover{
+      background:#F3F7F3;
+      border-color:#E6ECE7;
+      color:#3D704A;
+      transform:translateY(-1px);
+    }
+    .desktop-nav-link.active{
+      background:linear-gradient(180deg,#F0F6F0 0%,#EAF3EB 100%);
+      border-color:#DDE8DF;
+      color:#3D704A;
+      box-shadow:0 5px 14px rgba(61,112,74,.08);
+    }
+    .desktop-nav-link.active::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      bottom:-7px;
+      width:18px;
+      height:3px;
+      border-radius:999px;
+      background:#64A06F;
+      transform:translateX(-50%);
+    }
+    .desktop-nav-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex:0 0 auto;
+      padding-left:10px;
+      border-left:1px solid #E9EEE9;
+    }
+    .desktop-nav-shell .lang-toggle{
+      height:40px;
+      border:1px solid #E2E9E3;
+      padding:3px;
+      background:#F7FAF7;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.65);
+    }
+    .desktop-nav-shell .lang-toggle button{
+      height:32px;
+      min-width:38px;
+      padding:0 10px;
+      border-radius:999px;
+      background:transparent;
+      color:#7A857D;
+      font-size:11px;
+    }
+    .desktop-nav-shell .lang-toggle button.active{
+      background:#E7F1E8;
+      color:#3D704A;
+      box-shadow:0 2px 8px rgba(61,112,74,.08);
+    }
+    .desktop-nav-shell .account-btn{
+      height:40px;
+      padding:0 13px;
+      border:1px solid #E2E9E3;
+      background:#fff;
+      box-shadow:0 3px 10px rgba(34,48,39,.035);
+      color:#314137;
+      transition:.18s ease;
+    }
+    .desktop-nav-shell .account-btn:hover{
+      border-color:#CFE0D2;
+      background:#F7FAF7;
+      color:#3D704A;
+      transform:translateY(-1px);
+    }
+
+    /* Mobile web top bar */
+    .mobile-topbar-premium{
+      min-height:56px;
+      padding:7px 9px;
+      background:rgba(255,255,255,.9);
+      border:1px solid #E2E9E3;
+      border-radius:18px;
+      box-shadow:0 7px 22px rgba(34,48,39,.055);
+      backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px);
+    }
+    .mobile-brand-logo{width:34px;height:34px;object-fit:contain;border-radius:10px;display:block}
+
+    /* Native app bottom navigation */
+    .app-bottom-nav{
+      left:10px;
+      right:10px;
+      bottom:max(8px,env(safe-area-inset-bottom,0px));
+      border:1px solid rgba(226,233,227,.96);
+      border-radius:22px;
+      padding:7px 7px max(7px,env(safe-area-inset-bottom,7px));
+      background:rgba(255,255,255,.94);
+      box-shadow:0 12px 36px rgba(34,48,39,.14);
+      backdrop-filter:blur(20px) saturate(140%);
+      -webkit-backdrop-filter:blur(20px) saturate(140%);
+      overflow:visible;
+    }
+    .app-bottom-nav-item{
+      position:relative;
+      min-height:52px;
+      justify-content:center;
+      gap:4px;
+      padding:6px 2px;
+      color:#8B958E;
+      font-size:10px;
+      border-radius:16px;
+      transition:background .18s ease,color .18s ease,transform .18s ease;
+    }
+    .app-bottom-nav-item .icon{
+      width:21px!important;
+      height:21px!important;
+      transition:transform .18s ease;
+    }
+    .app-bottom-nav-item.active{
+      color:#3D704A;
+      background:#EDF5EE;
+    }
+    .app-bottom-nav-item.active .icon{
+      transform:translateY(-1px) scale(1.06);
+    }
+    .app-bottom-nav-item.active::after{
+      content:"";
+      position:absolute;
+      bottom:3px;
+      width:16px;
+      height:3px;
+      border-radius:999px;
+      background:#64A06F;
+    }
+    .app-bottom-nav-item:active{transform:scale(.96)}
+    @media(max-width:899px){
+      .bboggl-root{padding-bottom:0}
+    }
+    @media(min-width:900px) and (max-width:1080px){
+      .desktop-nav-shell{gap:10px;padding-left:10px}
+      .desktop-brand-copy{display:none}
+      .desktop-brand{padding-right:8px}
+      .desktop-nav-link{padding:0 8px;font-size:12.5px;gap:5px}
+      .desktop-nav-link .icon{width:15px;height:15px}
+    }
 `}</style>
 );
 
@@ -8767,44 +9000,42 @@ function AppInner({ lang, setLang }) {
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "16px 20px 0" }}>
         {!isNativeApp && (
           <>
-            {/* PC: 한 줄 상단 메뉴 (900px 이상) */}
-            <div className="desktop-nav" style={{ alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                <button type="button" onClick={() => goView("home")}
-                  aria-label="홈으로 이동"
-                  style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0, flexShrink: 0 }}>
-                  <PetGrowLogo style={{ width: 24, height: 24 }} />
-                  <span style={{ fontSize: 16, fontWeight: 800, fontFamily: "'Jua',sans-serif" }}>
-                    <span style={{ color: "var(--text)" }}>Pet</span><span style={{ color: "var(--primary)" }}>Grow</span>
-                  </span>
-                </button>
-                <nav style={{ display: "flex", alignItems: "center", gap: 2 }}>
-                  <button type="button" className={`desktop-nav-link ${view === "home" ? "active" : ""}`} onClick={() => goView("home")}>{t.hamNavHome}</button>
-                  <button type="button" className={`desktop-nav-link ${view === "about" ? "active" : ""}`} onClick={() => goView("about")}>{t.aboutNav}</button>
-                  <button type="button" className={`desktop-nav-link ${view === "pets" ? "active" : ""}`} onClick={() => goView("pets")}>{t.myPetsNav}</button>
-                  <button type="button" className={`desktop-nav-link ${view === "community" ? "active" : ""}`} onClick={() => goView("community")}>{t.communityNav}</button>
-                  <button type="button" className={`desktop-nav-link ${view === "saju" ? "active" : ""}`} onClick={() => goView("saju")}>{t.sajuNav}</button>
-                  <button type="button" className={`desktop-nav-link ${view === "petbti" ? "active" : ""}`} onClick={() => goView("petbti")}>{t.petBtiNav}</button>
-                  <button type="button" className={`desktop-nav-link ${view === "tips" ? "active" : ""}`} onClick={() => goView("tips")}>{t.tipsTitle}</button>
-                  {account && <button type="button" className={`desktop-nav-link ${view === "my" ? "active" : ""}`} onClick={() => goView("my")}>{t.hamNavMy}</button>}
-                </nav>
-              </div>
-              <div style={{ display: "flex", gap: 10, alignItems: "center", flexShrink: 0 }}>
+            {/* PC: 프리미엄 글래스 상단 메뉴 (900px 이상) */}
+            <div className="desktop-nav desktop-nav-shell">
+              <button type="button" className="desktop-brand" onClick={() => goView("home")} aria-label="홈으로 이동">
+                <img className="desktop-brand-logo" src="/petgrow-splash-logo.png" alt="" />
+                <span className="desktop-brand-copy">
+                  <span className="desktop-brand-name">Pet<b>Grow</b></span>
+                  <span className="desktop-brand-tagline">{lang === "en" ? "Growing together, every day" : "우리 아이의 건강한 성장을 함께"}</span>
+                </span>
+              </button>
+
+              <nav className="desktop-nav-links" aria-label={lang === "en" ? "Main navigation" : "주요 메뉴"}>
+                <button type="button" className={`desktop-nav-link ${view === "home" ? "active" : ""}`} onClick={() => goView("home")}><HomeIcon />{t.hamNavHome}</button>
+                <button type="button" className={`desktop-nav-link ${view === "about" ? "active" : ""}`} onClick={() => goView("about")}><InfoIcon />{t.aboutNav}</button>
+                <button type="button" className={`desktop-nav-link ${view === "pets" ? "active" : ""}`} onClick={() => goView("pets")}><HeartOutlineIcon />{t.myPetsNav}</button>
+                <button type="button" className={`desktop-nav-link ${view === "community" ? "active" : ""}`} onClick={() => goView("community")}><TalkIcon />{t.communityNav}</button>
+                <button type="button" className={`desktop-nav-link ${view === "saju" ? "active" : ""}`} onClick={() => goView("saju")}><SajuIcon />{t.sajuNav}</button>
+                <button type="button" className={`desktop-nav-link ${view === "petbti" ? "active" : ""}`} onClick={() => goView("petbti")}><PetBtiIcon />{t.petBtiNav}</button>
+                <button type="button" className={`desktop-nav-link ${view === "tips" ? "active" : ""}`} onClick={() => goView("tips")}><LightbulbIcon />{t.tipsTitle}</button>
+              </nav>
+
+              <div className="desktop-nav-actions">
                 <LangToggle lang={lang} onChange={setLang} />
                 <AccountButton account={account} onOpen={() => (account ? setAccountModalOpen(true) : goView("pets"))} />
               </div>
             </div>
 
             {/* 모바일 웹: ☰ | 로고 | KO/EN | 로그인/프로필 (900px 미만) */}
-            <div className="mobile-topbar" style={{ alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 14 }}>
+            <div className="mobile-topbar mobile-topbar-premium" style={{ alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 14 }}>
               <button type="button" className="icon-btn" aria-label={t.hamMenuAria} onClick={() => setHamOpen(true)}>
                 <HamburgerIcon style={{ width: 20, height: 20 }} />
               </button>
               <button type="button" onClick={() => goView("home")}
                 aria-label="홈으로 이동"
-                style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-                <PetGrowLogo style={{ width: 21, height: 21 }} />
-                <span style={{ fontSize: 15, fontWeight: 800, fontFamily: "'Jua',sans-serif" }}>
+                style={{ display: "flex", alignItems: "center", gap: 7, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+                <img className="mobile-brand-logo" src="/petgrow-splash-logo.png" alt="" />
+                <span style={{ fontSize: 16, fontWeight: 800, fontFamily: "'Jua',sans-serif", letterSpacing: "-.02em" }}>
                   <span style={{ color: "var(--text)" }}>Pet</span><span style={{ color: "var(--primary)" }}>Grow</span>
                 </span>
               </button>
@@ -8820,9 +9051,9 @@ function AppInner({ lang, setLang }) {
         {isNativeApp && (
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
             <button type="button" onClick={() => goView("home")} aria-label="홈으로 이동"
-              style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-              <PetGrowLogo style={{ width: 21, height: 21 }} />
-              <span style={{ fontSize: 15, fontWeight: 800, fontFamily: "'Jua',sans-serif" }}>
+              style={{ display: "flex", alignItems: "center", gap: 7, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+              <img className="mobile-brand-logo" src="/petgrow-splash-logo.png" alt="" />
+              <span style={{ fontSize: 16, fontWeight: 800, fontFamily: "'Jua',sans-serif", letterSpacing: "-.02em" }}>
                 <span style={{ color: "var(--text)" }}>Pet</span><span style={{ color: "var(--primary)" }}>Grow</span>
               </span>
             </button>
