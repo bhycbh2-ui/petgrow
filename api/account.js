@@ -2,6 +2,7 @@ import { SESSION_COOKIE } from "./_lib/config.js";
 import { getSessionUserId } from "./_lib/session.js";
 import { deleteUser, updateUserNickname } from "./_lib/db.js";
 import { validateNickname } from "./_nicknamePolicy.js";
+import { isAdminUserId } from "./_lib/admin.js";
 
 // 회원탈퇴: PetGrow 계정, 카카오 인증 연동 정보, 반려동물 정보·사진·성장기록·PetBTI 결과 등
 // pg_user_state 에 저장된 모든 데이터가 DB의 ON DELETE CASCADE 로 함께 삭제돼요.
@@ -16,7 +17,9 @@ export default async function handler(req, res) {
     return;
   }
   if (req.method === "PATCH") {
-    const checked = validateNickname(req.body?.nickname);
+    const requestedNickname = String(req.body?.nickname || "").trim();
+    const adminNicknameAllowed = requestedNickname === "운영자" && await isAdminUserId(uid);
+    const checked = validateNickname(requestedNickname, { allowOperator: adminNicknameAllowed });
     if (!checked.ok) {
       res.status(400).json({ error: checked.message, reason: checked.reason || "blocked" });
       return;

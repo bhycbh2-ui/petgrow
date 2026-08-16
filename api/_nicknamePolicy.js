@@ -11,14 +11,15 @@ export function normalizeNickname(v = "") {
   return String(v).trim().replace(/\s+/g, " ");
 }
 
-export function validateNickname(nickname) {
+export function validateNickname(nickname, { allowOperator = false } = {}) {
   const n = normalizeNickname(nickname);
   if (!n) return { ok:false, reason:"empty", message:"닉네임을 입력해 주세요." };
   if (n.length < 2 || n.length > MAX_LEN) return { ok:false, reason:"length", message:"닉네임은 2~8자 이내로 입력해 주세요." };
   if (/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/.test(n) || /(?:01[016789])[-\s]?\d{3,4}[-\s]?\d{4}/.test(n)) {
     return { ok:false, reason:"private", message:"전화번호나 이메일은 닉네임으로 사용할 수 없어요." };
   }
-  if (RESERVED.some((w) => n.toLowerCase().includes(w.toLowerCase()))) {
+  const reservedHit = RESERVED.some((w) => n.toLowerCase().includes(w.toLowerCase()));
+  if (reservedHit && !(allowOperator && n === "운영자")) {
     return { ok:false, reason:"reserved", message:"운영자나 공식 계정으로 오해할 수 있는 닉네임은 사용할 수 없어요." };
   }
   const compact = n.replace(/\s/g, "");

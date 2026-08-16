@@ -2165,7 +2165,7 @@ function normalizeNickname(value = "") {
 
 function validateNicknameLocal(value = "") {
   const nickname = normalizeNickname(value);
-  const reserved = ["admin","administrator","manager","moderator","운영자","관리자","petgrow","펫그로우","공식","official","staff","support","고객센터"];
+  const reserved = ["admin","administrator","manager","moderator","관리자","petgrow","펫그로우","공식","official","staff","support","고객센터"];
   const blocked = [
     /씨발|시발|ㅅㅂ|병신|븅신|개새끼|개새|좆|존나|지랄|꺼져|닥쳐/i,
     /섹스|sex|야동|porn|포르노|자위|딸딸|보지|자지|음란/i,
@@ -2250,7 +2250,7 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
     <Modal open={open} onClose={onClose} width={380}>
       <button type="button" onClick={onClose} aria-label={t.accountCloseBtn} title={t.accountCloseBtn} className="account-modal-close">×</button>
 
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18, paddingRight: 30 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18, paddingRight: 52 }}>
         <UserIcon style={{ width: 20, height: 20, color: "var(--primary)" }} />
         <h3 style={{ fontSize: 18 }}>{t.accountSettingsTitle}</h3>
       </div>
@@ -2308,8 +2308,7 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
       </>)}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <button type="button" className="bg-btn account-modal-close-btn" onClick={onClose}>{t.accountCloseBtn}</button>
-        <button type="button" className="bg-btn bg-btn-ghost" onClick={onLogout}>{t.accountLogoutBtn}</button>
+                <button type="button" className="bg-btn bg-btn-ghost" onClick={onLogout}>{t.accountLogoutBtn}</button>
         <button type="button" className="bg-btn bg-btn-ghost" style={{ color: "#C0392B" }} onClick={onRequestDelete}>{t.accountDeleteBtn}</button>
       </div>
     </Modal>
@@ -2512,7 +2511,7 @@ const GlobalStyle = () => (
     .profile-header-avatar .avatar-edit-badge .icon{width:14px; height:14px; fill:#fff;}
     .profile-header-name{font-family:'Jua',sans-serif; font-size:24px; color:var(--text);}
     .profile-header-meta{font-size:13px; color:var(--sub); margin-top:6px;}
-    .account-modal-close{position:absolute; right:16px; top:14px; width:36px; height:36px; border-radius:50%; border:1px solid #DEE7E0; background:#F4F7F4; color:#243229; font-size:24px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:2; box-shadow:0 3px 10px rgba(28,28,28,.08);}
+    
     .account-modal-close:hover{background:#EAF3EB; color:var(--primary); transform:translateY(-1px);}
     .account-modal-close-btn{width:100%; background:#EEF5EF; color:#243229; box-shadow:0 5px 0 #D6E5D9;}
     .pet-result-page{background:linear-gradient(180deg,#FCFDFC 0%,#FAFCFA 100%); border:1px solid #E6ECE7; border-radius:30px;}
@@ -3800,6 +3799,31 @@ const GlobalStyle = () => (
 
     .nickname-action-single{display:block!important}
     .nickname-action-single .nickname-change-btn{width:100%!important}
+
+    .account-modal-close{
+      position:sticky!important;
+      top:8px!important;
+      float:right!important;
+      margin:0 0 -42px auto!important;
+      z-index:50!important;
+      width:38px!important;
+      height:38px!important;
+      min-width:38px!important;
+      border:none!important;
+      border-radius:50%!important;
+      background:#F3F7F3!important;
+      color:#33483A!important;
+      display:flex!important;
+      align-items:center!important;
+      justify-content:center!important;
+      font-size:24px!important;
+      line-height:1!important;
+      cursor:pointer!important;
+      box-shadow:0 2px 8px rgba(35,55,42,.08)!important;
+    }
+    .account-modal-close:hover{
+      background:#E8F1E9!important;
+    }
 `}</style>
 );
 
