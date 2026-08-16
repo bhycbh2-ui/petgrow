@@ -311,258 +311,225 @@ async function fetchPublicNearby(type, region, refLat, refLng, kakaoKey) {
 
 async function handleNearby(req, res) {
   if (req.method !== "GET") return res.status(405).json({ error: "method not allowed" });
-  const key = process.env.KAKAO_REST_API_KEY;
+  const kakaoKey = String(process.env.KAKAO_REST_API_KEY || "").trim();
   const { lat, lng, userLat, userLng, category = "all", area = "" } = req.query || {};
   const keywords = {
-    all: ["동물병원", "24시 동물병원", "동물약국", "반려동물용품", "펫샵", "애견미용", "고양이미용", "반려동물 미용", "애견호텔", "반려동물 호텔", "반려동물 유치원", "애견유치원"],
-    hospital: ["동물병원", "24시 동물병원", "동물의료센터", "동물메디컬센터"],
+    all: ["동물병원", "동물약국", "펫샵", "반려동물용품", "애견미용", "펫미용", "애견호텔", "애견유치원"],
+    hospital: ["동물병원", "24시 동물병원", "동물의료센터"],
     pharmacy: ["동물약국"],
-    shop: ["반려동물용품", "펫샵", "애견용품", "고양이용품"],
-    grooming: ["애견미용", "고양이미용", "반려동물 미용", "펫미용"],
-    hotel: ["애견호텔", "반려동물 호텔", "반려동물 유치원", "애견유치원", "펫호텔"]
+    shop: ["펫샵", "반려동물용품", "애견용품", "고양이용품"],
+    grooming: ["애견미용", "펫미용", "반려동물 미용"],
+    hotel: ["애견호텔", "펫호텔", "애견유치원", "반려동물 유치원"]
   };
   const qs = keywords[category] || keywords.all;
+  const areaText = String(area || "").replace(/\s+/g, " ").trim();
+  const uLat = Number(userLat), uLng = Number(userLng);
+  const hasUserCoord = Number.isFinite(uLat) && Number.isFinite(uLng) && Math.abs(uLat) <= 90 && Math.abs(uLng) <= 180;
   let nLat = Number(lat), nLng = Number(lng);
   let hasCoord = Number.isFinite(nLat) && Number.isFinite(nLng) && Math.abs(nLat) <= 90 && Math.abs(nLng) <= 180;
-  const uLat=Number(userLat),uLng=Number(userLng);
-  const hasUserCoord=Number.isFinite(uLat)&&Number.isFinite(uLng)&&Math.abs(uLat)<=90&&Math.abs(uLng)<=180;
-  const all = [];
-  let kakaoOk = false;
   let kakaoStatus = null;
-  let searchRadius = hasCoord ? 1000 : null;
+  let geocodeSource = hasCoord ? "provided" : null;
 
   const norm = (v) => String(v || "").replace(/[^0-9A-Za-z가-힣]/g, "").toLowerCase();
-  const uniqueCount = (rows) => {
-    const set = new Set();
-    for (const x of rows) {
-      const coord = Number.isFinite(Number(x.lat)) && Number.isFinite(Number(x.lng)) ? `${Number(x.lat).toFixed(4)},${Number(x.lng).toFixed(4)}` : "";
-      set.add(`${norm(x.name)}|${coord || norm(x.address)}`);
-    }
-    return set.size;
-  };
   const calcDistance = (a,b,c,d) => {
     const rad=Math.PI/180,R=6371000,x=(c-a)*rad,y=(d-b)*rad;
     const aa=Math.sin(x/2)**2+Math.cos(a*rad)*Math.cos(c*rad)*Math.sin(y/2)**2;
     return Math.round(2*R*Math.asin(Math.sqrt(aa)));
   };
-  const areaText=String(area||"").trim();
-  const compactArea=areaText.replace(/\s+/g," ");
-  // 구/동만 입력한 넓은 지역 검색은 상세주소보다 넓은 반경을 사용합니다.
-  const coarseDistrict=/^[가-힣]+구$/.test(compactArea) || /^(?:[가-힣]+[도시]\s+)?[가-힣]+구$/.test(compactArea);
-  const coarseDong=/^[가-힣0-9·.]+(?:동|읍|면|리)$/.test(compactArea) || /^(?:[가-힣]+구\s+)?[가-힣0-9·.]+(?:동|읍|면|리)$/.test(compactArea);
-  const preferredRadius=(coarseDistrict||coarseDong)?3000:1000;
+  const coarseDistrict = /(?:^|\s)[가-힣]+구$/.test(areaText);
+  const coarseDong = /(?:^|\s)[가-힣0-9·.]+(?:동|읍|면|리)$/.test(areaText);
+  const preferredRadius = coarseDistrict ? 5000 : coarseDong ? 3000 : 2000;
 
-  // 주소 검색은 입력한 주소를 중심점으로 삼습니다. 현재 위치는 검색 기준이 아니라 거리 표시용입니다.
-  if(!hasCoord && key && String(area||"").trim()){
-    try{
-      const au=new URL("https://dapi.kakao.com/v2/local/search/address.json");
-      au.searchParams.set("query",String(area).trim());
-      const ar=await fetch(au,{headers:{Authorization:`KakaoAK ${key}`}});
-      if(ar.ok){const aj=await ar.json();const d=aj.documents?.[0];if(d){nLat=Number(d.y);nLng=Number(d.x);hasCoord=Number.isFinite(nLat)&&Number.isFinite(nLng);}}
-      if(!hasCoord){
-        // '강남구', '역삼동'처럼 주소 API가 직접 좌표를 주지 않는 행정구역도 인식합니다.
-        const variants=[areaText, `${areaText} 주민센터`, `${areaText} 행정복지센터`, `${areaText} 구청`];
-        for(const v of variants){
-          const ku=new URL("https://dapi.kakao.com/v2/local/search/keyword.json");ku.searchParams.set("query",v);ku.searchParams.set("size","5");
-          const kr=await fetch(ku,{headers:{Authorization:`KakaoAK ${key}`}});
-          if(!kr.ok)continue;
-          const kj=await kr.json();
-          const docs=kj.documents||[];
-          const d=docs.find(x=>String(x.address_name||"").includes(areaText)||String(x.road_address_name||"").includes(areaText)||String(x.place_name||"").includes(areaText))||docs[0];
-          if(d){nLat=Number(d.y);nLng=Number(d.x);hasCoord=Number.isFinite(nLat)&&Number.isFinite(nLng);if(hasCoord)break;}
+  // 1) 검색 주소를 좌표로 변환합니다. 카카오맵이 활성화돼 있으면 카카오를 우선 사용합니다.
+  if (!hasCoord && areaText && kakaoKey) {
+    try {
+      const au = new URL("https://dapi.kakao.com/v2/local/search/address.json");
+      au.searchParams.set("query", areaText);
+      au.searchParams.set("analyze_type", "similar");
+      const ar = await fetch(au, { headers:{ Authorization:`KakaoAK ${kakaoKey}` } });
+      kakaoStatus = ar.status;
+      if (ar.ok) {
+        const aj = await ar.json();
+        const d = (aj.documents || [])[0];
+        if (d) {
+          nLat = Number(d.y); nLng = Number(d.x);
+          hasCoord = Number.isFinite(nLat) && Number.isFinite(nLng);
+          if (hasCoord) geocodeSource = "kakao-address";
         }
       }
-    }catch(e){console.warn("address geocode failed",e?.message)}
+    } catch(e) { console.warn("kakao address geocode failed", e?.message); }
   }
-  if(String(area||"").trim() && !hasCoord) return res.status(400).json({error:"주소를 찾지 못했어요. 도로명주소나 동·구 이름을 조금 더 정확히 입력해 주세요."});
 
-  // 카카오: 좌표 반경 + 거리순. 페이지 1~3까지 조회해서 가까운 업체 누락을 줄입니다.
-  const fetchKakaoAtRadius = async (radius) => {
-    if (!key) return [];
-    const batches = await Promise.all(qs.map(async (kw) => {
+  // 2) 구/동처럼 주소 API에서 애매한 검색어는 카카오 장소검색으로 중심점을 잡습니다.
+  if (!hasCoord && areaText && kakaoKey) {
+    const variants = [areaText, `${areaText} 주민센터`, `${areaText} 행정복지센터`, `${areaText} 구청`];
+    for (const v of variants) {
+      try {
+        const ku = new URL("https://dapi.kakao.com/v2/local/search/keyword.json");
+        ku.searchParams.set("query", v); ku.searchParams.set("size", "15");
+        if (hasUserCoord) { ku.searchParams.set("x", String(uLng)); ku.searchParams.set("y", String(uLat)); ku.searchParams.set("sort", "distance"); }
+        const kr = await fetch(ku, { headers:{ Authorization:`KakaoAK ${kakaoKey}` } });
+        kakaoStatus = kr.status;
+        if (!kr.ok) continue;
+        const kj = await kr.json();
+        const docs = kj.documents || [];
+        const hit = docs.find(x => String(x.address_name||"").includes(areaText) || String(x.road_address_name||"").includes(areaText) || String(x.place_name||"").includes(areaText)) || docs[0];
+        if (hit) {
+          nLat=Number(hit.y); nLng=Number(hit.x);
+          hasCoord=Number.isFinite(nLat)&&Number.isFinite(nLng);
+          if (hasCoord) { geocodeSource="kakao-keyword"; break; }
+        }
+      } catch(e) { console.warn("kakao region keyword failed", e?.message); }
+    }
+  }
+
+  // 3) 카카오맵 API가 꺼져 있거나 실패한 경우 무료 OSM Nominatim으로 주소 중심점을 보조합니다.
+  //    동 이름이 여러 지역에 있으면 현재 위치와 가장 가까운 후보를 우선합니다.
+  if (!hasCoord && areaText) {
+    try {
+      const queries = [areaText, `${areaText}, 대한민국`];
+      let candidates = [];
+      for (const q of queries) {
+        const nu = new URL("https://nominatim.openstreetmap.org/search");
+        nu.searchParams.set("format", "jsonv2"); nu.searchParams.set("q", q);
+        nu.searchParams.set("countrycodes", "kr"); nu.searchParams.set("limit", "8"); nu.searchParams.set("addressdetails", "1");
+        const nr = await fetch(nu, { headers:{ "User-Agent":"PetGrow/1.0 (help.petgrow@gmail.com)", "Accept-Language":"ko" } });
+        if (!nr.ok) continue;
+        const rows = await nr.json();
+        candidates.push(...(rows || []).map(d => ({ lat:Number(d.lat), lng:Number(d.lon), label:d.display_name||"" })).filter(d=>Number.isFinite(d.lat)&&Number.isFinite(d.lng)));
+        if (candidates.length) break;
+      }
+      if (candidates.length) {
+        if (hasUserCoord) candidates.sort((a,b)=>calcDistance(uLat,uLng,a.lat,a.lng)-calcDistance(uLat,uLng,b.lat,b.lng));
+        nLat=candidates[0].lat; nLng=candidates[0].lng; hasCoord=true; geocodeSource="osm-geocode";
+      }
+    } catch(e) { console.warn("OSM address geocode failed", e?.message); }
+  }
+
+  if (areaText && !hasCoord) {
+    const needsActivation = kakaoStatus === 401 || kakaoStatus === 403;
+    return res.status(400).json({
+      error: needsActivation
+        ? "주소 검색 API 연결이 꺼져 있어요. 카카오 Developers에서 PetGrow 앱의 카카오맵 사용 설정을 ON으로 바꿔주세요."
+        : "주소를 찾지 못했어요. 구·동·도로명·지번 주소를 다시 확인해 주세요.",
+      kakaoStatus, needsMapActivation: needsActivation
+    });
+  }
+  if (!hasCoord) return res.status(400).json({ error:"검색할 주소를 입력해 주세요." });
+
+  const toPlace = (d, kw) => {
+    const type = placeType(d.category_name, kw);
+    const plat=Number(d.y), plng=Number(d.x);
+    return {
+      id:d.id, sourceId:d.id, name:d.place_name, phone:d.phone||"",
+      address:d.road_address_name||d.address_name||"", roadAddress:d.road_address_name||"",
+      category:d.category_name||"", typeKey:type.key, typeLabel:type.label, typeIcon:type.icon,
+      lat:plat, lng:plng, distance:calcDistance(nLat,nLng,plat,plng), url:d.place_url||"", source:"kakao"
+    };
+  };
+
+  // 카카오 장소검색. 좌표 반경검색 + '강남구 동물병원' 같은 주소문자열 직접검색을 함께 사용합니다.
+  const fetchKakaoPlaces = async () => {
+    if (!kakaoKey) return [];
+    const groups = await Promise.all(qs.map(async kw => {
       const rows=[];
-      for (let page=1; page<=5; page++) {
+      // A. 좌표 중심 반경검색
+      for (let page=1; page<=3; page++) {
         try {
-          const u = new URL("https://dapi.kakao.com/v2/local/search/keyword.json");
-          u.searchParams.set("query", hasCoord ? kw : (areaText ? `${areaText} ${kw}` : kw));
-          u.searchParams.set("size", "15");
-          u.searchParams.set("page", String(page));
-          if (hasCoord) {
-            u.searchParams.set("x", String(nLng)); u.searchParams.set("y", String(nLat));
-            u.searchParams.set("radius", String(radius)); u.searchParams.set("sort", "distance");
-          }
-          const r = await fetch(u, { headers: { Authorization: `KakaoAK ${key}` } });
-          kakaoStatus = r.status;
-          if (!r.ok) break;
-          kakaoOk = true;
-          const j = await r.json();
-          const docs=j.documents||[];
-          rows.push(...docs.map((d) => {
-            const type = placeType(d.category_name, kw);
-            const plat=Number(d.y), plng=Number(d.x);
-            return {
-              id: d.id, sourceId:d.id, name: d.place_name, phone: d.phone || "", address: d.road_address_name || d.address_name || "",
-              roadAddress: d.road_address_name || "", category: d.category_name || "", typeKey:type.key, typeLabel:type.label, typeIcon:type.icon,
-              lat: plat, lng: plng, distance: d.distance ? Number(d.distance) : (hasCoord ? calcDistance(nLat,nLng,plat,plng) : null), url: d.place_url || "", source:"kakao"
-            };
-          }));
-          if (j.meta?.is_end || docs.length < 15) break;
-        } catch (e) { console.warn("kakao nearby keyword failed", kw, e?.message); break; }
+          const u=new URL("https://dapi.kakao.com/v2/local/search/keyword.json");
+          u.searchParams.set("query",kw); u.searchParams.set("size","15"); u.searchParams.set("page",String(page));
+          u.searchParams.set("x",String(nLng)); u.searchParams.set("y",String(nLat)); u.searchParams.set("radius","5000"); u.searchParams.set("sort","distance");
+          const r=await fetch(u,{headers:{Authorization:`KakaoAK ${kakaoKey}`}}); kakaoStatus=r.status;
+          if(!r.ok) break;
+          const j=await r.json(); const docs=j.documents||[]; rows.push(...docs.map(d=>toPlace(d,kw)));
+          if(j.meta?.is_end||docs.length<15) break;
+        } catch(e) { console.warn("kakao radius search failed",kw,e?.message); break; }
+      }
+      // B. 지역명 직접검색. 중심점이 행정구역의 가장자리여도 결과를 놓치지 않게 합니다.
+      if (areaText) {
+        for (let page=1; page<=2; page++) {
+          try {
+            const u=new URL("https://dapi.kakao.com/v2/local/search/keyword.json");
+            u.searchParams.set("query",`${areaText} ${kw}`); u.searchParams.set("size","15"); u.searchParams.set("page",String(page));
+            const r=await fetch(u,{headers:{Authorization:`KakaoAK ${kakaoKey}`}}); kakaoStatus=r.status;
+            if(!r.ok) break;
+            const j=await r.json(); const docs=j.documents||[];
+            rows.push(...docs.map(d=>toPlace(d,kw)).filter(x=>Number(x.distance)<=10000));
+            if(j.meta?.is_end||docs.length<15) break;
+          } catch(e) { console.warn("kakao area-text search failed",kw,e?.message); break; }
+        }
       }
       return rows;
     }));
-    return batches.flat();
+    return groups.flat();
   };
 
-  // OSM 보조 검색을 '카카오가 0건일 때만'이 아니라 매 반경에서 함께 사용합니다.
-  // 카카오 DB에 누락된 1km 이내 병원/매장도 보완할 수 있습니다.
-  const fetchOsmAtRadius = async (radius) => {
-    if (!hasCoord) return [];
+  const fetchOsmPlaces = async (radius=5000) => {
     try {
-      const typeFilter = category === "hospital" ? `nwr(around:${radius},LAT,LNG)["amenity"="veterinary"];` :
+      const filters = category === "hospital" ? `nwr(around:${radius},LAT,LNG)["amenity"="veterinary"];` :
         category === "shop" ? `nwr(around:${radius},LAT,LNG)["shop"="pet"];` :
         category === "grooming" ? `nwr(around:${radius},LAT,LNG)["shop"="pet_grooming"];` :
         category === "hotel" ? `nwr(around:${radius},LAT,LNG)["amenity"="animal_boarding"];` :
         category === "pharmacy" ? `nwr(around:${radius},LAT,LNG)["name"~"동물약국",i];` :
         `nwr(around:${radius},LAT,LNG)["amenity"="veterinary"];nwr(around:${radius},LAT,LNG)["shop"="pet"];nwr(around:${radius},LAT,LNG)["shop"="pet_grooming"];nwr(around:${radius},LAT,LNG)["amenity"="animal_boarding"];nwr(around:${radius},LAT,LNG)["name"~"동물병원|동물약국|펫|애견|애묘|반려동물",i];`;
-      const body = `[out:json][timeout:9];(${typeFilter.replaceAll('LAT',String(nLat)).replaceAll('LNG',String(nLng))});out center tags 80;`;
-      const or = await fetch("https://overpass-api.de/api/interpreter", { method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"}, body:`data=${encodeURIComponent(body)}` });
-      if (!or.ok) return [];
-      const oj = await or.json();
+      const body=`[out:json][timeout:10];(${filters.replaceAll("LAT",String(nLat)).replaceAll("LNG",String(nLng))});out center tags 100;`;
+      const endpoints=["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter"];
+      let oj=null;
+      for(const ep of endpoints){
+        try{const or=await fetch(ep,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},body:`data=${encodeURIComponent(body)}`});if(or.ok){oj=await or.json();break;}}catch{}
+      }
+      if(!oj)return [];
       const rows=[];
-      for (const e of oj.elements || []) {
-        const tags=e.tags||{}, plat=Number(e.lat ?? e.center?.lat), plng=Number(e.lon ?? e.center?.lon);
-        if(!Number.isFinite(plat)||!Number.isFinite(plng)||!tags.name) continue;
+      for(const e of oj.elements||[]){
+        const tags=e.tags||{}, plat=Number(e.lat??e.center?.lat), plng=Number(e.lon??e.center?.lon);
+        if(!Number.isFinite(plat)||!Number.isFinite(plng)||!tags.name)continue;
         const raw=`${tags.amenity||""} ${tags.shop||""} ${tags.name||""}`;
-        const type = /veterinary|동물병원/.test(raw) ? {key:"hospital",label:"동물병원",icon:"🏥"} : /pet_grooming|미용/.test(raw) ? {key:"grooming",label:"펫미용",icon:"✂️"} : /animal_boarding|호텔|유치원/.test(raw) ? {key:"hotel",label:"호텔·유치원",icon:"🏡"} : /약국/.test(raw) ? {key:"pharmacy",label:"동물약국",icon:"💊"} : {key:"shop",label:"펫샵·용품",icon:"🛍️"};
-        const addr=[tags["addr:road"],tags["addr:housenumber"],tags["addr:district"]].filter(Boolean).join(" ") || tags["addr:full"] || "";
+        const type=/veterinary|동물병원/.test(raw)?{key:"hospital",label:"동물병원",icon:"🏥"}:/pet_grooming|미용/.test(raw)?{key:"grooming",label:"펫미용",icon:"✂️"}:/animal_boarding|호텔|유치원/.test(raw)?{key:"hotel",label:"호텔·유치원",icon:"🏡"}:/약국/.test(raw)?{key:"pharmacy",label:"동물약국",icon:"💊"}:{key:"shop",label:"펫샵·용품",icon:"🛍️"};
+        const addr=[tags["addr:city"],tags["addr:district"],tags["addr:road"],tags["addr:housenumber"]].filter(Boolean).join(" ")||tags["addr:full"]||"";
         rows.push({id:`osm-${e.type}-${e.id}`,sourceId:String(e.id),name:tags.name,phone:tags.phone||tags["contact:phone"]||"",address:addr,roadAddress:addr,category:type.label,typeKey:type.key,typeLabel:type.label,typeIcon:type.icon,lat:plat,lng:plng,distance:calcDistance(nLat,nLng,plat,plng),url:tags.website||tags["contact:website"]||"",source:"osm"});
       }
       return rows;
-    } catch(e) { console.warn("OSM nearby supplemental failed", e?.message); return []; }
+    } catch(e){console.warn("OSM nearby failed",e?.message);return [];}
   };
 
-  if (hasCoord) {
-    // 공공데이터포털 공식 인허가 5종을 먼저 조회합니다.
-    // 주소(구/시)로 후보를 좁힌 뒤 EPSG:5174 좌표를 WGS84로 변환해 실제 현재 위치와의 거리를 계산합니다.
-    const region = await kakaoRegionForCoord(key, nLat, nLng);
-    const publicTypes = category === "all" ? ["hospital","pharmacy","grooming","hotel","shop"] : (PUBLIC_NEARBY_SOURCES[category] ? [category] : []);
-    if (publicTypes.length) {
-      const publicBatches = await Promise.all(publicTypes.map(t => fetchPublicNearby(t, region, nLat, nLng, key)));
-      for (const row of publicBatches.flat()) { row.distance = calcDistance(nLat,nLng,Number(row.lat),Number(row.lng)); all.push(row); }
-    }
+  let all = await fetchKakaoPlaces();
+  const kakaoUnavailable = kakaoStatus === 401 || kakaoStatus === 403 || kakaoStatus === 429;
+  // 카카오 검색이 비었거나 사용 설정 문제일 때만 무료 OSM을 보조로 호출해 응답시간을 줄입니다.
+  if (!all.length || kakaoUnavailable) all.push(...await fetchOsmPlaces(Math.max(preferredRadius,5000)));
 
-    // 핵심 원칙: 1km 결과가 하나라도 있으면 그 결과만 보여줍니다.
-    // 먼 3~5km 결과가 가까운 장소를 밀어내지 않게 하고, 1km를 가장 촘촘하게 검색합니다.
-    const firstRadius = preferredRadius;
-    searchRadius = firstRadius;
-    const [kakao1km, osm1km] = await Promise.all([fetchKakaoAtRadius(firstRadius), fetchOsmAtRadius(firstRadius)]);
-    all.push(...kakao1km, ...osm1km);
-
-    // 선택한 기본 반경에서 결과가 없으면 최대 5km까지 자동 확대합니다.
-    if (uniqueCount(all.filter(x => Number(x.distance) <= firstRadius)) === 0) {
-      for (const radius of [3000, 5000].filter(r=>r>firstRadius)) {
-        searchRadius = radius;
-        const [kakaoRows, osmRows] = await Promise.all([fetchKakaoAtRadius(radius), fetchOsmAtRadius(radius)]);
-        all.push(...kakaoRows, ...osmRows);
-        if (uniqueCount(all.filter(x => Number(x.distance) <= radius)) > 0) break;
-      }
-    }
-  } else if (key) {
-    all.push(...await fetchKakaoAtRadius(5000));
-  }
-
-  // 모든 보조 소스가 비었을 때만 Nominatim을 최종 안전장치로 사용합니다.
-  if (hasCoord && all.length === 0) {
-    try {
-      const delta = 0.05;
-      const viewbox = `${nLng-delta},${nLat+delta},${nLng+delta},${nLat-delta}`;
-      const fallbackTerms = category === "hospital" ? ["동물병원","veterinary"] : category === "pharmacy" ? ["동물약국"] : category === "shop" ? ["펫샵","pet shop"] : category === "grooming" ? ["애견미용","pet grooming"] : category === "hotel" ? ["애견호텔","반려동물 유치원"] : ["동물병원","펫샵","애견미용","애견호텔","동물약국"];
-      for (const term of fallbackTerms) {
-        const nu = new URL("https://nominatim.openstreetmap.org/search");
-        nu.searchParams.set("format","jsonv2"); nu.searchParams.set("q",term); nu.searchParams.set("limit","10"); nu.searchParams.set("bounded","1"); nu.searchParams.set("viewbox",viewbox); nu.searchParams.set("addressdetails","1");
-        const nr = await fetch(nu,{headers:{"User-Agent":"PetGrow/1.0 (help.petgrow@gmail.com)","Accept-Language":"ko"}});
-        if(!nr.ok) continue;
-        const nj=await nr.json();
-        for(const d of nj||[]){
-          const plat=Number(d.lat),plng=Number(d.lon); if(!Number.isFinite(plat)||!Number.isFinite(plng)) continue;
-          const raw=`${d.type||""} ${d.category||""} ${d.display_name||""} ${term}`;
-          const type=/veterinary|동물병원/.test(raw)?{key:"hospital",label:"동물병원",icon:"🏥"}:/groom|미용/.test(raw)?{key:"grooming",label:"펫미용",icon:"✂️"}:/hotel|boarding|유치원/.test(raw)?{key:"hotel",label:"호텔·유치원",icon:"🏡"}:/약국/.test(raw)?{key:"pharmacy",label:"동물약국",icon:"💊"}:{key:"shop",label:"펫샵·용품",icon:"🛍️"};
-          const distance=calcDistance(nLat,nLng,plat,plng);
-          all.push({id:`nom-${d.osm_type||"x"}-${d.osm_id||crypto.randomUUID()}`,sourceId:String(d.osm_id||""),name:String(d.name||String(d.display_name||"").split(',')[0]||term),phone:"",address:String(d.display_name||""),roadAddress:String(d.display_name||""),category:type.label,typeKey:type.key,typeLabel:type.label,typeIcon:type.icon,lat:plat,lng:plng,distance,url:"",source:"nominatim"});
-        }
-      }
-    } catch(e) { console.warn("Nominatim nearby fallback failed", e?.message); }
-  }
-
-  // 공공데이터의 마스킹 주소/빈 전화번호는 같은 좌표 주변 카카오 장소정보로 보완합니다.
-  if (key && hasCoord) {
-    const typeQuery={hospital:"동물병원",pharmacy:"동물약국",grooming:"펫미용",hotel:"애견호텔",shop:"펫샵"};
-    const missing = all.filter(x => x.source !== "kakao" && x.name && Number(x.distance) <= 1500 && (!x.phone || !x.url || x.addressMasked || isMaskedPublicAddress(x.address))).slice(0,35);
-    await Promise.all(missing.map(async x => {
-      try {
-        const searchOnce=async(q)=>{
-          const u=new URL("https://dapi.kakao.com/v2/local/search/keyword.json");
-          u.searchParams.set("query",q);u.searchParams.set("size","10");u.searchParams.set("x",String(x.lng||nLng));u.searchParams.set("y",String(x.lat||nLat));u.searchParams.set("radius","700");u.searchParams.set("sort","distance");
-          const r=await fetch(u,{headers:{Authorization:`KakaoAK ${key}`}});if(!r.ok)return [];const j=await r.json();return j.documents||[];
-        };
-        let docs=await searchOnce(x.name);
-        if(!docs.length)docs=await searchOnce(typeQuery[x.typeKey]||x.typeLabel||"반려동물");
-        const target=norm(x.name);
-        let hit=docs.find(d=>norm(d.place_name)===target);
-        if(!hit)hit=docs.find(d=>Number(d.distance||999999)<=120);
-        if(!hit)return;
-        const hd=Number(hit.distance||999999);
-        // 좌표가 매우 가까운 경우 카카오 상호명도 사용자 표시명으로 사용해 깨진/축약된 공공데이터명을 보완합니다.
-        if(hd<=80 && hit.place_name)x.name=hit.place_name;
-        x.phone=hit.phone||x.phone||"";
-        x.url=hit.place_url||x.url||"";
-        const ka=hit.road_address_name||hit.address_name||"";
-        if(ka && (x.addressMasked || isMaskedPublicAddress(x.address))) x.address=ka;
-        if(hit.road_address_name)x.roadAddress=hit.road_address_name;
-        x.addressMasked=false;
-      } catch {}
-    }));
-  }
-  // 카카오에서도 주소를 보완하지 못한 마스킹 주소는 구·동 정도까지만 깔끔하게 표시합니다.
-  if(hasCoord){
-    const region = await kakaoRegionForCoord(key,nLat,nLng);
-    const safeRegion=publicRegionFallback(region);
-    for(const x of all){ if(x.addressMasked || isMaskedPublicAddress(x.address)) x.address=safeRegion||x.address||""; }
-  }
-
-  // 이름+근접좌표 기준 중복 제거. 카카오 결과를 우선 보존합니다.
-  const sourcePriority={public:0,kakao:1,osm:2,nominatim:3};
-  all.sort((a,b)=>(sourcePriority[a.source]??9)-(sourcePriority[b.source]??9));
+  // 중복 제거
   const items=[];
-  for (const x of all) {
-    if (!x.id || !Number.isFinite(Number(x.lat)) || !Number.isFinite(Number(x.lng))) continue;
-    const dup=items.find(y => {
-      if (y.source === x.source && y.sourceId && x.sourceId && String(y.sourceId) === String(x.sourceId)) return true;
-      const gap = calcDistance(Number(y.lat), Number(y.lng), Number(x.lat), Number(x.lng));
-      const sameName = norm(y.name) && norm(y.name) === norm(x.name);
-      const sameAddr = norm(y.address) && norm(y.address) === norm(x.address);
-      // 공공 인허가 ↔ 카카오의 좌표차를 고려하되, 같은 상호의 다른 지점은 합치지 않습니다.
-      return (sameName && gap <= 120) || (sameAddr && gap <= 180);
+  const sourcePriority={kakao:0,osm:1};
+  all.sort((a,b)=>(sourcePriority[a.source]??9)-(sourcePriority[b.source]??9));
+  for(const x of all){
+    if(!x.id||!Number.isFinite(Number(x.lat))||!Number.isFinite(Number(x.lng)))continue;
+    const dup=items.find(y=>{
+      const gap=calcDistance(Number(y.lat),Number(y.lng),Number(x.lat),Number(x.lng));
+      return (norm(y.name)&&norm(y.name)===norm(x.name)&&gap<=150)||(norm(y.address)&&norm(y.address)===norm(x.address)&&gap<=200);
     });
-    if (dup) {
-      if(!dup.phone&&x.phone)dup.phone=x.phone;
-      if(!dup.url&&x.url)dup.url=x.url;
-      if(!dup.address&&x.address)dup.address=x.address;
-      if(x.official)dup.official=true;
-      dup.distance=Math.min(Number(dup.distance??1e12),Number(x.distance??1e12));
-      continue;
-    }
+    if(dup){if(!dup.phone&&x.phone)dup.phone=x.phone;if(!dup.url&&x.url)dup.url=x.url;if(!dup.address&&x.address)dup.address=x.address;continue;}
     items.push(x);
   }
-  items.sort((a, b) => (a.distance ?? 1e12) - (b.distance ?? 1e12));
-  const within1km=items.filter(x=>Number(x.distance)<=1000).length;
-  // 1km 결과가 있으면 사용자에게는 1km 결과만 노출합니다.
-  const visibleItems = within1km > 0 ? items.filter(x=>Number(x.distance)<=1000) : items.filter(x=>Number(x.distance)<=Number(searchRadius||5000));
-  if(hasUserCoord){ for(const x of visibleItems){x.userDistance=calcDistance(uLat,uLng,Number(x.lat),Number(x.lng));} }
-  res.setHeader("Cache-Control", "s-maxage=20, stale-while-revalidate=40");
-  const sourceSet=[...new Set(visibleItems.map(x=>x.source).filter(Boolean))];
-  return res.status(200).json({ items: visibleItems.slice(0, 100), searchRadius: within1km > 0 ? 1000 : searchRadius, within1km, searchCenter: hasCoord?{lat:nLat,lng:nLng}:null, source: sourceSet.join("+")||"fallback", publicDataConnected: visibleItems.some(x=>x.source==="public"), kakaoStatus });
+  items.sort((a,b)=>(a.distance??1e12)-(b.distance??1e12));
+
+  // 구 검색은 최대 5km, 동/상세주소는 기본 3km. 결과가 없으면 최대 5km까지 자동 확대합니다.
+  let searchRadius=preferredRadius;
+  let visible=items.filter(x=>Number(x.distance)<=searchRadius);
+  if(!visible.length && searchRadius<5000){searchRadius=5000;visible=items.filter(x=>Number(x.distance)<=5000);}
+  // 지역명 직접검색 결과가 5km 밖에만 있는 예외 상황에서는 가장 가까운 결과도 일부 보여줍니다.
+  if(!visible.length && items.length) { searchRadius=10000; visible=items.filter(x=>Number(x.distance)<=10000).slice(0,40); }
+  if(hasUserCoord){for(const x of visible)x.userDistance=calcDistance(uLat,uLng,Number(x.lat),Number(x.lng));}
+
+  const needsMapActivation = kakaoStatus===401||kakaoStatus===403;
+  const warning = needsMapActivation
+    ? "카카오맵 API 사용 설정이 꺼져 있어 무료 OSM 보조검색으로 표시했어요. 카카오맵 사용 설정을 ON으로 바꾸면 국내 장소검색 정확도가 크게 좋아져요."
+    : (kakaoStatus===429 ? "카카오맵 무료 쿼터를 초과해 OSM 보조검색으로 표시했어요." : "");
+  res.setHeader("Cache-Control","s-maxage=30, stale-while-revalidate=60");
+  return res.status(200).json({
+    items:visible.slice(0,100), searchRadius, within1km:visible.filter(x=>Number(x.distance)<=1000).length,
+    searchCenter:{lat:nLat,lng:nLng}, source:[...new Set(visible.map(x=>x.source).filter(Boolean))].join("+")||"none",
+    geocodeSource, kakaoStatus, needsMapActivation, warning
+  });
 }
 
 export default async function handler(req, res) {

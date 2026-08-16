@@ -193,7 +193,7 @@ const STRINGS = {
     nearbyNav: "내 주변 Pet",
     nearbyTitle: "내 주변 Pet",
     nearbySubtitle: "검색한 주소 주변의 동물병원·동물약국·펫샵·미용·호텔을 찾아보고, 내 위치에서의 거리도 함께 확인해보세요.",
-    nearbyLocateBtn: "내 위치 찾기",
+    nearbyLocateBtn: "내 위치 표시",
     nearbySearchPlaceholder: "지역명으로 검색 (예: 강동구 천호동)",
     myPetsNav: "우리 아이",
     petgrowTagline: "우리 아이의 건강한 성장을 함께",
@@ -1981,7 +1981,7 @@ function GuideModal({ open, onClose }) {
         ))}
         <div>
           <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 3 }}>{lang === "en" ? "10. 📍 Nearby Pet" : "10. 📍 내 주변 Pet"}</div>
-          <div className="bg-sub" style={{ fontSize: 13, lineHeight: 1.6 }}>위치를 허용하면 가까운 동물병원·동물약국·펫샵·용품점·미용·호텔·유치원을 거리순으로 확인할 수 있어요. 장소별 업종·주소·전화번호가 표시되고, 로그인 회원은 별점·간단 후기·좋아요·신고를 남길 수 있어요.</div>
+          <div className="bg-sub" style={{ fontSize: 13, lineHeight: 1.6 }}>주소를 검색하면 해당 주소 주변의 동물병원·동물약국·펫샵·용품점·미용·호텔·유치원을 확인할 수 있어요. 위치 권한은 선택사항이며, 허용하면 지도에 내 현재 위치를 함께 표시하고 각 업체까지 내 위치 기준 거리를 보여줘요. 위치를 허용하지 않아도 주소 검색은 그대로 이용할 수 있어요. 로그인 회원은 별점·간단 후기·좋아요·신고를 남길 수 있어요.</div>
         </div>
         <div>
           <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 3 }}>{lang === "en" ? "11. 🎵 Pet Music" : "11. 🎵 Pet음악"}</div>
@@ -1997,7 +1997,7 @@ function GuideModal({ open, onClose }) {
    개인정보처리방침 (초안) — 법률 자문 아님, 배포 전 검토 필요
    ============================================================ */
 const PRIVACY_SECTIONS_KO = [
-  { title: "1. 개인정보의 처리 목적", body: "PetGrow는 카카오 간편로그인을 통한 회원 식별·계정 관리, 로그인 유지, 공지사항 제공, 문의·피드백 접수 및 답변 관리, 광고 문의 접수 및 상담(회사/브랜드명, 담당자명, 이메일, 선택 입력 연락처·예산), 직접광고 캠페인 운영 및 노출기간 관리, 반려동물 정보 저장 및 기기 간 동기화, PetBTI 등 서비스 결과 저장·다시보기, Pet음악 재생·반복재생·즐겨찾기·좋아요·댓글 제공, 보호자 궁합 계산, 고객 문의, 서비스 안정성·품질 개선, 광고 제공 및 성과 측정, 부정 이용 방지, 회원탈퇴 및 개인정보 삭제 처리, 이용자가 요청한 경우 현재 위치 기반 주변 반려동물 시설 검색을 위하여 필요한 범위에서 개인정보를 처리할 수 있습니다." },
+  { title: "1. 개인정보의 처리 목적", body: "PetGrow는 카카오 간편로그인을 통한 회원 식별·계정 관리, 로그인 유지, 공지사항 제공, 문의·피드백 접수 및 답변 관리, 광고 문의 접수 및 상담(회사/브랜드명, 담당자명, 이메일, 선택 입력 연락처·예산), 직접광고 캠페인 운영 및 노출기간 관리, 반려동물 정보 저장 및 기기 간 동기화, PetBTI 등 서비스 결과 저장·다시보기, Pet음악 재생·반복재생·즐겨찾기·좋아요·댓글 제공, 보호자 궁합 계산, 고객 문의, 서비스 안정성·품질 개선, 광고 제공 및 성과 측정, 부정 이용 방지, 회원탈퇴 및 개인정보 삭제 처리, 이용자가 입력한 주소를 기준으로 주변 반려동물 시설을 검색하고, 이용자가 선택적으로 위치 권한을 허용한 경우 지도에 현재 위치를 표시하고 장소까지의 거리를 계산하기 위하여 필요한 범위에서 정보를 처리할 수 있습니다." },
   { title: "2. 처리하는 개인정보 항목", body: "가. 카카오 간편로그인\n- 카카오가 제공하는 사용자 고유 식별정보\n- 닉네임, 프로필 이미지 등은 실제로 동의받아 제공받고 서비스에서 사용하는 경우에만 처리\n- 이메일 등 추가 정보는 실제 구현상 필요한 경우에만 동의를 받아 처리\n\n나. 반려동물 및 서비스 정보\n- 반려동물 이름, 종류, 품종, 생년월일, 성별, 현재 체중 및 성장 관련 정보\n- 반려동물 프로필 사진\n- PetBTI 결과 및 검사일\n- Pet사주 등 저장이 필요한 서비스 정보\n- Pet음악 좋아요·댓글 등 이용자가 직접 남긴 참여 기록\n\n다. 보호자 궁합 입력정보\n- 보호자 이름, 보호자 생년월일\n- 위 정보는 보호자 궁합 결과를 계산하기 위해 해당 화면에서만 일시적으로 사용하며, 현재 구현상 PetGrow 서버 또는 계정에 저장하지 않습니다.\n\n라. 광고·제휴 문의 정보\n- 필수: 회사/브랜드명, 담당자명, 이메일, 문의 내용\n- 선택: 연락처, 광고 유형, 예산 등 이용자가 직접 입력한 상담 정보\n- 처리 목적: 광고·제휴 상담, 견적·캠페인 협의 및 문의 이력 관리\n\n마. 자동으로 처리될 수 있는 정보\n- IP 주소, 기기·운영체제·브라우저 또는 앱 정보\n- 접속 및 서비스 이용기록, 오류·보안 관련 기록\n- Google Mobile Ads SDK 사용 시 광고 제공·분석·부정행위 방지를 위해 IP 주소, 앱 실행·탭·동영상 조회 등 이용 상호작용 정보, 앱/SDK 성능 관련 진단정보, Android 광고 ID·App Set ID 등 기기 또는 계정 식별자가 Google에 의해 자동으로 수집·공유될 수 있습니다. 광고 ID의 수집 여부는 앱 설정 및 SDK 구성에 따라 달라질 수 있습니다.\n\nPetGrow는 서비스 제공에 필요하지 않은 전화번호, 친구목록 등의 개인정보를 불필요하게 요청하지 않는 것을 원칙으로 합니다. 보호자 궁합에서 입력하는 보호자 이름·생년월일은 궁합 계산에만 일시적으로 사용되며 현재 구현상 서버로 전송하거나 계정에 저장하지 않습니다." },
   { title: "3. 개인정보의 저장 방식", body: "로그인 후 이용자가 등록하거나 생성한 정보는 단순히 '이 기기' 또는 '이 브라우저'에만 저장되는 구조를 원칙으로 하지 않으며, 로그인한 PetGrow 계정에 연결하여 서버 또는 클라우드 저장소에 저장·동기화될 수 있습니다. 동일한 카카오 계정으로 로그인하면 지원되는 다른 기기 또는 웹 환경에서 저장된 정보를 불러올 수 있습니다. 로그인 기능 도입 이전의 기존 기기 저장정보는 이용자의 선택에 따라 계정으로 이전될 수 있습니다." },
   { title: "4. 개인정보의 처리 및 보유기간", body: "회원계정 및 계정에 연결된 개인정보는 원칙적으로 회원탈퇴 시까지 보유·이용합니다. 회원탈퇴 시 관계 법령에 따라 별도로 보관할 필요가 있는 정보를 제외하고 계정 및 관련 개인정보를 삭제합니다. Pet음악 좋아요와 댓글 등 계정에 연결된 참여 기록도 회원탈퇴 또는 해당 댓글 삭제 시 함께 삭제될 수 있습니다. 광고·제휴 문의를 통해 입력된 회사/브랜드명, 담당자명, 이메일, 선택 연락처·예산 및 문의 내용은 상담·제휴 검토 등 처리 목적이 달성될 때까지 보유하며, 목적 달성 후 지체 없이 삭제하는 것을 원칙으로 합니다. 분쟁 대응이나 법령상 보관 의무가 있는 경우에는 필요한 범위와 기간에 한해 별도로 보관할 수 있습니다. 외부 인증·광고·호스팅 사업자가 자체적으로 처리하는 정보는 해당 사업자의 정책 및 실제 처리 구조에 따를 수 있습니다." },
@@ -2005,7 +2005,7 @@ const PRIVACY_SECTIONS_KO = [
   { title: "6. 반려동물 정보 및 프로필 사진", body: "이용자가 등록한 반려동물 정보와 프로필 사진은 해당 PetGrow 계정과 연결하여 저장될 수 있으며, 우리 아이, 성장정보, Pet사주(기본 Pet사주·오늘의 펫운세·보호자 궁합), PetBTI 등 반려동물별 기능 제공에 이용될 수 있습니다." },
   { title: "7. 기존 기기 저장정보의 계정 이전", body: "카카오 간편로그인 도입 이전에 기기 또는 브라우저에 저장되어 있던 반려동물 정보가 있는 경우 이용자의 선택과 동의에 따라 로그인 계정으로 이전할 수 있습니다. 서버 저장이 정상 완료되기 전에 기존 데이터를 임의로 삭제하지 않도록 운영합니다." },
   { title: "8. 개인정보의 제3자 제공·처리위탁 및 국외 이전", body: "PetGrow는 이용자의 개인정보를 임의로 판매하지 않습니다. 제3자 제공, 처리위탁 또는 국외 이전이 발생하는 경우 실제 데이터 흐름, 제공자, 처리 목적, 항목, 보유기간 및 관련 법령상 고지·동의 필요 여부를 확인하여 본 방침에 반영합니다. 실제 사용하는 DB, Storage 및 호스팅 사업자는 최종 배포 구조에 맞추어 구체적으로 기재합니다.\n\n현재 PetGrow는 회원 데이터 저장을 위해 Vercel(호스팅 및 서버리스 인프라), Vercel Postgres(데이터베이스, Neon 기반), Vercel Blob(Pet톡 게시글 사진 및 Pet음악 음원·커버 이미지 저장)을 사용하고 있으며, 이 과정에서 이용자의 반려동물 정보 및 Pet톡 게시물 등이 해당 사업자의 서버(국외 소재 가능)에 저장·처리될 수 있습니다." },
-  { title: "9. 위치기반 주변 시설 안내", body: "PetGrow의 '내 주변 Pet'은 이용자가 위치 권한을 허용하면 기기 또는 브라우저가 제공하는 현재 위치 좌표를 주변 동물병원·동물약국·펫샵·용품점·미용·호텔·유치원 등 장소 검색에 일시적으로 사용합니다. 현재 위치 좌표는 주변 검색 요청을 처리하는 동안에만 이용하며 PetGrow 회원 계정 또는 장소 후기 DB에 별도로 저장하지 않습니다. 위치 권한 허용 여부와 관계없이 주소를 직접 입력해 검색할 수 있으며, 위치 권한은 언제든 기기 또는 브라우저 설정에서 철회할 수 있습니다. 장소명·주소·전화번호·업종·거리 등 업체 정보는 카카오 장소검색 등 외부 장소정보를 검색 시점에 불러오므로 PetGrow가 매주 별도로 갱신하는 정보가 아니며 실제 영업정보와 차이가 있을 수 있습니다." },
+  { title: "9. 주소기반 주변 시설 검색 및 선택적 위치 권한", body: "PetGrow의 '내 주변 Pet' 검색 결과는 이용자가 직접 입력한 주소를 기준으로 제공합니다. 위치 권한은 선택사항이며, 이용자가 허용한 경우 기기 또는 브라우저가 제공하는 현재 위치 좌표를 지도에 내 위치를 표시하고 각 장소까지의 거리를 계산하는 데 일시적으로 사용합니다. 현재 위치 좌표는 검색 결과의 기준 주소를 결정하는 데 사용하지 않으며, PetGrow 회원 계정 또는 장소 후기 DB에 별도로 저장하지 않습니다. 위치 권한을 허용하지 않아도 주소 검색은 그대로 이용할 수 있고, 권한은 언제든 기기 또는 브라우저 설정에서 철회할 수 있습니다. 장소명·주소·전화번호·업종 등 업체 정보는 카카오 장소검색 등 외부 장소정보를 검색 시점에 불러오므로 실제 영업정보와 차이가 있을 수 있습니다." },
   { title: "10. 외부 서비스 및 광고", body: "PetGrow는 서비스 운영을 위해 카카오(간편로그인), Google AdMob/Google Mobile Ads SDK(앱 광고), 데이터베이스·파일 저장·호스팅 제공업체 등을 사용할 수 있습니다. Google은 간편로그인 제공자가 아니라 광고 등 실제 사용하는 서비스의 제공자로만 기재합니다. Google Mobile Ads SDK는 광고 제공, 분석 및 부정행위 방지를 위해 IP 주소, 이용 상호작용, 진단정보, 기기·계정 식별자 등을 자동으로 처리할 수 있습니다. 개인 맞춤형 광고 여부와 광고 관련 선택권은 적용되는 지역의 법령, Google의 동의 관리 도구 설정 및 이용자의 기기·계정 설정에 따라 달라질 수 있습니다. 외부 사업자가 자체적으로 처리하는 개인정보에는 해당 사업자의 개인정보처리방침이 적용될 수 있습니다." },
   { title: "10. 쿠키·광고 식별자 및 이용자 선택권", body: "웹 서비스는 로그인 유지, 서비스 제공, 이용 현황 분석 또는 광고 제공 등을 위해 쿠키 및 유사 기술을 사용할 수 있습니다. 모바일 앱에서는 광고 ID 등 기기 식별자가 광고 SDK에 의해 사용될 수 있습니다. 이용자는 브라우저의 쿠키 설정, Android의 광고 개인정보 보호/광고 ID 설정 등 기기에서 제공하는 방법을 통해 일부 광고 관련 식별정보의 사용을 제한하거나 광고 ID를 재설정·삭제할 수 있습니다. 관련 법령상 동의가 필요한 지역에는 Google의 개인정보 보호 메시지 또는 동의 관리 절차가 표시될 수 있습니다. 일부 설정을 제한하면 맞춤형 광고가 제한되거나 서비스 일부 기능에 차이가 생길 수 있습니다." },
   { title: "11. 개인정보의 파기", body: "개인정보 처리 목적이 달성되거나 회원이 탈퇴한 경우 관계 법령상 보관 의무가 있는 정보를 제외하고 개인정보를 삭제합니다. 삭제 대상에는 PetGrow 계정, 카카오 인증 관련 식별정보, 반려동물 정보, 프로필 사진, 저장된 검사 및 서비스 결과, Pet톡에 작성한 게시글·댓글·좋아요 기록 및 첨부 사진 등이 포함될 수 있습니다." },
@@ -2019,7 +2019,7 @@ const PRIVACY_SECTIONS_KO = [
   { title: "19. 익명·집계형 서비스 이용 통계 및 광고 성과", body: "PetGrow는 서비스 품질 및 운영 현황을 확인하기 위해 개인정보를 최소화한 자체 통계를 운영할 수 있습니다. 집계 항목에는 방문 세션 수, 최근 5분 내 활성 세션의 추정치, 메뉴별 페이지 조회 수, 앱·웹 이용 비중, 신규·활성 회원 수, 등록 반려동물 수, Pet톡 게시글·댓글·좋아요 수, 신고·이용제한 건수, 직접광고 노출·클릭 및 광고 표시 요청·성공·오류 건수 등이 포함될 수 있습니다.\n\nPetGrow 관리자 통계 화면에는 이용자의 이름, 이메일, 카카오 고유식별정보, IP 주소 또는 개인별 광고 이용내역을 표시하지 않는 것을 원칙으로 합니다. 익명 방문 세션 중복 집계를 위한 해시값은 최대 90일 동안 보관한 후 삭제할 수 있으며, 일자별 집계 통계는 서비스 운영 추이 확인을 위해 최대 24개월간 보관할 수 있습니다. '현재 접속 세션'은 최근 일정 시간 내 신호가 있었던 세션을 바탕으로 한 추정치이며 실제 동시접속자 수와 차이가 있을 수 있습니다. AdMob의 실제 광고 노출·클릭·수익 및 광고 식별자 등은 Google의 시스템에서 별도로 처리될 수 있으며, PetGrow의 자체 통계와 Google 광고 보고서는 서로 다른 데이터입니다." },
   { title: "19-2. 내 주변 Pet 이용후기·좋아요·신고", body: "회원이 내 주변 Pet의 장소에 별점과 이용후기를 작성·수정·삭제하거나 후기 좋아요·신고 기능을 사용하는 경우 장소 식별정보(카카오 장소 ID·장소명), 별점, 후기 내용, 좋아요 및 신고 내역, 작성·처리 시각과 회원 식별을 위한 내부 계정 ID가 처리될 수 있습니다. 다른 이용자에게는 후기 작성자의 서비스 닉네임이 표시될 수 있으나 카카오 고유 식별정보, 이메일 등 로그인 정보는 공개하지 않습니다. 후기 작성 단계에서는 욕설·비속어·음란·혐오 표현, 전화번호·이메일 등 개인정보 노출을 줄이기 위한 자동 필터를 적용할 수 있습니다. 신고된 후기는 운영진이 검토하여 숨김 또는 신고 종결 처리할 수 있으며, 신고 및 처리 이력은 서비스 운영·분쟁 대응·부정 이용 방지를 위해 필요한 기간 동안 보관될 수 있습니다. 회원탈퇴 시 작성 후기 및 후기 좋아요 등 계정에 직접 연결된 기록은 관계 법령상 별도 보관이 필요한 경우를 제외하고 삭제하는 것을 원칙으로 합니다." },
   { title: "20. 개인정보 관련 문의", body: "서비스명: PetGrow\n문의 이메일: help.petgrow@gmail.com" },
-  { title: "21. 개인정보처리방침의 변경", body: "서비스 기능, 개인정보 처리 방식, 외부 서비스 또는 관련 법령·정책 변경에 따라 본 개인정보처리방침이 변경될 수 있습니다. 중요한 변경사항은 PetGrow 웹사이트 또는 애플리케이션을 통해 안내합니다.\n\n이번 개정에는 광고·제휴 문의 시 처리되는 정보와 Google AdMob/Google Mobile Ads SDK를 통한 광고 관련 자동 처리 항목 및 이용자 선택권에 관한 내용을 보다 구체적으로 반영했습니다.\n\n또한 카카오 간편로그인 전 필수 이용약관·개인정보 수집·이용 동의와 선택 광고·마케팅 수신 동의를 구분하여 받을 수 있으며, 광고·제휴 문의 제출 시에는 해당 문의를 위한 개인정보 수집·이용 동의를 별도로 받습니다.\n\n최종 업데이트: 2026년 8월 16일\n시행일: 2026년 8월 16일" },
+  { title: "21. 개인정보처리방침의 변경", body: "서비스 기능, 개인정보 처리 방식, 외부 서비스 또는 관련 법령·정책 변경에 따라 본 개인정보처리방침이 변경될 수 있습니다. 중요한 변경사항은 PetGrow 웹사이트 또는 애플리케이션을 통해 안내합니다.\n\n이번 개정에는 광고·제휴 문의 시 처리되는 정보와 Google AdMob/Google Mobile Ads SDK를 통한 광고 관련 자동 처리 항목 및 이용자 선택권에 관한 내용을 보다 구체적으로 반영했습니다.\n\n또한 카카오 간편로그인 전 필수 이용약관·개인정보 수집·이용 동의와 선택 광고·마케팅 수신 동의를 구분하여 받을 수 있으며, 광고·제휴 문의 제출 시에는 해당 문의를 위한 개인정보 수집·이용 동의를 별도로 받습니다.\n\n내 주변 Pet은 입력한 주소를 검색 기준으로 사용하고, 현재 위치 권한은 지도 표시와 장소까지의 거리 계산을 위한 선택 기능임을 명확히 했습니다. 위치 권한을 거부해도 주소 검색은 이용할 수 있습니다.\n\n최종 업데이트: 2026년 8월 17일\n시행일: 2026년 8월 17일" },
 ];
 const PRIVACY_SECTIONS_EN = [
   { title: "1. Purpose of Processing", body: "PetGrow may process personal information to the extent necessary for: member identification and account management via Kakao Login; keeping you logged in; storing and syncing pet information across devices; saving and re-viewing results such as PetBTI; providing Pet Music playback, likes, comments, and popularity rankings; customer support; improving service stability and quality; delivering ads and measuring ad performance; preventing fraud; and processing account deletion and related data removal." },
@@ -2061,7 +2061,7 @@ const TERMS_SECTIONS_KO = [
   { title: "제13조 (건강 관련 정보)", body: "PetGrow에서 제공하는 건강, 식단, 영양 및 관리 정보는 일반적인 참고정보이며 수의사의 진료, 진단 또는 처방을 대신하지 않습니다. 반려동물에게 이상 증상이나 응급상황이 있는 경우 수의사 또는 동물병원의 진료를 받아야 합니다." },
   { title: "제14조 (Pet사주·PetBTI 등 재미 콘텐츠)", body: "기본 Pet사주, 오늘의 펫운세, 보호자 궁합 및 PetBTI는 재미와 참고를 위한 콘텐츠이며 과학적 진단, 의학적 판단, 성격 진단 또는 미래 결과를 보장하는 자료가 아닙니다. 보호자 궁합을 위해 입력한 보호자 이름과 생년월일은 현재 구현상 결과 계산에만 일시적으로 사용되며 PetGrow 서버 또는 계정에 저장되지 않습니다." },
   { title: "제14조의2 (Pet음악)", body: "① PetGrow는 강아지·고양이 등을 위한 음원 재생, 1곡 반복·전체 반복, 좋아요, 댓글 및 인기순위 기능을 제공할 수 있으며, 인스트루멘탈·보컬 여부와 휴식·수면·놀이·자연 등 음악 특성 태그를 표시할 수 있습니다.\n② Pet음악은 서비스 내 스트리밍 재생을 원칙으로 하며 별도의 음원 다운로드 기능을 제공하지 않을 수 있습니다. 이용자는 서비스에서 제공되는 음원을 무단 추출·복제·재판매 또는 재배포해서는 안 됩니다.\n③ 즐겨찾기·좋아요·댓글 등 이용자 반응은 개인화된 이용 편의 제공 및 서비스 개선에 활용될 수 있습니다. 댓글에는 Pet톡 게시물과 동일하게 타인의 권리 침해, 불법·유해 콘텐츠 등 금지행위 기준이 적용될 수 있습니다.\n④ PetGrow가 직접 등록하는 음원은 서비스 운영에 필요한 이용 권한을 확인한 범위에서 제공하는 것을 원칙으로 합니다." },
-  { title: "제14조의3 (내 주변 Pet 및 장소 이용후기)", body: "① PetGrow는 이용자가 직접 입력한 주소를 기준으로 동물병원·동물약국·펫샵·용품점·미용·호텔·유치원 등 주변 반려동물 관련 장소를 검색해 안내할 수 있습니다. 위치 권한을 허용한 경우 현재 위치는 지도 표시와 각 장소까지의 거리 계산에 사용할 수 있습니다. 장소명·업종·주소·전화번호·거리 등 장소정보는 외부 장소정보 제공자의 검색 결과를 기반으로 하며 PetGrow가 해당 업체의 영업상태·서비스 품질·정보 정확성을 보증하지 않습니다.\n② 현재 위치는 이용자가 위치 권한을 허용한 경우에만 지도 표시와 장소까지의 거리 계산을 위해 일시적으로 사용하며, PetGrow는 현재 구현상 정확한 현재 위치 좌표를 회원 계정이나 장소 후기 DB에 저장하지 않습니다.\n③ 회원은 장소별로 1~5점의 별점과 간단한 이용후기를 작성하고 다른 후기의 좋아요 또는 신고 기능을 이용할 수 있습니다. 후기 내용에 대한 책임은 작성자에게 있으며 욕설·비속어·음란·혐오 표현, 타인의 개인정보, 광고·도배, 허위 또는 권리침해 내용 등 부적절한 내용을 작성해서는 안 됩니다.\n④ PetGrow는 일부 금지 표현과 개인정보 노출을 자동 필터링할 수 있으나 모든 부적절한 내용을 완전히 탐지하는 것을 보장하지 않습니다. 신고된 후기는 운영진 검토 후 숨김 또는 신고 종결 처리될 수 있으며 신고만으로 자동 삭제되지 않습니다.\n⑤ 장소 이용후기는 회원 개인의 경험과 의견이며 해당 업체 또는 PetGrow의 공식 평가·보증이 아닙니다. 진료·건강 관련 판단은 반드시 수의사 등 전문가의 안내를 확인해야 합니다." },
+  { title: "제14조의3 (내 주변 Pet 및 장소 이용후기)", body: "① PetGrow는 이용자가 직접 입력한 주소를 기준으로 동물병원·동물약국·펫샵·용품점·미용·호텔·유치원 등 주변 반려동물 관련 장소를 검색해 안내할 수 있습니다. 위치 권한은 선택사항이며, 허용한 경우 현재 위치는 지도 표시와 각 장소까지의 거리 계산에 사용할 수 있습니다. 위치 권한을 허용하지 않아도 주소 검색은 이용할 수 있습니다. 장소명·업종·주소·전화번호·거리 등 장소정보는 외부 장소정보 제공자의 검색 결과를 기반으로 하며 PetGrow가 해당 업체의 영업상태·서비스 품질·정보 정확성을 보증하지 않습니다.\n② 현재 위치는 이용자가 위치 권한을 허용한 경우에만 지도 표시와 장소까지의 거리 계산을 위해 일시적으로 사용하며, PetGrow는 현재 구현상 정확한 현재 위치 좌표를 회원 계정이나 장소 후기 DB에 저장하지 않습니다.\n③ 회원은 장소별로 1~5점의 별점과 간단한 이용후기를 작성하고 다른 후기의 좋아요 또는 신고 기능을 이용할 수 있습니다. 후기 내용에 대한 책임은 작성자에게 있으며 욕설·비속어·음란·혐오 표현, 타인의 개인정보, 광고·도배, 허위 또는 권리침해 내용 등 부적절한 내용을 작성해서는 안 됩니다.\n④ PetGrow는 일부 금지 표현과 개인정보 노출을 자동 필터링할 수 있으나 모든 부적절한 내용을 완전히 탐지하는 것을 보장하지 않습니다. 신고된 후기는 운영진 검토 후 숨김 또는 신고 종결 처리될 수 있으며 신고만으로 자동 삭제되지 않습니다.\n⑤ 장소 이용후기는 회원 개인의 경험과 의견이며 해당 업체 또는 PetGrow의 공식 평가·보증이 아닙니다. 진료·건강 관련 판단은 반드시 수의사 등 전문가의 안내를 확인해야 합니다." },
   { title: "제15조 (광고 및 외부 서비스)", body: "① PetGrow는 서비스의 유지·운영을 위해 직접광고, 제휴광고 및 Google AdMob 등 외부 광고 서비스를 제공할 수 있습니다.\n② Google Mobile Ads SDK 사용 시 광고 제공, 분석 및 부정행위 방지를 위해 IP 주소, 앱 실행·탭·동영상 조회 등 이용 상호작용, 앱/SDK 진단정보, Android 광고 ID·App Set ID 등 기기 또는 계정 식별자가 Google에 의해 자동으로 처리될 수 있습니다. 구체적인 처리 범위는 앱 버전, SDK 설정 및 이용자의 기기 설정에 따라 달라질 수 있습니다.\n③ 개인 맞춤형 광고가 제공되는 경우 적용 법령과 Google의 동의 관리 절차에 따라 필요한 안내·동의 또는 선택권을 제공합니다. 이용자는 기기 설정에서 광고 ID를 재설정·삭제하거나 광고 개인정보 보호 관련 설정을 변경할 수 있습니다.\n④ PetGrow는 직접광고의 노출·클릭 및 광고 표시 요청·성공·오류 등의 집계 통계를 운영할 수 있습니다. PetGrow 관리자 화면의 자체 통계는 Google AdMob의 실제 광고 노출수·클릭수·수익 보고서와 구분됩니다.\n⑤ 외부 광고 서비스에는 해당 제공자의 이용약관 및 개인정보처리방침이 적용될 수 있습니다." },
   { title: "제16조 (개인정보 보호 및 광고·제휴 문의)", body: "① 회원 및 이용자의 개인정보 처리에 관한 사항은 PetGrow 개인정보처리방침에 따릅니다.\n② 이용자가 광고·제휴 문의 기능을 사용하는 경우 회사/브랜드명, 담당자명, 이메일, 문의 내용과 선택 입력한 연락처·광고 유형·예산 등의 정보가 상담 및 제휴 검토를 위해 처리될 수 있습니다.\n③ 광고·제휴 문의 정보는 상담 목적 달성 후 삭제하는 것을 원칙으로 하며, 이용자는 help.petgrow@gmail.com을 통해 관련 정보의 열람·정정·삭제를 요청할 수 있습니다." },
   { title: "제17조 (지식재산권)", body: "PetGrow가 직접 제작한 로고, 디자인, 문구, 프로그램 및 콘텐츠에 대한 권리는 PetGrow 또는 정당한 권리자에게 귀속됩니다. 이용자는 권리자의 허락 없이 이를 영리 목적으로 복제·배포·판매 또는 변형해서는 안 됩니다." },
@@ -2073,7 +2073,7 @@ const TERMS_SECTIONS_KO = [
   { title: "제23조 (서비스 변경 및 종료)", body: "PetGrow는 서비스 개선이나 기술적·운영상 필요에 따라 서비스의 전부 또는 일부를 변경할 수 있습니다. 중요한 변경 또는 서비스 종료가 예정된 경우 가능한 범위에서 사전에 안내합니다." },
   { title: "제24조 (책임의 제한)", body: "천재지변, 통신장애, 카카오 인증 서비스 장애 또는 PetGrow가 합리적으로 통제하기 어려운 사유로 서비스 이용에 문제가 발생한 경우 관련 법령에서 허용하는 범위에서 책임이 제한될 수 있습니다. 본 조는 관련 법령상 PetGrow가 부담해야 하는 책임을 부당하게 배제하는 것으로 해석되지 않습니다." },
   { title: "제25조 (분쟁 해결 및 준거법)", body: "본 약관은 대한민국 법령을 준거법으로 합니다. PetGrow와 이용자 사이에 분쟁이 발생하는 경우 상호 원만한 해결을 위해 노력하며 관할법원은 관계 법령에서 정하는 바에 따릅니다." },
-  { title: "부칙", body: "본 약관은 2026년 8월 16일부터 시행합니다.\n최종 업데이트: 2026년 8월 16일" },
+  { title: "부칙", body: "본 약관은 2026년 8월 17일부터 시행합니다.\n최종 업데이트: 2026년 8월 17일" },
 ];
 const TERMS_SECTIONS_EN = [
   { title: "Article 1 (Purpose)", body: "These Terms set out the conditions of use for the website, mobile application, and related services provided by PetGrow, and the rights, obligations, and responsibilities of PetGrow and users." },
@@ -2266,7 +2266,7 @@ function LoginScreen({ onGoTerms, onGoPrivacy }) {
 
       <Modal open={!!detail} onClose={()=>setDetail(null)} width={520}>
         {detail==="terms" && <><h3>이용약관 동의</h3><p className="consent-detail-text">PetGrow의 회원가입, 서비스 이용, 계정 및 데이터 저장·동기화, Pet톡 운영, 광고 및 외부서비스 등에 관한 이용약관에 동의합니다.</p><button className="bg-btn" onClick={()=>{setTermsOk(true);setDetail(null)}}>동의하고 닫기</button></>}
-        {detail==="privacy" && <><h3>개인정보 수집·이용 동의</h3><div className="consent-detail-text"><b>수집 항목</b><br/>카카오 사용자 고유 식별정보, 실제 동의받아 제공되는 닉네임·프로필 이미지, 반려동물 이름·종류·품종·생년월일·성별·현재 체중·프로필 사진, PetBTI 결과 및 저장되는 서비스 정보, 내 주변 Pet 후기·별점·좋아요·신고 기록. 현재 위치 좌표는 지도 표시와 장소까지의 거리 계산에 일시적으로 사용하며 계정에 저장하지 않습니다.<br/><br/><b>이용 목적</b><br/>회원 식별·계정 관리, 반려동물 프로필 및 PetGrow 서비스 제공, 계정별 데이터 저장·동기화<br/><br/><b>보유 기간</b><br/>회원 탈퇴 시까지 또는 처리 목적 달성 시까지. 관계 법령상 보관 의무가 있는 경우 해당 기간 동안 보관할 수 있습니다.<br/><br/><b>동의 거부권</b><br/>동의를 거부할 수 있으나 필수 정보이므로 회원 서비스 이용이 제한될 수 있습니다.</div><button className="bg-btn" onClick={()=>{setPrivacyOk(true);setDetail(null)}}>동의하고 닫기</button></>}
+        {detail==="privacy" && <><h3>개인정보 수집·이용 동의</h3><div className="consent-detail-text"><b>수집 항목</b><br/>카카오 사용자 고유 식별정보, 실제 동의받아 제공되는 닉네임·프로필 이미지, 반려동물 이름·종류·품종·생년월일·성별·현재 체중·프로필 사진, PetBTI 결과 및 저장되는 서비스 정보, 내 주변 Pet 후기·별점·좋아요·신고 기록. <br/><br/><b>선택적 위치 권한</b><br/>현재 위치는 필수 회원정보가 아닙니다. 위치 권한을 허용한 경우에만 지도에 내 위치를 표시하고 장소까지의 거리를 계산하기 위해 일시적으로 사용하며 계정에 저장하지 않습니다. 위치 권한을 거부해도 주소 검색과 회원 기능은 이용할 수 있습니다.<br/><br/><b>이용 목적</b><br/>회원 식별·계정 관리, 반려동물 프로필 및 PetGrow 서비스 제공, 계정별 데이터 저장·동기화<br/><br/><b>보유 기간</b><br/>회원 탈퇴 시까지 또는 처리 목적 달성 시까지. 관계 법령상 보관 의무가 있는 경우 해당 기간 동안 보관할 수 있습니다.<br/><br/><b>동의 거부권</b><br/>동의를 거부할 수 있으나 필수 정보이므로 회원 서비스 이용이 제한될 수 있습니다.</div><button className="bg-btn" onClick={()=>{setPrivacyOk(true);setDetail(null)}}>동의하고 닫기</button></>}
         {detail==="marketing" && <><h3>광고·마케팅 정보 수신 동의 (선택)</h3><div className="consent-detail-text">PetGrow의 이벤트, 새 기능, 제휴 또는 프로모션 관련 안내를 받을 수 있도록 선택 동의를 받습니다. 동의하지 않아도 기본 서비스 이용에는 제한이 없습니다. 실제 마케팅 발송 기능을 운영하는 경우 동의한 범위에서만 이용합니다.</div><button className="bg-btn" onClick={()=>{setMarketingOk(true);setDetail(null)}}>동의하고 닫기</button></>}
       </Modal>
     </div>
@@ -4602,7 +4602,7 @@ const GlobalStyle = () => (
   .cm-search-btn,.cm-write-btn{display:flex!important;align-items:center;justify-content:center;gap:5px;white-space:nowrap}
   .my-activity-stack{display:grid;gap:10px;margin-top:12px}.my-menu-card-wide{width:100%;display:flex}.my-accordion-panel{margin:0 0 4px!important;animation:petgrow-soft-in .16s ease-out both}
   .my-liked-music-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #edf2ee}.my-liked-music-row img,.my-liked-music-row>span{width:44px;height:44px;border-radius:11px;object-fit:cover;display:grid;place-items:center;background:#eef6f0}.my-liked-music-row b{display:block;font-size:13px}.my-liked-music-row small{display:block;color:var(--sub);font-size:10px;margin-top:3px}
-   .tip-answer-panel{margin-top:12px;padding:15px 16px 15px 18px;border:1px solid #d7e7da;border-left:4px solid #8fbc99;border-radius:12px;background:#eef6f0;color:var(--text);font-size:13px;line-height:1.75;box-shadow:0 3px 12px rgba(48,75,56,.05)}
+   .tip-answer-panel{margin-top:12px;padding:15px 16px 15px 18px;border:1px solid #EADFD6;border-left:4px solid #D8B49B;border-radius:12px;background:#FFF8F3;color:var(--text);font-size:13px;line-height:1.75;box-shadow:0 3px 12px rgba(82,62,46,.035)}
   .admin-entry-root .admin-reports-page:has(.admin-gate){min-height:calc(100dvh - 250px)!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:24px 16px!important}.admin-entry-root .admin-gate{margin:auto!important;width:min(520px,calc(100% - 12px))!important}
   body:has(.admin-gate) footer{margin:18px auto 14px!important;text-align:center!important;max-width:680px!important}
   @media(max-width:768px){.cm-search-actions{grid-template-columns:minmax(0,1fr) auto}.cm-write-btn{grid-column:1/-1;width:100%}.nearby-responsive-categories .responsive-category-primary{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.nearby-responsive-categories .responsive-category-primary .bg-chip{min-width:0;padding:9px 5px!important;font-size:11px!important;justify-content:center}.nearby-responsive-categories .responsive-category-more-panel{grid-template-columns:repeat(3,minmax(0,1fr))!important}.my-menu-grid-top{margin-bottom:10px}.admin-entry-root .admin-reports-page:has(.admin-gate){min-height:calc(100dvh - 290px)!important;padding-top:18px!important;padding-bottom:18px!important}}
@@ -4618,16 +4618,17 @@ const GlobalStyle = () => (
   .nearby-cats{display:flex;gap:7px;flex-wrap:wrap;overflow:visible;padding:2px 0 12px}.nearby-cats::-webkit-scrollbar{display:none}.nearby-cats button{border:1px solid #DDE8DF;background:#fff;border-radius:999px;padding:9px 13px;font-weight:750;color:#657269;white-space:nowrap;cursor:pointer}.nearby-cats button.active{background:#4F8A5B;border-color:#4F8A5B;color:#fff}
   .nearby-map-card{padding:0;overflow:hidden;position:relative;z-index:0;isolation:isolate;contain:paint}
   body .leaflet-container{isolation:isolate;} .nearby-map-card{transform:translateZ(0)}.nearby-map-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #EDF1ED}.nearby-map-head>div{display:flex;flex-direction:column;gap:2px}.nearby-map-head small{color:var(--sub)}.nearby-live-pill{font-size:11px;font-weight:850;color:#397447;background:#EDF7EF;border-radius:999px;padding:7px 9px}
-  .nearby-map{height:410px;position:relative;z-index:0;overflow:hidden;background:linear-gradient(145deg,#EEF5EF,#F8FBF8)}.nearby-map-card .leaflet-container{position:relative!important;z-index:0!important;width:100%;height:100%;}.nearby-map-card .leaflet-control-container,.nearby-map-card .leaflet-pane{max-width:100%;}.nearby-map-card .leaflet-popup-pane{z-index:700;}.nearby-map-card .leaflet-control{z-index:800;}.nearby-map-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:7px;color:#607067;padding:20px}.nearby-map-fallback .icon{width:38px;color:#4F8A5B}.nearby-map-fallback span{font-size:12px;max-width:390px;line-height:1.6}
+  .nearby-map{height:430px;position:relative;z-index:0;overflow:hidden;background:linear-gradient(145deg,#EEF5EF,#F8FBF8)}.nearby-map-card .leaflet-container{position:relative!important;z-index:0!important;width:100%;height:100%;}.nearby-map-card .leaflet-control-container,.nearby-map-card .leaflet-pane{max-width:100%;}.nearby-map-card .leaflet-popup-pane{z-index:700;}.nearby-map-card .leaflet-control{z-index:800;}.nearby-map-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:7px;color:#607067;padding:20px}.nearby-map-fallback .icon{width:38px;color:#4F8A5B}.nearby-map-fallback span{font-size:12px;max-width:390px;line-height:1.6}
   .nearby-search-pin{display:grid;place-items:center;position:relative}.nearby-search-pin span{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#fff;border:3px solid #7B8790;color:#59656E;font-size:13px;font-weight:900;box-shadow:0 3px 12px rgba(44,54,61,.2)}.nearby-search-pin b{margin-top:8px;background:#5C6770;color:#fff;border-radius:999px;padding:5px 8px;font-size:10px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.12)}.nearby-me-pin{display:grid;place-items:center;position:relative}.nearby-me-pin span{width:18px;height:18px;border-radius:50%;background:#4F8A5B;border:4px solid #fff;box-shadow:0 0 0 9px rgba(79,138,91,.18),0 3px 12px rgba(44,83,53,.28);animation:nearbyPulse 1.8s ease-out infinite}.nearby-me-pin b{margin-top:10px;background:#26372C;color:#fff;border-radius:999px;padding:5px 8px;font-size:10px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.15)}
   @keyframes nearbyPulse{0%{box-shadow:0 0 0 0 rgba(79,138,91,.3),0 3px 12px rgba(44,83,53,.28)}70%{box-shadow:0 0 0 14px rgba(79,138,91,0),0 3px 12px rgba(44,83,53,.28)}100%{box-shadow:0 0 0 0 rgba(79,138,91,0),0 3px 12px rgba(44,83,53,.28)}}
   .nearby-map-marker{width:34px;height:40px;border:0;background:#fff;border-radius:16px 16px 16px 3px;transform:rotate(-45deg);box-shadow:0 6px 16px rgba(35,54,40,.2);display:grid;place-items:center;cursor:pointer}.nearby-map-marker span{transform:rotate(45deg);width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#4F8A5B;color:#fff;font-size:11px;font-weight:900}
   .nearby-message{margin:10px 0;padding:11px 13px;border-radius:12px;background:#FFF8E8;color:#8A6920;font-size:12px}
   .nearby-results-head{display:flex;align-items:flex-end;justify-content:space-between;margin:18px 2px 10px}.nearby-results-head>div{display:flex;align-items:center;gap:8px}.nearby-results-head h2{margin:0;font-size:20px}.nearby-results-head span{font-size:11px;background:#EDF5EE;color:#4F8A5B;border-radius:999px;padding:4px 7px;font-weight:800}.nearby-results-head small{color:var(--sub)}
-  .nearby-list{display:grid;gap:10px}.nearby-place{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;padding:16px;transition:.18s ease;cursor:pointer}.nearby-place:hover,.nearby-place.selected{border-color:#9FC4A6;box-shadow:0 10px 24px rgba(61,99,70,.09);transform:translateY(-1px)}.nearby-rank{width:30px;height:30px;border-radius:10px;background:#EFF6F0;color:#4F8A5B;display:grid;place-items:center;font-size:12px;font-weight:900}.nearby-place-title{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.nearby-place-title h3{font-size:16px;margin:0;letter-spacing:-.03em}.nearby-place-title strong{color:#4F8A5B;font-size:13px;white-space:nowrap}.nearby-place-meta{display:grid;gap:4px;margin-top:7px;font-size:12.5px;color:#56645B;line-height:1.5}.nearby-place-main>small{display:block;color:#89948C;margin-top:6px;font-size:10.5px}.nearby-place-actions{display:flex;gap:6px}.nearby-place-actions a{border-radius:10px;padding:8px 10px;background:#F1F6F2;color:#426F4B;text-decoration:none;font-size:11px;font-weight:800}.nearby-empty{text-align:center;padding:34px;color:var(--sub)}.nearby-disclaimer{font-size:11px;color:#8B948E;line-height:1.6;margin:14px 4px}
+  .nearby-list{display:grid;gap:10px}.nearby-pagination{display:flex;justify-content:center;align-items:center;gap:6px;flex-wrap:wrap;margin:18px 0 4px}.nearby-pagination button{min-width:36px;height:36px;border:1px solid #DCE7DE;border-radius:10px;background:#fff;color:#55635A;font:inherit;font-size:11px;font-weight:800;cursor:pointer}.nearby-pagination button.active{background:#4F8A5B;color:#fff;border-color:#4F8A5B}.nearby-pagination button:disabled{opacity:.38;cursor:default}.nearby-place{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;padding:16px;transition:.18s ease;cursor:pointer}.nearby-place:hover,.nearby-place.selected{border-color:#9FC4A6;box-shadow:0 10px 24px rgba(61,99,70,.09);transform:translateY(-1px)}.nearby-rank{width:30px;height:30px;border-radius:10px;background:#EFF6F0;color:#4F8A5B;display:grid;place-items:center;font-size:12px;font-weight:900}.nearby-place-title{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:12px;align-items:start}.nearby-place-title h3{font-size:16px;margin:0;letter-spacing:-.03em}.nearby-place-title strong{color:#4F8A5B;font-size:13px;white-space:nowrap;text-align:right;min-width:150px}.nearby-place-meta{display:grid;gap:4px;margin-top:7px;font-size:12.5px;color:#56645B;line-height:1.5}.nearby-place-main>small{display:block;color:#89948C;margin-top:6px;font-size:10.5px}.nearby-place-actions{display:flex;gap:6px}.nearby-place-actions a{border-radius:10px;padding:8px 10px;background:#F1F6F2;color:#426F4B;text-decoration:none;font-size:11px;font-weight:800}.nearby-empty{text-align:center;padding:34px;color:var(--sub)}.nearby-disclaimer{font-size:11px;color:#8B948E;line-height:1.6;margin:14px 4px}
   .nearby-type-row{margin-bottom:6px}.nearby-type-badge{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:5px 9px;font-size:10.5px;font-weight:900;border:1px solid transparent}.nearby-type-hospital{background:#EEF4FF;color:#3765A5;border-color:#D7E5FA}.nearby-type-pharmacy{background:#F2F0FF;color:#6552A7;border-color:#E3DDF9}.nearby-type-shop{background:#FFF4E8;color:#A36328;border-color:#F7DFC3}.nearby-type-grooming{background:#FFF0F5;color:#A45170;border-color:#F5D4E0}.nearby-type-hotel{background:#EEF8F2;color:#3F7B51;border-color:#D5EBD9}.nearby-type-other{background:#F1F4F1;color:#617067;border-color:#E1E7E2}.nearby-map-marker{position:relative}.nearby-map-marker i{position:absolute;right:-6px;top:-6px;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:#26372C;color:#fff;font-style:normal;font-size:9px;font-weight:900}.nearby-map-marker span{font-size:15px}.nearby-review-panel{margin-top:18px;padding:18px}.nearby-review-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.nearby-review-head h2{font-size:18px;margin:8px 0 4px}.nearby-review-head p{margin:0;color:var(--sub);font-size:12px}.nearby-review-head p b{color:#D99528}.nearby-review-compose{margin-top:14px;padding:14px;border-radius:16px;background:#F8FBF8;border:1px solid #E4ECE5}.nearby-stars{display:flex;gap:4px;margin-bottom:9px}.nearby-stars button{border:0;background:transparent;color:#D9DDD9;font-size:24px;padding:0;cursor:pointer}.nearby-stars button.active{color:#F0B43E}.nearby-review-compose textarea{min-height:86px;resize:vertical}.nearby-review-compose-foot{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:9px}.nearby-review-compose-foot small{color:var(--sub);font-size:10.5px}.nearby-review-list{display:grid;gap:9px;margin-top:14px}.nearby-review-item{padding:13px 14px;border:1px solid #E4EAE5;border-radius:15px;background:#fff;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}.nearby-review-item:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(61,99,70,.06)}.nearby-review-item.mine{border-color:#CFE2D3;background:linear-gradient(180deg,#fff,#FBFDFB)}.nearby-review-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px}.nearby-review-meta>b{font-size:12px;display:inline-flex;align-items:center;gap:5px}.nearby-review-meta b em{font-style:normal;font-size:9px;color:#4F8A5B;background:#EAF4EC;border-radius:999px;padding:3px 6px}.nearby-review-meta span{color:#E0A62E;letter-spacing:.04em}.nearby-review-meta small{margin-left:auto;color:#919A94}.nearby-review-item p{font-size:12.5px;line-height:1.65;margin:9px 0;color:#4E5B52;white-space:pre-wrap}.nearby-review-actions{display:flex;gap:6px}.nearby-review-actions button{border:1px solid #E0E8E1;background:#FAFCFA;border-radius:9px;padding:6px 9px;font-size:10.5px;font-weight:800;color:#657168;cursor:pointer}.nearby-review-actions button.liked{background:#FFF0F4;border-color:#F2CDD8;color:#CC5470}.nearby-review-actions button.danger{color:#A65353;background:#FFF8F8;border-color:#F0DADA}.nearby-review-edit{margin:10px 0;padding:12px;border-radius:13px;background:#F7FAF7;border:1px solid #E1EAE2}.nearby-review-edit textarea{min-height:82px;resize:vertical}.nearby-review-edit-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:8px}.nearby-review-edit-actions .bg-btn{min-width:74px;padding:8px 12px}.nearby-review-empty{text-align:center;padding:22px;color:var(--sub);font-size:12px}
   .admin-menu-analytics{margin-top:14px;padding:18px}.admin-menu-analytics-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:14px}.admin-menu-analytics-head h3{margin:0;font-size:18px}.admin-menu-analytics-head small{color:var(--sub)}.admin-menu-row{display:grid;grid-template-columns:110px 1fr 72px;gap:10px;align-items:center;margin:10px 0}.admin-menu-name{font-size:12px;font-weight:800}.admin-menu-bar{height:9px;background:#EDF1ED;border-radius:999px;overflow:hidden}.admin-menu-bar i{display:block;height:100%;background:linear-gradient(90deg,#9FC4A6,#4F8A5B);border-radius:inherit}.admin-menu-value{text-align:right;font-size:11px;color:#657269}.admin-menu-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#315B39;font-weight:850}.admin-menu-period-chip{flex:0 0 auto!important;min-width:54px!important;width:auto!important;height:32px!important;padding:0 11px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;font-size:11px!important;line-height:1!important;white-space:nowrap!important}.my-accordion-panel{overflow:hidden;animation:myAccordionIn .2s ease both}.my-menu-card.is-open{box-shadow:0 0 0 2px rgba(79,138,91,.14),0 9px 22px rgba(60,70,55,.07);transform:translateY(-1px)}@keyframes myAccordionIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}.admin-report-period{margin-top:10px;padding:10px 12px;border-radius:12px;background:#F4F8F4;border:1px solid #E0EAE2;font-size:12px;color:#536158;font-weight:750}.admin-report-period b{color:#315B39}.admin-reporting-tabs button:disabled{opacity:.55;cursor:wait}@media(max-width:700px){.admin-menu-analytics-head{align-items:flex-start!important}.admin-menu-analytics-head>div{min-width:0;flex:1}.admin-menu-analytics-head small{display:block;font-size:11px;line-height:1.45;word-break:keep-all}.admin-menu-period-chip{min-width:50px!important;height:29px!important;padding:0 9px!important;font-size:10px!important}.admin-menu-row{grid-template-columns:82px 1fr 62px!important;gap:7px!important}.admin-menu-name{font-size:11px!important}.admin-menu-value{font-size:10px!important}}
-  @media(max-width:700px){.nearby-page{padding:12px 12px 36px}.nearby-hero{padding:18px;display:grid}.nearby-hero h1{font-size:25px}.nearby-locate-btn{width:100%;justify-content:center}.nearby-map{height:330px}.nearby-place{grid-template-columns:auto 1fr}.nearby-place-actions{grid-column:2;justify-content:flex-start}.nearby-place-title{display:block}.nearby-place-title strong{display:block;margin-top:3px}.nearby-review-head{display:grid}.nearby-review-head .bg-btn{width:100%}.nearby-review-compose-foot{align-items:flex-start;flex-direction:column}.nearby-review-compose-foot .bg-btn{width:100%}.nearby-review-meta small{margin-left:0;width:100%}.admin-menu-row{grid-template-columns:82px 1fr 60px}}
+  .nearby-location-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}.nearby-location-btn{border:1px solid #CFE2D3;background:#fff;color:#3E7650;border-radius:999px;padding:8px 12px;font:inherit;font-size:11px;font-weight:800;cursor:pointer}.nearby-location-btn:hover{background:#F0F7F1}.nearby-location-btn:focus-visible{outline:2px solid #88B894;outline-offset:2px}
+  @media(max-width:700px){.nearby-location-controls{width:100%;justify-content:flex-start}.nearby-map-head{align-items:flex-start;flex-wrap:wrap}.nearby-page{padding:12px 12px 36px}.nearby-hero{padding:18px;display:grid}.nearby-hero h1{font-size:25px}.nearby-locate-btn{width:100%;justify-content:center}.nearby-map{height:330px}.nearby-place{grid-template-columns:auto 1fr}.nearby-place-actions{grid-column:2;justify-content:flex-start}.nearby-place-title{display:block}.nearby-place-title strong{display:block;margin-top:3px;text-align:left;min-width:0}.nearby-review-head{display:grid}.nearby-review-head .bg-btn{width:100%}.nearby-review-compose-foot{align-items:flex-start;flex-direction:column}.nearby-review-compose-foot .bg-btn{width:100%}.nearby-review-meta small{margin-left:0;width:100%}.admin-menu-row{grid-template-columns:82px 1fr 60px}}
 
 
     /* 2026-08-17 PetGrow app-dashboard refresh */
@@ -6774,6 +6775,9 @@ function TipCard({ tip, lang, bookmarked, onToggleBookmark }) {
   const categoryLabel = t.tipCategoryLabels[tip.category];
   const categoryColors = { dog: "#EEF8E9", cat: "#FFF1F5", health: "#EAF4FF", life: "#F5F8F4", food: "#FFF0E5", training: "#F1F5F1", safety: "#E9F8F5", grooming: "#FCEEF9" };
   const categoryText = { dog: "#4F8A5B", cat: "#D66B8D", health: "#4C86B8", life: "#A37B18", food: "#C8733C", training: "#7965B3", safety: "#388C7D", grooming: "#B45D9A" };
+  const answerColors = { dog: "#F7FBF5", cat: "#FFF7FA", health: "#F6FAFF", life: "#FBFAF3", food: "#FFF8F3", training: "#F8F7FC", safety: "#F4FBF9", grooming: "#FFF7FC" };
+  const answerBorders = { dog: "#D5E8D0", cat: "#F1D9E2", health: "#D7E8F6", life: "#E9E3C7", food: "#F2DCCB", training: "#E0DAF1", safety: "#D1EAE4", grooming: "#EED8E8" };
+  const answerAccents = { dog: "#9FC59A", cat: "#DFA2B6", health: "#94B9D6", life: "#C7AE64", food: "#DEA77F", training: "#AFA2D5", safety: "#84BDB1", grooming: "#D39BC5" };
   return (
     <div className="bg-surface-card" style={{ padding: "16px 18px", background: categoryColors[tip.category] || "var(--surface)" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
@@ -6790,7 +6794,7 @@ function TipCard({ tip, lang, bookmarked, onToggleBookmark }) {
         </button>
       </div>
       {open && (
-        <div className="tip-answer-panel">{tip.body[lang]}</div>
+        <div className="tip-answer-panel" style={{ background: answerColors[tip.category] || "#FFF8F3", borderColor: answerBorders[tip.category] || "#EADFD6", borderLeftColor: answerAccents[tip.category] || "#D8B49B" }}>{tip.body[lang]}</div>
       )}
     </div>
   );
@@ -9181,6 +9185,8 @@ function NearbyPetPage(){
   const overlays=useRef([]);
   const [pos,setPos]=useState(null);
   const [items,setItems]=useState([]);
+  const [page,setPage]=useState(1);
+  const pageSize=10;
   const [cat,setCat]=useState("all");
   const [area,setArea]=useState("");
   const [loading,setLoading]=useState(false);
@@ -9210,14 +9216,45 @@ function NearbyPetPage(){
 
   // 다른 메뉴로 이동할 때 Leaflet 인스턴스를 즉시 제거해 지도가 다른 화면 위에 남는 현상을 방지합니다.
   useEffect(()=>()=>{
-    overlays.current.forEach(o=>{try{mapObj.current?.removeLayer(o)}catch{}});
+    overlays.current.forEach(o=>{try{o?.setMap?.(null)}catch{}try{mapObj.current?.removeLayer?.(o)}catch{}});
     overlays.current=[];
-    if(mapObj.current){try{mapObj.current.off();mapObj.current.remove();}catch{}mapObj.current=null;}
+    if(mapObj.current){try{mapObj.current.off?.();mapObj.current.remove?.();}catch{}mapObj.current=null;}
     if(mapRef.current) mapRef.current.innerHTML="";
   },[]);
 
   const loadMap=async(center,places,userPos=pos,showSearchPin=true)=>{
     if(!mapRef.current)return;
+    const kakaoJsKey=String(import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY||"").trim();
+    if(kakaoJsKey){
+      try{
+        if(!window.kakao?.maps){
+          await new Promise((resolve,reject)=>{
+            const old=document.getElementById("petgrow-kakao-map-sdk");
+            const done=()=>window.kakao?.maps?.load?window.kakao.maps.load(resolve):resolve();
+            if(old){if(window.kakao?.maps)return done();old.addEventListener("load",done,{once:true});old.addEventListener("error",reject,{once:true});return;}
+            const sc=document.createElement("script");sc.id="petgrow-kakao-map-sdk";sc.async=true;sc.src=`https://dapi.kakao.com/v2/maps/sdk.js?appkey=${encodeURIComponent(kakaoJsKey)}&autoload=false`;sc.onload=done;sc.onerror=reject;document.head.appendChild(sc);
+          });
+        }else if(window.kakao?.maps?.load){await new Promise(resolve=>window.kakao.maps.load(resolve));}
+        const K=window.kakao?.maps;if(K){
+          mapRef.current.innerHTML="";
+          overlays.current.forEach(o=>{try{o?.setMap?.(null)}catch{}});overlays.current=[];
+          const centerPos=new K.LatLng(center.lat,center.lng);
+          const map=new K.Map(mapRef.current,{center:centerPos,level:4});mapObj.current=map;mapObj.current.__engine="kakao";
+          const makeOverlay=(lat,lng,html,z=3,click)=>{const el=document.createElement("div");el.innerHTML=html;const node=el.firstElementChild;if(click)node.addEventListener("click",click);const ov=new K.CustomOverlay({position:new K.LatLng(lat,lng),content:node,yAnchor:1,zIndex:z});ov.setMap(map);overlays.current.push(ov);return ov;};
+          if(showSearchPin)makeOverlay(center.lat,center.lng,'<div class="nearby-search-pin"><span>⌖</span><b>검색 주소</b></div>',8);
+          if(userPos&&Number.isFinite(Number(userPos.lat))&&Number.isFinite(Number(userPos.lng)))makeOverlay(userPos.lat,userPos.lng,'<div class="nearby-me-pin"><span></span><b>내 위치</b></div>',9);
+          const bounds=new K.LatLngBounds();bounds.extend(centerPos);
+          places.forEach((p,i)=>{
+            const html=`<button type="button" class="nearby-map-marker nearby-map-marker--${p.typeKey||"other"}"><span>${p.typeIcon||"🐾"}</span><i>${i+1}</i></button>`;
+            makeOverlay(p.lat,p.lng,html,5,()=>{setSelected(p);document.getElementById(`nearby-place-${p.id}`)?.scrollIntoView({behavior:"smooth",block:"center"});});
+            bounds.extend(new K.LatLng(p.lat,p.lng));
+          });
+          if(places.length)map.setBounds(bounds,40,40,40,40);
+          window.setTimeout(()=>map.relayout?.(),60);
+          return;
+        }
+      }catch(e){console.warn("Kakao map load failed; using fallback map",e);}
+    }
     if(!window.L){
       if(!document.getElementById("petgrow-leaflet-css")){
         const link=document.createElement("link");link.id="petgrow-leaflet-css";link.rel="stylesheet";link.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(link);
@@ -9280,7 +9317,7 @@ function NearbyPetPage(){
     const cacheKey=`${coords?`${Number(coords.lat).toFixed(4)},${Number(coords.lng).toFixed(4)}`:manualArea.trim()}|${nextCat}`;
     const cached=nearbyCache.current.get(cacheKey);
     if(cached){
-      setItems(cached.items||[]);setSelected(cached.items?.[0]||null);setSearchRadius(Number(cached.searchRadius)||1000);setWithin1km(Number(cached.within1km)||0);
+      setItems(cached.items||[]);setPage(1);setSelected(cached.items?.[0]||null);setSearchRadius(Number(cached.searchRadius)||1000);setWithin1km(Number(cached.within1km)||0);
       if(cached.searchCenter)loadMap(cached.searchCenter,cached.items||[],pos).catch(()=>{});
       if(!background)return;
     }
@@ -9301,9 +9338,9 @@ function NearbyPetPage(){
       }else j=await fetchNearbyCategory(nextCat,coords,manualArea);
       nearbyCache.current.set(cacheKey,j);
       if(seq!==requestSeq.current && !background)return;
-      setItems(j.items||[]);setSelected(j.items?.[0]||null);if(Number(j.searchRadius))setSearchRadius(Number(j.searchRadius));setWithin1km(Number(j.within1km)||0);
+      setItems(j.items||[]);setPage(1);setSelected(j.items?.[0]||null);if(Number(j.searchRadius))setSearchRadius(Number(j.searchRadius));setWithin1km(Number(j.within1km)||0);
       if(j.searchCenter)loadMap(j.searchCenter,j.items||[],pos).catch(()=>{});
-      if(!(j.items||[]).length)setMsg("검색 결과가 없어요. 다른 카테고리나 지역명으로 검색해보세요.");
+      if(j.warning)setMsg(j.warning); else if(!(j.items||[]).length)setMsg("검색 결과가 없어요. 주소는 인식했지만 주변 업체 정보를 찾지 못했어요. 다른 카테고리를 눌러보거나 주소를 조금 더 구체적으로 입력해 주세요.");
     }catch(e){if(!cached)setMsg(e.message)}finally{if(seq===requestSeq.current)setLoading(false)}
   };
   const locate=()=>{
@@ -9315,8 +9352,8 @@ function NearbyPetPage(){
         setPositionAccuracy(Math.round(Number(p.coords.accuracy)||0));
         setPos(c);setMsg("");
         if(items.length){
-          const updated=items.map(x=>({...x,userDistance:calcClientDistance(c.lat,c.lng,Number(x.lat),Number(x.lng))})).sort((a,b)=>(a.distance??1e12)-(b.distance??1e12));
-          setItems(updated);
+          const updated=items.map(x=>({...x,userDistance:calcClientDistance(c.lat,c.lng,Number(x.lat),Number(x.lng))})).sort((a,b)=>(a.userDistance??1e12)-(b.userDistance??1e12));
+          setItems(updated);setPage(1);
           const mc=mapObj.current?.getCenter?.();if(mc)loadMap({lat:mc.lat,lng:mc.lng},updated,c).catch(()=>{});
         } else { loadMap(c,[],c,false).catch(()=>{}); }
       },
@@ -9347,6 +9384,9 @@ function NearbyPetPage(){
   const saveEditReview=async()=>{const text=editingText.trim();if(!editingReviewId||!text)return window.alert("후기 내용을 입력해 주세요.");setReviewBusy(true);try{const r=await fetch('/api/nearby-reviews?action=update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reviewId:editingReviewId,rating:editingRating,content:text})});const j=await r.json();if(!r.ok)throw new Error(j.error||'후기를 수정하지 못했어요.');cancelEditReview();await loadReviews(selected);}catch(e){window.alert(e.message)}finally{setReviewBusy(false)}};
   const deleteReview=async(rvw)=>{if(!window.confirm("이 후기를 삭제할까요? 삭제한 후기는 복구할 수 없어요."))return;setReviewBusy(true);try{const r=await fetch('/api/nearby-reviews?action=delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reviewId:rvw.id})});const j=await r.json();if(!r.ok)throw new Error(j.error||'후기를 삭제하지 못했어요.');if(editingReviewId===rvw.id)cancelEditReview();await loadReviews(selected);}catch(e){window.alert(e.message)}finally{setReviewBusy(false)}};
   const reportReview=async(rvw)=>{const reason=window.prompt("신고 사유를 간단히 입력해주세요. (욕설·광고·개인정보·허위정보 등)","부적절한 내용");if(reason===null)return;try{const r=await fetch('/api/nearby-reviews?action=report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reviewId:rvw.id,reason:'other',detail:reason})});const j=await r.json();if(!r.ok)throw new Error(j.error||'신고하지 못했어요.');window.alert(j.already?"이미 신고한 후기예요.":"신고가 접수됐어요. 운영진이 확인할게요.");}catch(e){window.alert(e.message)}};
+  const totalPages=Math.max(1,Math.ceil(items.length/pageSize));
+  const safePage=Math.min(page,totalPages);
+  const pageItems=items.slice((safePage-1)*pageSize,safePage*pageSize);
 
   return <div className="nearby-page">
     <section className="nearby-hero bg-card">
@@ -9355,15 +9395,15 @@ function NearbyPetPage(){
     <div className="nearby-search-row"><input className="bg-input" value={area} onChange={e=>setArea(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"){if(area.trim())search(cat,null,area);else setMsg("검색할 주소를 입력해 주세요.");}}} placeholder="구·동·도로명·지번 검색 (예: 강남구, 역삼동, 역삼동 695-26)"/><button className="bg-btn" onClick={()=>area.trim()?search(cat,null,area):setMsg("검색할 주소를 입력해 주세요.")}>{loading?"검색 중…":"검색"}</button></div>
     <ResponsiveCategoryMenu className="nearby-responsive-categories" primaryCount={3} items={cats.map(([id,label])=>({id,label}))} activeId={cat} onSelect={setCat} lang={"ko"} />
     <section className="nearby-map-card bg-card">
-      <div className="nearby-map-head"><div><b>검색 주소 기준</b><small>{pos?"검색 결과는 입력한 주소 기준 · 민트색 표시는 내 위치":"검색 결과는 입력한 주소 기준 · 위치 권한을 허용하면 내 위치도 함께 표시돼요"}</small></div>{pos&&<span className="nearby-live-pill">● 내 위치 표시</span>}</div>
+      <div className="nearby-map-head"><div><b>검색 주소 기준</b><small>{pos?"검색 결과는 입력한 주소 기준 · 민트색 표시는 내 위치":"검색 결과는 입력한 주소 기준 · 위치 권한을 허용하면 내 위치도 함께 표시돼요"}</small></div><div className="nearby-location-controls">{pos&&<span className="nearby-live-pill">● 내 위치 표시</span>}<button type="button" className="nearby-location-btn" onClick={locate}>{pos?"위치 다시 확인":"내 위치 표시"}</button></div></div>
       <div ref={mapRef} className="nearby-map"><div className="nearby-map-fallback"><MapPinIcon/><b>주소를 검색해 주세요</b><span>검색한 주소 주변 업체가 지도에 표시되고, 위치 허용 시 내 위치도 함께 표시됩니다.</span></div></div>
     </section>
     {msg&&<div className="nearby-message">{msg}</div>}
-    <div className="nearby-results-head"><div><h2>검색 주소 주변</h2><span>{items.length}곳</span></div><small>{`검색 주소 기준 가까운 순 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`}`}{pos?" · 카드 거리는 내 위치 기준":""}</small></div>
+    <div className="nearby-results-head"><div><h2>검색 주소 주변</h2><span>{items.length}곳</span></div><small>{pos?`내 위치에서 가까운 순 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`} · 검색 결과 범위는 입력 주소 기준`:`검색 주소 기준 가까운 순 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`}`}</small></div>
     <div className="nearby-list">
       {loading&&!items.length?<div className="bg-card nearby-empty">주변 Pet 정보를 찾는 중…</div>:
-      items.map((p,i)=><article id={`nearby-place-${p.id}`} key={p.id} className={`bg-card nearby-place ${selected?.id===p.id?"selected":""}`} onClick={()=>setSelected(p)}>
-        <div className="nearby-rank">{i+1}</div>
+      pageItems.map((p,i)=><article id={`nearby-place-${p.id}`} key={p.id} className={`bg-card nearby-place ${selected?.id===p.id?"selected":""}`} onClick={()=>setSelected(p)}>
+        <div className="nearby-rank">{(safePage-1)*pageSize+i+1}</div>
         <div className="nearby-place-main">
           <div className="nearby-type-row"><span className={`nearby-type-badge nearby-type-${p.typeKey||"other"}`}>{p.typeIcon||"🐾"} {p.typeLabel||"반려동물 관련"}</span></div>
           <div className="nearby-place-title"><h3>{p.name}</h3><strong>{pos?`내 위치에서 ${fmt(p.userDistance ?? p.distance)}`:`주소에서 ${fmt(p.distance)}`}</strong></div>
@@ -9373,6 +9413,11 @@ function NearbyPetPage(){
         <div className="nearby-place-actions">{p.phone&&<a href={`tel:${p.phone}`} onClick={e=>e.stopPropagation()}>전화</a>}{p.url&&<a href={p.url} target="_blank" rel="noreferrer" onClick={e=>e.stopPropagation()}>카카오맵</a>}</div>
       </article>)}
     </div>
+    {items.length>pageSize&&<nav className="nearby-pagination" aria-label="내 주변 Pet 페이지">
+      <button type="button" disabled={safePage<=1} onClick={()=>{setPage(p=>Math.max(1,p-1));window.scrollTo({top:0,behavior:"smooth"})}}>이전</button>
+      {Array.from({length:totalPages},(_,i)=>i+1).slice(Math.max(0,safePage-3),Math.max(0,safePage-3)+5).map(n=><button type="button" key={n} className={n===safePage?"active":""} onClick={()=>setPage(n)}>{n}</button>)}
+      <button type="button" disabled={safePage>=totalPages} onClick={()=>{setPage(p=>Math.min(totalPages,p+1));window.scrollTo({top:0,behavior:"smooth"})}}>다음</button>
+    </nav>}
 
     {selected&&<section className="bg-card nearby-review-panel">
       <div className="nearby-review-head"><div><span className={`nearby-type-badge nearby-type-${selected.typeKey||"other"}`}>{selected.typeIcon||"🐾"} {selected.typeLabel||"반려동물 관련"}</span><h2>{selected.name} 이용후기</h2><p><b>★ {Number(reviews.summary?.avg||0).toFixed(1)}</b> · 후기 {Number(reviews.summary?.count||0)}개</p></div><button className="bg-btn" onClick={()=>setReviewOpen(v=>!v)}>{reviewOpen?"작성 닫기":"후기 남기기"}</button></div>
