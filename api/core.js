@@ -3,6 +3,7 @@ import { sql } from "@vercel/postgres";
 import { getSessionUserId } from "../server_lib/session.js";
 import { getUserById, getState, setState, logServiceHealth, ensureSchema } from "../server_lib/db.js";
 import { isAdminUserId } from "../server_lib/admin.js";
+import proj4 from "proj4";
 
 async function handleMe(req, res) {
   const uid = getSessionUserId(req);
@@ -133,6 +134,122 @@ async function handleNearbyReviews(req, res) {
   return res.status(405).json({error:"지원하지 않는 요청이에요."});
 }
 
+
+const PUBLIC_NEARBY_SOURCES = {
+  hospital: { env: "PUBLIC_DATA_HOSPITAL_KEY", base: "animal_hospitals", label: "동물병원", icon: "🏥" },
+  pharmacy: { env: "PUBLIC_DATA_PHARMACY_KEY", base: "animal_pharmacies", label: "동물약국", icon: "💊" },
+  grooming: { env: "PUBLIC_DATA_GROOMING_KEY", base: "pet_grooming", label: "펫미용", icon: "✂️" },
+  hotel: { env: "PUBLIC_DATA_BOARDING_KEY", base: "animal_boarding", label: "호텔·유치원", icon: "🏡" },
+  shop: { env: "PUBLIC_DATA_SALES_KEY", base: "animal_sales", label: "펫샵·판매", icon: "🛍️" },
+};
+
+const EPSG5174 = "+proj=tmerc +lat_0=38 +lon_0=127.002890277778 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +towgs84=-145.907,505.034,685.756,-1.162,2.347,1.592,6.342 +units=m +no_defs +type=crs";
+proj4.defs("EPSG:5174", EPSG5174);
+
+function deepRows(value) {
+  if (!value || typeof value !== "object") return [];
+  if (Array.isArray(value)) {
+    if (value.length && value.some(v => v && typeof v === "object" && !Array.isArray(v))) return value;
+    for (const v of value) { const hit = deepRows(v); if (hit.length) return hit; }
+    return [];
+  }
+  for (const k of ["items","item","data","rows","row","list"]) {
+    if (value[k]) { const hit = deepRows(value[k]); if (hit.length) return hit; }
+  }
+  for (const v of Object.values(value)) { const hit = deepRows(v); if (hit.length) return hit; }
+  return [];
+}
+function pickField(row, names) {
+  if (!row || typeof row !== "object") return "";
+  const lower = new Map(Object.keys(row).map(k => [k.toLowerCase().replace(/[^a-z0-9가-힣]/g,""), k]));
+  for (const n of names) {
+    if (row[n] != null && String(row[n]).trim() !== "") return row[n];
+    const key = lower.get(String(n).toLowerCase().replace(/[^a-z0-9가-힣]/g,""));
+    if (key && row[key] != null && String(row[key]).trim() !== "") return row[key];
+  }
+  return "";
+}
+function publicCoordToWgs84(row, refLat, refLng) {
+  const xRaw = Number(pickField(row,["CRDNT_X","crdntX","X","x","좌표X","좌표정보x(epsg5174)"]));
+  const yRaw = Number(pickField(row,["CRDNT_Y","crdntY","Y","y","좌표Y","좌표정보y(epsg5174)"]));
+  if (!Number.isFinite(xRaw) || !Number.isFinite(yRaw)) return null;
+  const candidates=[];
+  for (const pair of [[xRaw,yRaw],[yRaw,xRaw]]) {
+    try {
+      const [lng,lat]=proj4("EPSG:5174","EPSG:4326",pair);
+      if (Number.isFinite(lat)&&Number.isFinite(lng)&&lat>=32&&lat<=40&&lng>=124&&lng<=132) {
+        const d=(Number.isFinite(refLat)&&Number.isFinite(refLng))?Math.hypot(lat-refLat,lng-refLng):0;
+        candidates.push({lat,lng,d});
+      }
+    } catch {}
+  }
+  candidates.sort((a,b)=>a.d-b.d);
+  return candidates[0]||null;
+}
+async function kakaoRegionForCoord(key, lat, lng) {
+  if (!key || !Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  try {
+    const u=new URL("https://dapi.kakao.com/v2/local/geo/coord2regioncode.json");
+    u.searchParams.set("x",String(lng));u.searchParams.set("y",String(lat));
+    const r=await fetch(u,{headers:{Authorization:`KakaoAK ${key}`}});
+    if(!r.ok)return null;const j=await r.json();
+    const road=(j.documents||[]).find(x=>x.region_type==="H")||(j.documents||[])[0];
+    if(!road)return null;
+    return { province:road.region_1depth_name||"", district:road.region_2depth_name||"", dong:road.region_3depth_name||"" };
+  } catch { return null; }
+}
+async function fetchPublicNearby(type, region, refLat, refLng) {
+  const cfg=PUBLIC_NEARBY_SOURCES[type];
+  if(!cfg)return [];
+  const serviceKey=String(process.env[cfg.env]||"").trim();
+  if(!serviceKey)return [];
+  const district=String(region?.district||"").trim();
+  const province=String(region?.province||"").trim();
+  const filters=[district, province].filter(Boolean);
+  // 구/시 단위로 공식 인허가 데이터를 가져온 뒤 실제 좌표거리로 1km를 판정합니다.
+  const queryAddr=filters[0]||"";
+  const rows=[];
+  try {
+    const base=`https://apis.data.go.kr/1741000/${cfg.base}/info`;
+    const pageSize=500;
+    for(let page=1;page<=3;page++){
+      const tail=[`pageNo=${page}`,`numOfRows=${pageSize}`,`returnType=json`];
+      if(queryAddr)tail.push(`cond%5BROAD_NM_ADDR%3A%3ALIKE%5D=${encodeURIComponent(queryAddr)}`);
+      const url=`${base}?serviceKey=${serviceKey}&${tail.join("&")}`;
+      const r=await fetch(url,{headers:{Accept:"application/json"}});
+      if(!r.ok)break;
+      const text=await r.text();
+      let j;try{j=JSON.parse(text);}catch{break;}
+      const batch=deepRows(j);
+      if(!batch.length)break;
+      rows.push(...batch);
+      if(batch.length<pageSize)break;
+    }
+  } catch(e){console.warn("public nearby failed",type,e?.message);return [];}
+  const out=[];
+  for(const row of rows){
+    const status=String(pickField(row,["SALS_STTS_NM","salesStatusName","영업상태명","TRDSTATENM","영업상태"] )||"");
+    const statusCode=String(pickField(row,["SALS_STTS_CD","salesStatusCode","영업상태구분코드","TRDSTATEGBN"] )||"");
+    if(/폐업|취소|말소|휴업|중지/.test(status))continue;
+    if(statusCode && !["01","1","정상","영업"].includes(statusCode) && /02|03|04/.test(statusCode))continue;
+    const name=String(pickField(row,["BPLC_NM","bplcNm","사업장명","BPLCNM","사업장명칭","업소명"] )||"").trim();
+    if(!name)continue;
+    const road=String(pickField(row,["ROAD_NM_ADDR","roadNmAddr","도로명전체주소","RDNWHLADDR","도로명주소"] )||"").trim();
+    const lot=String(pickField(row,["LOTNO_ADDR","lotnoAddr","소재지전체주소","SITEWHLADDR","지번주소"] )||"").trim();
+    const address=road||lot;
+    const coord=publicCoordToWgs84(row,refLat,refLng);
+    if(!coord)continue;
+    const phone=String(pickField(row,["TELNO","telno","전화번호","SITETEL","SITE_TELNO","전화번호정보"] )||"").trim();
+    out.push({
+      id:`public-${type}-${String(pickField(row,["MNG_NO","mngNo","관리번호","MANAGE_NO"])||name+address).replace(/[^0-9A-Za-z가-힣]/g,"").slice(0,80)}`,
+      sourceId:String(pickField(row,["MNG_NO","mngNo","관리번호","MANAGE_NO"])||""),name,phone,address,roadAddress:road,
+      category:cfg.label,typeKey:type,typeLabel:cfg.label,typeIcon:cfg.icon,lat:coord.lat,lng:coord.lng,
+      distance:null,url:"",source:"public",official:true,status:status||"영업"
+    });
+  }
+  return out;
+}
+
 async function handleNearby(req, res) {
   if (req.method !== "GET") return res.status(405).json({ error: "method not allowed" });
   const key = process.env.KAKAO_REST_API_KEY;
@@ -235,6 +352,15 @@ async function handleNearby(req, res) {
   };
 
   if (hasCoord) {
+    // 공공데이터포털 공식 인허가 5종을 먼저 조회합니다.
+    // 주소(구/시)로 후보를 좁힌 뒤 EPSG:5174 좌표를 WGS84로 변환해 실제 현재 위치와의 거리를 계산합니다.
+    const region = await kakaoRegionForCoord(key, nLat, nLng);
+    const publicTypes = category === "all" ? ["hospital","pharmacy","grooming","hotel","shop"] : (PUBLIC_NEARBY_SOURCES[category] ? [category] : []);
+    if (publicTypes.length) {
+      const publicBatches = await Promise.all(publicTypes.map(t => fetchPublicNearby(t, region, nLat, nLng)));
+      for (const row of publicBatches.flat()) { row.distance = calcDistance(nLat,nLng,Number(row.lat),Number(row.lng)); all.push(row); }
+    }
+
     // 핵심 원칙: 1km 결과가 하나라도 있으면 그 결과만 보여줍니다.
     // 먼 3~5km 결과가 가까운 장소를 밀어내지 않게 하고, 1km를 가장 촘촘하게 검색합니다.
     const firstRadius = 1000;
@@ -294,21 +420,24 @@ async function handleNearby(req, res) {
   }
 
   // 이름+근접좌표 기준 중복 제거. 카카오 결과를 우선 보존합니다.
-  all.sort((a,b)=>(a.source==="kakao"?-1:0)-(b.source==="kakao"?-1:0));
+  const sourcePriority={public:0,kakao:1,osm:2,nominatim:3};
+  all.sort((a,b)=>(sourcePriority[a.source]??9)-(sourcePriority[b.source]??9));
   const items=[];
   for (const x of all) {
     if (!x.id || !Number.isFinite(Number(x.lat)) || !Number.isFinite(Number(x.lng))) continue;
     const dup=items.find(y => {
       if (y.source === x.source && y.sourceId && x.sourceId && String(y.sourceId) === String(x.sourceId)) return true;
-      const near = calcDistance(Number(y.lat), Number(y.lng), Number(x.lat), Number(x.lng)) <= 30;
+      const gap = calcDistance(Number(y.lat), Number(y.lng), Number(x.lat), Number(x.lng));
       const sameName = norm(y.name) && norm(y.name) === norm(x.name);
-      // 같은 상호라도 멀리 떨어진 지점은 별도 업체로 유지합니다.
-      return near && sameName;
+      const sameAddr = norm(y.address) && norm(y.address) === norm(x.address);
+      // 공공 인허가 ↔ 카카오의 좌표차를 고려하되, 같은 상호의 다른 지점은 합치지 않습니다.
+      return (sameName && gap <= 120) || (sameAddr && gap <= 180);
     });
     if (dup) {
       if(!dup.phone&&x.phone)dup.phone=x.phone;
       if(!dup.url&&x.url)dup.url=x.url;
       if(!dup.address&&x.address)dup.address=x.address;
+      if(x.official)dup.official=true;
       dup.distance=Math.min(Number(dup.distance??1e12),Number(x.distance??1e12));
       continue;
     }
@@ -319,7 +448,8 @@ async function handleNearby(req, res) {
   // 1km 결과가 있으면 사용자에게는 1km 결과만 노출합니다.
   const visibleItems = within1km > 0 ? items.filter(x=>Number(x.distance)<=1000) : items.filter(x=>Number(x.distance)<=Number(searchRadius||5000));
   res.setHeader("Cache-Control", "s-maxage=20, stale-while-revalidate=40");
-  return res.status(200).json({ items: visibleItems.slice(0, 80), searchRadius: within1km > 0 ? 1000 : searchRadius, within1km, source: kakaoOk ? (visibleItems.some(x=>x.source!=="kakao")?"kakao+fallback":"kakao") : (visibleItems[0]?.source||"fallback"), kakaoStatus });
+  const sourceSet=[...new Set(visibleItems.map(x=>x.source).filter(Boolean))];
+  return res.status(200).json({ items: visibleItems.slice(0, 100), searchRadius: within1km > 0 ? 1000 : searchRadius, within1km, source: sourceSet.join("+")||"fallback", publicDataConnected: visibleItems.some(x=>x.source==="public"), kakaoStatus });
 }
 
 export default async function handler(req, res) {

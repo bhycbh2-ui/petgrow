@@ -1,0 +1,13 @@
+PetGrow 내 주변 Pet 공공데이터 5종 연동
+- 동물병원: PUBLIC_DATA_HOSPITAL_KEY / animal_hospitals
+- 동물약국: PUBLIC_DATA_PHARMACY_KEY / animal_pharmacies
+- 동물미용업: PUBLIC_DATA_GROOMING_KEY / pet_grooming
+- 동물위탁관리업: PUBLIC_DATA_BOARDING_KEY / animal_boarding
+- 동물판매업: PUBLIC_DATA_SALES_KEY / animal_sales
+- 현재 위치를 카카오 좌표→행정구역으로 확인 후 해당 구/시 공공 인허가 데이터 조회
+- 공공데이터 EPSG:5174 좌표를 WGS84로 변환하여 실제 거리 계산
+- 1km 이내 공식 등록업체 우선 노출
+- 공공데이터에 없는 전화번호/카카오맵 링크는 카카오 장소검색으로 보완
+- 공공데이터/카카오/OSM 중복 업체 병합 및 거리순 정렬
+- 전화번호가 없으면 전화번호 줄 숨김 유지
+- 공공데이터가 실패해도 기존 카카오/OSM 검색 fallback 유지
