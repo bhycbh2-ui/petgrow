@@ -4111,6 +4111,7 @@ const GlobalStyle = () => (
     .admin-found span,.admin-member-row>div:first-child{display:flex;flex-direction:column;gap:3px}.admin-found small,.admin-member-row small{color:#7b857e;font-size:11px}
     .admin-member-row>div:last-child{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.admin-member-row button,.admin-found button,.admin-member-row select,.admin-found select{min-height:36px;border:1px solid #dce6de;border-radius:10px;background:#fff;padding:0 10px}
     .support-page{max-width:920px;margin:0 auto;padding:8px 20px 70px}.support-head{display:flex;gap:14px;align-items:center;margin-bottom:14px}.support-head h1{font-size:24px}.support-head p{color:#738078;font-size:12px}
+    .ad-inquiry-head{justify-content:space-between;align-items:flex-start}.ad-inquiry-head>div{min-width:0}.ad-inquiry-back{margin-left:auto;flex:0 0 auto}
     .support-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:14px}.support-tabs button{border:1px solid #dfe8e1;background:#fff;border-radius:14px;padding:11px 8px;font-weight:800}.support-tabs button.active{background:#eaf4ec;color:#397247}
     .support-list{display:flex;flex-direction:column;gap:8px}.support-row{width:100%;text-align:left;border:1px solid #e4ebe5!important;cursor:pointer}.support-row>div:first-child{display:flex;gap:7px;align-items:center}.support-row b{font-size:14px}.support-badge,.support-pin{font-size:10px;border-radius:8px;padding:3px 6px;background:#eef5ef;color:#477453}.support-pin{background:#fff2d8;color:#8b671a}.support-meta{display:flex;gap:9px;color:#879088;font-size:10px;margin-top:7px}.support-detail{border-top:1px solid #edf1ed;margin-top:10px;padding-top:10px;white-space:pre-wrap;line-height:1.7}.support-reply{background:#f2f7f3;border-radius:12px;padding:11px;margin-top:10px}.support-write{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:10px}.support-textarea{height:150px!important;padding:12px!important;resize:vertical}.support-public-toggle{display:flex;gap:10px;align-items:flex-start;padding:12px;border:1px solid #e1e8e2;border-radius:14px}.support-public-toggle span{display:flex;flex-direction:column}.support-public-toggle small{color:#7c877f;margin-top:3px}.support-pagination{display:flex;justify-content:center;align-items:center;gap:12px;margin:16px}.support-pagination button{border:1px solid #dfe7e0;background:#fff;border-radius:10px;padding:8px 12px}
     .admin-notice-form{max-width:720px;display:flex;flex-direction:column;gap:10px}
@@ -9839,7 +9840,7 @@ function PublicDirectAds(){
 function AdInquiryPage({onBack}){
  const [f,setF]=useState({companyName:"",contactName:"",email:"",phone:"",campaignType:"banner",budget:"",message:""});
  const submit=async()=>{if(!window.confirm("광고 문의를 전송할까요?"))return;try{await submitAdInquiry(f);window.alert("광고 문의가 접수됐어요. 확인 후 연락드릴게요.");setF({companyName:"",contactName:"",email:"",phone:"",campaignType:"banner",budget:"",message:""})}catch(e){window.alert(e.message)}};
- return <div className="support-page"><div className="support-head"><button className="bg-btn bg-btn-ghost" onClick={onBack}>← 돌아가기</button><div><h1>광고 문의</h1><p>PetGrow 배너·팝업·제휴 광고를 문의할 수 있어요.</p></div></div><div className="bg-card support-write">
+ return <div className="support-page ad-inquiry-page"><div className="support-head ad-inquiry-head"><div><h1>광고 문의</h1><p>PetGrow 배너·팝업·제휴 광고를 문의할 수 있어요.</p></div><button className="bg-btn bg-btn-ghost ad-inquiry-back" onClick={onBack}>← 돌아가기</button></div><div className="bg-card support-write">
  <input className="bg-input" placeholder="회사/브랜드명 *" value={f.companyName} onChange={e=>setF({...f,companyName:e.target.value})}/>
  <input className="bg-input" placeholder="담당자명 *" value={f.contactName} onChange={e=>setF({...f,contactName:e.target.value})}/>
  <input className="bg-input" type="email" placeholder="이메일 *" value={f.email} onChange={e=>setF({...f,email:e.target.value})}/>
@@ -10078,7 +10079,6 @@ function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost, o
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
   const menuItems = [
-    { key: "member", icon: "👤", title: lang === "en" ? "Member info" : "회원정보", desc: lang === "en" ? "Check your PetGrow profile and Kakao-linked account." : "PetGrow 프로필과 카카오 연동 계정을 확인해요.", cls: "my-menu-mint", action: () => window.scrollTo({ top: 0, behavior: "smooth" }) },
     { key: "edit", icon: "✏️", title: lang === "en" ? "Edit info" : "정보 수정", desc: lang === "en" ? "Change the nickname shown in Pet Talk and manage your account." : "Pet톡에 보이는 닉네임과 계정 정보를 수정해요.", cls: "my-menu-pink", action: onOpenAccount },
     { key: "pets", icon: "🐾", title: lang === "en" ? "Manage pets" : "반려동물 관리", desc: lang === "en" ? `Manage ${allPets.length} registered pet(s).` : `등록한 아이 ${allPets.length}마리의 정보와 성장기록을 관리해요.`, cls: "my-menu-blue", action: onGoPets },
     { key: "activity", icon: "💬", title: lang === "en" ? "Pet Talk activity" : "Pet톡 내 활동", desc: lang === "en" ? "See your posts, comments and likes in one place." : "내가 작성한 글·댓글·좋아요를 한곳에서 확인해요.", cls: "my-menu-purple", action: goActivity },
@@ -10851,17 +10851,6 @@ function AppInner({ lang, setLang }) {
 
       {effectiveView !== "login" && (
         <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 40px" }}>
-          <div className="partner-inquiry-banner">
-            <button type="button" className="partner-inquiry-main" onClick={() => goView("ad-inquiry")}>
-              <span className="partner-inquiry-icon">🤝</span>
-              <span className="partner-inquiry-copy">
-                <strong>PetGrow 광고 · 제휴 문의</strong>
-                <small>배너 광고, 브랜드 제휴, 스폰서십을 제안해 주세요.</small>
-              </span>
-              <span className="partner-inquiry-arrow">›</span>
-            </button>
-            <a className="partner-inquiry-mail" href="mailto:help.petgrow@gmail.com?subject=PetGrow%20광고·제휴%20문의">이메일 문의</a>
-          </div>
           <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 10 }}>
             help.petgrow@gmail.com
           </div>
@@ -10880,6 +10869,10 @@ function AppInner({ lang, setLang }) {
             <a href="mailto:help.petgrow@gmail.com" style={{ fontSize: 11, fontWeight: 600, lineHeight: 1.4, fontFamily: "inherit", color: "var(--primary)", textDecoration: "none" }}>
               {t.contactBtn}
             </a>
+            <button type="button" onClick={() => goView("ad-inquiry")}
+              style={{ fontSize: 11, fontWeight: 600, lineHeight: 1.4, fontFamily: "inherit", color: "var(--primary)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+              광고·제휴 문의
+            </button>
           </div>
         </div>
       )}
