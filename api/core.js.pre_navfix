@@ -136,107 +136,41 @@ async function handleNearbyReviews(req, res) {
 async function handleNearby(req, res) {
   if (req.method !== "GET") return res.status(405).json({ error: "method not allowed" });
   const key = process.env.KAKAO_REST_API_KEY;
+  if (!key) return res.status(500).json({ error: "KAKAO_REST_API_KEY가 설정되지 않았어요." });
   const { lat, lng, category = "all", area = "" } = req.query || {};
   const keywords = {
-    all: ["동물병원", "동물약국", "반려동물용품", "펫샵", "애견미용", "고양이미용", "반려동물 미용", "애견호텔", "반려동물 호텔", "반려동물 유치원"],
-    hospital: ["동물병원", "24시 동물병원"], pharmacy: ["동물약국"], shop: ["반려동물용품", "펫샵", "애견용품"],
-    grooming: ["애견미용", "고양이미용", "반려동물 미용"], hotel: ["애견호텔", "반려동물 호텔", "반려동물 유치원", "애견유치원"]
+    all: ["동물병원", "동물약국", "반려동물용품", "펫샵", "애견미용", "고양이미용", "애견호텔", "반려동물 유치원"],
+    hospital: ["동물병원"], pharmacy: ["동물약국"], shop: ["반려동물용품", "펫샵"],
+    grooming: ["애견미용", "반려동물 미용"], hotel: ["애견호텔", "반려동물 유치원"]
   };
   const qs = keywords[category] || keywords.all;
-  const nLat = Number(lat), nLng = Number(lng);
-  const hasCoord = Number.isFinite(nLat) && Number.isFinite(nLng) && Math.abs(nLat) <= 90 && Math.abs(nLng) <= 180;
+  const hasCoord = Number.isFinite(Number(lat)) && Number.isFinite(Number(lng));
   const all = [];
-  let kakaoOk = false;
-  let kakaoStatus = null;
-
-  // 1) 카카오 장소검색을 우선 사용합니다. 한 키워드 실패가 전체 검색을 막지 않게 처리합니다.
-  if (key) {
-    for (const kw of qs) {
-      try {
-        const u = new URL("https://dapi.kakao.com/v2/local/search/keyword.json");
-        u.searchParams.set("query", area ? `${area} ${kw}` : kw);
-        u.searchParams.set("size", "15");
-        u.searchParams.set("page", "1");
-        if (hasCoord) {
-          u.searchParams.set("x", String(nLng)); u.searchParams.set("y", String(nLat));
-          u.searchParams.set("radius", "20000"); u.searchParams.set("sort", "distance");
-        }
-        const r = await fetch(u, { headers: { Authorization: `KakaoAK ${key}` } });
-        kakaoStatus = r.status;
-        if (!r.ok) continue;
-        kakaoOk = true;
-        const j = await r.json();
-        for (const d of j.documents || []) {
-          const type = placeType(d.category_name, kw);
-          all.push({
-            id: d.id, sourceId:d.id, name: d.place_name, phone: d.phone || "", address: d.road_address_name || d.address_name || "",
-            roadAddress: d.road_address_name || "", category: d.category_name || "", typeKey:type.key, typeLabel:type.label, typeIcon:type.icon,
-            lat: Number(d.y), lng: Number(d.x), distance: d.distance ? Number(d.distance) : null, url: d.place_url || "", source:"kakao"
-          });
-        }
-      } catch (e) { console.warn("kakao nearby keyword failed", kw, e?.message); }
+  for (const kw of qs) {
+    const u = new URL("https://dapi.kakao.com/v2/local/search/keyword.json");
+    u.searchParams.set("query", area ? `${area} ${kw}` : kw);
+    u.searchParams.set("size", "15");
+    if (hasCoord) {
+      u.searchParams.set("x", String(lng)); u.searchParams.set("y", String(lat));
+      u.searchParams.set("radius", "10000"); u.searchParams.set("sort", "distance");
+    }
+    const r = await fetch(u, { headers: { Authorization: `KakaoAK ${key}` } });
+    if (!r.ok) continue;
+    const j = await r.json();
+    for (const d of j.documents || []) {
+      const type = placeType(d.category_name, kw);
+      all.push({
+        id: d.id, name: d.place_name, phone: d.phone || "", address: d.road_address_name || d.address_name || "",
+        roadAddress: d.road_address_name || "", category: d.category_name || "", typeKey:type.key, typeLabel:type.label, typeIcon:type.icon,
+        lat: Number(d.y), lng: Number(d.x), distance: d.distance ? Number(d.distance) : null, url: d.place_url || ""
+      });
     }
   }
-
-  // 2) 현재 위치 검색인데 카카오 결과가 없으면 OSM을 보조 소스로 사용합니다.
-  //    키 설정/일시 장애 때문에 '내 위치만 나오고 0곳'이 되는 상황을 줄이는 안전장치입니다.
-  if (hasCoord && all.length === 0) {
-    try {
-      const typeFilter = category === "hospital" ? 'nwr(around:12000,LAT,LNG)["amenity"="veterinary"];' :
-        category === "shop" ? 'nwr(around:12000,LAT,LNG)["shop"="pet"];' :
-        category === "grooming" ? 'nwr(around:12000,LAT,LNG)["shop"="pet_grooming"];' :
-        category === "hotel" ? 'nwr(around:12000,LAT,LNG)["amenity"="animal_boarding"];' :
-        category === "pharmacy" ? 'nwr(around:12000,LAT,LNG)["name"~"동물약국",i];' :
-        'nwr(around:12000,LAT,LNG)["amenity"="veterinary"];nwr(around:12000,LAT,LNG)["shop"="pet"];nwr(around:12000,LAT,LNG)["shop"="pet_grooming"];nwr(around:12000,LAT,LNG)["amenity"="animal_boarding"];nwr(around:12000,LAT,LNG)["name"~"동물병원|동물약국|펫|애견|애묘|반려동물",i];';
-      const body = `[out:json][timeout:10];(${typeFilter.replaceAll('LAT',String(nLat)).replaceAll('LNG',String(nLng))});out center tags 60;`;
-      const or = await fetch("https://overpass-api.de/api/interpreter", { method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"}, body:`data=${encodeURIComponent(body)}` });
-      if (or.ok) {
-        const oj = await or.json();
-        const rad = Math.PI/180;
-        const dist=(a,b,c,d)=>{const R=6371000,x=(c-a)*rad,y=(d-b)*rad,aa=Math.sin(x/2)**2+Math.cos(a*rad)*Math.cos(c*rad)*Math.sin(y/2)**2;return Math.round(2*R*Math.asin(Math.sqrt(aa)));};
-        for (const e of oj.elements || []) {
-          const tags=e.tags||{}, plat=Number(e.lat ?? e.center?.lat), plng=Number(e.lon ?? e.center?.lon);
-          if(!Number.isFinite(plat)||!Number.isFinite(plng)||!tags.name) continue;
-          const raw=`${tags.amenity||""} ${tags.shop||""} ${tags.name||""}`;
-          const type = /veterinary|동물병원/.test(raw) ? {key:"hospital",label:"동물병원",icon:"🏥"} : /pet_grooming|미용/.test(raw) ? {key:"grooming",label:"펫미용",icon:"✂️"} : /animal_boarding|호텔|유치원/.test(raw) ? {key:"hotel",label:"호텔·유치원",icon:"🏡"} : /약국/.test(raw) ? {key:"pharmacy",label:"동물약국",icon:"💊"} : {key:"shop",label:"펫샵·용품",icon:"🛍️"};
-          const addr=[tags["addr:road"],tags["addr:housenumber"],tags["addr:district"]].filter(Boolean).join(" ") || tags["addr:full"] || "주소 상세정보 없음";
-          all.push({id:`osm-${e.type}-${e.id}`,sourceId:String(e.id),name:tags.name,phone:tags.phone||tags["contact:phone"]||"",address:addr,roadAddress:addr,category:type.label,typeKey:type.key,typeLabel:type.label,typeIcon:type.icon,lat:plat,lng:plng,distance:dist(nLat,nLng,plat,plng),url:tags.website||tags["contact:website"]||"",source:"osm"});
-        }
-      }
-    } catch(e) { console.warn("OSM nearby fallback failed", e?.message); }
-  }
-
-  // 3) Overpass가 일시적으로 응답하지 않는 경우 Nominatim의 bounded 검색으로 한 번 더 보완합니다.
-  if (hasCoord && all.length === 0) {
-    try {
-      const delta = 0.14;
-      const viewbox = `${nLng-delta},${nLat+delta},${nLng+delta},${nLat-delta}`;
-      const fallbackTerms = category === "hospital" ? ["동물병원","veterinary"] : category === "pharmacy" ? ["동물약국"] : category === "shop" ? ["펫샵","pet shop"] : category === "grooming" ? ["애견미용","pet grooming"] : category === "hotel" ? ["애견호텔","반려동물 유치원"] : ["동물병원","펫샵","애견미용","애견호텔","동물약국"];
-      for (const term of fallbackTerms) {
-        const nu = new URL("https://nominatim.openstreetmap.org/search");
-        nu.searchParams.set("format","jsonv2"); nu.searchParams.set("q",term); nu.searchParams.set("limit","8"); nu.searchParams.set("bounded","1"); nu.searchParams.set("viewbox",viewbox); nu.searchParams.set("addressdetails","1");
-        const nr = await fetch(nu,{headers:{"User-Agent":"PetGrow/1.0 (help.petgrow@gmail.com)","Accept-Language":"ko"}});
-        if(!nr.ok) continue;
-        const nj=await nr.json();
-        for(const d of nj||[]){
-          const plat=Number(d.lat),plng=Number(d.lon); if(!Number.isFinite(plat)||!Number.isFinite(plng)) continue;
-          const raw=`${d.type||""} ${d.category||""} ${d.display_name||""} ${term}`;
-          const type=/veterinary|동물병원/.test(raw)?{key:"hospital",label:"동물병원",icon:"🏥"}:/groom|미용/.test(raw)?{key:"grooming",label:"펫미용",icon:"✂️"}:/hotel|boarding|유치원/.test(raw)?{key:"hotel",label:"호텔·유치원",icon:"🏡"}:/약국/.test(raw)?{key:"pharmacy",label:"동물약국",icon:"💊"}:{key:"shop",label:"펫샵·용품",icon:"🛍️"};
-          const rad=Math.PI/180,R=6371000,x=(plat-nLat)*rad,y=(plng-nLng)*rad,aa=Math.sin(x/2)**2+Math.cos(nLat*rad)*Math.cos(plat*rad)*Math.sin(y/2)**2,distance=Math.round(2*R*Math.asin(Math.sqrt(aa)));
-          all.push({id:`nom-${d.osm_type||"x"}-${d.osm_id||crypto.randomUUID()}`,sourceId:String(d.osm_id||""),name:String(d.name||String(d.display_name||"").split(',')[0]||term),phone:"",address:String(d.display_name||""),roadAddress:String(d.display_name||""),category:type.label,typeKey:type.key,typeLabel:type.label,typeIcon:type.icon,lat:plat,lng:plng,distance,url:"",source:"nominatim"});
-        }
-      }
-    } catch(e) { console.warn("Nominatim nearby fallback failed", e?.message); }
-  }
-
   const seen = new Set(), items = [];
-  for (const x of all) {
-    const key2 = `${String(x.name||"").replace(/\s/g,"").toLowerCase()}|${String(x.address||"").replace(/\s/g,"").toLowerCase()}`;
-    if (!x.id || seen.has(key2)) continue; seen.add(key2); items.push(x);
-  }
+  for (const x of all) { if (!x.id || seen.has(x.id)) continue; seen.add(x.id); items.push(x); }
   items.sort((a, b) => (a.distance ?? 1e12) - (b.distance ?? 1e12));
-  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=180");
-  return res.status(200).json({ items: items.slice(0, 60), source: kakaoOk ? (items.some(x=>x.source!=="kakao")?"kakao+fallback":"kakao") : (items[0]?.source||"fallback"), kakaoStatus });
+  res.setHeader("Cache-Control", "s-maxage=120, stale-while-revalidate=300");
+  return res.status(200).json({ items: items.slice(0, 40), source: "kakao" });
 }
 
 export default async function handler(req, res) {

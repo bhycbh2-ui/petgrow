@@ -47,7 +47,7 @@ export default async function handler(req,res){
     await logAdmin(u,"ADMIN_PIN_SET",u);return res.status(200).json({ok:true});
   }
 
-  const cap=a==="reports"||a==="restrict"||a==="unblock"||a==="resolve"||a==="place-reports"||a==="place-review-hide"||a==="place-review-resolve"||a==="music-comment-reports"||a==="music-comment-hide"||a==="music-comment-resolve"?"reports":
+  const cap=a==="reports"||a==="restrict"||a==="unblock"||a==="resolve"||a==="place-reports"||a==="place-review-hide"||a==="place-review-resolve"?"reports":
             a==="stats"||a==="report-summary"?"dashboard":a==="logs"?"logs":
             a.startsWith("admin-")?"admins":null;
   const role=await auth(req,res,u,cap);if(!role)return;
@@ -137,21 +137,6 @@ export default async function handler(req,res){
     const {reportId}=req.body||{};if(!reportId)return res.status(400).json({error:"신고 정보가 없어요."});
     await sql`update pg_place_review_reports set status='resolved',reviewed_at=now(),reviewed_by=${u} where id=${reportId}`;
     await logAdmin(u,"PLACE_REVIEW_REPORT_RESOLVED",null,reportId);return res.status(200).json({ok:true});
-  }
-  if(a==="music-comment-reports"&&req.method==="GET"){
-    const {rows}=await sql`select mr.id,mr.comment_id,mr.reason,mr.detail,mr.status,mr.created_at,c.track_id,c.content,c.user_id target_user_id,t.title track_title,coalesce(author.nickname,'PetGrow 회원') author_nickname,coalesce(reporter.nickname,'PetGrow 회원') reporter_nickname from pg_music_comment_reports mr join pg_music_comments c on c.id=mr.comment_id join pg_music_tracks t on t.id=c.track_id left join pg_users author on author.id=c.user_id left join pg_users reporter on reporter.id=mr.reporter_user_id order by case when mr.status='open' then 0 else 1 end,mr.created_at desc limit 100`;
-    return res.status(200).json({reports:rows});
-  }
-  if(a==="music-comment-hide"&&req.method==="POST"){
-    const {commentId,reportId}=req.body||{};if(!commentId)return res.status(400).json({error:"댓글 정보가 없어요."});
-    await sql`update pg_music_comments set status='hidden',updated_at=now() where id=${commentId}`;
-    if(reportId)await sql`update pg_music_comment_reports set status='resolved',reviewed_at=now(),reviewed_by=${u} where id=${reportId}`;
-    await logAdmin(u,"MUSIC_COMMENT_HIDE",null,reportId||null,{commentId});return res.status(200).json({ok:true});
-  }
-  if(a==="music-comment-resolve"&&req.method==="POST"){
-    const {reportId}=req.body||{};if(!reportId)return res.status(400).json({error:"신고 정보가 없어요."});
-    await sql`update pg_music_comment_reports set status='resolved',reviewed_at=now(),reviewed_by=${u} where id=${reportId}`;
-    await logAdmin(u,"MUSIC_COMMENT_REPORT_RESOLVED",null,reportId);return res.status(200).json({ok:true});
   }
   if(a==="logs"&&req.method==="GET"){const {rows}=await sql`select l.*,coalesce(a.nickname,'관리자') admin_nickname,coalesce(t.nickname,'') target_nickname from pg_admin_audit_logs l left join pg_users a on a.id=l.admin_user_id left join pg_users t on t.id=l.target_user_id order by l.created_at desc limit 100`;return res.status(200).json({logs:rows});}
 
