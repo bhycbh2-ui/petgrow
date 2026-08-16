@@ -4602,7 +4602,7 @@ const GlobalStyle = () => (
   .cm-search-btn,.cm-write-btn{display:flex!important;align-items:center;justify-content:center;gap:5px;white-space:nowrap}
   .my-activity-stack{display:grid;gap:10px;margin-top:12px}.my-menu-card-wide{width:100%;display:flex}.my-accordion-panel{margin:0 0 4px!important;animation:petgrow-soft-in .16s ease-out both}
   .my-liked-music-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #edf2ee}.my-liked-music-row img,.my-liked-music-row>span{width:44px;height:44px;border-radius:11px;object-fit:cover;display:grid;place-items:center;background:#eef6f0}.my-liked-music-row b{display:block;font-size:13px}.my-liked-music-row small{display:block;color:var(--sub);font-size:10px;margin-top:3px}
-  .tip-answer-panel{margin-top:12px;padding:14px 15px;border:1px solid #e7eee8;border-radius:12px;background:#fff;color:var(--text);font-size:13px;line-height:1.75;box-shadow:0 3px 12px rgba(48,75,56,.045)}
+   .tip-answer-panel{margin-top:12px;padding:15px 16px 15px 18px;border:1px solid #d7e7da;border-left:4px solid #8fbc99;border-radius:12px;background:#eef6f0;color:var(--text);font-size:13px;line-height:1.75;box-shadow:0 3px 12px rgba(48,75,56,.05)}
   .admin-entry-root .admin-reports-page:has(.admin-gate){min-height:calc(100dvh - 250px)!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:24px 16px!important}.admin-entry-root .admin-gate{margin:auto!important;width:min(520px,calc(100% - 12px))!important}
   body:has(.admin-gate) footer{margin:18px auto 14px!important;text-align:center!important;max-width:680px!important}
   @media(max-width:768px){.cm-search-actions{grid-template-columns:minmax(0,1fr) auto}.cm-write-btn{grid-column:1/-1;width:100%}.nearby-responsive-categories .responsive-category-primary{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.nearby-responsive-categories .responsive-category-primary .bg-chip{min-width:0;padding:9px 5px!important;font-size:11px!important;justify-content:center}.nearby-responsive-categories .responsive-category-more-panel{grid-template-columns:repeat(3,minmax(0,1fr))!important}.my-menu-grid-top{margin-bottom:10px}.admin-entry-root .admin-reports-page:has(.admin-gate){min-height:calc(100dvh - 290px)!important;padding-top:18px!important;padding-bottom:18px!important}}
@@ -9296,7 +9296,8 @@ function NearbyPetPage(){
         for(const x of good){nearbyCache.current.set(`${coords?`${Number(coords.lat).toFixed(4)},${Number(coords.lng).toFixed(4)}`:manualArea.trim()}|${x.key}`,x.data);}
         const merged=mergeNearbyRows(good.map(x=>x.data.items||[]));
         const within=merged.filter(x=>Number(x.distance)<=1000).length;
-        j={items:within?merged.filter(x=>Number(x.distance)<=1000):merged,within1km:within,searchRadius:within?1000:Math.max(1000,...good.map(x=>Number(x.data.searchRadius)||1000)),searchCenter:good[0]?.data?.searchCenter||null};
+        const radius=Math.max(1000,...good.map(x=>Number(x.data.searchRadius)||1000));
+        j={items:merged.filter(x=>Number(x.distance)<=radius),within1km:within,searchRadius:radius,searchCenter:good[0]?.data?.searchCenter||null};
       }else j=await fetchNearbyCategory(nextCat,coords,manualArea);
       nearbyCache.current.set(cacheKey,j);
       if(seq!==requestSeq.current && !background)return;
@@ -9351,14 +9352,14 @@ function NearbyPetPage(){
     <section className="nearby-hero bg-card">
       <div><span className="nearby-eyebrow">PETGROW LOCAL</span><h1>{t.nearbyTitle}</h1><p>{t.nearbySubtitle}</p><small className="nearby-search-help">📍 주소를 검색하면 해당 주소 주변 장소가 표시돼요. 위치를 허용하면 지도에 내 위치와 업체까지의 거리도 함께 보여요.</small></div>
     </section>
-    <div className="nearby-search-row"><input className="bg-input" value={area} onChange={e=>setArea(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"){if(area.trim())search(cat,null,area);else setMsg("검색할 주소를 입력해 주세요.");}}} placeholder="주소 입력 (예: 서울 강동구 천호대로 123)"/><button className="bg-btn" onClick={()=>area.trim()?search(cat,null,area):setMsg("검색할 주소를 입력해 주세요.")}>{loading?"검색 중…":"검색"}</button></div>
+    <div className="nearby-search-row"><input className="bg-input" value={area} onChange={e=>setArea(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"){if(area.trim())search(cat,null,area);else setMsg("검색할 주소를 입력해 주세요.");}}} placeholder="구·동·도로명·지번 검색 (예: 강남구, 역삼동, 역삼동 695-26)"/><button className="bg-btn" onClick={()=>area.trim()?search(cat,null,area):setMsg("검색할 주소를 입력해 주세요.")}>{loading?"검색 중…":"검색"}</button></div>
     <ResponsiveCategoryMenu className="nearby-responsive-categories" primaryCount={3} items={cats.map(([id,label])=>({id,label}))} activeId={cat} onSelect={setCat} lang={"ko"} />
     <section className="nearby-map-card bg-card">
-      <div className="nearby-map-head"><div><b>검색 주소 기준</b><small>{pos?`검색 결과는 주소 기준 · 민트색 표시는 내 위치${positionAccuracy?` · 위치 오차 약 ±${positionAccuracy}m`:""}`:"검색 결과는 주소 기준 · 위치 권한을 허용하면 내 위치도 함께 표시돼요"}</small></div>{pos&&<span className="nearby-live-pill">● 내 위치 표시</span>}</div>
+      <div className="nearby-map-head"><div><b>검색 주소 기준</b><small>{pos?"검색 결과는 입력한 주소 기준 · 민트색 표시는 내 위치":"검색 결과는 입력한 주소 기준 · 위치 권한을 허용하면 내 위치도 함께 표시돼요"}</small></div>{pos&&<span className="nearby-live-pill">● 내 위치 표시</span>}</div>
       <div ref={mapRef} className="nearby-map"><div className="nearby-map-fallback"><MapPinIcon/><b>주소를 검색해 주세요</b><span>검색한 주소 주변 업체가 지도에 표시되고, 위치 허용 시 내 위치도 함께 표시됩니다.</span></div></div>
     </section>
     {msg&&<div className="nearby-message">{msg}</div>}
-    <div className="nearby-results-head"><div><h2>검색 주소 주변</h2><span>{items.length}곳</span></div><small>{`검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`} · 주소 기준 가까운 순`}{pos?" · 카드의 거리는 내 위치 기준":""}</small></div>
+    <div className="nearby-results-head"><div><h2>검색 주소 주변</h2><span>{items.length}곳</span></div><small>{`검색 주소 기준 가까운 순 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`}`}{pos?" · 카드 거리는 내 위치 기준":""}</small></div>
     <div className="nearby-list">
       {loading&&!items.length?<div className="bg-card nearby-empty">주변 Pet 정보를 찾는 중…</div>:
       items.map((p,i)=><article id={`nearby-place-${p.id}`} key={p.id} className={`bg-card nearby-place ${selected?.id===p.id?"selected":""}`} onClick={()=>setSelected(p)}>

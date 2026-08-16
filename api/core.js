@@ -345,6 +345,12 @@ async function handleNearby(req, res) {
     const aa=Math.sin(x/2)**2+Math.cos(a*rad)*Math.cos(c*rad)*Math.sin(y/2)**2;
     return Math.round(2*R*Math.asin(Math.sqrt(aa)));
   };
+  const areaText=String(area||"").trim();
+  const compactArea=areaText.replace(/\s+/g," ");
+  // 구/동만 입력한 넓은 지역 검색은 상세주소보다 넓은 반경을 사용합니다.
+  const coarseDistrict=/^[가-힣]+구$/.test(compactArea) || /^(?:[가-힣]+[도시]\s+)?[가-힣]+구$/.test(compactArea);
+  const coarseDong=/^[가-힣0-9·.]+(?:동|읍|면|리)$/.test(compactArea) || /^(?:[가-힣]+구\s+)?[가-힣0-9·.]+(?:동|읍|면|리)$/.test(compactArea);
+  const preferredRadius=(coarseDistrict||coarseDong)?3000:1000;
 
   // 주소 검색은 입력한 주소를 중심점으로 삼습니다. 현재 위치는 검색 기준이 아니라 거리 표시용입니다.
   if(!hasCoord && key && String(area||"").trim()){
@@ -354,8 +360,17 @@ async function handleNearby(req, res) {
       const ar=await fetch(au,{headers:{Authorization:`KakaoAK ${key}`}});
       if(ar.ok){const aj=await ar.json();const d=aj.documents?.[0];if(d){nLat=Number(d.y);nLng=Number(d.x);hasCoord=Number.isFinite(nLat)&&Number.isFinite(nLng);}}
       if(!hasCoord){
-        const ku=new URL("https://dapi.kakao.com/v2/local/search/keyword.json");ku.searchParams.set("query",String(area).trim());ku.searchParams.set("size","1");
-        const kr=await fetch(ku,{headers:{Authorization:`KakaoAK ${key}`}});if(kr.ok){const kj=await kr.json();const d=kj.documents?.[0];if(d){nLat=Number(d.y);nLng=Number(d.x);hasCoord=Number.isFinite(nLat)&&Number.isFinite(nLng);}}
+        // '강남구', '역삼동'처럼 주소 API가 직접 좌표를 주지 않는 행정구역도 인식합니다.
+        const variants=[areaText, `${areaText} 주민센터`, `${areaText} 행정복지센터`, `${areaText} 구청`];
+        for(const v of variants){
+          const ku=new URL("https://dapi.kakao.com/v2/local/search/keyword.json");ku.searchParams.set("query",v);ku.searchParams.set("size","5");
+          const kr=await fetch(ku,{headers:{Authorization:`KakaoAK ${key}`}});
+          if(!kr.ok)continue;
+          const kj=await kr.json();
+          const docs=kj.documents||[];
+          const d=docs.find(x=>String(x.address_name||"").includes(areaText)||String(x.road_address_name||"").includes(areaText)||String(x.place_name||"").includes(areaText))||docs[0];
+          if(d){nLat=Number(d.y);nLng=Number(d.x);hasCoord=Number.isFinite(nLat)&&Number.isFinite(nLng);if(hasCoord)break;}
+        }
       }
     }catch(e){console.warn("address geocode failed",e?.message)}
   }
@@ -369,7 +384,7 @@ async function handleNearby(req, res) {
       for (let page=1; page<=5; page++) {
         try {
           const u = new URL("https://dapi.kakao.com/v2/local/search/keyword.json");
-          u.searchParams.set("query", area ? `${area} ${kw}` : kw);
+          u.searchParams.set("query", hasCoord ? kw : (areaText ? `${areaText} ${kw}` : kw));
           u.searchParams.set("size", "15");
           u.searchParams.set("page", String(page));
           if (hasCoord) {
@@ -439,14 +454,14 @@ async function handleNearby(req, res) {
 
     // 핵심 원칙: 1km 결과가 하나라도 있으면 그 결과만 보여줍니다.
     // 먼 3~5km 결과가 가까운 장소를 밀어내지 않게 하고, 1km를 가장 촘촘하게 검색합니다.
-    const firstRadius = 1000;
+    const firstRadius = preferredRadius;
     searchRadius = firstRadius;
     const [kakao1km, osm1km] = await Promise.all([fetchKakaoAtRadius(firstRadius), fetchOsmAtRadius(firstRadius)]);
     all.push(...kakao1km, ...osm1km);
 
-    // 1km에서 정말 아무 장소도 못 찾았을 때만 3km, 이후 5km를 안전장치로 사용합니다.
-    if (uniqueCount(all.filter(x => Number(x.distance) <= 1000)) === 0) {
-      for (const radius of [3000, 5000]) {
+    // 선택한 기본 반경에서 결과가 없으면 최대 5km까지 자동 확대합니다.
+    if (uniqueCount(all.filter(x => Number(x.distance) <= firstRadius)) === 0) {
+      for (const radius of [3000, 5000].filter(r=>r>firstRadius)) {
         searchRadius = radius;
         const [kakaoRows, osmRows] = await Promise.all([fetchKakaoAtRadius(radius), fetchOsmAtRadius(radius)]);
         all.push(...kakaoRows, ...osmRows);
