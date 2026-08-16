@@ -1961,7 +1961,7 @@ const PRIVACY_SECTIONS_KO = [
   { title: "18. Pet톡 이미지 저장", body: "Pet톡에 첨부하는 사진은 Vercel Blob(파일 저장 서비스)에 저장되며, 데이터베이스에는 사진의 저장 위치(URL)만 저장됩니다. 업로드 시 허용된 이미지 형식(JPG/PNG/WebP) 및 용량 제한이 적용되며, 게시글이 삭제되면 저장된 사진 파일도 함께 삭제됩니다." },
   { title: "19. 익명·집계형 서비스 이용 통계 및 광고 성과", body: "PetGrow는 서비스 품질 및 운영 현황을 확인하기 위해 개인정보를 최소화한 자체 통계를 운영할 수 있습니다. 집계 항목에는 방문 세션 수, 최근 5분 내 활성 세션의 추정치, 메뉴별 페이지 조회 수, 앱·웹 이용 비중, 신규·활성 회원 수, 등록 반려동물 수, Pet톡 게시글·댓글·좋아요 수, 신고·이용제한 건수, 직접광고 노출·클릭 및 광고 표시 요청·성공·오류 건수 등이 포함될 수 있습니다.\n\nPetGrow 관리자 통계 화면에는 이용자의 이름, 이메일, 카카오 고유식별정보, IP 주소 또는 개인별 광고 이용내역을 표시하지 않는 것을 원칙으로 합니다. 익명 방문 세션 중복 집계를 위한 해시값은 최대 90일 동안 보관한 후 삭제할 수 있으며, 일자별 집계 통계는 서비스 운영 추이 확인을 위해 최대 24개월간 보관할 수 있습니다. '현재 접속 세션'은 최근 일정 시간 내 신호가 있었던 세션을 바탕으로 한 추정치이며 실제 동시접속자 수와 차이가 있을 수 있습니다. AdMob의 실제 광고 노출·클릭·수익 및 광고 식별자 등은 Google의 시스템에서 별도로 처리될 수 있으며, PetGrow의 자체 통계와 Google 광고 보고서는 서로 다른 데이터입니다." },
   { title: "20. 개인정보 관련 문의", body: "서비스명: PetGrow\n문의 이메일: help.petgrow@gmail.com" },
-  { title: "21. 개인정보처리방침의 변경", body: "서비스 기능, 개인정보 처리 방식, 외부 서비스 또는 관련 법령·정책 변경에 따라 본 개인정보처리방침이 변경될 수 있습니다. 중요한 변경사항은 PetGrow 웹사이트 또는 애플리케이션을 통해 안내합니다.\n\n이번 개정에는 광고·제휴 문의 시 처리되는 정보와 Google AdMob/Google Mobile Ads SDK를 통한 광고 관련 자동 처리 항목 및 이용자 선택권에 관한 내용을 보다 구체적으로 반영했습니다.\n\n최종 업데이트: 2026년 8월 16일\n시행일: 2026년 8월 16일" },
+  { title: "21. 개인정보처리방침의 변경", body: "서비스 기능, 개인정보 처리 방식, 외부 서비스 또는 관련 법령·정책 변경에 따라 본 개인정보처리방침이 변경될 수 있습니다. 중요한 변경사항은 PetGrow 웹사이트 또는 애플리케이션을 통해 안내합니다.\n\n이번 개정에는 광고·제휴 문의 시 처리되는 정보와 Google AdMob/Google Mobile Ads SDK를 통한 광고 관련 자동 처리 항목 및 이용자 선택권에 관한 내용을 보다 구체적으로 반영했습니다.\n\n또한 카카오 간편로그인 전 필수 이용약관·개인정보 수집·이용 동의와 선택 광고·마케팅 수신 동의를 구분하여 받을 수 있으며, 광고·제휴 문의 제출 시에는 해당 문의를 위한 개인정보 수집·이용 동의를 별도로 받습니다.\n\n최종 업데이트: 2026년 8월 16일\n시행일: 2026년 8월 16일" },
 ];
 const PRIVACY_SECTIONS_EN = [
   { title: "1. Purpose of Processing", body: "PetGrow may process personal information to the extent necessary for: member identification and account management via Kakao Login; keeping you logged in; storing and syncing pet information across devices; saving and re-viewing results such as PetBTI; customer support; improving service stability and quality; delivering ads and measuring ad performance; preventing fraud; and processing account deletion and related data removal." },
@@ -2124,30 +2124,61 @@ function TermsPage() {
    로그인 / 회원가입 (데모 — Supabase Auth 연동 전 UI 목업)
    카카오 간편로그인 전용. 실제 인가 코드 교환/세션 발급은 서버(/api/auth/kakao/*)에서 처리해요.
    ============================================================ */
+const CONSENT_VERSION = "2026-08-16-v1";
+const CONSENT_STORAGE_KEY = "petgrow:consent";
+
 function LoginScreen({ onGoTerms, onGoPrivacy }) {
   const t = useT();
+  const [termsOk, setTermsOk] = useState(false);
+  const [privacyOk, setPrivacyOk] = useState(false);
+  const [marketingOk, setMarketingOk] = useState(false);
+  const [detail, setDetail] = useState(null);
+  const allChecked = termsOk && privacyOk && marketingOk;
+  const setAll = (checked) => { setTermsOk(checked); setPrivacyOk(checked); setMarketingOk(checked); };
+  const startLogin = () => {
+    if (!termsOk || !privacyOk) {
+      window.alert("필수 약관과 개인정보 수집·이용에 동의해 주세요.");
+      return;
+    }
+    try {
+      localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify({
+        version: CONSENT_VERSION, terms: true, privacy: true, marketing: !!marketingOk,
+        agreedAt: new Date().toISOString()
+      }));
+    } catch {}
+    goToKakaoLogin();
+  };
   return (
-    <div style={{ maxWidth: 380, margin: "40px auto 0", textAlign: "center" }}>
+    <div style={{ maxWidth: 420, margin: "32px auto 0", textAlign: "center" }}>
       <PetGrowLogo style={{ width: 56, height: 56, margin: "0 auto 14px" }} />
       <h2 style={{ fontSize: 20, fontFamily: "'Jua',sans-serif", marginBottom: 6 }}>
         <span style={{ color: "var(--text)" }}>Pet</span><span style={{ color: "var(--primary)" }}>Grow</span> 🐾
       </h2>
-      <p className="bg-sub" style={{ fontSize: 14, lineHeight: 1.6, marginBottom: 32 }}>{t.loginTagline}</p>
+      <p className="bg-sub" style={{ fontSize: 14, lineHeight: 1.6, marginBottom: 22 }}>{t.loginTagline}</p>
 
-      <button type="button" className="kakao-login-btn" onClick={goToKakaoLogin}>
+      <div className="consent-box">
+        <label className="consent-all"><input type="checkbox" checked={allChecked} onChange={e=>setAll(e.target.checked)}/><strong>전체 동의</strong></label>
+        <div className="consent-divider"/>
+        <label className="consent-row"><input type="checkbox" checked={termsOk} onChange={e=>setTermsOk(e.target.checked)}/><span><b>[필수]</b> 이용약관 동의</span><button type="button" onClick={(e)=>{e.preventDefault();setDetail("terms")}}>보기</button></label>
+        <label className="consent-row"><input type="checkbox" checked={privacyOk} onChange={e=>setPrivacyOk(e.target.checked)}/><span><b>[필수]</b> 개인정보 수집·이용 동의</span><button type="button" onClick={(e)=>{e.preventDefault();setDetail("privacy")}}>보기</button></label>
+        <label className="consent-row"><input type="checkbox" checked={marketingOk} onChange={e=>setMarketingOk(e.target.checked)}/><span><em>[선택]</em> 광고·마케팅 정보 수신 동의</span><button type="button" onClick={(e)=>{e.preventDefault();setDetail("marketing")}}>보기</button></label>
+      </div>
+
+      <button type="button" className="kakao-login-btn" onClick={startLogin}>
         <KakaoIcon style={{ width: 20, height: 20 }} /> {t.loginContinueKakao}
       </button>
+      <p className="bg-sub" style={{fontSize:11,lineHeight:1.5,marginTop:10}}>선택 동의는 거부해도 PetGrow 기본 서비스를 이용할 수 있어요.</p>
 
-      <div style={{ display: "flex", justifyContent: "center", gap: 14, marginTop: 26 }}>
-        <button type="button" onClick={onGoTerms}
-          style={{ fontSize: 12, fontWeight: 700, color: "var(--sub)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-          {t.termsFooterLink}
-        </button>
-        <button type="button" onClick={onGoPrivacy}
-          style={{ fontSize: 12, fontWeight: 700, color: "var(--sub)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-          {t.privacyFooterLink}
-        </button>
+      <div style={{ display: "flex", justifyContent: "center", gap: 14, marginTop: 18 }}>
+        <button type="button" onClick={onGoTerms} style={{ fontSize: 12, fontWeight: 700, color: "var(--sub)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>{t.termsFooterLink}</button>
+        <button type="button" onClick={onGoPrivacy} style={{ fontSize: 12, fontWeight: 700, color: "var(--sub)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>{t.privacyFooterLink}</button>
       </div>
+
+      <Modal open={!!detail} onClose={()=>setDetail(null)} width={520}>
+        {detail==="terms" && <><h3>이용약관 동의</h3><p className="consent-detail-text">PetGrow의 회원가입, 서비스 이용, 계정 및 데이터 저장·동기화, Pet톡 운영, 광고 및 외부서비스 등에 관한 이용약관에 동의합니다.</p><button className="bg-btn" onClick={()=>{setTermsOk(true);setDetail(null)}}>동의하고 닫기</button></>}
+        {detail==="privacy" && <><h3>개인정보 수집·이용 동의</h3><div className="consent-detail-text"><b>수집 항목</b><br/>카카오 사용자 고유 식별정보, 실제 동의받아 제공되는 닉네임·프로필 이미지, 반려동물 이름·종류·품종·생년월일·성별·현재 체중·프로필 사진, PetBTI 결과 및 저장되는 서비스 정보<br/><br/><b>이용 목적</b><br/>회원 식별·계정 관리, 반려동물 프로필 및 PetGrow 서비스 제공, 계정별 데이터 저장·동기화<br/><br/><b>보유 기간</b><br/>회원 탈퇴 시까지 또는 처리 목적 달성 시까지. 관계 법령상 보관 의무가 있는 경우 해당 기간 동안 보관할 수 있습니다.<br/><br/><b>동의 거부권</b><br/>동의를 거부할 수 있으나 필수 정보이므로 회원 서비스 이용이 제한될 수 있습니다.</div><button className="bg-btn" onClick={()=>{setPrivacyOk(true);setDetail(null)}}>동의하고 닫기</button></>}
+        {detail==="marketing" && <><h3>광고·마케팅 정보 수신 동의 (선택)</h3><div className="consent-detail-text">PetGrow의 이벤트, 새 기능, 제휴 또는 프로모션 관련 안내를 받을 수 있도록 선택 동의를 받습니다. 동의하지 않아도 기본 서비스 이용에는 제한이 없습니다. 실제 마케팅 발송 기능을 운영하는 경우 동의한 범위에서만 이용합니다.</div><button className="bg-btn" onClick={()=>{setMarketingOk(true);setDetail(null)}}>동의하고 닫기</button></>}
+      </Modal>
     </div>
   );
 }
@@ -2612,6 +2643,8 @@ const GlobalStyle = () => (
       font-size:16px; font-weight:700; background:#FEE500; color:#191919;}
     .kakao-login-btn:hover{filter:brightness(0.97);}
     .kakao-login-btn:active{filter:brightness(0.93);}
+    .consent-box{margin:0 0 14px;text-align:left;border:1px solid #e3e9e3;background:#fff;border-radius:16px;padding:14px 15px;box-shadow:0 4px 14px rgba(49,74,56,.05)}
+    .consent-all,.consent-row{display:flex;align-items:center;gap:9px;font-size:13px;line-height:1.45;cursor:pointer}.consent-all{padding:2px 0 8px}.consent-row{padding:7px 0}.consent-row input,.consent-all input{width:17px;height:17px;accent-color:var(--primary);flex:0 0 auto}.consent-row span{flex:1}.consent-row b{color:#347455}.consent-row em{font-style:normal;color:#7c877f}.consent-row button,.consent-view-btn{border:0;background:none;color:var(--primary);font:inherit;font-size:11px;font-weight:800;text-decoration:underline;cursor:pointer;padding:4px}.consent-divider{height:1px;background:#edf1ed;margin:0 0 4px}.consent-detail-text{text-align:left;white-space:pre-line;font-size:13px;line-height:1.7;color:var(--text);margin:14px 0 20px}.support-public-toggle .consent-view-btn{margin-left:auto;align-self:center;flex:0 0 auto}
     .tab-bar{display:flex; gap:6px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; padding-bottom:2px;}
     .tab-bar::-webkit-scrollbar{display:none;}
     .tab-pill{flex:0 0 auto; display:flex; align-items:center; gap:6px; padding:0 16px; height:40px;
@@ -9839,7 +9872,8 @@ function PublicDirectAds(){
 
 function AdInquiryPage({onBack}){
  const [f,setF]=useState({companyName:"",contactName:"",email:"",phone:"",campaignType:"banner",budget:"",message:""});
- const submit=async()=>{if(!window.confirm("광고 문의를 전송할까요?"))return;try{await submitAdInquiry(f);window.alert("광고 문의가 접수됐어요. 확인 후 연락드릴게요.");setF({companyName:"",contactName:"",email:"",phone:"",campaignType:"banner",budget:"",message:""})}catch(e){window.alert(e.message)}};
+ const [privacyAgree,setPrivacyAgree]=useState(false),[privacyOpen,setPrivacyOpen]=useState(false);
+ const submit=async()=>{if(!privacyAgree){window.alert("광고·제휴 문의를 위한 개인정보 수집·이용에 동의해 주세요.");return}if(!window.confirm("광고 문의를 전송할까요?"))return;try{await submitAdInquiry({...f,privacyConsent:true,privacyConsentAt:new Date().toISOString()});window.alert("광고 문의가 접수됐어요. 확인 후 연락드릴게요.");setF({companyName:"",contactName:"",email:"",phone:"",campaignType:"banner",budget:"",message:""});setPrivacyAgree(false)}catch(e){window.alert(e.message)}};
  return <div className="support-page ad-inquiry-page"><div className="support-head ad-inquiry-head"><div><h1>광고 문의</h1><p>PetGrow 배너·팝업·제휴 광고를 문의할 수 있어요.</p></div><button className="bg-btn bg-btn-ghost ad-inquiry-back" onClick={onBack}>← 돌아가기</button></div><div className="bg-card support-write">
  <input className="bg-input" placeholder="회사/브랜드명 *" value={f.companyName} onChange={e=>setF({...f,companyName:e.target.value})}/>
  <input className="bg-input" placeholder="담당자명 *" value={f.contactName} onChange={e=>setF({...f,contactName:e.target.value})}/>
@@ -9848,7 +9882,10 @@ function AdInquiryPage({onBack}){
  <select className="bg-input" value={f.campaignType} onChange={e=>setF({...f,campaignType:e.target.value})}><option value="banner">배너 광고</option><option value="popup">팝업 광고</option><option value="sponsor">제휴/스폰서십</option><option value="other">기타</option></select>
  <input className="bg-input" placeholder="예상 예산 (선택)" value={f.budget} onChange={e=>setF({...f,budget:e.target.value})}/>
  <textarea className="bg-input support-textarea" placeholder="광고 내용, 희망 기간, 랜딩페이지 등을 적어주세요. *" value={f.message} onChange={e=>setF({...f,message:e.target.value})}/>
- <small>접수된 정보는 광고 문의 상담과 계약 검토 목적으로만 사용됩니다.</small><button className="bg-btn" onClick={submit}>광고 문의 보내기</button></div></div>
+ <label className="support-public-toggle"><input type="checkbox" checked={privacyAgree} onChange={e=>setPrivacyAgree(e.target.checked)}/><span><b>[필수] 광고·제휴 문의 개인정보 수집·이용 동의</b><small>회사/브랜드명, 담당자명, 이메일, 문의 내용(필수)과 연락처·광고유형·예산(선택)을 상담 및 제휴 검토 목적으로 처리합니다.</small></span><button type="button" className="consent-view-btn" onClick={(e)=>{e.preventDefault();setPrivacyOpen(true)}}>보기</button></label>
+ <small>접수된 정보는 광고 문의 상담과 계약 검토 목적으로만 사용됩니다.</small><button className="bg-btn" onClick={submit}>광고 문의 보내기</button></div>
+ <Modal open={privacyOpen} onClose={()=>setPrivacyOpen(false)} width={520}><h3>광고·제휴 문의 개인정보 수집·이용 동의</h3><div className="consent-detail-text"><b>필수 항목</b><br/>회사/브랜드명, 담당자명, 이메일, 문의 내용<br/><br/><b>선택 항목</b><br/>연락처, 광고 유형, 예산 등 이용자가 직접 입력한 정보<br/><br/><b>이용 목적</b><br/>광고·제휴 상담, 견적·캠페인 협의 및 문의 이력 관리<br/><br/><b>보유 기간</b><br/>상담·제휴 검토 등 처리 목적 달성 시까지. 관계 법령상 보관이 필요한 경우 해당 기간 동안 보관합니다.<br/><br/>동의를 거부할 수 있으나, 필수 정보 수집에 동의하지 않으면 광고·제휴 문의 접수가 어렵습니다.</div><button className="bg-btn" onClick={()=>{setPrivacyAgree(true);setPrivacyOpen(false)}}>동의하고 닫기</button></Modal>
+ </div>
 }
 
 function SupportPage({account,onBack}){
@@ -10306,8 +10343,15 @@ function AppInner({ lang, setLang }) {
       const me = meResult === undefined ? null : meResult;
       if (meResult !== undefined) setAccount(meResult);
       setAuthChecked(true);
-      // 로그인된 사용자는 새로 접속하거나 새로고침해도 홈에서 시작해요.
+      // 로그인 직전에 받은 약관/개인정보 동의 기록을 계정 상태에도 저장해요.
       if (me) {
+        try {
+          const rawConsent = window.localStorage.getItem(CONSENT_STORAGE_KEY);
+          const consent = rawConsent ? JSON.parse(rawConsent) : null;
+          if (consent?.version === CONSENT_VERSION && consent?.terms && consent?.privacy) {
+            await safeSet("petgrow:consent", consent, me);
+          }
+        } catch {}
         setView("home");
       }
 
