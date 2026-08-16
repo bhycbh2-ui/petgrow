@@ -4287,6 +4287,152 @@ const GlobalStyle = () => (
       margin-top:2px!important;
     }
   }
+
+  /* 모바일 관리자센터 헤더 충돌 방지 */
+  @media(max-width:760px){
+    .admin-mobile-safe-header{
+      display:flex!important;
+      flex-direction:column!important;
+      align-items:stretch!important;
+      gap:14px!important;
+      width:100%!important;
+    }
+
+    .admin-mobile-safe-header>div:first-child{
+      width:100%!important;
+      min-width:0!important;
+      padding:0!important;
+      margin:0!important;
+    }
+
+    .admin-mobile-safe-header small{
+      display:block!important;
+      margin-bottom:6px!important;
+    }
+
+    .admin-mobile-safe-header h1{
+      width:100%!important;
+      max-width:none!important;
+      margin:0!important;
+      padding:0!important;
+      font-size:clamp(30px,8vw,44px)!important;
+      line-height:1.14!important;
+      word-break:keep-all!important;
+      overflow-wrap:normal!important;
+      white-space:normal!important;
+    }
+
+    .admin-mobile-safe-header .bg-sub{
+      width:100%!important;
+      max-width:none!important;
+      margin:16px 0 0!important;
+      padding:0!important;
+      line-height:1.6!important;
+      white-space:normal!important;
+      word-break:keep-all!important;
+    }
+
+    .admin-mobile-safe-header .admin-exit-btn{
+      position:static!important;
+      align-self:flex-end!important;
+      justify-self:auto!important;
+      width:auto!important;
+      min-width:132px!important;
+      max-width:60%!important;
+      margin:0!important;
+      padding:12px 18px!important;
+      white-space:nowrap!important;
+      flex:0 0 auto!important;
+    }
+  }
+
+  @media(max-width:430px){
+    .admin-mobile-safe-header h1{
+      font-size:34px!important;
+    }
+    .admin-mobile-safe-header .admin-exit-btn{
+      max-width:72%!important;
+      min-width:124px!important;
+    }
+  }
+
+  /* ===== PetGrow 전체 모바일 배율/자동확대 안정화 ===== */
+  html{
+    -webkit-text-size-adjust:100%!important;
+    text-size-adjust:100%!important;
+  }
+
+  body{
+    width:100%!important;
+    min-width:0!important;
+    overflow-x:hidden!important;
+    -webkit-text-size-adjust:100%!important;
+    text-size-adjust:100%!important;
+  }
+
+  #root{
+    width:100%!important;
+    max-width:100vw!important;
+    min-width:0!important;
+    overflow-x:hidden!important;
+  }
+
+  *,*::before,*::after{
+    box-sizing:border-box;
+  }
+
+  img,video,canvas,svg{
+    max-width:100%;
+  }
+
+  @media(max-width:760px){
+    /* iOS Safari는 16px 미만 input에 포커스 시 화면을 자동 확대하므로 전체 입력 UI를 16px 이상으로 고정 */
+    input,
+    textarea,
+    select,
+    .bg-input{
+      font-size:16px!important;
+    }
+
+    /* 긴 관리자/콘텐츠 화면이 viewport보다 넓어져 전체가 확대되어 보이는 현상 방지 */
+    .app-shell,
+    .main-content,
+    .admin-reports-page,
+    .support-page,
+    .admin-adops-page,
+    .admin-manage,
+    .service-health-wrap{
+      width:100%!important;
+      max-width:100%!important;
+      min-width:0!important;
+    }
+
+    .bg-card,
+    .admin-hero,
+    .admin-mobile-safe-header,
+    .admin-direct-ad-form,
+    .admin-report-card,
+    .service-health-hero{
+      max-width:100%!important;
+      min-width:0!important;
+    }
+
+    button,
+    input,
+    textarea,
+    select{
+      max-width:100%;
+    }
+  }
+
+  @media(max-width:430px){
+    /* 아주 작은 iPhone에서도 웹/앱 공통 페이지가 데스크톱 폭처럼 계산되지 않도록 보정 */
+    .admin-reports-page,
+    .support-page{
+      padding-left:12px!important;
+      padding-right:12px!important;
+    }
+  }
 `}</style>
 );
 
@@ -9800,7 +9946,7 @@ function AdminReportsPage({onBack}){
  role==="report"?[["reports","신고관리"]]:[["ads","광고운영"]];
  const c=stats?.cards||{};
  return <div className="admin-reports-page">
-   <div className="admin-hero admin-hero-toolbar">
+   <div className="admin-hero admin-hero-toolbar admin-mobile-safe-header">
   <div><small>{status.roleLabel}</small><h1>PetGrow 관리자 센터</h1><p className="bg-sub">서비스 운영·신고·문의·광고를 한 곳에서 관리해요.</p></div>
   <button className="bg-btn bg-btn-ghost admin-exit-btn" onClick={onBack}>← 회원정보</button>
 </div>
