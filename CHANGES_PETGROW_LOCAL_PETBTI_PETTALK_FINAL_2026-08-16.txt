@@ -14,4 +14,4 @@ PetGrow 통합 업데이트 2026-08-16
 
 환경변수
 - KAKAO_REST_API_KEY: 주변 업체 검색 서버 API
-- VITE_KAKAO_JS_KEY: 카카오 지도 표시(현재 위치/업체 마커)
+- 지도 표시: 별도 JavaScript 키 없이 지도 타일을 사용하고, 주변 업체 검색은 서버의 KAKAO_REST_API_KEY를 사용

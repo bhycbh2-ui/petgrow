@@ -47,6 +47,10 @@
       "dest": "/api/core?route=nearby"
     },
     {
+      "src": "/api/nearby-reviews",
+      "dest": "/api/core?route=nearby-reviews"
+    },
+    {
       "handle": "filesystem"
     },
     {

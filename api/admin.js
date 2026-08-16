@@ -47,7 +47,7 @@ export default async function handler(req,res){
     await logAdmin(u,"ADMIN_PIN_SET",u);return res.status(200).json({ok:true});
   }
 
-  const cap=a==="reports"||a==="restrict"||a==="unblock"||a==="resolve"?"reports":
+  const cap=a==="reports"||a==="restrict"||a==="unblock"||a==="resolve"||a==="place-reports"||a==="place-review-hide"||a==="place-review-resolve"?"reports":
             a==="stats"?"dashboard":a==="logs"?"logs":
             a.startsWith("admin-")?"admins":null;
   const role=await auth(req,res,u,cap);if(!role)return;
@@ -57,6 +57,7 @@ export default async function handler(req,res){
       members:()=>sql`select count(*)::int total,count(*) filter(where created_at>=now()-interval '7 days')::int new7 from pg_users`,
       active:()=>sql`select count(*) filter(where last_login_at>=now()-interval '7 days')::int d7 from pg_users`,
       reports:()=>sql`select count(*) filter(where status='open')::int open,count(*) filter(where status='resolved' and reviewed_at>=now()-interval '7 days')::int done7 from pg_reports`,
+      nearbyReports:()=>sql`select count(*) filter(where status='open')::int open,count(*) filter(where status='resolved' and reviewed_at>=now()-interval '7 days')::int done7 from pg_place_review_reports`,
       restrictions:()=>sql`select count(*)::int n from pg_community_restrictions where permanent=true or restricted_until>now()`,
       sessions:()=>sql`select count(*) filter(where day=(now() at time zone 'Asia/Seoul')::date)::int today,count(*) filter(where last_seen>now()-interval '5 minutes')::int online from pg_analytics_sessions`,
       community:()=>sql`select (select count(*)::int from pg_posts where created_at>=(now() at time zone 'Asia/Seoul')::date) posts_today,(select count(*)::int from pg_comments where created_at>=(now() at time zone 'Asia/Seoul')::date) comments_today`,
@@ -76,7 +77,7 @@ export default async function handler(req,res){
     const ent=Object.entries(queries),settled=await Promise.allSettled(ent.map(([,f])=>f())),q={},warnings=[];
     settled.forEach((x,i)=>{const k=ent[i][0];if(x.status==="fulfilled")q[k]=x.value.rows[0]||{};else warnings.push(`${k} 통계를 불러오지 못했어요.`)});
     const menuRows=settled[ent.findIndex(([k])=>k==="menuUsage")]?.status==="fulfilled" ? settled[ent.findIndex(([k])=>k==="menuUsage")].value.rows : [];
-    return res.status(200).json({warnings,cards:{totalMembers:q.members?.total||0,new7d:q.members?.new7||0,active7d:q.active?.d7||0,openReports:q.reports?.open||0,resolvedReports7d:q.reports?.done7||0,restricted:q.restrictions?.n||0,todaySessions:q.sessions?.today||0,onlineSessions5m:q.sessions?.online||0,postsToday:q.community?.posts_today||0,commentsToday:q.community?.comments_today||0,waitingInquiries:q.inquiries?.waiting||0},menuUsage:menuRows});
+    return res.status(200).json({warnings,cards:{totalMembers:q.members?.total||0,new7d:q.members?.new7||0,active7d:q.active?.d7||0,openReports:(q.reports?.open||0)+(q.nearbyReports?.open||0),resolvedReports7d:(q.reports?.done7||0)+(q.nearbyReports?.done7||0),restricted:q.restrictions?.n||0,todaySessions:q.sessions?.today||0,onlineSessions5m:q.sessions?.online||0,postsToday:q.community?.posts_today||0,commentsToday:q.community?.comments_today||0,waitingInquiries:q.inquiries?.waiting||0},menuUsage:menuRows});
   }
   if(a==="reports"&&req.method==="GET"){
     const {rows}=await sql`select * from pg_reports order by case when status='open' then 0 else 1 end,created_at desc limit 100`;
@@ -91,6 +92,21 @@ export default async function handler(req,res){
   }
   if(a==="unblock"&&req.method==="POST"){const {targetUserId,reportId}=req.body||{};await sql`delete from pg_community_restrictions where user_id=${targetUserId}`;await logAdmin(u,"UNBLOCK",targetUserId,reportId||null);return res.status(200).json({ok:true});}
   if(a==="resolve"&&req.method==="POST"){const {reportId}=req.body||{};await sql`update pg_reports set status='resolved',reviewed_at=now(),reviewed_by=${u} where id=${reportId}`;await logAdmin(u,"REPORT_RESOLVED",null,reportId);return res.status(200).json({ok:true});}
+  if(a==="place-reports"&&req.method==="GET"){
+    const {rows}=await sql`select prr.id,prr.review_id,prr.reason,prr.detail,prr.status,prr.created_at,pr.place_id,pr.place_name,pr.content,pr.rating,pr.user_id target_user_id,coalesce(author.nickname,'PetGrow 회원') author_nickname,coalesce(reporter.nickname,'PetGrow 회원') reporter_nickname from pg_place_review_reports prr join pg_place_reviews pr on pr.id=prr.review_id left join pg_users author on author.id=pr.user_id left join pg_users reporter on reporter.id=prr.reporter_user_id order by case when prr.status='open' then 0 else 1 end,prr.created_at desc limit 100`;
+    return res.status(200).json({reports:rows});
+  }
+  if(a==="place-review-hide"&&req.method==="POST"){
+    const {reviewId,reportId}=req.body||{};if(!reviewId)return res.status(400).json({error:"후기 정보가 없어요."});
+    await sql`update pg_place_reviews set status='hidden',updated_at=now() where id=${reviewId}`;
+    if(reportId)await sql`update pg_place_review_reports set status='resolved',reviewed_at=now(),reviewed_by=${u} where id=${reportId}`;
+    await logAdmin(u,"PLACE_REVIEW_HIDE",null,reportId||null,{reviewId});return res.status(200).json({ok:true});
+  }
+  if(a==="place-review-resolve"&&req.method==="POST"){
+    const {reportId}=req.body||{};if(!reportId)return res.status(400).json({error:"신고 정보가 없어요."});
+    await sql`update pg_place_review_reports set status='resolved',reviewed_at=now(),reviewed_by=${u} where id=${reportId}`;
+    await logAdmin(u,"PLACE_REVIEW_REPORT_RESOLVED",null,reportId);return res.status(200).json({ok:true});
+  }
   if(a==="logs"&&req.method==="GET"){const {rows}=await sql`select l.*,coalesce(a.nickname,'관리자') admin_nickname,coalesce(t.nickname,'') target_nickname from pg_admin_audit_logs l left join pg_users a on a.id=l.admin_user_id left join pg_users t on t.id=l.target_user_id order by l.created_at desc limit 100`;return res.status(200).json({logs:rows});}
 
   if(a==="admin-list"&&req.method==="GET"){

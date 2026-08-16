@@ -289,6 +289,8 @@ export function ensureSchema() {
           title text not null,
           description text,
           species text not null default 'all',
+          vocal_type text not null default 'instrumental',
+          mood text not null default 'relax',
           cover_url text,
           audio_url text not null,
           active boolean not null default true,
@@ -300,6 +302,8 @@ export function ensureSchema() {
           updated_at timestamptz not null default now()
         )
       `;
+      await sql`alter table pg_music_tracks add column if not exists vocal_type text not null default 'instrumental'`;
+      await sql`alter table pg_music_tracks add column if not exists mood text not null default 'relax'`;
       await sql`create index if not exists idx_pg_music_tracks_rank on pg_music_tracks(active,like_count desc,comment_count desc,play_count desc,created_at desc)`;
       await sql`
         create table if not exists pg_music_likes (
@@ -319,6 +323,56 @@ export function ensureSchema() {
         )
       `;
       await sql`create index if not exists idx_pg_music_comments_track on pg_music_comments(track_id,created_at desc)`;
+
+      // ---- 내 주변 Pet 장소 후기 ----
+      // 카카오 장소 id를 기준으로 별점·간단 후기만 PetGrow DB에 저장합니다.
+      // 사용자의 현재 위치 좌표는 이 테이블에 저장하지 않습니다.
+      await sql`
+        create table if not exists pg_place_reviews (
+          id text primary key,
+          place_id text not null,
+          place_name text not null,
+          user_id text not null references pg_users(id) on delete cascade,
+          rating smallint not null check (rating between 1 and 5),
+          content text not null,
+          like_count bigint not null default 0,
+          status text not null default 'visible',
+          created_at timestamptz not null default now(),
+          updated_at timestamptz not null default now()
+        )
+      `;
+      await sql`create index if not exists idx_pg_place_reviews_place on pg_place_reviews(place_id,status,created_at desc)`;
+      await sql`
+        create table if not exists pg_place_review_likes (
+          review_id text not null references pg_place_reviews(id) on delete cascade,
+          user_id text not null references pg_users(id) on delete cascade,
+          created_at timestamptz not null default now(),
+          primary key(review_id,user_id)
+        )
+      `;
+      await sql`
+        create table if not exists pg_place_review_reports (
+          id text primary key,
+          review_id text not null references pg_place_reviews(id) on delete cascade,
+          reporter_user_id text not null references pg_users(id) on delete cascade,
+          reason text not null,
+          detail text,
+          status text not null default 'open',
+          reviewed_by text references pg_users(id) on delete set null,
+          reviewed_at timestamptz,
+          created_at timestamptz not null default now(),
+          unique(review_id,reporter_user_id)
+        )
+      `;
+      await sql`create index if not exists idx_pg_place_review_reports_status on pg_place_review_reports(status,created_at desc)`;
+
+      await sql`
+        create table if not exists pg_app_meta (
+          key text primary key,
+          value text,
+          updated_at timestamptz not null default now()
+        )
+      `;
 
     })().catch((error) => {
       schemaReadyPromise = null;

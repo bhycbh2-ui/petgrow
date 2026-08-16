@@ -9,6 +9,8 @@ const MAX_AUDIO_BYTES = 12 * 1024 * 1024;
 const MAX_COVER_BYTES = 4 * 1024 * 1024;
 const AUDIO_MIME = new Set(["audio/mpeg","audio/mp3","audio/wav","audio/x-wav","audio/mp4","audio/aac"]);
 const IMAGE_MIME = new Set(["image/jpeg","image/png","image/webp"]);
+const MUSIC_COMMENT_BLOCKED_RE = /씨발|시발|ㅅㅂ|병신|븅신|개새끼|개새|좆|존나|지랄|꺼져|닥쳐|섹스|sex|야동|porn|포르노|자위|보지|자지|음란|나치|nazi|혐오/i;
+function validateMusicComment(text){const raw=String(text||"").trim(),compact=raw.replace(/[\s._\-~!@#$%^&*()+=|\\/]/g,"");if(!raw||raw.length>300)return "댓글은 1~300자로 입력해 주세요.";if(MUSIC_COMMENT_BLOCKED_RE.test(compact))return "사용할 수 없는 표현이 포함되어 있어요.";if(/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/.test(raw)||/(?:01[016789])[-\s]?\d{3,4}[-\s]?\d{4}/.test(raw))return "전화번호나 이메일 같은 개인정보는 댓글에 작성하지 말아 주세요.";return "";}
 
 function parseDataUrl(dataUrl, allowed, maxBytes) {
   const m = /^data:([^;]+);base64,(.+)$/s.exec(String(dataUrl || ""));
@@ -31,11 +33,72 @@ function speciesWhere(species){
   return sql``;
 }
 
+async function ensureStarterTracks(){
+  const seedKey="petmusic-starter-four-v1";
+  // 예전에 넣었던 데모곡은 더 이상 사용하지 않습니다. 기존 DB에 남아 있어도 자동 정리해요.
+  await sql`delete from pg_music_tracks where id='demo-pink-day' or audio_url='/petmusic/pink-day.mp3'`;
+  await sql`delete from pg_app_meta where key in ('petmusic-demo-pink-day-v2','petmusic-demo-pink-day-v1')`;
+
+  const {rows:meta}=await sql`select value from pg_app_meta where key=${seedKey} limit 1`;
+  if(meta[0]) return;
+
+  const tracks = [
+    {
+      id:'starter-cat-soft-steps',
+      title:'사뿐사뿐 낮잠길',
+      description:'고양이가 편안하게 쉬는 시간에 가볍게 틀어두기 좋은 잔잔한 인스트루멘탈이에요.',
+      species:'cat', vocalType:'instrumental', mood:'relax',
+      cover:'/pettalk-demo-cat.webp', audio:'/petmusic/cat-soft-steps.mp3'
+    },
+    {
+      id:'starter-cat-moonlight-steps',
+      title:'달빛 아래 고양이 발걸음',
+      description:'조용한 저녁과 수면 전 시간에 어울리는 부드러운 고양이용 인스트루멘탈이에요.',
+      species:'cat', vocalType:'instrumental', mood:'sleep',
+      cover:'/pettalk-demo-cat.webp', audio:'/petmusic/cat-moonlight-steps.mp3'
+    },
+    {
+      id:'starter-dog-happy-walk',
+      title:'꼬리콩콩 산책길',
+      description:'산책 전후나 기분 좋은 놀이 시간에 함께 듣기 좋은 밝은 강아지용 인스트루멘탈이에요.',
+      species:'dog', vocalType:'instrumental', mood:'play',
+      cover:'/pettalk-demo-dog.webp', audio:'/petmusic/dog-happy-walk.mp3'
+    },
+    {
+      id:'starter-dog-sunshine-steps',
+      title:'햇살 따라 총총',
+      description:'편안한 낮 시간에 강아지와 함께 반복재생하기 좋은 포근한 인스트루멘탈이에요.',
+      species:'dog', vocalType:'instrumental', mood:'relax',
+      cover:'/pettalk-demo-dog.webp', audio:'/petmusic/dog-sunshine-steps.mp3'
+    }
+  ];
+
+  for (const track of tracks) {
+    await sql`
+      insert into pg_music_tracks(id,title,description,species,vocal_type,mood,cover_url,audio_url,active,created_by)
+      values(${track.id},${track.title},${track.description},${track.species},${track.vocalType},${track.mood},${track.cover},${track.audio},true,null)
+      on conflict(id) do update set
+        title=excluded.title,
+        description=excluded.description,
+        species=excluded.species,
+        vocal_type=excluded.vocal_type,
+        mood=excluded.mood,
+        cover_url=excluded.cover_url,
+        audio_url=excluded.audio_url,
+        active=true,
+        updated_at=now()
+    `;
+  }
+  await sql`insert into pg_app_meta(key,value) values(${seedKey},'done') on conflict(key) do update set value='done',updated_at=now()`;
+}
+
+
 export default async function handler(req,res){
   await ensureSchema();
   const action=String(req.query.action||"list");
   try{
     if(action==="list" && req.method==="GET"){
+      await ensureStarterTracks();
       const species=["dog","cat","all"].includes(String(req.query.species))?String(req.query.species):"all";
       const page=Math.max(1,parseInt(req.query.page||"1",10)||1), pageSize=20, offset=(page-1)*pageSize;
       const uid=getSessionUserId(req);
@@ -78,27 +141,31 @@ export default async function handler(req,res){
     if(action==="comment" && req.method==="POST"){
       const uid=getSessionUserId(req); if(!uid)return res.status(401).json({error:"댓글은 로그인 후 이용할 수 있어요."});
       const trackId=String(req.body?.id||""), content=String(req.body?.content||"").trim();
-      if(!trackId||content.length<1||content.length>300)return res.status(400).json({error:"댓글은 1~300자로 입력해 주세요."});
+      if(!trackId)return res.status(400).json({error:"곡 정보가 없어요."});
+      const bad=validateMusicComment(content);if(bad)return res.status(400).json({error:bad});
       const id=crypto.randomUUID(); await sql`insert into pg_music_comments(id,track_id,user_id,content) values(${id},${trackId},${uid},${content})`;
       await sql`update pg_music_tracks set comment_count=comment_count+1 where id=${trackId}`;
       return res.status(201).json({ok:true,id});
     }
     if(action==="admin-list" && req.method==="GET"){
       if(!(await requireAdmin(req,res)))return;
+      await ensureStarterTracks();
       const {rows}=await sql`select * from pg_music_tracks order by created_at desc`;
       return res.status(200).json({items:rows});
     }
     if(action==="admin-save" && req.method==="POST"){
       const admin=await requireAdmin(req,res); if(!admin)return;
       const body=req.body||{}, title=String(body.title||"").trim(), species=["dog","cat","all"].includes(body.species)?body.species:"all";
+      const vocalType=["instrumental","vocal"].includes(body.vocalType)?body.vocalType:"instrumental";
+      const mood=["relax","sleep","play","nature"].includes(body.mood)?body.mood:"relax";
       if(!title)return res.status(400).json({error:"노래 제목을 입력해 주세요."});
       let audioUrl=String(body.audioUrl||""), coverUrl=String(body.coverUrl||"");
       const id=String(body.id||crypto.randomUUID());
       if(body.audioDataUrl){const f=parseDataUrl(body.audioDataUrl,AUDIO_MIME,MAX_AUDIO_BYTES);const ext=f.mime.includes("wav")?"wav":f.mime.includes("mp4")?"m4a":"mp3";const b=await put(`petmusic/${id}-${Date.now()}.${ext}`,f.buffer,{access:"public",contentType:f.mime,token:process.env.BLOB_READ_WRITE_TOKEN});audioUrl=b.url;}
       if(body.coverDataUrl){const f=parseDataUrl(body.coverDataUrl,IMAGE_MIME,MAX_COVER_BYTES);const ext=f.mime.includes("png")?"png":f.mime.includes("webp")?"webp":"jpg";const b=await put(`petmusic/covers/${id}-${Date.now()}.${ext}`,f.buffer,{access:"public",contentType:f.mime,token:process.env.BLOB_READ_WRITE_TOKEN});coverUrl=b.url;}
       if(!audioUrl)return res.status(400).json({error:"음원 파일을 선택해 주세요."});
-      await sql`insert into pg_music_tracks(id,title,description,species,cover_url,audio_url,active,created_by) values(${id},${title},${String(body.description||"").trim()||null},${species},${coverUrl||null},${audioUrl},${body.active!==false},${admin.uid}) on conflict(id) do update set title=excluded.title,description=excluded.description,species=excluded.species,cover_url=excluded.cover_url,audio_url=excluded.audio_url,active=excluded.active,updated_at=now()`;
-      await logAdmin(admin.uid,body.id?"MUSIC_UPDATE":"MUSIC_CREATE",null,null,{trackId:id,title,species});
+      await sql`insert into pg_music_tracks(id,title,description,species,vocal_type,mood,cover_url,audio_url,active,created_by) values(${id},${title},${String(body.description||"").trim()||null},${species},${vocalType},${mood},${coverUrl||null},${audioUrl},${body.active!==false},${admin.uid}) on conflict(id) do update set title=excluded.title,description=excluded.description,species=excluded.species,vocal_type=excluded.vocal_type,mood=excluded.mood,cover_url=excluded.cover_url,audio_url=excluded.audio_url,active=excluded.active,updated_at=now()`;
+      await logAdmin(admin.uid,body.id?"MUSIC_UPDATE":"MUSIC_CREATE",null,null,{trackId:id,title,species,vocalType,mood});
       return res.status(200).json({ok:true,id});
     }
     if(action==="admin-toggle" && req.method==="POST"){

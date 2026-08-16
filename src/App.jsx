@@ -1589,6 +1589,9 @@ function adminBootstrap(setupCode,pin){return adminApi("bootstrap",{method:"POST
 function adminRecover(setupCode,pin){return adminApi("recover",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({setupCode,pin})});}
 function adminVerify(pin){return adminApi("verify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pin})});}
 function adminListReports(){return adminApi("reports");}
+function adminListPlaceReviewReports(){return adminApi("place-reports");}
+function adminHidePlaceReview(reviewId,reportId){return adminApi("place-review-hide",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({reviewId,reportId})});}
+function adminResolvePlaceReviewReport(reportId){return adminApi("place-review-resolve",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({reportId})});}
 function adminRestrictUser(payload){return adminApi("restrict",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});}
 function adminUnblockUser(userId,reportId){return adminApi("unblock",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId,reportId})});}
 function adminResolveReport(reportId){return adminApi("resolve",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({reportId})});}
@@ -1966,6 +1969,10 @@ function GuideModal({ open, onClose }) {
           </div>
         ))}
         <div>
+          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 3 }}>📍 내 주변 Pet</div>
+          <div className="bg-sub" style={{ fontSize: 13, lineHeight: 1.6 }}>위치를 허용하면 가까운 동물병원·동물약국·펫샵·용품점·미용·호텔·유치원을 거리순으로 확인할 수 있어요. 장소별 업종·주소·전화번호가 표시되고, 로그인 회원은 별점·간단 후기·좋아요·신고를 남길 수 있어요.</div>
+        </div>
+        <div>
           <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 3 }}>🎵 Pet음악</div>
           <div className="bg-sub" style={{ fontSize: 13, lineHeight: 1.6 }}>강아지·고양이 음악을 듣고 1곡 반복·전체 반복으로 재생할 수 있어요. 좋아요와 댓글로 반려동물의 반응을 남길 수 있고, 음악 목록은 20곡씩 페이지로 나뉘어요.</div>
         </div>
@@ -1987,7 +1994,7 @@ const PRIVACY_SECTIONS_KO = [
   { title: "6. 반려동물 정보 및 프로필 사진", body: "이용자가 등록한 반려동물 정보와 프로필 사진은 해당 PetGrow 계정과 연결하여 저장될 수 있으며, 우리 아이, 성장정보, Pet사주(기본 Pet사주·오늘의 펫운세·보호자 궁합), PetBTI 등 반려동물별 기능 제공에 이용될 수 있습니다." },
   { title: "7. 기존 기기 저장정보의 계정 이전", body: "카카오 간편로그인 도입 이전에 기기 또는 브라우저에 저장되어 있던 반려동물 정보가 있는 경우 이용자의 선택과 동의에 따라 로그인 계정으로 이전할 수 있습니다. 서버 저장이 정상 완료되기 전에 기존 데이터를 임의로 삭제하지 않도록 운영합니다." },
   { title: "8. 개인정보의 제3자 제공·처리위탁 및 국외 이전", body: "PetGrow는 이용자의 개인정보를 임의로 판매하지 않습니다. 제3자 제공, 처리위탁 또는 국외 이전이 발생하는 경우 실제 데이터 흐름, 제공자, 처리 목적, 항목, 보유기간 및 관련 법령상 고지·동의 필요 여부를 확인하여 본 방침에 반영합니다. 실제 사용하는 DB, Storage 및 호스팅 사업자는 최종 배포 구조에 맞추어 구체적으로 기재합니다.\n\n현재 PetGrow는 회원 데이터 저장을 위해 Vercel(호스팅 및 서버리스 인프라), Vercel Postgres(데이터베이스, Neon 기반), Vercel Blob(Pet톡 게시글 사진 및 Pet음악 음원·커버 이미지 저장)을 사용하고 있으며, 이 과정에서 이용자의 반려동물 정보 및 Pet톡 게시물 등이 해당 사업자의 서버(국외 소재 가능)에 저장·처리될 수 있습니다." },
-  { title: "9. 위치기반 주변 시설 안내", body: "PetGrow의 '내 주변 Pet'은 이용자가 위치 권한을 허용하거나 지역명을 직접 입력한 경우 주변 반려동물 관련 시설 정보를 검색해 보여주는 편의 기능입니다. 업체명·주소·전화번호·거리·영업정보 등은 외부 지도/장소 정보 제공자의 최신 데이터에 따라 달라질 수 있으므로 방문 또는 예약 전 해당 업체에 직접 확인해주세요. PetGrow는 이용자의 현재 위치 좌표를 회원 계정에 저장하지 않으며, 위치 권한은 언제든 기기 또는 브라우저 설정에서 철회할 수 있습니다." },
+  { title: "9. 위치기반 주변 시설 안내", body: "PetGrow의 '내 주변 Pet'은 이용자가 위치 권한을 허용하면 기기 또는 브라우저가 제공하는 현재 위치 좌표를 주변 동물병원·동물약국·펫샵·용품점·미용·호텔·유치원 등 장소 검색에 일시적으로 사용합니다. 현재 위치 좌표는 주변 검색 요청을 처리하는 동안에만 이용하며 PetGrow 회원 계정 또는 장소 후기 DB에 별도로 저장하지 않습니다. 위치 권한을 허용하지 않아도 지역명을 직접 입력해 검색할 수 있으며, 위치 권한은 언제든 기기 또는 브라우저 설정에서 철회할 수 있습니다. 장소명·주소·전화번호·업종·거리 등 업체 정보는 카카오 장소검색 등 외부 장소정보를 검색 시점에 불러오므로 PetGrow가 매주 별도로 갱신하는 정보가 아니며 실제 영업정보와 차이가 있을 수 있습니다." },
   { title: "10. 외부 서비스 및 광고", body: "PetGrow는 서비스 운영을 위해 카카오(간편로그인), Google AdMob/Google Mobile Ads SDK(앱 광고), 데이터베이스·파일 저장·호스팅 제공업체 등을 사용할 수 있습니다. Google은 간편로그인 제공자가 아니라 광고 등 실제 사용하는 서비스의 제공자로만 기재합니다. Google Mobile Ads SDK는 광고 제공, 분석 및 부정행위 방지를 위해 IP 주소, 이용 상호작용, 진단정보, 기기·계정 식별자 등을 자동으로 처리할 수 있습니다. 개인 맞춤형 광고 여부와 광고 관련 선택권은 적용되는 지역의 법령, Google의 동의 관리 도구 설정 및 이용자의 기기·계정 설정에 따라 달라질 수 있습니다. 외부 사업자가 자체적으로 처리하는 개인정보에는 해당 사업자의 개인정보처리방침이 적용될 수 있습니다." },
   { title: "10. 쿠키·광고 식별자 및 이용자 선택권", body: "웹 서비스는 로그인 유지, 서비스 제공, 이용 현황 분석 또는 광고 제공 등을 위해 쿠키 및 유사 기술을 사용할 수 있습니다. 모바일 앱에서는 광고 ID 등 기기 식별자가 광고 SDK에 의해 사용될 수 있습니다. 이용자는 브라우저의 쿠키 설정, Android의 광고 개인정보 보호/광고 ID 설정 등 기기에서 제공하는 방법을 통해 일부 광고 관련 식별정보의 사용을 제한하거나 광고 ID를 재설정·삭제할 수 있습니다. 관련 법령상 동의가 필요한 지역에는 Google의 개인정보 보호 메시지 또는 동의 관리 절차가 표시될 수 있습니다. 일부 설정을 제한하면 맞춤형 광고가 제한되거나 서비스 일부 기능에 차이가 생길 수 있습니다." },
   { title: "11. 개인정보의 파기", body: "개인정보 처리 목적이 달성되거나 회원이 탈퇴한 경우 관계 법령상 보관 의무가 있는 정보를 제외하고 개인정보를 삭제합니다. 삭제 대상에는 PetGrow 계정, 카카오 인증 관련 식별정보, 반려동물 정보, 프로필 사진, 저장된 검사 및 서비스 결과, Pet톡에 작성한 게시글·댓글·좋아요 기록 및 첨부 사진 등이 포함될 수 있습니다." },
@@ -1999,6 +2006,7 @@ const PRIVACY_SECTIONS_KO = [
   { title: "17. Pet톡 게시물의 보유기간 및 삭제", body: "Pet톡의 게시글·댓글·좋아요·신고 내역은 게시글/댓글이 삭제되거나 회원이 탈퇴할 때까지 보유됩니다. 회원은 본인이 작성한 게시글과 댓글을 언제든지 직접 삭제할 수 있습니다. 회원탈퇴 시 해당 회원이 작성한 모든 게시글·댓글·좋아요 기록은 즉시 삭제되며, 첨부된 사진 파일도 함께 삭제됩니다. 신고 내역은 신고한 회원이 탈퇴하는 경우 함께 삭제됩니다.\n\nPetGrow는 신고된 게시물을 운영자가 검토한 후 게시글·댓글을 숨기거나 삭제할 수 있으며, 운영정책 위반 정도에 따라 Pet톡 이용을 1일·7일·30일 또는 영구 제한하거나 제한을 해제할 수 있습니다. 신고만으로 자동 이용제한되지는 않으며, 관리자 처리 이력은 운영·보안 및 오남용 방지를 위해 기록될 수 있습니다." },
   { title: "18. Pet톡 이미지 저장", body: "Pet톡에 첨부하는 사진은 Vercel Blob(파일 저장 서비스)에 저장되며, 데이터베이스에는 사진의 저장 위치(URL)만 저장됩니다. 업로드 시 허용된 이미지 형식(JPG/PNG/WebP) 및 용량 제한이 적용되며, 게시글이 삭제되면 저장된 사진 파일도 함께 삭제됩니다." },
   { title: "19. 익명·집계형 서비스 이용 통계 및 광고 성과", body: "PetGrow는 서비스 품질 및 운영 현황을 확인하기 위해 개인정보를 최소화한 자체 통계를 운영할 수 있습니다. 집계 항목에는 방문 세션 수, 최근 5분 내 활성 세션의 추정치, 메뉴별 페이지 조회 수, 앱·웹 이용 비중, 신규·활성 회원 수, 등록 반려동물 수, Pet톡 게시글·댓글·좋아요 수, 신고·이용제한 건수, 직접광고 노출·클릭 및 광고 표시 요청·성공·오류 건수 등이 포함될 수 있습니다.\n\nPetGrow 관리자 통계 화면에는 이용자의 이름, 이메일, 카카오 고유식별정보, IP 주소 또는 개인별 광고 이용내역을 표시하지 않는 것을 원칙으로 합니다. 익명 방문 세션 중복 집계를 위한 해시값은 최대 90일 동안 보관한 후 삭제할 수 있으며, 일자별 집계 통계는 서비스 운영 추이 확인을 위해 최대 24개월간 보관할 수 있습니다. '현재 접속 세션'은 최근 일정 시간 내 신호가 있었던 세션을 바탕으로 한 추정치이며 실제 동시접속자 수와 차이가 있을 수 있습니다. AdMob의 실제 광고 노출·클릭·수익 및 광고 식별자 등은 Google의 시스템에서 별도로 처리될 수 있으며, PetGrow의 자체 통계와 Google 광고 보고서는 서로 다른 데이터입니다." },
+  { title: "19-2. 내 주변 Pet 이용후기·좋아요·신고", body: "회원이 내 주변 Pet의 장소에 별점과 이용후기를 작성하거나 후기 좋아요·신고 기능을 사용하는 경우 장소 식별정보(카카오 장소 ID·장소명), 별점, 후기 내용, 좋아요 및 신고 내역, 작성·처리 시각과 회원 식별을 위한 내부 계정 ID가 처리될 수 있습니다. 다른 이용자에게는 후기 작성자의 서비스 닉네임이 표시될 수 있으나 카카오 고유 식별정보, 이메일 등 로그인 정보는 공개하지 않습니다. 후기 작성 단계에서는 욕설·비속어·음란·혐오 표현, 전화번호·이메일 등 개인정보 노출을 줄이기 위한 자동 필터를 적용할 수 있습니다. 신고된 후기는 운영진이 검토하여 숨김 또는 신고 종결 처리할 수 있으며, 신고 및 처리 이력은 서비스 운영·분쟁 대응·부정 이용 방지를 위해 필요한 기간 동안 보관될 수 있습니다. 회원탈퇴 시 작성 후기 및 후기 좋아요 등 계정에 직접 연결된 기록은 관계 법령상 별도 보관이 필요한 경우를 제외하고 삭제하는 것을 원칙으로 합니다." },
   { title: "20. 개인정보 관련 문의", body: "서비스명: PetGrow\n문의 이메일: help.petgrow@gmail.com" },
   { title: "21. 개인정보처리방침의 변경", body: "서비스 기능, 개인정보 처리 방식, 외부 서비스 또는 관련 법령·정책 변경에 따라 본 개인정보처리방침이 변경될 수 있습니다. 중요한 변경사항은 PetGrow 웹사이트 또는 애플리케이션을 통해 안내합니다.\n\n이번 개정에는 광고·제휴 문의 시 처리되는 정보와 Google AdMob/Google Mobile Ads SDK를 통한 광고 관련 자동 처리 항목 및 이용자 선택권에 관한 내용을 보다 구체적으로 반영했습니다.\n\n또한 카카오 간편로그인 전 필수 이용약관·개인정보 수집·이용 동의와 선택 광고·마케팅 수신 동의를 구분하여 받을 수 있으며, 광고·제휴 문의 제출 시에는 해당 문의를 위한 개인정보 수집·이용 동의를 별도로 받습니다.\n\n최종 업데이트: 2026년 8월 16일\n시행일: 2026년 8월 16일" },
 ];
@@ -2041,7 +2049,8 @@ const TERMS_SECTIONS_KO = [
   { title: "제12조 (반려동물 관련 정보 및 계산 결과)", body: "PetGrow의 성장 예상, 체중 계산 및 기타 반려동물 관련 정보는 일반적인 자료와 이용자가 입력한 정보를 기반으로 제공되는 참고용 정보이며 실제 결과를 보장하지 않습니다." },
   { title: "제13조 (건강 관련 정보)", body: "PetGrow에서 제공하는 건강, 식단, 영양 및 관리 정보는 일반적인 참고정보이며 수의사의 진료, 진단 또는 처방을 대신하지 않습니다. 반려동물에게 이상 증상이나 응급상황이 있는 경우 수의사 또는 동물병원의 진료를 받아야 합니다." },
   { title: "제14조 (Pet사주·PetBTI 등 재미 콘텐츠)", body: "기본 Pet사주, 오늘의 펫운세, 보호자 궁합 및 PetBTI는 재미와 참고를 위한 콘텐츠이며 과학적 진단, 의학적 판단, 성격 진단 또는 미래 결과를 보장하는 자료가 아닙니다. 보호자 궁합을 위해 입력한 보호자 이름과 생년월일은 현재 구현상 결과 계산에만 일시적으로 사용되며 PetGrow 서버 또는 계정에 저장되지 않습니다." },
-  { title: "제14조의2 (Pet음악)", body: "① PetGrow는 강아지·고양이 등을 위한 음원 재생, 1곡 반복·전체 반복, 좋아요, 댓글 및 인기순위 기능을 제공할 수 있습니다.\n② Pet음악은 서비스 내 스트리밍 재생을 원칙으로 하며 별도의 음원 다운로드 기능을 제공하지 않을 수 있습니다. 이용자는 서비스에서 제공되는 음원을 무단 추출·복제·재판매 또는 재배포해서는 안 됩니다.\n③ 좋아요·댓글 등 이용자 반응은 인기순위 산정 및 서비스 개선에 활용될 수 있습니다. 댓글에는 Pet톡 게시물과 동일하게 타인의 권리 침해, 불법·유해 콘텐츠 등 금지행위 기준이 적용될 수 있습니다.\n④ PetGrow가 직접 등록하는 음원은 서비스 운영에 필요한 이용 권한을 확인한 범위에서 제공하는 것을 원칙으로 합니다." },
+  { title: "제14조의2 (Pet음악)", body: "① PetGrow는 강아지·고양이 등을 위한 음원 재생, 1곡 반복·전체 반복, 좋아요, 댓글 및 인기순위 기능을 제공할 수 있으며, 인스트루멘탈·보컬 여부와 휴식·수면·놀이·자연 등 음악 특성 태그를 표시할 수 있습니다.\n② Pet음악은 서비스 내 스트리밍 재생을 원칙으로 하며 별도의 음원 다운로드 기능을 제공하지 않을 수 있습니다. 이용자는 서비스에서 제공되는 음원을 무단 추출·복제·재판매 또는 재배포해서는 안 됩니다.\n③ 좋아요·댓글 등 이용자 반응은 인기순위 산정 및 서비스 개선에 활용될 수 있습니다. 댓글에는 Pet톡 게시물과 동일하게 타인의 권리 침해, 불법·유해 콘텐츠 등 금지행위 기준이 적용될 수 있습니다.\n④ PetGrow가 직접 등록하는 음원은 서비스 운영에 필요한 이용 권한을 확인한 범위에서 제공하는 것을 원칙으로 합니다." },
+  { title: "제14조의3 (내 주변 Pet 및 장소 이용후기)", body: "① PetGrow는 이용자의 현재 위치 또는 직접 입력한 지역을 기준으로 동물병원·동물약국·펫샵·용품점·미용·호텔·유치원 등 주변 반려동물 관련 장소를 검색해 안내할 수 있습니다. 장소명·업종·주소·전화번호·거리 등 장소정보는 외부 장소정보 제공자의 검색 결과를 기반으로 하며 PetGrow가 해당 업체의 영업상태·서비스 품질·정보 정확성을 보증하지 않습니다.\n② 현재 위치는 이용자가 위치 권한을 허용한 경우에만 주변 검색을 위해 일시적으로 사용하며, PetGrow는 현재 구현상 정확한 현재 위치 좌표를 회원 계정이나 장소 후기 DB에 저장하지 않습니다.\n③ 회원은 장소별로 1~5점의 별점과 간단한 이용후기를 작성하고 다른 후기의 좋아요 또는 신고 기능을 이용할 수 있습니다. 후기 내용에 대한 책임은 작성자에게 있으며 욕설·비속어·음란·혐오 표현, 타인의 개인정보, 광고·도배, 허위 또는 권리침해 내용 등 부적절한 내용을 작성해서는 안 됩니다.\n④ PetGrow는 일부 금지 표현과 개인정보 노출을 자동 필터링할 수 있으나 모든 부적절한 내용을 완전히 탐지하는 것을 보장하지 않습니다. 신고된 후기는 운영진 검토 후 숨김 또는 신고 종결 처리될 수 있으며 신고만으로 자동 삭제되지 않습니다.\n⑤ 장소 이용후기는 회원 개인의 경험과 의견이며 해당 업체 또는 PetGrow의 공식 평가·보증이 아닙니다. 진료·건강 관련 판단은 반드시 수의사 등 전문가의 안내를 확인해야 합니다." },
   { title: "제15조 (광고 및 외부 서비스)", body: "① PetGrow는 서비스의 유지·운영을 위해 직접광고, 제휴광고 및 Google AdMob 등 외부 광고 서비스를 제공할 수 있습니다.\n② Google Mobile Ads SDK 사용 시 광고 제공, 분석 및 부정행위 방지를 위해 IP 주소, 앱 실행·탭·동영상 조회 등 이용 상호작용, 앱/SDK 진단정보, Android 광고 ID·App Set ID 등 기기 또는 계정 식별자가 Google에 의해 자동으로 처리될 수 있습니다. 구체적인 처리 범위는 앱 버전, SDK 설정 및 이용자의 기기 설정에 따라 달라질 수 있습니다.\n③ 개인 맞춤형 광고가 제공되는 경우 적용 법령과 Google의 동의 관리 절차에 따라 필요한 안내·동의 또는 선택권을 제공합니다. 이용자는 기기 설정에서 광고 ID를 재설정·삭제하거나 광고 개인정보 보호 관련 설정을 변경할 수 있습니다.\n④ PetGrow는 직접광고의 노출·클릭 및 광고 표시 요청·성공·오류 등의 집계 통계를 운영할 수 있습니다. PetGrow 관리자 화면의 자체 통계는 Google AdMob의 실제 광고 노출수·클릭수·수익 보고서와 구분됩니다.\n⑤ 외부 광고 서비스에는 해당 제공자의 이용약관 및 개인정보처리방침이 적용될 수 있습니다." },
   { title: "제16조 (개인정보 보호 및 광고·제휴 문의)", body: "① 회원 및 이용자의 개인정보 처리에 관한 사항은 PetGrow 개인정보처리방침에 따릅니다.\n② 이용자가 광고·제휴 문의 기능을 사용하는 경우 회사/브랜드명, 담당자명, 이메일, 문의 내용과 선택 입력한 연락처·광고 유형·예산 등의 정보가 상담 및 제휴 검토를 위해 처리될 수 있습니다.\n③ 광고·제휴 문의 정보는 상담 목적 달성 후 삭제하는 것을 원칙으로 하며, 이용자는 help.petgrow@gmail.com을 통해 관련 정보의 열람·정정·삭제를 요청할 수 있습니다." },
   { title: "제17조 (지식재산권)", body: "PetGrow가 직접 제작한 로고, 디자인, 문구, 프로그램 및 콘텐츠에 대한 권리는 PetGrow 또는 정당한 권리자에게 귀속됩니다. 이용자는 권리자의 허락 없이 이를 영리 목적으로 복제·배포·판매 또는 변형해서는 안 됩니다." },
@@ -2072,6 +2081,7 @@ const TERMS_SECTIONS_EN = [
   { title: "Article 13 (Health-Related Information)", body: "Health, diet, nutrition, and care information provided by PetGrow is general reference information and does not replace examination, diagnosis, or treatment by a veterinarian. If your pet shows abnormal symptoms or an emergency, please see a veterinarian or animal hospital." },
   { title: "Article 14 (Saju, PetBTI, and Other Entertainment Content)", body: "Saju and PetBTI are content for entertainment and reference purposes, and are not scientific diagnosis, medical judgment, or a guarantee of future outcomes." },
   { title: "Article 14-2 (Pet Music)", body: "① PetGrow may provide music playback for dogs, cats, and other pets, including single-track loop, all-track loop, likes, comments, and popularity rankings.\n② Pet Music is primarily provided for in-service streaming. A separate audio download feature may not be provided, and users must not extract, reproduce, resell, or redistribute the audio without authorization.\n③ Likes and comments may be used to calculate popularity rankings and improve the service. Music comments may be subject to the same prohibited-content and rights-protection standards that apply to Pet Talk content.\n④ Music uploaded directly by PetGrow is intended to be provided only where PetGrow has confirmed the rights necessary for service operation." },
+  { title: "Article 14-3 (Nearby Pet and Place Reviews)", body: "PetGrow may show nearby pet-related places based on a user-authorized current location or a manually entered area. Place names, categories, addresses, phone numbers, and distances are based on external place-search data and are not guaranteed by PetGrow. Current precise coordinates are used transiently for nearby search and are not stored in the member account or place-review database in the current implementation. Members may submit 1–5 star ratings, short reviews, likes, and reports. Abusive, sexual, hateful, privacy-exposing, spam, misleading, or rights-infringing content is prohibited. PetGrow may apply automated filters and may hide reported reviews after administrator review. Reviews represent individual members' experiences and are not official ratings or guarantees by PetGrow or the business." },
   { title: "Article 15 (Advertising and External Services)", body: "PetGrow may use external services such as advertising, Kakao authentication, and Google AdMob to operate the service. Google is not provided as a login method; the terms and privacy policy of external providers apply only to services actually used, such as advertising. PetGrow may record aggregate counts of ad display requests, successful display requests, and errors for operational monitoring. These internal figures are not verified impressions, clicks, or revenue; official AdMob or advertising-platform reports remain the source for such figures." },
   { title: "Article 16 (Protection of Personal Information)", body: "Matters regarding processing of members' personal information follow the PetGrow Privacy Policy." },
   { title: "Article 17 (Intellectual Property)", body: "Rights to logos, designs, text, programs, and content created directly by PetGrow belong to PetGrow or its rightful owners. Users must not reproduce, distribute, sell, or modify these for commercial purposes without the rights holder's permission." },
@@ -2165,7 +2175,7 @@ function TermsPage() {
    로그인 / 회원가입 (데모 — Supabase Auth 연동 전 UI 목업)
    카카오 간편로그인 전용. 실제 인가 코드 교환/세션 발급은 서버(/api/auth/kakao/*)에서 처리해요.
    ============================================================ */
-const CONSENT_VERSION = "2026-08-16-v1";
+const CONSENT_VERSION = "2026-08-16-v2";
 const CONSENT_STORAGE_KEY = "petgrow:consent";
 
 function LoginScreen({ onGoTerms, onGoPrivacy }) {
@@ -2245,7 +2255,7 @@ function LoginScreen({ onGoTerms, onGoPrivacy }) {
 
       <Modal open={!!detail} onClose={()=>setDetail(null)} width={520}>
         {detail==="terms" && <><h3>이용약관 동의</h3><p className="consent-detail-text">PetGrow의 회원가입, 서비스 이용, 계정 및 데이터 저장·동기화, Pet톡 운영, 광고 및 외부서비스 등에 관한 이용약관에 동의합니다.</p><button className="bg-btn" onClick={()=>{setTermsOk(true);setDetail(null)}}>동의하고 닫기</button></>}
-        {detail==="privacy" && <><h3>개인정보 수집·이용 동의</h3><div className="consent-detail-text"><b>수집 항목</b><br/>카카오 사용자 고유 식별정보, 실제 동의받아 제공되는 닉네임·프로필 이미지, 반려동물 이름·종류·품종·생년월일·성별·현재 체중·프로필 사진, PetBTI 결과 및 저장되는 서비스 정보<br/><br/><b>이용 목적</b><br/>회원 식별·계정 관리, 반려동물 프로필 및 PetGrow 서비스 제공, 계정별 데이터 저장·동기화<br/><br/><b>보유 기간</b><br/>회원 탈퇴 시까지 또는 처리 목적 달성 시까지. 관계 법령상 보관 의무가 있는 경우 해당 기간 동안 보관할 수 있습니다.<br/><br/><b>동의 거부권</b><br/>동의를 거부할 수 있으나 필수 정보이므로 회원 서비스 이용이 제한될 수 있습니다.</div><button className="bg-btn" onClick={()=>{setPrivacyOk(true);setDetail(null)}}>동의하고 닫기</button></>}
+        {detail==="privacy" && <><h3>개인정보 수집·이용 동의</h3><div className="consent-detail-text"><b>수집 항목</b><br/>카카오 사용자 고유 식별정보, 실제 동의받아 제공되는 닉네임·프로필 이미지, 반려동물 이름·종류·품종·생년월일·성별·현재 체중·프로필 사진, PetBTI 결과 및 저장되는 서비스 정보, 내 주변 Pet 후기·별점·좋아요·신고 기록. 현재 위치 좌표는 주변 장소 검색에 일시적으로 사용하며 계정에 저장하지 않습니다.<br/><br/><b>이용 목적</b><br/>회원 식별·계정 관리, 반려동물 프로필 및 PetGrow 서비스 제공, 계정별 데이터 저장·동기화<br/><br/><b>보유 기간</b><br/>회원 탈퇴 시까지 또는 처리 목적 달성 시까지. 관계 법령상 보관 의무가 있는 경우 해당 기간 동안 보관할 수 있습니다.<br/><br/><b>동의 거부권</b><br/>동의를 거부할 수 있으나 필수 정보이므로 회원 서비스 이용이 제한될 수 있습니다.</div><button className="bg-btn" onClick={()=>{setPrivacyOk(true);setDetail(null)}}>동의하고 닫기</button></>}
         {detail==="marketing" && <><h3>광고·마케팅 정보 수신 동의 (선택)</h3><div className="consent-detail-text">PetGrow의 이벤트, 새 기능, 제휴 또는 프로모션 관련 안내를 받을 수 있도록 선택 동의를 받습니다. 동의하지 않아도 기본 서비스 이용에는 제한이 없습니다. 실제 마케팅 발송 기능을 운영하는 경우 동의한 범위에서만 이용합니다.</div><button className="bg-btn" onClick={()=>{setMarketingOk(true);setDetail(null)}}>동의하고 닫기</button></>}
       </Modal>
     </div>
@@ -3054,7 +3064,7 @@ const GlobalStyle = () => (
     .cm-sample-showcase{margin:12px 0 18px;padding:16px;border-radius:22px;background:linear-gradient(145deg,#F4FAF5,#FFF9F0);border:1px solid #E1EBE3}.cm-sample-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;margin-bottom:12px}.cm-sample-head>div{display:grid;gap:2px}.cm-sample-head span{font-size:9px;letter-spacing:.12em;font-weight:900;color:#579163}.cm-sample-head b{font-size:15px}.cm-sample-head small{font-size:10px;color:var(--sub);text-align:right;max-width:240px;line-height:1.5}@media(max-width:640px){.cm-sample-head{display:grid;align-items:start}.cm-sample-head small{text-align:left;max-width:none}}
     .cm-demo-card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:0 5px 16px rgba(0,0,0,.035);}
     .cm-demo-badge{display:inline-flex;padding:3px 8px;border-radius:999px;background:#F2F6F1;color:#786326;font-size:10px;font-weight:800;margin-bottom:8px;}
-    @media(max-width:640px){.cm-demo-grid{grid-template-columns:1fr}.cm-filter-wrap{overflow-x:auto;flex-wrap:nowrap;padding-bottom:3px;-webkit-overflow-scrolling:touch}.cm-filter-wrap::-webkit-scrollbar{display:none}}
+    @media(max-width:640px){.cm-demo-grid{grid-template-columns:1fr}}
     @media(max-width:680px){.bboggl-root{font-family:'Gowun Dodum','Noto Sans KR','Malgun Gothic',Arial,sans-serif}.bboggl-root h1,.bboggl-root h2,.bboggl-root h3{font-family:'Jua','Gowun Dodum','Malgun Gothic',sans-serif}.landing-headline,.home-hero-copy h1{word-break:keep-all}.desktop-nav-link,.ham-nav-item,.app-bottom-nav-item{letter-spacing:-.02em}}
     @media(max-width:560px){
       .cm-search-input{min-width:0;}
@@ -4219,6 +4229,10 @@ const GlobalStyle = () => (
     .admin-member-row>div:last-child{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.admin-member-row button,.admin-found button,.admin-member-row select,.admin-found select{min-height:36px;border:1px solid #dce6de;border-radius:10px;background:#fff;padding:0 10px}
     .support-page{max-width:920px;margin:0 auto;padding:8px 20px 70px}.support-head{display:flex;gap:14px;align-items:center;margin-bottom:14px}.support-head h1{font-size:24px}.support-head p{color:#738078;font-size:12px}
 .support-head{justify-content:space-between}.support-head>div:first-child{min-width:0}.support-back-right{margin-left:auto;flex:0 0 auto}
+/* PetGrow 공통 모바일 카테고리 / 페이지네이션 */
+.responsive-category-shell{margin-bottom:20px}.responsive-category-desktop{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.responsive-category-desktop .bg-chip,.responsive-category-primary .bg-chip,.responsive-category-more-panel .bg-chip{display:inline-flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap}.responsive-category-mobile{display:none}.responsive-pagination{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:26px;flex-wrap:nowrap}.responsive-pages-mobile,.responsive-pages-desktop{display:flex;gap:6px;align-items:center}.responsive-pages-mobile{display:none}.responsive-page-number,.responsive-page-arrow{height:42px;min-width:42px;border-radius:999px;border:1px solid #DDE7DF;background:#fff;color:var(--text);font-family:inherit;font-weight:800;cursor:pointer;padding:0 13px;transition:transform .16s ease,background .16s ease,border-color .16s ease,color .16s ease}.responsive-page-number:hover,.responsive-page-arrow:hover:not(:disabled){transform:translateY(-1px);border-color:#BFD7C0}.responsive-page-number.active{background:#E7F2E5;color:#3D704A;border-color:#BFD7C0}.responsive-page-arrow:disabled,.responsive-page-number:disabled{opacity:.38;cursor:default;transform:none}
+@media(max-width:640px){.responsive-category-desktop{display:none}.responsive-category-mobile{display:block}.responsive-category-primary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.responsive-category-primary .bg-chip{min-width:0;padding:9px 5px;font-size:12px;overflow:hidden;text-overflow:ellipsis}.responsive-category-more{background:#F5F8F5!important;color:#526057!important}.responsive-category-more-panel{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;padding:10px;border:1px solid #E3EBE4;border-radius:16px;background:rgba(248,251,248,.92);animation:petgrow-category-open .18s ease both}.responsive-category-more-panel .bg-chip{padding:9px 11px;font-size:12px}.responsive-pagination{width:100%;gap:5px;margin-top:22px}.responsive-pages-desktop{display:none}.responsive-pages-mobile{display:flex;gap:5px}.responsive-page-number{min-width:36px;width:36px;height:36px;padding:0;font-size:13px}.responsive-page-arrow{height:36px;min-width:52px;padding:0 9px;font-size:12px}.community-responsive-categories{margin-bottom:10px}}@media(max-width:390px){.responsive-category-primary{gap:4px}.responsive-category-primary .bg-chip{padding:8px 3px;font-size:11px}.responsive-page-number{min-width:34px;width:34px}.responsive-page-arrow{min-width:48px;padding:0 7px}}@keyframes petgrow-category-open{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+
 .petmusic-page{max-width:980px;margin:0 auto;padding:4px 20px 80px}.petmusic-hero{border-radius:24px;padding:24px;background:linear-gradient(135deg,#f2f8f3,#fff);border:1px solid #dfece1;margin-bottom:18px;overflow:hidden;position:relative}.petmusic-hero:after{content:"♫";position:absolute;right:26px;top:10px;font-size:72px;color:rgba(79,138,91,.10);font-family:serif}.petmusic-hero h1{font-size:26px;margin:0 0 6px}.petmusic-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 20px}.petmusic-tabs button{border:1px solid #d7e6da;background:#fff;border-radius:999px;padding:9px 15px;font-weight:800;color:#66736a;cursor:pointer}.petmusic-tabs button.active{background:var(--primary);color:#fff;border-color:var(--primary)}.petmusic-top5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:24px}.petmusic-rank{background:#fff;border:1px solid #e2ebe3;border-radius:18px;padding:9px;cursor:pointer;box-shadow:0 6px 18px rgba(39,77,50,.05)}.petmusic-rank img,.petmusic-rank-cover{width:100%;aspect-ratio:1;border-radius:13px;object-fit:cover;background:linear-gradient(145deg,#e7f3ea,#f8efe7);display:grid;place-items:center;font-size:34px}.petmusic-rank b{display:block;font-size:12px;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.petmusic-rank small{font-size:10px;color:#869188}.petmusic-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.petmusic-card{display:grid;grid-template-columns:126px minmax(0,1fr);gap:15px;border:1px solid #e0ebe2;border-radius:22px;background:#fff;padding:13px;box-shadow:0 7px 22px rgba(38,78,50,.055)}.petmusic-cover{width:126px;height:126px;border-radius:17px;object-fit:cover;background:linear-gradient(145deg,#e9f5ec,#fbf1eb);display:grid;place-items:center;font-size:40px}.petmusic-title{font-size:16px;font-weight:900;margin-bottom:3px}.petmusic-date{font-size:11px;color:#8b958e}.petmusic-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.petmusic-actions button{border:1px solid #dce8de;background:#f8fbf9;border-radius:10px;padding:7px 9px;font-size:11px;font-weight:800;cursor:pointer}.petmusic-actions button.liked{background:#fff0f4;border-color:#f4c6d2;color:#cf4e6c}.petmusic-player{display:flex;align-items:center;gap:8px;margin-top:8px}.petmusic-play{width:38px;height:38px;border:0;border-radius:50%;background:var(--primary);color:#fff;font-size:16px;cursor:pointer}.petmusic-loop{font-size:10px;border:1px solid #dce8de;background:#fff;border-radius:9px;padding:6px 8px;cursor:pointer}.petmusic-loop.active{background:#eaf5ed;color:var(--primary-dark);border-color:#bcd6c2}.petmusic-pagination{display:flex;justify-content:center;gap:6px;margin-top:24px;flex-wrap:wrap}.petmusic-pagination button{min-width:34px;height:34px;border-radius:10px;border:1px solid #dce8de;background:#fff;font-weight:800;cursor:pointer}.petmusic-pagination button.active{background:var(--primary);color:#fff}.petmusic-comments{margin-top:10px;border-top:1px solid #edf2ee;padding-top:9px}.petmusic-comment-row{font-size:11px;padding:6px 0;border-bottom:1px dashed #edf1ee}.petmusic-comment-form{display:flex;gap:6px;margin-top:7px}.petmusic-comment-form input{flex:1;min-width:0;border:1px solid #dfe9e1;border-radius:10px;padding:8px 9px;font-size:11px}.petmusic-comment-form button{border:0;border-radius:10px;background:var(--primary);color:#fff;font-weight:800;padding:0 10px}.admin-music-form{display:grid;grid-template-columns:1fr 170px;gap:12px}.admin-music-form .full{grid-column:1/-1}.admin-music-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}.admin-music-row{display:grid;grid-template-columns:54px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px;border:1px solid #e2ebe3;border-radius:15px}.admin-music-thumb{width:54px;height:54px;object-fit:cover;border-radius:12px;background:#eef6f0;display:grid;place-items:center}.admin-music-row small{display:block;color:#88938b;font-size:10px}.admin-music-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.admin-music-actions button{border:1px solid #dce8de;background:#fff;border-radius:9px;padding:7px 9px;font-size:11px;font-weight:800;cursor:pointer}
 @media(max-width:760px){.support-head{align-items:center}.support-head h1{font-size:22px}.support-back-right{padding:8px 12px}.petmusic-page{padding:2px 12px 76px}.petmusic-top5{grid-template-columns:repeat(5,132px);overflow-x:auto;padding-bottom:5px}.petmusic-grid{grid-template-columns:1fr}.petmusic-card{grid-template-columns:104px minmax(0,1fr)}.petmusic-cover{width:104px;height:104px}.admin-music-form{grid-template-columns:1fr}.admin-music-form .full{grid-column:auto}.admin-music-row{grid-template-columns:46px minmax(0,1fr)}.admin-music-actions{grid-column:1/-1;justify-content:flex-start}}
     .ad-inquiry-head{justify-content:space-between;align-items:flex-start}.ad-inquiry-head>div{min-width:0}.ad-inquiry-back{margin-left:auto;flex:0 0 auto}
@@ -4572,8 +4586,9 @@ const GlobalStyle = () => (
   .nearby-message{margin:10px 0;padding:11px 13px;border-radius:12px;background:#FFF8E8;color:#8A6920;font-size:12px}
   .nearby-results-head{display:flex;align-items:flex-end;justify-content:space-between;margin:18px 2px 10px}.nearby-results-head>div{display:flex;align-items:center;gap:8px}.nearby-results-head h2{margin:0;font-size:20px}.nearby-results-head span{font-size:11px;background:#EDF5EE;color:#4F8A5B;border-radius:999px;padding:4px 7px;font-weight:800}.nearby-results-head small{color:var(--sub)}
   .nearby-list{display:grid;gap:10px}.nearby-place{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;padding:16px;transition:.18s ease;cursor:pointer}.nearby-place:hover,.nearby-place.selected{border-color:#9FC4A6;box-shadow:0 10px 24px rgba(61,99,70,.09);transform:translateY(-1px)}.nearby-rank{width:30px;height:30px;border-radius:10px;background:#EFF6F0;color:#4F8A5B;display:grid;place-items:center;font-size:12px;font-weight:900}.nearby-place-title{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.nearby-place-title h3{font-size:16px;margin:0;letter-spacing:-.03em}.nearby-place-title strong{color:#4F8A5B;font-size:13px;white-space:nowrap}.nearby-place-meta{display:grid;gap:4px;margin-top:7px;font-size:12.5px;color:#56645B;line-height:1.5}.nearby-place-main>small{display:block;color:#89948C;margin-top:6px;font-size:10.5px}.nearby-place-actions{display:flex;gap:6px}.nearby-place-actions a{border-radius:10px;padding:8px 10px;background:#F1F6F2;color:#426F4B;text-decoration:none;font-size:11px;font-weight:800}.nearby-empty{text-align:center;padding:34px;color:var(--sub)}.nearby-disclaimer{font-size:11px;color:#8B948E;line-height:1.6;margin:14px 4px}
+  .nearby-type-row{margin-bottom:6px}.nearby-type-badge{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:5px 9px;font-size:10.5px;font-weight:900;border:1px solid transparent}.nearby-type-hospital{background:#EEF4FF;color:#3765A5;border-color:#D7E5FA}.nearby-type-pharmacy{background:#F2F0FF;color:#6552A7;border-color:#E3DDF9}.nearby-type-shop{background:#FFF4E8;color:#A36328;border-color:#F7DFC3}.nearby-type-grooming{background:#FFF0F5;color:#A45170;border-color:#F5D4E0}.nearby-type-hotel{background:#EEF8F2;color:#3F7B51;border-color:#D5EBD9}.nearby-type-other{background:#F1F4F1;color:#617067;border-color:#E1E7E2}.nearby-map-marker{position:relative}.nearby-map-marker i{position:absolute;right:-6px;top:-6px;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:#26372C;color:#fff;font-style:normal;font-size:9px;font-weight:900}.nearby-map-marker span{font-size:15px}.nearby-review-panel{margin-top:18px;padding:18px}.nearby-review-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.nearby-review-head h2{font-size:18px;margin:8px 0 4px}.nearby-review-head p{margin:0;color:var(--sub);font-size:12px}.nearby-review-head p b{color:#D99528}.nearby-review-compose{margin-top:14px;padding:14px;border-radius:16px;background:#F8FBF8;border:1px solid #E4ECE5}.nearby-stars{display:flex;gap:4px;margin-bottom:9px}.nearby-stars button{border:0;background:transparent;color:#D9DDD9;font-size:24px;padding:0;cursor:pointer}.nearby-stars button.active{color:#F0B43E}.nearby-review-compose textarea{min-height:86px;resize:vertical}.nearby-review-compose-foot{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:9px}.nearby-review-compose-foot small{color:var(--sub);font-size:10.5px}.nearby-review-list{display:grid;gap:9px;margin-top:14px}.nearby-review-item{padding:13px 14px;border:1px solid #E4EAE5;border-radius:15px;background:#fff}.nearby-review-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px}.nearby-review-meta>b{font-size:12px}.nearby-review-meta span{color:#E0A62E;letter-spacing:.04em}.nearby-review-meta small{margin-left:auto;color:#919A94}.nearby-review-item p{font-size:12.5px;line-height:1.65;margin:9px 0;color:#4E5B52;white-space:pre-wrap}.nearby-review-actions{display:flex;gap:6px}.nearby-review-actions button{border:1px solid #E0E8E1;background:#FAFCFA;border-radius:9px;padding:6px 9px;font-size:10.5px;font-weight:800;color:#657168;cursor:pointer}.nearby-review-actions button.liked{background:#FFF0F4;border-color:#F2CDD8;color:#CC5470}.nearby-review-empty{text-align:center;padding:22px;color:var(--sub);font-size:12px}
   .admin-menu-analytics{margin-top:14px;padding:18px}.admin-menu-analytics-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:14px}.admin-menu-analytics-head h3{margin:0;font-size:18px}.admin-menu-analytics-head small{color:var(--sub)}.admin-menu-row{display:grid;grid-template-columns:110px 1fr 72px;gap:10px;align-items:center;margin:10px 0}.admin-menu-name{font-size:12px;font-weight:800}.admin-menu-bar{height:9px;background:#EDF1ED;border-radius:999px;overflow:hidden}.admin-menu-bar i{display:block;height:100%;background:linear-gradient(90deg,#9FC4A6,#4F8A5B);border-radius:inherit}.admin-menu-value{text-align:right;font-size:11px;color:#657269}.admin-menu-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#315B39;font-weight:850}
-  @media(max-width:700px){.nearby-page{padding:12px 12px 36px}.nearby-hero{padding:18px;display:grid}.nearby-hero h1{font-size:25px}.nearby-locate-btn{width:100%;justify-content:center}.nearby-map{height:330px}.nearby-place{grid-template-columns:auto 1fr}.nearby-place-actions{grid-column:2;justify-content:flex-start}.nearby-place-title{display:block}.nearby-place-title strong{display:block;margin-top:3px}.admin-menu-row{grid-template-columns:82px 1fr 60px}}
+  @media(max-width:700px){.nearby-page{padding:12px 12px 36px}.nearby-hero{padding:18px;display:grid}.nearby-hero h1{font-size:25px}.nearby-locate-btn{width:100%;justify-content:center}.nearby-map{height:330px}.nearby-place{grid-template-columns:auto 1fr}.nearby-place-actions{grid-column:2;justify-content:flex-start}.nearby-place-title{display:block}.nearby-place-title strong{display:block;margin-top:3px}.nearby-review-head{display:grid}.nearby-review-head .bg-btn{width:100%}.nearby-review-compose-foot{align-items:flex-start;flex-direction:column}.nearby-review-compose-foot .bg-btn{width:100%}.nearby-review-meta small{margin-left:0;width:100%}.admin-menu-row{grid-template-columns:82px 1fr 60px}}
 
 `}</style>
 );
@@ -6640,6 +6655,58 @@ const TIPS_DATA = [
 
 ];
 
+function getPageWindow(currentPage, totalPages, maxVisible = 4) {
+  const total = Math.max(1, Number(totalPages) || 1);
+  const current = Math.min(total, Math.max(1, Number(currentPage) || 1));
+  const size = Math.min(maxVisible, total);
+  let start = Math.max(1, current - Math.floor((size - 1) / 2));
+  let end = start + size - 1;
+  if (end > total) {
+    end = total;
+    start = Math.max(1, end - size + 1);
+  }
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+}
+
+function ResponsivePagination({ page, totalPages, onChange, lang = "ko", disabled = false, className = "" }) {
+  const total = Math.max(1, Number(totalPages) || 1);
+  if (total <= 1) return null;
+  const mobilePages = getPageWindow(page, total, 4);
+  const desktopPages = getPageWindow(page, total, 8);
+  const go = (next) => {
+    if (disabled || next < 1 || next > total || next === page) return;
+    onChange(next);
+  };
+  const numberButtons = (pages) => pages.map((n) => (
+    <button key={n} type="button" className={`responsive-page-number ${page === n ? "active" : ""}`} aria-current={page === n ? "page" : undefined} disabled={disabled} onClick={() => go(n)}>{n}</button>
+  ));
+  return <nav className={`responsive-pagination ${className}`} aria-label={lang === "en" ? "Pagination" : "페이지 이동"}>
+    <button type="button" className="responsive-page-arrow" disabled={disabled || page <= 1} onClick={() => go(page - 1)}>{lang === "en" ? "Prev" : "이전"}</button>
+    <span className="responsive-pages-mobile">{numberButtons(mobilePages)}</span>
+    <span className="responsive-pages-desktop">{numberButtons(desktopPages)}</span>
+    <button type="button" className="responsive-page-arrow" disabled={disabled || page >= total} onClick={() => go(page + 1)}>{lang === "en" ? "Next" : "다음"}</button>
+  </nav>;
+}
+
+function ResponsiveCategoryMenu({ items, activeId, onSelect, lang = "ko", primaryCount = 4, className = "" }) {
+  const [expanded, setExpanded] = useState(false);
+  const activeItem = items.find((item) => item.id === activeId);
+  let primary = items.slice(0, primaryCount);
+  if (activeItem && !primary.some((item) => item.id === activeId) && primary.length) {
+    primary = [...primary.slice(0, Math.max(0, primaryCount - 1)), activeItem];
+  }
+  const primaryIds = new Set(primary.map((item) => item.id));
+  const secondary = items.filter((item) => !primaryIds.has(item.id));
+  const renderItem = (item) => <button key={item.id} type="button" className={`bg-chip ${activeId === item.id ? "active" : ""}`} onClick={() => { onSelect(item.id); setExpanded(false); }}>{item.label}</button>;
+  return <div className={`responsive-category-shell ${className}`}>
+    <div className="responsive-category-desktop">{items.map(renderItem)}</div>
+    <div className="responsive-category-mobile">
+      <div className="responsive-category-primary">{primary.map(renderItem)}{secondary.length > 0 && <button type="button" className={`bg-chip responsive-category-more ${expanded ? "active" : ""}`} aria-expanded={expanded} onClick={() => setExpanded((v) => !v)}>{lang === "en" ? (expanded ? "Close" : "More") : (expanded ? "접기" : "더보기")} <span aria-hidden="true">{expanded ? "▴" : "▾"}</span></button>}</div>
+      {expanded && secondary.length > 0 && <div className="responsive-category-more-panel">{secondary.map(renderItem)}</div>}
+    </div>
+  </div>;
+}
+
 function TipCard({ tip, lang, bookmarked, onToggleBookmark }) {
   const t = useT();
   const [open, setOpen] = useState(false);
@@ -6758,20 +6825,15 @@ function TipsPage({ onClose }) {
           placeholder={t.tipSearchPlaceholder} />
       </div>
 
-      <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 6, marginBottom: 20 }}>
-        {categories.map((c) => (
-          <button key={c.id} className={`bg-chip ${category === c.id && !showBookmarked ? "active" : ""}`}
-            style={{ whiteSpace: "nowrap", flexShrink: 0 }}
-            onClick={() => { setCategory(c.id); setShowBookmarked(false); }}>
-            {c.name}
-          </button>
-        ))}
-        <button className={`bg-chip ${showBookmarked ? "active" : ""}`}
-          style={{ whiteSpace: "nowrap", flexShrink: 0, display: "flex", alignItems: "center", gap: 4 }}
-          onClick={() => setShowBookmarked((v) => !v)}>
-          <HeartIcon style={{ width: 14, height: 14 }} /> {t.tipBookmarkedFilter}
-        </button>
-      </div>
+      <ResponsiveCategoryMenu
+        items={[...categories.map((c) => ({ id: c.id, label: c.name })), { id: "bookmarked", label: <><HeartIcon style={{ width: 14, height: 14 }} /> {t.tipBookmarkedFilter}</> }]}
+        activeId={showBookmarked ? "bookmarked" : category}
+        lang={lang}
+        onSelect={(id) => {
+          if (id === "bookmarked") { setShowBookmarked(true); setPage(1); }
+          else { setCategory(id); setShowBookmarked(false); setPage(1); }
+        }}
+      />
 
       {!showBookmarked && !q && category === "all" && currentPage === 1 && featured.length > 0 && (
         <div style={{ marginBottom: 24 }}>
@@ -6794,24 +6856,7 @@ function TipsPage({ onClose }) {
               <TipCard key={tip.id} tip={tip} lang={lang} bookmarked={bookmarks.includes(tip.id)} onToggleBookmark={toggleBookmark} />
             ))}
           </div>
-          {totalPages > 1 && (
-            <nav aria-label={lang === "ko" ? "Pet정보 페이지" : "Pet info pages"} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, flexWrap: "wrap", marginTop: 26 }}>
-              <button type="button" className="bg-chip" disabled={currentPage === 1} onClick={() => { setPage((p) => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: "smooth" }); }} style={{ opacity: currentPage === 1 ? .45 : 1 }}>
-                {lang === "ko" ? "이전" : "Prev"}
-              </button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
-                <button key={n} type="button" className={`bg-chip ${n === currentPage ? "active" : ""}`} aria-current={n === currentPage ? "page" : undefined} onClick={() => { setPage(n); window.scrollTo({ top: 0, behavior: "smooth" }); }} style={{ minWidth: 40, justifyContent: "center" }}>
-                  {n}
-                </button>
-              ))}
-              <button type="button" className="bg-chip" disabled={currentPage === totalPages} onClick={() => { setPage((p) => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: "smooth" }); }} style={{ opacity: currentPage === totalPages ? .45 : 1 }}>
-                {lang === "ko" ? "다음" : "Next"}
-              </button>
-            </nav>
-          )}
-          <div className="bg-sub" style={{ textAlign: "center", marginTop: 10, fontSize: 12 }}>
-            {lang === "ko" ? `총 ${filtered.length}개 · ${currentPage}/${totalPages} 페이지 · 페이지당 최대 20개` : `${filtered.length} items · Page ${currentPage}/${totalPages} · Up to 20 per page`}
-          </div>
+          <ResponsivePagination page={currentPage} totalPages={totalPages} lang={lang} onChange={(n) => { setPage(n); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
         </>
       ) : (
         <div className="bg-sub" style={{ textAlign: "center", padding: "30px 0", fontSize: 13 }}>{t.tipEmptyResult}</div>
@@ -9065,35 +9110,52 @@ function NearbyPetPage(){
   const [loading,setLoading]=useState(false);
   const [msg,setMsg]=useState("");
   const [selected,setSelected]=useState(null);
+  const [reviews,setReviews]=useState({items:[],summary:{count:0,avg:0}});
+  const [reviewOpen,setReviewOpen]=useState(false);
+  const [reviewRating,setReviewRating]=useState(5);
+  const [reviewText,setReviewText]=useState("");
+  const [reviewBusy,setReviewBusy]=useState(false);
+  const locationRequested=useRef(false);
+
+  const loadReviews=async(place)=>{
+    if(!place?.id){setReviews({items:[],summary:{count:0,avg:0}});return;}
+    try{const r=await fetch(`/api/nearby-reviews?action=list&placeId=${encodeURIComponent(place.id)}`);const j=await r.json();if(r.ok)setReviews(j);}catch{}
+  };
+
+  useEffect(()=>{loadReviews(selected)},[selected?.id]);
 
   const loadMap=async(center,places)=>{
-    const key=import.meta.env.VITE_KAKAO_JS_KEY;
-    if(!key||!mapRef.current){return;}
-    if(!window.kakao?.maps){
+    if(!mapRef.current)return;
+    if(!window.L){
+      if(!document.getElementById("petgrow-leaflet-css")){
+        const link=document.createElement("link");link.id="petgrow-leaflet-css";link.rel="stylesheet";link.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(link);
+      }
       await new Promise((resolve,reject)=>{
-        const old=document.getElementById("petgrow-kakao-map-sdk");
-        if(old){old.addEventListener("load",resolve,{once:true});return;}
-        const sc=document.createElement("script");sc.id="petgrow-kakao-map-sdk";sc.async=true;
-        sc.src=`https://dapi.kakao.com/v2/maps/sdk.js?appkey=${encodeURIComponent(key)}&autoload=false`;
-        sc.onload=resolve;sc.onerror=reject;document.head.appendChild(sc);
+        const old=document.getElementById("petgrow-leaflet-sdk");
+        if(old){if(window.L)return resolve();old.addEventListener("load",resolve,{once:true});old.addEventListener("error",reject,{once:true});return;}
+        const sc=document.createElement("script");sc.id="petgrow-leaflet-sdk";sc.async=true;sc.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";sc.onload=resolve;sc.onerror=reject;document.head.appendChild(sc);
       });
     }
-    await new Promise(r=>window.kakao.maps.load(r));
-    const kakao=window.kakao;
-    const c=new kakao.maps.LatLng(center.lat,center.lng);
-    const map=mapObj.current||new kakao.maps.Map(mapRef.current,{center:c,level:4});
-    mapObj.current=map; map.setCenter(c);
-    overlays.current.forEach(o=>o.setMap(null)); overlays.current=[];
-    const meEl=document.createElement("div");meEl.className="nearby-me-pin";meEl.innerHTML='<span></span><b>내 위치</b>';
-    const me=new kakao.maps.CustomOverlay({position:c,content:meEl,yAnchor:.7,zIndex:9});me.setMap(map);overlays.current.push(me);
-    const bounds=new kakao.maps.LatLngBounds();bounds.extend(c);
+    const L=window.L;if(!L)return;
+    if(mapRef.current.querySelector(".nearby-map-fallback")) mapRef.current.innerHTML="";
+    const c=[center.lat,center.lng];
+    const map=mapObj.current||L.map(mapRef.current,{zoomControl:true,attributionControl:true}).setView(c,14);
+    mapObj.current=map;
+    if(!map.__petgrowTiles){L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(map);map.__petgrowTiles=true;}
+    map.setView(c,14);
+    overlays.current.forEach(o=>{try{map.removeLayer(o)}catch{}});overlays.current=[];
+    const meIcon=L.divIcon({className:"petgrow-leaflet-me",html:'<div class="nearby-me-pin"><span></span><b>내 위치</b></div>',iconSize:[64,52],iconAnchor:[32,36]});
+    const me=L.marker(c,{icon:meIcon,zIndexOffset:1000}).addTo(map);overlays.current.push(me);
+    const bounds=L.latLngBounds([c]);
     places.forEach((p,i)=>{
-      const el=document.createElement("button");el.type="button";el.className="nearby-map-marker";
-      el.innerHTML=`<span>${i+1}</span>`;el.onclick=()=>{setSelected(p);document.getElementById(`nearby-place-${p.id}`)?.scrollIntoView({behavior:"smooth",block:"center"});};
-      const ll=new kakao.maps.LatLng(p.lat,p.lng);bounds.extend(ll);
-      const ov=new kakao.maps.CustomOverlay({position:ll,content:el,yAnchor:1,zIndex:5});ov.setMap(map);overlays.current.push(ov);
+      const icon=L.divIcon({className:"petgrow-leaflet-place",html:`<button type="button" class="nearby-map-marker nearby-map-marker--${p.typeKey||"other"}"><span>${p.typeIcon||"🐾"}</span><i>${i+1}</i></button>`,iconSize:[44,50],iconAnchor:[22,46]});
+      const m=L.marker([p.lat,p.lng],{icon}).addTo(map);
+      m.on("click",()=>{setSelected(p);document.getElementById(`nearby-place-${p.id}`)?.scrollIntoView({behavior:"smooth",block:"center"});});
+      const popup=`<div style="min-width:200px"><div style="font-size:11px;font-weight:800;color:#4F8A5B;margin-bottom:5px">${String(p.typeIcon||"🐾")} ${String(p.typeLabel||"반려동물 관련")}</div><b style="font-size:14px">${String(p.name||"").replace(/[<>&]/g,"")}</b><div style="margin-top:5px;font-size:12px;font-weight:800;color:#4F8A5B">${p.distance==null?"":p.distance<1000?`${p.distance}m`:`${(p.distance/1000).toFixed(1)}km`}</div><div style="margin-top:4px;font-size:11px;line-height:1.45">${String(p.address||"").replace(/[<>&]/g,"")}</div>${p.phone?`<div style="margin-top:4px;font-size:11px">☎ ${String(p.phone).replace(/[<>&]/g,"")}</div>`:""}</div>`;
+      m.bindPopup(popup);overlays.current.push(m);bounds.extend([p.lat,p.lng]);
     });
-    if(places.length) map.setBounds(bounds,48,48,48,48);
+    if(places.length)map.fitBounds(bounds.pad(.12),{maxZoom:15,padding:[28,28]});
+    window.setTimeout(()=>map.invalidateSize(),60);
   };
 
   const search=async(nextCat=cat,coords=pos,manualArea=area)=>{
@@ -9115,13 +9177,33 @@ function NearbyPetPage(){
     setLoading(true);setMsg("현재 위치를 확인하고 있어요…");
     navigator.geolocation.getCurrentPosition(
       p=>{const c={lat:p.coords.latitude,lng:p.coords.longitude};setPos(c);setArea("");setMsg("");search(cat,c,"");},
-      ()=>{setLoading(false);setMsg("위치 권한을 사용할 수 없어요. 아래에서 지역명을 직접 검색해주세요.");},
+      err=>{
+        setLoading(false);
+        if(err?.code===1) setMsg("위치 권한이 꺼져 있어요. 브라우저 또는 앱 설정에서 위치를 허용하거나 아래에서 지역명을 검색해주세요.");
+        else setMsg("현재 위치를 확인하지 못했어요. 다시 시도하거나 아래에서 지역명을 검색해주세요.");
+      },
       {enableHighAccuracy:true,timeout:9000,maximumAge:120000}
     );
   };
+  useEffect(()=>{
+    if(locationRequested.current) return;
+    locationRequested.current=true;
+    const timer=window.setTimeout(()=>locate(),220);
+    return()=>window.clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[]);
   useEffect(()=>{if(pos)search(cat,pos,"");},[cat]);
-  const cats=[["all","전체"],["hospital","동물병원"],["pharmacy","동물약국"],["shop","펫샵"],["grooming","미용"],["hotel","호텔·유치원"]];
+  const cats=[["all","전체"],["hospital","동물병원"],["pharmacy","동물약국"],["shop","펫샵·용품"],["grooming","펫미용"],["hotel","호텔·유치원"]];
   const fmt=d=>d==null?"거리 확인 불가":d<1000?`${d}m`:`${(d/1000).toFixed(1)}km`;
+  const submitReview=async()=>{
+    if(!selected)return;
+    const text=reviewText.trim();if(!text)return window.alert("간단한 이용후기를 입력해 주세요.");
+    setReviewBusy(true);
+    try{const r=await fetch('/api/nearby-reviews?action=write',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({placeId:selected.id,placeName:selected.name,rating:reviewRating,content:text})});const j=await r.json();if(!r.ok)throw new Error(j.error||'후기를 등록하지 못했어요.');setReviewText("");setReviewRating(5);setReviewOpen(false);await loadReviews(selected);}catch(e){window.alert(e.message)}finally{setReviewBusy(false)}
+  };
+  const likeReview=async(rvw)=>{try{const r=await fetch('/api/nearby-reviews?action=like',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reviewId:rvw.id})});const j=await r.json();if(!r.ok)throw new Error(j.error||'좋아요를 처리하지 못했어요.');await loadReviews(selected);}catch(e){window.alert(e.message)}};
+  const reportReview=async(rvw)=>{const reason=window.prompt("신고 사유를 간단히 입력해주세요. (욕설·광고·개인정보·허위정보 등)","부적절한 내용");if(reason===null)return;try{const r=await fetch('/api/nearby-reviews?action=report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reviewId:rvw.id,reason:'other',detail:reason})});const j=await r.json();if(!r.ok)throw new Error(j.error||'신고하지 못했어요.');window.alert(j.already?"이미 신고한 후기예요.":"신고가 접수됐어요. 운영진이 확인할게요.");}catch(e){window.alert(e.message)}};
+
   return <div className="nearby-page">
     <section className="nearby-hero bg-card">
       <div><span className="nearby-eyebrow">PETGROW LOCAL</span><h1>{t.nearbyTitle}</h1><p>{t.nearbySubtitle}</p></div>
@@ -9130,8 +9212,8 @@ function NearbyPetPage(){
     <div className="nearby-search-row"><input className="bg-input" value={area} onChange={e=>setArea(e.target.value)} onKeyDown={e=>e.key==="Enter"&&search(cat,null,area)} placeholder={t.nearbySearchPlaceholder}/><button className="bg-btn" onClick={()=>search(cat,null,area)}>검색</button></div>
     <div className="nearby-cats">{cats.map(([k,l])=><button key={k} className={cat===k?"active":""} onClick={()=>{setCat(k);if(!pos&&area.trim())search(k,null,area)}}>{l}</button>)}</div>
     <section className="nearby-map-card bg-card">
-      <div className="nearby-map-head"><div><b>{pos?"현재 위치 기준":"지역 검색"}</b><small>{pos?"민트색 원이 내 현재 위치예요":"위치 권한 없이도 검색할 수 있어요"}</small></div>{pos&&<span className="nearby-live-pill">● LIVE 위치</span>}</div>
-      <div ref={mapRef} className="nearby-map">{!import.meta.env.VITE_KAKAO_JS_KEY&&<div className="nearby-map-fallback"><MapPinIcon/><b>지도 표시 준비가 필요해요</b><span>VITE_KAKAO_JS_KEY를 설정하면 내 위치와 업체 마커가 지도에 표시돼요.</span></div>}</div>
+      <div className="nearby-map-head"><div><b>{pos?"현재 위치 기준":"지역 검색"}</b><small>{pos?"민트색 원이 내 현재 위치예요":"위치 권한 없이도 지역명으로 검색할 수 있어요"}</small></div>{pos&&<span className="nearby-live-pill">● LIVE 위치</span>}</div>
+      <div ref={mapRef} className="nearby-map"><div className="nearby-map-fallback"><MapPinIcon/><b>내 위치 지도를 준비하고 있어요</b><span>위치 허용 후 주변 업체가 지도에 표시됩니다.</span></div></div>
     </section>
     {msg&&<div className="nearby-message">{msg}</div>}
     <div className="nearby-results-head"><div><h2>가까운 곳</h2><span>{items.length}곳</span></div><small>거리순으로 정렬돼요</small></div>
@@ -9139,14 +9221,22 @@ function NearbyPetPage(){
       {loading&&!items.length?<div className="bg-card nearby-empty">주변 Pet 정보를 찾는 중…</div>:
       items.map((p,i)=><article id={`nearby-place-${p.id}`} key={p.id} className={`bg-card nearby-place ${selected?.id===p.id?"selected":""}`} onClick={()=>setSelected(p)}>
         <div className="nearby-rank">{i+1}</div>
-        <div className="nearby-place-main"><div className="nearby-place-title"><h3>{p.name}</h3><strong>{fmt(p.distance)}</strong></div>
+        <div className="nearby-place-main">
+          <div className="nearby-type-row"><span className={`nearby-type-badge nearby-type-${p.typeKey||"other"}`}>{p.typeIcon||"🐾"} {p.typeLabel||"반려동물 관련"}</span></div>
+          <div className="nearby-place-title"><h3>{p.name}</h3><strong>{fmt(p.distance)}</strong></div>
           <div className="nearby-place-meta"><span>📍 {p.address||"주소 정보 없음"}</span><span>☎ {p.phone||"전화번호 정보 없음"}</span></div>
           <small>{p.category}</small>
         </div>
         <div className="nearby-place-actions">{p.phone&&<a href={`tel:${p.phone}`} onClick={e=>e.stopPropagation()}>전화</a>}{p.url&&<a href={p.url} target="_blank" rel="noreferrer" onClick={e=>e.stopPropagation()}>카카오맵</a>}</div>
       </article>)}
     </div>
-    <p className="nearby-disclaimer">업체 정보는 외부 장소정보를 기반으로 하며 실제 영업 여부·전화번호·주소가 변경될 수 있어요. 방문 전 업체에 확인해주세요.</p>
+
+    {selected&&<section className="bg-card nearby-review-panel">
+      <div className="nearby-review-head"><div><span className={`nearby-type-badge nearby-type-${selected.typeKey||"other"}`}>{selected.typeIcon||"🐾"} {selected.typeLabel||"반려동물 관련"}</span><h2>{selected.name} 이용후기</h2><p><b>★ {Number(reviews.summary?.avg||0).toFixed(1)}</b> · 후기 {Number(reviews.summary?.count||0)}개</p></div><button className="bg-btn" onClick={()=>setReviewOpen(v=>!v)}>{reviewOpen?"작성 닫기":"후기 남기기"}</button></div>
+      {reviewOpen&&<div className="nearby-review-compose"><div className="nearby-stars" aria-label="별점 선택">{[1,2,3,4,5].map(n=><button key={n} className={n<=reviewRating?"active":""} onClick={()=>setReviewRating(n)}>★</button>)}</div><textarea className="bg-input" maxLength={300} value={reviewText} onChange={e=>setReviewText(e.target.value)} placeholder="시설·서비스 이용 경험을 간단히 남겨주세요. 비속어·개인정보·광고성 내용은 등록할 수 없어요."/><div className="nearby-review-compose-foot"><small>{reviewText.length}/300 · 후기는 로그인 후 작성할 수 있어요.</small><button className="bg-btn" disabled={reviewBusy} onClick={submitReview}>{reviewBusy?"저장 중…":"후기 저장"}</button></div></div>}
+      <div className="nearby-review-list">{reviews.items?.length?reviews.items.map(r=><div className="nearby-review-item" key={r.id}><div className="nearby-review-meta"><b>{r.nickname}</b><span>{"★".repeat(Number(r.rating)||0)}{"☆".repeat(5-(Number(r.rating)||0))}</span><small>{new Date(r.created_at).toLocaleDateString("ko-KR")}</small></div><p>{r.content}</p><div className="nearby-review-actions"><button className={r.liked?"liked":""} onClick={()=>likeReview(r)}>♥ {Number(r.like_count)||0}</button><button onClick={()=>reportReview(r)}>🚩 신고</button></div></div>):<div className="nearby-review-empty">아직 후기가 없어요. 첫 이용후기를 남겨보세요 🐾</div>}</div>
+    </section>}
+    <p className="nearby-disclaimer">업체 정보는 카카오 장소검색 결과를 기반으로 검색 시점에 불러오며 PetGrow가 업체 정보를 별도로 매주 갱신하지 않습니다. 실제 영업 여부·전화번호·주소는 변경될 수 있으니 방문 전 업체에 확인해주세요. 이용후기는 PetGrow 회원이 작성한 의견으로 업체의 공식 정보가 아닙니다.</p>
   </div>;
 }
 
@@ -9286,8 +9376,12 @@ function InfoGuidePage() {
           </div>
         ))}
         <div className="bg-surface-card">
+          <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 5 }}>📍 내 주변 Pet</div>
+          <div className="bg-sub" style={{ fontSize: 13, lineHeight: 1.7 }}>현재 위치를 허용하면 주변 반려동물 시설을 거리순으로 검색해요. 업종 배지로 동물병원·동물약국·펫샵·용품점·미용·호텔·유치원을 구분하고, 상호명·주소·전화번호·거리와 지도 위치를 함께 확인할 수 있어요. 로그인 회원은 장소별 별점·후기·좋아요·신고를 이용할 수 있습니다.</div>
+        </div>
+        <div className="bg-surface-card">
           <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 5 }}>🎵 Pet음악</div>
-          <div className="bg-sub" style={{ fontSize: 13, lineHeight: 1.7 }}>강아지·고양이·공용 음악을 들을 수 있어요. 1곡 반복과 전체 반복을 지원하고, 좋아요·댓글·재생 반응을 바탕으로 인기 TOP5가 표시됩니다. 음악 목록은 20곡씩 페이지로 구분됩니다.</div>
+          <div className="bg-sub" style={{ fontSize: 13, lineHeight: 1.7 }}>강아지·고양이·공용 음악을 들을 수 있어요. 인스트루멘탈을 중심으로 보컬 여부와 휴식·수면·놀이·자연 태그를 확인할 수 있고, 1곡 반복과 전체 반복을 지원해요. 좋아요·댓글·재생 반응을 바탕으로 인기 TOP5가 표시되며 음악 목록은 20곡씩 페이지로 구분됩니다.</div>
         </div>
       </div>
     </div>
@@ -9924,16 +10018,13 @@ function CommunityFeed({ pets, lang, onOpenPost, onWrite, onMyActivity }) {
         </button>
       </div>
 
-      <div className="cm-filter-wrap">
-        <button type="button" className={`tab-pill ${category === "all" ? "active" : ""}`} onClick={() => setCategory("all")}>
-          {t.communityCategoryAll}
-        </button>
-        {COMMUNITY_CATEGORY_KEYS.map((k) => (
-          <button key={k} type="button" className={`tab-pill ${category === k ? "active" : ""}`} onClick={() => setCategory(k)}>
-            {t.communityCategoryLabels[k]}
-          </button>
-        ))}
-      </div>
+      <ResponsiveCategoryMenu
+        className="community-responsive-categories"
+        items={[{ id: "all", label: t.communityCategoryAll }, ...COMMUNITY_CATEGORY_KEYS.map((k) => ({ id: k, label: t.communityCategoryLabels[k] }))]}
+        activeId={category}
+        lang={lang}
+        onSelect={setCategory}
+      />
 
       <div className="cm-sort-row">
         <div style={{ display: "flex", gap: 8 }}>
@@ -9979,24 +10070,7 @@ function CommunityFeed({ pets, lang, onOpenPost, onWrite, onMyActivity }) {
         </div>
       )}
 
-      {(page > 1 || hasMore) && (
-        <div className="cm-pagination" style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 8, marginTop: 22, flexWrap: "wrap" }}>
-          <button type="button" className="bg-btn bg-btn-ghost" style={{ minWidth: 72 }} disabled={loading || page <= 1} onClick={() => loadPage(page - 1)}>
-            {lang === "en" ? "Previous" : "이전"}
-          </button>
-          {Array.from({ length: Math.min(5, page + (hasMore ? 1 : 0)) }, (_, i) => {
-            const startPage = Math.max(1, page - 2);
-            return startPage + i;
-          }).filter((n) => n <= page || hasMore).map((n) => (
-            <button key={n} type="button" className={`bg-chip ${page === n ? "active" : ""}`} disabled={loading} onClick={() => loadPage(n)}>
-              {n}
-            </button>
-          ))}
-          <button type="button" className="bg-btn bg-btn-ghost" style={{ minWidth: 72 }} disabled={loading || !hasMore} onClick={() => loadPage(page + 1)}>
-            {lang === "en" ? "Next" : "다음"}
-          </button>
-        </div>
-      )}
+      {(page > 1 || hasMore) && <ResponsivePagination page={page} totalPages={Math.max(page, hasMore ? page + 1 : page)} lang={lang} disabled={loading} onChange={loadPage} />}
     </div>
   );
 }
@@ -10137,28 +10211,30 @@ function PetMusicPage({ account, lang }) {
   const toggleComments=async(track)=>{if(openComments===track.id){setOpenComments(null);return;}setOpenComments(track.id);try{const r=await musicComments(track.id);setComments(c=>({...c,[track.id]:r.items||[]}))}catch{setComments(c=>({...c,[track.id]:[]}))}};
   const addComment=async(track)=>{const text=commentText.trim();if(!account){window.alert(lang==="en"?"Please log in to comment.":"댓글은 로그인 후 이용할 수 있어요.");return;}if(!text)return;try{await musicAddComment(track.id,text);setCommentText("");const r=await musicComments(track.id);setComments(c=>({...c,[track.id]:r.items||[]}));await load()}catch(e){window.alert(e.message)}};
   const speciesLabel=x=>x==="dog"?(lang==="en"?"Dog":"강아지"):x==="cat"?(lang==="en"?"Cat":"고양이"):(lang==="en"?"All":"전체");
+  const vocalLabel=x=>x==="vocal"?(lang==="en"?"Vocal":"🎤 보컬"):(lang==="en"?"Instrumental":"🎼 인스트루멘탈");
+  const moodLabel=x=>({relax:lang==="en"?"Relax":"😌 휴식",sleep:lang==="en"?"Sleep":"🌙 수면",play:lang==="en"?"Play":"🐾 놀이",nature:lang==="en"?"Nature":"🌿 자연"}[x]||(lang==="en"?"Relax":"😌 휴식"));
   return <div className="petmusic-page">
-    <section className="petmusic-hero"><small style={{fontWeight:900,color:"var(--primary)"}}>PETGROW SOUND</small><h1>🎵 {lang==="en"?"Pet Music":"Pet음악"}</h1><p className="bg-sub">{lang==="en"?"Music for dogs and cats. Loop favorites and share your pet's reaction with likes and comments.":"강아지·고양이를 위한 음악을 편하게 듣고 반복재생해보세요. 좋아요와 댓글로 우리 아이의 반응도 함께 남겨요."}</p></section>
+    <section className="petmusic-hero"><small style={{fontWeight:900,color:"var(--primary)"}}>PETGROW SOUND</small><h1>🎵 {lang==="en"?"Pet Music":"Pet음악"}</h1><p className="bg-sub">{lang==="en"?"Music for dogs and cats. Loop favorites and share your pet's reaction with likes and comments.":"강아지·고양이를 위한 음악을 편하게 듣고 반복재생해보세요. 인스트루멘탈을 중심으로 제공하고 좋아요와 댓글로 우리 아이의 반응도 함께 남겨요."}</p></section>
     <div className="petmusic-tabs">{["all","dog","cat"].map(x=><button key={x} className={species===x?"active":""} onClick={()=>setSpecies(x)}>{x==="dog"?"🐶 ":x==="cat"?"🐱 ":"🎧 "}{speciesLabel(x)}</button>)}</div>
     {!!data.top5.length&&<><h2 style={{fontSize:18,margin:"0 0 12px"}}>🏆 {lang==="en"?"Popular TOP 5":"인기 TOP 5"}</h2><div className="petmusic-top5">{data.top5.map((x,i)=><button key={x.id} className="petmusic-rank" onClick={()=>playTrack(x)}><div style={{position:"relative"}}>{x.cover_url?<img src={x.cover_url} alt=""/>:<div className="petmusic-rank-cover">🎵</div>}<span style={{position:"absolute",left:7,top:7,width:24,height:24,borderRadius:99,display:"grid",placeItems:"center",background:"rgba(255,255,255,.93)",fontSize:11,fontWeight:900}}>#{i+1}</span></div><b>{x.title}</b><small>♥ {Number(x.like_count)||0} · 💬 {Number(x.comment_count)||0}</small></button>)}</div></>}
     {current&&<div className="bg-card" style={{display:"flex",gap:12,alignItems:"center",marginBottom:18,padding:12,position:"sticky",top:8,zIndex:4}}>{current.cover_url?<img src={current.cover_url} alt="" style={{width:52,height:52,borderRadius:13,objectFit:"cover"}}/>:<div className="petmusic-rank-cover" style={{width:52,height:52,flex:"0 0 52px",fontSize:22}}>🎵</div>}<div style={{flex:1,minWidth:0}}><b style={{display:"block",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{current.title}</b><small className="bg-sub">{playing?(lang==="en"?"Playing now":"재생 중"):(lang==="en"?"Paused":"일시정지")}</small></div><button className="petmusic-play" onClick={()=>togglePlay(current)}>{playing?"Ⅱ":"▶"}</button><button className={`petmusic-loop ${repeatMode!=="off"?"active":""}`} onClick={cycleRepeat}>{repeatMode==="one"?"🔂 1곡":repeatMode==="all"?"🔁 전체":"↪ 반복 OFF"}</button></div>}
     <audio ref={audioRef} src={current?.audio_url||""} onPlay={()=>setPlaying(true)} onPause={()=>setPlaying(false)} onEnded={onEnded}/>
-    {loading?<div className="bg-card" style={{textAlign:"center"}}>음악을 불러오는 중...</div>:data.items.length?<div className="petmusic-grid">{data.items.map(track=><article className="petmusic-card" key={track.id}>{track.cover_url?<img className="petmusic-cover" src={track.cover_url} alt={`${track.title} cover`}/>:<div className="petmusic-cover">🎵</div>}<div style={{minWidth:0}}><div className="petmusic-title">{track.title}</div><div className="petmusic-date">{speciesLabel(track.species)} · {new Date(track.created_at).toLocaleDateString(lang==="en"?"en-US":"ko-KR")}</div>{track.description&&<div className="bg-sub" style={{fontSize:11,marginTop:5,lineHeight:1.45}}>{track.description}</div>}<div className="petmusic-player"><button className="petmusic-play" onClick={()=>togglePlay(track)}>{current?.id===track.id&&playing?"Ⅱ":"▶"}</button><span className="bg-sub" style={{fontSize:10}}>▶ {Number(track.play_count)||0}</span></div><div className="petmusic-actions"><button className={track.liked?"liked":""} onClick={()=>doLike(track)}>♥ {Number(track.like_count)||0}</button><button onClick={()=>toggleComments(track)}>💬 {Number(track.comment_count)||0}</button></div>{openComments===track.id&&<div className="petmusic-comments">{(comments[track.id]||[]).slice(0,8).map(c=><div className="petmusic-comment-row" key={c.id}><b>{c.nickname||"PetGrow"}</b> · {c.content}</div>)}<div className="petmusic-comment-form"><input value={commentText} onChange={e=>setCommentText(e.target.value)} maxLength={300} placeholder={lang==="en"?"How did your pet react?":"우리 아이 반응을 남겨주세요"}/><button onClick={()=>addComment(track)}>등록</button></div></div>}</div></article>)}</div>:<div className="bg-card" style={{textAlign:"center",padding:32}}><div style={{fontSize:36,marginBottom:8}}>🎵</div><b>{lang==="en"?"No music has been uploaded yet.":"아직 등록된 음악이 없어요."}</b><p className="bg-sub" style={{fontSize:12,marginTop:6}}>{lang==="en"?"PetGrow music will appear here after an administrator uploads it.":"관리자센터에서 음악을 등록하면 이곳에 바로 표시됩니다."}</p></div>}
-    {data.pages>1&&<nav className="petmusic-pagination" aria-label="Pet음악 페이지">{Array.from({length:data.pages},(_,i)=>i+1).map(n=><button key={n} className={page===n?"active":""} onClick={()=>{setPage(n);window.scrollTo({top:0,behavior:"smooth"})}}>{n}</button>)}</nav>}
+    {loading?<div className="bg-card" style={{textAlign:"center"}}>음악을 불러오는 중...</div>:data.items.length?<div className="petmusic-grid">{data.items.map(track=><article className="petmusic-card" key={track.id}>{track.cover_url?<img className="petmusic-cover" src={track.cover_url} alt={`${track.title} cover`}/>:<div className="petmusic-cover">🎵</div>}<div style={{minWidth:0}}><div className="petmusic-title">{track.title}</div><div className="petmusic-date">{speciesLabel(track.species)} · {new Date(track.created_at).toLocaleDateString(lang==="en"?"en-US":"ko-KR")}</div><div style={{display:"flex",gap:5,flexWrap:"wrap",marginTop:6}}><span className="cm-cat-chip" style={{margin:0,fontSize:10}}>{vocalLabel(track.vocal_type)}</span><span className="cm-cat-chip" style={{margin:0,fontSize:10}}>{moodLabel(track.mood)}</span></div>{track.description&&<div className="bg-sub" style={{fontSize:11,marginTop:5,lineHeight:1.45}}>{track.description}</div>}<div className="petmusic-player"><button className="petmusic-play" onClick={()=>togglePlay(track)}>{current?.id===track.id&&playing?"Ⅱ":"▶"}</button><span className="bg-sub" style={{fontSize:10}}>▶ {Number(track.play_count)||0}</span></div><div className="petmusic-actions"><button className={track.liked?"liked":""} onClick={()=>doLike(track)}>♥ {Number(track.like_count)||0}</button><button onClick={()=>toggleComments(track)}>💬 {Number(track.comment_count)||0}</button></div>{openComments===track.id&&<div className="petmusic-comments">{(comments[track.id]||[]).slice(0,8).map(c=><div className="petmusic-comment-row" key={c.id}><b>{c.nickname||"PetGrow"}</b> · {c.content}</div>)}<div className="petmusic-comment-form"><input value={commentText} onChange={e=>setCommentText(e.target.value)} maxLength={300} placeholder={lang==="en"?"How did your pet react?":"우리 아이 반응을 남겨주세요"}/><button onClick={()=>addComment(track)}>등록</button></div></div>}</div></article>)}</div>:<div className="bg-card" style={{textAlign:"center",padding:32}}><div style={{fontSize:36,marginBottom:8}}>🎵</div><b>{lang==="en"?"No music has been uploaded yet.":"아직 등록된 음악이 없어요."}</b><p className="bg-sub" style={{fontSize:12,marginTop:6}}>{lang==="en"?"PetGrow music will appear here after an administrator uploads it.":"관리자센터에서 음악을 등록하면 이곳에 바로 표시됩니다."}</p></div>}
+    <ResponsivePagination page={page} totalPages={data.pages} lang={lang} onChange={(n)=>{setPage(n);window.scrollTo({top:0,behavior:"smooth"})}} />
   </div>;
 }
 
 function AdminMusicPanel(){
   const [items,setItems]=useState([]),[busy,setBusy]=useState(false),[editing,setEditing]=useState(null);
-  const blank={title:"",description:"",species:"all",active:true,audioDataUrl:"",coverDataUrl:"",audioUrl:"",coverUrl:""};
+  const blank={title:"",description:"",species:"all",vocalType:"instrumental",mood:"relax",active:true,audioDataUrl:"",coverDataUrl:"",audioUrl:"",coverUrl:""};
   const [form,setForm]=useState(blank);
   const load=async()=>{try{const r=await adminMusicList();setItems(r.items||[])}catch(e){window.alert(e.message)}};
   useEffect(()=>{load()},[]);
   const pickAudio=async e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>12*1024*1024){window.alert("음원 파일은 12MB 이하로 올려주세요.");e.target.value="";return;}setForm(x=>({...x,audioDataUrl:""}));try{const d=await fileToDataUrl(f);setForm(x=>({...x,audioDataUrl:d}))}catch{window.alert("음원 파일을 읽지 못했어요.")}};
   const pickCover=async e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>4*1024*1024){window.alert("커버 이미지는 4MB 이하로 올려주세요.");e.target.value="";return;}try{const d=await fileToCompressedDataUrl(f,1000,.82);setForm(x=>({...x,coverDataUrl:d}))}catch{window.alert("커버 이미지를 읽지 못했어요.")}};
   const save=async()=>{if(!form.title.trim())return window.alert("노래 제목을 입력해 주세요.");if(!editing&&!form.audioDataUrl)return window.alert("음원 파일을 선택해 주세요.");if(!editing&&!form.coverDataUrl)return window.alert("커버 이미지를 선택해 주세요.");setBusy(true);try{await adminMusicSave({...form,id:editing?.id||undefined,audioUrl:editing?.audio_url||form.audioUrl,coverUrl:editing?.cover_url||form.coverUrl});window.alert(editing?"Pet음악을 수정했어요.":"Pet음악을 등록했어요.");setEditing(null);setForm(blank);await load()}catch(e){window.alert(e.message)}finally{setBusy(false)}};
-  const edit=x=>{setEditing(x);setForm({title:x.title||"",description:x.description||"",species:x.species||"all",active:x.active!==false,audioDataUrl:"",coverDataUrl:"",audioUrl:x.audio_url||"",coverUrl:x.cover_url||""});window.scrollTo({top:0,behavior:"smooth"})};
-  return <div className="admin-report-list"><div className="bg-card"><h2>🎵 Pet음악 관리</h2><p className="bg-sub">음원·제목·커버 이미지를 등록하면 사용자 Pet음악 메뉴에 연결돼요. 업로드일은 자동 기록되고 좋아요·댓글·재생수로 인기 TOP5가 계산됩니다.</p><div className="admin-music-form" style={{marginTop:14}}><input className="bg-input" placeholder="노래 제목" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/><select className="bg-input" value={form.species} onChange={e=>setForm({...form,species:e.target.value})}><option value="all">🐾 공용</option><option value="dog">🐶 강아지</option><option value="cat">🐱 고양이</option></select><textarea className="bg-input support-textarea full" placeholder="간단한 설명 (선택)" value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/><label className="bg-card" style={{padding:12}}><b style={{fontSize:12}}>음원 파일 {editing?"(교체할 때만 선택)":""}</b><input type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/mp4,audio/aac" onChange={pickAudio} style={{display:"block",marginTop:8,width:"100%"}}/><small className="bg-sub">MP3/WAV/M4A · 최대 12MB</small></label><label className="bg-card" style={{padding:12}}><b style={{fontSize:12}}>커버 이미지</b><input type="file" accept="image/*" onChange={pickCover} style={{display:"block",marginTop:8,width:"100%"}}/><small className="bg-sub">정사각형 이미지 권장</small></label><label className="full" style={{fontSize:12,fontWeight:700}}><input type="checkbox" checked={form.active} onChange={e=>setForm({...form,active:e.target.checked})}/> 사용자에게 공개</label><div className="full" style={{display:"flex",gap:8}}><button className="bg-btn" disabled={busy} onClick={save}>{busy?"업로드 중...":editing?"수정 저장":"음악 등록"}</button>{editing&&<button className="bg-btn bg-btn-ghost" onClick={()=>{setEditing(null);setForm(blank)}}>취소</button>}</div></div></div><div className="bg-card"><h3>등록된 음악 {items.length}곡</h3><div className="admin-music-list">{items.length?items.map(x=><div className="admin-music-row" key={x.id}>{x.cover_url?<img className="admin-music-thumb" src={x.cover_url} alt=""/>:<div className="admin-music-thumb">🎵</div>}<div><b>{x.title}</b><small>{x.species==="dog"?"강아지":x.species==="cat"?"고양이":"공용"} · {new Date(x.created_at).toLocaleDateString("ko-KR")} · ▶ {Number(x.play_count)||0} · ♥ {Number(x.like_count)||0} · 💬 {Number(x.comment_count)||0}</small></div><div className="admin-music-actions"><button onClick={()=>edit(x)}>수정</button><button onClick={async()=>{await adminMusicToggle(x.id,!x.active);await load()}}>{x.active?"비공개":"공개"}</button><button onClick={async()=>{if(!window.confirm(`'${x.title}' 음악을 삭제할까요?`))return;await adminMusicDelete(x.id);await load()}}>삭제</button></div></div>):<p className="bg-sub">등록된 음악이 없어요.</p>}</div></div></div>;
+  const edit=x=>{setEditing(x);setForm({title:x.title||"",description:x.description||"",species:x.species||"all",vocalType:x.vocal_type||"instrumental",mood:x.mood||"relax",active:x.active!==false,audioDataUrl:"",coverDataUrl:"",audioUrl:x.audio_url||"",coverUrl:x.cover_url||""});window.scrollTo({top:0,behavior:"smooth"})};
+  return <div className="admin-report-list"><div className="bg-card"><h2>🎵 Pet음악 관리</h2><p className="bg-sub">음원·제목·커버 이미지를 등록하면 사용자 Pet음악 메뉴에 연결돼요. 보컬 여부와 분위기 태그도 지정할 수 있고, 업로드일은 자동 기록되며 좋아요·댓글·재생수로 인기 TOP5가 계산됩니다.</p><div className="admin-music-form" style={{marginTop:14}}><input className="bg-input" placeholder="노래 제목" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/><select className="bg-input" value={form.species} onChange={e=>setForm({...form,species:e.target.value})}><option value="all">🐾 공용</option><option value="dog">🐶 강아지</option><option value="cat">🐱 고양이</option></select><select className="bg-input" value={form.vocalType} onChange={e=>setForm({...form,vocalType:e.target.value})}><option value="instrumental">🎼 인스트루멘탈</option><option value="vocal">🎤 보컬 있음</option></select><select className="bg-input" value={form.mood} onChange={e=>setForm({...form,mood:e.target.value})}><option value="relax">😌 휴식</option><option value="sleep">🌙 수면</option><option value="play">🐾 놀이</option><option value="nature">🌿 자연</option></select><textarea className="bg-input support-textarea full" placeholder="간단한 설명 (선택)" value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/><label className="bg-card" style={{padding:12}}><b style={{fontSize:12}}>음원 파일 {editing?"(교체할 때만 선택)":""}</b><input type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/mp4,audio/aac" onChange={pickAudio} style={{display:"block",marginTop:8,width:"100%"}}/><small className="bg-sub">MP3/WAV/M4A · 최대 12MB</small></label><label className="bg-card" style={{padding:12}}><b style={{fontSize:12}}>커버 이미지</b><input type="file" accept="image/*" onChange={pickCover} style={{display:"block",marginTop:8,width:"100%"}}/><small className="bg-sub">정사각형 이미지 권장</small></label><label className="full" style={{fontSize:12,fontWeight:700}}><input type="checkbox" checked={form.active} onChange={e=>setForm({...form,active:e.target.checked})}/> 사용자에게 공개</label><div className="full" style={{display:"flex",gap:8}}><button className="bg-btn" disabled={busy} onClick={save}>{busy?"업로드 중...":editing?"수정 저장":"음악 등록"}</button>{editing&&<button className="bg-btn bg-btn-ghost" onClick={()=>{setEditing(null);setForm(blank)}}>취소</button>}</div></div></div><div className="bg-card"><h3>등록된 음악 {items.length}곡</h3><div className="admin-music-list">{items.length?items.map(x=><div className="admin-music-row" key={x.id}>{x.cover_url?<img className="admin-music-thumb" src={x.cover_url} alt=""/>:<div className="admin-music-thumb">🎵</div>}<div><b>{x.title}</b><small>{x.species==="dog"?"강아지":x.species==="cat"?"고양이":"공용"} · {x.vocal_type==="vocal"?"보컬":"인스트루멘탈"} · {({relax:"휴식",sleep:"수면",play:"놀이",nature:"자연"}[x.mood]||"휴식")} · {new Date(x.created_at).toLocaleDateString("ko-KR")} · ▶ {Number(x.play_count)||0} · ♥ {Number(x.like_count)||0} · 💬 {Number(x.comment_count)||0}</small></div><div className="admin-music-actions"><button onClick={()=>edit(x)}>수정</button><button onClick={async()=>{await adminMusicToggle(x.id,!x.active);await load()}}>{x.active?"비공개":"공개"}</button><button onClick={async()=>{if(!window.confirm(`'${x.title}' 음악을 삭제할까요?`))return;await adminMusicDelete(x.id);await load()}}>삭제</button></div></div>):<p className="bg-sub">등록된 음악이 없어요.</p>}</div></div></div>;
 }
 
 function SupportPage({account,onBack}){
@@ -10189,7 +10265,7 @@ function SupportPage({account,onBack}){
         <div className="support-meta">{x.nickname&&<span>{x.nickname}</span>}<span>{x.status==="answered"?"답변완료":x.status==="checking"?"확인중":x.status==="waiting"?"답변대기":""}</span><span>{new Date(x.created_at).toLocaleDateString("ko-KR")}</span></div>
         {open===x.id&&<div className="support-detail"><p>{x.body}</p>{x.admin_reply&&<div className="support-reply"><b>PetGrow 운영팀 답변</b><p>{x.admin_reply}</p></div>}</div>}
       </button>)}
-      {pages>1&&<div className="support-pagination"><button disabled={page<=1} onClick={()=>setPage(p=>p-1)}>이전</button><span>{page} / {pages}</span><button disabled={page>=pages} onClick={()=>setPage(p=>p+1)}>다음</button></div>}
+      <ResponsivePagination page={page} totalPages={pages} lang="ko" onChange={setPage} />
     </div>}
   </div>
 }
@@ -10204,7 +10280,7 @@ function AdminReportsPage({onBack}){
  const [status,setStatus]=useState(null),[pin,setPin]=useState(""),[setupCode,setSetupCode]=useState(""),[setupPin,setSetupPin]=useState("");
  const clearAdminPin=()=>{setPin("");setSetupPin("");};
  useEffect(()=>{clearAdminPin();const h=()=>{if(document.visibilityState==="hidden")clearAdminPin()};document.addEventListener("visibilitychange",h);return()=>document.removeEventListener("visibilitychange",h)},[]);
- const [unlocked,setUnlocked]=useState(false),[tab,setTab]=useState("dashboard"),[stats,setStats]=useState(null),[health,setHealth]=useState(null),[reports,setReports]=useState([]),[logs,setLogs]=useState([]);
+ const [unlocked,setUnlocked]=useState(false),[tab,setTab]=useState("dashboard"),[stats,setStats]=useState(null),[health,setHealth]=useState(null),[reports,setReports]=useState([]),[placeReports,setPlaceReports]=useState([]),[logs,setLogs]=useState([]);
  const [admins,setAdmins]=useState([]),[directAds,setDirectAds]=useState([]),[adInquiries,setAdInquiries]=useState([]),[adForm,setAdForm]=useState({name:"",placement:"banner",imageUrl:"",targetUrl:"",startsAt:"",endsAt:"",active:false,priority:0}),[query,setQuery]=useState(""),[found,setFound]=useState([]),[inq,setInq]=useState([]),[reply,setReply]=useState({}),[notice,setNotice]=useState({title:"",body:"",category:"notice",pinned:false,popup:false});
  useEffect(()=>{sessionStorage.removeItem("petgrow_admin_token");adminStatus().then(setStatus).catch(e=>window.alert(e.message));return()=>sessionStorage.removeItem("petgrow_admin_token")},[]);
  const role=status?.role,can=x=>role==="superadmin"||role==="operator"||role===x;
@@ -10214,7 +10290,7 @@ function AdminReportsPage({onBack}){
      tasks.push(adminStats().then(setStats).catch(()=>null));
      if(typeof adminHealth==="function")tasks.push(adminHealth().then(setHealth).catch(()=>null));
    }
-   if(can("report"))tasks.push(adminListReports().then(x=>setReports(x.reports||[])).catch(()=>null));
+   if(can("report")){tasks.push(adminListReports().then(x=>setReports(x.reports||[])).catch(()=>null));tasks.push(adminListPlaceReviewReports().then(x=>setPlaceReports(x.reports||[])).catch(()=>null));}
    if(can("logs"))tasks.push(adminLogs().then(x=>setLogs(x.logs||[])).catch(()=>null));
    if(role==="superadmin")tasks.push(adminListAdmins().then(x=>setAdmins(x.admins||[])).catch(()=>null));
    if(role==="superadmin"||role==="operator"){
@@ -10249,6 +10325,8 @@ function AdminReportsPage({onBack}){
  const restrict=async(r,d)=>{const lab={ "1d":"1일","7d":"7일","30d":"30일",permanent:"영구"}[d];if(!window.confirm(`${r.authorNickname} 계정을 ${lab} 이용제한할까요?\n확인 시 즉시 Pet톡 글/댓글 작성이 제한됩니다.`))return;try{await adminRestrict(r.targetUserId,d,r.id);window.alert("이용제한을 적용했어요.");await loadAll()}catch(e){window.alert(e.message)}};
  const unblock=async r=>{if(!window.confirm(`${r.authorNickname} 계정의 이용제한을 해제할까요?`))return;try{await adminUnblock(r.targetUserId,r.id);window.alert("제한을 해제했어요.");await loadAll()}catch(e){window.alert(e.message)}};
  const resolve=async r=>{if(!window.confirm("이 신고를 검토 완료 처리할까요?"))return;try{await adminResolveReport(r.id);await loadAll()}catch(e){window.alert(e.message)}};
+ const hidePlaceReview=async r=>{if(!window.confirm(`'${r.place_name}'의 신고된 후기를 숨길까요?`))return;try{await adminHidePlaceReview(r.review_id,r.id);window.alert("후기를 숨기고 신고를 처리했어요.");await loadAll()}catch(e){window.alert(e.message)}};
+ const resolvePlaceReview=async r=>{if(!window.confirm("이 장소 후기 신고를 검토 완료 처리할까요? 후기는 계속 공개됩니다."))return;try{await adminResolvePlaceReviewReport(r.id);await loadAll()}catch(e){window.alert(e.message)}};
 
  const getAdStatus=(a)=>{
    const now=Date.now(),start=a?.starts_at?new Date(a.starts_at).getTime():null,end=a?.ends_at?new Date(a.ends_at).getTime():null;
@@ -10291,7 +10369,7 @@ function AdminReportsPage({onBack}){
  <div className={`service-health-hero ${health?.level||"healthy"}`}><div className="service-health-dot">{health?.level==="down"?"🔴":health?.level==="warning"?"🟡":"🟢"}</div><div><small>현재 서비스 상태</small><h2>{health?.level==="down"?"장애":health?.level==="warning"?"주의":"정상"}</h2>{health?.reason && !["정상","주의","장애"].includes(health.reason) ? <p>{health.reason}</p> : <p className="service-health-subtext">{health?.level==="healthy"?"모든 주요 기능이 정상적으로 동작하고 있어요.":health?.level==="warning"?"일부 요청 지연이나 오류가 감지됐어요.":"서비스 장애 징후가 감지됐어요."}</p>}</div><button className="bg-btn bg-btn-ghost" onClick={async()=>{try{setHealth(await adminHealth())}catch(e){window.alert(e.message)}}}>새로고침</button></div>
  <div className="service-health-grid">{[["최근 15분 오류",health?.metrics?.errors15m||0],["1시간 DB 오류",health?.metrics?.dbErrors1h||0],["1시간 느린 요청",health?.metrics?.slow1h||0],["1시간 요청제한",health?.metrics?.rateLimits1h||0],["15분 평균 응답",`${health?.metrics?.avgLatency15m||0}ms`],["1시간 최대 응답",`${health?.metrics?.maxLatency1h||0}ms`],["5분 접속 추정",health?.traffic?.online5m||0],["오늘 방문",health?.traffic?.today||0]].map(([k,v])=><div className="bg-card service-health-card" key={k}><strong>{v}</strong><span>{k}</span></div>)}</div>
  <div className="bg-card"><h3>트래픽 대비</h3><p className="bg-sub">일시적 429/502/503/504는 GET 요청을 한 번 재시도하고, 8초 이상 응답이 없으면 무한 로딩을 중단해요. 접속 급증 시에는 관리자 화면에서 접속 추정치와 오류·응답 지연을 함께 확인하세요.</p></div>
- </div>}{tab==="reports"&&<div className="admin-report-list">{reports.length?reports.map(r=><div className="bg-card admin-report-card" key={r.id}><div><b>{r.postTitle}</b><small>{r.authorNickname} · 신고자 {r.reporterNickname}</small></div><p>{r.targetContent}</p><p><b>신고사유:</b> {r.reason} {r.detail}</p><div className="admin-report-actions"><button onClick={()=>restrict(r,"1d")}>1일</button><button onClick={()=>restrict(r,"7d")}>7일</button><button onClick={()=>restrict(r,"30d")}>30일</button><button onClick={()=>restrict(r,"permanent")}>영구 제한</button><button onClick={()=>unblock(r)}>제한 해제</button><button onClick={()=>resolve(r)}>검토 완료</button></div></div>):<div className="bg-card">신고가 없어요.</div>}</div>}
+ </div>}{tab==="reports"&&<div className="admin-report-list"><div className="bg-card"><h3 style={{marginTop:0}}>💬 Pet톡 신고</h3>{reports.length?reports.map(r=><div className="admin-report-card" key={r.id}><div><b>{r.postTitle}</b><small>{r.authorNickname} · 신고자 {r.reporterNickname}</small></div><p>{r.targetContent}</p><p><b>신고사유:</b> {r.reason} {r.detail}</p><div className="admin-report-actions"><button onClick={()=>restrict(r,"1d")}>1일</button><button onClick={()=>restrict(r,"7d")}>7일</button><button onClick={()=>restrict(r,"30d")}>30일</button><button onClick={()=>restrict(r,"permanent")}>영구 제한</button><button onClick={()=>unblock(r)}>제한 해제</button><button onClick={()=>resolve(r)}>검토 완료</button></div></div>):<p className="bg-sub">Pet톡 신고가 없어요.</p>}</div><div className="bg-card"><h3 style={{marginTop:0}}>📍 내 주변 Pet 후기 신고</h3>{placeReports.length?placeReports.map(r=><div className="admin-report-card" key={r.id}><div><b>{r.place_name} · ★ {r.rating}</b><small>{r.author_nickname} 작성 · 신고자 {r.reporter_nickname}</small></div><p>{r.content}</p><p><b>신고사유:</b> {r.detail||r.reason}</p><div className="admin-report-actions"><button onClick={()=>hidePlaceReview(r)}>후기 숨김</button><button onClick={()=>resolvePlaceReview(r)}>문제없음·완료</button></div></div>):<p className="bg-sub">장소 후기 신고가 없어요.</p>}</div></div>}
    {tab==="inquiries"&&<div className="admin-report-list">{inq.length?inq.map(x=><div className="bg-card admin-report-card" key={x.id}><b>{x.title}</b><small>{x.nickname} · {x.is_public?"공개":"비공개"} · {x.status}</small><p>{x.body}</p><textarea className="bg-input support-textarea" value={reply[x.id]??x.admin_reply??""} onChange={e=>setReply({...reply,[x.id]:e.target.value})}/><button className="bg-btn" onClick={async()=>{if(!window.confirm("이 답변을 등록할까요?"))return;try{await adminReplyInquiry(x.id,reply[x.id]??x.admin_reply??"");window.alert("답변을 등록했어요.");await loadAll()}catch(e){window.alert(e.message)}}}>답변 등록</button></div>):<div className="bg-card">문의가 없어요.</div>}</div>}
    {tab==="notices"&&<div className="bg-card admin-notice-form"><h2>공지 작성</h2><input className="bg-input admin-notice-input" placeholder="공지 제목" value={notice.title} onChange={e=>setNotice({...notice,title:e.target.value})}/><textarea className="bg-input support-textarea admin-notice-input admin-notice-textarea" placeholder="공지 내용" value={notice.body} onChange={e=>setNotice({...notice,body:e.target.value})}/><label><input type="checkbox" checked={notice.pinned} onChange={e=>setNotice({...notice,pinned:e.target.checked})}/> 중요공지 상단 고정</label><label><input type="checkbox" checked={notice.popup} onChange={e=>setNotice({...notice,popup:e.target.checked})}/> 팝업 공지</label><button className="bg-btn" onClick={async()=>{if(!window.confirm("이 공지를 게시할까요?"))return;try{await adminCreateNotice(notice);setNotice({title:"",body:"",category:"notice",pinned:false,popup:false});window.alert("공지를 게시했어요.")}catch(e){window.alert(e.message)}}}>공지 게시</button></div>}
    {tab==="music"&&<AdminMusicPanel/>}
@@ -10750,22 +10828,35 @@ function AppInner({ lang, setLang }) {
     };
   }, []);
 
-  // 앱 데이터와 로그인 확인이 모두 끝난 뒤 웹/모바일/PWA/앱 공통 스플래시를 페이드아웃해요.
+  // React가 올라오면 홈 스켈레톤이 이미 준비된 상태이므로 스플래시를 너무 오래 붙잡지 않아요.
+  // 데이터가 느려도 "스플래시 → 스켈레톤 → 실제 홈"으로 이어져 흰 화면이 보이지 않습니다.
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      if (typeof window.__hidePetGrowSplash === "function") window.__hidePetGrowSplash();
+    }, 1150);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  // React가 홈 스켈레톤을 그릴 준비가 되면 스플래시를 먼저 내려요.
+  // 로그인/DB 응답을 기다리며 흰 화면이 보이지 않고 "스플래시 → 홈 스켈레톤 → 실제 홈"으로 이어집니다.
+  useEffect(() => {
+    const toSkeleton = window.setTimeout(() => {
+      if (typeof window.__hidePetGrowSplash === "function") window.__hidePetGrowSplash();
+    }, 520);
+    return () => window.clearTimeout(toSkeleton);
+  }, []);
+
+  // 실제 데이터 준비가 빠르게 끝난 경우에도 스플래시 종료 요청을 한 번 더 보장해요.
   useEffect(() => {
     if (!loaded || !authChecked) return;
-    if (typeof window.__hidePetGrowSplash === "function") {
-      window.__hidePetGrowSplash();
-    }
+    if (typeof window.__hidePetGrowSplash === "function") window.__hidePetGrowSplash();
   }, [loaded, authChecked]);
 
-  // 네트워크/DB가 일시적으로 느린 경우에도 시작 화면이 무한정 남지 않게 하는 최종 안전장치.
-  // 정상적인 경우에는 위 effect가 먼저 실행되므로 화면 동작에는 영향이 없습니다.
+  // 네트워크가 지연돼도 스플래시는 오래 붙잡지 않고 스켈레톤이 대신 로딩 상태를 보여줍니다.
   useEffect(() => {
     const fallback = window.setTimeout(() => {
-      if (typeof window.__hidePetGrowSplash === "function") {
-        window.__hidePetGrowSplash();
-      }
-    }, 7000);
+      if (typeof window.__hidePetGrowSplash === "function") window.__hidePetGrowSplash();
+    }, 1800);
     return () => window.clearTimeout(fallback);
   }, []);
 
@@ -11005,7 +11096,26 @@ function AppInner({ lang, setLang }) {
     setMigrating(false);
   };
 
-  if (!loaded || !authChecked) return <div className="bboggl-root" style={{ minHeight: 300 }} />;
+  if (!loaded || !authChecked) return (
+    <div className="bboggl-root petgrow-boot-skeleton" style={{ minHeight: "100vh", padding: "22px" }}>
+      <GlobalStyle />
+      <div style={{ maxWidth: 1180, margin: "0 auto" }}>
+        <div className="boot-skel-head"><i/><div><b/><span/></div></div>
+        <div className="boot-skel-hero"><b/><span/><span/></div>
+        <div className="boot-skel-grid">{[0,1,2,3,4,5].map(i=><div className="boot-skel-card" key={i}><i/><b/><span/></div>)}</div>
+      </div>
+      <style>{`
+        .petgrow-boot-skeleton{background:#F8FAF7;color:var(--text);box-sizing:border-box}
+        .boot-skel-head{display:flex;align-items:center;gap:12px;margin-bottom:26px}.boot-skel-head>i{width:42px;height:42px;border-radius:15px}.boot-skel-head div{display:grid;gap:7px}.boot-skel-head b{width:105px;height:14px;border-radius:8px}.boot-skel-head span{width:155px;height:9px;border-radius:8px}
+        .boot-skel-hero{padding:28px;border-radius:25px;background:#fff;border:1px solid #E3EBE4;margin-bottom:18px;display:grid;gap:10px}.boot-skel-hero b{width:min(330px,70%);height:22px;border-radius:10px}.boot-skel-hero span{height:11px;border-radius:8px}.boot-skel-hero span:nth-child(2){width:min(500px,90%)}.boot-skel-hero span:nth-child(3){width:min(370px,72%)}
+        .boot-skel-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.boot-skel-card{min-height:120px;padding:18px;border-radius:22px;background:#fff;border:1px solid #E3EBE4;display:grid;align-content:start;gap:11px}.boot-skel-card i{width:38px;height:38px;border-radius:13px}.boot-skel-card b{width:44%;height:14px;border-radius:8px}.boot-skel-card span{width:78%;height:10px;border-radius:8px}
+        .boot-skel-head i,.boot-skel-head b,.boot-skel-head span,.boot-skel-hero b,.boot-skel-hero span,.boot-skel-card i,.boot-skel-card b,.boot-skel-card span{display:block;background:linear-gradient(90deg,#EDF3ED 25%,#F8FBF8 45%,#EDF3ED 65%);background-size:240% 100%;animation:petgrowBootShimmer 1.15s ease-in-out infinite}
+        @keyframes petgrowBootShimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+        @media(max-width:760px){.petgrow-boot-skeleton{padding:18px 14px!important}.boot-skel-grid{grid-template-columns:1fr 1fr;gap:10px}.boot-skel-card{min-height:104px;padding:14px;border-radius:18px}.boot-skel-hero{padding:22px 18px;border-radius:21px}}
+        @media(prefers-reduced-motion:reduce){.boot-skel-head i,.boot-skel-head b,.boot-skel-head span,.boot-skel-hero b,.boot-skel-hero span,.boot-skel-card i,.boot-skel-card b,.boot-skel-card span{animation:none}}
+      `}</style>
+    </div>
+  );
 
   const breedGroups = species === "dog" ? DOG_BREED_GROUPS : CAT_BREED_GROUPS;
   const sizeOptions = species === "dog" ? DOG_SIZE_OPTIONS : CAT_SIZE_OPTIONS;
