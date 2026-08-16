@@ -43,3 +43,6 @@ PetGrow 통합 수정사항 (2026-08-16)
 - 8개 영역(강아지, 고양이, 건강, 생활, 식단, 훈련, 안전, 미용)에 중복되지 않는 정보 10개씩 추가
 - 영역별 20개, 전체 160개 Pet정보로 확대
 - 안내 문구의 기존 50개/5개 카테고리 표현을 160개/8개 영역으로 수정
+
+--- design refresh ---
+2026-08-16: unified PetGrow visual system: softer sage green, warm neutral background, modern low-elevation cards, less chunky button shadows, consistent PetTalk colors, refined navigation/inputs/mobile bottom bar. No feature or data-flow changes.

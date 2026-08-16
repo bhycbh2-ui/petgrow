@@ -1700,12 +1700,12 @@ const SoundOffIcon = (p) => (
 const PetGrowMark = (p) => (
   <svg viewBox="0 0 100 100" {...p}>
     <g fill="none" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M30 30c-8 0-13 6-13 14 0 7 4 12 9 15-3 6-2 13 2 18" stroke="#1C1C1C" strokeWidth="3.2" />
-      <circle cx="20" cy="34" r="1.6" fill="#1C1C1C" />
-      <path d="M55 38c8-2 15 3 17 11 2 8-2 15-8 19 2 6 0 12-4 16" stroke="#4F9D3C" strokeWidth="3.2" />
-      <circle cx="65" cy="42" r="1.6" fill="#4F9D3C" />
-      <path d="M32 60c4-5 10-5 14 0 4-5 10-5 14 0 0 6-7 12-14 16-7-4-14-10-14-16z" stroke="#4F9D3C" strokeWidth="3" />
-      <path d="M46 58c0-4 2-6 6-7-1 4-2 6-6 7z" fill="#4F9D3C" stroke="none" />
+      <path d="M30 30c-8 0-13 6-13 14 0 7 4 12 9 15-3 6-2 13 2 18" stroke="#223027" strokeWidth="3.2" />
+      <circle cx="20" cy="34" r="1.6" fill="#223027" />
+      <path d="M55 38c8-2 15 3 17 11 2 8-2 15-8 19 2 6 0 12-4 16" stroke="#4F8A5B" strokeWidth="3.2" />
+      <circle cx="65" cy="42" r="1.6" fill="#4F8A5B" />
+      <path d="M32 60c4-5 10-5 14 0 4-5 10-5 14 0 0 6-7 12-14 16-7-4-14-10-14-16z" stroke="#4F8A5B" strokeWidth="3" />
+      <path d="M46 58c0-4 2-6 6-7-1 4-2 6-6 7z" fill="#4F8A5B" stroke="none" />
     </g>
   </svg>
 );
@@ -2235,7 +2235,7 @@ const GlobalStyle = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap');
     .bboggl-root{
-      --primary:#4F9D3C;--primary-dark:#3D7A2E;--text:#1C1C1C;--sub:#666666;--bg:#FAF7F0;--surface:#F1F3E9;--border:#E3DECF;
+      --primary:#4F8A5B;--primary-dark:#3D704A;--text:#223027;--sub:#68736B;--bg:#F8FAF7;--surface:#F1F5F1;--border:#E2E9E3;
       font-family:'Gowun Dodum','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic','Segoe UI',sans-serif; letter-spacing:0; color:var(--text); background:var(--bg);
       min-height:100%; width:100%; box-sizing:border-box; font-weight:500; overflow-x:hidden;
     }
@@ -2251,14 +2251,14 @@ const GlobalStyle = () => (
     .bg-btn-ghost:hover{box-shadow:0 5px 0 var(--border);}
     .bg-btn-ghost:active{box-shadow:0 1px 0 var(--border);}
     .icon{width:22px;height:22px;fill:currentColor;stroke:none;flex-shrink:0;}
-    .bg-card{background:#fff; border:1.5px solid #E2DDCF; border-radius:26px; padding:22px; box-shadow:0 7px 20px rgba(54,48,38,.045);}
+    .bg-card{background:#fff; border:1.5px solid #E1E8E2; border-radius:26px; padding:22px; box-shadow:0 7px 20px rgba(54,48,38,.045);}
     .result-columns{display:flex; flex-direction:column; gap:16px;}
     .result-block{display:flex; flex-direction:column;}
     @media (min-width:900px){
       .result-columns{display:block; column-count:2; column-gap:20px;}
       .result-columns > *{break-inside:avoid; -webkit-column-break-inside:avoid; margin-bottom:16px; display:block; width:100%;}
     }
-    .bg-surface-card{background:#F2F5EC; border:1px solid #E3E7DA; border-radius:22px; padding:20px;}
+    .bg-surface-card{background:#F3F7F3; border:1px solid #E3EAE4; border-radius:22px; padding:20px;}
     .bg-input{width:100%; max-width:100%; min-width:0; box-sizing:border-box; padding:12px 16px; border:2px solid var(--border); border-radius:18px; font-family:inherit;
       font-size:14px; background:#fff; color:var(--text);}
     .bg-input:focus{outline:none; border-color:var(--primary);}
@@ -2319,7 +2319,7 @@ const GlobalStyle = () => (
     .about-logo-float{animation:aboutFloat 3.2s ease-in-out infinite;}
     .mock-sparkline polyline{stroke-dasharray:300; animation:sparklineDraw 1.3s ease-out .5s both;}
     .landing-hero-section{position:relative; overflow:hidden;
-      background:linear-gradient(120deg,#F7FBF5,#EAF3E4,#F7FBF5); background-size:200% 200%; animation:gradientPan 10s ease infinite;}
+      background:linear-gradient(120deg,#F7FAF6,#EAF3EB,#F7FAF6); background-size:200% 200%; animation:gradientPan 10s ease infinite;}
     .landing-hero-section::before, .landing-hero-section::after{content:"🌿"; position:absolute; font-size:26px;
       opacity:.5; animation:leafDrift 6s ease-in-out infinite;}
     .landing-hero-section::before{top:18%; left:8%;}
@@ -2351,14 +2351,14 @@ const GlobalStyle = () => (
     .profile-header-avatar .avatar-edit-badge .icon{width:14px; height:14px; fill:#fff;}
     .profile-header-name{font-family:'Jua',sans-serif; font-size:24px; color:var(--text);}
     .profile-header-meta{font-size:13px; color:var(--sub); margin-top:6px;}
-    .account-modal-close{position:absolute; right:16px; top:14px; width:36px; height:36px; border-radius:50%; border:1px solid #DFE5D7; background:#F3F7EF; color:#2E3328; font-size:24px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:2; box-shadow:0 3px 10px rgba(28,28,28,.08);}
-    .account-modal-close:hover{background:#EAF4E4; color:var(--primary); transform:translateY(-1px);}
-    .account-modal-close-btn{width:100%; background:#EEF6E9; color:#2E3328; box-shadow:0 5px 0 #D7E4CF;}
-    .pet-result-page{background:linear-gradient(180deg,#FFFDF8 0%,#FAFCF7 100%); border:1px solid #E8EBDD; border-radius:30px;}
-    .pet-result-profile-shell{background:#fff; border:1px solid #DFE7D8; border-radius:24px; padding:18px 20px; box-shadow:0 8px 24px rgba(54,76,45,.08);}
-    .pet-result-page .bg-card{background:#fff; border-color:#DFE6D7; box-shadow:0 6px 18px rgba(54,76,45,.055);}
-    .pet-result-page .bg-surface-card{background:#F2F7EE; border:1px solid #E0E8D9;}
-    .pet-result-page .result-block>.bg-surface-card{background:linear-gradient(135deg,#F0F8EA 0%,#FFFDF7 100%); border:1px solid #D8E7D0; box-shadow:0 8px 20px rgba(79,157,60,.08);}
+    .account-modal-close{position:absolute; right:16px; top:14px; width:36px; height:36px; border-radius:50%; border:1px solid #DEE7E0; background:#F4F7F4; color:#243229; font-size:24px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:2; box-shadow:0 3px 10px rgba(28,28,28,.08);}
+    .account-modal-close:hover{background:#EAF3EB; color:var(--primary); transform:translateY(-1px);}
+    .account-modal-close-btn{width:100%; background:#EEF5EF; color:#243229; box-shadow:0 5px 0 #D6E5D9;}
+    .pet-result-page{background:linear-gradient(180deg,#FCFDFC 0%,#FAFCFA 100%); border:1px solid #E6ECE7; border-radius:30px;}
+    .pet-result-profile-shell{background:#fff; border:1px solid #DDE7DF; border-radius:24px; padding:18px 20px; box-shadow:0 8px 24px rgba(54,76,45,.08);}
+    .pet-result-page .bg-card{background:#fff; border-color:#DEE8E0; box-shadow:0 6px 18px rgba(54,76,45,.055);}
+    .pet-result-page .bg-surface-card{background:#F1F6F2; border:1px solid #DFE8E1;}
+    .pet-result-page .result-block>.bg-surface-card{background:linear-gradient(135deg,#EEF6EF 0%,#FCFDFC 100%); border:1px solid #D8E7DB; box-shadow:0 8px 20px rgba(79,157,60,.08);}
     @media (max-width:680px){.pet-result-page{border-radius:22px; padding:14px 12px 48px !important}.pet-result-profile-shell{padding:14px; border-radius:20px}.profile-header-avatar{width:84px; height:84px}.account-modal-close{right:12px; top:12px;}}
     .badge-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px 4px;}
     .badge-tile{text-align:center;}
@@ -2412,7 +2412,7 @@ const GlobalStyle = () => (
       border-top:1px solid var(--border); display:flex; padding-bottom:env(safe-area-inset-bottom,0);
       box-shadow:0 -4px 14px rgba(0,0,0,.04);}
     .app-bottom-nav-item{flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
-      background:none; border:none; cursor:pointer; font-family:inherit; padding:9px 2px 8px; color:#9a9d95; font-size:10.5px; font-weight:700;}
+      background:none; border:none; cursor:pointer; font-family:inherit; padding:9px 2px 8px; color:#98A19B; font-size:10.5px; font-weight:700;}
     .app-bottom-nav-item.active{color:var(--primary);}
     .home-pet-list{display:flex; flex-direction:column; gap:10px; width:100%; max-width:760px; margin:0 auto;}
     .home-pet-card{display:flex; align-items:center; gap:14px; background:#fff; border:1px solid var(--border);
@@ -2425,12 +2425,12 @@ const GlobalStyle = () => (
     .home-pet-avatar img{width:100%; height:100%; object-fit:cover;}
     .home-pet-name{font-weight:800; font-size:16px;}
     .home-service-grid{display:grid; grid-template-columns:1fr; gap:16px;}
-    .home-service-grid .home-service-card:nth-child(1){background:linear-gradient(135deg,#EAF6E4,#F6FBF2)!important;}
-    .home-service-grid .home-service-card:nth-child(2){background:linear-gradient(135deg,#FFF0E6,#FFF8F2)!important;}
-    .home-service-grid .home-service-card:nth-child(3){background:linear-gradient(135deg,#FCE8F1,#FFF4F8)!important;}
-    .home-service-grid .home-service-card:nth-child(4){background:linear-gradient(135deg,#F2ECFF,#FAF7FF)!important;}
-    .home-service-grid .home-service-card:nth-child(5){background:linear-gradient(135deg,#E9F3FF,#F5FAFF)!important;}
-    .home-service-grid .home-service-card:nth-child(6){background:linear-gradient(135deg,#FFF4D8,#FFF9EA)!important;}
+    .home-service-grid .home-service-card:nth-child(1){background:linear-gradient(135deg,#EDF5EE,#F8FBF8)!important;}
+    .home-service-grid .home-service-card:nth-child(2){background:linear-gradient(135deg,#F3F7F3,#FCFDFC)!important;}
+    .home-service-grid .home-service-card:nth-child(3){background:linear-gradient(135deg,#EAF3EB,#F7FAF7)!important;}
+    .home-service-grid .home-service-card:nth-child(4){background:linear-gradient(135deg,#EDF5EE,#F8FBF8)!important;}
+    .home-service-grid .home-service-card:nth-child(5){background:linear-gradient(135deg,#F3F7F3,#FCFDFC)!important;}
+    .home-service-grid .home-service-card:nth-child(6){background:linear-gradient(135deg,#EAF3EB,#F7FAF7)!important;}
     .home-service-card{border:1px solid rgba(255,255,255,.8); border-radius:24px; padding:22px 24px; text-align:left; cursor:pointer;
       font-family:inherit; display:grid; grid-template-columns:64px 1fr; grid-template-rows:auto auto; column-gap:18px; row-gap:5px; align-items:center;
       min-height:128px; transition:transform .18s,box-shadow .18s; box-shadow:0 8px 22px rgba(30,45,26,.055); position:relative; overflow:hidden;}
@@ -2438,8 +2438,8 @@ const GlobalStyle = () => (
     .home-service-card:hover{transform:translateY(-3px); box-shadow:0 12px 28px rgba(30,45,26,.09);}
     .home-service-illust{width:64px; height:64px; border-radius:20px; background:rgba(255,255,255,.72);
       display:flex; align-items:center; justify-content:center; grid-row:1/3; box-shadow:inset 0 0 0 1px rgba(255,255,255,.7);}
-    .home-service-title{font-weight:800; font-size:19px; color:var(--pg-dark,#1C1C1C); align-self:end;}
-    .home-service-desc{font-size:14px; color:#64685f; line-height:1.65; align-self:start;}
+    .home-service-title{font-weight:800; font-size:19px; color:var(--pg-dark,#223027); align-self:end;}
+    .home-service-desc{font-size:14px; color:#68736B; line-height:1.65; align-self:start;}
     @media(max-width:560px){.home-service-card{grid-template-columns:56px 1fr; min-height:116px; padding:18px 17px; border-radius:21px; column-gap:14px}.home-service-illust{width:56px;height:56px;border-radius:17px}.home-service-title{font-size:18px}.home-service-desc{font-size:13px}.home-service-card::after{right:12px;top:10px;font-size:20px}}
     .cm-card{background:#fff; border-radius:18px; border:1px solid #e2ddd2; overflow:hidden; cursor:pointer;
       transition:transform .12s, box-shadow .12s; box-shadow:0 5px 16px rgba(52,45,35,.055);}
@@ -2517,19 +2517,19 @@ const GlobalStyle = () => (
     .slideshow-prev{left:8px;} .slideshow-next{right:8px;}
     .slideshow-caption{display:flex; justify-content:space-between; color:#fff; font-size:13px; margin-top:12px;}
     .slideshow-caption .bg-sub{color:rgba(255,255,255,.6);}
-    .landing-root{--pg-dark:#1C1C1C; --pg-green:#4F9D3C; --pg-green-light:#F2F8F0;
-      background:linear-gradient(180deg,#F7FBF5 0%, #F2F8F0 60%, #F7FBF5 100%); min-height:100vh;}
+    .landing-root{--pg-dark:#223027; --pg-green:#4F8A5B; --pg-green-light:#F2F7F2;
+      background:linear-gradient(180deg,#F7FAF6 0%, #F2F7F2 60%, #F7FAF6 100%); min-height:100vh;}
     .landing-wrap{max-width:960px; margin:0 auto; padding:0 24px;}
     .landing-logo-badge{width:156px; height:156px; border-radius:50%; background:#fff; display:flex;
       align-items:center; justify-content:center; margin:0 auto 18px; box-shadow:0 10px 30px rgba(0,0,0,.1);}
     .landing-wordmark{text-align:center; font-size:clamp(38px,7vw,56px); font-weight:800; letter-spacing:-0.02em;}
     .landing-wordmark .pet{color:var(--pg-dark);} .landing-wordmark .grow{color:var(--pg-green);}
-    .landing-tagline{text-align:center; color:#8a8f86; font-size:15px; margin-top:8px;}
+    .landing-tagline{text-align:center; color:#89928C; font-size:15px; margin-top:8px;}
     .landing-headline{text-align:center; font-size:clamp(32px,5.5vw,48px); font-weight:800; line-height:1.35; margin-top:44px; color:var(--pg-dark); word-break:keep-all;}
     .landing-headline .hl{color:var(--pg-green);}
     .landing-headline .mobile-br{display:none;}
     @media (max-width:560px){ .landing-headline .mobile-br{display:block; content:"";} }
-    .landing-subtitle{text-align:center; color:#787774; font-size:19px; margin-top:18px; line-height:1.75;
+    .landing-subtitle{text-align:center; color:#737E76; font-size:19px; margin-top:18px; line-height:1.75;
       max-width:600px; margin-left:auto; margin-right:auto; word-break:keep-all;}
     .landing-cta{display:block; margin:32px auto 0; background:var(--pg-green); color:#fff; border:none;
       border-radius:14px; padding:18px 42px; font-size:18px; font-weight:700; font-family:inherit; cursor:pointer;
@@ -2543,7 +2543,7 @@ const GlobalStyle = () => (
     .landing-about{display:flex; flex-direction:column; align-items:center; text-align:center; gap:18px; max-width:680px; margin:0 auto;}
     .landing-about-icon{width:104px; height:104px; border-radius:28px; background:var(--pg-green-light);
       display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 10px 24px rgba(0,0,0,.05);}
-    .landing-about-text{font-size:19px; line-height:1.9; color:#585d57;}
+    .landing-about-text{font-size:19px; line-height:1.9; color:#5F6B63;}
     .landing-showcase{display:flex; flex-direction:column; gap:36px; margin-top:8px;}
     .landing-showcase-row{display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:40px;}
     .landing-showcase-media{order:1; display:flex; justify-content:center; min-width:0; outline:none; border:none;}
@@ -2551,7 +2551,7 @@ const GlobalStyle = () => (
     .landing-showcase-row.reverse .landing-showcase-media{order:2;}
     .landing-showcase-row.reverse .landing-showcase-text{order:1;}
     .landing-showcase-title{font-size:30px; font-weight:800; color:var(--pg-dark); margin-bottom:14px;}
-    .landing-showcase-desc{font-size:18px; color:#787774; line-height:1.85; max-width:440px;}
+    .landing-showcase-desc{font-size:18px; color:#737E76; line-height:1.85; max-width:440px;}
     .mock-card{background:#fff; border-radius:22px; padding:30px; box-shadow:0 20px 48px rgba(28,28,28,.1);
       width:100%; max-width:400px; border:1px solid var(--border);}
     .mock-card-label{font-size:13px; color:var(--sub); font-weight:700; text-transform:uppercase; letter-spacing:.03em;}
@@ -2577,7 +2577,7 @@ const GlobalStyle = () => (
     .landing-feature-icon{width:58px; height:58px; border-radius:16px; background:var(--pg-green-light);
       display:flex; align-items:center; justify-content:center; margin:0 auto 14px;}
     .landing-feature-title{font-weight:700; font-size:16px; color:var(--pg-dark); margin-bottom:8px;}
-    .landing-feature-desc{font-size:13px; color:#8a8f86; line-height:1.6;}
+    .landing-feature-desc{font-size:13px; color:#89928C; line-height:1.6;}
     .landing-highlight-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:20px;}
     @media (max-width:680px){ .landing-highlight-grid{grid-template-columns:1fr;} }
     .landing-highlight-card{background:#fff; border-radius:22px; padding:36px 30px; text-align:center;
@@ -2586,14 +2586,14 @@ const GlobalStyle = () => (
       display:flex; align-items:center; justify-content:center; margin:0 auto 18px;}
     .landing-highlight-eyebrow{font-size:12px; font-weight:800; color:var(--pg-green); letter-spacing:.02em; margin-bottom:6px;}
     .landing-highlight-title{font-size:19px; font-weight:800; color:var(--pg-dark); margin-bottom:10px;}
-    .landing-highlight-desc{font-size:14px; color:#787774; line-height:1.7; margin-bottom:20px; flex:1;}
+    .landing-highlight-desc{font-size:14px; color:#737E76; line-height:1.7; margin-bottom:20px; flex:1;}
     .landing-highlight-cta{margin-top:auto; border:2px solid var(--pg-green); color:var(--pg-green); background:none;
       border-radius:999px; padding:11px 26px; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit; transition:.15s;}
     .landing-highlight-cta:hover{background:var(--pg-green); color:#fff;}
     .landing-community-wrap{display:flex; flex-direction:column; align-items:center; gap:28px; margin-top:22px;}
     .landing-community-text{text-align:center; max-width:720px; margin:0 auto;}
     .landing-community-cta{margin:22px auto 0;}
-    .landing-community-desc{font-size:15px; color:#787774; line-height:1.8; margin:10px auto 0; max-width:680px;}
+    .landing-community-desc{font-size:15px; color:#737E76; line-height:1.8; margin:10px auto 0; max-width:680px;}
     .cm-mock-feed{width:100%; max-width:860px; margin:0 auto; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px;}
     @media (max-width:680px){ .cm-mock-feed{grid-template-columns:1fr; max-width:420px; gap:14px;} }
     .cm-mock-card{background:#fff; border-radius:18px; padding:16px; box-shadow:0 8px 22px rgba(0,0,0,.06);
@@ -2602,12 +2602,12 @@ const GlobalStyle = () => (
     .cm-mock-avatar{width:34px; height:34px; border-radius:50%; background:var(--pg-green-light);
       display:flex; align-items:center; justify-content:center; flex-shrink:0;}
     .cm-mock-name{font-size:13px; font-weight:800; color:var(--pg-dark);}
-    .cm-mock-breed{font-weight:600; color:#9a9d95;}
+    .cm-mock-breed{font-weight:600; color:#98A19B;}
     .cm-mock-time{font-size:11px; color:#adb0a8; margin-top:1px;}
     .cm-mock-photo{width:100%; aspect-ratio:16/9; border-radius:12px; background:var(--pg-green-light);
       display:flex; align-items:center; justify-content:center; margin-bottom:10px;}
-    .cm-mock-text{font-size:13px; color:#585d57; margin-bottom:8px; line-height:1.5;}
-    .cm-mock-meta{font-size:12px; color:#9a9d95; font-weight:700;}
+    .cm-mock-text{font-size:13px; color:#5F6B63; margin-bottom:8px; line-height:1.5;}
+    .cm-mock-meta{font-size:12px; color:#98A19B; font-weight:700;}
     .landing-final-cta{background:var(--pg-dark); border-radius:32px; padding:56px 32px; text-align:center; position:relative; overflow:hidden;}
     .landing-final-cta-title{color:#fff; font-size:clamp(22px,4vw,30px); font-weight:800; line-height:1.5; margin-bottom:14px;}
     .landing-final-cta-desc{color:rgba(255,255,255,.68); font-size:14px; line-height:1.8; margin-bottom:28px;}
@@ -2622,8 +2622,8 @@ const GlobalStyle = () => (
       display:flex; align-items:center; justify-content:center;}
     .landing-mini-teaser-label{font-size:13px; font-weight:700; color:var(--pg-dark);}
     .landing-trust{display:flex; flex-wrap:wrap; justify-content:center; gap:12px 28px; margin-top:44px;
-      padding-top:28px; border-top:1px solid #e3e8de;}
-    .landing-trust-item{display:flex; align-items:center; gap:6px; font-size:13px; color:#787774; font-weight:600;}
+      padding-top:28px; border-top:1px solid #E2E9E3;}
+    .landing-trust-item{display:flex; align-items:center; gap:6px; font-size:13px; color:#737E76; font-weight:600;}
     .social-links{display:flex; justify-content:center; gap:14px;}
     .social-btn{width:46px; height:46px; border-radius:50%; background:#fff; display:flex; align-items:center;
       justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.08); transition:.15s;}
@@ -2643,18 +2643,18 @@ const GlobalStyle = () => (
     .icon-btn-sm{background:none; border:none; cursor:pointer; padding:4px; display:flex; align-items:center; justify-content:center; border-radius:8px;}
     .icon-btn-sm:hover{background:var(--surface);}
     .landing-pricing{display:grid; grid-template-columns:repeat(2,1fr); gap:20px; max-width:640px; margin:0 auto;}
-    .landing-pricing-card{background:#fff; border:1px solid #e3e8de; border-radius:18px; padding:28px 24px;}
+    .landing-pricing-card{background:#fff; border:1px solid #E2E9E3; border-radius:18px; padding:28px 24px;}
     .landing-pricing-highlight{background:var(--pg-dark); border-color:var(--pg-dark);}
     .landing-pricing-name{font-weight:800; font-size:16px; color:var(--pg-dark);}
     .landing-pricing-highlight .landing-pricing-name{color:#fff;}
     .landing-pricing-price{font-weight:800; font-size:24px; color:var(--pg-green); margin:8px 0 16px;}
-    .landing-pricing-highlight .landing-pricing-price{color:#9dc088;}
+    .landing-pricing-highlight .landing-pricing-price{color:#A9C8AE;}
     .landing-pricing-list{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px;
-      font-size:13px; color:#585d57;}
+      font-size:13px; color:#5F6B63;}
     .landing-pricing-highlight .landing-pricing-list{color:rgba(255,255,255,.85);}
     .landing-pricing-list li{padding-left:20px; position:relative;}
     .landing-pricing-list li::before{content:"✓"; position:absolute; left:0; color:var(--pg-green); font-weight:800;}
-    .landing-pricing-highlight .landing-pricing-list li::before{color:#9dc088;}
+    .landing-pricing-highlight .landing-pricing-list li::before{color:#A9C8AE;}
     .landing-section{padding:36px 0;}
     .landing-section-white{background:#fff;}
     .landing-hero-section{padding-top:44px; padding-bottom:20px;}
@@ -2678,7 +2678,7 @@ const GlobalStyle = () => (
     .landing-step-num{width:36px; height:36px; border-radius:50%; background:var(--pg-green); color:#fff;
       display:flex; align-items:center; justify-content:center; font-weight:800; margin:0 auto 20px;}
     .landing-step-title{font-weight:700; font-size:14px; color:var(--pg-dark); margin-bottom:6px;}
-    .landing-step-desc{font-size:12px; color:#8a8f86; line-height:1.6;}
+    .landing-step-desc{font-size:12px; color:#89928C; line-height:1.6;}
     .landing-footer{background:var(--pg-dark);}
     .landing-footer-text{text-align:center; color:rgba(255,255,255,.55); font-size:11px; margin-top:10px; line-height:1.7;}
     @media (max-width:680px){
@@ -2692,26 +2692,26 @@ const GlobalStyle = () => (
       .landing-showcase-row.reverse .landing-showcase-media, .landing-showcase-row.reverse .landing-showcase-text{order:unset;}
       .landing-showcase{gap:36px;}
       .mock-card{max-width:100%;} }
-    .landing-features .landing-feature-card:nth-child(1){background:#EAF6E4!important;}
-    .landing-features .landing-feature-card:nth-child(2){background:#FFF0E6!important;}
-    .landing-features .landing-feature-card:nth-child(3){background:#F2ECFF!important;}
-    .landing-features .landing-feature-card:nth-child(4){background:#E9F3FF!important;}
-    .landing-features .landing-feature-card:nth-child(5){background:#FFF4D8!important;}
-    .landing-features .landing-feature-card:nth-child(6){background:#FCE8F1!important;}
+    .landing-features .landing-feature-card:nth-child(1){background:#EDF5EE!important;}
+    .landing-features .landing-feature-card:nth-child(2){background:#F3F7F3!important;}
+    .landing-features .landing-feature-card:nth-child(3){background:#F1F5F1!important;}
+    .landing-features .landing-feature-card:nth-child(4){background:#EDF5EE!important;}
+    .landing-features .landing-feature-card:nth-child(5){background:#F2F6F1!important;}
+    .landing-features .landing-feature-card:nth-child(6){background:#EEF5EF!important;}
     .landing-features .landing-feature-card:nth-child(7){background:#EAF7F5!important;}
     .landing-features .landing-feature-card:nth-child(8){background:#FFF0EA!important;}
     .info-guide-list .bg-surface-card{border:1px solid rgba(255,255,255,.75); box-shadow:0 6px 18px rgba(28,28,28,.04);}
     .info-guide-list .bg-surface-card:nth-child(6n+1){background:#EEF7E9;}
-    .info-guide-list .bg-surface-card:nth-child(6n+2){background:#FFF0E6;}
-    .info-guide-list .bg-surface-card:nth-child(6n+3){background:#FCE8F1;}
-    .info-guide-list .bg-surface-card:nth-child(6n+4){background:#F2ECFF;}
-    .info-guide-list .bg-surface-card:nth-child(6n+5){background:#E9F3FF;}
-    .info-guide-list .bg-surface-card:nth-child(6n){background:#FFF4D8;}
+    .info-guide-list .bg-surface-card:nth-child(6n+2){background:#F3F7F3;}
+    .info-guide-list .bg-surface-card:nth-child(6n+3){background:#EEF5EF;}
+    .info-guide-list .bg-surface-card:nth-child(6n+4){background:#F1F5F1;}
+    .info-guide-list .bg-surface-card:nth-child(6n+5){background:#EDF5EE;}
+    .info-guide-list .bg-surface-card:nth-child(6n){background:#F2F6F1;}
     .cm-filter-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
     .cm-filter-wrap .tab-pill{flex:0 0 auto;}
     .cm-demo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:4px;}
     .cm-demo-card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:0 5px 16px rgba(0,0,0,.035);}
-    .cm-demo-badge{display:inline-flex;padding:3px 8px;border-radius:999px;background:#FFF4D8;color:#786326;font-size:10px;font-weight:800;margin-bottom:8px;}
+    .cm-demo-badge{display:inline-flex;padding:3px 8px;border-radius:999px;background:#F2F6F1;color:#786326;font-size:10px;font-weight:800;margin-bottom:8px;}
     @media(max-width:640px){.cm-demo-grid{grid-template-columns:1fr}.cm-filter-wrap{overflow-x:auto;flex-wrap:nowrap;padding-bottom:3px;-webkit-overflow-scrolling:touch}.cm-filter-wrap::-webkit-scrollbar{display:none}}
     @media(max-width:680px){.bboggl-root{font-family:'Gowun Dodum','Noto Sans KR','Malgun Gothic',Arial,sans-serif}.bboggl-root h1,.bboggl-root h2,.bboggl-root h3{font-family:'Jua','Gowun Dodum','Malgun Gothic',sans-serif}.landing-headline,.home-hero-copy h1{word-break:keep-all}.desktop-nav-link,.ham-nav-item,.app-bottom-nav-item{letter-spacing:-.02em}}
     @media(max-width:560px){
@@ -2762,14 +2762,92 @@ const GlobalStyle = () => (
 /* 2026-08-16 contextual page guide + member menu refresh */
 .menu-help-fab{position:fixed;right:22px;bottom:24px;z-index:1150;width:42px;height:42px;border-radius:50%;border:1px solid rgba(74,139,58,.16);background:#fff;color:var(--primary);font-weight:900;font-size:18px;box-shadow:0 10px 28px rgba(40,70,35,.16);cursor:pointer;transition:transform .2s ease,box-shadow .2s ease}.menu-help-fab:hover{transform:translateY(-2px) rotate(-4deg);box-shadow:0 14px 34px rgba(40,70,35,.2)}
 .menu-help-dim{position:fixed;inset:0;background:rgba(28,35,29,.08);backdrop-filter:blur(1px);z-index:1190;opacity:0;pointer-events:none;transition:opacity .28s ease}.menu-help-dim.open{opacity:1;pointer-events:auto}
-.menu-help-coach{position:fixed;right:20px;top:92px;width:min(360px,calc(100vw - 40px));z-index:1200;background:linear-gradient(145deg,#fffdf8,#f5fbf2);border:1px solid rgba(95,144,78,.14);border-radius:26px;padding:22px;box-shadow:0 24px 60px rgba(46,67,43,.2);transform:translateX(calc(100% + 45px));opacity:0;pointer-events:none;transition:transform .42s cubic-bezier(.2,.8,.2,1),opacity .3s ease}.menu-help-coach.open{transform:translateX(0);opacity:1;pointer-events:auto}.menu-help-top{display:flex;justify-content:space-between;align-items:center}.menu-help-emoji{display:grid;place-items:center;width:54px;height:54px;border-radius:18px;background:linear-gradient(135deg,#fff1dc,#f0e7ff);font-size:27px;animation:pgFloat 2.8s ease-in-out infinite}.menu-help-close{width:34px;height:34px;border:0;border-radius:50%;background:#f1f3ee;color:#71786d;font-size:23px;cursor:pointer}.menu-help-kicker{margin-top:16px;font-size:10px;letter-spacing:.16em;font-weight:900;color:#7ca76d}.menu-help-coach h3{font-size:22px;margin:5px 0 7px;font-family:'Jua','Gowun Dodum','Noto Sans KR',sans-serif}.menu-help-coach p{font-size:13px;line-height:1.75;color:var(--sub);margin:0}.menu-help-actions{display:flex;gap:8px;margin-top:18px}.menu-help-actions button{border:0;border-radius:13px;padding:11px 13px;font-size:12px;font-weight:800;cursor:pointer}.menu-help-secondary{flex:1;background:#f1f3ee;color:#60685d}.menu-help-primary{background:var(--primary);color:#fff;min-width:74px}
+.menu-help-coach{position:fixed;right:20px;top:92px;width:min(360px,calc(100vw - 40px));z-index:1200;background:linear-gradient(145deg,#FCFDFC,#f5fbf2);border:1px solid rgba(95,144,78,.14);border-radius:26px;padding:22px;box-shadow:0 24px 60px rgba(46,67,43,.2);transform:translateX(calc(100% + 45px));opacity:0;pointer-events:none;transition:transform .42s cubic-bezier(.2,.8,.2,1),opacity .3s ease}.menu-help-coach.open{transform:translateX(0);opacity:1;pointer-events:auto}.menu-help-top{display:flex;justify-content:space-between;align-items:center}.menu-help-emoji{display:grid;place-items:center;width:54px;height:54px;border-radius:18px;background:linear-gradient(135deg,#fff1dc,#f0e7ff);font-size:27px;animation:pgFloat 2.8s ease-in-out infinite}.menu-help-close{width:34px;height:34px;border:0;border-radius:50%;background:#F1F5F1;color:#71786d;font-size:23px;cursor:pointer}.menu-help-kicker{margin-top:16px;font-size:10px;letter-spacing:.16em;font-weight:900;color:#7ca76d}.menu-help-coach h3{font-size:22px;margin:5px 0 7px;font-family:'Jua','Gowun Dodum','Noto Sans KR',sans-serif}.menu-help-coach p{font-size:13px;line-height:1.75;color:var(--sub);margin:0}.menu-help-actions{display:flex;gap:8px;margin-top:18px}.menu-help-actions button{border:0;border-radius:13px;padding:11px 13px;font-size:12px;font-weight:800;cursor:pointer}.menu-help-secondary{flex:1;background:#F1F5F1;color:#60685d}.menu-help-primary{background:var(--primary);color:#fff;min-width:74px}
 .my-page-head{display:flex;justify-content:space-between;align-items:center;padding:22px 24px;margin-bottom:16px;border-radius:26px;background:linear-gradient(135deg,#f4fbef,#fff8ea);overflow:hidden;position:relative}.my-page-head:after{content:'';position:absolute;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.55);right:-35px;top:-46px}.my-page-head h1{font-size:24px;margin:3px 0 5px}.my-page-head p{font-size:13px;color:var(--sub);margin:0}.my-page-kicker{font-size:10px;letter-spacing:.14em;font-weight:900;color:#74a660}.my-page-head-icon{font-size:44px;position:relative;z-index:1;animation:pgFloat 3.1s ease-in-out infinite}.my-menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}.my-menu-card{border:0;border-radius:20px;padding:16px;text-align:left;display:flex;align-items:center;gap:11px;cursor:pointer;color:var(--text);animation:pgCardIn .48s both;transition:transform .2s ease,box-shadow .2s ease}.my-menu-card:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(60,70,55,.10)}.my-menu-mint{background:#edf8ef}.my-menu-pink{background:#fff0f3}.my-menu-blue{background:#edf5ff}.my-menu-purple{background:#f4efff}.my-menu-card-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.72);font-size:21px;flex:0 0 auto}.my-menu-card-copy{display:flex;flex-direction:column;min-width:0;flex:1}.my-menu-card-copy strong{font-size:14px}.my-menu-card-copy small{font-size:11px;color:var(--sub);line-height:1.45;margin-top:3px}.my-menu-card-arrow{font-size:23px;color:#8b9488}.my-member-summary,.my-activity-card{border:1px solid rgba(80,120,72,.08)}
 @keyframes pgCardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pgFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 @media(max-width:700px){.menu-help-fab{right:16px;bottom:92px;width:40px;height:40px}.menu-help-coach{top:auto;right:0;bottom:0;width:100%;max-width:none;border-radius:26px 26px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom));transform:translateY(calc(100% + 30px))}.menu-help-coach.open{transform:translateY(0)}.menu-help-actions{flex-direction:column-reverse}.menu-help-primary{width:100%}.my-menu-grid{grid-template-columns:1fr}.my-menu-card{padding:15px}.my-page-head{padding:19px 18px}.my-page-head h1{font-size:22px}}
 @media(prefers-reduced-motion:reduce){.menu-help-coach,.menu-help-fab,.my-menu-card,.menu-help-emoji,.my-page-head-icon{animation:none!important;transition:none!important}}
 
-  `}</style>
+
+
+    /* ============================================================
+       2026 UI polish — PetGrow visual refresh
+       기능/레이아웃 구조는 유지하고 색감·표면·버튼·카드 톤만 통일
+       ============================================================ */
+    .bboggl-root{
+      --primary:#4B9560; --primary-dark:#347347; --text:#20251F; --sub:#687066;
+      --bg:#F7F8F3; --surface:#EEF4EB; --border:#DDE7DF;
+      background:linear-gradient(180deg,#FAFBF8 0%,#F5F7F1 100%);
+    }
+    .bg-card{border:1px solid var(--border);border-radius:22px;box-shadow:0 8px 28px rgba(42,62,40,.055);}
+    .bg-surface-card{background:#F1F6EF;border:1px solid #E0E9DD;border-radius:20px;}
+    .bg-btn{border-radius:14px;box-shadow:0 3px 0 var(--primary-dark);transition:transform .16s ease,box-shadow .16s ease,filter .16s ease;}
+    .bg-btn:hover{transform:translateY(-1px);box-shadow:0 4px 0 var(--primary-dark);filter:brightness(1.015);}
+    .bg-btn:active{transform:translateY(1px);box-shadow:0 1px 0 var(--primary-dark);}
+    .bg-btn-ghost{background:#F2F5EF;color:#3A4238;box-shadow:none;border:1px solid #DDE7DF;}
+    .bg-btn-ghost:hover{box-shadow:0 4px 12px rgba(42,62,40,.06);}
+    .bg-input,.cm-search-input{border:1px solid #DDE7DF;border-radius:14px;box-shadow:0 1px 2px rgba(35,50,32,.025);transition:border-color .16s,box-shadow .16s;}
+    .bg-input:focus,.cm-search-input:focus{border-color:#79AA84;box-shadow:0 0 0 3px rgba(75,149,96,.11);}
+    .bg-chip{border:1px solid #DDE7DF;background:rgba(255,255,255,.92);font-weight:650;}
+    .bg-chip.active{background:#E7F2E5;color:#3D704A;border-color:#BFD7C0;font-weight:800;}
+    .desktop-nav-link{border-radius:999px;padding:8px 11px;}
+    .desktop-nav-link.active{color:#3D704A;background:#E8F2E5;}
+    .lang-toggle{box-shadow:0 3px 12px rgba(35,50,32,.045);}
+    .lang-toggle button.active{background:#E4F0E2;color:#3D704A;}
+    .icon-btn{border:1px solid #DDE7DF;background:rgba(255,255,255,.92);box-shadow:0 3px 10px rgba(35,50,32,.035);}
+    .app-bottom-nav{background:rgba(255,255,255,.94);border-top:1px solid #E5EAE1;box-shadow:0 -8px 24px rgba(35,50,32,.045);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+    .app-bottom-nav-item{color:#92998F;}
+    .app-bottom-nav-item.active{color:#347A4A;}
+    .ham-panel{background:#FBFCF9;box-shadow:8px 0 32px rgba(28,42,27,.12);}
+    .ham-nav-item.active{background:#E6F1E3;color:#3D704A;}
+    .home-pet-card{border:1px solid #DFE8E1;border-radius:20px;box-shadow:0 6px 20px rgba(35,50,32,.045);}
+    .home-service-grid .home-service-card:nth-child(1){background:linear-gradient(145deg,#EAF5E8,#F7FAF6)!important;}
+    .home-service-grid .home-service-card:nth-child(2){background:linear-gradient(145deg,#FFF2E8,#FFF9F4)!important;}
+    .home-service-grid .home-service-card:nth-child(3){background:linear-gradient(145deg,#FBEAF1,#FFF7FA)!important;}
+    .home-service-grid .home-service-card:nth-child(4){background:linear-gradient(145deg,#F0ECFA,#FAF8FD)!important;}
+    .home-service-grid .home-service-card:nth-child(5){background:linear-gradient(145deg,#EAF3F7,#F7FBFC)!important;}
+    .home-service-grid .home-service-card:nth-child(6){background:linear-gradient(145deg,#FFF4DC,#FFFAF0)!important;}
+    .home-service-card{border:1px solid rgba(70,95,66,.075);border-radius:22px;box-shadow:0 8px 24px rgba(35,50,32,.05);}
+    .home-service-card:hover{box-shadow:0 12px 30px rgba(35,50,32,.075);}
+    .home-service-card::after{opacity:.08;}
+    .home-service-illust{background:rgba(255,255,255,.78);box-shadow:inset 0 0 0 1px rgba(70,95,66,.055);}
+    .home-service-title{color:#252A23;}
+    .home-service-desc{color:#697066;}
+    .cm-card{border:1px solid #DFE8E1;border-radius:20px;box-shadow:0 7px 22px rgba(35,50,32,.05);}
+    .cm-card:hover{box-shadow:0 11px 28px rgba(35,50,32,.075);}
+    .cm-detail-body-card{border:1px solid #DFE8E1;border-radius:20px;box-shadow:0 7px 22px rgba(35,50,32,.045);}
+    .cm-detail-body-card h1{color:var(--text);}.cm-detail-content{color:#343A32;}
+    .cm-owner-action-btn{border:1px solid #DDE7DF;border-radius:14px;color:#465044;box-shadow:none;}
+    .cm-cat-chip{color:#347347;background:#EEF5EF;}
+    .notif-panel{border:1px solid #DDE7DF;border-radius:18px;box-shadow:0 16px 38px rgba(35,50,32,.12);}
+    .pet-result-page{background:linear-gradient(180deg,#FCFDF9 0%,#F6F9F3 100%);border:1px solid #E1E8DD;}
+    .pet-result-profile-shell,.pet-result-page .bg-card{border-color:#DFE8E1;box-shadow:0 8px 24px rgba(35,50,32,.05);}
+    .landing-root{--pg-green:#4B9560;--pg-green-light:#EFF6EC;background:linear-gradient(180deg,#FAFCFA 0%,#F1F7EE 58%,#F8FAF6 100%);}
+    .landing-hero-section{background:linear-gradient(120deg,#FAFCFA,#EAF3E7,#F8FBF6);}
+    .account-modal-close{border:1px solid #DDE7DF;background:#F2F6EF;color:#394238;box-shadow:0 3px 10px rgba(35,50,32,.055);}
+    .account-modal-close-btn{background:#EEF5EF;color:#30382F;box-shadow:none;border:1px solid #DDE7D9;}
+    @media(max-width:560px){
+      .bg-card{border-radius:20px;padding:18px;}
+      .bg-btn{border-radius:13px;}
+      .home-service-card{border-radius:20px;}
+    }
+  
+    /* PetGrow 2026 unified sage visual system */
+    .bboggl-root{--primary:#4F8A5B;--primary-dark:#3D704A;--text:#223027;--sub:#68736B;--bg:#F8FAF7;--surface:#F1F5F1;--border:#E2E9E3;}
+    .bg-btn{border-radius:14px;box-shadow:0 6px 16px rgba(61,112,74,.18);transition:.16s;}
+    .bg-btn:hover{transform:translateY(-1px);box-shadow:0 9px 20px rgba(61,112,74,.22);}
+    .bg-btn:active{transform:none;box-shadow:0 3px 10px rgba(61,112,74,.16);}
+    .bg-btn-ghost{background:#F1F5F1;box-shadow:none;border:1px solid #E2E9E3;}
+    .bg-btn-ghost:hover,.bg-btn-ghost:active{box-shadow:none;background:#EAF3EB;}
+    .bg-card,.cm-card,.home-pet-card{border-color:#E2E9E3;box-shadow:0 8px 24px rgba(34,48,39,.055);}
+    .bg-input,.bg-chip,.account-btn,.icon-btn{border-width:1px;}
+    .home-service-card{border:1px solid #E2E9E3;box-shadow:0 8px 22px rgba(34,48,39,.055);}
+    .home-service-card::after{color:#4F8A5B;}
+    .app-bottom-nav{border-color:#E2E9E3;box-shadow:0 -4px 18px rgba(34,48,39,.045);}
+    .landing-hero-section{background:linear-gradient(120deg,#F8FAF7,#EDF5EE,#F8FAF7);}
+    .pet-result-page{background:linear-gradient(180deg,#FCFDFC 0%,#F6FAF7 100%);border-color:#E2E9E3;}
+`}</style>
 );
 
 /* ============================================================
@@ -3145,17 +3223,17 @@ function GrowthChartCard({ table, ageMonths, currentWeightKg, statusDiffGrams })
       </div>
       <ResponsiveContainer width="100%" height={240}>
         <LineChart data={data} margin={{ top: 10, right: 16, left: -10, bottom: 0 }}>
-          <CartesianGrid stroke="#E3DECF" vertical={false} />
-          <XAxis dataKey="month" type="number" domain={[0, 24]} tick={{ fontSize: 12, fill: "#666666" }} tickFormatter={(m) => t.monthLabel(m)}
-            stroke="#E3DECF" />
-          <YAxis tick={{ fontSize: 12, fill: "#666666" }} stroke="#E3DECF" width={40} tickFormatter={(v) => `${v}kg`} />
+          <CartesianGrid stroke="#E2E9E3" vertical={false} />
+          <XAxis dataKey="month" type="number" domain={[0, 24]} tick={{ fontSize: 12, fill: "#68736B" }} tickFormatter={(m) => t.monthLabel(m)}
+            stroke="#E2E9E3" />
+          <YAxis tick={{ fontSize: 12, fill: "#68736B" }} stroke="#E2E9E3" width={40} tickFormatter={(v) => `${v}kg`} />
           <Tooltip formatter={(v, name) => name === "band" ? null : [`${v}kg`, t.tooltipWeight]} labelFormatter={(m) => t.monthLabelAge(m)}
-            contentStyle={{ borderRadius: 16, border: "2px solid #E3DECF", fontSize: 13 }} />
-          <Area dataKey="band" stroke="none" fill="#4F9D3C" fillOpacity={0.12} isAnimationActive={false} />
+            contentStyle={{ borderRadius: 16, border: "2px solid #E2E9E3", fontSize: 13 }} />
+          <Area dataKey="band" stroke="none" fill="#4F8A5B" fillOpacity={0.12} isAnimationActive={false} />
           {isOutsideBand && (
             <ReferenceLine x={currentPoint.month} stroke={dotColor} strokeWidth={2} strokeDasharray="0" ifOverflow="extendDomain" />
           )}
-          <Line type="monotone" dataKey="weight" stroke="#4F9D3C" strokeWidth={3} dot={{ r: 4, fill: "#4F9D3C" }} />
+          <Line type="monotone" dataKey="weight" stroke="#4F8A5B" strokeWidth={3} dot={{ r: 4, fill: "#4F8A5B" }} />
           <ReferenceDot x={currentPoint.month} y={currentPoint.weight} r={9} fill={dotColor} stroke="#fff" strokeWidth={3} />
         </LineChart>
       </ResponsiveContainer>
@@ -3922,7 +4000,7 @@ async function renderShareCard({ pet, estimate, range, breedDisplayName, lang, t
   const ctx = canvas.getContext("2d");
 
   // 배경
-  ctx.fillStyle = "#F1F3E9";
+  ctx.fillStyle = "#F1F5F1";
   ctx.fillRect(0, 0, W, H);
   ctx.fillStyle = "#FFFFFF";
   const pad = 50;
@@ -3940,10 +4018,10 @@ async function renderShareCard({ pet, estimate, range, breedDisplayName, lang, t
     ctx.drawImage(logo, pad + 50, pad + 50, 80, 80);
     ctx.restore();
   } catch {}
-  ctx.fillStyle = "#1C1C1C";
+  ctx.fillStyle = "#223027";
   ctx.font = "bold 38px sans-serif";
   ctx.fillText("Pet", pad + 148, pad + 100);
-  ctx.fillStyle = "#4F9D3C";
+  ctx.fillStyle = "#4F8A5B";
   ctx.fillText("Grow", pad + 148 + ctx.measureText("Pet").width, pad + 100);
 
   // 반려동물 사진 (원형)
@@ -3962,12 +4040,12 @@ async function renderShareCard({ pet, estimate, range, breedDisplayName, lang, t
       ctx.restore();
     } catch {}
   } else {
-    ctx.fillStyle = "#F1F3E9";
+    ctx.fillStyle = "#F1F5F1";
     ctx.beginPath();
     ctx.arc(photoCenterX, photoY + photoR, photoR, 0, Math.PI * 2);
     ctx.fill();
   }
-  ctx.strokeStyle = "#E3DECF";
+  ctx.strokeStyle = "#E2E9E3";
   ctx.lineWidth = 6;
   ctx.beginPath();
   ctx.arc(photoCenterX, photoY + photoR, photoR, 0, Math.PI * 2);
@@ -3975,25 +4053,25 @@ async function renderShareCard({ pet, estimate, range, breedDisplayName, lang, t
 
   // 이름
   ctx.textAlign = "center";
-  ctx.fillStyle = "#1C1C1C";
+  ctx.fillStyle = "#223027";
   ctx.font = "bold 58px sans-serif";
   ctx.fillText(pet.profile.name, photoCenterX, photoY + photoR * 2 + 78);
 
   // 품종
   ctx.font = "bold 28px sans-serif";
-  ctx.fillStyle = "#666666";
+  ctx.fillStyle = "#68736B";
   ctx.fillText(breedDisplayName, photoCenterX, photoY + photoR * 2 + 122);
 
   // 예상 체중
   ctx.font = "bold 22px sans-serif";
-  ctx.fillStyle = "#666666";
+  ctx.fillStyle = "#68736B";
   ctx.fillText(t.heroLabel(t.adultWord[pet.profile.species]), photoCenterX, photoY + photoR * 2 + 192);
   ctx.font = "bold 78px sans-serif";
-  ctx.fillStyle = "#4F9D3C";
+  ctx.fillStyle = "#4F8A5B";
   ctx.fillText(`${range.low.toFixed(1)} ~ ${range.high.toFixed(1)}kg`, photoCenterX, photoY + photoR * 2 + 278);
 
   ctx.font = "bold 21px sans-serif";
-  ctx.fillStyle = "#666666";
+  ctx.fillStyle = "#68736B";
   ctx.fillText(t.petgrowTagline, photoCenterX, H - pad - 46);
 
   ctx.textAlign = "left";
@@ -4840,8 +4918,8 @@ function TipCard({ tip, lang, bookmarked, onToggleBookmark }) {
   const t = useT();
   const [open, setOpen] = useState(false);
   const categoryLabel = t.tipCategoryLabels[tip.category];
-  const categoryColors = { dog: "#EEF8E9", cat: "#FFF1F5", health: "#EAF4FF", life: "#FFF7DE", food: "#FFF0E5", training: "#F2EDFF", safety: "#E9F8F5", grooming: "#FCEEF9" };
-  const categoryText = { dog: "#4F9D3C", cat: "#D66B8D", health: "#4C86B8", life: "#A37B18", food: "#C8733C", training: "#7965B3", safety: "#388C7D", grooming: "#B45D9A" };
+  const categoryColors = { dog: "#EEF8E9", cat: "#FFF1F5", health: "#EAF4FF", life: "#F5F8F4", food: "#FFF0E5", training: "#F1F5F1", safety: "#E9F8F5", grooming: "#FCEEF9" };
+  const categoryText = { dog: "#4F8A5B", cat: "#D66B8D", health: "#4C86B8", life: "#A37B18", food: "#C8733C", training: "#7965B3", safety: "#388C7D", grooming: "#B45D9A" };
   return (
     <div className="bg-surface-card" style={{ padding: "16px 18px", background: categoryColors[tip.category] || "var(--surface)" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
@@ -5343,18 +5421,18 @@ async function renderSajuShareCard({ result, name, lang, t, petPhoto }) {
     ctx.drawImage(logo, pad + 46, pad + 46, 68, 68);
     ctx.restore();
   } catch {}
-  ctx.fillStyle = "#1C1C1C";
+  ctx.fillStyle = "#223027";
   ctx.font = "bold 30px sans-serif";
   ctx.fillText("Pet", pad + 128, pad + 90);
-  ctx.fillStyle = "#4F9D3C";
+  ctx.fillStyle = "#4F8A5B";
   ctx.fillText("Grow", pad + 128 + ctx.measureText("Pet").width, pad + 90);
 
   ctx.textAlign = "center";
-  ctx.fillStyle = "#666666";
+  ctx.fillStyle = "#68736B";
   ctx.font = "24px sans-serif";
   ctx.fillText(t.sajuShareHeading(name), W / 2, pad + 180);
 
-  ctx.fillStyle = "#1C1C1C";
+  ctx.fillStyle = "#223027";
   ctx.font = "bold 40px sans-serif";
   wrapText(ctx, result.summary, W / 2, pad + 250, W - pad * 2 - 60, 52);
 
@@ -5368,7 +5446,7 @@ async function renderSajuShareCard({ result, name, lang, t, petPhoto }) {
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
       ctx.closePath();
-      ctx.strokeStyle = "#4F9D3C"; ctx.lineWidth = 5; ctx.stroke();
+      ctx.strokeStyle = "#4F8A5B"; ctx.lineWidth = 5; ctx.stroke();
       ctx.clip();
       // object-fit: cover 방식으로 정사각형 크롭
       const s = Math.min(img.width, img.height);
@@ -5382,10 +5460,10 @@ async function renderSajuShareCard({ result, name, lang, t, petPhoto }) {
   ctx.font = "bold 26px sans-serif";
   result.categories.slice(0, 3).forEach((c) => {
     ctx.textAlign = "left";
-    ctx.fillStyle = "#4F9D3C";
+    ctx.fillStyle = "#4F8A5B";
     ctx.font = "bold 26px sans-serif";
     ctx.fillText(c.icon, pad + 40, y);
-    ctx.fillStyle = "#1C1C1C";
+    ctx.fillStyle = "#223027";
     ctx.font = "22px sans-serif";
     wrapText(ctx, c.text, pad + 90, y, W - pad * 2 - 130, 30, 2);
     y += 140;
@@ -5393,11 +5471,11 @@ async function renderSajuShareCard({ result, name, lang, t, petPhoto }) {
 
   ctx.textAlign = "center";
   ctx.font = "bold 24px sans-serif";
-  ctx.fillStyle = "#4F9D3C";
+  ctx.fillStyle = "#4F8A5B";
   ctx.fillText(result.tags.join("   "), W / 2, Math.min(y + 20, H - pad - 90));
 
   ctx.font = "18px sans-serif";
-  ctx.fillStyle = "#999999";
+  ctx.fillStyle = "#98A19B";
   ctx.fillText("PetGrow  |  petgrow.co.kr", W / 2, H - pad - 36);
 
   ctx.textAlign = "left";
@@ -5561,7 +5639,7 @@ function SajuPage({ pet, onGoRegister }) {
   const dailySeed = `${petName}|${pet.profile.birthDate || ""}|${pet.profile.species || ""}|${todayKey}`;
   const idx = hashString(dailySeed) % dailyMessages.length;
 
-  if (mode === "daily") return <div style={{ maxWidth: 520, margin: "0 auto" }}><div className="bg-card" style={{ textAlign: "center", background: "#FFF7DE" }}>
+  if (mode === "daily") return <div style={{ maxWidth: 520, margin: "0 auto" }}><div className="bg-card" style={{ textAlign: "center", background: "#F5F8F4" }}>
     <div style={{ fontSize: 38, marginBottom: 8 }}>🌤️</div><h2 style={{ fontSize: 21, marginBottom: 10 }}>{lang === "en" ? `${petName}'s fortune today` : `${petName}의 오늘의 펫운세`}</h2>
     <p style={{ fontSize: 15, lineHeight: 1.8 }}>{dailyMessages[idx]}</p><button className="bg-btn bg-btn-ghost" style={{ width: "100%", marginTop: 22 }} onClick={() => setMode("menu")}>{lang === "en" ? "Back" : "다른 Pet사주 보기"}</button>
   </div><div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 16 }}>{t.sajuDisclaimer}</div></div>;
@@ -5590,7 +5668,7 @@ function SajuPage({ pet, onGoRegister }) {
       setCompatResult({ score, message });
     };
     return <div style={{ maxWidth: 520, margin: "0 auto" }}>
-      <div className="bg-card" style={{ background: "#FFF0F4" }}>
+      <div className="bg-card" style={{ background: "#F1F6F2" }}>
         <div style={{ textAlign: "center" }}><div style={{ fontSize: 38, marginBottom: 8 }}>🫶</div><h2 style={{ fontSize: 21, marginBottom: 8 }}>{lang === "en" ? "Guardian compatibility" : "보호자 궁합"}</h2>
         <p className="bg-sub" style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 18 }}>{lang === "en" ? "Enter guardian information to see the compatibility result." : "보호자 정보를 입력하면 우리 아이와의 궁합을 확인할 수 있어요."}</p></div>
         <label className="bg-label">{lang === "en" ? "Guardian name" : "보호자 이름"}</label>
@@ -5609,9 +5687,9 @@ function SajuPage({ pet, onGoRegister }) {
 
   const startBasic = () => setInput({ name: pet.profile.name, species: pet.profile.species, birthDate: pet.profile.birthDate, gender: pet.profile.gender, birthTime: "", breed: pet.profile.breedName, profileImage: pet.profile.profileImage || null });
   const modes = [
-    { id: "basic", icon: "🔮", title: lang === "en" ? "Basic Pet Saju" : "기본 Pet사주", desc: lang === "en" ? "Personality, bonds, play style and luck" : "타고난 성격·인연·놀이 스타일·복을 재미로 봐요.", bg: "#F2EDFF", click: startBasic },
-    { id: "daily", icon: "🌤️", title: lang === "en" ? "Today's Pet Fortune" : "오늘의 펫운세", desc: lang === "en" ? "A light daily fortune for your pet" : "오늘 우리 아이에게 어울리는 행운 메시지를 확인해요.", bg: "#FFF7DE", click: () => setMode("daily") },
-    { id: "compat", icon: "🫶", title: lang === "en" ? "Guardian Compatibility" : "보호자 궁합", desc: lang === "en" ? "See the fun chemistry between you two" : "우리 아이와 보호자님의 케미와 유대감을 재미로 확인해요.", bg: "#FFF0F4", click: () => setMode("compat") },
+    { id: "basic", icon: "🔮", title: lang === "en" ? "Basic Pet Saju" : "기본 Pet사주", desc: lang === "en" ? "Personality, bonds, play style and luck" : "타고난 성격·인연·놀이 스타일·복을 재미로 봐요.", bg: "#F1F5F1", click: startBasic },
+    { id: "daily", icon: "🌤️", title: lang === "en" ? "Today's Pet Fortune" : "오늘의 펫운세", desc: lang === "en" ? "A light daily fortune for your pet" : "오늘 우리 아이에게 어울리는 행운 메시지를 확인해요.", bg: "#F5F8F4", click: () => setMode("daily") },
+    { id: "compat", icon: "🫶", title: lang === "en" ? "Guardian Compatibility" : "보호자 궁합", desc: lang === "en" ? "See the fun chemistry between you two" : "우리 아이와 보호자님의 케미와 유대감을 재미로 확인해요.", bg: "#F1F6F2", click: () => setMode("compat") },
   ];
   return <div style={{ maxWidth: 620, margin: "0 auto" }}><div style={{ textAlign: "center", marginBottom: 18 }}><FeaturePetHeader pet={pet} /><h2 style={{ fontSize: 21, marginTop: 10 }}>{lang === "en" ? `Choose ${petName}'s Pet Saju` : `${petName}와 어떤 Pet사주를 볼까요?`}</h2><p className="bg-sub" style={{ fontSize: 13, marginTop: 6 }}>{lang === "en" ? "Choose one of three fun contents." : "원하는 콘텐츠를 골라 재미로 즐겨보세요."}</p></div>
     <div style={{ display: "grid", gap: 12 }}>{modes.map(m => <button key={m.id} type="button" onClick={m.click} className="bg-surface-card" style={{ border: 0, cursor: "pointer", background: m.bg, padding: "20px", textAlign: "left", display: "flex", alignItems: "center", gap: 16 }}><span style={{ fontSize: 34 }}>{m.icon}</span><span><strong style={{ display: "block", fontSize: 17, marginBottom: 5 }}>{m.title}</strong><span className="bg-sub" style={{ fontSize: 13, lineHeight: 1.55 }}>{m.desc}</span></span><span style={{ marginLeft: "auto", fontSize: 22, color: "var(--primary)" }}>›</span></button>)}</div>
@@ -6061,24 +6139,24 @@ async function renderPetBtiShareCard({ result, name, lang, t, petPhoto }) {
     ctx.drawImage(logo, pad + 46, pad + 46, 68, 68);
     ctx.restore();
   } catch {}
-  ctx.fillStyle = "#1C1C1C";
+  ctx.fillStyle = "#223027";
   ctx.font = "bold 30px sans-serif";
   ctx.fillText("Pet", pad + 128, pad + 90);
-  ctx.fillStyle = "#4F9D3C";
+  ctx.fillStyle = "#4F8A5B";
   ctx.fillText("Grow", pad + 128 + ctx.measureText("Pet").width, pad + 90);
-  ctx.fillStyle = "#999999";
+  ctx.fillStyle = "#98A19B";
   ctx.font = "22px sans-serif";
   ctx.fillText("· PetBTI", pad + 128 + ctx.measureText("Grow").width + 138, pad + 90);
 
   ctx.textAlign = "center";
-  ctx.fillStyle = "#666666";
+  ctx.fillStyle = "#68736B";
   ctx.font = "24px sans-serif";
   ctx.fillText(t.petBtiShareHeading(name), W / 2, pad + 175);
 
-  ctx.fillStyle = "#4F9D3C";
+  ctx.fillStyle = "#4F8A5B";
   ctx.font = "bold 58px sans-serif";
   ctx.fillText(`${result.type} ${result.nickname.emoji}`, W / 2, pad + 255);
-  ctx.fillStyle = "#1C1C1C";
+  ctx.fillStyle = "#223027";
   ctx.font = "bold 36px sans-serif";
   ctx.fillText((lang === "en" ? result.nickname.en : result.nickname.ko), W / 2, pad + 310);
 
@@ -6091,7 +6169,7 @@ async function renderPetBtiShareCard({ result, name, lang, t, petPhoto }) {
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
       ctx.closePath();
-      ctx.strokeStyle = "#4F9D3C"; ctx.lineWidth = 5; ctx.stroke();
+      ctx.strokeStyle = "#4F8A5B"; ctx.lineWidth = 5; ctx.stroke();
       ctx.clip();
       const s = Math.min(img.width, img.height);
       ctx.drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, cx - r, cy - r, r * 2, r * 2);
@@ -6101,19 +6179,19 @@ async function renderPetBtiShareCard({ result, name, lang, t, petPhoto }) {
   }
 
   ctx.font = "26px sans-serif";
-  ctx.fillStyle = "#666666";
+  ctx.fillStyle = "#68736B";
   wrapText(ctx, result.summary, W / 2, photoBottom + 50, W - pad * 2 - 80, 36);
 
   let y = photoBottom + 190;
   ctx.font = "bold 30px sans-serif";
-  ctx.fillStyle = "#4F9D3C";
+  ctx.fillStyle = "#4F8A5B";
   result.tags.forEach((tag) => {
     ctx.fillText(tag, W / 2, y);
     y += 56;
   });
 
   ctx.font = "18px sans-serif";
-  ctx.fillStyle = "#999999";
+  ctx.fillStyle = "#98A19B";
   ctx.fillText("PetGrow  |  petgrow.co.kr", W / 2, H - pad - 36);
 
   ctx.textAlign = "left";
@@ -6518,10 +6596,10 @@ function ResultPage({ pet, breedGroups, onAddRecord, onDeleteRecord, onAddPhoto,
    소개페이지 기능 카드용 일러스트 — 외부 이미지 없이 프로젝트 안에서 안정적으로 쓰는 SVG 벡터 일러스트예요.
    전부 화이트/크림/연한 그린/PetGrow 메인 그린 톤으로 통일했고, 글자는 넣지 않았어요.
    ============================================================ */
-const ILLUST_GREEN = "#4F9D3C";
+const ILLUST_GREEN = "#4F8A5B";
 const ILLUST_GREEN_LIGHT = "#DCEED4";
 const ILLUST_CREAM = "#FBF8F1";
-const ILLUST_DARK = "#2E3328";
+const ILLUST_DARK = "#243229";
 
 function IllustMyPets(p) {
   return (
@@ -6714,8 +6792,8 @@ function MiniPredictionCard() {
       <div className="mock-card-value">5.2<span style={{ fontSize: 16 }}>kg</span></div>
       <div className="mock-card-sub">예측 성체 체중 (±0.4kg)</div>
       <svg className="mock-sparkline" viewBox="0 0 260 70" width="100%" height="70">
-        <polyline points="0,58 40,50 80,40 120,34 160,24 200,16 240,10" fill="none" stroke="#4F9D3C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-        <circle cx="240" cy="10" r="5" fill="#4F9D3C" />
+        <polyline points="0,58 40,50 80,40 120,34 160,24 200,16 240,10" fill="none" stroke="#4F8A5B" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="240" cy="10" r="5" fill="#4F8A5B" />
       </svg>
     </div>
   );
@@ -6725,9 +6803,9 @@ function MiniAlbumCard() {
     <div className="mock-card">
       <div className="mock-card-label">성장앨범</div>
       <div className="mock-photos">
-        <div className="mock-photo"><PawIcon style={{ width: 22, height: 22, color: "#4F9D3C" }} /></div>
-        <div className="mock-photo mock-photo-alt"><CatIcon style={{ width: 22, height: 22, color: "#1C1C1C" }} /></div>
-        <div className="mock-photo"><CameraIcon style={{ width: 20, height: 20, color: "#4F9D3C" }} /></div>
+        <div className="mock-photo"><PawIcon style={{ width: 22, height: 22, color: "#4F8A5B" }} /></div>
+        <div className="mock-photo mock-photo-alt"><CatIcon style={{ width: 22, height: 22, color: "#223027" }} /></div>
+        <div className="mock-photo"><CameraIcon style={{ width: 20, height: 20, color: "#4F8A5B" }} /></div>
       </div>
       <div className="mock-photo-caption">2026-03-02 · 약 3개월</div>
     </div>
@@ -6738,15 +6816,15 @@ function MiniGuideCard() {
     <div className="mock-card">
       <div className="mock-card-label">참고 정보</div>
       <div className="mock-checklist-row">
-        <div className="mock-checklist-icon"><BowlIcon style={{ width: 16, height: 16, color: "#4F9D3C" }} /></div>
+        <div className="mock-checklist-icon"><BowlIcon style={{ width: 16, height: 16, color: "#4F8A5B" }} /></div>
         <div className="mock-checklist-text">사료 급여량 참고</div>
       </div>
       <div className="mock-checklist-row">
-        <div className="mock-checklist-icon"><ShieldIcon style={{ width: 16, height: 16, color: "#4F9D3C" }} /></div>
+        <div className="mock-checklist-icon"><ShieldIcon style={{ width: 16, height: 16, color: "#4F8A5B" }} /></div>
         <div className="mock-checklist-text">예방접종·건강관리</div>
       </div>
       <div className="mock-checklist-row">
-        <div className="mock-checklist-icon"><ScaleIcon style={{ width: 16, height: 16, color: "#4F9D3C" }} /></div>
+        <div className="mock-checklist-icon"><ScaleIcon style={{ width: 16, height: 16, color: "#4F8A5B" }} /></div>
         <div className="mock-checklist-text">또래 대비 체중 비교</div>
       </div>
     </div>
@@ -6774,7 +6852,7 @@ function LandingPage({ onEnter }) {
 
           <div className="landing-illustration">
             <div className="paw-badge"><PawIcon style={{ width: 60, height: 60, color: "#3a3a3a" }} /></div>
-            <div className="cat-badge"><CatIcon style={{ width: 60, height: 60, color: "#4F9D3C" }} /></div>
+            <div className="cat-badge"><CatIcon style={{ width: 60, height: 60, color: "#4F8A5B" }} /></div>
           </div>
         </div>
       </section>
@@ -6886,7 +6964,7 @@ function LandingPage({ onEnter }) {
           <div style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "center" }}>
             <PetGrowLogo style={{ width: 18, height: 18 }} />
             <span style={{ fontWeight: 800, fontSize: 13 }}>
-              <span style={{ color: "#fff" }}>Pet</span><span style={{ color: "#9dc088" }}>Grow</span>
+              <span style={{ color: "#fff" }}>Pet</span><span style={{ color: "#A9C8AE" }}>Grow</span>
             </span>
           </div>
           <div className="landing-footer-text">
@@ -6936,8 +7014,8 @@ function IntroVideo() {
 const SOCIAL_LINKS = [
   { id: "youtube", url: "https://www.youtube.com/@petgrow_official", icon: YoutubeIcon, color: "#FF0000" },
   { id: "instagram", url: "https://www.instagram.com/petgrow_official", icon: InstagramIcon, color: "#E1306C" },
-  { id: "threads", url: "https://www.threads.com/@petgrow_official", icon: ThreadsIcon, color: "#1C1C1C" },
-  { id: "tiktok", url: "https://www.tiktok.com/@petgrow_official", icon: TiktokIcon, color: "#1C1C1C" },
+  { id: "threads", url: "https://www.threads.com/@petgrow_official", icon: ThreadsIcon, color: "#223027" },
+  { id: "tiktok", url: "https://www.tiktok.com/@petgrow_official", icon: TiktokIcon, color: "#223027" },
   { id: "blog", url: "https://blog.naver.com/petgrow", icon: BlogIcon, color: "#03C75A" },
 ];
 function SocialLinks() {
@@ -6991,7 +7069,7 @@ function AboutPage({ onStart, onNavigate }) {
 
           <div className="landing-illustration about-fade" style={{ animationDelay: ".46s" }}>
             <div className="paw-badge"><PawIcon style={{ width: 72, height: 72, color: "#3a3a3a" }} /></div>
-            <div className="cat-badge"><CatIcon style={{ width: 72, height: 72, color: "#4F9D3C" }} /></div>
+            <div className="cat-badge"><CatIcon style={{ width: 72, height: 72, color: "#4F8A5B" }} /></div>
           </div>
         </div>
       </section>
@@ -7013,7 +7091,7 @@ function AboutPage({ onStart, onNavigate }) {
       <section className="landing-section">
         <div className="landing-wrap">
           <h2 className="landing-section-title" style={{ marginBottom: 6 }}>{t.landingCoreFeaturesTitle}</h2>
-          <p style={{ textAlign: "center", color: "#8a8f86", fontSize: 15, marginBottom: 8 }}>{t.landingCoreFeaturesSubtitle}</p>
+          <p style={{ textAlign: "center", color: "#89928C", fontSize: 15, marginBottom: 8 }}>{t.landingCoreFeaturesSubtitle}</p>
           <div className="landing-features">
             <LandingFeatureCard Illust={IllustMyPets} title={t.landingCardMyPetsTitle} desc={t.landingCardMyPetsDesc} />
             <LandingFeatureCard Illust={IllustGrowth} title={t.landingCardGrowthTitle} desc={t.landingCardGrowthDesc} />
@@ -7075,7 +7153,7 @@ function AboutPage({ onStart, onNavigate }) {
       <section className="landing-section landing-section-white">
         <div className="landing-wrap">
           <h2 className="landing-section-title" style={{ marginBottom: 6 }}>{t.landingCommunityTitle}</h2>
-          <p style={{ textAlign: "center", color: "#8a8f86", fontSize: 15, marginBottom: 8 }}>{t.landingCommunitySubtitle}</p>
+          <p style={{ textAlign: "center", color: "#89928C", fontSize: 15, marginBottom: 8 }}>{t.landingCommunitySubtitle}</p>
           <div className="landing-community-wrap">
             <div className="landing-community-text">
               <p className="landing-community-desc">{t.landingCommunityDesc}</p>
@@ -7097,7 +7175,7 @@ function AboutPage({ onStart, onNavigate }) {
       <section className="landing-section">
         <div className="landing-wrap">
           <h2 className="landing-section-title" style={{ marginBottom: 6 }}>{t.landingTipsGuideTitle}</h2>
-          <p style={{ textAlign: "center", color: "#8a8f86", fontSize: 15, maxWidth: 520, margin: "0 auto" }}>{t.landingTipsGuideDesc}</p>
+          <p style={{ textAlign: "center", color: "#89928C", fontSize: 15, maxWidth: 520, margin: "0 auto" }}>{t.landingTipsGuideDesc}</p>
           <div className="landing-mini-teaser">
             <button type="button" className="landing-mini-teaser-item" onClick={() => go("tips")}>
               <span className="landing-mini-teaser-icon"><IllustTips style={{ width: 20, height: 20 }} /></span>
@@ -7255,11 +7333,11 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
       <h2 style={{ fontSize: 17, marginTop: 24, marginBottom: 14 }}>{t.homeServicesTitle}</h2>
       <div className="home-service-grid">
         <HomeServiceCard Illust={InfoIcon} bg="#EEF5EC" title={t.aboutNav} desc={lang === "en" ? "See PetGrow features and services at a glance" : "PetGrow의 기능과 서비스를 한눈에 보기"} onClick={() => onGoView("about")} />
-        <HomeServiceCard Illust={IllustGrowth} bg="#EAF6E4" title={t.homeCardGrowthTitle} desc={t.homeCardGrowthDesc} onClick={onGoPets} />
+        <HomeServiceCard Illust={IllustGrowth} bg="#EDF5EE" title={t.homeCardGrowthTitle} desc={t.homeCardGrowthDesc} onClick={onGoPets} />
         <HomeServiceCard Illust={IllustCommunity} bg="#FBE9EF" title={t.landingCardCommunityTitle.replace(/^\S+\s/, "")} desc={t.homeCardCommunityDesc} onClick={() => onGoView("community")} />
-        <HomeServiceCard Illust={IllustSaju} bg="#F1ECFA" title={t.landingCardSajuTitle.replace(/^\S+\s/, "")} desc={t.homeCardSajuDesc} onClick={() => onGoView("saju")} />
-        <HomeServiceCard Illust={IllustPetBti} bg="#E9F1FB" title={t.landingCardPetBtiTitle.replace(/^\S+\s/, "")} desc={t.homeCardPetBtiDesc} onClick={() => onGoView("petbti")} />
-        <HomeServiceCard Illust={IllustTips} bg="#FBF3DC" title={t.landingCardTipsTitle.replace(/^\S+\s/, "")} desc={t.homeCardTipsDesc} onClick={() => onGoView("tips")} />
+        <HomeServiceCard Illust={IllustSaju} bg="#F1F5F1" title={t.landingCardSajuTitle.replace(/^\S+\s/, "")} desc={t.homeCardSajuDesc} onClick={() => onGoView("saju")} />
+        <HomeServiceCard Illust={IllustPetBti} bg="#EEF5EF" title={t.landingCardPetBtiTitle.replace(/^\S+\s/, "")} desc={t.homeCardPetBtiDesc} onClick={() => onGoView("petbti")} />
+        <HomeServiceCard Illust={IllustTips} bg="#F3F7F3" title={t.landingCardTipsTitle.replace(/^\S+\s/, "")} desc={t.homeCardTipsDesc} onClick={() => onGoView("tips")} />
       </div>
     </div>
   );
@@ -7301,9 +7379,9 @@ function PetContentPage({ subTab, onSubTabChange, allPets, featurePet, onSelectF
 
       {subTab === "all" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          <HomeServiceCard Illust={IllustSaju} bg="#F1ECFA" title={t.sajuNav} desc={t.homeCardSajuDesc} onClick={() => onSubTabChange("saju")} />
-          <HomeServiceCard Illust={IllustPetBti} bg="#E9F1FB" title={t.petBtiNav} desc={t.homeCardPetBtiDesc} onClick={() => onSubTabChange("petbti")} />
-          <HomeServiceCard Illust={IllustTips} bg="#FBF3DC" title={t.tipsTitle} desc={t.homeCardTipsDesc} onClick={() => onSubTabChange("tips")} />
+          <HomeServiceCard Illust={IllustSaju} bg="#F1F5F1" title={t.sajuNav} desc={t.homeCardSajuDesc} onClick={() => onSubTabChange("saju")} />
+          <HomeServiceCard Illust={IllustPetBti} bg="#EEF5EF" title={t.petBtiNav} desc={t.homeCardPetBtiDesc} onClick={() => onSubTabChange("petbti")} />
+          <HomeServiceCard Illust={IllustTips} bg="#F3F7F3" title={t.tipsTitle} desc={t.homeCardTipsDesc} onClick={() => onSubTabChange("tips")} />
         </div>
       )}
       {subTab === "saju" && (
@@ -7489,7 +7567,7 @@ function PostCard({ post, lang, onOpen }) {
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
         <span className="cm-cat-chip" style={{ marginBottom: 0 }}>{t.communityCategoryLabels[post.category]}</span>
         {post.isOwner && (
-          <span className="cm-cat-chip" style={{ marginBottom: 0, background: post.isPublic ? "#EAF6E4" : "#F1F1F1", color: post.isPublic ? "var(--primary)" : "var(--sub)" }}>
+          <span className="cm-cat-chip" style={{ marginBottom: 0, background: post.isPublic ? "#EDF5EE" : "#F1F1F1", color: post.isPublic ? "var(--primary)" : "var(--sub)" }}>
             {post.isPublic ? `🌐 ${t.communityVisibilityPublic}` : `🔒 ${t.communityVisibilityPrivate}`}
           </span>
         )}
@@ -7846,7 +7924,7 @@ function PostDetail({ postId, pets, account, onBack, onDeleted, onEdit }) {
       <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
         <span className="cm-cat-chip" style={{ marginBottom: 0 }}>{t.communityCategoryLabels[post.category]}</span>
         {post.isOwner && (
-          <span className="cm-cat-chip" style={{ marginBottom: 0, background: post.isPublic ? "#EAF6E4" : "#F1F1F1", color: post.isPublic ? "var(--primary)" : "var(--sub)" }}>
+          <span className="cm-cat-chip" style={{ marginBottom: 0, background: post.isPublic ? "#EDF5EE" : "#F1F1F1", color: post.isPublic ? "var(--primary)" : "var(--sub)" }}>
             {post.isPublic ? `🌐 ${t.communityVisibilityPublic}` : `🔒 ${t.communityVisibilityPrivate}`}
           </span>
         )}

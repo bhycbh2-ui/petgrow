@@ -1,0 +1,10 @@
+PetGrow unified palette
+Primary #4F8A5B
+Dark #3D704A
+Background #F8FAF7
+Surface #F1F5F1
+Border #E2E9E3
+Text #223027
+Subtext #68736B
+
+Rainbow decorative colors were collapsed into sage/neutral tones. Error red and Kakao login yellow are intentionally preserved. Business logic was not intentionally changed.
