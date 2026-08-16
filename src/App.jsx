@@ -4157,6 +4157,15 @@ const GlobalStyle = () => (
   }
 
  .footer-ad-inquiry{border:0;background:transparent;text-decoration:underline;font-size:11px;color:#718078;cursor:pointer;margin-left:8px}
+ .partner-inquiry-banner{display:flex;align-items:stretch;gap:8px;margin:26px auto 18px;padding:8px;background:linear-gradient(135deg,#EEF8EF,#F7FBF5);border:1px solid #D7E8D8;border-radius:22px;box-shadow:0 8px 24px rgba(54,86,61,.07)}
+ .partner-inquiry-main{flex:1;min-width:0;border:0;background:transparent;display:flex;align-items:center;gap:12px;text-align:left;padding:10px 8px;cursor:pointer;font-family:inherit;color:var(--text)}
+ .partner-inquiry-icon{width:42px;height:42px;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:21px;flex:0 0 auto;border:1px solid #E1ECE2}
+ .partner-inquiry-copy{display:flex;flex-direction:column;gap:3px;min-width:0;line-height:1.35}
+ .partner-inquiry-copy strong{font-size:14px;color:#2F5F39}
+ .partner-inquiry-copy small{font-size:11px;color:#718078;white-space:normal}
+ .partner-inquiry-arrow{font-size:26px;color:#6F9A78;line-height:1}
+ .partner-inquiry-mail{flex:0 0 auto;align-self:center;padding:10px 13px;border-radius:999px;background:#fff;border:1px solid #D7E8D8;color:#3F744B;text-decoration:none;font-size:12px;font-weight:700;white-space:nowrap}
+ @media(max-width:480px){.partner-inquiry-banner{align-items:center}.partner-inquiry-mail{padding:9px 11px;font-size:11px}.partner-inquiry-copy small{font-size:10.5px}}
  .notice-popup-backdrop,.direct-ad-modal-backdrop{position:fixed;inset:0;z-index:120;background:rgba(25,35,29,.42);display:flex;align-items:center;justify-content:center;padding:18px}
  .notice-popup-card,.direct-ad-modal{position:relative;width:min(460px,100%);max-height:min(650px,85vh);overflow:auto;background:#fff;border-radius:22px;padding:22px;box-shadow:0 20px 60px rgba(20,45,28,.25)}
  .notice-popup-x{position:absolute;right:12px;top:10px;border:0;background:transparent;font-size:26px;line-height:1;cursor:pointer;color:#66736a}
@@ -4707,7 +4716,7 @@ function OnboardingPage({ species, breedGroups, sizeOptions, initialValues, onSu
 
         <div>
           <label className="bg-label">{t.labelBirthDate}</label>
-          <input type="date" className={`bg-input ${errors.birthDate ? "invalid" : ""}`} value={birthDate}
+          <input type="date" className={`bg-input compat-birth-input ${errors.birthDate ? "invalid" : ""}`} value={birthDate}
             onChange={(e) => setBirthDate(e.target.value)} />
           {errors.birthDate && <div className="field-error">{errors.birthDate}</div>}
         </div>
@@ -10842,6 +10851,17 @@ function AppInner({ lang, setLang }) {
 
       {effectiveView !== "login" && (
         <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 40px" }}>
+          <div className="partner-inquiry-banner">
+            <button type="button" className="partner-inquiry-main" onClick={() => goView("ad-inquiry")}>
+              <span className="partner-inquiry-icon">🤝</span>
+              <span className="partner-inquiry-copy">
+                <strong>PetGrow 광고 · 제휴 문의</strong>
+                <small>배너 광고, 브랜드 제휴, 스폰서십을 제안해 주세요.</small>
+              </span>
+              <span className="partner-inquiry-arrow">›</span>
+            </button>
+            <a className="partner-inquiry-mail" href="mailto:help.petgrow@gmail.com?subject=PetGrow%20광고·제휴%20문의">이메일 문의</a>
+          </div>
           <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 10 }}>
             help.petgrow@gmail.com
           </div>
