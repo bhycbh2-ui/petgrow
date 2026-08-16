@@ -20,6 +20,9 @@ export function ensureSchema() {
           last_login_at timestamptz not null default now()
         )
       `;
+      await sql`alter table pg_users add column if not exists created_at timestamptz not null default now()`;
+      await sql`alter table pg_users add column if not exists last_login_at timestamptz not null default now()`;
+
       await sql`
         create table if not exists pg_user_state (
           user_id text not null references pg_users(id) on delete cascade,

@@ -3946,6 +3946,100 @@ const GlobalStyle = () => (
         border-radius:14px!important;
       }
     }
+
+    /* 관리자 센터: 모바일 웹/PWA/Android 앱 공통 */
+    .admin-inline-warning{
+      max-width:100%;
+      margin:0 0 14px;
+      padding:12px 14px;
+      border:1px solid #F1D9A8;
+      border-radius:14px;
+      background:#FFF9ED;
+      color:#72591D;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      font-size:12px;
+      line-height:1.5;
+    }
+    .admin-log-summary{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:10px;
+      margin-bottom:14px;
+    }
+    .admin-log-summary>div{
+      background:#F4F8F4;
+      border:1px solid #DFE9E1;
+      border-radius:16px;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      text-align:center;
+    }
+    .admin-log-summary b{font-size:20px;color:#3F7650}
+    .admin-log-summary span{font-size:11px;color:#6F7A72}
+    @media(max-width:760px){
+      .admin-reports-page{
+        padding:12px 12px 60px!important;
+        max-width:100%!important;
+        overflow-x:hidden!important;
+      }
+      .admin-reports-page .admin-hero{
+        padding:18px 16px!important;
+        border-radius:20px!important;
+      }
+      .admin-tabs{
+        display:grid!important;
+        grid-template-columns:repeat(3,minmax(0,1fr))!important;
+        gap:6px!important;
+        position:sticky!important;
+        top:0!important;
+        z-index:20!important;
+        background:rgba(248,250,247,.94)!important;
+        backdrop-filter:blur(10px);
+        padding:8px 0!important;
+      }
+      .admin-tabs button{
+        min-width:0!important;
+        padding:10px 6px!important;
+        font-size:12px!important;
+        white-space:nowrap!important;
+      }
+      .admin-stat-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr))!important;
+        gap:8px!important;
+      }
+      .admin-stat-card{
+        min-height:104px!important;
+        padding:13px 10px!important;
+      }
+      .admin-stat-card strong{font-size:22px!important}
+      .admin-dashboard-columns{
+        grid-template-columns:1fr!important;
+        gap:10px!important;
+      }
+      .admin-dashboard-panel{padding:14px!important}
+      .admin-report-card{padding:14px!important}
+      .admin-report-actions{
+        display:grid!important;
+        grid-template-columns:repeat(2,minmax(0,1fr))!important;
+        gap:7px!important;
+      }
+      .admin-report-actions button{width:100%!important;min-height:42px!important}
+      .admin-log-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+      .admin-log-row{
+        align-items:flex-start!important;
+        gap:10px!important;
+        padding:12px!important;
+      }
+      .admin-log-row>span{font-size:10px!important;white-space:nowrap!important}
+    }
+    @media(max-width:390px){
+      .admin-stat-grid{grid-template-columns:1fr 1fr!important}
+      .admin-tabs button{font-size:11px!important}
+    }
 `}</style>
 );
 
@@ -7454,17 +7548,18 @@ function PetBtiPage({ pet, onUpdatePetBti, onGoRegister }) {
     setPhase("result");
   };
 
-  if (!pet) {
-    return (
-      <div className="bg-card feature-module-shell" style={{ textAlign: "center" }}>
-        <PetBtiIcon style={{ width: 40, height: 40, color: "var(--primary)", margin: "0 auto 14px" }} />
-        <p className="bg-sub" style={{ fontSize: 14, marginBottom: 18 }}>{t.petBtiNoPet}</p>
-        <button className="bg-btn" style={{ width: "100%", fontSize: 15 }} onClick={onGoRegister}>
-          {t.sajuGoRegisterBtn}
-        </button>
-      </div>
-    );
-  }
+  if (!pet) return (
+    <div className="feature-module-shell"><div className="bg-card" style={{ textAlign: "center" }}>
+      <PetBtiIcon style={{ width: 40, height: 40, color: "var(--primary)", margin: "0 auto 14px" }} />
+      <h2 style={{ fontSize: 19, marginBottom: 6 }}>{t.sajuNeedPetTitle}</h2>
+      <p className="bg-sub" style={{ fontSize: 13, marginBottom: 22 }}>
+        {lang === "en"
+          ? "PetBTI is only available for pets registered under My Pets. Please register a pet first."
+          : "PetBTI는 '우리 아이'에 등록한 반려동물만 이용할 수 있어요. 먼저 반려동물을 등록해주세요."}
+      </p>
+      <button className="bg-btn" style={{ width: "100%", fontSize: 15 }} onClick={onGoRegister}>{t.sajuGoRegisterBtn}</button>
+    </div></div>
+  );
 
   if (phase === "result" && liveResult) {
     return (
@@ -9297,6 +9392,8 @@ function AdminReportsPage({ onBack }) {
   const [reports,setReports]=useState([]);
   const [stats,setStats]=useState(null);
   const [logs,setLogs]=useState([]);
+  const [logSummary,setLogSummary]=useState({});
+  const [adminWarnings,setAdminWarnings]=useState([]);
   const [loading,setLoading]=useState(false);
   const [busy,setBusy]=useState("");
   const [tab,setTab]=useState("dashboard");
@@ -9314,21 +9411,28 @@ function AdminReportsPage({ onBack }) {
 
   const loadAll=async()=>{
     setLoading(true);
-    try{
-      const [sr,rr,lr]=await Promise.all([adminStats(),adminListReports(),adminLogs()]);
-      setStats(sr); setReports(rr.reports||[]); setLogs(lr.logs||[]); setUnlocked(true);
-    }catch(e){
-      sessionStorage.removeItem("petgrow_admin_token");
-      setUnlocked(false);
-      window.alert(e.message||"관리자 정보를 불러오지 못했어요.");
-    }
+    setAdminWarnings([]);
+    const results=await Promise.allSettled([adminStats(),adminListReports(),adminLogs()]);
+    const warnings=[];
+    if(results[0].status==="fulfilled"){
+      setStats(results[0].value);
+      warnings.push(...(results[0].value?.warnings||[]));
+    }else warnings.push("대시보드 데이터를 불러오지 못했어요.");
+    if(results[1].status==="fulfilled") setReports(results[1].value.reports||[]);
+    else warnings.push("신고 목록을 불러오지 못했어요.");
+    if(results[2].status==="fulfilled"){
+      setLogs(results[2].value.logs||[]);
+      setLogSummary(results[2].value.summary||{});
+    }else warnings.push("운영로그를 불러오지 못했어요.");
+    setAdminWarnings(warnings);
+    setUnlocked(true);
     setLoading(false);
   };
   const unlock=async()=>{
     try{
       const r=await adminVerify(pin);
       sessionStorage.setItem("petgrow_admin_token",r.token);
-      setPin(""); setUnlocked(true);
+      setPin("");
       await loadAll();
     }catch(e){
       sessionStorage.removeItem("petgrow_admin_token");
@@ -9367,7 +9471,7 @@ function AdminReportsPage({ onBack }) {
       await adminRestrictUser({userId:r.targetUserId,duration,reason:`신고 ${r.id} 검토 후 운영정책 위반`,reportId:r.id});
       window.alert(`${label} 처리했어요.`);
       await reloadReports();
-      const l=await adminLogs(); setLogs(l.logs||[]);
+      const l=await adminLogs(); setLogs(l.logs||[]); setLogSummary(l.summary||{});
     }catch(e){window.alert(e.message)}
     setBusy("");
   };
@@ -9405,13 +9509,18 @@ function AdminReportsPage({ onBack }) {
       <button className={tab==="logs"?"active":""} onClick={()=>setTab("logs")}>🧾 운영로그</button>
     </div>
 
-    {loading?<div className="bg-card">불러오는 중...</div>:tab==="dashboard"?<>
+    {adminWarnings.length>0&&<div className="admin-inline-warning">
+      <b>일부 데이터 확인 필요</b>
+      <span>{adminWarnings.join(" · ")}</span>
+    </div>}
+
+    {loading?<div className="bg-card">관리자 데이터를 불러오는 중...</div>:tab==="dashboard"?<>
       <div className="admin-stat-grid">
         {[
-          ["전체 회원",c.totalMembers||0,"👥"],["오늘 신규",c.newToday||0,"✨"],["7일 활성 회원",c.active7d||0,"🌱"],["오늘 방문 세션",c.todaySessions||0,"📱"],
-          ["현재 접속 세션",c.onlineSessions5m||0,"🟢"],["등록 반려동물",c.totalPets||0,"🐾"],["오늘 페이지뷰",c.pageviewsToday||0,"👀"],["신고 대기",c.openReports||0,"🚨"],
-          ["이용제한 중",c.restricted||0,"🛡️"],["Pet톡 게시글",c.posts||0,"📝"],["Pet톡 댓글",c.comments||0,"💬"],["좋아요",c.likes||0,"💚"]
-        ].map(([label,value,icon])=><div className="admin-stat-card" key={label}><span>{icon}</span><strong>{Number(value).toLocaleString()}</strong><small>{label}</small></div>)}
+          ["미처리 신고",c.openReports||0,"🚨"],["신고 최장 대기",c.oldestOpenHours==null?"-":`${c.oldestOpenHours}h`,"⏳"],["이용제한 중",c.restricted||0,"🛡️"],["오늘 신규",c.newToday||0,"✨"],
+          ["7일 활성 회원",c.active7d||0,"🌱"],["오늘 방문",c.todaySessions||0,"📱"],["현재 접속 추정",c.onlineSessions5m||0,"🟢"],["오늘 페이지뷰",c.pageviewsToday||0,"👀"],
+          ["오늘 Pet톡 글",c.postsToday||0,"📝"],["오늘 댓글",c.commentsToday||0,"💬"],["7일 신고 처리",c.resolvedReports7d||0,"✅"],["등록 반려동물",c.totalPets||0,"🐾"]
+        ].map(([label,value,icon])=><div className="admin-stat-card" key={label}><span>{icon}</span><strong>{typeof value==="number"?value.toLocaleString():value}</strong><small>{label}</small></div>)}
       </div>
 
       <div className="admin-dashboard-columns">
@@ -9451,7 +9560,25 @@ function AdminReportsPage({ onBack }) {
     </>:tab==="reports"?(
       reports.length===0?<div className="bg-card">접수된 신고가 없어요.</div>:<div className="admin-report-list">{reports.map(r=><div className="admin-report-card" key={r.id}><div className="admin-report-top"><span className={`admin-status ${r.status}`}>{r.status==="open"?"검토 필요":"처리 완료"}</span><span>{new Date(r.createdAt).toLocaleString("ko-KR")}</span></div><h3>{r.postTitle}</h3><div className="admin-report-meta">작성자: <b>{r.authorNickname}</b> · 신고자: {r.reporterNickname}</div><div className="admin-report-content">{r.targetContent}</div><div className="admin-report-reason"><b>신고 사유:</b> {r.reason}<br/><b>상세:</b> {r.detail||"없음"}</div>{r.restriction&&<div className="admin-report-reason"><b>현재 제한:</b> {r.restriction.permanent?"영구":new Date(r.restriction.restricted_until).toLocaleString("ko-KR")+"까지"}</div>}<div className="admin-report-actions"><button disabled={busy===r.id} onClick={()=>restrict(r,1)}>1일</button><button disabled={busy===r.id} onClick={()=>restrict(r,7)}>7일</button><button disabled={busy===r.id} onClick={()=>restrict(r,30)}>30일</button><button className="danger" disabled={busy===r.id} onClick={()=>restrict(r,"permanent")}>영구 제한</button><button disabled={busy===r.id} onClick={async()=>{setBusy(r.id);try{await adminUnblockUser(r.targetUserId,r.id);window.alert("이용 제한을 해제했어요.");await reloadReports();const l=await adminLogs();setLogs(l.logs||[])}catch(e){window.alert(e.message)}setBusy("")}}>제한 해제</button><button disabled={busy===r.id} onClick={async()=>{setBusy(r.id);try{await adminResolveReport(r.id);await reloadReports();const l=await adminLogs();setLogs(l.logs||[])}catch(e){window.alert(e.message)}setBusy("")}}>검토 완료</button></div></div>)}</div>
     ):(
-      logs.length===0?<div className="bg-card">아직 관리자 처리 기록이 없어요.</div>:<div className="admin-log-list">{logs.map((l,i)=><div className="admin-log-row" key={`${l.created_at}-${i}`}><div><b>{l.action}</b><small>{l.target_user_id?`대상 ${String(l.target_user_id).slice(0,8)}…`:""} {l.report_id?`· 신고 ${String(l.report_id).slice(0,8)}…`:""}</small></div><span>{new Date(l.created_at).toLocaleString("ko-KR")}</span></div>)}</div>
+      <>
+        <div className="admin-log-summary">
+          <div><b>{logSummary.today||0}</b><span>최근 24시간 처리</span></div>
+          <div><b>{logSummary.restrictions7d||0}</b><span>7일 이용제한</span></div>
+          <div><b>{logSummary.unblocks7d||0}</b><span>7일 제한해제</span></div>
+          <div><b>{logSummary.reportsResolved7d||0}</b><span>7일 신고완료</span></div>
+        </div>
+        {logs.length===0?<div className="bg-card">아직 관리자 처리 기록이 없어요.</div>:<div className="admin-log-list">{logs.map((l,i)=>{
+          const labels={
+            ADMIN_BOOTSTRAP:"최초 관리자 등록",ADMIN_RECOVERY:"관리자 계정 복구",
+            RESTRICT_1D:"1일 이용제한",RESTRICT_7D:"7일 이용제한",RESTRICT_30D:"30일 이용제한",
+            RESTRICT_PERMANENT:"영구 이용제한",UNBLOCK:"이용제한 해제",REPORT_RESOLVED:"신고 처리 완료"
+          };
+          return <div className="admin-log-row" key={`${l.created_at}-${i}`}>
+            <div><b>{labels[l.action]||l.action}</b><small>{l.target_nickname?`대상: ${l.target_nickname}`:""}{l.report_id?` · 신고 건 처리`:""}</small></div>
+            <span>{new Date(l.created_at).toLocaleString("ko-KR")}</span>
+          </div>;
+        })}</div>}
+      </>
     )}
   </div>;
 }
