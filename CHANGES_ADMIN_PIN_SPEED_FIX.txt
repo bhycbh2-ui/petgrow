@@ -1,0 +1,25 @@
+관리자 PIN/속도 개선
+
+1. PIN 자동저장 방지 강화
+- 관리자 PIN 입력은 password credential이 아닌 text+numeric+CSS 마스킹 방식
+- autocomplete=one-time-code
+- LastPass/1Password 제외 힌트
+- 숨김 credential trap으로 브라우저 비밀번호 관리자 오인 방지
+- PIN 인증 버튼 클릭 즉시 화면 state에서 PIN 삭제
+- 화면이 백그라운드로 가도 PIN 삭제
+
+2. 관리자센터 열기 속도
+- PIN 인증 성공 즉시 관리자 화면 표시
+- 통계/신고/문의/광고/로그는 뒤에서 병렬 로딩
+- 한 데이터 API가 느려도 관리자센터 진입 자체를 기다리지 않음
+
+3. 회원정보 관리자 버튼 속도
+- 로그인 계정 확인 직후 관리자 상태를 미리 preload
+- 관리자 상태 결과를 메모리 캐시
+- 회원정보를 열 때 캐시가 있으면 즉시 관리자 버튼 표시
+- 최초 확인 중에는 '관리자 확인 중...' 자리 표시로 UI 점프 방지
+
+검증
+- 전체 API node --check 통과
+- 관리자 PIN password 입력 잔존 검사 통과
+- 관리자 관련 중복 함수 검사 통과
