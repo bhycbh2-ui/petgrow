@@ -190,6 +190,11 @@ const STRINGS = {
     contactFallback: "메일 앱이 안 열리면 help.petgrow@gmail.com으로 직접 보내주세요. 기능 개선 제안이나 버그 제보도 언제든 환영이에요!",
     feedbackBtn: "개선 요청하기",
     tipsTitle: "Pet정보",
+    nearbyNav: "내 주변 Pet",
+    nearbyTitle: "내 주변 Pet",
+    nearbySubtitle: "현재 위치에서 가까운 동물병원·동물약국·펫샵·미용·호텔을 한눈에 찾아보세요.",
+    nearbyLocateBtn: "내 위치 찾기",
+    nearbySearchPlaceholder: "지역명으로 검색 (예: 강동구 천호동)",
     myPetsNav: "우리 아이",
     petgrowTagline: "우리 아이의 건강한 성장을 함께",
     badgesTitle: "성장 배지",
@@ -328,12 +333,13 @@ const STRINGS = {
       { title: "계정 저장 · 다른 기기에서 정보 불러오기", body: "등록한 우리 아이 정보는 로그인한 카카오 계정에 안전하게 저장돼요. 다른 기기나 웹에서도 같은 카카오 계정으로 로그인하면 그대로 이어서 볼 수 있어요." },
       { title: "성장정보", body: "체중을 기록할 때마다 예상보다 빠르게 크는지 느리게 크는지 자동으로 비교해주고, 사진을 모아 성장앨범도 만들 수 있어요." },
       { title: "Pet사주", body: "등록한 우리 아이의 정보를 바탕으로 성격·궁합·행운 같은 재미있는 사주 콘텐츠를 볼 수 있어요. 결과는 참고와 재미를 위한 것이에요." },
-            { title: "PetBTI", body: "몇 가지 질문에 답하면 우리 아이만의 16가지 성격 유형이 나와요. 강아지와 고양이 각각에 맞는 질문으로 진행돼요." },
+            { title: "PetBTI", body: "강아지·고양이 각각 20개의 구체적인 행동 질문에 답하면 우리 아이만의 16가지 성격 유형이 나와요." },
       { title: "PetBTI 결과 저장", body: "완료한 결과는 자동으로 저장돼서 'PetBTI 결과 보기'로 언제든 다시 볼 수 있고, '다시 검사하기'로 새로 진행할 수도 있어요." },
-      { title: "Pet정보", body: "강아지·고양이·건강·생활·식단·훈련·안전·미용 8개 영역, 총 160개의 Pet정보를 확인할 수 있어요. 웹과 모바일 모두 20개씩 페이지로 나뉘며 검색은 전체 정보를 대상으로 해요." },
+      { title: "Pet정보", body: "강아지·고양이·건강·생활·식단·훈련·안전·미용 8개 영역, 총 200개의 Pet정보를 확인할 수 있어요. 웹과 모바일 모두 20개씩 페이지로 나뉘며 검색은 전체 정보를 대상으로 해요." },
+      { title: "내 주변 Pet", body: "위치 권한을 허용하면 현재 위치를 기준으로 가까운 동물병원·동물약국·반려동물용품점·미용실·호텔/유치원을 거리순으로 확인할 수 있어요. 위치 권한을 사용하지 않을 때는 지역명을 직접 검색할 수 있어요. 현재 위치 좌표는 주변 장소 검색에만 일시적으로 사용하며 PetGrow 계정에 저장하지 않아요." },
       { title: "Pet톡", body: "우리 아이 사진과 일상을 다른 보호자와 나누는 커뮤니티예요. 일상·자랑·질문·건강·정보공유·산책·훈련·용품추천·자유수다로 분류해서 글을 남기고 좋아요·댓글을 주고받을 수 있어요." },
       { title: "닉네임 · 내 활동", body: "계정 설정에서 Pet톡에 표시할 닉네임을 변경할 수 있어요. 회원정보와 Pet톡의 내 활동에서는 내가 작성한 글·댓글·좋아요를 확인할 수 있어요." },
-      { title: "검색", body: "Pet정보 화면 상단 검색창에 원하는 키워드를 입력하면 현재 페이지가 아닌 전체 160개 정보에서 찾아줘요." },
+      { title: "검색", body: "Pet정보 화면 상단 검색창에 원하는 키워드를 입력하면 현재 페이지가 아닌 전체 200개 정보에서 찾아줘요." },
       { title: "로그아웃", body: "우측 상단 계정 버튼을 누르면 로그아웃할 수 있어요. 로그아웃해도 서버에 저장된 정보는 삭제되지 않고, 다시 로그인하면 그대로 남아있어요." },
       { title: "회원탈퇴", body: "계정 설정에서 회원탈퇴를 진행하면 반려동물 정보·사진·PetBTI 결과·Pet톡 게시글과 댓글 등 계정에 연결된 데이터가 함께 삭제돼요. 삭제 후에는 복구할 수 없어요." },
     ],
@@ -663,6 +669,9 @@ const STRINGS = {
     landingCardCompatTitle: "🫶 보호자 궁합",
     landingCardCompatDesc: "나와 우리 아이는 얼마나 잘 맞을까요? 보호자와 반려동물의 재미있는 궁합 결과를 확인해요.",
     landingCardTipsTitle: "💡 Pet정보",
+    landingCardNearbyTitle: "📍 내 주변 Pet",
+    landingCardNearbyDesc: "내 위치에서 가까운 병원·약국·펫샵·미용·호텔을 거리순으로 찾아봐요.",
+    homeCardNearbyDesc: "현재 위치와 업체까지의 거리, 주소, 전화번호를 지도와 함께 확인해요.",
     landingCardTipsDesc: "반려생활에 필요한 정보를 쉽고 빠르게. 건강, 식단, 행동, 성장, 생활 정보를 확인해요.",
     landingCardCommunityTitle: "💬 Pet톡",
     landingCardCommunityDesc: "우리 아이 이야기를 함께 나눠요. 다른 보호자들과 반려동물의 일상과 사진, 질문과 정보를 공유하는 커뮤니티예요.",
@@ -868,7 +877,7 @@ const STRINGS = {
       { title: "Account storage & cross-device sync", body: "Your pet info is safely saved to your logged-in Kakao account. Log in with the same account on any device or the web to pick up right where you left off." },
       { title: "Growth info", body: "Every weight you log is automatically compared to the prediction, and you can build a growth photo album over time." },
       { title: "Saju", body: "Fun Saju-style content — personality, compatibility, luck — generated from your registered pet's info, for entertainment and reference." },
-            { title: "PetBTI", body: "Answer a few questions to get your pet's 16-type personality result, with questions tailored separately for dogs and cats." },
+            { title: "PetBTI", body: "Answer 20 behavior-based questions tailored separately for dogs and cats to get a fun 16-type personality result." },
       { title: "Saving PetBTI results", body: "Your completed result is saved automatically — revisit it anytime with 'View PetBTI result', or take the test again." },
       { title: "Pet Tips", body: "160 Pet info articles across 8 categories, shown 20 per page on both web and mobile. Search works across the full collection." },
       { title: "Search", body: "Type a keyword to search across all 160 Pet info articles, not just the current page." },
@@ -1201,6 +1210,9 @@ const STRINGS = {
     landingCardCompatTitle: "🫶 Guardian Compatibility",
     landingCardCompatDesc: "How well do you and your pet click? See a fun compatibility result between you two.",
     landingCardTipsTitle: "💡 Pet Tips",
+    landingCardNearbyTitle: "📍 Nearby Pet",
+    landingCardNearbyDesc: "Find nearby clinics, pharmacies, pet shops, groomers, hotels and daycare.",
+    homeCardNearbyDesc: "See distance, address and phone details together with the map.",
     landingCardTipsDesc: "Everything you need for pet life, quick and easy. Health, diet, behavior, growth, and lifestyle info.",
     landingCardCommunityTitle: "💬 Pet Talk",
     landingCardCommunityDesc: "Share your pet's story with others. A community for sharing daily life, photos, questions, and info with fellow guardians.",
@@ -1587,6 +1599,18 @@ function adminUnblock(targetUserId,reportId){return adminApi("unblock",{method:"
 
 function adminLogs(){return adminApi("logs");}
 
+function musicApi(action,options={}){return apiJson(`/api/music?action=${action}`,options);}
+function musicList(species="all",page=1){return musicApi(`list&species=${encodeURIComponent(species)}&page=${page}`);}
+function musicTrackPlay(id){return musicApi("play",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id})});}
+function musicToggleLike(id){return musicApi("like",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id})});}
+function musicComments(id){return musicApi(`comments&id=${encodeURIComponent(id)}`);}
+function musicAddComment(id,content){return musicApi("comment",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id,content})});}
+function adminMusicRequest(action,options={}){const token=sessionStorage.getItem("petgrow_admin_token")||"";return musicApi(action,{...options,headers:{...(options.headers||{}),"X-PetGrow-Admin-Token":token}});}
+function adminMusicList(){return adminMusicRequest("admin-list");}
+function adminMusicSave(payload){return adminMusicRequest("admin-save",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});}
+function adminMusicToggle(id,active){return adminMusicRequest("admin-toggle",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id,active})});}
+function adminMusicDelete(id){return adminMusicRequest("admin-delete",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id})});}
+
 function getAnonymousAnalyticsSessionId() {
   try {
     let id = sessionStorage.getItem("petgrow_analytics_session");
@@ -1636,6 +1660,16 @@ const PawIcon = (p) => (
 const CatIcon = (p) => (
   <svg className="icon" viewBox="0 0 24 24" {...p}>
     <path d="M5 3l2.2 5.2h9.6L19 3l-5.4 3h-3.2L5 3zM4 10c0 6 3.6 10.5 8 10.5S20 16 20 10l-3 2c-1 3.2-3.2 4.5-5 4.5s-4-1.3-5-4.5l-3-2z" />
+  </svg>
+);
+const MapPinIcon = (p) => (
+  <svg className="icon" viewBox="0 0 24 24" {...p}>
+    <path d="M12 2.7c-4.2 0-7.5 3.3-7.5 7.5 0 5.6 7.5 11.2 7.5 11.2s7.5-5.6 7.5-11.2c0-4.2-3.3-7.5-7.5-7.5zm0 10.2a2.8 2.8 0 1 1 0-5.6 2.8 2.8 0 0 1 0 5.6z"/>
+  </svg>
+);
+const MusicIcon = (p) => (
+  <svg className="icon" viewBox="0 0 24 24" {...p}>
+    <path d="M9 4v11.2A3.4 3.4 0 1 0 11 18V8h8v7.2A3.4 3.4 0 1 0 21 18V4H9z"/>
   </svg>
 );
 const ChartIcon = (p) => (
@@ -1931,6 +1965,10 @@ function GuideModal({ open, onClose }) {
             <div className="bg-sub" style={{ fontSize: 13, lineHeight: 1.6 }}>{s.body}</div>
           </div>
         ))}
+        <div>
+          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 3 }}>🎵 Pet음악</div>
+          <div className="bg-sub" style={{ fontSize: 13, lineHeight: 1.6 }}>강아지·고양이 음악을 듣고 1곡 반복·전체 반복으로 재생할 수 있어요. 좋아요와 댓글로 반려동물의 반응을 남길 수 있고, 음악 목록은 20곡씩 페이지로 나뉘어요.</div>
+        </div>
       </div>
       <button className="bg-btn" style={{ width: "100%", marginTop: 22 }} onClick={onClose}>{t.guideConfirm}</button>
     </Modal>
@@ -1941,15 +1979,16 @@ function GuideModal({ open, onClose }) {
    개인정보처리방침 (초안) — 법률 자문 아님, 배포 전 검토 필요
    ============================================================ */
 const PRIVACY_SECTIONS_KO = [
-  { title: "1. 개인정보의 처리 목적", body: "PetGrow는 카카오 간편로그인을 통한 회원 식별·계정 관리, 로그인 유지, 공지사항 제공, 문의·피드백 접수 및 답변 관리, 광고 문의 접수 및 상담(회사/브랜드명, 담당자명, 이메일, 선택 입력 연락처·예산), 직접광고 캠페인 운영 및 노출기간 관리, 반려동물 정보 저장 및 기기 간 동기화, PetBTI 등 서비스 결과 저장·다시보기, 보호자 궁합 계산, 고객 문의, 서비스 안정성·품질 개선, 광고 제공 및 성과 측정, 부정 이용 방지, 회원탈퇴 및 개인정보 삭제 처리를 위하여 필요한 범위에서 개인정보를 처리할 수 있습니다." },
-  { title: "2. 처리하는 개인정보 항목", body: "가. 카카오 간편로그인\n- 카카오가 제공하는 사용자 고유 식별정보\n- 닉네임, 프로필 이미지 등은 실제로 동의받아 제공받고 서비스에서 사용하는 경우에만 처리\n- 이메일 등 추가 정보는 실제 구현상 필요한 경우에만 동의를 받아 처리\n\n나. 반려동물 및 서비스 정보\n- 반려동물 이름, 종류, 품종, 생년월일, 성별, 현재 체중 및 성장 관련 정보\n- 반려동물 프로필 사진\n- PetBTI 결과 및 검사일\n- Pet사주 등 저장이 필요한 서비스 정보\n\n다. 보호자 궁합 입력정보\n- 보호자 이름, 보호자 생년월일\n- 위 정보는 보호자 궁합 결과를 계산하기 위해 해당 화면에서만 일시적으로 사용하며, 현재 구현상 PetGrow 서버 또는 계정에 저장하지 않습니다.\n\n라. 광고·제휴 문의 정보\n- 필수: 회사/브랜드명, 담당자명, 이메일, 문의 내용\n- 선택: 연락처, 광고 유형, 예산 등 이용자가 직접 입력한 상담 정보\n- 처리 목적: 광고·제휴 상담, 견적·캠페인 협의 및 문의 이력 관리\n\n마. 자동으로 처리될 수 있는 정보\n- IP 주소, 기기·운영체제·브라우저 또는 앱 정보\n- 접속 및 서비스 이용기록, 오류·보안 관련 기록\n- Google Mobile Ads SDK 사용 시 광고 제공·분석·부정행위 방지를 위해 IP 주소, 앱 실행·탭·동영상 조회 등 이용 상호작용 정보, 앱/SDK 성능 관련 진단정보, Android 광고 ID·App Set ID 등 기기 또는 계정 식별자가 Google에 의해 자동으로 수집·공유될 수 있습니다. 광고 ID의 수집 여부는 앱 설정 및 SDK 구성에 따라 달라질 수 있습니다.\n\nPetGrow는 서비스 제공에 필요하지 않은 전화번호, 친구목록 등의 개인정보를 불필요하게 요청하지 않는 것을 원칙으로 합니다. 보호자 궁합에서 입력하는 보호자 이름·생년월일은 궁합 계산에만 일시적으로 사용되며 현재 구현상 서버로 전송하거나 계정에 저장하지 않습니다." },
+  { title: "1. 개인정보의 처리 목적", body: "PetGrow는 카카오 간편로그인을 통한 회원 식별·계정 관리, 로그인 유지, 공지사항 제공, 문의·피드백 접수 및 답변 관리, 광고 문의 접수 및 상담(회사/브랜드명, 담당자명, 이메일, 선택 입력 연락처·예산), 직접광고 캠페인 운영 및 노출기간 관리, 반려동물 정보 저장 및 기기 간 동기화, PetBTI 등 서비스 결과 저장·다시보기, Pet음악 재생·좋아요·댓글 및 인기순위 제공, 보호자 궁합 계산, 고객 문의, 서비스 안정성·품질 개선, 광고 제공 및 성과 측정, 부정 이용 방지, 회원탈퇴 및 개인정보 삭제 처리, 이용자가 요청한 경우 현재 위치 기반 주변 반려동물 시설 검색을 위하여 필요한 범위에서 개인정보를 처리할 수 있습니다." },
+  { title: "2. 처리하는 개인정보 항목", body: "가. 카카오 간편로그인\n- 카카오가 제공하는 사용자 고유 식별정보\n- 닉네임, 프로필 이미지 등은 실제로 동의받아 제공받고 서비스에서 사용하는 경우에만 처리\n- 이메일 등 추가 정보는 실제 구현상 필요한 경우에만 동의를 받아 처리\n\n나. 반려동물 및 서비스 정보\n- 반려동물 이름, 종류, 품종, 생년월일, 성별, 현재 체중 및 성장 관련 정보\n- 반려동물 프로필 사진\n- PetBTI 결과 및 검사일\n- Pet사주 등 저장이 필요한 서비스 정보\n- Pet음악 좋아요·댓글 등 이용자가 직접 남긴 참여 기록\n\n다. 보호자 궁합 입력정보\n- 보호자 이름, 보호자 생년월일\n- 위 정보는 보호자 궁합 결과를 계산하기 위해 해당 화면에서만 일시적으로 사용하며, 현재 구현상 PetGrow 서버 또는 계정에 저장하지 않습니다.\n\n라. 광고·제휴 문의 정보\n- 필수: 회사/브랜드명, 담당자명, 이메일, 문의 내용\n- 선택: 연락처, 광고 유형, 예산 등 이용자가 직접 입력한 상담 정보\n- 처리 목적: 광고·제휴 상담, 견적·캠페인 협의 및 문의 이력 관리\n\n마. 자동으로 처리될 수 있는 정보\n- IP 주소, 기기·운영체제·브라우저 또는 앱 정보\n- 접속 및 서비스 이용기록, 오류·보안 관련 기록\n- Google Mobile Ads SDK 사용 시 광고 제공·분석·부정행위 방지를 위해 IP 주소, 앱 실행·탭·동영상 조회 등 이용 상호작용 정보, 앱/SDK 성능 관련 진단정보, Android 광고 ID·App Set ID 등 기기 또는 계정 식별자가 Google에 의해 자동으로 수집·공유될 수 있습니다. 광고 ID의 수집 여부는 앱 설정 및 SDK 구성에 따라 달라질 수 있습니다.\n\nPetGrow는 서비스 제공에 필요하지 않은 전화번호, 친구목록 등의 개인정보를 불필요하게 요청하지 않는 것을 원칙으로 합니다. 보호자 궁합에서 입력하는 보호자 이름·생년월일은 궁합 계산에만 일시적으로 사용되며 현재 구현상 서버로 전송하거나 계정에 저장하지 않습니다." },
   { title: "3. 개인정보의 저장 방식", body: "로그인 후 이용자가 등록하거나 생성한 정보는 단순히 '이 기기' 또는 '이 브라우저'에만 저장되는 구조를 원칙으로 하지 않으며, 로그인한 PetGrow 계정에 연결하여 서버 또는 클라우드 저장소에 저장·동기화될 수 있습니다. 동일한 카카오 계정으로 로그인하면 지원되는 다른 기기 또는 웹 환경에서 저장된 정보를 불러올 수 있습니다. 로그인 기능 도입 이전의 기존 기기 저장정보는 이용자의 선택에 따라 계정으로 이전될 수 있습니다." },
-  { title: "4. 개인정보의 처리 및 보유기간", body: "회원계정 및 계정에 연결된 개인정보는 원칙적으로 회원탈퇴 시까지 보유·이용합니다. 회원탈퇴 시 관계 법령에 따라 별도로 보관할 필요가 있는 정보를 제외하고 계정 및 관련 개인정보를 삭제합니다. 광고·제휴 문의를 통해 입력된 회사/브랜드명, 담당자명, 이메일, 선택 연락처·예산 및 문의 내용은 상담·제휴 검토 등 처리 목적이 달성될 때까지 보유하며, 목적 달성 후 지체 없이 삭제하는 것을 원칙으로 합니다. 분쟁 대응이나 법령상 보관 의무가 있는 경우에는 필요한 범위와 기간에 한해 별도로 보관할 수 있습니다. 외부 인증·광고·호스팅 사업자가 자체적으로 처리하는 정보는 해당 사업자의 정책 및 실제 처리 구조에 따를 수 있습니다." },
+  { title: "4. 개인정보의 처리 및 보유기간", body: "회원계정 및 계정에 연결된 개인정보는 원칙적으로 회원탈퇴 시까지 보유·이용합니다. 회원탈퇴 시 관계 법령에 따라 별도로 보관할 필요가 있는 정보를 제외하고 계정 및 관련 개인정보를 삭제합니다. Pet음악 좋아요와 댓글 등 계정에 연결된 참여 기록도 회원탈퇴 또는 해당 댓글 삭제 시 함께 삭제될 수 있습니다. 광고·제휴 문의를 통해 입력된 회사/브랜드명, 담당자명, 이메일, 선택 연락처·예산 및 문의 내용은 상담·제휴 검토 등 처리 목적이 달성될 때까지 보유하며, 목적 달성 후 지체 없이 삭제하는 것을 원칙으로 합니다. 분쟁 대응이나 법령상 보관 의무가 있는 경우에는 필요한 범위와 기간에 한해 별도로 보관할 수 있습니다. 외부 인증·광고·호스팅 사업자가 자체적으로 처리하는 정보는 해당 사업자의 정책 및 실제 처리 구조에 따를 수 있습니다." },
   { title: "5. 카카오 간편로그인", body: "PetGrow는 이용 편의를 위해 카카오 간편로그인을 제공할 수 있습니다. 로그인 과정에서 카카오의 동의 화면을 통해 이용자가 동의한 범위의 정보만 PetGrow에 제공될 수 있습니다. 처리 목적은 회원 식별, 계정 생성·관리, 사용자별 데이터 저장·동기화, 회원탈퇴 및 고객지원 등입니다." },
   { title: "6. 반려동물 정보 및 프로필 사진", body: "이용자가 등록한 반려동물 정보와 프로필 사진은 해당 PetGrow 계정과 연결하여 저장될 수 있으며, 우리 아이, 성장정보, Pet사주(기본 Pet사주·오늘의 펫운세·보호자 궁합), PetBTI 등 반려동물별 기능 제공에 이용될 수 있습니다." },
   { title: "7. 기존 기기 저장정보의 계정 이전", body: "카카오 간편로그인 도입 이전에 기기 또는 브라우저에 저장되어 있던 반려동물 정보가 있는 경우 이용자의 선택과 동의에 따라 로그인 계정으로 이전할 수 있습니다. 서버 저장이 정상 완료되기 전에 기존 데이터를 임의로 삭제하지 않도록 운영합니다." },
-  { title: "8. 개인정보의 제3자 제공·처리위탁 및 국외 이전", body: "PetGrow는 이용자의 개인정보를 임의로 판매하지 않습니다. 제3자 제공, 처리위탁 또는 국외 이전이 발생하는 경우 실제 데이터 흐름, 제공자, 처리 목적, 항목, 보유기간 및 관련 법령상 고지·동의 필요 여부를 확인하여 본 방침에 반영합니다. 실제 사용하는 DB, Storage 및 호스팅 사업자는 최종 배포 구조에 맞추어 구체적으로 기재합니다.\n\n현재 PetGrow는 회원 데이터 저장을 위해 Vercel(호스팅 및 서버리스 인프라), Vercel Postgres(데이터베이스, Neon 기반), Vercel Blob(Pet톡 게시글 사진 저장)을 사용하고 있으며, 이 과정에서 이용자의 반려동물 정보 및 Pet톡 게시물 등이 해당 사업자의 서버(국외 소재 가능)에 저장·처리될 수 있습니다." },
-  { title: "9. 외부 서비스 및 광고", body: "PetGrow는 서비스 운영을 위해 카카오(간편로그인), Google AdMob/Google Mobile Ads SDK(앱 광고), 데이터베이스·파일 저장·호스팅 제공업체 등을 사용할 수 있습니다. Google은 간편로그인 제공자가 아니라 광고 등 실제 사용하는 서비스의 제공자로만 기재합니다. Google Mobile Ads SDK는 광고 제공, 분석 및 부정행위 방지를 위해 IP 주소, 이용 상호작용, 진단정보, 기기·계정 식별자 등을 자동으로 처리할 수 있습니다. 개인 맞춤형 광고 여부와 광고 관련 선택권은 적용되는 지역의 법령, Google의 동의 관리 도구 설정 및 이용자의 기기·계정 설정에 따라 달라질 수 있습니다. 외부 사업자가 자체적으로 처리하는 개인정보에는 해당 사업자의 개인정보처리방침이 적용될 수 있습니다." },
+  { title: "8. 개인정보의 제3자 제공·처리위탁 및 국외 이전", body: "PetGrow는 이용자의 개인정보를 임의로 판매하지 않습니다. 제3자 제공, 처리위탁 또는 국외 이전이 발생하는 경우 실제 데이터 흐름, 제공자, 처리 목적, 항목, 보유기간 및 관련 법령상 고지·동의 필요 여부를 확인하여 본 방침에 반영합니다. 실제 사용하는 DB, Storage 및 호스팅 사업자는 최종 배포 구조에 맞추어 구체적으로 기재합니다.\n\n현재 PetGrow는 회원 데이터 저장을 위해 Vercel(호스팅 및 서버리스 인프라), Vercel Postgres(데이터베이스, Neon 기반), Vercel Blob(Pet톡 게시글 사진 및 Pet음악 음원·커버 이미지 저장)을 사용하고 있으며, 이 과정에서 이용자의 반려동물 정보 및 Pet톡 게시물 등이 해당 사업자의 서버(국외 소재 가능)에 저장·처리될 수 있습니다." },
+  { title: "9. 위치기반 주변 시설 안내", body: "PetGrow의 '내 주변 Pet'은 이용자가 위치 권한을 허용하거나 지역명을 직접 입력한 경우 주변 반려동물 관련 시설 정보를 검색해 보여주는 편의 기능입니다. 업체명·주소·전화번호·거리·영업정보 등은 외부 지도/장소 정보 제공자의 최신 데이터에 따라 달라질 수 있으므로 방문 또는 예약 전 해당 업체에 직접 확인해주세요. PetGrow는 이용자의 현재 위치 좌표를 회원 계정에 저장하지 않으며, 위치 권한은 언제든 기기 또는 브라우저 설정에서 철회할 수 있습니다." },
+  { title: "10. 외부 서비스 및 광고", body: "PetGrow는 서비스 운영을 위해 카카오(간편로그인), Google AdMob/Google Mobile Ads SDK(앱 광고), 데이터베이스·파일 저장·호스팅 제공업체 등을 사용할 수 있습니다. Google은 간편로그인 제공자가 아니라 광고 등 실제 사용하는 서비스의 제공자로만 기재합니다. Google Mobile Ads SDK는 광고 제공, 분석 및 부정행위 방지를 위해 IP 주소, 이용 상호작용, 진단정보, 기기·계정 식별자 등을 자동으로 처리할 수 있습니다. 개인 맞춤형 광고 여부와 광고 관련 선택권은 적용되는 지역의 법령, Google의 동의 관리 도구 설정 및 이용자의 기기·계정 설정에 따라 달라질 수 있습니다. 외부 사업자가 자체적으로 처리하는 개인정보에는 해당 사업자의 개인정보처리방침이 적용될 수 있습니다." },
   { title: "10. 쿠키·광고 식별자 및 이용자 선택권", body: "웹 서비스는 로그인 유지, 서비스 제공, 이용 현황 분석 또는 광고 제공 등을 위해 쿠키 및 유사 기술을 사용할 수 있습니다. 모바일 앱에서는 광고 ID 등 기기 식별자가 광고 SDK에 의해 사용될 수 있습니다. 이용자는 브라우저의 쿠키 설정, Android의 광고 개인정보 보호/광고 ID 설정 등 기기에서 제공하는 방법을 통해 일부 광고 관련 식별정보의 사용을 제한하거나 광고 ID를 재설정·삭제할 수 있습니다. 관련 법령상 동의가 필요한 지역에는 Google의 개인정보 보호 메시지 또는 동의 관리 절차가 표시될 수 있습니다. 일부 설정을 제한하면 맞춤형 광고가 제한되거나 서비스 일부 기능에 차이가 생길 수 있습니다." },
   { title: "11. 개인정보의 파기", body: "개인정보 처리 목적이 달성되거나 회원이 탈퇴한 경우 관계 법령상 보관 의무가 있는 정보를 제외하고 개인정보를 삭제합니다. 삭제 대상에는 PetGrow 계정, 카카오 인증 관련 식별정보, 반려동물 정보, 프로필 사진, 저장된 검사 및 서비스 결과, Pet톡에 작성한 게시글·댓글·좋아요 기록 및 첨부 사진 등이 포함될 수 있습니다." },
   { title: "12. 이용자의 권리", body: "이용자는 관련 법령에서 정한 범위에서 자신의 개인정보에 대한 열람, 정정, 삭제 또는 처리정지 등을 요청할 수 있습니다. 서비스 내 회원탈퇴 기능을 통해 계정 및 관련 데이터 삭제를 요청할 수 있으며, 앱 이용이 어려운 경우 help.petgrow@gmail.com으로 문의할 수 있습니다." },
@@ -1964,7 +2003,7 @@ const PRIVACY_SECTIONS_KO = [
   { title: "21. 개인정보처리방침의 변경", body: "서비스 기능, 개인정보 처리 방식, 외부 서비스 또는 관련 법령·정책 변경에 따라 본 개인정보처리방침이 변경될 수 있습니다. 중요한 변경사항은 PetGrow 웹사이트 또는 애플리케이션을 통해 안내합니다.\n\n이번 개정에는 광고·제휴 문의 시 처리되는 정보와 Google AdMob/Google Mobile Ads SDK를 통한 광고 관련 자동 처리 항목 및 이용자 선택권에 관한 내용을 보다 구체적으로 반영했습니다.\n\n또한 카카오 간편로그인 전 필수 이용약관·개인정보 수집·이용 동의와 선택 광고·마케팅 수신 동의를 구분하여 받을 수 있으며, 광고·제휴 문의 제출 시에는 해당 문의를 위한 개인정보 수집·이용 동의를 별도로 받습니다.\n\n최종 업데이트: 2026년 8월 16일\n시행일: 2026년 8월 16일" },
 ];
 const PRIVACY_SECTIONS_EN = [
-  { title: "1. Purpose of Processing", body: "PetGrow may process personal information to the extent necessary for: member identification and account management via Kakao Login; keeping you logged in; storing and syncing pet information across devices; saving and re-viewing results such as PetBTI; customer support; improving service stability and quality; delivering ads and measuring ad performance; preventing fraud; and processing account deletion and related data removal." },
+  { title: "1. Purpose of Processing", body: "PetGrow may process personal information to the extent necessary for: member identification and account management via Kakao Login; keeping you logged in; storing and syncing pet information across devices; saving and re-viewing results such as PetBTI; providing Pet Music playback, likes, comments, and popularity rankings; customer support; improving service stability and quality; delivering ads and measuring ad performance; preventing fraud; and processing account deletion and related data removal." },
   { title: "2. Categories of Personal Information Processed", body: "a. Kakao Login\n- The unique user identifier provided by Kakao\n- Nickname and profile image are only processed where actually consented to and used by the service\n- Additional info such as email is only requested with consent where actually needed\n\nb. Pet & service information\n- Pet name, species, breed, birth date, sex, current weight, and growth-related information\n- Pet profile photo\n- PetBTI results and test date\n- Saju and other service results that need to be saved\n\nc. Guardian compatibility input\n- Guardian name and date of birth\n- These are used temporarily on the compatibility screen to calculate the result and, in the current implementation, are not sent to or stored on PetGrow servers or the account.\n\nd. Information that may be processed automatically\n- IP address, device/OS/browser or app info\n- Access and usage logs, error/security logs\n- Advertising identifiers and ad interaction data\n\nPetGrow's principle is not to request phone number, gender, birthday, friend list, or other information not needed for the service." },
   { title: "3. How Information Is Stored", body: "Information you register or create after logging in is not simply stored on 'this device' or 'this browser' — it is linked to your logged-in PetGrow account and may be stored/synced on our servers or cloud storage. Logging in with the same Kakao account lets you retrieve your saved information on other supported devices or the web. Data stored locally before Kakao Login was introduced may be migrated to your account with a separate process." },
   { title: "4. Retention Period", body: "Member accounts and connected personal information are generally retained until account deletion. Upon deletion, the account and related personal information are deleted except where retention is required by law. Information processed by external authentication, advertising, or hosting providers follows those providers' own policies and actual processing structure." },
@@ -1993,7 +2032,7 @@ const TERMS_SECTIONS_KO = [
   { title: "제4조 (회원가입 및 이용계약)", body: "이용자가 카카오 간편로그인 등 PetGrow가 제공하는 인증 절차를 완료하고 필요한 약관 및 개인정보 관련 절차에 동의하면 이용계약이 성립할 수 있습니다." },
   { title: "제5조 (카카오 간편로그인)", body: "① PetGrow는 회원 편의를 위해 카카오의 외부 인증 서비스를 이용한 간편로그인을 제공할 수 있습니다.\n② 회원은 카카오 계정을 이용하여 PetGrow에 로그인할 수 있습니다.\n③ 카카오 서비스의 장애, 정책 변경 또는 이용자의 카카오 계정 상태에 따라 로그인이 일시적으로 제한될 수 있습니다.\n④ 카카오 인증 서비스 자체에 대해서는 카카오의 이용약관 및 개인정보처리방침이 적용될 수 있습니다." },
   { title: "제6조 (계정 및 로그인 상태 관리)", body: "회원은 자신의 카카오 계정을 안전하게 관리해야 합니다. PetGrow의 주요 기능은 로그인한 회원에게 제공될 수 있으며, 로그아웃 시 서버에 저장된 계정 데이터는 삭제되지 않습니다. 동일한 카카오 계정으로 다시 로그인하면 저장된 정보를 불러올 수 있습니다." },
-  { title: "제7조 (서비스 제공)", body: "PetGrow는 우리 아이 등록·관리, 성장 예상 및 성장정보, Pet사주, PetBTI, Pet정보, Pet톡 커뮤니티, 공지사항, 문의·피드백(공개/비공개 선택 및 운영진 답변), 광고 문의 및 제휴 광고 안내(직접광고 배너·사이트 내부 프로모션 모달 포함), 회원정보(계정·닉네임·활동 관리), 계정별 데이터 저장 및 기기 간 동기화 등의 서비스를 제공할 수 있습니다." },
+  { title: "제7조 (서비스 제공)", body: "PetGrow는 우리 아이 등록·관리, 성장 예상 및 성장정보, Pet사주, PetBTI, Pet음악(음원 재생·반복재생·좋아요·댓글·인기순위), Pet정보, Pet톡 커뮤니티, 공지사항, 문의·피드백(공개/비공개 선택 및 운영진 답변), 광고 문의 및 제휴 광고 안내(직접광고 배너·사이트 내부 프로모션 모달 포함), 회원정보(계정·닉네임·활동 관리), 계정별 데이터 저장 및 기기 간 동기화 등의 서비스를 제공할 수 있습니다." },
   { title: "제8조 (데이터 저장 및 동기화)", body: "로그인 회원이 등록한 반려동물 정보와 일부 서비스 결과는 회원 계정에 연결하여 서버 또는 클라우드 저장소에 저장될 수 있습니다. 따라서 서비스 내에서 '이 기기에만 저장', '이 브라우저에만 저장'되는 것으로 안내하지 않습니다. 동일한 카카오 계정으로 로그인하면 지원되는 다른 기기 또는 웹 환경에서 저장된 정보를 불러올 수 있습니다. 다만 카카오 간편로그인 도입 이전의 기존 로컬 데이터는 별도의 이전 절차가 적용될 수 있습니다." },
   { title: "제9조 (이용자의 의무)", body: "이용자는 타인의 계정·정보 도용, 시스템의 정상 운영 방해, 취약점 악용, 불법적인 데이터 수집, PetGrow 또는 제3자의 권리 침해, 관계 법령 위반 등의 행위를 해서는 안 됩니다." },
   { title: "제10조 (서비스 이용 제한)", body: "이용자가 본 약관 또는 관계 법령을 위반하거나 서비스의 안정적인 운영을 방해하는 경우 PetGrow는 필요한 범위에서 서비스 이용을 제한하거나 이용계약을 해지할 수 있습니다. Pet톡 운영정책 위반의 경우 운영자가 신고 및 위반 내용을 검토하여 1일, 7일, 30일 또는 영구 이용제한을 적용하거나 해제할 수 있습니다. 신고 접수만을 이유로 자동 이용제한하지 않으며, 이용제한·해제·신고처리 등 관리자 조치는 운영 및 보안 목적으로 기록될 수 있습니다." },
@@ -2002,6 +2041,7 @@ const TERMS_SECTIONS_KO = [
   { title: "제12조 (반려동물 관련 정보 및 계산 결과)", body: "PetGrow의 성장 예상, 체중 계산 및 기타 반려동물 관련 정보는 일반적인 자료와 이용자가 입력한 정보를 기반으로 제공되는 참고용 정보이며 실제 결과를 보장하지 않습니다." },
   { title: "제13조 (건강 관련 정보)", body: "PetGrow에서 제공하는 건강, 식단, 영양 및 관리 정보는 일반적인 참고정보이며 수의사의 진료, 진단 또는 처방을 대신하지 않습니다. 반려동물에게 이상 증상이나 응급상황이 있는 경우 수의사 또는 동물병원의 진료를 받아야 합니다." },
   { title: "제14조 (Pet사주·PetBTI 등 재미 콘텐츠)", body: "기본 Pet사주, 오늘의 펫운세, 보호자 궁합 및 PetBTI는 재미와 참고를 위한 콘텐츠이며 과학적 진단, 의학적 판단, 성격 진단 또는 미래 결과를 보장하는 자료가 아닙니다. 보호자 궁합을 위해 입력한 보호자 이름과 생년월일은 현재 구현상 결과 계산에만 일시적으로 사용되며 PetGrow 서버 또는 계정에 저장되지 않습니다." },
+  { title: "제14조의2 (Pet음악)", body: "① PetGrow는 강아지·고양이 등을 위한 음원 재생, 1곡 반복·전체 반복, 좋아요, 댓글 및 인기순위 기능을 제공할 수 있습니다.\n② Pet음악은 서비스 내 스트리밍 재생을 원칙으로 하며 별도의 음원 다운로드 기능을 제공하지 않을 수 있습니다. 이용자는 서비스에서 제공되는 음원을 무단 추출·복제·재판매 또는 재배포해서는 안 됩니다.\n③ 좋아요·댓글 등 이용자 반응은 인기순위 산정 및 서비스 개선에 활용될 수 있습니다. 댓글에는 Pet톡 게시물과 동일하게 타인의 권리 침해, 불법·유해 콘텐츠 등 금지행위 기준이 적용될 수 있습니다.\n④ PetGrow가 직접 등록하는 음원은 서비스 운영에 필요한 이용 권한을 확인한 범위에서 제공하는 것을 원칙으로 합니다." },
   { title: "제15조 (광고 및 외부 서비스)", body: "① PetGrow는 서비스의 유지·운영을 위해 직접광고, 제휴광고 및 Google AdMob 등 외부 광고 서비스를 제공할 수 있습니다.\n② Google Mobile Ads SDK 사용 시 광고 제공, 분석 및 부정행위 방지를 위해 IP 주소, 앱 실행·탭·동영상 조회 등 이용 상호작용, 앱/SDK 진단정보, Android 광고 ID·App Set ID 등 기기 또는 계정 식별자가 Google에 의해 자동으로 처리될 수 있습니다. 구체적인 처리 범위는 앱 버전, SDK 설정 및 이용자의 기기 설정에 따라 달라질 수 있습니다.\n③ 개인 맞춤형 광고가 제공되는 경우 적용 법령과 Google의 동의 관리 절차에 따라 필요한 안내·동의 또는 선택권을 제공합니다. 이용자는 기기 설정에서 광고 ID를 재설정·삭제하거나 광고 개인정보 보호 관련 설정을 변경할 수 있습니다.\n④ PetGrow는 직접광고의 노출·클릭 및 광고 표시 요청·성공·오류 등의 집계 통계를 운영할 수 있습니다. PetGrow 관리자 화면의 자체 통계는 Google AdMob의 실제 광고 노출수·클릭수·수익 보고서와 구분됩니다.\n⑤ 외부 광고 서비스에는 해당 제공자의 이용약관 및 개인정보처리방침이 적용될 수 있습니다." },
   { title: "제16조 (개인정보 보호 및 광고·제휴 문의)", body: "① 회원 및 이용자의 개인정보 처리에 관한 사항은 PetGrow 개인정보처리방침에 따릅니다.\n② 이용자가 광고·제휴 문의 기능을 사용하는 경우 회사/브랜드명, 담당자명, 이메일, 문의 내용과 선택 입력한 연락처·광고 유형·예산 등의 정보가 상담 및 제휴 검토를 위해 처리될 수 있습니다.\n③ 광고·제휴 문의 정보는 상담 목적 달성 후 삭제하는 것을 원칙으로 하며, 이용자는 help.petgrow@gmail.com을 통해 관련 정보의 열람·정정·삭제를 요청할 수 있습니다." },
   { title: "제17조 (지식재산권)", body: "PetGrow가 직접 제작한 로고, 디자인, 문구, 프로그램 및 콘텐츠에 대한 권리는 PetGrow 또는 정당한 권리자에게 귀속됩니다. 이용자는 권리자의 허락 없이 이를 영리 목적으로 복제·배포·판매 또는 변형해서는 안 됩니다." },
@@ -2022,7 +2062,7 @@ const TERMS_SECTIONS_EN = [
   { title: "Article 4 (Membership and Service Agreement)", body: "A service agreement may be formed once a user completes an authentication procedure provided by PetGrow (such as Kakao Login) and agrees to the required terms and personal-information procedures." },
   { title: "Article 5 (Kakao Login)", body: "① PetGrow may provide Kakao Login, using Kakao's external authentication service, for member convenience.\n② Members may log in to PetGrow using their Kakao account.\n③ Login may be temporarily limited due to Kakao service outages, policy changes, or the status of a user's Kakao account.\n④ Kakao's own Terms of Service and Privacy Policy may apply to the Kakao authentication service itself." },
   { title: "Article 6 (Account and Login Session Management)", body: "Members must securely manage their own Kakao account. PetGrow's core features may be provided to logged-in members, and account data stored on the server is not deleted upon logout. Logging in again with the same Kakao account lets you retrieve your saved information." },
-  { title: "Article 7 (Provision of Service)", body: "PetGrow may provide services including registering/managing pets, growth prediction and growth info, basic Pet Saju, Daily Pet Fortune, Guardian Compatibility, PetBTI, Pet Info, the Pet Talk community, member-info/nickname/activity management, and per-account data storage and cross-device sync." },
+  { title: "Article 7 (Provision of Service)", body: "PetGrow may provide services including registering/managing pets, growth prediction and growth info, basic Pet Saju, Daily Pet Fortune, Guardian Compatibility, PetBTI, Pet Music (playback, looping, likes, comments, and popularity rankings), Pet Info, the Pet Talk community, member-info/nickname/activity management, and per-account data storage and cross-device sync." },
   { title: "Article 8 (Data Storage and Sync)", body: "Pet information and certain service results registered by a logged-in member may be stored on our servers or cloud storage, linked to the member's account. Accordingly, the service does not describe data as being stored 'only on this device' or 'only in this browser.' Logging in with the same Kakao account lets you retrieve saved information on other supported devices or the web. Local data predating Kakao Login may be subject to a separate migration process." },
   { title: "Article 9 (User Obligations)", body: "Users must not impersonate or misuse another person's account or information, interfere with normal system operation, exploit vulnerabilities, unlawfully collect data, infringe the rights of PetGrow or third parties, or violate applicable law." },
   { title: "Article 10 (Restriction of Service Use)", body: "If a user violates these Terms or applicable law, or interferes with stable operation, PetGrow may restrict use or terminate the service agreement to the necessary extent. For Pet Talk policy violations, an administrator may review the report and violation and apply or remove a 1-day, 7-day, 30-day, or permanent Pet Talk restriction. A report alone does not automatically restrict an account, and moderation actions may be logged for operational and security purposes." },
@@ -2031,6 +2071,7 @@ const TERMS_SECTIONS_EN = [
   { title: "Article 12 (Pet-Related Information and Calculated Results)", body: "PetGrow's growth predictions, weight calculations, and other pet-related information are reference information based on general data and information entered by the user, and do not guarantee actual outcomes." },
   { title: "Article 13 (Health-Related Information)", body: "Health, diet, nutrition, and care information provided by PetGrow is general reference information and does not replace examination, diagnosis, or treatment by a veterinarian. If your pet shows abnormal symptoms or an emergency, please see a veterinarian or animal hospital." },
   { title: "Article 14 (Saju, PetBTI, and Other Entertainment Content)", body: "Saju and PetBTI are content for entertainment and reference purposes, and are not scientific diagnosis, medical judgment, or a guarantee of future outcomes." },
+  { title: "Article 14-2 (Pet Music)", body: "① PetGrow may provide music playback for dogs, cats, and other pets, including single-track loop, all-track loop, likes, comments, and popularity rankings.\n② Pet Music is primarily provided for in-service streaming. A separate audio download feature may not be provided, and users must not extract, reproduce, resell, or redistribute the audio without authorization.\n③ Likes and comments may be used to calculate popularity rankings and improve the service. Music comments may be subject to the same prohibited-content and rights-protection standards that apply to Pet Talk content.\n④ Music uploaded directly by PetGrow is intended to be provided only where PetGrow has confirmed the rights necessary for service operation." },
   { title: "Article 15 (Advertising and External Services)", body: "PetGrow may use external services such as advertising, Kakao authentication, and Google AdMob to operate the service. Google is not provided as a login method; the terms and privacy policy of external providers apply only to services actually used, such as advertising. PetGrow may record aggregate counts of ad display requests, successful display requests, and errors for operational monitoring. These internal figures are not verified impressions, clicks, or revenue; official AdMob or advertising-platform reports remain the source for such figures." },
   { title: "Article 16 (Protection of Personal Information)", body: "Matters regarding processing of members' personal information follow the PetGrow Privacy Policy." },
   { title: "Article 17 (Intellectual Property)", body: "Rights to logos, designs, text, programs, and content created directly by PetGrow belong to PetGrow or its rightful owners. Users must not reproduce, distribute, sell, or modify these for commercial purposes without the rights holder's permission." },
@@ -2231,6 +2272,7 @@ function AccountButton({ account, onOpen }) {
 // 모바일 웹 전용 햄버거 메뉴 — 슬라이드 애니메이션, 오버레이, X 닫기, 바깥 터치 시 닫힘, 뒤 스크롤 잠금
 function HamburgerMenu({ open, onClose, view, onNavigate, onOpenAccount, account }) {
   const t = useT();
+  const lang = useLang();
   useEffect(() => {
     if (!open) return;
     const prevOverflow = document.body.style.overflow;
@@ -2242,9 +2284,11 @@ function HamburgerMenu({ open, onClose, view, onNavigate, onOpenAccount, account
     { key: "home", label: t.hamNavHome, Icon: HomeIcon },
     { key: "about", label: t.aboutNav, Icon: InfoIcon },
     { key: "pets", label: t.myPetsNav, Icon: PawIcon },
+    { key: "nearby", label: t.nearbyNav, Icon: MapPinIcon },
     { key: "community", label: t.communityNav, Icon: TalkIcon },
     { key: "saju", label: t.sajuNav, Icon: SajuIcon },
     { key: "petbti", label: t.petBtiNav, Icon: PetBtiIcon },
+    { key: "music", label: lang === "en" ? "Pet Music" : "Pet음악", Icon: MusicIcon },
     { key: "tips", label: t.tipsTitle, Icon: LightbulbIcon },
   ];
 
@@ -3007,6 +3051,7 @@ const GlobalStyle = () => (
     .cm-filter-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
     .cm-filter-wrap .tab-pill{flex:0 0 auto;}
     .cm-demo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:4px;}
+    .cm-sample-showcase{margin:12px 0 18px;padding:16px;border-radius:22px;background:linear-gradient(145deg,#F4FAF5,#FFF9F0);border:1px solid #E1EBE3}.cm-sample-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;margin-bottom:12px}.cm-sample-head>div{display:grid;gap:2px}.cm-sample-head span{font-size:9px;letter-spacing:.12em;font-weight:900;color:#579163}.cm-sample-head b{font-size:15px}.cm-sample-head small{font-size:10px;color:var(--sub);text-align:right;max-width:240px;line-height:1.5}@media(max-width:640px){.cm-sample-head{display:grid;align-items:start}.cm-sample-head small{text-align:left;max-width:none}}
     .cm-demo-card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:0 5px 16px rgba(0,0,0,.035);}
     .cm-demo-badge{display:inline-flex;padding:3px 8px;border-radius:999px;background:#F2F6F1;color:#786326;font-size:10px;font-weight:800;margin-bottom:8px;}
     @media(max-width:640px){.cm-demo-grid{grid-template-columns:1fr}.cm-filter-wrap{overflow-x:auto;flex-wrap:nowrap;padding-bottom:3px;-webkit-overflow-scrolling:touch}.cm-filter-wrap::-webkit-scrollbar{display:none}}
@@ -4173,6 +4218,9 @@ const GlobalStyle = () => (
     .admin-found span,.admin-member-row>div:first-child{display:flex;flex-direction:column;gap:3px}.admin-found small,.admin-member-row small{color:#7b857e;font-size:11px}
     .admin-member-row>div:last-child{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.admin-member-row button,.admin-found button,.admin-member-row select,.admin-found select{min-height:36px;border:1px solid #dce6de;border-radius:10px;background:#fff;padding:0 10px}
     .support-page{max-width:920px;margin:0 auto;padding:8px 20px 70px}.support-head{display:flex;gap:14px;align-items:center;margin-bottom:14px}.support-head h1{font-size:24px}.support-head p{color:#738078;font-size:12px}
+.support-head{justify-content:space-between}.support-head>div:first-child{min-width:0}.support-back-right{margin-left:auto;flex:0 0 auto}
+.petmusic-page{max-width:980px;margin:0 auto;padding:4px 20px 80px}.petmusic-hero{border-radius:24px;padding:24px;background:linear-gradient(135deg,#f2f8f3,#fff);border:1px solid #dfece1;margin-bottom:18px;overflow:hidden;position:relative}.petmusic-hero:after{content:"♫";position:absolute;right:26px;top:10px;font-size:72px;color:rgba(79,138,91,.10);font-family:serif}.petmusic-hero h1{font-size:26px;margin:0 0 6px}.petmusic-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 20px}.petmusic-tabs button{border:1px solid #d7e6da;background:#fff;border-radius:999px;padding:9px 15px;font-weight:800;color:#66736a;cursor:pointer}.petmusic-tabs button.active{background:var(--primary);color:#fff;border-color:var(--primary)}.petmusic-top5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:24px}.petmusic-rank{background:#fff;border:1px solid #e2ebe3;border-radius:18px;padding:9px;cursor:pointer;box-shadow:0 6px 18px rgba(39,77,50,.05)}.petmusic-rank img,.petmusic-rank-cover{width:100%;aspect-ratio:1;border-radius:13px;object-fit:cover;background:linear-gradient(145deg,#e7f3ea,#f8efe7);display:grid;place-items:center;font-size:34px}.petmusic-rank b{display:block;font-size:12px;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.petmusic-rank small{font-size:10px;color:#869188}.petmusic-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.petmusic-card{display:grid;grid-template-columns:126px minmax(0,1fr);gap:15px;border:1px solid #e0ebe2;border-radius:22px;background:#fff;padding:13px;box-shadow:0 7px 22px rgba(38,78,50,.055)}.petmusic-cover{width:126px;height:126px;border-radius:17px;object-fit:cover;background:linear-gradient(145deg,#e9f5ec,#fbf1eb);display:grid;place-items:center;font-size:40px}.petmusic-title{font-size:16px;font-weight:900;margin-bottom:3px}.petmusic-date{font-size:11px;color:#8b958e}.petmusic-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.petmusic-actions button{border:1px solid #dce8de;background:#f8fbf9;border-radius:10px;padding:7px 9px;font-size:11px;font-weight:800;cursor:pointer}.petmusic-actions button.liked{background:#fff0f4;border-color:#f4c6d2;color:#cf4e6c}.petmusic-player{display:flex;align-items:center;gap:8px;margin-top:8px}.petmusic-play{width:38px;height:38px;border:0;border-radius:50%;background:var(--primary);color:#fff;font-size:16px;cursor:pointer}.petmusic-loop{font-size:10px;border:1px solid #dce8de;background:#fff;border-radius:9px;padding:6px 8px;cursor:pointer}.petmusic-loop.active{background:#eaf5ed;color:var(--primary-dark);border-color:#bcd6c2}.petmusic-pagination{display:flex;justify-content:center;gap:6px;margin-top:24px;flex-wrap:wrap}.petmusic-pagination button{min-width:34px;height:34px;border-radius:10px;border:1px solid #dce8de;background:#fff;font-weight:800;cursor:pointer}.petmusic-pagination button.active{background:var(--primary);color:#fff}.petmusic-comments{margin-top:10px;border-top:1px solid #edf2ee;padding-top:9px}.petmusic-comment-row{font-size:11px;padding:6px 0;border-bottom:1px dashed #edf1ee}.petmusic-comment-form{display:flex;gap:6px;margin-top:7px}.petmusic-comment-form input{flex:1;min-width:0;border:1px solid #dfe9e1;border-radius:10px;padding:8px 9px;font-size:11px}.petmusic-comment-form button{border:0;border-radius:10px;background:var(--primary);color:#fff;font-weight:800;padding:0 10px}.admin-music-form{display:grid;grid-template-columns:1fr 170px;gap:12px}.admin-music-form .full{grid-column:1/-1}.admin-music-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}.admin-music-row{display:grid;grid-template-columns:54px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px;border:1px solid #e2ebe3;border-radius:15px}.admin-music-thumb{width:54px;height:54px;object-fit:cover;border-radius:12px;background:#eef6f0;display:grid;place-items:center}.admin-music-row small{display:block;color:#88938b;font-size:10px}.admin-music-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.admin-music-actions button{border:1px solid #dce8de;background:#fff;border-radius:9px;padding:7px 9px;font-size:11px;font-weight:800;cursor:pointer}
+@media(max-width:760px){.support-head{align-items:center}.support-head h1{font-size:22px}.support-back-right{padding:8px 12px}.petmusic-page{padding:2px 12px 76px}.petmusic-top5{grid-template-columns:repeat(5,132px);overflow-x:auto;padding-bottom:5px}.petmusic-grid{grid-template-columns:1fr}.petmusic-card{grid-template-columns:104px minmax(0,1fr)}.petmusic-cover{width:104px;height:104px}.admin-music-form{grid-template-columns:1fr}.admin-music-form .full{grid-column:auto}.admin-music-row{grid-template-columns:46px minmax(0,1fr)}.admin-music-actions{grid-column:1/-1;justify-content:flex-start}}
     .ad-inquiry-head{justify-content:space-between;align-items:flex-start}.ad-inquiry-head>div{min-width:0}.ad-inquiry-back{margin-left:auto;flex:0 0 auto}
     .support-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:14px}.support-tabs button{border:1px solid #dfe8e1;background:#fff;border-radius:14px;padding:11px 8px;font-weight:800}.support-tabs button.active{background:#eaf4ec;color:#397247}
     .support-list{display:flex;flex-direction:column;gap:8px}.support-row{width:100%;text-align:left;border:1px solid #e4ebe5!important;cursor:pointer}.support-row>div:first-child{display:flex;gap:7px;align-items:center}.support-row b{font-size:14px}.support-badge,.support-pin{font-size:10px;border-radius:8px;padding:3px 6px;background:#eef5ef;color:#477453}.support-pin{background:#fff2d8;color:#8b671a}.support-meta{display:flex;gap:9px;color:#879088;font-size:10px;margin-top:7px}.support-detail{border-top:1px solid #edf1ed;margin-top:10px;padding-top:10px;white-space:pre-wrap;line-height:1.7}.support-reply{background:#f2f7f3;border-radius:12px;padding:11px;margin-top:10px}.support-write{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:10px}.support-textarea{height:150px!important;padding:12px!important;resize:vertical}.support-public-toggle{display:flex;gap:10px;align-items:flex-start;padding:12px;border:1px solid #e1e8e2;border-radius:14px}.support-public-toggle span{display:flex;flex-direction:column}.support-public-toggle small{color:#7c877f;margin-top:3px}.support-pagination{display:flex;justify-content:center;align-items:center;gap:12px;margin:16px}.support-pagination button{border:1px solid #dfe7e0;background:#fff;border-radius:10px;padding:8px 12px}
@@ -4506,6 +4554,27 @@ const GlobalStyle = () => (
       padding-right:12px!important;
     }
   }
+
+  /* ===== 내 주변 Pet ===== */
+  .nearby-page{max-width:980px;margin:0 auto;padding:22px 20px 48px}
+  .nearby-hero{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:24px 26px;background:linear-gradient(135deg,#F4FAF5,#FFFFFF);overflow:hidden;position:relative}
+  .nearby-hero:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;right:-58px;top:-78px;background:rgba(79,138,91,.09)}
+  .nearby-eyebrow{font-size:11px;font-weight:900;letter-spacing:.12em;color:#4F8A5B}
+  .nearby-hero h1{margin:5px 0 7px;font-size:30px;letter-spacing:-.04em}.nearby-hero p{margin:0;color:var(--sub);line-height:1.65;font-size:14px}
+  .nearby-locate-btn{position:relative;z-index:2;border:0;border-radius:16px;background:#4F8A5B;color:#fff;padding:14px 18px;font-weight:800;display:flex;align-items:center;gap:7px;box-shadow:0 10px 24px rgba(79,138,91,.22);cursor:pointer;white-space:nowrap}.nearby-locate-btn .icon{width:18px}
+  .nearby-search-row{display:grid;grid-template-columns:1fr auto;gap:9px;margin:12px 0}.nearby-search-row .bg-btn{min-width:82px}
+  .nearby-cats{display:flex;gap:7px;overflow:auto;padding:2px 0 12px;scrollbar-width:none}.nearby-cats::-webkit-scrollbar{display:none}.nearby-cats button{border:1px solid #DDE8DF;background:#fff;border-radius:999px;padding:9px 13px;font-weight:750;color:#657269;white-space:nowrap;cursor:pointer}.nearby-cats button.active{background:#4F8A5B;border-color:#4F8A5B;color:#fff}
+  .nearby-map-card{padding:0;overflow:hidden}.nearby-map-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #EDF1ED}.nearby-map-head>div{display:flex;flex-direction:column;gap:2px}.nearby-map-head small{color:var(--sub)}.nearby-live-pill{font-size:11px;font-weight:850;color:#397447;background:#EDF7EF;border-radius:999px;padding:7px 9px}
+  .nearby-map{height:410px;position:relative;background:linear-gradient(145deg,#EEF5EF,#F8FBF8)}.nearby-map-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:7px;color:#607067;padding:20px}.nearby-map-fallback .icon{width:38px;color:#4F8A5B}.nearby-map-fallback span{font-size:12px;max-width:390px;line-height:1.6}
+  .nearby-me-pin{display:grid;place-items:center;position:relative}.nearby-me-pin span{width:18px;height:18px;border-radius:50%;background:#4F8A5B;border:4px solid #fff;box-shadow:0 0 0 9px rgba(79,138,91,.18),0 3px 12px rgba(44,83,53,.28);animation:nearbyPulse 1.8s ease-out infinite}.nearby-me-pin b{margin-top:10px;background:#26372C;color:#fff;border-radius:999px;padding:5px 8px;font-size:10px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+  @keyframes nearbyPulse{0%{box-shadow:0 0 0 0 rgba(79,138,91,.3),0 3px 12px rgba(44,83,53,.28)}70%{box-shadow:0 0 0 14px rgba(79,138,91,0),0 3px 12px rgba(44,83,53,.28)}100%{box-shadow:0 0 0 0 rgba(79,138,91,0),0 3px 12px rgba(44,83,53,.28)}}
+  .nearby-map-marker{width:34px;height:40px;border:0;background:#fff;border-radius:16px 16px 16px 3px;transform:rotate(-45deg);box-shadow:0 6px 16px rgba(35,54,40,.2);display:grid;place-items:center;cursor:pointer}.nearby-map-marker span{transform:rotate(45deg);width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#4F8A5B;color:#fff;font-size:11px;font-weight:900}
+  .nearby-message{margin:10px 0;padding:11px 13px;border-radius:12px;background:#FFF8E8;color:#8A6920;font-size:12px}
+  .nearby-results-head{display:flex;align-items:flex-end;justify-content:space-between;margin:18px 2px 10px}.nearby-results-head>div{display:flex;align-items:center;gap:8px}.nearby-results-head h2{margin:0;font-size:20px}.nearby-results-head span{font-size:11px;background:#EDF5EE;color:#4F8A5B;border-radius:999px;padding:4px 7px;font-weight:800}.nearby-results-head small{color:var(--sub)}
+  .nearby-list{display:grid;gap:10px}.nearby-place{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;padding:16px;transition:.18s ease;cursor:pointer}.nearby-place:hover,.nearby-place.selected{border-color:#9FC4A6;box-shadow:0 10px 24px rgba(61,99,70,.09);transform:translateY(-1px)}.nearby-rank{width:30px;height:30px;border-radius:10px;background:#EFF6F0;color:#4F8A5B;display:grid;place-items:center;font-size:12px;font-weight:900}.nearby-place-title{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.nearby-place-title h3{font-size:16px;margin:0;letter-spacing:-.03em}.nearby-place-title strong{color:#4F8A5B;font-size:13px;white-space:nowrap}.nearby-place-meta{display:grid;gap:4px;margin-top:7px;font-size:12.5px;color:#56645B;line-height:1.5}.nearby-place-main>small{display:block;color:#89948C;margin-top:6px;font-size:10.5px}.nearby-place-actions{display:flex;gap:6px}.nearby-place-actions a{border-radius:10px;padding:8px 10px;background:#F1F6F2;color:#426F4B;text-decoration:none;font-size:11px;font-weight:800}.nearby-empty{text-align:center;padding:34px;color:var(--sub)}.nearby-disclaimer{font-size:11px;color:#8B948E;line-height:1.6;margin:14px 4px}
+  .admin-menu-analytics{margin-top:14px;padding:18px}.admin-menu-analytics-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:14px}.admin-menu-analytics-head h3{margin:0;font-size:18px}.admin-menu-analytics-head small{color:var(--sub)}.admin-menu-row{display:grid;grid-template-columns:110px 1fr 72px;gap:10px;align-items:center;margin:10px 0}.admin-menu-name{font-size:12px;font-weight:800}.admin-menu-bar{height:9px;background:#EDF1ED;border-radius:999px;overflow:hidden}.admin-menu-bar i{display:block;height:100%;background:linear-gradient(90deg,#9FC4A6,#4F8A5B);border-radius:inherit}.admin-menu-value{text-align:right;font-size:11px;color:#657269}.admin-menu-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#315B39;font-weight:850}
+  @media(max-width:700px){.nearby-page{padding:12px 12px 36px}.nearby-hero{padding:18px;display:grid}.nearby-hero h1{font-size:25px}.nearby-locate-btn{width:100%;justify-content:center}.nearby-map{height:330px}.nearby-place{grid-template-columns:auto 1fr}.nearby-place-actions{grid-column:2;justify-content:flex-start}.nearby-place-title{display:block}.nearby-place-title strong{display:block;margin-top:3px}.admin-menu-row{grid-template-columns:82px 1fr 60px}}
+
 `}</style>
 );
 
@@ -5961,7 +6030,7 @@ const TIPS_DATA = [
     summary: { ko: "새 공간에 대한 불안은 자연스러운 반응이에요. 익숙한 담요·장난감을 먼저 놓아주세요.", en: "Anxiety about a new space is completely normal. Set out familiar blankets and toys first." },
     body: { ko: "며칠간은 방 하나만 먼저 개방하고 점차 넓혀가는 게 좋고, 사료·화장실 위치는 최대한 빨리 고정해주는 게 안정에 도움이 돼요.", en: "Opening up just one room at first and gradually expanding helps, and settling on a fixed spot for food and litter/potty as soon as possible aids adjustment." } },
   { id: "t9", category: "dog", featured: false,
-    title: { ko: "초코릿, 왜 강아지에게 위험할까?", en: "Why chocolate is dangerous for dogs" },
+    title: { ko: "초콜릿, 왜 강아지에게 위험할까?", en: "Why chocolate is dangerous for dogs" },
     summary: { ko: "테오브로민 성분을 강아지는 잘 분해하지 못해서 소량도 위험할 수 있어요.", en: "Dogs can't metabolize theobromine well, so even a small amount can be dangerous." },
     body: { ko: "다크초콜릿일수록 더 위험해요. 섭취를 의심되면 양과 시간을 기록해두고 바로 동물병원에 연락하세요.", en: "Darker chocolate is more dangerous. If ingestion is suspected, note the amount and time, and contact a vet immediately." } },
   { id: "t10", category: "cat", featured: false,
@@ -5979,7 +6048,7 @@ const TIPS_DATA = [
   { id: "t13", category: "dog", featured: false,
     title: { ko: "강아지 사회화, 언제가 적기일까?", en: "The best window for puppy socialization" },
     summary: { ko: "생후 3~14주가 사회화에 특히 중요한 시기로 알려져 있어요.", en: "Weeks 3-14 are considered an especially important window for socialization." },
-    body: { ko: "접종이 다 끝나지 않았어도 안는 상태로 다양한 소리·사람을 접하게 해주는 것부터 시작할 수 있어요.", en: "Even before vaccinations are complete, you can start by carrying them to safely expose them to different sounds and people." } },
+    body: { ko: "예방접종 전후에는 감염 위험을 고려해 수의사와 상의하면서, 안전한 환경에서 다양한 소리·사람·물건을 천천히 경험하게 해주세요.", en: "Around the vaccination period, ask your veterinarian about infection risk and use controlled, safe exposure to different sounds, people and objects." } },
   { id: "t14", category: "cat", featured: false,
     title: { ko: "고양이 물그릇, 이렇게 두면 더 잘 마셔요", en: "Placing water bowls cats actually use" },
     summary: { ko: "밥그릇과 물그릇을 붙여두면 오히려 안 마시는 고양이도 있어요.", en: "Some cats drink less when the water bowl sits right next to the food bowl." },
@@ -7443,6 +7512,15 @@ const PETBTI_QUESTIONS_DOG = [
       { ko: "같이 뒹굴거리며 여유를 즐긴다", en: "Lounges right along with you", w: -1 },
       { ko: "신경 안 쓰고 자기도 늘어져 있는다", en: "Doesn't mind, stays sleepy too", w: -2 },
     ] },
+  { id: "q13", axis: "EI", ko: "낯선 공원에 도착했을 때 첫 1분 동안은? 🌳", en: "In the first minute at an unfamiliar park, what do they do?", options: [ { ko: "여기저기 사람과 강아지를 향해 신나게 움직인다", en: "Moves excitedly toward people and dogs", w: 2 }, { ko: "주변 냄새를 맡다가 관심 가는 곳으로 다가간다", en: "Sniffs around, then approaches what interests them", w: 1 }, { ko: "보호자 근처에서 상황을 충분히 살핀다", en: "Stays near you and surveys the scene", w: -1 }, { ko: "조용한 곳을 찾거나 빨리 벗어나고 싶어 한다", en: "Looks for a quiet spot or wants to leave", w: -2 } ] },
+  { id: "q14", axis: "EI", ko: "여러 사람이 동시에 이름을 부르면 어떻게 반응하나요?", en: "Several people call their name at once. How do they react?", options: [ { ko: "모두에게 번갈아 가며 반응한다", en: "Responds to everyone in turn", w: 2 }, { ko: "가장 가까운 사람에게 먼저 간다", en: "Goes to the closest person first", w: 1 }, { ko: "보호자를 먼저 확인한 뒤 움직인다", en: "Checks with you before moving", w: -1 }, { ko: "복잡한 상황을 피하고 가만히 있는다", en: "Avoids the busy situation and stays put", w: -2 } ] },
+  { id: "q15", axis: "SN", ko: "산책길에 처음 보는 큰 물건이 놓여 있다면?", en: "There is a large unfamiliar object on the walking route.", options: [ { ko: "바로 가까이 가서 냄새와 모양을 확인한다", en: "Goes right up to inspect it", w: 2 }, { ko: "주변을 돌며 천천히 확인한다", en: "Circles around and checks it slowly", w: 1 }, { ko: "보호자가 먼저 지나가면 따라간다", en: "Follows after you pass it first", w: -1 }, { ko: "원래 길을 고집하거나 우회하려 한다", en: "Prefers the usual path or tries to detour", w: -2 } ] },
+  { id: "q16", axis: "SN", ko: "노즈워크 장난감 안에 간식이 숨겨져 있다면?", en: "Treats are hidden inside a scent puzzle.", options: [ { ko: "새 방법을 계속 시도하며 적극적으로 푼다", en: "Keeps trying new ways to solve it", w: 2 }, { ko: "냄새를 따라 차근차근 방법을 찾는다", en: "Follows the scent step by step", w: 1 }, { ko: "익숙한 방식으로만 몇 번 시도한다", en: "Tries only familiar methods a few times", w: -1 }, { ko: "쉽게 안 나오면 금방 관심을 접는다", en: "Loses interest quickly if it is not easy", w: -2 } ] },
+  { id: "q17", axis: "TF", ko: "다른 강아지가 자기 장난감을 가져가면?", en: "Another dog takes their toy.", options: [ { ko: "바로 다가가 함께 놀거나 되찾으려 한다", en: "Approaches to play together or get it back", w: 2 }, { ko: "보호자를 보며 도움을 요청하는 듯한다", en: "Looks to you as if asking for help", w: 1 }, { ko: "잠시 지켜보다 다른 장난감을 찾는다", en: "Watches briefly, then finds another toy", w: -1 }, { ko: "별 반응 없이 자기 할 일을 한다", en: "Barely reacts and carries on", w: -2 } ] },
+  { id: "q18", axis: "TF", ko: "보호자가 오랜 외출 후 돌아왔을 때는? 💚", en: "You return after being away for a long time.", options: [ { ko: "온몸으로 반기며 한동안 떨어지지 않는다", en: "Greets you with their whole body and stays close", w: 2 }, { ko: "반갑게 인사한 뒤 곁에서 머문다", en: "Greets you warmly and stays nearby", w: 1 }, { ko: "짧게 인사하고 다시 자기 자리로 간다", en: "Gives a brief greeting, then returns to their spot", w: -1 }, { ko: "평소와 큰 차이 없이 차분하다", en: "Stays calm, not much different from usual", w: -2 } ] },
+  { id: "q19", axis: "JP", ko: "매일 먹던 시간보다 식사가 30분 늦어지면?", en: "Dinner is 30 minutes later than usual.", options: [ { ko: "밥자리와 보호자 사이를 오가며 적극적으로 재촉한다", en: "Actively reminds you by pacing between you and the food area", w: 2 }, { ko: "근처를 맴돌며 신호를 보낸다", en: "Hovers nearby, giving hints", w: 1 }, { ko: "기다리긴 하지만 크게 표현하지 않는다", en: "Waits without making much of it", w: -1 }, { ko: "시간이 바뀌어도 별로 신경 쓰지 않는다", en: "Does not seem to mind the schedule change", w: -2 } ] },
+  { id: "q20", axis: "JP", ko: "갑자기 하루 일정이 달라져 산책·놀이 시간이 바뀌면?", en: "The daily schedule suddenly changes, including walk and play time.", options: [ { ko: "새 일정도 바로 즐기며 그때그때 적응한다", en: "Enjoys the new schedule and adapts on the fly", w: 2 }, { ko: "조금 어색해도 금방 새로운 흐름을 따른다", en: "Feels slightly unsure but adjusts quickly", w: 1 }, { ko: "평소 하던 시간대에 기대 행동을 보인다", en: "Shows expectation around the usual times", w: -1 }, { ko: "정해진 루틴이 깨지면 꽤 불편해한다", en: "Gets noticeably uncomfortable when routine changes", w: -2 } ] },
+
 ];
 
 const PETBTI_QUESTIONS_CAT = [
@@ -7530,6 +7608,15 @@ const PETBTI_QUESTIONS_CAT = [
       { ko: "조용히 기다리는 편이다", en: "Tends to wait quietly", w: -1 },
       { ko: "늦어져도 크게 신경 쓰지 않는다", en: "Doesn't seem too bothered either way", w: -2 },
     ] },
+  { id: "c13", axis: "EI", ko: "가족 여러 명이 한 공간에 모여 있을 때 우리 고양이는?", en: "When several family members gather in one room, what does your cat do?", options: [ { ko: "사람들 사이를 오가며 존재감을 드러낸다", en: "Moves among everyone and joins in", w: 2 }, { ko: "가까운 곳에 자리 잡고 함께 있는다", en: "Settles nearby and stays with the group", w: 1 }, { ko: "조금 떨어진 곳에서 조용히 지켜본다", en: "Watches quietly from a short distance", w: -1 }, { ko: "사람이 적은 다른 공간으로 이동한다", en: "Moves to a quieter room", w: -2 } ] },
+  { id: "c14", axis: "EI", ko: "보호자가 이름을 부르며 손을 내밀면?", en: "You call their name and hold out your hand.", options: [ { ko: "바로 다가와 몸을 비비거나 올라온다", en: "Comes right over to rub or climb up", w: 2 }, { ko: "잠깐 바라본 뒤 천천히 다가온다", en: "Looks first, then approaches slowly", w: 1 }, { ko: "있는 자리에서 눈이나 꼬리로만 반응한다", en: "Responds only with eyes or tail from where they are", w: -1 }, { ko: "혼자 있고 싶다는 듯 반응하지 않는다", en: "Does not respond, preferring to be alone", w: -2 } ] },
+  { id: "c15", axis: "SN", ko: "방 안 가구 배치가 크게 바뀌었을 때는?", en: "The furniture layout in a room changes a lot.", options: [ { ko: "곧바로 구석구석 새 동선을 탐색한다", en: "Immediately explores every new route", w: 2 }, { ko: "냄새와 위치를 확인하며 천천히 둘러본다", en: "Checks scents and positions carefully", w: 1 }, { ko: "익숙한 물건 주변부터 다시 적응한다", en: "Reorients around familiar objects first", w: -1 }, { ko: "한동안 원래 익숙한 공간만 사용한다", en: "Uses only familiar areas for a while", w: -2 } ] },
+  { id: "c16", axis: "SN", ko: "창밖에 처음 보는 새나 움직임이 보이면? 🐦", en: "A new bird or unfamiliar movement appears outside the window.", options: [ { ko: "바로 달려가 자세를 바꿔가며 집중 관찰한다", en: "Rushes over and intensely tracks it", w: 2 }, { ko: "가까이 가서 한동안 조용히 관찰한다", en: "Moves closer and watches quietly", w: 1 }, { ko: "잠깐 보고 금방 원래 행동으로 돌아간다", en: "Looks briefly, then returns to what it was doing", w: -1 }, { ko: "별 관심을 보이지 않는다", en: "Shows little interest", w: -2 } ] },
+  { id: "c17", axis: "TF", ko: "보호자가 아프거나 평소보다 조용히 누워 있으면?", en: "You are sick or lying down more quietly than usual.", options: [ { ko: "곁에 와서 오래 붙어 있거나 골골거린다", en: "Stays close for a long time or purrs", w: 2 }, { ko: "몇 번 다가와 상태를 확인하듯 머문다", en: "Checks on you a few times", w: 1 }, { ko: "평소 거리에서 조용히 지켜본다", en: "Watches quietly from the usual distance", w: -1 }, { ko: "평소와 거의 똑같이 행동한다", en: "Acts almost exactly as usual", w: -2 } ] },
+  { id: "c18", axis: "TF", ko: "보호자가 다른 고양이를 쓰다듬고 돌아왔을 때는?", en: "You come home after petting another cat.", options: [ { ko: "바로 냄새를 확인하고 몸을 비비며 관심을 요구한다", en: "Checks the scent immediately and rubs against you", w: 2 }, { ko: "냄새를 맡으며 한동안 가까이 있는다", en: "Sniffs and stays close for a while", w: 1 }, { ko: "잠깐 확인한 뒤 자기 일로 돌아간다", en: "Checks briefly, then moves on", w: -1 }, { ko: "거의 신경 쓰지 않는다", en: "Barely seems to care", w: -2 } ] },
+  { id: "c19", axis: "JP", ko: "평소 급식 시간이 늦어지면 어떻게 하나요?", en: "What happens when the usual feeding time is late?", options: [ { ko: "울거나 밥자리로 유도하며 분명하게 재촉한다", en: "Meows or leads you to the food area", w: 2 }, { ko: "근처에서 기다리며 여러 번 눈치를 준다", en: "Waits nearby and gives repeated hints", w: 1 }, { ko: "조용히 기다리다가 나오면 먹는다", en: "Waits quietly and eats when food appears", w: -1 }, { ko: "시간이 달라도 크게 신경 쓰지 않는다", en: "Does not seem bothered by timing changes", w: -2 } ] },
+  { id: "c20", axis: "JP", ko: "자주 자는 담요나 방석을 다른 곳으로 옮기면?", en: "Their usual blanket or bed is moved to a different place.", options: [ { ko: "새 위치에서도 바로 사용한다", en: "Uses it immediately in the new spot", w: 2 }, { ko: "주변을 확인한 뒤 곧 적응한다", en: "Checks around, then adapts quickly", w: 1 }, { ko: "원래 있던 자리를 먼저 찾아본다", en: "Checks the old location first", w: -1 }, { ko: "익숙한 자리나 다른 고정 장소를 고집한다", en: "Sticks to an old or other fixed spot", w: -2 } ] },
+
 ];
 
 function petBtiQuestionsFor(species) {
@@ -8767,7 +8854,9 @@ function AboutPage({ onStart, onNavigate }) {
             <LandingFeatureCard Illust={IllustGrowth} title={t.landingCardGrowthTitle} desc={t.landingCardGrowthDesc} />
             <LandingFeatureCard Illust={IllustSaju} title={t.landingCardSajuTitle} desc={t.landingCardSajuDesc} />
             <LandingFeatureCard Illust={IllustPetBti} title={t.landingCardPetBtiTitle} desc={t.landingCardPetBtiDesc} />
+            <LandingFeatureCard Illust={MusicIcon} title={lang === "en" ? "🎵 Pet Music" : "🎵 Pet음악"} desc={lang === "en" ? "Music for dogs and cats with loop playback, likes, comments and a live Top 5." : "강아지·고양이 음악을 반복재생하고 좋아요·댓글로 인기 TOP5를 함께 만들어요."} />
             <LandingFeatureCard Illust={IllustTips} title={t.landingCardTipsTitle} desc={t.landingCardTipsDesc} />
+            <LandingFeatureCard Illust={IllustTips} title={t.landingCardNearbyTitle} desc={t.landingCardNearbyDesc} />
             <LandingFeatureCard Illust={IllustCommunity} title={t.landingCardCommunityTitle} desc={t.landingCardCommunityDesc} />
           </div>
         </div>
@@ -8838,6 +8927,15 @@ function AboutPage({ onStart, onNavigate }) {
                 timeLabel={t.landingMockPost2Time} text={t.landingMockPost2Text} likeCount={12} commentCount={3} />
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Pet음악 */}
+      <section className="landing-section">
+        <div className="landing-wrap">
+          <h2 className="landing-section-title" style={{ marginBottom: 6 }}>{lang === "en" ? "Pet Music" : "Pet음악"}</h2>
+          <p style={{ textAlign:"center",color:"#89928C",fontSize:15,maxWidth:560,margin:"0 auto 18px" }}>{lang === "en" ? "Discover music for dogs and cats, loop favorites, and help shape the Top 5 with likes and comments." : "강아지·고양이를 위한 음악을 듣고 반복재생해보세요. 좋아요와 댓글 반응을 모아 인기 TOP5를 함께 만들어요."}</p>
+          <div className="landing-mini-teaser"><button type="button" className="landing-mini-teaser-item" onClick={() => go("music")}><span className="landing-mini-teaser-icon"><MusicIcon style={{width:20,height:20}}/></span><span className="landing-mini-teaser-label">{lang === "en" ? "Open Pet Music" : "Pet음악 들으러 가기"}</span></button></div>
         </div>
       </section>
 
@@ -8954,6 +9052,104 @@ function HomeServiceCard({ Illust, bg, title, desc, onClick }) {
   );
 }
 
+
+function NearbyPetPage(){
+  const t=useT();
+  const mapRef=useRef(null);
+  const mapObj=useRef(null);
+  const overlays=useRef([]);
+  const [pos,setPos]=useState(null);
+  const [items,setItems]=useState([]);
+  const [cat,setCat]=useState("all");
+  const [area,setArea]=useState("");
+  const [loading,setLoading]=useState(false);
+  const [msg,setMsg]=useState("");
+  const [selected,setSelected]=useState(null);
+
+  const loadMap=async(center,places)=>{
+    const key=import.meta.env.VITE_KAKAO_JS_KEY;
+    if(!key||!mapRef.current){return;}
+    if(!window.kakao?.maps){
+      await new Promise((resolve,reject)=>{
+        const old=document.getElementById("petgrow-kakao-map-sdk");
+        if(old){old.addEventListener("load",resolve,{once:true});return;}
+        const sc=document.createElement("script");sc.id="petgrow-kakao-map-sdk";sc.async=true;
+        sc.src=`https://dapi.kakao.com/v2/maps/sdk.js?appkey=${encodeURIComponent(key)}&autoload=false`;
+        sc.onload=resolve;sc.onerror=reject;document.head.appendChild(sc);
+      });
+    }
+    await new Promise(r=>window.kakao.maps.load(r));
+    const kakao=window.kakao;
+    const c=new kakao.maps.LatLng(center.lat,center.lng);
+    const map=mapObj.current||new kakao.maps.Map(mapRef.current,{center:c,level:4});
+    mapObj.current=map; map.setCenter(c);
+    overlays.current.forEach(o=>o.setMap(null)); overlays.current=[];
+    const meEl=document.createElement("div");meEl.className="nearby-me-pin";meEl.innerHTML='<span></span><b>내 위치</b>';
+    const me=new kakao.maps.CustomOverlay({position:c,content:meEl,yAnchor:.7,zIndex:9});me.setMap(map);overlays.current.push(me);
+    const bounds=new kakao.maps.LatLngBounds();bounds.extend(c);
+    places.forEach((p,i)=>{
+      const el=document.createElement("button");el.type="button";el.className="nearby-map-marker";
+      el.innerHTML=`<span>${i+1}</span>`;el.onclick=()=>{setSelected(p);document.getElementById(`nearby-place-${p.id}`)?.scrollIntoView({behavior:"smooth",block:"center"});};
+      const ll=new kakao.maps.LatLng(p.lat,p.lng);bounds.extend(ll);
+      const ov=new kakao.maps.CustomOverlay({position:ll,content:el,yAnchor:1,zIndex:5});ov.setMap(map);overlays.current.push(ov);
+    });
+    if(places.length) map.setBounds(bounds,48,48,48,48);
+  };
+
+  const search=async(nextCat=cat,coords=pos,manualArea=area)=>{
+    if(!coords&&!manualArea.trim()) return;
+    setLoading(true);setMsg("");
+    try{
+      const q=new URLSearchParams({category:nextCat});
+      if(coords){q.set("lat",coords.lat);q.set("lng",coords.lng);}
+      if(manualArea.trim())q.set("area",manualArea.trim());
+      const r=await fetch(`/api/nearby?${q}`);const j=await r.json();
+      if(!r.ok) throw new Error(j.error||"주변 정보를 불러오지 못했어요.");
+      setItems(j.items||[]);setSelected(j.items?.[0]||null);
+      if(coords)loadMap(coords,j.items||[]).catch(()=>{});
+      if(!(j.items||[]).length)setMsg("검색 결과가 없어요. 검색 범위나 지역명을 바꿔보세요.");
+    }catch(e){setMsg(e.message)}finally{setLoading(false)}
+  };
+  const locate=()=>{
+    if(!navigator.geolocation){setMsg("이 기기에서는 현재 위치를 사용할 수 없어요. 지역명으로 검색해주세요.");return;}
+    setLoading(true);setMsg("현재 위치를 확인하고 있어요…");
+    navigator.geolocation.getCurrentPosition(
+      p=>{const c={lat:p.coords.latitude,lng:p.coords.longitude};setPos(c);setArea("");setMsg("");search(cat,c,"");},
+      ()=>{setLoading(false);setMsg("위치 권한을 사용할 수 없어요. 아래에서 지역명을 직접 검색해주세요.");},
+      {enableHighAccuracy:true,timeout:9000,maximumAge:120000}
+    );
+  };
+  useEffect(()=>{if(pos)search(cat,pos,"");},[cat]);
+  const cats=[["all","전체"],["hospital","동물병원"],["pharmacy","동물약국"],["shop","펫샵"],["grooming","미용"],["hotel","호텔·유치원"]];
+  const fmt=d=>d==null?"거리 확인 불가":d<1000?`${d}m`:`${(d/1000).toFixed(1)}km`;
+  return <div className="nearby-page">
+    <section className="nearby-hero bg-card">
+      <div><span className="nearby-eyebrow">PETGROW LOCAL</span><h1>{t.nearbyTitle}</h1><p>{t.nearbySubtitle}</p></div>
+      <button className="nearby-locate-btn" onClick={locate}><MapPinIcon/>{t.nearbyLocateBtn}</button>
+    </section>
+    <div className="nearby-search-row"><input className="bg-input" value={area} onChange={e=>setArea(e.target.value)} onKeyDown={e=>e.key==="Enter"&&search(cat,null,area)} placeholder={t.nearbySearchPlaceholder}/><button className="bg-btn" onClick={()=>search(cat,null,area)}>검색</button></div>
+    <div className="nearby-cats">{cats.map(([k,l])=><button key={k} className={cat===k?"active":""} onClick={()=>{setCat(k);if(!pos&&area.trim())search(k,null,area)}}>{l}</button>)}</div>
+    <section className="nearby-map-card bg-card">
+      <div className="nearby-map-head"><div><b>{pos?"현재 위치 기준":"지역 검색"}</b><small>{pos?"민트색 원이 내 현재 위치예요":"위치 권한 없이도 검색할 수 있어요"}</small></div>{pos&&<span className="nearby-live-pill">● LIVE 위치</span>}</div>
+      <div ref={mapRef} className="nearby-map">{!import.meta.env.VITE_KAKAO_JS_KEY&&<div className="nearby-map-fallback"><MapPinIcon/><b>지도 표시 준비가 필요해요</b><span>VITE_KAKAO_JS_KEY를 설정하면 내 위치와 업체 마커가 지도에 표시돼요.</span></div>}</div>
+    </section>
+    {msg&&<div className="nearby-message">{msg}</div>}
+    <div className="nearby-results-head"><div><h2>가까운 곳</h2><span>{items.length}곳</span></div><small>거리순으로 정렬돼요</small></div>
+    <div className="nearby-list">
+      {loading&&!items.length?<div className="bg-card nearby-empty">주변 Pet 정보를 찾는 중…</div>:
+      items.map((p,i)=><article id={`nearby-place-${p.id}`} key={p.id} className={`bg-card nearby-place ${selected?.id===p.id?"selected":""}`} onClick={()=>setSelected(p)}>
+        <div className="nearby-rank">{i+1}</div>
+        <div className="nearby-place-main"><div className="nearby-place-title"><h3>{p.name}</h3><strong>{fmt(p.distance)}</strong></div>
+          <div className="nearby-place-meta"><span>📍 {p.address||"주소 정보 없음"}</span><span>☎ {p.phone||"전화번호 정보 없음"}</span></div>
+          <small>{p.category}</small>
+        </div>
+        <div className="nearby-place-actions">{p.phone&&<a href={`tel:${p.phone}`} onClick={e=>e.stopPropagation()}>전화</a>}{p.url&&<a href={p.url} target="_blank" rel="noreferrer" onClick={e=>e.stopPropagation()}>카카오맵</a>}</div>
+      </article>)}
+    </div>
+    <p className="nearby-disclaimer">업체 정보는 외부 장소정보를 기반으로 하며 실제 영업 여부·전화번호·주소가 변경될 수 있어요. 방문 전 업체에 확인해주세요.</p>
+  </div>;
+}
+
 function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
   const t = useT();
   // 비로그인 상태에서는 브라우저에 남아 있는 이전 반려동물 정보를 홈에 노출하지 않아요.
@@ -9004,9 +9200,11 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
       <div className="home-service-grid">
         <HomeServiceCard Illust={InfoIcon} bg="#EEF5EC" title={t.aboutNav} desc={lang === "en" ? "See PetGrow features and services at a glance" : "PetGrow의 기능과 서비스를 한눈에 보기"} onClick={() => onGoView("about")} />
         <HomeServiceCard Illust={IllustGrowth} bg="#EDF5EE" title={t.homeCardGrowthTitle} desc={t.homeCardGrowthDesc} onClick={onGoPets} />
+        <HomeServiceCard Illust={IllustTips} bg="#EAF5ED" title={t.landingCardNearbyTitle.replace(/^\S+\s/, "")} desc={t.homeCardNearbyDesc} onClick={() => onGoView("nearby")} />
         <HomeServiceCard Illust={IllustCommunity} bg="#FBE9EF" title={t.landingCardCommunityTitle.replace(/^\S+\s/, "")} desc={t.homeCardCommunityDesc} onClick={() => onGoView("community")} />
         <HomeServiceCard Illust={IllustSaju} bg="#F1F5F1" title={t.landingCardSajuTitle.replace(/^\S+\s/, "")} desc={t.homeCardSajuDesc} onClick={() => onGoView("saju")} />
         <HomeServiceCard Illust={IllustPetBti} bg="#EEF5EF" title={t.landingCardPetBtiTitle.replace(/^\S+\s/, "")} desc={t.homeCardPetBtiDesc} onClick={() => onGoView("petbti")} />
+        <HomeServiceCard Illust={MusicIcon} bg="#EEF6F0" title={lang === "en" ? "Pet Music" : "Pet음악"} desc={lang === "en" ? "Play and loop music your dog or cat may enjoy" : "강아지·고양이가 좋아할 음악을 듣고 반복재생해요"} onClick={() => onGoView("music")} />
         <HomeServiceCard Illust={IllustTips} bg="#F3F7F3" title={t.landingCardTipsTitle.replace(/^\S+\s/, "")} desc={t.homeCardTipsDesc} onClick={() => onGoView("tips")} />
       </div>
     </div>
@@ -9087,6 +9285,10 @@ function InfoGuidePage() {
             <div className="bg-sub" style={{ fontSize: 13, lineHeight: 1.7 }}>{s.body}</div>
           </div>
         ))}
+        <div className="bg-surface-card">
+          <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 5 }}>🎵 Pet음악</div>
+          <div className="bg-sub" style={{ fontSize: 13, lineHeight: 1.7 }}>강아지·고양이·공용 음악을 들을 수 있어요. 1곡 반복과 전체 반복을 지원하고, 좋아요·댓글·재생 반응을 바탕으로 인기 TOP5가 표시됩니다. 음악 목록은 20곡씩 페이지로 구분됩니다.</div>
+        </div>
       </div>
     </div>
   );
@@ -9747,10 +9949,9 @@ function CommunityFeed({ pets, lang, onOpenPost, onWrite, onMyActivity }) {
         </button>
       </div>
 
-      {posts.length === 0 && !loading ? (
-        <div>
-          <p className="bg-sub" style={{ textAlign: "center", padding: "18px 0 14px" }}>{t.communityEmptyFeed}</p>
-          <div className="cm-demo-grid">
+      <div className="cm-sample-showcase">
+        <div className="cm-sample-head"><div><span>PET TALK PREVIEW</span><b>{lang === "en" ? "See sample posts first" : "Pet톡은 이렇게 보여요"}</b></div><small>{lang === "en" ? "Samples stay visible while real posts load." : "실제 게시글이 로딩되기 전에도 예시글이 바로 보여요."}</small></div>
+        <div className="cm-demo-grid">
             <div className="cm-demo-card">
               <span className="cm-demo-badge">{lang === "en" ? "Sample post" : "예시 게시글"}</span>
               <div className="cm-pet-row"><span className="cm-pet-avatar-fallback">🐶</span><div><div style={{fontWeight:800,fontSize:13}}>{lang === "en" ? "Butter's guardian" : "버터네 보호자"}</div><div className="bg-sub" style={{fontSize:11}}>{lang === "en" ? "Maltipoo · 4 months" : "말티푸 · 4개월"}</div></div></div>
@@ -9768,7 +9969,10 @@ function CommunityFeed({ pets, lang, onOpenPost, onWrite, onMyActivity }) {
               <div className="cm-meta-row"><span>♡ 5</span><span>💬 4</span></div>
             </div>
           </div>
-        </div>
+      </div>
+
+      {posts.length === 0 && !loading ? (
+        <p className="bg-sub" style={{ textAlign: "center", padding: "18px 0 14px" }}>{t.communityEmptyFeed}</p>
       ) : (
         <div className="cm-feed-grid">
           {posts.map((p) => <PostCard key={p.id} post={p} lang={lang} onOpen={() => onOpenPost(p.id)} />)}
@@ -9917,6 +10121,46 @@ function AdInquiryPage({onBack}){
  </div>
 }
 
+
+function PetMusicPage({ account, lang }) {
+  const [species,setSpecies]=useState("all"),[page,setPage]=useState(1),[data,setData]=useState({items:[],top5:[],pages:1,total:0}),[loading,setLoading]=useState(true);
+  const [current,setCurrent]=useState(null),[playing,setPlaying]=useState(false),[repeatMode,setRepeatMode]=useState("one"),[openComments,setOpenComments]=useState(null),[comments,setComments]=useState({}),[commentText,setCommentText]=useState("");
+  const audioRef=useRef(null);
+  const load=async(sp=species,pg=page)=>{setLoading(true);try{setData(await musicList(sp,pg))}catch(e){console.error(e);setData({items:[],top5:[],pages:1,total:0})}finally{setLoading(false)}};
+  useEffect(()=>{setPage(1);load(species,1)},[species]);
+  useEffect(()=>{load(species,page)},[page]);
+  const playTrack=async(track)=>{setCurrent(track);setPlaying(true);musicTrackPlay(track.id).catch(()=>{});setTimeout(()=>audioRef.current?.play().catch(()=>setPlaying(false)),0)};
+  const togglePlay=track=>{if(current?.id!==track.id)return playTrack(track);const a=audioRef.current;if(!a)return;if(a.paused){a.play().then(()=>setPlaying(true)).catch(()=>{})}else{a.pause();setPlaying(false)}};
+  const onEnded=()=>{if(!current)return;if(repeatMode==="one"){audioRef.current.currentTime=0;audioRef.current.play().catch(()=>{});return;}if(repeatMode==="all"&&data.items.length){const i=data.items.findIndex(x=>x.id===current.id),next=data.items[(i+1+data.items.length)%data.items.length];if(next)playTrack(next);return;}setPlaying(false)};
+  const cycleRepeat=()=>setRepeatMode(x=>x==="one"?"all":x==="all"?"off":"one");
+  const doLike=async(track)=>{if(!account){window.alert(lang==="en"?"Please log in to like a track.":"좋아요는 로그인 후 이용할 수 있어요.");return;}try{await musicToggleLike(track.id);await load()}catch(e){window.alert(e.message)}};
+  const toggleComments=async(track)=>{if(openComments===track.id){setOpenComments(null);return;}setOpenComments(track.id);try{const r=await musicComments(track.id);setComments(c=>({...c,[track.id]:r.items||[]}))}catch{setComments(c=>({...c,[track.id]:[]}))}};
+  const addComment=async(track)=>{const text=commentText.trim();if(!account){window.alert(lang==="en"?"Please log in to comment.":"댓글은 로그인 후 이용할 수 있어요.");return;}if(!text)return;try{await musicAddComment(track.id,text);setCommentText("");const r=await musicComments(track.id);setComments(c=>({...c,[track.id]:r.items||[]}));await load()}catch(e){window.alert(e.message)}};
+  const speciesLabel=x=>x==="dog"?(lang==="en"?"Dog":"강아지"):x==="cat"?(lang==="en"?"Cat":"고양이"):(lang==="en"?"All":"전체");
+  return <div className="petmusic-page">
+    <section className="petmusic-hero"><small style={{fontWeight:900,color:"var(--primary)"}}>PETGROW SOUND</small><h1>🎵 {lang==="en"?"Pet Music":"Pet음악"}</h1><p className="bg-sub">{lang==="en"?"Music for dogs and cats. Loop favorites and share your pet's reaction with likes and comments.":"강아지·고양이를 위한 음악을 편하게 듣고 반복재생해보세요. 좋아요와 댓글로 우리 아이의 반응도 함께 남겨요."}</p></section>
+    <div className="petmusic-tabs">{["all","dog","cat"].map(x=><button key={x} className={species===x?"active":""} onClick={()=>setSpecies(x)}>{x==="dog"?"🐶 ":x==="cat"?"🐱 ":"🎧 "}{speciesLabel(x)}</button>)}</div>
+    {!!data.top5.length&&<><h2 style={{fontSize:18,margin:"0 0 12px"}}>🏆 {lang==="en"?"Popular TOP 5":"인기 TOP 5"}</h2><div className="petmusic-top5">{data.top5.map((x,i)=><button key={x.id} className="petmusic-rank" onClick={()=>playTrack(x)}><div style={{position:"relative"}}>{x.cover_url?<img src={x.cover_url} alt=""/>:<div className="petmusic-rank-cover">🎵</div>}<span style={{position:"absolute",left:7,top:7,width:24,height:24,borderRadius:99,display:"grid",placeItems:"center",background:"rgba(255,255,255,.93)",fontSize:11,fontWeight:900}}>#{i+1}</span></div><b>{x.title}</b><small>♥ {Number(x.like_count)||0} · 💬 {Number(x.comment_count)||0}</small></button>)}</div></>}
+    {current&&<div className="bg-card" style={{display:"flex",gap:12,alignItems:"center",marginBottom:18,padding:12,position:"sticky",top:8,zIndex:4}}>{current.cover_url?<img src={current.cover_url} alt="" style={{width:52,height:52,borderRadius:13,objectFit:"cover"}}/>:<div className="petmusic-rank-cover" style={{width:52,height:52,flex:"0 0 52px",fontSize:22}}>🎵</div>}<div style={{flex:1,minWidth:0}}><b style={{display:"block",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{current.title}</b><small className="bg-sub">{playing?(lang==="en"?"Playing now":"재생 중"):(lang==="en"?"Paused":"일시정지")}</small></div><button className="petmusic-play" onClick={()=>togglePlay(current)}>{playing?"Ⅱ":"▶"}</button><button className={`petmusic-loop ${repeatMode!=="off"?"active":""}`} onClick={cycleRepeat}>{repeatMode==="one"?"🔂 1곡":repeatMode==="all"?"🔁 전체":"↪ 반복 OFF"}</button></div>}
+    <audio ref={audioRef} src={current?.audio_url||""} onPlay={()=>setPlaying(true)} onPause={()=>setPlaying(false)} onEnded={onEnded}/>
+    {loading?<div className="bg-card" style={{textAlign:"center"}}>음악을 불러오는 중...</div>:data.items.length?<div className="petmusic-grid">{data.items.map(track=><article className="petmusic-card" key={track.id}>{track.cover_url?<img className="petmusic-cover" src={track.cover_url} alt={`${track.title} cover`}/>:<div className="petmusic-cover">🎵</div>}<div style={{minWidth:0}}><div className="petmusic-title">{track.title}</div><div className="petmusic-date">{speciesLabel(track.species)} · {new Date(track.created_at).toLocaleDateString(lang==="en"?"en-US":"ko-KR")}</div>{track.description&&<div className="bg-sub" style={{fontSize:11,marginTop:5,lineHeight:1.45}}>{track.description}</div>}<div className="petmusic-player"><button className="petmusic-play" onClick={()=>togglePlay(track)}>{current?.id===track.id&&playing?"Ⅱ":"▶"}</button><span className="bg-sub" style={{fontSize:10}}>▶ {Number(track.play_count)||0}</span></div><div className="petmusic-actions"><button className={track.liked?"liked":""} onClick={()=>doLike(track)}>♥ {Number(track.like_count)||0}</button><button onClick={()=>toggleComments(track)}>💬 {Number(track.comment_count)||0}</button></div>{openComments===track.id&&<div className="petmusic-comments">{(comments[track.id]||[]).slice(0,8).map(c=><div className="petmusic-comment-row" key={c.id}><b>{c.nickname||"PetGrow"}</b> · {c.content}</div>)}<div className="petmusic-comment-form"><input value={commentText} onChange={e=>setCommentText(e.target.value)} maxLength={300} placeholder={lang==="en"?"How did your pet react?":"우리 아이 반응을 남겨주세요"}/><button onClick={()=>addComment(track)}>등록</button></div></div>}</div></article>)}</div>:<div className="bg-card" style={{textAlign:"center",padding:32}}><div style={{fontSize:36,marginBottom:8}}>🎵</div><b>{lang==="en"?"No music has been uploaded yet.":"아직 등록된 음악이 없어요."}</b><p className="bg-sub" style={{fontSize:12,marginTop:6}}>{lang==="en"?"PetGrow music will appear here after an administrator uploads it.":"관리자센터에서 음악을 등록하면 이곳에 바로 표시됩니다."}</p></div>}
+    {data.pages>1&&<nav className="petmusic-pagination" aria-label="Pet음악 페이지">{Array.from({length:data.pages},(_,i)=>i+1).map(n=><button key={n} className={page===n?"active":""} onClick={()=>{setPage(n);window.scrollTo({top:0,behavior:"smooth"})}}>{n}</button>)}</nav>}
+  </div>;
+}
+
+function AdminMusicPanel(){
+  const [items,setItems]=useState([]),[busy,setBusy]=useState(false),[editing,setEditing]=useState(null);
+  const blank={title:"",description:"",species:"all",active:true,audioDataUrl:"",coverDataUrl:"",audioUrl:"",coverUrl:""};
+  const [form,setForm]=useState(blank);
+  const load=async()=>{try{const r=await adminMusicList();setItems(r.items||[])}catch(e){window.alert(e.message)}};
+  useEffect(()=>{load()},[]);
+  const pickAudio=async e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>12*1024*1024){window.alert("음원 파일은 12MB 이하로 올려주세요.");e.target.value="";return;}setForm(x=>({...x,audioDataUrl:""}));try{const d=await fileToDataUrl(f);setForm(x=>({...x,audioDataUrl:d}))}catch{window.alert("음원 파일을 읽지 못했어요.")}};
+  const pickCover=async e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>4*1024*1024){window.alert("커버 이미지는 4MB 이하로 올려주세요.");e.target.value="";return;}try{const d=await fileToCompressedDataUrl(f,1000,.82);setForm(x=>({...x,coverDataUrl:d}))}catch{window.alert("커버 이미지를 읽지 못했어요.")}};
+  const save=async()=>{if(!form.title.trim())return window.alert("노래 제목을 입력해 주세요.");if(!editing&&!form.audioDataUrl)return window.alert("음원 파일을 선택해 주세요.");if(!editing&&!form.coverDataUrl)return window.alert("커버 이미지를 선택해 주세요.");setBusy(true);try{await adminMusicSave({...form,id:editing?.id||undefined,audioUrl:editing?.audio_url||form.audioUrl,coverUrl:editing?.cover_url||form.coverUrl});window.alert(editing?"Pet음악을 수정했어요.":"Pet음악을 등록했어요.");setEditing(null);setForm(blank);await load()}catch(e){window.alert(e.message)}finally{setBusy(false)}};
+  const edit=x=>{setEditing(x);setForm({title:x.title||"",description:x.description||"",species:x.species||"all",active:x.active!==false,audioDataUrl:"",coverDataUrl:"",audioUrl:x.audio_url||"",coverUrl:x.cover_url||""});window.scrollTo({top:0,behavior:"smooth"})};
+  return <div className="admin-report-list"><div className="bg-card"><h2>🎵 Pet음악 관리</h2><p className="bg-sub">음원·제목·커버 이미지를 등록하면 사용자 Pet음악 메뉴에 연결돼요. 업로드일은 자동 기록되고 좋아요·댓글·재생수로 인기 TOP5가 계산됩니다.</p><div className="admin-music-form" style={{marginTop:14}}><input className="bg-input" placeholder="노래 제목" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/><select className="bg-input" value={form.species} onChange={e=>setForm({...form,species:e.target.value})}><option value="all">🐾 공용</option><option value="dog">🐶 강아지</option><option value="cat">🐱 고양이</option></select><textarea className="bg-input support-textarea full" placeholder="간단한 설명 (선택)" value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/><label className="bg-card" style={{padding:12}}><b style={{fontSize:12}}>음원 파일 {editing?"(교체할 때만 선택)":""}</b><input type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/mp4,audio/aac" onChange={pickAudio} style={{display:"block",marginTop:8,width:"100%"}}/><small className="bg-sub">MP3/WAV/M4A · 최대 12MB</small></label><label className="bg-card" style={{padding:12}}><b style={{fontSize:12}}>커버 이미지</b><input type="file" accept="image/*" onChange={pickCover} style={{display:"block",marginTop:8,width:"100%"}}/><small className="bg-sub">정사각형 이미지 권장</small></label><label className="full" style={{fontSize:12,fontWeight:700}}><input type="checkbox" checked={form.active} onChange={e=>setForm({...form,active:e.target.checked})}/> 사용자에게 공개</label><div className="full" style={{display:"flex",gap:8}}><button className="bg-btn" disabled={busy} onClick={save}>{busy?"업로드 중...":editing?"수정 저장":"음악 등록"}</button>{editing&&<button className="bg-btn bg-btn-ghost" onClick={()=>{setEditing(null);setForm(blank)}}>취소</button>}</div></div></div><div className="bg-card"><h3>등록된 음악 {items.length}곡</h3><div className="admin-music-list">{items.length?items.map(x=><div className="admin-music-row" key={x.id}>{x.cover_url?<img className="admin-music-thumb" src={x.cover_url} alt=""/>:<div className="admin-music-thumb">🎵</div>}<div><b>{x.title}</b><small>{x.species==="dog"?"강아지":x.species==="cat"?"고양이":"공용"} · {new Date(x.created_at).toLocaleDateString("ko-KR")} · ▶ {Number(x.play_count)||0} · ♥ {Number(x.like_count)||0} · 💬 {Number(x.comment_count)||0}</small></div><div className="admin-music-actions"><button onClick={()=>edit(x)}>수정</button><button onClick={async()=>{await adminMusicToggle(x.id,!x.active);await load()}}>{x.active?"비공개":"공개"}</button><button onClick={async()=>{if(!window.confirm(`'${x.title}' 음악을 삭제할까요?`))return;await adminMusicDelete(x.id);await load()}}>삭제</button></div></div>):<p className="bg-sub">등록된 음악이 없어요.</p>}</div></div></div>;
+}
+
 function SupportPage({account,onBack}){
   const [section,setSection]=useState("notices"),[page,setPage]=useState(1),[data,setData]=useState({items:[],total:0}),[open,setOpen]=useState(null);
   const [form,setForm]=useState({category:"inquiry",title:"",body:"",isPublic:false});
@@ -9925,7 +10169,7 @@ function SupportPage({account,onBack}){
   const submit=async()=>{if(!account){window.alert("로그인 후 문의를 작성할 수 있어요.");return}if(!window.confirm(`${form.isPublic?"공개":"비공개"} 문의로 등록할까요?`))return;try{await supportCreateInquiry(form);setForm({category:"inquiry",title:"",body:"",isPublic:false});setSection("mine");setPage(1);await load();window.alert("문의/피드백이 등록됐어요.")}catch(e){window.alert(e.message)}};
   const pages=Math.max(1,Math.ceil((data.total||0)/20));
   return <div className="support-page">
-    <div className="support-head"><button className="bg-btn bg-btn-ghost" onClick={onBack}>← 돌아가기</button><div><h1>고객지원</h1><p>공지사항과 문의/피드백을 확인할 수 있어요.</p></div></div>
+    <div className="support-head"><div><h1>고객지원</h1><p>공지사항과 문의/피드백을 확인할 수 있어요.</p></div><button className="bg-btn bg-btn-ghost support-back-right" onClick={onBack}>← 돌아가기</button></div>
     <div className="support-tabs">
       <button className={section==="notices"?"active":""} onClick={()=>{setSection("notices");setPage(1)}}>📢 공지사항</button>
       <button className={section==="public"?"active":""} onClick={()=>{setSection("public");setPage(1)}}>💬 공개 피드백</button>
@@ -9937,7 +10181,7 @@ function SupportPage({account,onBack}){
       <select className="bg-input" value={form.category} onChange={e=>setForm({...form,category:e.target.value})}><option value="inquiry">문의</option><option value="bug">오류신고</option><option value="suggestion">기능제안</option><option value="other">기타</option></select>
       <input className="bg-input" maxLength={80} placeholder="제목" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/>
       <textarea className="bg-input support-textarea" maxLength={3000} placeholder="내용을 입력해 주세요." value={form.body} onChange={e=>setForm({...form,body:e.target.value})}/>
-      <label className="support-public-toggle"><input type="checkbox" checked={form.isPublic} onChange={e=>setForm({...form,isPublic:e.target.checked})}/><span><b>다른 회원에게 공개</b><small>끄면 작성자와 운영진만 볼 수 있어요. 기본값은 비공개예요.</small></span></label>
+      <label className="support-public-toggle"><input type="checkbox" checked={form.isPublic} onChange={e=>setForm({...form,isPublic:e.target.checked})}/><span><b>다른 회원에게 공개</b><small>체크 해제하면 운영진만 볼 수 있어요.</small></span></label>
       <button className="bg-btn" onClick={submit}>등록하기</button>
     </div>:<div className="support-list">
       {(data.items||[]).length===0?<div className="bg-card">아직 등록된 내용이 없어요.</div>:(data.items||[]).map(x=><button className="bg-card support-row" key={x.id} onClick={()=>setOpen(open===x.id?null:x.id)}>
@@ -10026,9 +10270,9 @@ function AdminReportsPage({onBack}){
  if(!status.isAdmin)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>관리자 전용</h2><p>현재 계정에는 관리자 권한이 없어요.</p><button className="bg-btn bg-btn-ghost" onClick={onBack}>돌아가기</button></div></div>;
  if(status.pinSetupRequired)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>🔐 관리자 PIN 최초 설정</h2><p>본인만 사용할 숫자 6자리 PIN을 설정하세요.</p><input name="petgrow-pin-code" inputMode="numeric" pattern="[0-9]*" maxLength={6} autoComplete="one-time-code" data-lpignore="true" data-1p-ignore="true" data-form-type="other" spellCheck={false} className="bg-input admin-pin-input admin-pin-no-save" type="text" value={setupPin} onChange={e=>setSetupPin(e.target.value.replace(/\D/g,"").slice(0,6))}/><button className="bg-btn" onClick={setNewPin}>PIN 설정</button></div></div>;
  if(!unlocked)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>🔐 {status.roleLabel||"관리자"} PIN</h2><input name="petgrow-pin-code" inputMode="numeric" pattern="[0-9]*" maxLength={6} autoComplete="one-time-code" data-lpignore="true" data-1p-ignore="true" data-form-type="other" spellCheck={false} className="bg-input admin-pin-input admin-pin-no-save" type="text" value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,"").slice(0,6))} placeholder="PIN 6자리"/><button className="bg-btn admin-open-center-btn" disabled={pin.length!==6} onClick={unlock}>관리자 센터 열기</button></div></div>;
- const tabs=role==="superadmin"?[["dashboard","대시보드"],["service","서비스상태"],["reports","신고관리"],["inquiries","문의관리"],["notices","공지관리"],["ads","광고운영"],["logs","운영로그"],["admins","관리자관리"]]:
- role==="operator"?[["dashboard","대시보드"],["service","서비스상태"],["reports","신고관리"],["inquiries","문의관리"],["notices","공지관리"],["ads","광고운영"],["logs","운영로그"]]:
- role==="report"?[["reports","신고관리"]]:[["ads","광고운영"]];
+ const tabs=role==="superadmin"?[["dashboard","대시보드"],["service","서비스상태"],["reports","신고관리"],["inquiries","문의관리"],["notices","공지관리"],["music","Pet음악"],["ads","광고운영"],["logs","운영로그"],["admins","관리자관리"]]:
+ role==="operator"?[["dashboard","대시보드"],["service","서비스상태"],["reports","신고관리"],["inquiries","문의관리"],["notices","공지관리"],["music","Pet음악"],["ads","광고운영"],["logs","운영로그"]]:
+ role==="report"?[["reports","신고관리"]]:[["music","Pet음악"],["ads","광고운영"]];
  const c=stats?.cards||{};
  return <div className="admin-reports-page">
    <div className="admin-hero admin-hero-toolbar admin-mobile-safe-header">
@@ -10036,7 +10280,13 @@ function AdminReportsPage({onBack}){
   <button className="bg-btn bg-btn-ghost admin-exit-btn" onClick={onBack}>← 회원정보</button>
 </div>
    <div className="admin-tabs">{tabs.map(([k,l])=><button key={k} className={tab===k?"active":""} onClick={()=>setTab(k)}>{l}</button>)}</div>
-   {tab==="dashboard"&&<div className="admin-stat-grid">{[["미처리 신고",c.openReports||0],["답변대기 문의",c.waitingInquiries||0],["이용제한 중",c.restricted||0],["오늘 방문",c.todaySessions||0],["현재 접속 추정",c.onlineSessions5m||0],["7일 활성회원",c.active7d||0],["7일 신규회원",c.new7d||0],["오늘 Pet톡 글",c.postsToday||0]].map(([a,b])=><div className="admin-stat-card" key={a}><strong>{b}</strong><small>{a}</small></div>)}</div>}
+   {tab==="dashboard"&&<>
+     <div className="admin-stat-grid">{[["미처리 신고",c.openReports||0],["답변대기 문의",c.waitingInquiries||0],["이용제한 중",c.restricted||0],["오늘 방문",c.todaySessions||0],["현재 접속 추정",c.onlineSessions5m||0],["7일 활성회원",c.active7d||0],["7일 신규회원",c.new7d||0],["오늘 Pet톡 글",c.postsToday||0]].map(([a,b])=><div className="admin-stat-card" key={a}><strong>{b}</strong><small>{a}</small></div>)}</div>
+     <div className="bg-card admin-menu-analytics">
+       <div className="admin-menu-analytics-head"><div><h3>메뉴 이용 통계</h3><small>페이지 진입 기준 · 오늘 / 7일 / 30일 이용량을 확인해요.</small></div><span className="bg-chip active">30일</span></div>
+       {(()=>{const labels={home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"회원정보",support:"고객지원",admin:"관리자"};const rows=(stats?.menuUsage||[]).filter(x=>labels[x.dimension]);const max=Math.max(1,...rows.map(x=>Number(x.d30)||0));return rows.length?<><div className="admin-menu-top">🏆 가장 자주 이용 <span>{labels[rows[0]?.dimension]||rows[0]?.dimension}</span></div>{rows.map((x,i)=><div className="admin-menu-row" key={x.dimension}><div className="admin-menu-name">{i<3?["🥇 ","🥈 ","🥉 "][i]:""}{labels[x.dimension]||x.dimension}</div><div className="admin-menu-bar"><i style={{width:`${Math.max(3,Math.round((Number(x.d30)||0)/max*100))}%`}}/></div><div className="admin-menu-value"><b>{Number(x.d30)||0}회</b><br/><small>7일 {Number(x.d7)||0} · 오늘 {Number(x.today)||0}</small></div></div>)}</>:<div className="bg-sub" style={{padding:"10px 0"}}>아직 메뉴 이용 데이터가 충분하지 않아요. 배포 후 방문부터 자동 집계됩니다.</div>})()}
+     </div>
+   </>}
    {tab==="service"&&<div className="service-health-wrap">
  <div className={`service-health-hero ${health?.level||"healthy"}`}><div className="service-health-dot">{health?.level==="down"?"🔴":health?.level==="warning"?"🟡":"🟢"}</div><div><small>현재 서비스 상태</small><h2>{health?.level==="down"?"장애":health?.level==="warning"?"주의":"정상"}</h2>{health?.reason && !["정상","주의","장애"].includes(health.reason) ? <p>{health.reason}</p> : <p className="service-health-subtext">{health?.level==="healthy"?"모든 주요 기능이 정상적으로 동작하고 있어요.":health?.level==="warning"?"일부 요청 지연이나 오류가 감지됐어요.":"서비스 장애 징후가 감지됐어요."}</p>}</div><button className="bg-btn bg-btn-ghost" onClick={async()=>{try{setHealth(await adminHealth())}catch(e){window.alert(e.message)}}}>새로고침</button></div>
  <div className="service-health-grid">{[["최근 15분 오류",health?.metrics?.errors15m||0],["1시간 DB 오류",health?.metrics?.dbErrors1h||0],["1시간 느린 요청",health?.metrics?.slow1h||0],["1시간 요청제한",health?.metrics?.rateLimits1h||0],["15분 평균 응답",`${health?.metrics?.avgLatency15m||0}ms`],["1시간 최대 응답",`${health?.metrics?.maxLatency1h||0}ms`],["5분 접속 추정",health?.traffic?.online5m||0],["오늘 방문",health?.traffic?.today||0]].map(([k,v])=><div className="bg-card service-health-card" key={k}><strong>{v}</strong><span>{k}</span></div>)}</div>
@@ -10044,6 +10294,7 @@ function AdminReportsPage({onBack}){
  </div>}{tab==="reports"&&<div className="admin-report-list">{reports.length?reports.map(r=><div className="bg-card admin-report-card" key={r.id}><div><b>{r.postTitle}</b><small>{r.authorNickname} · 신고자 {r.reporterNickname}</small></div><p>{r.targetContent}</p><p><b>신고사유:</b> {r.reason} {r.detail}</p><div className="admin-report-actions"><button onClick={()=>restrict(r,"1d")}>1일</button><button onClick={()=>restrict(r,"7d")}>7일</button><button onClick={()=>restrict(r,"30d")}>30일</button><button onClick={()=>restrict(r,"permanent")}>영구 제한</button><button onClick={()=>unblock(r)}>제한 해제</button><button onClick={()=>resolve(r)}>검토 완료</button></div></div>):<div className="bg-card">신고가 없어요.</div>}</div>}
    {tab==="inquiries"&&<div className="admin-report-list">{inq.length?inq.map(x=><div className="bg-card admin-report-card" key={x.id}><b>{x.title}</b><small>{x.nickname} · {x.is_public?"공개":"비공개"} · {x.status}</small><p>{x.body}</p><textarea className="bg-input support-textarea" value={reply[x.id]??x.admin_reply??""} onChange={e=>setReply({...reply,[x.id]:e.target.value})}/><button className="bg-btn" onClick={async()=>{if(!window.confirm("이 답변을 등록할까요?"))return;try{await adminReplyInquiry(x.id,reply[x.id]??x.admin_reply??"");window.alert("답변을 등록했어요.");await loadAll()}catch(e){window.alert(e.message)}}}>답변 등록</button></div>):<div className="bg-card">문의가 없어요.</div>}</div>}
    {tab==="notices"&&<div className="bg-card admin-notice-form"><h2>공지 작성</h2><input className="bg-input admin-notice-input" placeholder="공지 제목" value={notice.title} onChange={e=>setNotice({...notice,title:e.target.value})}/><textarea className="bg-input support-textarea admin-notice-input admin-notice-textarea" placeholder="공지 내용" value={notice.body} onChange={e=>setNotice({...notice,body:e.target.value})}/><label><input type="checkbox" checked={notice.pinned} onChange={e=>setNotice({...notice,pinned:e.target.checked})}/> 중요공지 상단 고정</label><label><input type="checkbox" checked={notice.popup} onChange={e=>setNotice({...notice,popup:e.target.checked})}/> 팝업 공지</label><button className="bg-btn" onClick={async()=>{if(!window.confirm("이 공지를 게시할까요?"))return;try{await adminCreateNotice(notice);setNotice({title:"",body:"",category:"notice",pinned:false,popup:false});window.alert("공지를 게시했어요.")}catch(e){window.alert(e.message)}}}>공지 게시</button></div>}
+   {tab==="music"&&<AdminMusicPanel/>}
    {tab==="ads"&&<div className="admin-adops-page">
   <div className="ad-overview-grid" aria-label="광고 현황 요약">
     <span className="sr-only">광고 현황 요약</span>
@@ -10252,7 +10503,8 @@ const MENU_HELP = {
   pets: { icon: "🐾", koTitle: "우리 아이", koBody: "반려동물 정보를 등록하고 체중·성장기록·사진을 꾸준히 관리해보세요.", enTitle: "My Pets", enBody: "Register your pets and manage growth, weight, and photos." },
   community: { icon: "💬", koTitle: "Pet톡", koBody: "다른 보호자들과 일상·질문·건강·산책·훈련 이야기를 나눠요. 닉네임은 회원정보에서 바꿀 수 있어요.", enTitle: "Pet Talk", enBody: "Share daily life, questions, health, walks and training with other pet guardians." },
   saju: { icon: "🔮", koTitle: "Pet사주", koBody: "기본 Pet사주, 오늘의 펫운세, 보호자 궁합 중 원하는 콘텐츠를 골라 재미로 즐겨보세요.", enTitle: "Pet Saju", enBody: "Enjoy Pet Saju, today's fortune, or guardian compatibility for fun." },
-  petbti: { icon: "🧩", koTitle: "PetBTI", koBody: "우리 아이의 행동 성향을 질문으로 알아보고 재미있는 성격 유형을 확인해요.", enTitle: "PetBTI", enBody: "Answer behavior questions and discover a fun personality type for your pet." },
+  petbti: { icon: "🧩", koTitle: "PetBTI", koBody: "강아지·고양이별 20개 행동 질문으로 우리 아이의 성향을 더 구체적으로 알아봐요.", enTitle: "PetBTI", enBody: "Answer behavior questions and discover a fun personality type for your pet." },
+  music: { icon: "🎵", koTitle: "Pet음악", koBody: "강아지·고양이를 위한 음악을 듣고 반복재생하며 좋아요와 댓글로 우리 아이의 반응을 나눠보세요.", enTitle: "Pet Music", enBody: "Listen to pet-friendly music, loop favorites, and share reactions with likes and comments." },
   tips: { icon: "💡", koTitle: "Pet정보", koBody: "건강·식단·생활·훈련 등 반려생활에 바로 써먹기 좋은 정보를 모아봤어요.", enTitle: "Pet Tips", enBody: "Browse practical tips for health, food, daily care and training." },
   my: { icon: "👤", koTitle: "회원정보", koBody: "닉네임과 계정 정보를 수정하고, 반려동물 관리와 Pet톡 내 활동을 확인할 수 있어요.", enTitle: "Member info", enBody: "Edit your nickname and account, manage pets, and review your Pet Talk activity." },
   content: { icon: "✨", koTitle: "Pet 콘텐츠", koBody: "Pet사주·PetBTI·Pet정보을 한곳에서 골라 이용할 수 있어요.", enTitle: "Pet Content", enBody: "Choose Pet Saju, PetBTI and Pet Tips in one place." },
@@ -10769,9 +11021,11 @@ function AppInner({ lang, setLang }) {
             <button className={view === "home" ? "active" : ""} onClick={() => goView("home")}><HomeIcon /><span>{t.hamNavHome}</span></button>
             <button className={view === "about" ? "active" : ""} onClick={() => goView("about")}><InfoIcon /><span>{t.aboutNav}</span></button>
             <button className={view === "pets" ? "active" : ""} onClick={() => goView("pets")}><HeartOutlineIcon /><span>{t.myPetsNav}</span></button>
+            <button className={view === "nearby" ? "active" : ""} onClick={() => goView("nearby")}><MapPinIcon /><span>{t.nearbyNav}</span></button>
             <button className={view === "community" ? "active" : ""} onClick={() => goView("community")}><TalkIcon /><span>{t.communityNav}</span></button>
             <button className={view === "saju" ? "active" : ""} onClick={() => goView("saju")}><SajuIcon /><span>{t.sajuNav}</span></button>
             <button className={view === "petbti" ? "active" : ""} onClick={() => goView("petbti")}><PetBtiIcon /><span>{t.petBtiNav}</span></button>
+            <button className={view === "music" ? "active" : ""} onClick={() => goView("music")}><MusicIcon /><span>{lang === "en" ? "Pet Music" : "Pet음악"}</span></button>
             <button className={view === "tips" ? "active" : ""} onClick={() => goView("tips")}><LightbulbIcon /><span>{t.tipsTitle}</span></button>
           </nav>
           <div className="petgrow-sidebar-bottom"><div className="petgrow-sidebar-message">♡ <span>{lang === "en" ? "A happier day with your pet" : "우리 아이와 더 행복한 하루"}</span></div><LangToggle lang={lang} onChange={setLang} /><AccountButton account={account} onOpen={() => (account ? setAccountModalOpen(true) : goView("pets"))} /></div>
@@ -10794,9 +11048,11 @@ function AppInner({ lang, setLang }) {
                 <button type="button" className={`desktop-nav-link ${view === "home" ? "active" : ""}`} onClick={() => goView("home")}><HomeIcon />{t.hamNavHome}</button>
                 <button type="button" className={`desktop-nav-link ${view === "about" ? "active" : ""}`} onClick={() => goView("about")}><InfoIcon />{t.aboutNav}</button>
                 <button type="button" className={`desktop-nav-link ${view === "pets" ? "active" : ""}`} onClick={() => goView("pets")}><HeartOutlineIcon />{t.myPetsNav}</button>
+                <button type="button" className={`desktop-nav-link ${view === "nearby" ? "active" : ""}`} onClick={() => goView("nearby")}><MapPinIcon />{t.nearbyNav}</button>
                 <button type="button" className={`desktop-nav-link ${view === "community" ? "active" : ""}`} onClick={() => goView("community")}><TalkIcon />{t.communityNav}</button>
                 <button type="button" className={`desktop-nav-link ${view === "saju" ? "active" : ""}`} onClick={() => goView("saju")}><SajuIcon />{t.sajuNav}</button>
                 <button type="button" className={`desktop-nav-link ${view === "petbti" ? "active" : ""}`} onClick={() => goView("petbti")}><PetBtiIcon />{t.petBtiNav}</button>
+                <button type="button" className={`desktop-nav-link ${view === "music" ? "active" : ""}`} onClick={() => goView("music")}><MusicIcon />{lang === "en" ? "Pet Music" : "Pet음악"}</button>
                 <button type="button" className={`desktop-nav-link ${view === "tips" ? "active" : ""}`} onClick={() => goView("tips")}><LightbulbIcon />{t.tipsTitle}</button>
               </nav>
 
@@ -10862,6 +11118,10 @@ function AppInner({ lang, setLang }) {
       ) : effectiveView === "home" ? (
         <HomePage account={account} pets={allPets} lang={lang}
           onGoPets={() => goView("pets")} onGoView={(v) => goView(v)} />
+      ) : effectiveView === "nearby" ? (
+        <NearbyPetPage />
+      ) : effectiveView === "music" ? (
+        <PetMusicPage account={account} lang={lang} />
       ) : effectiveView === "content" ? (
         <PetContentPage subTab={contentSubTab} onSubTabChange={setContentSubTab}
           allPets={allPets} featurePet={featurePet} onSelectFeaturePet={setFeaturePetId}
@@ -10944,7 +11204,7 @@ function AppInner({ lang, setLang }) {
             </a>
             <button type="button" onClick={() => goView("ad-inquiry")}
               style={{ fontSize: 11, fontWeight: 600, lineHeight: 1.4, fontFamily: "inherit", color: "var(--primary)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-              광고·제휴 문의
+              {lang === "en" ? "Partnerships" : "광고·제휴 문의"}
             </button>
           </div>
         </div>

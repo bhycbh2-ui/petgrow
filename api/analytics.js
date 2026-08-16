@@ -4,7 +4,7 @@ import { ensureSchema } from "./_lib/db.js";
 
 const ALLOWED_EVENTS = new Set(["session", "heartbeat", "pageview", "ad_request", "ad_ready", "ad_error"]);
 const ALLOWED_PLATFORMS = new Set(["web", "android", "ios"]);
-const ALLOWED_PAGES = new Set(["home","about","pets","community","saju","petbti","tips","my","login","terms","privacy","admin","other"]);
+const ALLOWED_PAGES = new Set(["home","about","pets","community","saju","petbti","tips","my","login","terms","privacy","admin","nearby","other"]);
 
 function kstDay() {
   const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());

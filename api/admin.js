@@ -60,11 +60,23 @@ export default async function handler(req,res){
       restrictions:()=>sql`select count(*)::int n from pg_community_restrictions where permanent=true or restricted_until>now()`,
       sessions:()=>sql`select count(*) filter(where day=(now() at time zone 'Asia/Seoul')::date)::int today,count(*) filter(where last_seen>now()-interval '5 minutes')::int online from pg_analytics_sessions`,
       community:()=>sql`select (select count(*)::int from pg_posts where created_at>=(now() at time zone 'Asia/Seoul')::date) posts_today,(select count(*)::int from pg_comments where created_at>=(now() at time zone 'Asia/Seoul')::date) comments_today`,
-      inquiries:()=>sql`select count(*) filter(where status='waiting')::int waiting from pg_inquiries`
+      inquiries:()=>sql`select count(*) filter(where status='waiting')::int waiting from pg_inquiries`,
+      menuUsage:()=>sql`
+        select dimension,
+          sum(count) filter(where day=(now() at time zone 'Asia/Seoul')::date)::int today,
+          sum(count) filter(where day>=(now() at time zone 'Asia/Seoul')::date-6)::int d7,
+          sum(count) filter(where day>=(now() at time zone 'Asia/Seoul')::date-29)::int d30
+        from pg_daily_metrics
+        where metric='pageview'
+          and day>=(now() at time zone 'Asia/Seoul')::date-29
+        group by dimension
+        order by d30 desc nulls last
+      `
     };
     const ent=Object.entries(queries),settled=await Promise.allSettled(ent.map(([,f])=>f())),q={},warnings=[];
     settled.forEach((x,i)=>{const k=ent[i][0];if(x.status==="fulfilled")q[k]=x.value.rows[0]||{};else warnings.push(`${k} 통계를 불러오지 못했어요.`)});
-    return res.status(200).json({warnings,cards:{totalMembers:q.members?.total||0,new7d:q.members?.new7||0,active7d:q.active?.d7||0,openReports:q.reports?.open||0,resolvedReports7d:q.reports?.done7||0,restricted:q.restrictions?.n||0,todaySessions:q.sessions?.today||0,onlineSessions5m:q.sessions?.online||0,postsToday:q.community?.posts_today||0,commentsToday:q.community?.comments_today||0,waitingInquiries:q.inquiries?.waiting||0}});
+    const menuRows=settled[ent.findIndex(([k])=>k==="menuUsage")]?.status==="fulfilled" ? settled[ent.findIndex(([k])=>k==="menuUsage")].value.rows : [];
+    return res.status(200).json({warnings,cards:{totalMembers:q.members?.total||0,new7d:q.members?.new7||0,active7d:q.active?.d7||0,openReports:q.reports?.open||0,resolvedReports7d:q.reports?.done7||0,restricted:q.restrictions?.n||0,todaySessions:q.sessions?.today||0,onlineSessions5m:q.sessions?.online||0,postsToday:q.community?.posts_today||0,commentsToday:q.community?.comments_today||0,waitingInquiries:q.inquiries?.waiting||0},menuUsage:menuRows});
   }
   if(a==="reports"&&req.method==="GET"){
     const {rows}=await sql`select * from pg_reports order by case when status='open' then 0 else 1 end,created_at desc limit 100`;

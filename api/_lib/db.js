@@ -282,6 +282,44 @@ export function ensureSchema() {
         )
       `;
 
+      // ---- Pet음악 ----
+      await sql`
+        create table if not exists pg_music_tracks (
+          id text primary key,
+          title text not null,
+          description text,
+          species text not null default 'all',
+          cover_url text,
+          audio_url text not null,
+          active boolean not null default true,
+          play_count bigint not null default 0,
+          like_count bigint not null default 0,
+          comment_count bigint not null default 0,
+          created_by text references pg_users(id) on delete set null,
+          created_at timestamptz not null default now(),
+          updated_at timestamptz not null default now()
+        )
+      `;
+      await sql`create index if not exists idx_pg_music_tracks_rank on pg_music_tracks(active,like_count desc,comment_count desc,play_count desc,created_at desc)`;
+      await sql`
+        create table if not exists pg_music_likes (
+          track_id text not null references pg_music_tracks(id) on delete cascade,
+          user_id text not null references pg_users(id) on delete cascade,
+          created_at timestamptz not null default now(),
+          primary key(track_id,user_id)
+        )
+      `;
+      await sql`
+        create table if not exists pg_music_comments (
+          id text primary key,
+          track_id text not null references pg_music_tracks(id) on delete cascade,
+          user_id text not null references pg_users(id) on delete cascade,
+          content text not null,
+          created_at timestamptz not null default now()
+        )
+      `;
+      await sql`create index if not exists idx_pg_music_comments_track on pg_music_comments(track_id,created_at desc)`;
+
     })().catch((error) => {
       schemaReadyPromise = null;
       throw error;
