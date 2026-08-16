@@ -14,8 +14,11 @@ import {
   getMyComments,
   getMyLikedPosts,
   createReport,
+  getReportContext,
+  getCommunityRestriction,
   CATEGORIES,
 } from "./_lib/community.js";
+import { validateCommunityText } from "./_lib/contentPolicy.js";
 
 const REPORT_REASONS = ["ad", "abuse", "sexual", "animal_abuse", "privacy", "misinformation", "spam", "other"];
 const ALLOWED_MIME = {
@@ -33,6 +36,40 @@ function requireUser(req, res) {
     return null;
   }
   return uid;
+}
+
+async function requireCommunityWrite(uid, res) {
+  const restriction = await getCommunityRestriction(uid);
+  if (!restriction?.active) return true;
+  const untilText = restriction.permanent ? "영구" : new Date(restriction.until).toLocaleString("ko-KR", { timeZone:"Asia/Seoul" });
+  res.status(403).json({ error:"community restricted", code:"COMMUNITY_RESTRICTED", message:`커뮤니티 이용이 제한된 계정입니다. 제한 기간: ${untilText}. 자세한 내용은 고객센터로 문의해 주세요.` });
+  return false;
+}
+
+async function sendReportEmail({ reportId, reporterUserId, reason, detail, context }) {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) return false;
+  const to = process.env.REPORT_EMAIL_TO || "help.petgrow@gmail.com";
+  const from = process.env.REPORT_EMAIL_FROM || "PetGrow 신고 <onboarding@resend.dev>";
+  const safe = (v) => String(v ?? "").replace(/[<>]/g, "");
+  const title = context?.title || "제목 없음";
+  const targetLabel = context?.targetType === "comment" ? "댓글" : "게시글";
+  const html = `
+    <h2>PetGrow Pet톡 신고 접수</h2>
+    <p><b>대상:</b> ${targetLabel}</p>
+    <p><b>게시글 제목:</b> ${safe(title)}</p>
+    <p><b>작성자 닉네임:</b> ${safe(context?.authorNickname)}</p>
+    <p><b>신고 사유:</b> ${safe(reason)}</p>
+    <p><b>신고 상세:</b> ${safe(detail || "없음")}</p>
+    <p><b>신고 ID:</b> ${safe(reportId)}</p>
+    <p><b>대상 ID:</b> ${safe(context?.targetId)}</p>
+    <p><b>신고자 내부 ID:</b> ${safe(reporterUserId)}</p>
+    <p><b>접수 시각:</b> ${new Date().toLocaleString("ko-KR", { timeZone:"Asia/Seoul" })}</p>`;
+  try {
+    const r = await fetch("https://api.resend.com/emails", { method:"POST", headers:{ Authorization:`Bearer ${key}`, "Content-Type":"application/json" }, body:JSON.stringify({ from, to:[to], subject:`[PetGrow 신고] ${title}`, html }) });
+    if (!r.ok) console.error("report email failed", await r.text());
+    return r.ok;
+  } catch (e) { console.error("report email error", e); return false; }
 }
 
 export default async function handler(req, res) {
@@ -58,6 +95,9 @@ export default async function handler(req, res) {
         const uid = requireUser(req, res);
         if (!uid) return;
         const { pet, category, title, content, imageUrls, isPublic } = req.body || {};
+        if (!(await requireCommunityWrite(uid, res))) return;
+        const policy = validateCommunityText(title, content);
+        if (!policy.ok) return res.status(400).json({ error: policy.message, code: "CONTENT_BLOCKED" });
         if (!pet || !pet.id || !pet.name) return res.status(400).json({ error: "pet is required" });
         if (!CATEGORIES.includes(category)) return res.status(400).json({ error: "invalid category" });
         if (!title || !title.trim()) return res.status(400).json({ error: "title is required" });
@@ -91,8 +131,11 @@ export default async function handler(req, res) {
         const uid = requireUser(req, res);
         if (!uid) return;
         const { category, title, content, imageUrls, isPublic } = req.body || {};
+        if (!(await requireCommunityWrite(uid, res))) return;
         const visibilityOnly = typeof isPublic === "boolean" && category == null && title == null && content == null && imageUrls == null;
         if (!visibilityOnly) {
+          const policy = validateCommunityText(title, content);
+          if (!policy.ok) return res.status(400).json({ error: policy.message, code: "CONTENT_BLOCKED" });
           if (!CATEGORIES.includes(category)) return res.status(400).json({ error: "invalid category" });
           if (!title || !title.trim()) return res.status(400).json({ error: "title is required" });
           if (!content || !content.trim()) return res.status(400).json({ error: "content is required" });
@@ -143,6 +186,9 @@ export default async function handler(req, res) {
         const uid = requireUser(req, res);
         if (!uid) return;
         const { pet, content } = req.body || {};
+        if (!(await requireCommunityWrite(uid, res))) return;
+        const policy = validateCommunityText(content);
+        if (!policy.ok) return res.status(400).json({ error: policy.message, code: "CONTENT_BLOCKED" });
         if (!content || !content.trim()) return res.status(400).json({ error: "content is required" });
         if (!pet || !pet.id || !pet.name) return res.status(400).json({ error: "pet is required" });
         const comment = await addComment({ postId, userId: uid, pet, content: content.trim() });
@@ -169,7 +215,14 @@ export default async function handler(req, res) {
       if (!["post", "comment"].includes(targetType)) return res.status(400).json({ error: "invalid targetType" });
       if (!targetId) return res.status(400).json({ error: "targetId is required" });
       if (!REPORT_REASONS.includes(reason)) return res.status(400).json({ error: "invalid reason" });
-      return res.status(200).json(await createReport({ reporterUserId: uid, targetType, targetId, reason, detail }));
+      if (detail && String(detail).length > 1000) return res.status(400).json({ error: "신고 상세내용은 1000자 이내로 입력해 주세요." });
+      const context = await getReportContext(targetType, targetId);
+      if (!context) return res.status(404).json({ error: "신고 대상을 찾을 수 없어요." });
+      if (context.targetUserId === uid) return res.status(400).json({ error: "본인이 작성한 글이나 댓글은 신고할 수 없어요." });
+      const result = await createReport({ reporterUserId: uid, targetType, targetId, reason, detail });
+      let emailSent = false;
+      if (result.reported) emailSent = await sendReportEmail({ reportId:result.reportId, reporterUserId:uid, reason, detail, context });
+      return res.status(200).json({ ...result, emailSent });
     }
 
     if (action === "my") {

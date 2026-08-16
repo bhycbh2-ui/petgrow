@@ -505,10 +505,10 @@ const STRINGS = {
     accountKakaoTag: "카카오 계정으로 로그인됨",
     accountCodeLabel: "카카오 계정 구분번호",
     accountNicknameLabel: "Pet톡 닉네임",
-    accountNicknameHelp: "2~20자 · Pet톡 게시글과 댓글에 표시돼요.",
+    accountNicknameHelp: "2~8자 · Pet톡 게시글과 댓글에 표시돼요.",
     accountNicknameSave: "닉네임 저장",
     accountNicknameSaved: "닉네임이 변경됐어요.",
-    accountNicknameError: "닉네임은 2~20자로 입력해주세요.",
+    accountNicknameError: "닉네임은 2~8자로 입력해주세요.",
     accountFreshLoginHelp: "로그아웃 후 다시 로그인하면 저장된 카카오 계정 중 원하는 계정을 선택할 수 있어요.",
     loginToastSuccess: "로그인됐어요",
     loginToastError: "로그인에 실패했어요. 다시 시도해주세요.",
@@ -1511,6 +1511,48 @@ function communityReport(payload) {
 function communityMyActivity(type, page) {
   return apiJson(`/api/community?action=my&type=${encodeURIComponent(type)}&page=${page || 1}`);
 }
+
+function adminApi(action, options={}) { const tok=sessionStorage.getItem("petgrow_admin_token")||""; return apiJson(`/api/admin?action=${action}`, {...options,headers:{...(options.headers||{}),...(tok?{"X-PetGrow-Admin-Token":tok}:{})}}); }
+function adminStatus(){return adminApi("status");}
+function adminBootstrap(setupCode,pin){return adminApi("bootstrap",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({setupCode,pin})});}
+function adminVerify(pin){return adminApi("verify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pin})});}
+function adminListReports(){return adminApi("reports");}
+function adminRestrictUser(payload){return adminApi("restrict",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});}
+function adminUnblockUser(userId,reportId){return adminApi("unblock",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId,reportId})});}
+function adminResolveReport(reportId){return adminApi("resolve",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({reportId})});}
+function adminStats(){return adminApi("stats");}
+function adminLogs(){return adminApi("logs");}
+
+function getAnonymousAnalyticsSessionId() {
+  try {
+    let id = sessionStorage.getItem("petgrow_analytics_session");
+    if (!id) {
+      id = (globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`);
+      sessionStorage.setItem("petgrow_analytics_session", id);
+    }
+    return id;
+  } catch {
+    return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  }
+}
+function getAnalyticsPlatform() {
+  if (!Capacitor.isNativePlatform()) return "web";
+  return Capacitor.getPlatform() === "ios" ? "ios" : "android";
+}
+function analyticsEvent(event, page) {
+  return fetch("/api/analytics", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      event,
+      page,
+      platform: getAnalyticsPlatform(),
+      sessionId: getAnonymousAnalyticsSessionId(),
+    }),
+    keepalive: true,
+  }).catch(() => null);
+}
+
 async function communityUploadImage(dataUrl) {
   const data = await apiJson("/api/community?action=upload", {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ dataUrl }),
@@ -1843,10 +1885,11 @@ const PRIVACY_SECTIONS_KO = [
   { title: "14. 아동의 개인정보", body: "PetGrow는 아동의 개인정보를 의도적으로 수집하는 것을 목적으로 하지 않습니다. 향후 아동을 대상으로 하는 기능을 제공하거나 아동의 개인정보를 처리하게 되는 경우 관련 법령 및 앱 마켓 정책에서 요구하는 보호조치를 적용합니다." },
   { title: "15. 개인정보의 안전성 확보조치", body: "PetGrow는 인증정보 및 비밀키 보호, 사용자별 데이터 접근권한 제한, 불필요한 접근 최소화, 서비스 보안 점검 등 합리적으로 필요한 기술적·관리적 보호조치를 적용하도록 노력합니다." },
   { title: "16. Pet톡(커뮤니티) 서비스와 개인정보", body: "PetGrow는 회원 간 반려동물 정보를 공유하는 커뮤니티 기능 'Pet톡'을 제공합니다. Pet톡 이용과 관련하여 다음 정보가 처리됩니다.\n- 게시글, 댓글, 좋아요 및 신고 내역\n- 게시글에 첨부한 사진(최대 5장)\n- 게시글·댓글에 표시되는 반려동물 정보(반려동물 이름, 품종, 생년월일 기반 나이, 프로필 사진)\n\n회원의 카카오 식별정보, 이메일 등 회원 개인정보는 다른 회원에게 공개되지 않습니다. Pet톡에는 회원이 직접 설정한 닉네임과, 게시글 작성 시 선택한 반려동물의 이름·품종·나이·프로필 사진이 표시될 수 있습니다. 작성자는 게시글 상세 화면에서 게시글을 공개 또는 비공개로 전환할 수 있으며, 비공개 게시글은 작성자 본인에게만 제공됩니다. 게시글 작성자 본인 여부는 서버에서만 확인하며 다른 회원에게 노출되지 않습니다." },
-  { title: "17. Pet톡 게시물의 보유기간 및 삭제", body: "Pet톡의 게시글·댓글·좋아요·신고 내역은 게시글/댓글이 삭제되거나 회원이 탈퇴할 때까지 보유됩니다. 회원은 본인이 작성한 게시글과 댓글을 언제든지 직접 삭제할 수 있습니다. 회원탈퇴 시 해당 회원이 작성한 모든 게시글·댓글·좋아요 기록은 즉시 삭제되며, 첨부된 사진 파일도 함께 삭제됩니다. 신고 내역은 신고한 회원이 탈퇴하는 경우 함께 삭제됩니다.\n\nPetGrow는 신고된 게시물에 대해 운영자가 확인 후 게시글·댓글을 숨기거나 삭제할 수 있습니다." },
+  { title: "17. Pet톡 게시물의 보유기간 및 삭제", body: "Pet톡의 게시글·댓글·좋아요·신고 내역은 게시글/댓글이 삭제되거나 회원이 탈퇴할 때까지 보유됩니다. 회원은 본인이 작성한 게시글과 댓글을 언제든지 직접 삭제할 수 있습니다. 회원탈퇴 시 해당 회원이 작성한 모든 게시글·댓글·좋아요 기록은 즉시 삭제되며, 첨부된 사진 파일도 함께 삭제됩니다. 신고 내역은 신고한 회원이 탈퇴하는 경우 함께 삭제됩니다.\n\nPetGrow는 신고된 게시물을 운영자가 검토한 후 게시글·댓글을 숨기거나 삭제할 수 있으며, 운영정책 위반 정도에 따라 Pet톡 이용을 1일·7일·30일 또는 영구 제한하거나 제한을 해제할 수 있습니다. 신고만으로 자동 이용제한되지는 않으며, 관리자 처리 이력은 운영·보안 및 오남용 방지를 위해 기록될 수 있습니다." },
   { title: "18. Pet톡 이미지 저장", body: "Pet톡에 첨부하는 사진은 Vercel Blob(파일 저장 서비스)에 저장되며, 데이터베이스에는 사진의 저장 위치(URL)만 저장됩니다. 업로드 시 허용된 이미지 형식(JPG/PNG/WebP) 및 용량 제한이 적용되며, 게시글이 삭제되면 저장된 사진 파일도 함께 삭제됩니다." },
-  { title: "19. 개인정보 관련 문의", body: "서비스명: PetGrow\n문의 이메일: help.petgrow@gmail.com" },
-  { title: "20. 개인정보처리방침의 변경", body: "서비스 기능, 개인정보 처리 방식, 외부 서비스 또는 관련 법령·정책 변경에 따라 본 개인정보처리방침이 변경될 수 있습니다. 중요한 변경사항은 PetGrow 웹사이트 또는 애플리케이션을 통해 안내합니다.\n\n최종 업데이트: 2026년 8월 16일\n시행일: 2026년 8월 16일" },
+  { title: "19. 익명·집계형 서비스 이용 통계", body: "PetGrow는 서비스 품질 및 운영 현황을 확인하기 위해 개인정보를 최소화한 자체 통계를 운영할 수 있습니다. 집계 항목에는 방문 세션 수, 최근 5분 내 활성 세션의 추정치, 메뉴별 페이지 조회 수, 앱·웹 이용 비중, 신규·활성 회원 수, 등록 반려동물 수, Pet톡 게시글·댓글·좋아요 수, 신고·이용제한 건수, 광고 표시 요청·성공·오류 건수 등이 포함될 수 있습니다.\n\n이 통계 화면에는 이용자의 이름, 이메일, 카카오 고유식별정보, IP 주소 또는 개인별 이용내역을 표시하지 않습니다. 익명 방문 세션 중복 집계를 위한 해시값은 최대 90일 동안 보관한 후 삭제할 수 있으며, 일자별 집계 통계는 서비스 운영 추이 확인을 위해 최대 24개월간 보관할 수 있습니다. '현재 접속 세션'은 최근 일정 시간 내 신호가 있었던 세션을 바탕으로 한 추정치이며 실제 동시접속자 수와 차이가 있을 수 있습니다. AdMob의 실제 광고 노출·클릭·수익 정보는 Google의 시스템에서 별도로 처리될 수 있으며 PetGrow 자체 통계의 광고 성공 건수는 광고 표시 요청 처리 상태를 의미합니다." },
+  { title: "20. 개인정보 관련 문의", body: "서비스명: PetGrow\n문의 이메일: help.petgrow@gmail.com" },
+  { title: "21. 개인정보처리방침의 변경", body: "서비스 기능, 개인정보 처리 방식, 외부 서비스 또는 관련 법령·정책 변경에 따라 본 개인정보처리방침이 변경될 수 있습니다. 중요한 변경사항은 PetGrow 웹사이트 또는 애플리케이션을 통해 안내합니다.\n\n최종 업데이트: 2026년 8월 16일\n시행일: 2026년 8월 16일" },
 ];
 const PRIVACY_SECTIONS_EN = [
   { title: "1. Purpose of Processing", body: "PetGrow may process personal information to the extent necessary for: member identification and account management via Kakao Login; keeping you logged in; storing and syncing pet information across devices; saving and re-viewing results such as PetBTI; customer support; improving service stability and quality; delivering ads and measuring ad performance; preventing fraud; and processing account deletion and related data removal." },
@@ -1868,7 +1911,7 @@ const PRIVACY_SECTIONS_EN = [
   { title: "17. Retention and Deletion of Pet Talk Content", body: "Posts, comments, likes, and reports on Pet Talk are retained until the post/comment is deleted or the member withdraws. Members can delete their own posts and comments at any time. Upon account withdrawal, all posts, comments, and likes by that member are deleted immediately, along with any attached photo files. Report records are deleted if the reporting member withdraws.\n\nPetGrow may hide or delete reported posts/comments after operator review." },
   { title: "18. Pet Talk Image Storage", body: "Photos attached to Pet Talk posts are stored in Vercel Blob (a file storage service); only the storage location (URL) is stored in the database. Uploads are restricted to allowed image formats (JPG/PNG/WebP) and a size limit, and stored photo files are deleted when a post is deleted." },
   { title: "19. Contact", body: "Service: PetGrow\nContact email: help.petgrow@gmail.com" },
-  { title: "20. Changes to This Policy", body: "This policy may change due to changes in service features, how personal information is processed, external services, or applicable laws/policies. Material changes will be announced via the PetGrow website or app.\n\nLast updated: August 16, 2026\nEffective date: August 16, 2026" },
+  { title: "21. Changes to This Policy", body: "This policy may change due to changes in service features, how personal information is processed, external services, or applicable laws/policies. Material changes will be announced via the PetGrow website or app.\n\nLast updated: August 16, 2026\nEffective date: August 16, 2026" },
 ];
 
 const TERMS_SECTIONS_KO = [
@@ -1881,22 +1924,22 @@ const TERMS_SECTIONS_KO = [
   { title: "제7조 (서비스 제공)", body: "PetGrow는 우리 아이 등록·관리, 성장 예상 및 성장정보, Pet사주, PetBTI, Pet정보, Pet톡 커뮤니티, 회원정보(계정·닉네임·활동 관리), 계정별 데이터 저장 및 기기 간 동기화 등의 서비스를 제공할 수 있습니다." },
   { title: "제8조 (데이터 저장 및 동기화)", body: "로그인 회원이 등록한 반려동물 정보와 일부 서비스 결과는 회원 계정에 연결하여 서버 또는 클라우드 저장소에 저장될 수 있습니다. 따라서 서비스 내에서 '이 기기에만 저장', '이 브라우저에만 저장'되는 것으로 안내하지 않습니다. 동일한 카카오 계정으로 로그인하면 지원되는 다른 기기 또는 웹 환경에서 저장된 정보를 불러올 수 있습니다. 다만 카카오 간편로그인 도입 이전의 기존 로컬 데이터는 별도의 이전 절차가 적용될 수 있습니다." },
   { title: "제9조 (이용자의 의무)", body: "이용자는 타인의 계정·정보 도용, 시스템의 정상 운영 방해, 취약점 악용, 불법적인 데이터 수집, PetGrow 또는 제3자의 권리 침해, 관계 법령 위반 등의 행위를 해서는 안 됩니다." },
-  { title: "제10조 (서비스 이용 제한)", body: "이용자가 본 약관 또는 관계 법령을 위반하거나 서비스의 안정적인 운영을 방해하는 경우 PetGrow는 필요한 범위에서 서비스 이용을 제한하거나 이용계약을 해지할 수 있습니다." },
+  { title: "제10조 (서비스 이용 제한)", body: "이용자가 본 약관 또는 관계 법령을 위반하거나 서비스의 안정적인 운영을 방해하는 경우 PetGrow는 필요한 범위에서 서비스 이용을 제한하거나 이용계약을 해지할 수 있습니다. Pet톡 운영정책 위반의 경우 운영자가 신고 및 위반 내용을 검토하여 1일, 7일, 30일 또는 영구 이용제한을 적용하거나 해제할 수 있습니다. 신고 접수만을 이유로 자동 이용제한하지 않으며, 이용제한·해제·신고처리 등 관리자 조치는 운영 및 보안 목적으로 기록될 수 있습니다." },
   { title: "제10조의2 (Pet톡 닉네임 및 공개정보)", body: "회원은 계정의 회원정보 수정 기능에서 Pet톡에 표시할 닉네임을 설정·변경할 수 있습니다. Pet톡 게시글 및 댓글에는 회원이 설정한 닉네임과 선택한 반려동물의 일부 정보가 표시될 수 있습니다. 카카오 계정의 고유 식별정보나 로그인 정보는 다른 회원에게 공개되지 않습니다." },
   { title: "제11조 (회원탈퇴 및 이용계약 해지)", body: "회원은 언제든지 서비스 내 회원탈퇴 기능을 통해 이용계약을 해지할 수 있습니다. 회원탈퇴가 완료되면 관계 법령에 따라 별도로 보관해야 하는 정보가 있는 경우를 제외하고 회원계정 및 계정과 연결된 개인정보와 저장정보를 삭제합니다." },
   { title: "제12조 (반려동물 관련 정보 및 계산 결과)", body: "PetGrow의 성장 예상, 체중 계산 및 기타 반려동물 관련 정보는 일반적인 자료와 이용자가 입력한 정보를 기반으로 제공되는 참고용 정보이며 실제 결과를 보장하지 않습니다." },
   { title: "제13조 (건강 관련 정보)", body: "PetGrow에서 제공하는 건강, 식단, 영양 및 관리 정보는 일반적인 참고정보이며 수의사의 진료, 진단 또는 처방을 대신하지 않습니다. 반려동물에게 이상 증상이나 응급상황이 있는 경우 수의사 또는 동물병원의 진료를 받아야 합니다." },
   { title: "제14조 (Pet사주·PetBTI 등 재미 콘텐츠)", body: "기본 Pet사주, 오늘의 펫운세, 보호자 궁합 및 PetBTI는 재미와 참고를 위한 콘텐츠이며 과학적 진단, 의학적 판단, 성격 진단 또는 미래 결과를 보장하는 자료가 아닙니다. 보호자 궁합을 위해 입력한 보호자 이름과 생년월일은 현재 구현상 결과 계산에만 일시적으로 사용되며 PetGrow 서버 또는 계정에 저장되지 않습니다." },
-  { title: "제15조 (광고 및 외부 서비스)", body: "PetGrow는 서비스 운영을 위해 광고 및 카카오 인증, Google AdMob 등 외부 서비스를 이용할 수 있습니다. Google은 간편로그인 수단으로 제공하지 않으며, 실제 사용하는 광고 등 외부 서비스에 대해서만 해당 제공자의 이용약관 및 개인정보처리방침이 적용될 수 있습니다." },
+  { title: "제15조 (광고 및 외부 서비스)", body: "PetGrow는 서비스 운영을 위해 광고 및 카카오 인증, Google AdMob 등 외부 서비스를 이용할 수 있습니다. Google은 간편로그인 수단으로 제공하지 않으며, 실제 사용하는 광고 등 외부 서비스에 대해서만 해당 제공자의 이용약관 및 개인정보처리방침이 적용될 수 있습니다. PetGrow는 광고 운영 상태 확인을 위해 광고 표시 요청·성공·오류 건수를 개인정보와 분리된 집계 통계로 기록할 수 있습니다. PetGrow 관리자 화면의 광고 통계는 실제 광고 노출수·클릭수·수익을 의미하지 않으며 해당 정보는 Google AdMob 또는 관련 광고 플랫폼의 공식 보고서를 기준으로 합니다." },
   { title: "제16조 (개인정보 보호)", body: "회원의 개인정보 처리에 관한 사항은 PetGrow 개인정보처리방침에 따릅니다." },
   { title: "제17조 (지식재산권)", body: "PetGrow가 직접 제작한 로고, 디자인, 문구, 프로그램 및 콘텐츠에 대한 권리는 PetGrow 또는 정당한 권리자에게 귀속됩니다. 이용자는 권리자의 허락 없이 이를 영리 목적으로 복제·배포·판매 또는 변형해서는 안 됩니다." },
   { title: "제18조 (Pet톡 게시물의 작성 및 책임)", body: "① \"Pet톡\"이란 회원이 등록한 반려동물을 중심으로 사진과 글을 공유하는 PetGrow의 커뮤니티 기능을 말합니다.\n② 회원은 Pet톡에 게시글·댓글(이하 \"게시물\")을 작성할 때 자신이 등록한 반려동물 중 하나를 선택하여 함께 표시할 수 있습니다.\n③ 게시물의 내용에 대한 책임은 작성자 본인에게 있으며, 회원은 다음 각 호에 해당하는 게시물을 작성해서는 안 됩니다.\n1. 광고·홍보성 게시물\n2. 욕설·비방 등 타인을 모욕하거나 명예를 훼손하는 게시물\n3. 음란하거나 부적절한 콘텐츠\n4. 동물학대를 조장하거나 미화하는 콘텐츠\n5. 타인의 개인정보를 노출하는 게시물\n6. 허위 사실이나 반려동물에게 위험할 수 있는 정보를 사실인 것처럼 유포하는 게시물\n7. 동일하거나 유사한 내용을 반복적으로 게시(도배)하는 행위\n8. 그 밖에 관계 법령 또는 본 약관을 위반하는 게시물\n④ 건강·식단 카테고리에 게시되는 내용은 회원 개인의 경험이나 의견이며, PetGrow가 직접 작성하거나 검증한 전문 의료정보가 아닙니다. 반려동물의 건강 문제는 반드시 수의사와 상담해야 합니다." },
   { title: "제19조 (게시물의 저작권 및 이용허락)", body: "① 회원이 Pet톡에 게시한 글과 사진의 저작권은 원칙적으로 해당 게시물을 작성한 회원 본인에게 귀속됩니다.\n② 회원은 게시물을 PetGrow 서비스 내에서 게시·전시·전송하는 데 필요한 범위에서 PetGrow에게 무상으로 이용을 허락한 것으로 봅니다. 이는 게시물의 저작권을 PetGrow에 양도하는 것이 아닙니다.\n③ PetGrow는 게시물을 서비스 운영 목적을 벗어나 회원의 동의 없이 상업적으로 이용하지 않습니다.\n④ 회원은 자신이 작성한 Pet톡 게시글을 공개 또는 비공개로 전환할 수 있으며, 비공개 게시글은 작성자 본인에게만 표시됩니다." },
-  { title: "제20조 (신고 및 게시물 관리)", body: "① 회원은 다른 회원의 게시물이 제18조 제3항 각 호에 해당한다고 판단되는 경우 서비스 내 신고 기능을 통해 신고할 수 있습니다.\n② 타인의 권리(저작권, 초상권, 개인정보 등)를 침해하는 게시물을 발견한 경우 help.petgrow@gmail.com으로 침해 사실을 구체적으로 알려 삭제 등 조치를 요청할 수 있습니다.\n③ PetGrow는 신고가 접수되거나 제18조 제3항을 위반한 것으로 확인되는 게시물에 대해 사전 통지 없이 게시물을 숨기거나 삭제할 수 있고, 반복적으로 위반하는 회원의 서비스 이용을 제한할 수 있습니다.\n④ 신고 내용 및 처리 이력은 서비스 운영 및 부정 이용 방지 목적으로 보관될 수 있습니다." },
+  { title: "제20조 (신고 및 게시물 관리)", body: "① 회원은 다른 회원의 게시물이 제18조 제3항 각 호에 해당한다고 판단되는 경우 서비스 내 신고 기능을 통해 신고할 수 있습니다.\n② 타인의 권리(저작권, 초상권, 개인정보 등)를 침해하는 게시물을 발견한 경우 help.petgrow@gmail.com으로 침해 사실을 구체적으로 알려 삭제 등 조치를 요청할 수 있습니다.\n③ PetGrow는 신고가 접수되거나 제18조 제3항을 위반한 것으로 확인되는 게시물에 대해 사전 통지 없이 게시물을 숨기거나 삭제할 수 있고, 반복적으로 위반하는 회원의 서비스 이용을 제한할 수 있습니다.\n④ 신고 내용 및 처리 이력은 서비스 운영 및 부정 이용 방지 목적으로 보관될 수 있습니다.\n⑤ 신고된 계정에 대한 이용제한은 운영자의 검토 후 1일·7일·30일 또는 영구 제한으로 적용될 수 있으며, 필요 시 제한을 해제할 수 있습니다. 신고만 접수되었다는 이유만으로 자동 제한하지 않습니다.\n⑥ PetGrow는 욕설·비속어·음란·혐오 표현, 개인정보 노출 등 일부 금지 표현에 대하여 게시글·댓글 작성 단계에서 자동 필터를 적용할 수 있으나 모든 부적절한 콘텐츠를 완전히 탐지하거나 차단하는 것을 보장하지 않습니다." },
   { title: "제21조 (회원탈퇴와 게시물)", body: "회원탈퇴 시 해당 회원이 Pet톡에 작성한 게시글·댓글·좋아요 기록 및 첨부 사진은 계정 삭제와 동시에 즉시 삭제되며, 삭제된 게시물은 복구할 수 없습니다. 다른 회원이 그 게시글에 남긴 댓글도 게시글과 함께 삭제됩니다." },
-  { title: "제22조 (서비스 변경 및 종료)", body: "PetGrow는 서비스 개선이나 기술적·운영상 필요에 따라 서비스의 전부 또는 일부를 변경할 수 있습니다. 중요한 변경 또는 서비스 종료가 예정된 경우 가능한 범위에서 사전에 안내합니다." },
-  { title: "제23조 (책임의 제한)", body: "천재지변, 통신장애, 카카오 인증 서비스 장애 또는 PetGrow가 합리적으로 통제하기 어려운 사유로 서비스 이용에 문제가 발생한 경우 관련 법령에서 허용하는 범위에서 책임이 제한될 수 있습니다. 본 조는 관련 법령상 PetGrow가 부담해야 하는 책임을 부당하게 배제하는 것으로 해석되지 않습니다." },
-  { title: "제24조 (분쟁 해결 및 준거법)", body: "본 약관은 대한민국 법령을 준거법으로 합니다. PetGrow와 이용자 사이에 분쟁이 발생하는 경우 상호 원만한 해결을 위해 노력하며 관할법원은 관계 법령에서 정하는 바에 따릅니다." },
+  { title: "제22조 (서비스 이용 통계)", body: "PetGrow는 서비스 개선 및 운영을 위해 개인정보를 최소화한 집계 통계를 생성할 수 있습니다. 방문 세션, 메뉴 조회, 앱·웹 이용 비중, 회원·반려동물·Pet톡 활동 및 광고 요청 상태 등 통계가 포함될 수 있으며 관리자 화면에는 개인의 이름·이메일·카카오 식별정보·IP 주소를 표시하지 않습니다. 현재 접속 세션과 일부 이용 통계는 기술적 특성상 추정값이며 정확한 실제 이용자 수를 보장하지 않습니다." },\n  { title: "제23조 (서비스 변경 및 종료)", body: "PetGrow는 서비스 개선이나 기술적·운영상 필요에 따라 서비스의 전부 또는 일부를 변경할 수 있습니다. 중요한 변경 또는 서비스 종료가 예정된 경우 가능한 범위에서 사전에 안내합니다." },
+  { title: "제24조 (책임의 제한)", body: "천재지변, 통신장애, 카카오 인증 서비스 장애 또는 PetGrow가 합리적으로 통제하기 어려운 사유로 서비스 이용에 문제가 발생한 경우 관련 법령에서 허용하는 범위에서 책임이 제한될 수 있습니다. 본 조는 관련 법령상 PetGrow가 부담해야 하는 책임을 부당하게 배제하는 것으로 해석되지 않습니다." },
+  { title: "제25조 (분쟁 해결 및 준거법)", body: "본 약관은 대한민국 법령을 준거법으로 합니다. PetGrow와 이용자 사이에 분쟁이 발생하는 경우 상호 원만한 해결을 위해 노력하며 관할법원은 관계 법령에서 정하는 바에 따릅니다." },
   { title: "부칙", body: "본 약관은 2026년 8월 16일부터 시행합니다.\n최종 업데이트: 2026년 8월 16일" },
 ];
 const TERMS_SECTIONS_EN = [
@@ -1909,22 +1952,22 @@ const TERMS_SECTIONS_EN = [
   { title: "Article 7 (Provision of Service)", body: "PetGrow may provide services including registering/managing pets, growth prediction and growth info, basic Pet Saju, Daily Pet Fortune, Guardian Compatibility, PetBTI, Pet Info, the Pet Talk community, member-info/nickname/activity management, and per-account data storage and cross-device sync." },
   { title: "Article 8 (Data Storage and Sync)", body: "Pet information and certain service results registered by a logged-in member may be stored on our servers or cloud storage, linked to the member's account. Accordingly, the service does not describe data as being stored 'only on this device' or 'only in this browser.' Logging in with the same Kakao account lets you retrieve saved information on other supported devices or the web. Local data predating Kakao Login may be subject to a separate migration process." },
   { title: "Article 9 (User Obligations)", body: "Users must not impersonate or misuse another person's account or information, interfere with normal system operation, exploit vulnerabilities, unlawfully collect data, infringe the rights of PetGrow or third parties, or violate applicable law." },
-  { title: "Article 10 (Restriction of Service Use)", body: "If a user violates these Terms or applicable law, or interferes with the stable operation of the service, PetGrow may restrict use of the service or terminate the service agreement to the necessary extent." },
+  { title: "Article 10 (Restriction of Service Use)", body: "If a user violates these Terms or applicable law, or interferes with stable operation, PetGrow may restrict use or terminate the service agreement to the necessary extent. For Pet Talk policy violations, an administrator may review the report and violation and apply or remove a 1-day, 7-day, 30-day, or permanent Pet Talk restriction. A report alone does not automatically restrict an account, and moderation actions may be logged for operational and security purposes." },
   { title: "Article 10-2 (Pet Talk Nickname and Public Information)", body: "Members may set or change the nickname displayed on Pet Talk from the member-info editing feature. Pet Talk posts and comments may display the member-selected nickname together with some information about the selected pet. Kakao account identifiers and login credentials are not disclosed to other members." },
   { title: "Article 11 (Withdrawal and Termination)", body: "Members may terminate the service agreement at any time via the in-service account withdrawal feature. Upon completion, the member account and connected personal information and stored data are deleted, except for information that must be separately retained under applicable law." },
   { title: "Article 12 (Pet-Related Information and Calculated Results)", body: "PetGrow's growth predictions, weight calculations, and other pet-related information are reference information based on general data and information entered by the user, and do not guarantee actual outcomes." },
   { title: "Article 13 (Health-Related Information)", body: "Health, diet, nutrition, and care information provided by PetGrow is general reference information and does not replace examination, diagnosis, or treatment by a veterinarian. If your pet shows abnormal symptoms or an emergency, please see a veterinarian or animal hospital." },
   { title: "Article 14 (Saju, PetBTI, and Other Entertainment Content)", body: "Saju and PetBTI are content for entertainment and reference purposes, and are not scientific diagnosis, medical judgment, or a guarantee of future outcomes." },
-  { title: "Article 15 (Advertising and External Services)", body: "PetGrow may use external services such as advertising, Kakao authentication, and Google AdMob to operate the service. Google is not provided as a login method; the terms and privacy policy of external providers apply only to services actually used, such as advertising." },
+  { title: "Article 15 (Advertising and External Services)", body: "PetGrow may use external services such as advertising, Kakao authentication, and Google AdMob to operate the service. Google is not provided as a login method; the terms and privacy policy of external providers apply only to services actually used, such as advertising. PetGrow may record aggregate counts of ad display requests, successful display requests, and errors for operational monitoring. These internal figures are not verified impressions, clicks, or revenue; official AdMob or advertising-platform reports remain the source for such figures." },
   { title: "Article 16 (Protection of Personal Information)", body: "Matters regarding processing of members' personal information follow the PetGrow Privacy Policy." },
   { title: "Article 17 (Intellectual Property)", body: "Rights to logos, designs, text, programs, and content created directly by PetGrow belong to PetGrow or its rightful owners. Users must not reproduce, distribute, sell, or modify these for commercial purposes without the rights holder's permission." },
   { title: "Article 18 (Posting and Responsibility on Pet Talk)", body: "① \"Pet Talk\" means PetGrow's community feature for sharing photos and posts centered on a member's registered pet.\n② When posting or commenting on Pet Talk (\"Content\"), members may select one of their registered pets to display alongside it.\n③ Members are responsible for their own Content and must not post Content that:\n1. Is advertising or promotional in nature\n2. Insults or defames others, including abusive language\n3. Is sexual or otherwise inappropriate\n4. Promotes or glorifies animal abuse\n5. Exposes another person's personal information\n6. Spreads false or potentially dangerous information as if it were fact\n7. Repeats the same or similar content excessively (spam)\n8. Otherwise violates applicable law or these Terms\n④ Content in the Health & Diet category reflects individual members' experience or opinions, not professional medical information written or verified by PetGrow. Always consult a veterinarian for your pet's health issues." },
   { title: "Article 19 (Copyright and License to Content)", body: "① Copyright in text and photos a member posts on Pet Talk belongs, in principle, to that member.\n② By posting, a member grants PetGrow a free license to display, exhibit, and transmit the Content to the extent necessary to operate the service within PetGrow. This is not a transfer of copyright to PetGrow.\n③ PetGrow will not use Content commercially beyond the purpose of operating the service without the member's consent.\n④ Members may switch their own Pet Talk posts between public and private; private posts are shown only to the author." },
-  { title: "Article 20 (Reports and Content Moderation)", body: "① Members may report another member's Content believed to violate Article 18(3) using the in-service report feature.\n② If you find Content that infringes your rights (copyright, likeness, personal information, etc.), you may contact help.petgrow@gmail.com with specifics to request removal or other action.\n③ PetGrow may hide or delete reported Content, or Content confirmed to violate Article 18(3), without prior notice, and may restrict the service access of members who repeatedly violate these Terms.\n④ Report content and handling history may be retained for service operation and fraud-prevention purposes." },
+  { title: "Article 20 (Reports and Content Moderation)", body: "① Members may report another member's Content believed to violate Article 18(3) using the in-service report feature.\n② If you find Content that infringes your rights (copyright, likeness, personal information, etc.), you may contact help.petgrow@gmail.com with specifics to request removal or other action.\n③ PetGrow may hide or delete reported Content, or Content confirmed to violate Article 18(3), without prior notice, and may restrict the service access of members who repeatedly violate these Terms.\n④ Report content and handling history may be retained for service operation and fraud-prevention purposes.\n⑤ Following administrator review, a reported account may receive a 1-day, 7-day, 30-day, or permanent Pet Talk restriction, which may later be removed. Reports do not trigger automatic restrictions.\n⑥ PetGrow may automatically filter certain prohibited expressions, including abusive, sexual, hateful, or privacy-exposing content, when posts or comments are submitted, but does not guarantee that every inappropriate item will be detected or blocked." },
   { title: "Article 21 (Account Withdrawal and Content)", body: "Upon account withdrawal, that member's Pet Talk posts, comments, likes, and attached photos are deleted immediately along with the account, and cannot be recovered. Other members' comments on a deleted post are also deleted along with that post." },
-  { title: "Article 22 (Changes to and Discontinuation of Service)", body: "PetGrow may change all or part of the service for improvement or operational/technical reasons. Where a material change or discontinuation is planned, PetGrow will provide advance notice where reasonably possible." },
-  { title: "Article 23 (Limitation of Liability)", body: "Where an issue arises from force majeure, communication failure, a Kakao authentication service outage, or a cause PetGrow cannot reasonably control, PetGrow's liability may be limited to the extent permitted by applicable law. This article shall not be construed as unfairly excluding liability that PetGrow must bear under applicable law." },
-  { title: "Article 24 (Dispute Resolution and Governing Law)", body: "These Terms are governed by the laws of the Republic of Korea. PetGrow and users will make good-faith efforts to resolve disputes amicably, and jurisdiction follows applicable law." },
+  { title: "Article 22 (Service Usage Analytics)", body: "PetGrow may create privacy-minimized aggregate analytics for service improvement and operations, including visit sessions, menu views, web/app platform share, membership/pet/Pet Talk activity, and ad-request status. The admin dashboard does not display individual names, email addresses, Kakao identifiers, or IP addresses. Current-session and certain usage metrics are estimates and do not guarantee an exact count of real users." },\n  { title: "Article 23 (Changes to and Discontinuation of Service)", body: "PetGrow may change all or part of the service for improvement or operational/technical reasons. Where a material change or discontinuation is planned, PetGrow will provide advance notice where reasonably possible." },
+  { title: "Article 24 (Limitation of Liability)", body: "Where an issue arises from force majeure, communication failure, a Kakao authentication service outage, or a cause PetGrow cannot reasonably control, PetGrow's liability may be limited to the extent permitted by applicable law. This article shall not be construed as unfairly excluding liability that PetGrow must bear under applicable law." },
+  { title: "Article 25 (Dispute Resolution and Governing Law)", body: "These Terms are governed by the laws of the Republic of Korea. PetGrow and users will make good-faith efforts to resolve disputes amicably, and jurisdiction follows applicable law." },
   { title: "Addendum", body: "These Terms take effect on August 16, 2026.\nLast updated: August 16, 2026." },
 ];
 
@@ -2111,18 +2154,77 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
   const [msg, setMsg] = useState("");
   const [savedOpen, setSavedOpen] = useState(false);
   useEffect(() => { setNickname(account?.name || ""); setMsg(""); setSavedOpen(false); }, [account?.name, open]);
-  const saveNickname = async () => {
-    const clean = nickname.trim();
-    if (clean.length < 2 || clean.length > 20) { setMsg(t.accountNicknameError); return; }
-    setSaving(true); setMsg("");
+  async function saveNickname() {
+    if (nicknameSaving) return;
+    const checked = validateNicknameLocal(nicknameDraft);
+    if (!checked.ok) {
+      window.alert(checked.message);
+      return;
+    }
+    const nickname = checked.nickname;
+
+    if (account?.nickname && normalizeNickname(account.nickname) === nickname) {
+      window.alert("현재 사용 중인 닉네임과 같아요.");
+      setNicknameEditMode(false);
+      return;
+    }
+
     try {
-      const data = await apiUpdateNickname(clean);
-      onNicknameUpdated?.(data.name || clean);
-      setMsg(t.accountNicknameSaved);
-      setSavedOpen(true);
-    } catch { setMsg(t.accountNicknameError); }
-    setSaving(false);
-  };
+      setNicknameSaving(true);
+
+      const checkRes = await fetch("/api/account/nickname/check", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ nickname })
+      });
+
+      if (checkRes.ok) {
+        const checkData = await checkRes.json().catch(() => ({}));
+        if (checkData?.available === false || checkData?.duplicate === true || checkData?.reason === "duplicate") {
+          window.alert("이미 사용 중인 닉네임이에요. 다른 닉네임을 사용해 주세요.");
+          return;
+        }
+        if (checkData?.blocked === true || checkData?.reason === "blocked") {
+          window.alert("사용할 수 없는 표현이 포함된 닉네임이에요. 다른 닉네임을 사용해 주세요.");
+          return;
+        }
+      } else if (checkRes.status === 409) {
+        window.alert("이미 사용 중인 닉네임이에요. 다른 닉네임을 사용해 주세요.");
+        return;
+      }
+
+      const saveRes = await fetch("/api/account/nickname", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ nickname })
+      });
+
+      const saveData = await saveRes.json().catch(() => ({}));
+      if (!saveRes.ok) {
+        if (saveRes.status === 409 || saveData?.reason === "duplicate") {
+          window.alert("이미 사용 중인 닉네임이에요. 다른 닉네임을 사용해 주세요.");
+          return;
+        }
+        if (saveData?.reason === "blocked") {
+          window.alert("사용할 수 없는 표현이 포함된 닉네임이에요. 다른 닉네임을 사용해 주세요.");
+          return;
+        }
+        throw new Error(saveData?.message || "닉네임 저장에 실패했어요.");
+      }
+
+      setAccount((prev) => prev ? { ...prev, nickname } : prev);
+      setNicknameDraft(nickname);
+      setNicknameEditMode(false);
+      window.alert("닉네임이 저장되었어요.");
+    } catch (e) {
+      console.error(e);
+      window.alert(e?.message || "닉네임 저장 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.");
+    } finally {
+      setNicknameSaving(false);
+    }
+  }
   return (
     <>
     <Modal open={open} onClose={onClose} width={380}>
@@ -3567,6 +3669,43 @@ const GlobalStyle = () => (
         padding:24px;
       }
     }
+
+    /* Nickname edit / save UX */
+    .nickname-action-row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+    .nickname-action-row .bg-btn{
+      width:100%;
+      min-height:48px;
+      border-radius:14px;
+    }
+    .nickname-action-row .nickname-change-btn{
+      background:#F3F7F3;
+      color:#3D704A;
+      border:1px solid #DDE8DF;
+      box-shadow:none;
+    }
+    .nickname-action-row .nickname-save-btn:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+      transform:none;
+      box-shadow:none;
+    }
+    input:disabled{
+      background:#F7F9F7 !important;
+      color:#7C877F !important;
+      cursor:not-allowed;
+    }
+
+    .admin-reports-page{width:100%;max-width:1180px;margin:0;padding:0 20px 70px;box-sizing:border-box}.admin-reports-head{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,#fff,#F0F6F0);border:1px solid #E2E9E3;border-radius:22px;padding:24px 26px;margin-bottom:16px}.admin-reports-head h1{margin:4px 0 6px;font-size:26px}.admin-reports-head p{margin:0;color:#68736B;font-size:13px}.admin-reports-head>span{font-size:38px}.admin-report-list{display:flex;flex-direction:column;gap:12px}.admin-report-card{background:#fff;border:1px solid #E2E9E3;border-radius:18px;padding:18px 20px;box-shadow:0 7px 22px rgba(34,48,39,.04)}.admin-report-top{display:flex;justify-content:space-between;gap:10px;color:#89928C;font-size:11px}.admin-status{padding:4px 8px;border-radius:999px;background:#FFF1E8;color:#A75C2D;font-weight:800}.admin-status.resolved,.admin-status.reviewed{background:#EDF5EE;color:#3D704A}.admin-report-card h3{margin:10px 0 5px;font-size:16px}.admin-report-meta{font-size:12px;color:#68736B}.admin-report-content{margin-top:12px;padding:12px 14px;border-radius:13px;background:#F7FAF7;font-size:13px;line-height:1.6;white-space:pre-wrap}.admin-report-reason{margin-top:10px;font-size:12px;line-height:1.7;color:#5F6B63}.admin-report-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}.admin-report-actions button{border:1px solid #DDE7DF;border-radius:11px;background:#F4F8F4;color:#3D704A;padding:8px 11px;font:inherit;font-size:11px;font-weight:800;cursor:pointer}.admin-report-actions button.danger{background:#FFF2F1;border-color:#F1D1CE;color:#A84B43}.admin-report-actions button:disabled{opacity:.5;cursor:not-allowed}@media(max-width:899px){.admin-reports-page{padding:0 12px 60px}.admin-reports-head{padding:20px 18px}.admin-reports-head h1{font-size:22px}}
+
+    .admin-tabs{display:flex;gap:8px;margin:-4px 0 16px;overflow-x:auto;padding-bottom:2px}.admin-tabs button{border:1px solid #E2E9E3;background:#fff;color:#68736B;border-radius:13px;padding:10px 14px;font:inherit;font-size:12px;font-weight:800;white-space:nowrap;cursor:pointer}.admin-tabs button.active{background:#EDF5EE;color:#3D704A;border-color:#D4E4D7}
+    .admin-stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}.admin-stat-card{background:#fff;border:1px solid #E2E9E3;border-radius:17px;padding:16px;display:grid;grid-template-columns:auto 1fr;column-gap:9px;align-items:center;box-shadow:0 6px 18px rgba(34,48,39,.035)}.admin-stat-card>span{grid-row:1/3;font-size:22px}.admin-stat-card strong{font-size:22px;line-height:1;color:#223027}.admin-stat-card small{font-size:10.5px;color:#78837B;margin-top:5px}
+    .admin-dashboard-columns{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:12px;margin-bottom:12px}.admin-dashboard-panel{margin:0!important}.admin-panel-title{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}.admin-panel-title b{display:block;font-size:15px}.admin-panel-title small{display:block;color:#89928C;font-size:10.5px;margin-top:4px}.admin-ranking{display:flex;flex-direction:column;gap:7px}.admin-ranking>div{display:flex;justify-content:space-between;gap:12px;padding:9px 10px;border-radius:10px;background:#F7FAF7;font-size:12px}.admin-ranking>div b{color:#3D704A}.admin-ad-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.admin-ad-grid>div{padding:12px 8px;border-radius:12px;background:#F5F9F5;text-align:center}.admin-ad-grid b{display:block;font-size:18px;color:#3D704A}.admin-ad-grid span{display:block;font-size:9.5px;color:#7A857D;margin-top:4px}.admin-privacy-note{font-size:10.5px!important;color:#89928C!important;line-height:1.55!important;margin:12px 0 0!important}.admin-log-list{display:flex;flex-direction:column;gap:8px}.admin-log-row{display:flex;justify-content:space-between;gap:12px;align-items:center;background:#fff;border:1px solid #E2E9E3;border-radius:14px;padding:12px 14px}.admin-log-row b{display:block;font-size:12px}.admin-log-row small{display:block;margin-top:3px;color:#89928C;font-size:9.5px}.admin-log-row>span{font-size:10px;color:#89928C;white-space:nowrap}
+    @media(max-width:1050px){.admin-stat-grid{grid-template-columns:repeat(3,1fr)}.admin-dashboard-columns{grid-template-columns:1fr}.admin-ad-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.admin-stat-grid{grid-template-columns:repeat(2,1fr)}.admin-stat-card{padding:13px}.admin-stat-card strong{font-size:19px}.admin-log-row{align-items:flex-start;flex-direction:column}.admin-log-row>span{white-space:normal}}
 `}</style>
 );
 
@@ -8240,6 +8379,16 @@ function DeleteAccountPage() {
 const COMMUNITY_CATEGORY_KEYS = ["daily", "brag", "question", "health", "info", "walk", "training", "shopping", "free"];
 const REPORT_REASON_KEYS = ["ad", "abuse", "sexual", "animal_abuse", "privacy", "misinformation", "spam", "other"];
 
+const PETTALK_BLOCKED_RE = /씨발|시발|ㅅㅂ|병신|븅신|개새끼|개새|좆|존나|지랄|꺼져|닥쳐|섹스|sex|야동|porn|포르노|자위|딸딸|보지|자지|음란|나치|nazi|혐오/i;
+function validatePetTalkText(...parts) {
+  const joined = parts.filter(Boolean).join(" ");
+  const compact = joined.replace(/[\s._\-~!@#$%^&*()+=|\\/]/g, "");
+  if (PETTALK_BLOCKED_RE.test(compact)) return "사용할 수 없는 표현이 포함되어 있어요. 내용을 수정해 주세요.";
+  if (/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/.test(joined) || /(?:01[016789])[-\s]?\d{3,4}[-\s]?\d{4}/.test(joined)) return "전화번호나 이메일 같은 개인정보는 Pet톡에 직접 작성하지 말아 주세요.";
+  return "";
+}
+
+
 function petSnapshot(pet) {
   return {
     id: pet.id,
@@ -8377,6 +8526,8 @@ function PostComposer({ pets, initialPost, onCancel, onSaved }) {
     if (!petId) next.pet = t.communityComposeErrPet;
     if (!title.trim()) next.title = t.communityComposeErrTitle;
     if (!content.trim()) next.content = t.communityComposeErrContent;
+    const blockedMessage = validatePetTalkText(title, content);
+    if (blockedMessage) next.submit = blockedMessage;
     if (Object.keys(next).length) { setErrors(next); return; }
     setSubmitting(true);
     try {
@@ -8387,8 +8538,9 @@ function PostComposer({ pets, initialPost, onCancel, onSaved }) {
         await communityCreatePost({ pet: petSnapshot(pet), category, title: title.trim(), content: content.trim(), imageUrls: images, isPublic });
       }
       onSaved();
-    } catch {
-      setErrors({ submit: t.communityUploadFailed });
+    } catch (err) {
+      setErrors({ submit: err?.message || t.communityUploadFailed });
+      if (err?.message) window.alert(err.message);
     }
     setSubmitting(false);
   };
@@ -8600,13 +8752,15 @@ function PostDetail({ postId, pets, account, onBack, onDeleted, onEdit }) {
 
   const submitComment = async () => {
     if (!commentText.trim() || !commentPetId) return;
+    const blockedMessage = validatePetTalkText(commentText);
+    if (blockedMessage) { window.alert(blockedMessage); return; }
     const pet = pets.find((p) => p.id === commentPetId);
     try {
       const c = await communityAddComment(postId, { pet: petSnapshot(pet), content: commentText.trim() });
       setComments((prev) => [...prev, c]);
       setCommentText("");
       setPost((prev) => ({ ...prev, commentCount: prev.commentCount + 1 }));
-    } catch {}
+    } catch (err) { if (err?.message) window.alert(err.message); }
   };
 
   const confirmDeleteComment = async () => {
@@ -8894,7 +9048,137 @@ function MyActivityPage({ lang, onOpenPost, embedded = false }) {
   );
 }
 
-function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost }) {
+
+function AdminReportsPage({ onBack }) {
+  const [status,setStatus]=useState(null);
+  const [pin,setPin]=useState("");
+  const [setupCode,setSetupCode]=useState("");
+  const [setupPin,setSetupPin]=useState("");
+  const [reports,setReports]=useState([]);
+  const [stats,setStats]=useState(null);
+  const [logs,setLogs]=useState([]);
+  const [loading,setLoading]=useState(false);
+  const [busy,setBusy]=useState("");
+  const [tab,setTab]=useState("dashboard");
+  const [unlocked,setUnlocked]=useState(false);
+
+  useEffect(()=>{adminStatus().then(setStatus).catch(e=>window.alert(e.message));},[]);
+
+  const loadAll=async()=>{
+    setLoading(true);
+    try{
+      const [sr,rr,lr]=await Promise.all([adminStats(),adminListReports(),adminLogs()]);
+      setStats(sr); setReports(rr.reports||[]); setLogs(lr.logs||[]); setUnlocked(true);
+    }catch(e){
+      sessionStorage.removeItem("petgrow_admin_token");
+      setUnlocked(false);
+      window.alert(e.message||"관리자 정보를 불러오지 못했어요.");
+    }
+    setLoading(false);
+  };
+  const unlock=async()=>{
+    try{
+      const r=await adminVerify(pin);
+      sessionStorage.setItem("petgrow_admin_token",r.token);
+      setPin(""); setUnlocked(true);
+      await loadAll();
+    }catch(e){window.alert(e.message)}
+  };
+  const bootstrap=async()=>{
+    if(!/^\d{6}$/.test(setupPin)){window.alert("PIN은 숫자 6자리로 입력해 주세요.");return}
+    try{
+      await adminBootstrap(setupCode,setupPin);
+      window.alert("현재 로그인 계정이 관리자로 등록됐어요. 다시 로그인하면 관리자 센터가 표시돼요.");
+      setStatus({adminExists:true,isAdmin:true});
+    }catch(e){window.alert(e.message)}
+  };
+  const reloadReports=async()=>{
+    const r=await adminListReports(); setReports(r.reports||[]);
+    const s=await adminStats(); setStats(s);
+  };
+  const restrict=async(r,duration)=>{
+    const label=duration==="permanent"?"영구 제한":`${duration}일 제한`;
+    if(!window.confirm(`${r.authorNickname} 계정을 Pet톡 ${label}할까요?`))return;
+    setBusy(r.id);
+    try{
+      await adminRestrictUser({userId:r.targetUserId,duration,reason:`신고 ${r.id} 검토 후 운영정책 위반`,reportId:r.id});
+      window.alert(`${label} 처리했어요.`);
+      await reloadReports();
+      const l=await adminLogs(); setLogs(l.logs||[]);
+    }catch(e){window.alert(e.message)}
+    setBusy("");
+  };
+
+  if(!status)return <div className="bg-card">관리자 정보를 확인하는 중...</div>;
+  if(!status.adminExists)return <div className="admin-reports-page"><button className="bg-btn bg-btn-ghost" onClick={onBack}>← 회원정보</button><div className="bg-card" style={{maxWidth:560,margin:"18px auto"}}><h2>🛡️ 최초 관리자 등록</h2><p>Vercel에 설정한 최초 등록 코드와 앞으로 사용할 숫자 6자리 PIN을 입력하세요.</p><input className="bg-input" type="password" value={setupCode} onChange={e=>setSetupCode(e.target.value)} placeholder="최초 등록 코드"/><input className="bg-input" type="password" inputMode="numeric" maxLength={6} value={setupPin} onChange={e=>setSetupPin(e.target.value.replace(/\D/g,""))} placeholder="관리자 PIN 6자리"/><button className="bg-btn" onClick={bootstrap}>현재 계정을 관리자로 등록</button></div></div>;
+  if(!status.isAdmin)return <div className="bg-card">관리자 계정만 접근할 수 있어요.</div>;
+  if(!unlocked)return <div className="admin-reports-page"><button className="bg-btn bg-btn-ghost" onClick={onBack}>← 회원정보</button><div className="bg-card" style={{maxWidth:520,margin:"18px auto"}}><h2>🔐 관리자 PIN</h2><p>관리자 기능을 사용하려면 6자리 PIN을 입력하세요. 인증 토큰은 10분 후 만료되고, 5회 오류 시 15분 잠깁니다.</p><input className="bg-input" type="password" inputMode="numeric" maxLength={6} value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,""))} placeholder="PIN 6자리"/><button className="bg-btn" disabled={pin.length!==6} onClick={unlock}>관리자 센터 열기</button></div></div>;
+
+  const c=stats?.cards||{};
+  const pageNames={home:"홈",about:"소개",pets:"우리 아이",community:"Pet톡",saju:"Pet사주",petbti:"PetBTI",tips:"Pet정보",my:"회원정보",login:"로그인",terms:"이용약관",privacy:"개인정보처리방침",admin:"관리자"};
+  const adRate=c.adRequestsToday?Math.round((c.adReadyToday/c.adRequestsToday)*100):0;
+
+  return <div className="admin-reports-page">
+    <button className="bg-btn bg-btn-ghost" onClick={onBack} style={{marginBottom:16}}>← 회원정보</button>
+    <div className="admin-reports-head"><div><div className="my-page-kicker">PETGROW ADMIN</div><h1>관리자 센터</h1><p>개인정보 대신 집계 통계로 서비스 현황과 Pet톡 운영 상태를 확인해요.</p></div><span>🛡️</span></div>
+    <div className="admin-tabs">
+      <button className={tab==="dashboard"?"active":""} onClick={()=>setTab("dashboard")}>📊 대시보드</button>
+      <button className={tab==="reports"?"active":""} onClick={()=>setTab("reports")}>🚨 신고관리 {c.openReports?`(${c.openReports})`:""}</button>
+      <button className={tab==="logs"?"active":""} onClick={()=>setTab("logs")}>🧾 운영로그</button>
+    </div>
+
+    {loading?<div className="bg-card">불러오는 중...</div>:tab==="dashboard"?<>
+      <div className="admin-stat-grid">
+        {[
+          ["전체 회원",c.totalMembers||0,"👥"],["오늘 신규",c.newToday||0,"✨"],["7일 활성 회원",c.active7d||0,"🌱"],["오늘 방문 세션",c.todaySessions||0,"📱"],
+          ["현재 접속 세션",c.onlineSessions5m||0,"🟢"],["등록 반려동물",c.totalPets||0,"🐾"],["오늘 페이지뷰",c.pageviewsToday||0,"👀"],["신고 대기",c.openReports||0,"🚨"],
+          ["이용제한 중",c.restricted||0,"🛡️"],["Pet톡 게시글",c.posts||0,"📝"],["Pet톡 댓글",c.comments||0,"💬"],["좋아요",c.likes||0,"💚"]
+        ].map(([label,value,icon])=><div className="admin-stat-card" key={label}><span>{icon}</span><strong>{Number(value).toLocaleString()}</strong><small>{label}</small></div>)}
+      </div>
+
+      <div className="admin-dashboard-columns">
+        <div className="bg-card admin-dashboard-panel">
+          <div className="admin-panel-title"><div><b>최근 7일 이용 추이</b><small>방문 세션 · 페이지뷰 · 신규가입</small></div></div>
+          <div style={{width:"100%",height:250}}>
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={(stats?.trend||[]).map(x=>({...x,day:String(x.day).slice(5,10)}))} margin={{top:12,right:12,left:-18,bottom:0}}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false}/>
+                <XAxis dataKey="day" tick={{fontSize:11}}/><YAxis tick={{fontSize:10}}/>
+                <Tooltip/>
+                <Line type="monotone" dataKey="sessions" name="방문 세션" stroke="#4F8A5B" strokeWidth={2.5} dot={false}/>
+                <Line type="monotone" dataKey="pageviews" name="페이지뷰" stroke="#8CB69A" strokeWidth={2} dot={false}/>
+                <Line type="monotone" dataKey="signups" name="신규가입" stroke="#A8A1C5" strokeWidth={2} dot={false}/>
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        <div className="bg-card admin-dashboard-panel">
+          <div className="admin-panel-title"><div><b>최근 7일 인기 메뉴</b><small>페이지뷰 기준</small></div></div>
+          <div className="admin-ranking">{(stats?.topPages||[]).length?(stats.topPages.map((x,i)=><div key={x.page}><span>{i+1}. {pageNames[x.page]||x.page}</span><b>{Number(x.views).toLocaleString()}</b></div>)):<p>아직 집계된 데이터가 없어요.</p>}</div>
+        </div>
+      </div>
+
+      <div className="admin-dashboard-columns">
+        <div className="bg-card admin-dashboard-panel">
+          <div className="admin-panel-title"><div><b>광고 운영</b><small>AdMob 실제 수익/노출이 아닌 앱의 광고 표시 요청 상태</small></div></div>
+          <div className="admin-ad-grid"><div><b>{c.adRequestsToday||0}</b><span>오늘 광고 요청</span></div><div><b>{c.adReadyToday||0}</b><span>표시 요청 성공</span></div><div><b>{c.adErrorsToday||0}</b><span>오류</span></div><div><b>{adRate}%</b><span>요청 성공률</span></div></div>
+          <p className="admin-privacy-note">※ 정확한 노출수·클릭수·예상수익은 Google AdMob/AdSense 보고서 또는 별도 Reporting API 연동이 필요해요.</p>
+        </div>
+        <div className="bg-card admin-dashboard-panel">
+          <div className="admin-panel-title"><div><b>접속 환경</b><small>최근 7일 익명 세션 기준</small></div></div>
+          <div className="admin-ranking">{(stats?.platforms||[]).map(x=><div key={x.platform}><span>{x.platform==="web"?"웹":x.platform==="ios"?"iOS 앱":"Android 앱"}</span><b>{Number(x.total).toLocaleString()}</b></div>)}</div>
+          <p className="admin-privacy-note">IP·이메일·카카오ID·개별 이용자 목록은 관리자 통계에 표시하지 않아요. 현재 접속은 최근 5분 내 heartbeat가 있는 세션의 추정치예요.</p>
+        </div>
+      </div>
+    </>:tab==="reports"?(
+      reports.length===0?<div className="bg-card">접수된 신고가 없어요.</div>:<div className="admin-report-list">{reports.map(r=><div className="admin-report-card" key={r.id}><div className="admin-report-top"><span className={`admin-status ${r.status}`}>{r.status==="open"?"검토 필요":"처리 완료"}</span><span>{new Date(r.createdAt).toLocaleString("ko-KR")}</span></div><h3>{r.postTitle}</h3><div className="admin-report-meta">작성자: <b>{r.authorNickname}</b> · 신고자: {r.reporterNickname}</div><div className="admin-report-content">{r.targetContent}</div><div className="admin-report-reason"><b>신고 사유:</b> {r.reason}<br/><b>상세:</b> {r.detail||"없음"}</div>{r.restriction&&<div className="admin-report-reason"><b>현재 제한:</b> {r.restriction.permanent?"영구":new Date(r.restriction.restricted_until).toLocaleString("ko-KR")+"까지"}</div>}<div className="admin-report-actions"><button disabled={busy===r.id} onClick={()=>restrict(r,1)}>1일</button><button disabled={busy===r.id} onClick={()=>restrict(r,7)}>7일</button><button disabled={busy===r.id} onClick={()=>restrict(r,30)}>30일</button><button className="danger" disabled={busy===r.id} onClick={()=>restrict(r,"permanent")}>영구 제한</button><button disabled={busy===r.id} onClick={async()=>{setBusy(r.id);try{await adminUnblockUser(r.targetUserId,r.id);window.alert("이용 제한을 해제했어요.");await reloadReports();const l=await adminLogs();setLogs(l.logs||[])}catch(e){window.alert(e.message)}setBusy("")}}>제한 해제</button><button disabled={busy===r.id} onClick={async()=>{setBusy(r.id);try{await adminResolveReport(r.id);await reloadReports();const l=await adminLogs();setLogs(l.logs||[])}catch(e){window.alert(e.message)}setBusy("")}}>검토 완료</button></div></div>)}</div>
+    ):(
+      logs.length===0?<div className="bg-card">아직 관리자 처리 기록이 없어요.</div>:<div className="admin-log-list">{logs.map((l,i)=><div className="admin-log-row" key={`${l.created_at}-${i}`}><div><b>{l.action}</b><small>{l.target_user_id?`대상 ${String(l.target_user_id).slice(0,8)}…`:""} {l.report_id?`· 신고 ${String(l.report_id).slice(0,8)}…`:""}</small></div><span>{new Date(l.created_at).toLocaleString("ko-KR")}</span></div>)}</div>
+    )}
+  </div>;
+}
+
+function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost, onOpenAdmin }) {
   const t = useT();
   const goActivity = () => {
     const el = document.getElementById("my-pettalk-activity");
@@ -8905,6 +9189,7 @@ function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost })
     { key: "edit", icon: "✏️", title: lang === "en" ? "Edit info" : "정보 수정", desc: lang === "en" ? "Change the nickname shown in Pet Talk and manage your account." : "Pet톡에 보이는 닉네임과 계정 정보를 수정해요.", cls: "my-menu-pink", action: onOpenAccount },
     { key: "pets", icon: "🐾", title: lang === "en" ? "Manage pets" : "반려동물 관리", desc: lang === "en" ? `Manage ${allPets.length} registered pet(s).` : `등록한 아이 ${allPets.length}마리의 정보와 성장기록을 관리해요.`, cls: "my-menu-blue", action: onGoPets },
     { key: "activity", icon: "💬", title: lang === "en" ? "Pet Talk activity" : "Pet톡 내 활동", desc: lang === "en" ? "See your posts, comments and likes in one place." : "내가 작성한 글·댓글·좋아요를 한곳에서 확인해요.", cls: "my-menu-purple", action: goActivity },
+    ...(account?.isAdmin ? [{ key:"admin", icon:"🛡️", title:"관리자 센터", desc:"통계·Pet톡 신고·이용제한·운영로그 관리", cls:"my-menu-mint", action:onOpenAdmin }] : []),
   ];
   return (
     <div style={{ maxWidth: 760, margin: "0 auto", padding: "0 20px 70px" }}>
@@ -9066,12 +9351,14 @@ function AppInner({ lang, setLang }) {
 
   // 'about' | 'pets' | 'saju' | 'petbti' | 'tips' | 'guide' | 'privacy' | 'terms'
   const [view, setView] = useState("home");
-  const GATED_VIEWS = ["pets", "saju", "petbti", "tips", "guide", "community", "content", "my"];
+  const GATED_VIEWS = ["pets", "saju", "petbti", "tips", "guide", "community", "content", "my", "admin"];
 
   // ---- 계정(카카오 로그인) ----
   const [account, setAccount] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [accountModalOpen, setAccountModalOpen] = useState(false);
+  const [nicknameEditMode, setNicknameEditMode] = useState(false);
+  const [nicknameSaving, setNicknameSaving] = useState(false);
   const [hamOpen, setHamOpen] = useState(false);
   const [contentSubTab, setContentSubTab] = useState("all");
   const isNativeApp = Capacitor.isNativePlatform();
@@ -9234,19 +9521,35 @@ function AppInner({ lang, setLang }) {
     }
   }, [loaded, authChecked]);
 
+  // 개인정보 최소화 운영 통계: 세션은 임의 ID를 서버에서 해시해 집계합니다.
+  useEffect(() => {
+    if (!loaded || !authChecked) return;
+    analyticsEvent("session", effectiveView || "home");
+    const timer = window.setInterval(() => analyticsEvent("heartbeat", effectiveView || "home"), 60000);
+    return () => window.clearInterval(timer);
+  }, [loaded, authChecked]);
+
+  useEffect(() => {
+    if (!loaded || !authChecked) return;
+    analyticsEvent("pageview", effectiveView || "home");
+  }, [effectiveView, loaded, authChecked]);
+
   // AdMob 하단 배너 광고 — 실제 안드로이드/iOS 앱에서만 동작해요 (웹사이트는 그냥 넘어가요)
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
     (async () => {
       try {
         await AdMob.initialize();
+        analyticsEvent("ad_request", effectiveView || "home");
         await AdMob.showBanner({
           adId: ADMOB_BANNER_ID,
           adSize: BannerAdSize.ADAPTIVE_BANNER,
           position: BannerAdPosition.BOTTOM_CENTER,
           isTesting: false,
         });
+        analyticsEvent("ad_ready", effectiveView || "home");
       } catch (err) {
+        analyticsEvent("ad_error", effectiveView || "home");
         console.warn("AdMob banner failed to load", err);
       }
     })();
@@ -9576,7 +9879,9 @@ function AppInner({ lang, setLang }) {
       ) : effectiveView === "my" ? (
         <MyPage account={account} allPets={allPets} lang={lang}
           onOpenAccount={() => setAccountModalOpen(true)} onGoPets={() => goView("pets")}
-          onOpenPost={() => goView("community")} />
+          onOpenPost={() => goView("community")} onOpenAdmin={() => goView("admin")} />
+      ) : effectiveView === "admin" ? (
+        <AdminReportsPage onBack={() => goView("my")} />
       ) : effectiveView === "tips" ? (
         <TipsPage />
       ) : effectiveView === "saju" ? (

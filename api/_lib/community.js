@@ -9,6 +9,36 @@ function newId() {
   return crypto.randomUUID();
 }
 
+export async function getCommunityRestriction(userId) {
+  await ensureSchema();
+  const { rows } = await sql`select * from pg_community_restrictions where user_id = ${userId}`;
+  const r = rows[0];
+  if (!r) return null;
+  if (r.permanent) return { active:true, permanent:true, until:null, reason:r.reason || null };
+  if (r.restricted_until && new Date(r.restricted_until).getTime() > Date.now()) {
+    return { active:true, permanent:false, until:r.restricted_until, reason:r.reason || null };
+  }
+  return null;
+}
+
+export async function getReportContext(targetType, targetId) {
+  await ensureSchema();
+  if (targetType === "post") {
+    const { rows } = await sql`
+      select p.id, p.user_id as target_user_id, p.title, p.content, u.nickname as author_nickname
+      from pg_posts p join pg_users u on u.id=p.user_id where p.id=${targetId}
+    `;
+    const r = rows[0];
+    return r ? { targetType, targetId, targetUserId:r.target_user_id, title:r.title, content:r.content, authorNickname:r.author_nickname } : null;
+  }
+  const { rows } = await sql`
+    select c.id, c.user_id as target_user_id, c.content, u.nickname as author_nickname, p.id as post_id, p.title as post_title
+    from pg_comments c join pg_users u on u.id=c.user_id join pg_posts p on p.id=c.post_id where c.id=${targetId}
+  `;
+  const r = rows[0];
+  return r ? { targetType, targetId, targetUserId:r.target_user_id, title:r.post_title, content:r.content, authorNickname:r.author_nickname, postId:r.post_id } : null;
+}
+
 // pg_posts 를 클라이언트에 안전하게 내려줄 형태로 정리해요.
 // user_id(작성자 내부 식별자)는 절대 다른 회원에게 노출하지 않고, isOwner 로만 알려줘요.
 function shapePost(row, viewerId, images, likedByMe) {
@@ -270,7 +300,7 @@ export async function createReport({ reporterUserId, targetType, targetId, reaso
     on conflict (reporter_user_id, target_type, target_id) do nothing
     returning id
   `;
-  return { reported: inserted.rows.length > 0, alreadyReported: inserted.rows.length === 0 };
+  return { reported: inserted.rows.length > 0, alreadyReported: inserted.rows.length === 0, reportId: inserted.rows[0]?.id || null };
 }
 
 export async function getMyPosts(userId, page, pageSize) {

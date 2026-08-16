@@ -1,0 +1,20 @@
+PetGrow Pet톡 신고/운영관리 기능
+
+- 기존 게시글/댓글 신고 기능 확장
+- 신고 접수 시 help.petgrow@gmail.com 이메일 알림(Resend 환경변수 필요)
+- 메일에 게시글 제목, 작성자 닉네임, 신고 사유, 상세내용, 대상 ID, 신고 ID 포함
+- 같은 사용자의 동일 게시물 반복 신고 DB 차단 유지
+- 본인 게시글/댓글 신고 방지
+- Pet톡 게시글/수정/댓글에 욕설·비속어·음란표현·혐오표현·전화번호·이메일 필터 적용
+- 프런트에서 1차 차단 + 서버 API에서 2차 차단
+- 관리자 신고관리 페이지 추가
+- 관리자 직접 1일/7일/30일/영구 Pet톡 이용제한 가능
+- 차단 해제 및 신고 검토완료 가능
+- 신고만 들어왔다고 자동 차단하지 않음
+- 차단된 계정은 게시글/댓글 작성 시 서버에서 거부
+
+Vercel 환경변수 필요:
+RESEND_API_KEY
+REPORT_EMAIL_TO=help.petgrow@gmail.com
+REPORT_EMAIL_FROM=검증된 발신주소
+PETGROW_ADMIN_USER_ID 또는 PETGROW_ADMIN_KAKAO_ID

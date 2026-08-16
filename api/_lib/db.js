@@ -114,6 +114,59 @@ export function ensureSchema() {
         on pg_reports(reporter_user_id, target_type, target_id)
       `;
       await sql`create index if not exists idx_pg_reports_target on pg_reports(target_type, target_id)`;
+      await sql`alter table pg_reports add column if not exists status text not null default 'open'`;
+      await sql`alter table pg_reports add column if not exists reviewed_at timestamptz`;
+      await sql`alter table pg_reports add column if not exists reviewed_by text`;
+      await sql`
+        create table if not exists pg_community_restrictions (
+          user_id text primary key references pg_users(id) on delete cascade,
+          permanent boolean not null default false,
+          restricted_until timestamptz,
+          reason text,
+          updated_at timestamptz not null default now()
+        )
+      `;
+      await sql`create index if not exists idx_pg_restrictions_until on pg_community_restrictions(restricted_until)`;
+      await sql`alter table pg_community_restrictions add column if not exists updated_by text`;
+      await sql`
+        create table if not exists pg_admins (
+          user_id text primary key references pg_users(id) on delete cascade,
+          pin_salt text not null,
+          pin_hash text not null,
+          created_at timestamptz not null default now(),
+          pin_updated_at timestamptz not null default now()
+        )
+      `;
+      await sql`
+        create table if not exists pg_admin_audit_logs (
+          id text primary key, admin_user_id text not null references pg_users(id) on delete cascade,
+          action text not null, target_user_id text, report_id text, detail jsonb,
+          created_at timestamptz not null default now()
+        )
+      `;
+      // ---- 개인정보 최소화 운영 통계 ----
+      // IP, 이메일, 카카오 ID, User-Agent 원문은 이 통계 테이블에 저장하지 않아요.
+      await sql`
+        create table if not exists pg_analytics_sessions (
+          day date not null,
+          session_hash text not null,
+          platform text not null default 'web',
+          first_seen timestamptz not null default now(),
+          last_seen timestamptz not null default now(),
+          primary key (day, session_hash)
+        )
+      `;
+      await sql`create index if not exists idx_pg_analytics_sessions_last_seen on pg_analytics_sessions(last_seen desc)`;
+      await sql`
+        create table if not exists pg_daily_metrics (
+          day date not null,
+          metric text not null,
+          dimension text not null default '',
+          count bigint not null default 0,
+          primary key (day, metric, dimension)
+        )
+      `;
+
     })();
   }
   return schemaReadyPromise;
