@@ -2285,6 +2285,7 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
         window.alert("현재 사용 중인 닉네임과 같아요.");
       return;
     }
+    if (!window.confirm("닉네임을 변경하시겠습니까?")) return;
 
     setSaving(true);
     try {
@@ -2354,7 +2355,7 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
               onClick={saveNickname}
               disabled={saving}
             >
-              {saving ? "변경 중..." : "변경하기"}
+              {saving ? "변경 중..." : "닉네임 변경하기"}
             </button>
           </div>
         </div>
@@ -4566,19 +4567,15 @@ function OnboardingPage({ species, breedGroups, sizeOptions, initialValues, onSu
   const adultWord = t.adultWord[species];
   const otherLabel = t.otherLabel[species];
 
-  const [name, setName] = useState(initialValues?.name ?? t.defaultPetName[species]);
+  const [name, setName] = useState(initialValues?.name ?? "");
   const [profileImage, setProfileImage] = useState(initialValues?.profileImage ?? null);
-  const [breedId, setBreedId] = useState(initialValues?.breedId ?? allBreeds[0]?.id ?? "custom");
+  const [breedId, setBreedId] = useState(initialValues?.breedId ?? "");
   const [customBreedName, setCustomBreedName] = useState(initialValues?.breedId === "custom" ? initialValues.breedName : "");
   const [sizeCategory, setSizeCategory] = useState(
     initialValues?.curveKey ? initialValues.curveKey.split("-")[1] : sizeOptions[0].id
   );
-  const [birthDate, setBirthDate] = useState(initialValues?.birthDate ?? (() => {
-    const d = new Date();
-    d.setMonth(d.getMonth() - 3);
-    return d.toISOString().slice(0, 10);
-  })());
-  const [weight, setWeight] = useState(species === "cat" ? "0.6" : "1.1");
+  const [birthDate, setBirthDate] = useState(initialValues?.birthDate ?? "");
+  const [weight, setWeight] = useState(initialValues?.initialWeightKg ? String(initialValues.initialWeightKg) : "");
   const [gender, setGender] = useState(initialValues?.gender ?? "female");
   const [neutered, setNeutered] = useState(initialValues?.neutered ?? "no");
   const [bodyCondition, setBodyCondition] = useState(initialValues?.bodyCondition ?? "normal");
@@ -4595,6 +4592,7 @@ function OnboardingPage({ species, breedGroups, sizeOptions, initialValues, onSu
   const validate = () => {
     const next = {};
     if (!name.trim()) next.name = t.errName;
+    if (!breedId) next.breedId = lang === "en" ? "Please select a breed." : `${otherLabel}을(를) 선택해주세요.`;
     if (!birthDate) next.birthDate = t.errBirthDate;
     if (!isEdit && !(Number(weight) > 0)) next.weight = t.errWeight;
     if (isCustom && !customBreedName.trim()) next.customBreedName = t.errCustomBreed(otherLabel);
@@ -4685,7 +4683,8 @@ function OnboardingPage({ species, breedGroups, sizeOptions, initialValues, onSu
 
         <div>
           <label className="bg-label">{t.labelBreedField(otherLabel)}</label>
-          <BreedCombobox breedGroups={breedGroups} allBreeds={allBreeds} species={species} value={breedId} onChange={setBreedId} />
+          <BreedCombobox breedGroups={breedGroups} allBreeds={allBreeds} species={species} value={breedId} onChange={setBreedId} invalid={!!errors.breedId} />
+          {errors.breedId && <div className="field-error">{errors.breedId}</div>}
 
           {isCustom && (
             <div style={{ marginTop: 10 }}>
@@ -8536,6 +8535,16 @@ function LandingPage({ onEnter }) {
         </div>
       </section>
 
+      <section className="landing-section" style={{ paddingTop: 18, paddingBottom: 18 }}>
+        <div className="landing-wrap">
+          <button type="button" className="bg-card" onClick={()=>window.dispatchEvent(new CustomEvent("petgrow:navigate",{detail:"ad-inquiry"}))}
+            style={{ width:"100%", border:"1px solid rgba(79,138,91,.22)", cursor:"pointer", textAlign:"left", padding:"18px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", gap:12 }}>
+            <span><strong style={{display:"block",fontSize:16,marginBottom:4}}>🤝 PetGrow 광고 · 제휴</strong><small className="bg-sub">배너 광고, 브랜드 제휴, 스폰서십을 문의해보세요.</small></span>
+            <span style={{fontSize:24,color:"var(--primary)"}}>›</span>
+          </button>
+        </div>
+      </section>
+
       <section className="landing-section landing-section-white">
         <div className="landing-wrap">
           <div className="landing-trust">
@@ -10077,9 +10086,9 @@ function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost, o
         <div>
           <div className="my-page-kicker">{lang === "en" ? "MY PETGROW" : "MY PETGROW"}</div>
           <h1>{lang === "en" ? "Member info" : "회원정보"}</h1>
-          <p>{lang === "en" ? "Manage your profile, pets, and Pet Talk activity." : "회원정보부터 우리 아이와 Pet톡 활동까지 한곳에서 관리해요."}</p>
+          <p style={{ whiteSpace: "nowrap", fontSize: 13 }}>{lang === "en" ? "Manage your profile, pets, and Pet Talk activity." : "회원정보부터 우리 아이와 Pet톡 활동까지 한곳에서 관리해요."}</p>
         </div>
-        <span className="my-page-head-icon">🐶</span>
+        <span className="my-page-head-icon" style={{ fontSize: 30 }}>🐶</span>
       </div>
 
       <div className="my-menu-grid">
@@ -10090,24 +10099,6 @@ function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost, o
             <span className="my-menu-card-arrow">›</span>
           </button>
         ))}
-      </div>
-
-      <div className="bg-card my-member-summary" style={{ marginBottom: 18 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          {account?.profileImage ? (
-            <img src={account.profileImage} alt="" style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover", objectPosition: "center" }} />
-          ) : (
-            <div style={{ width: 52, height: 52, borderRadius: "50%", background: "var(--surface)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <UserIcon style={{ width: 24, height: 24, color: "var(--primary)" }} />
-            </div>
-          )}
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 12, color: "var(--sub)", fontWeight: 700 }}>{lang === "en" ? "Pet Talk nickname" : "Pet톡 닉네임"}</div>
-            <div style={{ fontSize: 17, fontWeight: 800, marginTop: 2 }}>{account?.name || "PetGrow"}</div>
-            <div className="bg-sub" style={{ fontSize: 11, marginTop: 2 }}>{t.accountKakaoTag}</div>
-          </div>
-          <button type="button" className="bg-btn bg-btn-ghost" style={{ fontSize: 12 }} onClick={onOpenAccount}>{lang === "en" ? "Edit info" : "정보 수정"}</button>
-        </div>
       </div>
 
       <div id="my-pettalk-activity" className="bg-card my-activity-card">
