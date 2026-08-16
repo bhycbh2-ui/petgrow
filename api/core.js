@@ -79,8 +79,9 @@ async function handleNearbyReviews(req, res) {
     const placeId = String(req.query?.placeId || "").slice(0,120);
     if (!placeId) return res.status(400).json({ error:"장소 정보가 없어요." });
     const { rows } = await sql`
-      select r.id,r.place_id,r.place_name,r.rating,r.content,r.like_count,r.created_at,
+      select r.id,r.place_id,r.place_name,r.rating,r.content,r.like_count,r.created_at,r.updated_at,
              coalesce(u.nickname,'PetGrow 회원') nickname,
+             (r.user_id=${uid || ""}) is_owner,
              exists(select 1 from pg_place_review_likes l where l.review_id=r.id and l.user_id=${uid || ""}) liked
       from pg_place_reviews r join pg_users u on u.id=r.user_id
       where r.place_id=${placeId} and r.status='visible'
@@ -98,6 +99,23 @@ async function handleNearbyReviews(req, res) {
     const id=crypto.randomUUID();
     await sql`insert into pg_place_reviews(id,place_id,place_name,user_id,rating,content) values(${id},${placeId},${placeName},${uid},${rating},${content})`;
     return res.status(201).json({ok:true,id});
+  }
+  if (action === "update" && req.method === "POST") {
+    const reviewId=String(req.body?.reviewId||"");
+    const rating=Math.max(1,Math.min(5,Number(req.body?.rating)||0));
+    const content=String(req.body?.content||"").trim();
+    if(!reviewId||!rating)return res.status(400).json({error:"후기 정보를 확인해 주세요."});
+    const bad=validatePlaceReviewText(content); if(bad)return res.status(400).json({error:bad});
+    const {rowCount}=await sql`update pg_place_reviews set rating=${rating},content=${content},updated_at=now() where id=${reviewId} and user_id=${uid} and status='visible'`;
+    if(!rowCount)return res.status(403).json({error:"본인이 작성한 후기만 수정할 수 있어요."});
+    return res.status(200).json({ok:true});
+  }
+  if (action === "delete" && req.method === "POST") {
+    const reviewId=String(req.body?.reviewId||"");
+    if(!reviewId)return res.status(400).json({error:"후기 정보가 없어요."});
+    const {rowCount}=await sql`delete from pg_place_reviews where id=${reviewId} and user_id=${uid}`;
+    if(!rowCount)return res.status(403).json({error:"본인이 작성한 후기만 삭제할 수 있어요."});
+    return res.status(200).json({ok:true});
   }
   if (action === "like" && req.method === "POST") {
     const reviewId=String(req.body?.reviewId||""); if(!reviewId)return res.status(400).json({error:"후기 정보가 없어요."});
@@ -121,7 +139,7 @@ async function handleNearby(req, res) {
   if (!key) return res.status(500).json({ error: "KAKAO_REST_API_KEY가 설정되지 않았어요." });
   const { lat, lng, category = "all", area = "" } = req.query || {};
   const keywords = {
-    all: ["동물병원", "동물약국", "반려동물용품", "애견미용", "애견호텔"],
+    all: ["동물병원", "동물약국", "반려동물용품", "펫샵", "애견미용", "고양이미용", "애견호텔", "반려동물 유치원"],
     hospital: ["동물병원"], pharmacy: ["동물약국"], shop: ["반려동물용품", "펫샵"],
     grooming: ["애견미용", "반려동물 미용"], hotel: ["애견호텔", "반려동물 유치원"]
   };
