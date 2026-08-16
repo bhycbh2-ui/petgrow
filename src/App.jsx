@@ -1771,11 +1771,19 @@ const PetGrowLogo = ({ style, className }) => (
 /* ============================================================
    범용 모달 / 확인창 / 가이드
    ============================================================ */
-function Modal({ open, onClose, children, width = 420, closeOnBackdrop = true }) {
+function Modal({ open, onClose, children, width = 420, closeOnBackdrop = true, cardClassName = "" }) {
   if (!open) return null;
+  const handleBackdropPointerDown = (e) => {
+    if (!closeOnBackdrop) return;
+    if (e.target === e.currentTarget) onClose?.();
+  };
   return (
-    <div className="modal-overlay" onClick={closeOnBackdrop ? onClose : undefined}>
-      <div className="modal-card" style={{ maxWidth: width }} onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay" onPointerDown={handleBackdropPointerDown}>
+      <div
+        className={`modal-card ${cardClassName}`.trim()}
+        style={{ maxWidth: width }}
+        onPointerDown={(e) => e.stopPropagation()}
+      >
         {children}
       </div>
     </div>
@@ -1837,7 +1845,7 @@ function UpdateModal({ open, config, onLater }) {
   return (
     <Modal open={open} onClose={force ? () => {} : onLater} width={380}>
       <div style={{ textAlign: "center" }}>
-        <div style={{ fontSize: 42, lineHeight: 1, marginBottom: 12 }}>🐾</div>
+        <div style={{ fontSize: 42, lineHeight: 1, marginBottom: 8 }}>🐾</div>
         <h3 style={{ fontSize: 19, marginBottom: 10 }}>{config.title || "PetGrow 업데이트 안내 🐾"}</h3>
         <p className="bg-sub" style={{ fontSize: 14, lineHeight: 1.7, margin: "0 0 20px" }}>
           {config.message || "더 나은 사용을 위해 새로운 업데이트가 준비되었어요. 최신 버전으로 업데이트해주세요."}
@@ -2247,16 +2255,19 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
     : (adminEntry?.adminExists ? "관리자 등록/복구" : "최초 관리자 등록");
 
   return (
-    <Modal open={open} onClose={onClose} width={380}>
-      <button type="button" onClick={onClose} aria-label={t.accountCloseBtn} title={t.accountCloseBtn} className="account-modal-close">×</button>
+    <Modal open={open} onClose={onClose} width={410} closeOnBackdrop={false} cardClassName="account-settings-modal">
+      
 
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18, paddingRight: 52 }}>
-        <UserIcon style={{ width: 20, height: 20, color: "var(--primary)" }} />
-        <h3 style={{ fontSize: 18 }}>{t.accountSettingsTitle}</h3>
+      <div className="account-settings-header">
+        <div className="account-settings-title">
+          <UserIcon style={{ width: 20, height: 20, color: "var(--primary)" }} />
+          <h3 style={{ fontSize: 18 }}>{t.accountSettingsTitle}</h3>
+        </div>
+        <button type="button" onClick={onClose} aria-label="닫기" title="닫기" className="account-modal-close">×</button>
       </div>
 
       {account && (<>
-        <div className="bg-surface-card" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+        <div className="bg-surface-card" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
           {account.profileImage ? (
             <img src={account.profileImage} alt="" style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover" }} />
           ) : (
@@ -2271,7 +2282,7 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
           </div>
         </div>
 
-        <div className="bg-surface-card" style={{ marginBottom: 14 }}>
+        <div className="bg-surface-card" style={{ marginBottom: 10 }}>
           <label className="bg-label">{t.accountNicknameLabel}</label>
           <input
             className="bg-input"
@@ -2304,11 +2315,11 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
           </button>
         )}
 
-        <div className="bg-sub" style={{ fontSize: 11, lineHeight: 1.6, marginBottom: 12 }}>{t.accountFreshLoginHelp}</div>
+        <div className="bg-sub" style={{ fontSize: 10.5, lineHeight: 1.45, marginBottom: 8 }}>{t.accountFreshLoginHelp}</div>
       </>)}
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                <button type="button" className="bg-btn bg-btn-ghost" onClick={onLogout}>{t.accountLogoutBtn}</button>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+<button type="button" className="bg-btn bg-btn-ghost" onClick={onLogout}>{t.accountLogoutBtn}</button>
         <button type="button" className="bg-btn bg-btn-ghost" style={{ color: "#C0392B" }} onClick={onRequestDelete}>{t.accountDeleteBtn}</button>
       </div>
     </Modal>
@@ -2511,7 +2522,7 @@ const GlobalStyle = () => (
     .profile-header-avatar .avatar-edit-badge .icon{width:14px; height:14px; fill:#fff;}
     .profile-header-name{font-family:'Jua',sans-serif; font-size:24px; color:var(--text);}
     .profile-header-meta{font-size:13px; color:var(--sub); margin-top:6px;}
-    
+    .account-modal-close{position:absolute; right:16px; top:14px; width:36px; height:36px; border-radius:50%; border:1px solid #DEE7E0; background:#F4F7F4; color:#243229; font-size:24px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:2; box-shadow:0 3px 10px rgba(28,28,28,.08);}
     .account-modal-close:hover{background:#EAF3EB; color:var(--primary); transform:translateY(-1px);}
     .account-modal-close-btn{width:100%; background:#EEF5EF; color:#243229; box-shadow:0 5px 0 #D6E5D9;}
     .pet-result-page{background:linear-gradient(180deg,#FCFDFC 0%,#FAFCFA 100%); border:1px solid #E6ECE7; border-radius:30px;}
@@ -3800,29 +3811,110 @@ const GlobalStyle = () => (
     .nickname-action-single{display:block!important}
     .nickname-action-single .nickname-change-btn{width:100%!important}
 
-    .account-modal-close{
-      position:sticky!important;
-      top:8px!important;
-      float:right!important;
-      margin:0 0 -42px auto!important;
-      z-index:50!important;
-      width:38px!important;
-      height:38px!important;
-      min-width:38px!important;
-      border:none!important;
+    /* 계정 설정: 텍스트 선택 중 닫힘 방지 + 한 화면 컴팩트 레이아웃 */
+    .modal-card{position:relative}
+    .account-settings-modal{
+      padding:16px 18px 14px!important;
+      max-height:calc(100dvh - 24px)!important;
+      overflow-y:auto!important;
+      overscroll-behavior:contain;
+      scrollbar-width:thin;
+    }
+    .account-settings-modal .bg-surface-card{
+      padding:14px 16px!important;
+      border-radius:20px!important;
+    }
+    .account-settings-modal .bg-label{margin-bottom:7px!important}
+    .account-settings-modal .bg-input{
+      min-height:48px!important;
+      height:48px!important;
+      padding:0 14px!important;
+    }
+    .account-settings-modal .nickname-action-row{margin-top:10px!important}
+    .account-settings-modal .bg-btn{
+      min-height:46px!important;
+      height:auto!important;
+      padding:10px 14px!important;
+      border-radius:15px!important;
+    }
+    .account-settings-modal .admin-entry-account-btn{
+      min-height:46px!important;
+      margin-bottom:8px!important;
+    }
+    .account-settings-modal .account-modal-close{
+      position:absolute!important;
+      top:12px!important;
+      right:12px!important;
+      float:none!important;
+      margin:0!important;
+      z-index:60!important;
+      width:36px!important;
+      height:36px!important;
+      min-width:36px!important;
+      border:1px solid #DCE7DD!important;
       border-radius:50%!important;
-      background:#F3F7F3!important;
+      background:#F4F8F4!important;
       color:#33483A!important;
       display:flex!important;
       align-items:center!important;
       justify-content:center!important;
-      font-size:24px!important;
+      font-size:22px!important;
       line-height:1!important;
       cursor:pointer!important;
-      box-shadow:0 2px 8px rgba(35,55,42,.08)!important;
+      box-shadow:0 2px 7px rgba(35,55,42,.07)!important;
     }
-    .account-modal-close:hover{
-      background:#E8F1E9!important;
+    .account-settings-modal .account-modal-close:hover{background:#E9F2EA!important}
+    @media (min-height:700px){
+      .account-settings-modal{overflow-y:hidden!important}
+    }
+    @media (max-height:699px){
+      .account-settings-modal{overflow-y:auto!important}
+    }
+    @media (max-width:520px){
+      .account-settings-modal{
+        padding:14px!important;
+        max-height:calc(100dvh - 14px)!important;
+      }
+      .account-settings-modal .bg-surface-card{padding:12px 14px!important}
+      .account-settings-modal .bg-btn{min-height:44px!important;padding:9px 12px!important}
+      .account-settings-modal .account-modal-close{top:10px!important;right:10px!important}
+    }
+
+    .account-settings-header{
+      display:flex!important;
+      align-items:center!important;
+      justify-content:space-between!important;
+      gap:12px!important;
+      margin-bottom:12px!important;
+      width:100%!important;
+    }
+    .account-settings-title{
+      display:flex!important;
+      align-items:center!important;
+      gap:8px!important;
+      min-width:0!important;
+    }
+    .account-settings-header .account-modal-close{
+      position:static!important;
+      inset:auto!important;
+      flex:0 0 36px!important;
+      width:36px!important;
+      height:36px!important;
+      min-width:36px!important;
+      margin:0!important;
+      padding:0!important;
+      border:1px solid #DCE7DD!important;
+      border-radius:50%!important;
+      background:#F4F8F4!important;
+      color:#33483A!important;
+      display:flex!important;
+      align-items:center!important;
+      justify-content:center!important;
+      font-size:22px!important;
+      line-height:1!important;
+      z-index:100!important;
+      cursor:pointer!important;
+      box-shadow:0 2px 7px rgba(35,55,42,.07)!important;
     }
 `}</style>
 );
