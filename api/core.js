@@ -229,6 +229,22 @@ async function handleNearby(req, res) {
     } catch(e) { console.warn("Nominatim nearby fallback failed", e?.message); }
   }
 
+  // Fallback 결과에 전화번호가 없을 때 카카오 장소검색으로 상호명을 다시 대조해 전화번호를 보완합니다.
+  // 최대 12곳만 병렬 조회해 검색 속도 저하를 제한합니다.
+  if (key && hasCoord) {
+    const missing = all.filter(x => !x.phone && x.name && x.source !== "kakao").slice(0,12);
+    await Promise.all(missing.map(async x => {
+      try {
+        const u = new URL("https://dapi.kakao.com/v2/local/search/keyword.json");
+        u.searchParams.set("query", x.name);u.searchParams.set("size","5");u.searchParams.set("x",String(x.lng||nLng));u.searchParams.set("y",String(x.lat||nLat));u.searchParams.set("radius","5000");u.searchParams.set("sort","distance");
+        const r=await fetch(u,{headers:{Authorization:`KakaoAK ${key}`}});if(!r.ok)return;const j=await r.json();
+        const norm=v=>String(v||"").replace(/[^0-9A-Za-z가-힣]/g,"").toLowerCase();const target=norm(x.name);
+        const hit=(j.documents||[]).find(d=>norm(d.place_name)===target)||(j.documents||[])[0];
+        if(hit){x.phone=hit.phone||x.phone||"";x.url=hit.place_url||x.url||"";x.address=hit.road_address_name||hit.address_name||x.address;x.roadAddress=hit.road_address_name||x.roadAddress||"";}
+      } catch {}
+    }));
+  }
+
   const seen = new Set(), items = [];
   for (const x of all) {
     const key2 = `${String(x.name||"").replace(/\s/g,"").toLowerCase()}|${String(x.address||"").replace(/\s/g,"").toLowerCase()}`;

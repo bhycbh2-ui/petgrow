@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import { put } from "@vercel/blob";
+import { handleUpload } from "@vercel/blob/client";
 import { sql } from "@vercel/postgres";
 import { ensureSchema } from "../server_lib/db.js";
 import { getSessionUserId } from "../server_lib/session.js";
@@ -146,6 +147,23 @@ export default async function handler(req,res){
       try{await sql`insert into pg_music_comment_reports(id,comment_id,reporter_user_id,reason,detail) values(${id},${commentId},${uid},${reason},${detail||null})`;}catch(e){if(String(e?.message||"").toLowerCase().includes("duplicate"))return res.status(200).json({ok:true,already:true});throw e;}
       return res.status(201).json({ok:true});
     }
+    if(action==="upload" && req.method==="POST"){
+      const body=req.body||{};
+      try{
+        const json=await handleUpload({
+          body,request:req,
+          onBeforeGenerateToken:async(pathname,clientPayload)=>{
+            const uid=getSessionUserId(req);if(!uid)throw new Error("로그인이 필요해요.");
+            const role=await getAdminRole(uid);let payload={};try{payload=JSON.parse(clientPayload||"{}")}catch{}
+            if(!role||!verifyToken(payload.adminToken,uid)||!roleCan(role,"ads"))throw new Error("Pet음악 관리 권한이 없어요.");
+            const isCover=String(pathname||"").includes("/covers/")||payload.kind==="cover";
+            return {allowedContentTypes:isCover?["image/jpeg","image/png","image/webp"]:["audio/mpeg","audio/mp3","audio/wav","audio/x-wav","audio/mp4","audio/aac"],maximumSizeInBytes:isCover?MAX_COVER_BYTES:MAX_AUDIO_BYTES,addRandomSuffix:true,tokenPayload:JSON.stringify({uid,kind:isCover?"cover":"audio"})};
+          },
+          onUploadCompleted:async()=>{}
+        });
+        return res.status(200).json(json);
+      }catch(e){return res.status(400).json({error:e?.message||"파일 업로드를 시작하지 못했어요."});}
+    }
     if(action==="admin-list" && req.method==="GET"){
       if(!(await requireAdmin(req,res)))return;
       await ensureStarterTracks();
@@ -165,7 +183,7 @@ export default async function handler(req,res){
       if(!audioUrl)return res.status(400).json({error:"음원 파일을 선택해 주세요."});
       await sql`insert into pg_music_tracks(id,title,description,species,vocal_type,mood,cover_url,audio_url,active,created_by) values(${id},${title},${String(body.description||"").trim()||null},${species},${vocalType},${mood},${coverUrl||null},${audioUrl},${body.active!==false},${admin.uid}) on conflict(id) do update set title=excluded.title,description=excluded.description,species=excluded.species,vocal_type=excluded.vocal_type,mood=excluded.mood,cover_url=excluded.cover_url,audio_url=excluded.audio_url,active=excluded.active,updated_at=now()`;
       await logAdmin(admin.uid,body.id?"MUSIC_UPDATE":"MUSIC_CREATE",null,null,{trackId:id,title,species,vocalType,mood});
-      return res.status(200).json({ok:true,id});
+      return res.status(200).json({ok:true,id,audioUrl,coverUrl});
     }
     if(action==="admin-toggle" && req.method==="POST"){
       const admin=await requireAdmin(req,res); if(!admin)return; const id=String(req.body?.id||""); const active=!!req.body?.active;
