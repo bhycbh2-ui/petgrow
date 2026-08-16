@@ -3336,6 +3336,95 @@ const GlobalStyle = () => (
         scroll-margin-top:76px;
       }
     }
+
+    /* ============================================================
+       PetGrow Desktop Web Content Alignment
+       - sidebar remains fixed
+       - every main menu starts on the same left line
+       - mobile web / native app untouched
+       ============================================================ */
+    @media (min-width:900px){
+      .petgrow-web-layout{
+        --pg-content-left:32px;
+        --pg-content-right:32px;
+        --pg-content-max:1120px;
+      }
+
+      /* 상단 보조 영역(우리 아이 종 선택 등)도 본문과 같은 시작선 */
+      .petgrow-web-layout .petgrow-page-top{
+        width:calc(100% - var(--pg-content-left) - var(--pg-content-right)) !important;
+        max-width:var(--pg-content-max) !important;
+        margin-left:var(--pg-content-left) !important;
+        margin-right:auto !important;
+        padding-left:0 !important;
+        padding-right:0 !important;
+      }
+
+      /* 홈 ~ Pet정보 모든 메뉴의 공통 본문 시작 위치 */
+      .petgrow-web-layout .petgrow-content-stage{
+        width:calc(100% - var(--pg-content-left) - var(--pg-content-right));
+        max-width:var(--pg-content-max);
+        margin:24px auto 0 var(--pg-content-left);
+        box-sizing:border-box;
+      }
+
+      /* 각 페이지가 자체적으로 margin:auto / max-width:900 을 갖고 있어도
+         PC에서는 동일한 왼쪽 시작선으로 강제 정렬 */
+      .petgrow-web-layout .petgrow-content-stage > *{
+        width:100% !important;
+        max-width:100% !important;
+        margin-left:0 !important;
+        margin-right:0 !important;
+        box-sizing:border-box;
+      }
+
+      .petgrow-web-layout .petgrow-content-stage > div[style*="max-width"],
+      .petgrow-web-layout .petgrow-content-stage > section[style*="max-width"],
+      .petgrow-web-layout .petgrow-content-stage > main[style*="max-width"]{
+        max-width:100% !important;
+        margin-left:0 !important;
+        margin-right:0 !important;
+      }
+
+      /* 페이지 내부의 대표 900px 컨테이너도 가운데 재정렬되지 않도록 통일 */
+      .petgrow-web-layout .petgrow-content-stage [style*="max-width: 900"]{
+        margin-left:0 !important;
+        margin-right:0 !important;
+      }
+
+      /* 약관형 shell을 쓰는 Pet사주/PetBTI도 같은 폭과 시작선 */
+      .petgrow-web-layout .petgrow-content-stage > .legal-page-shell{
+        max-width:100% !important;
+        padding-left:0 !important;
+        padding-right:0 !important;
+      }
+
+      /* 푸터도 본문과 같은 가로축으로 정돈 */
+      .petgrow-web-layout > div[style*="max-width: 900"][style*="40px"]{
+        width:calc(100% - 64px) !important;
+        max-width:1120px !important;
+        margin-left:32px !important;
+        margin-right:auto !important;
+      }
+    }
+
+    /* 큰 모니터에서는 너무 왼쪽에 붙지 않으면서 여백 유지 */
+    @media (min-width:1450px){
+      .petgrow-web-layout{
+        --pg-content-left:48px;
+        --pg-content-right:48px;
+        --pg-content-max:1180px;
+      }
+    }
+
+    /* 태블릿 직전 구간에서도 사이드바와 본문 간격 확보 */
+    @media (min-width:900px) and (max-width:1120px){
+      .petgrow-web-layout{
+        --pg-content-left:22px;
+        --pg-content-right:22px;
+        --pg-content-max:calc(100vw - 248px);
+      }
+    }
 `}</style>
 );
 
@@ -9324,6 +9413,7 @@ function AppInner({ lang, setLang }) {
         )}
       </div>
 
+      <div className="petgrow-content-stage">
       {effectiveView === "login" ? (
         <LoginScreen onGoTerms={() => goView("terms")} onGoPrivacy={() => goView("privacy")} />
       ) : effectiveView === "privacy" ? (
@@ -9387,6 +9477,7 @@ function AppInner({ lang, setLang }) {
           />
         </>
       )}
+      </div>
 
       {effectiveView !== "login" && (
         <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 40px" }}>
