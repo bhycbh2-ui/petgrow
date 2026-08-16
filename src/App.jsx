@@ -1421,21 +1421,13 @@ function goToKakaoLogin() {
   // 전체 페이지 이동으로 카카오 로그인 화면으로 리다이렉트해요 (실제 OAuth 인가 흐름).
   window.location.href = "/api/auth/kakao/login";
 }
-async function fetchMe(timeoutMs = 6000) {
-  const controller = new AbortController();
-  const timer = window.setTimeout(() => controller.abort(), timeoutMs);
+async function fetchMe() {
   try {
-    const res = await fetch("/api/me", {
-      credentials: "include",
-      signal: controller.signal,
-    });
+    const res = await fetch("/api/me", { credentials: "include" });
     if (!res.ok) return null;
     return await res.json();
-  } catch (err) {
-    if (err?.name !== "AbortError") console.warn("로그인 확인 지연:", err);
+  } catch {
     return null;
-  } finally {
-    window.clearTimeout(timer);
   }
 }
 async function apiLogout() {
@@ -9484,11 +9476,9 @@ function AppInner({ lang, setLang }) {
       const catsKey = "bboggl:cats";
       const activesKey = "bboggl:activeIds";
 
-      let [dogs, cats, actives] = await Promise.all([
-        safeGet(dogsKey, me),
-        safeGet(catsKey, me),
-        safeGet(activesKey, me),
-      ]);
+      let dogs = await safeGet(dogsKey, me);
+      let cats = await safeGet(catsKey, me);
+      const actives = await safeGet(activesKey, me);
 
       if (!me) {
         // 로그인 전(게스트) 상태에서만 예전 버전 로컬 데이터를 함께 확인해요
@@ -9578,17 +9568,6 @@ function AppInner({ lang, setLang }) {
       window.__hidePetGrowSplash();
     }
   }, [loaded, authChecked]);
-
-  // 네트워크/DB가 일시적으로 느린 경우에도 시작 화면이 무한정 남지 않게 하는 최종 안전장치.
-  // 정상적인 경우에는 위 effect가 먼저 실행되므로 화면 동작에는 영향이 없습니다.
-  useEffect(() => {
-    const fallback = window.setTimeout(() => {
-      if (typeof window.__hidePetGrowSplash === "function") {
-        window.__hidePetGrowSplash();
-      }
-    }, 7000);
-    return () => window.clearTimeout(fallback);
-  }, []);
 
   // 개인정보 최소화 운영 통계: 세션은 임의 ID를 서버에서 해시해 집계합니다.
   useEffect(() => {
