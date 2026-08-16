@@ -2158,6 +2158,37 @@ function HamburgerMenu({ open, onClose, view, onNavigate, onOpenAccount, account
   );
 }
 
+
+function normalizeNickname(value = "") {
+  return String(value).trim().replace(/\s+/g, " ");
+}
+
+function validateNicknameLocal(value = "") {
+  const nickname = normalizeNickname(value);
+  const reserved = ["admin","administrator","manager","moderator","운영자","관리자","petgrow","펫그로우","공식","official","staff","support","고객센터"];
+  const blocked = [
+    /씨발|시발|ㅅㅂ|병신|븅신|개새끼|개새|좆|존나|지랄|꺼져|닥쳐/i,
+    /섹스|sex|야동|porn|포르노|자위|딸딸|보지|자지|음란/i,
+    /혐오|나치|nazi/i
+  ];
+
+  if (!nickname) return { ok:false, reason:"empty", message:"닉네임을 입력해 주세요." };
+  if (nickname.length < 2 || nickname.length > 8) {
+    return { ok:false, reason:"length", message:"닉네임은 2~8자 이내로 입력해 주세요." };
+  }
+  if (/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/.test(nickname) || /(?:01[016789])[-\s]?\d{3,4}[-\s]?\d{4}/.test(nickname)) {
+    return { ok:false, reason:"private", message:"전화번호나 이메일은 닉네임으로 사용할 수 없어요." };
+  }
+  if (reserved.some((word) => nickname.toLowerCase().includes(word.toLowerCase()))) {
+    return { ok:false, reason:"reserved", message:"운영자나 공식 계정으로 오해할 수 있는 닉네임은 사용할 수 없어요." };
+  }
+  const compact = nickname.replace(/\s/g, "");
+  if (blocked.some((rule) => rule.test(compact))) {
+    return { ok:false, reason:"blocked", message:"사용할 수 없는 표현이 포함된 닉네임이에요. 다른 닉네임을 사용해 주세요." };
+  }
+  return { ok:true, nickname };
+}
+
 function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNicknameUpdated, onOpenAdmin }) {
   const t = useT();
   const [nickname, setNickname] = useState(account?.name || "");
