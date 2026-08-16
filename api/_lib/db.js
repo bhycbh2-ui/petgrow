@@ -5,11 +5,14 @@ import crypto from "crypto";
 // POSTGRES_URL 등의 환경변수가 자동으로 주입돼요. 별도 설정 불필요.
 // 테이블 이름은 pg_ 접두사를 붙여서 기존 DB의 다른 테이블과 겹치지 않도록 했어요.
 
+let authSchemaReadyPromise = null;
 let schemaReadyPromise = null;
 
-export function ensureSchema() {
-  if (!schemaReadyPromise) {
-    schemaReadyPromise = (async () => {
+// 로그인/세션 확인에는 회원·관리자 테이블만 필요해요.
+// Pet톡/통계 전체 스키마를 기다리지 않도록 가볍게 분리합니다.
+export function ensureAuthSchema() {
+  if (!authSchemaReadyPromise) {
+    authSchemaReadyPromise = (async () => {
       await sql`
         create table if not exists pg_users (
           id text primary key,
@@ -22,6 +25,18 @@ export function ensureSchema() {
       `;
       await sql`alter table pg_users add column if not exists created_at timestamptz not null default now()`;
       await sql`alter table pg_users add column if not exists last_login_at timestamptz not null default now()`;
+    })().catch((error) => {
+      authSchemaReadyPromise = null;
+      throw error;
+    });
+  }
+  return authSchemaReadyPromise;
+}
+
+export function ensureSchema() {
+  if (!schemaReadyPromise) {
+    schemaReadyPromise = (async () => {
+      await ensureAuthSchema();
 
       await sql`
         create table if not exists pg_user_state (
@@ -140,6 +155,92 @@ export function ensureSchema() {
           pin_updated_at timestamptz not null default now()
         )
       `;
+      await sql`alter table pg_admins add column if not exists role text not null default 'operator'`;
+      await sql`alter table pg_admins add column if not exists added_by text`;
+      await sql`alter table pg_admins add column if not exists last_admin_login_at timestamptz`;
+      await sql`alter table pg_admins alter column pin_salt drop not null`;
+      await sql`alter table pg_admins alter column pin_hash drop not null`;
+      await sql`
+        create table if not exists pg_notices (
+          id text primary key,
+          title text not null,
+          body text not null,
+          category text not null default 'notice',
+          pinned boolean not null default false,
+          popup boolean not null default false,
+          active boolean not null default true,
+          starts_at timestamptz,
+          ends_at timestamptz,
+          created_by text references pg_users(id) on delete set null,
+          created_at timestamptz not null default now(),
+          updated_at timestamptz not null default now()
+        )
+      `;
+      await sql`create index if not exists idx_pg_notices_created on pg_notices(pinned desc,created_at desc)`;
+      await sql`
+        create table if not exists pg_inquiries (
+          id text primary key,
+          user_id text not null references pg_users(id) on delete cascade,
+          category text not null default 'inquiry',
+          title text not null,
+          body text not null,
+          is_public boolean not null default false,
+          status text not null default 'waiting',
+          admin_reply text,
+          replied_by text references pg_users(id) on delete set null,
+          replied_at timestamptz,
+          created_at timestamptz not null default now(),
+          updated_at timestamptz not null default now()
+        )
+      `;
+      await sql`create index if not exists idx_pg_inquiries_public on pg_inquiries(is_public,created_at desc)`;
+      await sql`create index if not exists idx_pg_inquiries_user on pg_inquiries(user_id,created_at desc)`;
+      await sql`
+        create table if not exists pg_ad_inquiries (
+          id text primary key,
+          company_name text not null,
+          contact_name text not null,
+          email text not null,
+          phone text,
+          campaign_type text not null default 'banner',
+          budget text,
+          message text not null,
+          status text not null default 'new',
+          created_at timestamptz not null default now(),
+          updated_at timestamptz not null default now()
+        )
+      `;
+      await sql`create index if not exists idx_pg_ad_inquiries_status on pg_ad_inquiries(status,created_at desc)`;
+      await sql`
+        create table if not exists pg_service_health_events (
+          id text primary key,
+          kind text not null,
+          source text not null default 'api',
+          status_code int,
+          latency_ms int,
+          detail text,
+          created_at timestamptz not null default now()
+        )
+      `;
+      await sql`create index if not exists idx_pg_service_health_events_created on pg_service_health_events(created_at desc)`;
+
+      await sql`
+        create table if not exists pg_direct_ads (
+          id text primary key,
+          name text not null,
+          placement text not null,
+          image_url text,
+          target_url text,
+          starts_at timestamptz,
+          ends_at timestamptz,
+          active boolean not null default false,
+          priority int not null default 0,
+          created_by text references pg_users(id) on delete set null,
+          created_at timestamptz not null default now(),
+          updated_at timestamptz not null default now()
+        )
+      `;
+
       await sql`
         create table if not exists pg_admin_audit_logs (
           id text primary key, admin_user_id text not null references pg_users(id) on delete cascade,
@@ -178,7 +279,10 @@ export function ensureSchema() {
         )
       `;
 
-    })();
+    })().catch((error) => {
+      schemaReadyPromise = null;
+      throw error;
+    });
   }
   return schemaReadyPromise;
 }
@@ -186,7 +290,7 @@ export function ensureSchema() {
 // 카카오 고유 식별정보(kakaoId)로 회원을 찾고, 없으면 새로 생성해요.
 // PetGrow 내부 user_id 는 여기서 발급되는 id(UUID) 예요 — 이후 모든 데이터는 이 id 를 기준으로 연결돼요.
 export async function findOrCreateUserByKakaoId({ kakaoId, nickname, profileImage }) {
-  await ensureSchema();
+  await ensureAuthSchema();
   const existing = await sql`select * from pg_users where kakao_id = ${kakaoId}`;
   if (existing.rows[0]) {
     const updated = await sql`
@@ -209,7 +313,7 @@ export async function findOrCreateUserByKakaoId({ kakaoId, nickname, profileImag
 }
 
 export async function getUserById(id) {
-  await ensureSchema();
+  await ensureAuthSchema();
   const { rows } = await sql`select * from pg_users where id = ${id}`;
   return rows[0] || null;
 }
@@ -270,4 +374,50 @@ export async function setState(userId, key, value) {
     values (${userId}, ${key}, ${JSON.stringify(value)}::jsonb, now())
     on conflict (user_id, key) do update set value = excluded.value, updated_at = now()
   `;
+}
+
+
+export async function getCommunityRestriction(userId) {
+  await ensureSchema();
+  if (!userId) return null;
+  const { rows } = await sql`
+    select restricted_until, permanent
+    from pg_community_restrictions
+    where user_id=${userId}
+  `;
+  const r=rows[0];
+  if(!r)return null;
+  if(r.permanent)return {restricted:true,permanent:true,restrictedUntil:null};
+  if(r.restricted_until && new Date(r.restricted_until).getTime()>Date.now()){
+    return {restricted:true,permanent:false,restrictedUntil:r.restricted_until};
+  }
+  if(r.restricted_until){
+    await sql`delete from pg_community_restrictions where user_id=${userId}`;
+  }
+  return null;
+}
+
+export async function logServiceHealth(kind,source="api",statusCode=null,latencyMs=null,detail=""){
+  try{
+    await ensureSchema();
+    await sql`insert into pg_service_health_events(id,kind,source,status_code,latency_ms,detail)
+      values(${crypto.randomUUID()},${String(kind||"unknown").slice(0,40)},${String(source||"api").slice(0,80)},${statusCode==null?null:Number(statusCode)},${latencyMs==null?null:Number(latencyMs)},${String(detail||"").slice(0,400)})`;
+  }catch{}
+}
+export async function getServiceHealthSummary(){
+  await ensureSchema();
+  const {rows}=await sql`
+    select
+      count(*) filter(where kind='error' and created_at>=now()-interval '15 minutes')::int errors15m,
+      count(*) filter(where kind='db_error' and created_at>=now()-interval '1 hour')::int dbErrors1h,
+      count(*) filter(where kind='rate_limit' and created_at>=now()-interval '1 hour')::int rateLimits1h,
+      count(*) filter(where latency_ms>=3000 and created_at>=now()-interval '1 hour')::int slow1h,
+      coalesce(round(avg(latency_ms) filter(where latency_ms is not null and created_at>=now()-interval '15 minutes')),0)::int avgLatency15m,
+      coalesce(max(latency_ms) filter(where latency_ms is not null and created_at>=now()-interval '1 hour'),0)::int maxLatency1h
+    from pg_service_health_events`;
+  const {rows:recent}=await sql`select kind,source,status_code,latency_ms,detail,created_at from pg_service_health_events where created_at>=now()-interval '24 hours' order by created_at desc limit 20`;
+  const s=rows[0]||{};let level="healthy",reason="정상";
+  if((s.dbErrors1h||0)>=3||(s.errors15m||0)>=10||(s.maxLatency1h||0)>=8000){level="down";reason="오류 또는 응답 지연이 많이 발생하고 있어요."}
+  else if((s.errors15m||0)>=3||(s.slow1h||0)>=5||(s.rateLimits1h||0)>=3||(s.avgLatency15m||0)>=1800){level="warning";reason="일부 요청 지연이나 오류가 감지됐어요."}
+  return {level,reason,metrics:s,recent};
 }

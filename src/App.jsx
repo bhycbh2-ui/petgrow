@@ -1421,22 +1421,30 @@ function goToKakaoLogin() {
   // 전체 페이지 이동으로 카카오 로그인 화면으로 리다이렉트해요 (실제 OAuth 인가 흐름).
   window.location.href = "/api/auth/kakao/login";
 }
-async function fetchMe(timeoutMs = 6000) {
-  const controller = new AbortController();
-  const timer = window.setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const res = await fetch("/api/me", {
-      credentials: "include",
-      signal: controller.signal,
-    });
-    if (!res.ok) return null;
-    return await res.json();
-  } catch (err) {
-    if (err?.name !== "AbortError") console.warn("로그인 확인 지연:", err);
-    return null;
-  } finally {
-    window.clearTimeout(timer);
+async function fetchMe(timeoutMs = 8000) {
+  // 401만 실제 로그아웃으로 판단해요. 서버 cold start/DB 지연은 한 번 재시도해서
+  // 로그인된 사용자가 UI에서 다시 "로그인"으로 보이는 현상을 막습니다.
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const res = await fetch("/api/me", {
+        credentials: "include",
+        signal: controller.signal,
+        cache: "no-store",
+      });
+      if (res.status === 401) return null;
+      if (!res.ok) throw new Error(`me_${res.status}`);
+      return await res.json();
+    } catch (err) {
+      console.warn(`로그인 상태 확인 재시도 ${attempt + 1}/2:`, err);
+      if (attempt === 0) await new Promise((resolve) => window.setTimeout(resolve, 700));
+    } finally {
+      window.clearTimeout(timer);
+    }
   }
+  // 일시적 서버 오류를 로그아웃으로 확정하지 않습니다. 다음 focus/visibility에서 다시 확인해요.
+  return undefined;
 }
 async function apiLogout() {
   try {
@@ -1464,6 +1472,9 @@ async function apiUpdateNickname(nickname) {
 /* ============================================================
    Pet톡 커뮤니티 — API 클라이언트 헬퍼
    ============================================================ */
+function sendHealthEvent(kind,source,statusCode=null,latencyMs=null,detail=""){
+ try{fetch("/api/health-event",{method:"POST",credentials:"include",headers:{"Content-Type":"application/json"},body:JSON.stringify({kind,source,statusCode,latencyMs,detail})}).catch(()=>{})}catch{}
+}
 async function apiJson(url, options) {
   const res = await fetch(url, { credentials: "include", ...options });
   let data = null;
@@ -1522,6 +1533,24 @@ function communityMyActivity(type, page) {
 
 function adminApi(action, options={}) { const tok=sessionStorage.getItem("petgrow_admin_token")||""; return apiJson(`/api/admin?action=${action}`, {...options,headers:{...(options.headers||{}),...(tok?{"X-PetGrow-Admin-Token":tok}:{})}}); }
 function adminStatus(){return adminApi("status");}
+function adminHealth(){return adminApi("health");}
+function adsApi(action,options={}){return apiJson(`/api/ads?action=${action}`,options);}
+function submitAdInquiry(payload){return adsApi("inquiry",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});}
+function supportApi(action,options={}){return apiJson(`/api/support?action=${action}`,options);}
+function supportNotices(page=1){return supportApi(`notices&page=${page}`);}
+function supportInquiries(page=1,mine=false){return supportApi(`inquiries&page=${page}&mine=${mine?1:0}`);}
+function supportCreateInquiry(payload){return supportApi("inquiry-create",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});}
+function adminSetPin(pin){return adminApi("set-pin",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pin})});}
+function adminListAdmins(){return adminApi("admin-list");}
+function adminSearchUser(q){return adminApi(`admin-search&q=${encodeURIComponent(q)}`);}
+function adminAddUser(userId,role){return adminApi("admin-add",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId,role})});}
+function adminChangeRole(userId,role){return adminApi("admin-role",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId,role})});}
+function adminResetPin(userId){return adminApi("admin-reset-pin",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId})});}
+function adminRemoveUser(userId){return adminApi("admin-remove",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId})});}
+function adminSupportInquiries(page=1){return supportApi(`admin-inquiries&page=${page}`,{headers:{"X-PetGrow-Admin-Token":sessionStorage.getItem("petgrow_admin_token")||""}});}
+function adminReplyInquiry(id,reply,status="answered"){return supportApi("admin-reply",{method:"POST",headers:{"Content-Type":"application/json","X-PetGrow-Admin-Token":sessionStorage.getItem("petgrow_admin_token")||""},body:JSON.stringify({id,reply,status})});}
+function adminCreateNotice(payload){return supportApi("admin-notice-create",{method:"POST",headers:{"Content-Type":"application/json","X-PetGrow-Admin-Token":sessionStorage.getItem("petgrow_admin_token")||""},body:JSON.stringify(payload)});}
+
 function adminBootstrap(setupCode,pin){return adminApi("bootstrap",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({setupCode,pin})});}
 function adminRecover(setupCode,pin){return adminApi("recover",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({setupCode,pin})});}
 function adminVerify(pin){return adminApi("verify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pin})});}
@@ -1530,6 +1559,10 @@ function adminRestrictUser(payload){return adminApi("restrict",{method:"POST",he
 function adminUnblockUser(userId,reportId){return adminApi("unblock",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId,reportId})});}
 function adminResolveReport(reportId){return adminApi("resolve",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({reportId})});}
 function adminStats(){return adminApi("stats");}
+
+function adminRestrict(targetUserId,duration,reportId){return adminApi("restrict",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({targetUserId,duration,reportId})});}
+function adminUnblock(targetUserId,reportId){return adminApi("unblock",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({targetUserId,reportId})});}
+function adminResolveReport(reportId){return adminApi("resolve",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({reportId})});}
 function adminLogs(){return adminApi("logs");}
 
 function getAnonymousAnalyticsSessionId() {
@@ -1886,7 +1919,7 @@ function GuideModal({ open, onClose }) {
    개인정보처리방침 (초안) — 법률 자문 아님, 배포 전 검토 필요
    ============================================================ */
 const PRIVACY_SECTIONS_KO = [
-  { title: "1. 개인정보의 처리 목적", body: "PetGrow는 카카오 간편로그인을 통한 회원 식별·계정 관리, 로그인 유지, 반려동물 정보 저장 및 기기 간 동기화, PetBTI 등 서비스 결과 저장·다시보기, 보호자 궁합 계산, 고객 문의, 서비스 안정성·품질 개선, 광고 제공 및 성과 측정, 부정 이용 방지, 회원탈퇴 및 개인정보 삭제 처리를 위하여 필요한 범위에서 개인정보를 처리할 수 있습니다." },
+  { title: "1. 개인정보의 처리 목적", body: "PetGrow는 카카오 간편로그인을 통한 회원 식별·계정 관리, 로그인 유지, 공지사항 제공, 문의·피드백 접수 및 답변 관리, 광고 문의 접수 및 상담(회사/브랜드명, 담당자명, 이메일, 선택 입력 연락처·예산), 직접광고 캠페인 운영 및 노출기간 관리, 반려동물 정보 저장 및 기기 간 동기화, PetBTI 등 서비스 결과 저장·다시보기, 보호자 궁합 계산, 고객 문의, 서비스 안정성·품질 개선, 광고 제공 및 성과 측정, 부정 이용 방지, 회원탈퇴 및 개인정보 삭제 처리를 위하여 필요한 범위에서 개인정보를 처리할 수 있습니다." },
   { title: "2. 처리하는 개인정보 항목", body: "가. 카카오 간편로그인\n- 카카오가 제공하는 사용자 고유 식별정보\n- 닉네임, 프로필 이미지 등은 실제로 동의받아 제공받고 서비스에서 사용하는 경우에만 처리\n- 이메일 등 추가 정보는 실제 구현상 필요한 경우에만 동의를 받아 처리\n\n나. 반려동물 및 서비스 정보\n- 반려동물 이름, 종류, 품종, 생년월일, 성별, 현재 체중 및 성장 관련 정보\n- 반려동물 프로필 사진\n- PetBTI 결과 및 검사일\n- Pet사주 등 저장이 필요한 서비스 정보\n\n다. 보호자 궁합 입력정보\n- 보호자 이름, 보호자 생년월일\n- 위 정보는 보호자 궁합 결과를 계산하기 위해 해당 화면에서만 일시적으로 사용하며, 현재 구현상 PetGrow 서버 또는 계정에 저장하지 않습니다.\n\n라. 자동으로 처리될 수 있는 정보\n- IP 주소, 기기·운영체제·브라우저 또는 앱 정보\n- 접속 및 서비스 이용기록, 오류·보안 관련 기록\n- 광고 식별정보 및 광고 상호작용 정보\n\nPetGrow는 서비스 제공에 필요하지 않은 전화번호, 친구목록 등의 개인정보를 불필요하게 요청하지 않는 것을 원칙으로 합니다. 보호자 궁합에서 입력하는 보호자 이름·생년월일은 궁합 계산에만 일시적으로 사용되며 현재 구현상 서버로 전송하거나 계정에 저장하지 않습니다." },
   { title: "3. 개인정보의 저장 방식", body: "로그인 후 이용자가 등록하거나 생성한 정보는 단순히 '이 기기' 또는 '이 브라우저'에만 저장되는 구조를 원칙으로 하지 않으며, 로그인한 PetGrow 계정에 연결하여 서버 또는 클라우드 저장소에 저장·동기화될 수 있습니다. 동일한 카카오 계정으로 로그인하면 지원되는 다른 기기 또는 웹 환경에서 저장된 정보를 불러올 수 있습니다. 로그인 기능 도입 이전의 기존 기기 저장정보는 이용자의 선택에 따라 계정으로 이전될 수 있습니다." },
   { title: "4. 개인정보의 처리 및 보유기간", body: "회원계정 및 계정에 연결된 개인정보는 원칙적으로 회원탈퇴 시까지 보유·이용합니다. 회원탈퇴 시 관계 법령에 따라 별도로 보관할 필요가 있는 정보를 제외하고 계정 및 관련 개인정보를 삭제합니다. 외부 인증·광고·호스팅 사업자가 자체적으로 처리하는 정보는 해당 사업자의 정책 및 실제 처리 구조에 따를 수 있습니다." },
@@ -1938,7 +1971,7 @@ const TERMS_SECTIONS_KO = [
   { title: "제4조 (회원가입 및 이용계약)", body: "이용자가 카카오 간편로그인 등 PetGrow가 제공하는 인증 절차를 완료하고 필요한 약관 및 개인정보 관련 절차에 동의하면 이용계약이 성립할 수 있습니다." },
   { title: "제5조 (카카오 간편로그인)", body: "① PetGrow는 회원 편의를 위해 카카오의 외부 인증 서비스를 이용한 간편로그인을 제공할 수 있습니다.\n② 회원은 카카오 계정을 이용하여 PetGrow에 로그인할 수 있습니다.\n③ 카카오 서비스의 장애, 정책 변경 또는 이용자의 카카오 계정 상태에 따라 로그인이 일시적으로 제한될 수 있습니다.\n④ 카카오 인증 서비스 자체에 대해서는 카카오의 이용약관 및 개인정보처리방침이 적용될 수 있습니다." },
   { title: "제6조 (계정 및 로그인 상태 관리)", body: "회원은 자신의 카카오 계정을 안전하게 관리해야 합니다. PetGrow의 주요 기능은 로그인한 회원에게 제공될 수 있으며, 로그아웃 시 서버에 저장된 계정 데이터는 삭제되지 않습니다. 동일한 카카오 계정으로 다시 로그인하면 저장된 정보를 불러올 수 있습니다." },
-  { title: "제7조 (서비스 제공)", body: "PetGrow는 우리 아이 등록·관리, 성장 예상 및 성장정보, Pet사주, PetBTI, Pet정보, Pet톡 커뮤니티, 회원정보(계정·닉네임·활동 관리), 계정별 데이터 저장 및 기기 간 동기화 등의 서비스를 제공할 수 있습니다." },
+  { title: "제7조 (서비스 제공)", body: "PetGrow는 우리 아이 등록·관리, 성장 예상 및 성장정보, Pet사주, PetBTI, Pet정보, Pet톡 커뮤니티, 공지사항, 문의·피드백(공개/비공개 선택 및 운영진 답변), 광고 문의 및 제휴 광고 안내(직접광고 배너·사이트 내부 프로모션 모달 포함), 회원정보(계정·닉네임·활동 관리), 계정별 데이터 저장 및 기기 간 동기화 등의 서비스를 제공할 수 있습니다." },
   { title: "제8조 (데이터 저장 및 동기화)", body: "로그인 회원이 등록한 반려동물 정보와 일부 서비스 결과는 회원 계정에 연결하여 서버 또는 클라우드 저장소에 저장될 수 있습니다. 따라서 서비스 내에서 '이 기기에만 저장', '이 브라우저에만 저장'되는 것으로 안내하지 않습니다. 동일한 카카오 계정으로 로그인하면 지원되는 다른 기기 또는 웹 환경에서 저장된 정보를 불러올 수 있습니다. 다만 카카오 간편로그인 도입 이전의 기존 로컬 데이터는 별도의 이전 절차가 적용될 수 있습니다." },
   { title: "제9조 (이용자의 의무)", body: "이용자는 타인의 계정·정보 도용, 시스템의 정상 운영 방해, 취약점 악용, 불법적인 데이터 수집, PetGrow 또는 제3자의 권리 침해, 관계 법령 위반 등의 행위를 해서는 안 됩니다." },
   { title: "제10조 (서비스 이용 제한)", body: "이용자가 본 약관 또는 관계 법령을 위반하거나 서비스의 안정적인 운영을 방해하는 경우 PetGrow는 필요한 범위에서 서비스 이용을 제한하거나 이용계약을 해지할 수 있습니다. Pet톡 운영정책 위반의 경우 운영자가 신고 및 위반 내용을 검토하여 1일, 7일, 30일 또는 영구 이용제한을 적용하거나 해제할 수 있습니다. 신고 접수만을 이유로 자동 이용제한하지 않으며, 이용제한·해제·신고처리 등 관리자 조치는 운영 및 보안 목적으로 기록될 수 있습니다." },
@@ -2319,7 +2352,8 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
       </>)}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-<button type="button" className="bg-btn bg-btn-ghost" onClick={onLogout}>{t.accountLogoutBtn}</button>
+        <button type="button" className="bg-btn bg-btn-ghost" onClick={()=>{onClose();window.dispatchEvent(new CustomEvent("petgrow:navigate",{detail:"support"}));}}>📢 공지사항 · 문의/피드백</button>
+        <button type="button" className="bg-btn bg-btn-ghost" onClick={onLogout}>{t.accountLogoutBtn}</button>
         <button type="button" className="bg-btn bg-btn-ghost" style={{ color: "#C0392B" }} onClick={onRequestDelete}>{t.accountDeleteBtn}</button>
       </div>
     </Modal>
@@ -4040,6 +4074,23 @@ const GlobalStyle = () => (
       .admin-stat-grid{grid-template-columns:1fr 1fr!important}
       .admin-tabs button{font-size:11px!important}
     }
+
+    .admin-gate{max-width:520px!important;margin:22px auto!important;text-align:center!important}
+    .admin-gate .bg-input{margin:10px auto!important;display:block!important}
+    .admin-open-center-btn{display:block!important;width:min(100%,320px)!important;margin:14px auto 0!important}
+    .admin-search-row{display:grid;grid-template-columns:1fr auto;gap:8px}
+    .admin-found,.admin-member-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 0;border-top:1px solid #edf1ed}
+    .admin-found span,.admin-member-row>div:first-child{display:flex;flex-direction:column;gap:3px}.admin-found small,.admin-member-row small{color:#7b857e;font-size:11px}
+    .admin-member-row>div:last-child{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.admin-member-row button,.admin-found button,.admin-member-row select,.admin-found select{min-height:36px;border:1px solid #dce6de;border-radius:10px;background:#fff;padding:0 10px}
+    .support-page{max-width:920px;margin:0 auto;padding:8px 20px 70px}.support-head{display:flex;gap:14px;align-items:center;margin-bottom:14px}.support-head h1{font-size:24px}.support-head p{color:#738078;font-size:12px}
+    .support-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:14px}.support-tabs button{border:1px solid #dfe8e1;background:#fff;border-radius:14px;padding:11px 8px;font-weight:800}.support-tabs button.active{background:#eaf4ec;color:#397247}
+    .support-list{display:flex;flex-direction:column;gap:8px}.support-row{width:100%;text-align:left;border:1px solid #e4ebe5!important;cursor:pointer}.support-row>div:first-child{display:flex;gap:7px;align-items:center}.support-row b{font-size:14px}.support-badge,.support-pin{font-size:10px;border-radius:8px;padding:3px 6px;background:#eef5ef;color:#477453}.support-pin{background:#fff2d8;color:#8b671a}.support-meta{display:flex;gap:9px;color:#879088;font-size:10px;margin-top:7px}.support-detail{border-top:1px solid #edf1ed;margin-top:10px;padding-top:10px;white-space:pre-wrap;line-height:1.7}.support-reply{background:#f2f7f3;border-radius:12px;padding:11px;margin-top:10px}.support-write{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:10px}.support-textarea{height:150px!important;padding:12px!important;resize:vertical}.support-public-toggle{display:flex;gap:10px;align-items:flex-start;padding:12px;border:1px solid #e1e8e2;border-radius:14px}.support-public-toggle span{display:flex;flex-direction:column}.support-public-toggle small{color:#7c877f;margin-top:3px}.support-pagination{display:flex;justify-content:center;align-items:center;gap:12px;margin:16px}.support-pagination button{border:1px solid #dfe7e0;background:#fff;border-radius:10px;padding:8px 12px}
+    .admin-notice-form{max-width:720px;display:flex;flex-direction:column;gap:10px}
+    @media(max-width:760px){.support-page{padding:4px 12px 70px}.support-tabs{grid-template-columns:repeat(2,1fr)}.support-head{align-items:flex-start}.admin-member-row{align-items:flex-start;flex-direction:column}.admin-member-row>div:last-child{justify-content:flex-start;width:100%}.admin-search-row{grid-template-columns:1fr}.admin-open-center-btn{margin-left:auto!important;margin-right:auto!important}}
+
+ .admin-adops-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.ad-policy-safe,.ad-policy-warn{margin-top:10px;padding:10px 12px;border-radius:12px;font-size:12px}.ad-policy-safe{background:#edf7ef;color:#39734a}.ad-policy-warn{background:#fff7e8;color:#805f18}
+ .service-health-wrap{display:flex;flex-direction:column;gap:12px}.service-health-hero{display:flex;align-items:center;gap:14px;padding:18px;border:1px solid #dfe8e1;border-radius:20px;background:#f5faf6}.service-health-hero.warning{background:#fff9ec;border-color:#f0deb4}.service-health-hero.down{background:#fff2f1;border-color:#efcecb}.service-health-dot{font-size:28px}.service-health-hero>div:nth-child(2){flex:1}.service-health-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.service-health-card{text-align:center;padding:15px!important}.service-health-card strong{display:block;font-size:21px;color:#39734a}.service-health-card span{font-size:11px;color:#707b73}
+ @media(max-width:760px){.admin-adops-grid{grid-template-columns:1fr}.service-health-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.service-health-hero{align-items:flex-start;flex-wrap:wrap}.service-health-hero button{width:100%}}
 `}</style>
 );
 
@@ -9384,203 +9435,109 @@ function MyActivityPage({ lang, onOpenPost, embedded = false }) {
 }
 
 
-function AdminReportsPage({ onBack }) {
-  const [status,setStatus]=useState(null);
-  const [pin,setPin]=useState("");
-  const [setupCode,setSetupCode]=useState("");
-  const [setupPin,setSetupPin]=useState("");
-  const [reports,setReports]=useState([]);
-  const [stats,setStats]=useState(null);
-  const [logs,setLogs]=useState([]);
-  const [logSummary,setLogSummary]=useState({});
-  const [adminWarnings,setAdminWarnings]=useState([]);
-  const [loading,setLoading]=useState(false);
-  const [busy,setBusy]=useState("");
-  const [tab,setTab]=useState("dashboard");
-  const [unlocked,setUnlocked]=useState(false);
 
-  useEffect(()=>{
-    // 관리자 센터를 열 때마다 이전 PIN 인증을 폐기해 매번 PIN을 다시 요구합니다.
-    sessionStorage.removeItem("petgrow_admin_token");
-    setUnlocked(false);
-    adminStatus().then(setStatus).catch(e=>window.alert(e.message));
-    return () => {
-      sessionStorage.removeItem("petgrow_admin_token");
-    };
-  },[]);
 
-  const loadAll=async()=>{
-    setLoading(true);
-    setAdminWarnings([]);
-    const results=await Promise.allSettled([adminStats(),adminListReports(),adminLogs()]);
-    const warnings=[];
-    if(results[0].status==="fulfilled"){
-      setStats(results[0].value);
-      warnings.push(...(results[0].value?.warnings||[]));
-    }else warnings.push("대시보드 데이터를 불러오지 못했어요.");
-    if(results[1].status==="fulfilled") setReports(results[1].value.reports||[]);
-    else warnings.push("신고 목록을 불러오지 못했어요.");
-    if(results[2].status==="fulfilled"){
-      setLogs(results[2].value.logs||[]);
-      setLogSummary(results[2].value.summary||{});
-    }else warnings.push("운영로그를 불러오지 못했어요.");
-    setAdminWarnings(warnings);
-    setUnlocked(true);
-    setLoading(false);
-  };
-  const unlock=async()=>{
-    try{
-      const r=await adminVerify(pin);
-      sessionStorage.setItem("petgrow_admin_token",r.token);
-      setPin("");
-      await loadAll();
-    }catch(e){
-      sessionStorage.removeItem("petgrow_admin_token");
-      setUnlocked(false);
-      window.alert(e.message);
-    }
-  };
-  const bootstrap=async()=>{
-    if(!/^\d{6}$/.test(setupPin)){window.alert("PIN은 숫자 6자리로 입력해 주세요.");return}
-    try{
-      await adminBootstrap(String(setupCode||"").trim(), String(setupPin||"").trim());
-      window.alert("관리자 등록이 완료됐어요. 앞으로 관리자 센터에 들어갈 때마다 설정한 6자리 PIN을 입력해야 해요.");
-      setStatus({adminExists:true,isAdmin:true});
-    }catch(e){window.alert(e.message)}
-  };
-  const recoverAdmin=async()=>{
-    if(!/^\d{6}$/.test(setupPin)){window.alert("새 관리자 PIN은 숫자 6자리로 입력해 주세요.");return}
-    if(!window.confirm("현재 로그인한 카카오 계정을 PetGrow 관리자 계정으로 복구할까요? 기존 관리자 지정은 해제됩니다."))return;
-    try{
-      await adminRecover(setupCode,setupPin);
-      sessionStorage.removeItem("petgrow_admin_token");
-      window.alert("현재 로그인 계정이 관리자 계정으로 복구됐어요. 이제 새 PIN으로 관리자 센터에 들어갈 수 있어요.");
-      setSetupCode(""); setSetupPin("");
-      setStatus({adminExists:true,isAdmin:true,recoveryAvailable:true});
-    }catch(e){window.alert(e.message||"관리자 복구에 실패했어요.")}
-  };
-  const reloadReports=async()=>{
-    const r=await adminListReports(); setReports(r.reports||[]);
-    const s=await adminStats(); setStats(s);
-  };
-  const restrict=async(r,duration)=>{
-    const label=duration==="permanent"?"영구 제한":`${duration}일 제한`;
-    if(!window.confirm(`${r.authorNickname} 계정을 Pet톡 ${label}할까요?`))return;
-    setBusy(r.id);
-    try{
-      await adminRestrictUser({userId:r.targetUserId,duration,reason:`신고 ${r.id} 검토 후 운영정책 위반`,reportId:r.id});
-      window.alert(`${label} 처리했어요.`);
-      await reloadReports();
-      const l=await adminLogs(); setLogs(l.logs||[]); setLogSummary(l.summary||{});
-    }catch(e){window.alert(e.message)}
-    setBusy("");
-  };
+function AdInquiryPage({onBack}){
+ const [f,setF]=useState({companyName:"",contactName:"",email:"",phone:"",campaignType:"banner",budget:"",message:""});
+ const submit=async()=>{if(!window.confirm("광고 문의를 전송할까요?"))return;try{await submitAdInquiry(f);window.alert("광고 문의가 접수됐어요. 확인 후 연락드릴게요.");setF({companyName:"",contactName:"",email:"",phone:"",campaignType:"banner",budget:"",message:""})}catch(e){window.alert(e.message)}};
+ return <div className="support-page"><div className="support-head"><button className="bg-btn bg-btn-ghost" onClick={onBack}>← 돌아가기</button><div><h1>광고 문의</h1><p>PetGrow 배너·팝업·제휴 광고를 문의할 수 있어요.</p></div></div><div className="bg-card support-write">
+ <input className="bg-input" placeholder="회사/브랜드명 *" value={f.companyName} onChange={e=>setF({...f,companyName:e.target.value})}/>
+ <input className="bg-input" placeholder="담당자명 *" value={f.contactName} onChange={e=>setF({...f,contactName:e.target.value})}/>
+ <input className="bg-input" type="email" placeholder="이메일 *" value={f.email} onChange={e=>setF({...f,email:e.target.value})}/>
+ <input className="bg-input" placeholder="연락처 (선택)" value={f.phone} onChange={e=>setF({...f,phone:e.target.value})}/>
+ <select className="bg-input" value={f.campaignType} onChange={e=>setF({...f,campaignType:e.target.value})}><option value="banner">배너 광고</option><option value="popup">팝업 광고</option><option value="sponsor">제휴/스폰서십</option><option value="other">기타</option></select>
+ <input className="bg-input" placeholder="예상 예산 (선택)" value={f.budget} onChange={e=>setF({...f,budget:e.target.value})}/>
+ <textarea className="bg-input support-textarea" placeholder="광고 내용, 희망 기간, 랜딩페이지 등을 적어주세요. *" value={f.message} onChange={e=>setF({...f,message:e.target.value})}/>
+ <small>접수된 정보는 광고 문의 상담과 계약 검토 목적으로만 사용됩니다.</small><button className="bg-btn" onClick={submit}>광고 문의 보내기</button></div></div>
+}
 
-  if(!status)return <div className="bg-card">관리자 정보를 확인하는 중...</div>;
-  if(!status.adminExists)return <div className="admin-reports-page"><button className="bg-btn bg-btn-ghost" onClick={onBack}>← 회원정보</button><div className="bg-card" style={{maxWidth:560,margin:"18px auto"}}><h2>🛡️ 최초 관리자 등록</h2><p>Vercel에 설정한 최초 등록 코드와 앞으로 사용할 숫자 6자리 PIN을 입력하세요.</p><input className="bg-input" type="password" value={setupCode} onChange={e=>setSetupCode(e.target.value)} placeholder="최초 등록 코드"/><input className="bg-input" type="password" inputMode="numeric" maxLength={6} value={setupPin} onChange={e=>setSetupPin(e.target.value.replace(/\D/g,""))} placeholder="관리자 PIN 6자리"/><button className="bg-btn" onClick={bootstrap}>현재 계정을 관리자로 등록</button></div></div>;
-  if(!status.isAdmin)return <div className="admin-reports-page">
-    <button className="bg-btn bg-btn-ghost" onClick={onBack}>← 회원정보</button>
-    <div className="bg-card" style={{maxWidth:560,margin:"18px auto"}}>
-      <h2>🛡️ 관리자 계정 등록/복구</h2>
-      <p style={{lineHeight:1.7,color:"#68736B"}}>
-        현재 로그인 계정은 관리자로 등록되어 있지 않아요.<br/>
-        Vercel의 <b>ADMIN_SETUP_CODE</b>를 정확히 아는 경우에만 현재 카카오 계정을 관리자로 복구할 수 있어요.
-      </p>
-      <input className="bg-input" type="password" value={setupCode} onChange={e=>setSetupCode(e.target.value)} placeholder="ADMIN_SETUP_CODE 값"/>
-      <input className="bg-input" type="password" inputMode="numeric" maxLength={6} value={setupPin} onChange={e=>setSetupPin(e.target.value.replace(/\D/g,""))} placeholder="새 관리자 PIN 숫자 6자리"/>
-      <button className="bg-btn" disabled={!status.recoveryAvailable} onClick={recoverAdmin}>현재 계정을 관리자로 복구</button>
-      <p style={{fontSize:11,color:"#89928C",lineHeight:1.6,marginTop:10}}>
-        복구 성공 후에는 보안을 위해 Vercel의 ADMIN_SETUP_CODE를 새 값으로 변경해두는 것을 권장해요.
-      </p>
+function SupportPage({account,onBack}){
+  const [section,setSection]=useState("notices"),[page,setPage]=useState(1),[data,setData]=useState({items:[],total:0}),[open,setOpen]=useState(null);
+  const [form,setForm]=useState({category:"inquiry",title:"",body:"",isPublic:false});
+  const load=async()=>{try{const r=section==="notices"?await supportNotices(page):await supportInquiries(page,section==="mine");setData(r)}catch(e){window.alert(e.message)}};
+  useEffect(()=>{load()},[section,page]);
+  const submit=async()=>{if(!account){window.alert("로그인 후 문의를 작성할 수 있어요.");return}if(!window.confirm(`${form.isPublic?"공개":"비공개"} 문의로 등록할까요?`))return;try{await supportCreateInquiry(form);setForm({category:"inquiry",title:"",body:"",isPublic:false});setSection("mine");setPage(1);await load();window.alert("문의/피드백이 등록됐어요.")}catch(e){window.alert(e.message)}};
+  const pages=Math.max(1,Math.ceil((data.total||0)/20));
+  return <div className="support-page">
+    <div className="support-head"><button className="bg-btn bg-btn-ghost" onClick={onBack}>← 돌아가기</button><div><h1>고객지원</h1><p>공지사항과 문의/피드백을 확인할 수 있어요.</p></div></div>
+    <div className="support-tabs">
+      <button className={section==="notices"?"active":""} onClick={()=>{setSection("notices");setPage(1)}}>📢 공지사항</button>
+      <button className={section==="public"?"active":""} onClick={()=>{setSection("public");setPage(1)}}>💬 공개 피드백</button>
+      {account&&<button className={section==="mine"?"active":""} onClick={()=>{setSection("mine");setPage(1)}}>🔒 내 문의</button>}
+      <button className={section==="write"?"active":""} onClick={()=>setSection("write")}>✍️ 문의하기</button>
     </div>
-  </div>;
-  if(!unlocked)return <div className="admin-reports-page"><button className="bg-btn bg-btn-ghost" onClick={onBack}>← 회원정보</button><div className="bg-card" style={{maxWidth:520,margin:"18px auto"}}><h2>🔐 관리자 PIN</h2><p>관리자 기능을 사용하려면 설정한 6자리 PIN을 입력하세요. 관리자 센터를 열 때마다 PIN을 다시 확인하며, 인증은 최대 10분 후 만료되고 5회 오류 시 15분 잠깁니다.</p><input className="bg-input" type="password" inputMode="numeric" maxLength={6} value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,""))} placeholder="PIN 6자리"/><button className="bg-btn" disabled={pin.length!==6} onClick={unlock}>관리자 센터 열기</button></div></div>;
-
-  const c=stats?.cards||{};
-  const pageNames={home:"홈",about:"소개",pets:"우리 아이",community:"Pet톡",saju:"Pet사주",petbti:"PetBTI",tips:"Pet정보",my:"회원정보",login:"로그인",terms:"이용약관",privacy:"개인정보처리방침",admin:"관리자"};
-  const adRate=c.adRequestsToday?Math.round((c.adReadyToday/c.adRequestsToday)*100):0;
-
-  return <div className="admin-reports-page">
-    <button className="bg-btn bg-btn-ghost" onClick={onBack} style={{marginBottom:16}}>← 회원정보</button>
-    <div className="admin-reports-head"><div><div className="my-page-kicker">PETGROW ADMIN</div><h1>관리자 센터</h1><p>개인정보 대신 집계 통계로 서비스 현황과 Pet톡 운영 상태를 확인해요.</p></div><span>🛡️</span></div>
-    <div className="admin-tabs">
-      <button className={tab==="dashboard"?"active":""} onClick={()=>setTab("dashboard")}>📊 대시보드</button>
-      <button className={tab==="reports"?"active":""} onClick={()=>setTab("reports")}>🚨 신고관리 {c.openReports?`(${c.openReports})`:""}</button>
-      <button className={tab==="logs"?"active":""} onClick={()=>setTab("logs")}>🧾 운영로그</button>
-    </div>
-
-    {adminWarnings.length>0&&<div className="admin-inline-warning">
-      <b>일부 데이터 확인 필요</b>
-      <span>{adminWarnings.join(" · ")}</span>
+    {section==="write"?<div className="bg-card support-write">
+      <h2>문의/피드백 작성</h2>
+      <select className="bg-input" value={form.category} onChange={e=>setForm({...form,category:e.target.value})}><option value="inquiry">문의</option><option value="bug">오류신고</option><option value="suggestion">기능제안</option><option value="other">기타</option></select>
+      <input className="bg-input" maxLength={80} placeholder="제목" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/>
+      <textarea className="bg-input support-textarea" maxLength={3000} placeholder="내용을 입력해 주세요." value={form.body} onChange={e=>setForm({...form,body:e.target.value})}/>
+      <label className="support-public-toggle"><input type="checkbox" checked={form.isPublic} onChange={e=>setForm({...form,isPublic:e.target.checked})}/><span><b>다른 회원에게 공개</b><small>끄면 작성자와 운영진만 볼 수 있어요. 기본값은 비공개예요.</small></span></label>
+      <button className="bg-btn" onClick={submit}>등록하기</button>
+    </div>:<div className="support-list">
+      {(data.items||[]).length===0?<div className="bg-card">아직 등록된 내용이 없어요.</div>:(data.items||[]).map(x=><button className="bg-card support-row" key={x.id} onClick={()=>setOpen(open===x.id?null:x.id)}>
+        <div><span className="support-badge">{x.category==="suggestion"?"기능제안":x.category==="bug"?"오류신고":x.category==="notice"?"공지":x.category||"문의"}</span>{x.pinned&&<span className="support-pin">중요</span>}<b>{x.title}</b></div>
+        <div className="support-meta">{x.nickname&&<span>{x.nickname}</span>}<span>{x.status==="answered"?"답변완료":x.status==="checking"?"확인중":x.status==="waiting"?"답변대기":""}</span><span>{new Date(x.created_at).toLocaleDateString("ko-KR")}</span></div>
+        {open===x.id&&<div className="support-detail"><p>{x.body}</p>{x.admin_reply&&<div className="support-reply"><b>PetGrow 운영팀 답변</b><p>{x.admin_reply}</p></div>}</div>}
+      </button>)}
+      {pages>1&&<div className="support-pagination"><button disabled={page<=1} onClick={()=>setPage(p=>p-1)}>이전</button><span>{page} / {pages}</span><button disabled={page>=pages} onClick={()=>setPage(p=>p+1)}>다음</button></div>}
     </div>}
+  </div>
+}
 
-    {loading?<div className="bg-card">관리자 데이터를 불러오는 중...</div>:tab==="dashboard"?<>
-      <div className="admin-stat-grid">
-        {[
-          ["미처리 신고",c.openReports||0,"🚨"],["신고 최장 대기",c.oldestOpenHours==null?"-":`${c.oldestOpenHours}h`,"⏳"],["이용제한 중",c.restricted||0,"🛡️"],["오늘 신규",c.newToday||0,"✨"],
-          ["7일 활성 회원",c.active7d||0,"🌱"],["오늘 방문",c.todaySessions||0,"📱"],["현재 접속 추정",c.onlineSessions5m||0,"🟢"],["오늘 페이지뷰",c.pageviewsToday||0,"👀"],
-          ["오늘 Pet톡 글",c.postsToday||0,"📝"],["오늘 댓글",c.commentsToday||0,"💬"],["7일 신고 처리",c.resolvedReports7d||0,"✅"],["등록 반려동물",c.totalPets||0,"🐾"]
-        ].map(([label,value,icon])=><div className="admin-stat-card" key={label}><span>{icon}</span><strong>{typeof value==="number"?value.toLocaleString():value}</strong><small>{label}</small></div>)}
-      </div>
 
-      <div className="admin-dashboard-columns">
-        <div className="bg-card admin-dashboard-panel">
-          <div className="admin-panel-title"><div><b>최근 7일 이용 추이</b><small>방문 세션 · 페이지뷰 · 신규가입</small></div></div>
-          <div style={{width:"100%",height:250}}>
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={(stats?.trend||[]).map(x=>({...x,day:String(x.day).slice(5,10)}))} margin={{top:12,right:12,left:-18,bottom:0}}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false}/>
-                <XAxis dataKey="day" tick={{fontSize:11}}/><YAxis tick={{fontSize:10}}/>
-                <Tooltip/>
-                <Line type="monotone" dataKey="sessions" name="방문 세션" stroke="#4F8A5B" strokeWidth={2.5} dot={false}/>
-                <Line type="monotone" dataKey="pageviews" name="페이지뷰" stroke="#8CB69A" strokeWidth={2} dot={false}/>
-                <Line type="monotone" dataKey="signups" name="신규가입" stroke="#A8A1C5" strokeWidth={2} dot={false}/>
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-        <div className="bg-card admin-dashboard-panel">
-          <div className="admin-panel-title"><div><b>최근 7일 인기 메뉴</b><small>페이지뷰 기준</small></div></div>
-          <div className="admin-ranking">{(stats?.topPages||[]).length?(stats.topPages.map((x,i)=><div key={x.page}><span>{i+1}. {pageNames[x.page]||x.page}</span><b>{Number(x.views).toLocaleString()}</b></div>)):<p>아직 집계된 데이터가 없어요.</p>}</div>
-        </div>
-      </div>
-
-      <div className="admin-dashboard-columns">
-        <div className="bg-card admin-dashboard-panel">
-          <div className="admin-panel-title"><div><b>광고 운영</b><small>AdMob 실제 수익/노출이 아닌 앱의 광고 표시 요청 상태</small></div></div>
-          <div className="admin-ad-grid"><div><b>{c.adRequestsToday||0}</b><span>오늘 광고 요청</span></div><div><b>{c.adReadyToday||0}</b><span>표시 요청 성공</span></div><div><b>{c.adErrorsToday||0}</b><span>오류</span></div><div><b>{adRate}%</b><span>요청 성공률</span></div></div>
-          <p className="admin-privacy-note">※ 정확한 노출수·클릭수·예상수익은 Google AdMob/AdSense 보고서 또는 별도 Reporting API 연동이 필요해요.</p>
-        </div>
-        <div className="bg-card admin-dashboard-panel">
-          <div className="admin-panel-title"><div><b>접속 환경</b><small>최근 7일 익명 세션 기준</small></div></div>
-          <div className="admin-ranking">{(stats?.platforms||[]).map(x=><div key={x.platform}><span>{x.platform==="web"?"웹":x.platform==="ios"?"iOS 앱":"Android 앱"}</span><b>{Number(x.total).toLocaleString()}</b></div>)}</div>
-          <p className="admin-privacy-note">IP·이메일·카카오ID·개별 이용자 목록은 관리자 통계에 표시하지 않아요. 현재 접속은 최근 5분 내 heartbeat가 있는 세션의 추정치예요.</p>
-        </div>
-      </div>
-    </>:tab==="reports"?(
-      reports.length===0?<div className="bg-card">접수된 신고가 없어요.</div>:<div className="admin-report-list">{reports.map(r=><div className="admin-report-card" key={r.id}><div className="admin-report-top"><span className={`admin-status ${r.status}`}>{r.status==="open"?"검토 필요":"처리 완료"}</span><span>{new Date(r.createdAt).toLocaleString("ko-KR")}</span></div><h3>{r.postTitle}</h3><div className="admin-report-meta">작성자: <b>{r.authorNickname}</b> · 신고자: {r.reporterNickname}</div><div className="admin-report-content">{r.targetContent}</div><div className="admin-report-reason"><b>신고 사유:</b> {r.reason}<br/><b>상세:</b> {r.detail||"없음"}</div>{r.restriction&&<div className="admin-report-reason"><b>현재 제한:</b> {r.restriction.permanent?"영구":new Date(r.restriction.restricted_until).toLocaleString("ko-KR")+"까지"}</div>}<div className="admin-report-actions"><button disabled={busy===r.id} onClick={()=>restrict(r,1)}>1일</button><button disabled={busy===r.id} onClick={()=>restrict(r,7)}>7일</button><button disabled={busy===r.id} onClick={()=>restrict(r,30)}>30일</button><button className="danger" disabled={busy===r.id} onClick={()=>restrict(r,"permanent")}>영구 제한</button><button disabled={busy===r.id} onClick={async()=>{setBusy(r.id);try{await adminUnblockUser(r.targetUserId,r.id);window.alert("이용 제한을 해제했어요.");await reloadReports();const l=await adminLogs();setLogs(l.logs||[])}catch(e){window.alert(e.message)}setBusy("")}}>제한 해제</button><button disabled={busy===r.id} onClick={async()=>{setBusy(r.id);try{await adminResolveReport(r.id);await reloadReports();const l=await adminLogs();setLogs(l.logs||[])}catch(e){window.alert(e.message)}setBusy("")}}>검토 완료</button></div></div>)}</div>
-    ):(
-      <>
-        <div className="admin-log-summary">
-          <div><b>{logSummary.today||0}</b><span>최근 24시간 처리</span></div>
-          <div><b>{logSummary.restrictions7d||0}</b><span>7일 이용제한</span></div>
-          <div><b>{logSummary.unblocks7d||0}</b><span>7일 제한해제</span></div>
-          <div><b>{logSummary.reportsResolved7d||0}</b><span>7일 신고완료</span></div>
-        </div>
-        {logs.length===0?<div className="bg-card">아직 관리자 처리 기록이 없어요.</div>:<div className="admin-log-list">{logs.map((l,i)=>{
-          const labels={
-            ADMIN_BOOTSTRAP:"최초 관리자 등록",ADMIN_RECOVERY:"관리자 계정 복구",
-            RESTRICT_1D:"1일 이용제한",RESTRICT_7D:"7일 이용제한",RESTRICT_30D:"30일 이용제한",
-            RESTRICT_PERMANENT:"영구 이용제한",UNBLOCK:"이용제한 해제",REPORT_RESOLVED:"신고 처리 완료"
-          };
-          return <div className="admin-log-row" key={`${l.created_at}-${i}`}>
-            <div><b>{labels[l.action]||l.action}</b><small>{l.target_nickname?`대상: ${l.target_nickname}`:""}{l.report_id?` · 신고 건 처리`:""}</small></div>
-            <span>{new Date(l.created_at).toLocaleString("ko-KR")}</span>
-          </div>;
-        })}</div>}
-      </>
-    )}
-  </div>;
+function AdminReportsPage({onBack}){
+ const [status,setStatus]=useState(null),[pin,setPin]=useState(""),[setupCode,setSetupCode]=useState(""),[setupPin,setSetupPin]=useState("");
+ const [unlocked,setUnlocked]=useState(false),[tab,setTab]=useState("dashboard"),[stats,setStats]=useState(null),[health,setHealth]=useState(null),[reports,setReports]=useState([]),[logs,setLogs]=useState([]);
+ const [admins,setAdmins]=useState([]),[query,setQuery]=useState(""),[found,setFound]=useState([]),[inq,setInq]=useState([]),[reply,setReply]=useState({}),[notice,setNotice]=useState({title:"",body:"",category:"notice",pinned:false,popup:false});
+ useEffect(()=>{sessionStorage.removeItem("petgrow_admin_token");adminStatus().then(setStatus).catch(e=>window.alert(e.message));return()=>sessionStorage.removeItem("petgrow_admin_token")},[]);
+ const role=status?.role,can=x=>role==="superadmin"||role==="operator"||role===x;
+ const load=async()=>{const tasks=[];if(can("dashboard")){tasks.push(adminStats().then(setStats));tasks.push(adminHealth().then(setHealth));}if(can("report"))tasks.push(adminListReports().then(x=>setReports(x.reports||[])));if(can("logs"))tasks.push(adminLogs().then(x=>setLogs(x.logs||[])));if(role==="superadmin")tasks.push(adminListAdmins().then(x=>setAdmins(x.admins||[])));if(role==="superadmin"||role==="operator")tasks.push(adminSupportInquiries().then(x=>setInq(x.items||[])));await Promise.allSettled(tasks);setUnlocked(true)};
+ const unlock=async()=>{try{const r=await adminVerify(pin);sessionStorage.setItem("petgrow_admin_token",r.token);setStatus(s=>({...s,role:r.role,roleLabel:r.roleLabel}));setPin("");await load()}catch(e){if(e.message==="PIN_SETUP_REQUIRED"){setStatus(s=>({...s,pinSetupRequired:true}))}else window.alert(e.message)}};
+ const setNewPin=async()=>{if(!/^\d{6}$/.test(setupPin))return window.alert("PIN은 숫자 6자리로 입력해 주세요.");try{await adminSetPin(setupPin);setStatus(s=>({...s,pinSetupRequired:false}));setSetupPin("");window.alert("관리자 PIN을 설정했어요.")}catch(e){window.alert(e.message)}};
+ const bootstrap=async()=>{if(!/^\d{6}$/.test(setupPin))return window.alert("PIN은 숫자 6자리로 입력해 주세요.");try{await adminBootstrap(setupCode,setupPin);setStatus({adminExists:true,isAdmin:true,role:"superadmin",roleLabel:"최고관리자"});setSetupPin("");setSetupCode("");window.alert("최고관리자 등록이 완료됐어요.")}catch(e){window.alert(e.message)}};
+ const restrict=async(r,d)=>{const lab={ "1d":"1일","7d":"7일","30d":"30일",permanent:"영구"}[d];if(!window.confirm(`${r.authorNickname} 계정을 ${lab} 이용제한할까요?\n확인 시 즉시 Pet톡 글/댓글 작성이 제한됩니다.`))return;try{await adminRestrict(r.targetUserId,d,r.id);window.alert("이용제한을 적용했어요.");await load()}catch(e){window.alert(e.message)}};
+ const unblock=async r=>{if(!window.confirm(`${r.authorNickname} 계정의 이용제한을 해제할까요?`))return;try{await adminUnblock(r.targetUserId,r.id);window.alert("제한을 해제했어요.");await load()}catch(e){window.alert(e.message)}};
+ const resolve=async r=>{if(!window.confirm("이 신고를 검토 완료 처리할까요?"))return;try{await adminResolveReport(r.id);await load()}catch(e){window.alert(e.message)}};
+ if(!status)return <div className="bg-card admin-gate">관리자 정보를 확인하는 중...</div>;
+ if(!status.adminExists)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>🛡️ 최초 관리자 등록</h2><input className="bg-input" type="password" placeholder="ADMIN_SETUP_CODE" value={setupCode} onChange={e=>setSetupCode(e.target.value)}/><input className="bg-input" inputMode="numeric" maxLength={6} placeholder="관리자 PIN 6자리" value={setupPin} onChange={e=>setSetupPin(e.target.value.replace(/\D/g,"").slice(0,6))}/><button className="bg-btn" onClick={bootstrap}>현재 계정을 최고관리자로 등록</button></div></div>;
+ if(!status.isAdmin)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>관리자 전용</h2><p>현재 계정에는 관리자 권한이 없어요.</p><button className="bg-btn bg-btn-ghost" onClick={onBack}>돌아가기</button></div></div>;
+ if(status.pinSetupRequired)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>🔐 관리자 PIN 최초 설정</h2><p>본인만 사용할 숫자 6자리 PIN을 설정하세요.</p><input className="bg-input" inputMode="numeric" maxLength={6} value={setupPin} onChange={e=>setSetupPin(e.target.value.replace(/\D/g,"").slice(0,6))}/><button className="bg-btn" onClick={setNewPin}>PIN 설정</button></div></div>;
+ if(!unlocked)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>🔐 {status.roleLabel||"관리자"} PIN</h2><input className="bg-input" inputMode="numeric" type="password" maxLength={6} value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,"").slice(0,6))} placeholder="PIN 6자리"/><button className="bg-btn admin-open-center-btn" disabled={pin.length!==6} onClick={unlock}>관리자 센터 열기</button></div></div>;
+ const tabs=role==="superadmin"?[["dashboard","대시보드"],["service","서비스상태"],["reports","신고관리"],["inquiries","문의관리"],["notices","공지관리"],["ads","광고운영"],["logs","운영로그"],["admins","관리자관리"]]:
+ role==="operator"?[["dashboard","대시보드"],["service","서비스상태"],["reports","신고관리"],["inquiries","문의관리"],["notices","공지관리"],["ads","광고운영"],["logs","운영로그"]]:
+ role==="report"?[["reports","신고관리"]]:[["ads","광고운영"]];
+ const c=stats?.cards||{};
+ return <div className="admin-reports-page">
+   <div className="admin-hero"><div><small>{status.roleLabel}</small><h1>PetGrow 관리자 센터</h1></div><button className="bg-btn bg-btn-ghost" onClick={onBack}>나가기</button></div>
+   <div className="admin-tabs">{tabs.map(([k,l])=><button key={k} className={tab===k?"active":""} onClick={()=>setTab(k)}>{l}</button>)}</div>
+   {tab==="dashboard"&&<div className="admin-stat-grid">{[["미처리 신고",c.openReports||0],["답변대기 문의",c.waitingInquiries||0],["이용제한 중",c.restricted||0],["오늘 방문",c.todaySessions||0],["현재 접속 추정",c.onlineSessions5m||0],["7일 활성회원",c.active7d||0],["7일 신규회원",c.new7d||0],["오늘 Pet톡 글",c.postsToday||0]].map(([a,b])=><div className="admin-stat-card" key={a}><strong>{b}</strong><small>{a}</small></div>)}</div>}
+   {tab==="service"&&<div className="service-health-wrap">
+ <div className={`service-health-hero ${health?.level||"healthy"}`}><div className="service-health-dot">{health?.level==="down"?"🔴":health?.level==="warning"?"🟡":"🟢"}</div><div><small>현재 서비스 상태</small><h2>{health?.level==="down"?"장애":health?.level==="warning"?"주의":"정상"}</h2><p>{health?.reason||"서비스 상태를 확인하고 있어요."}</p></div><button className="bg-btn bg-btn-ghost" onClick={async()=>{try{setHealth(await adminHealth())}catch(e){window.alert(e.message)}}}>새로고침</button></div>
+ <div className="service-health-grid">{[["최근 15분 오류",health?.metrics?.errors15m||0],["1시간 DB 오류",health?.metrics?.dbErrors1h||0],["1시간 느린 요청",health?.metrics?.slow1h||0],["1시간 요청제한",health?.metrics?.rateLimits1h||0],["15분 평균 응답",`${health?.metrics?.avgLatency15m||0}ms`],["1시간 최대 응답",`${health?.metrics?.maxLatency1h||0}ms`],["5분 접속 추정",health?.traffic?.online5m||0],["오늘 방문",health?.traffic?.today||0]].map(([k,v])=><div className="bg-card service-health-card" key={k}><strong>{v}</strong><span>{k}</span></div>)}</div>
+ <div className="bg-card"><h3>트래픽 대비</h3><p className="bg-sub">일시적 429/502/503/504는 GET 요청을 한 번 재시도하고, 8초 이상 응답이 없으면 무한 로딩을 중단해요. 접속 급증 시에는 관리자 화면에서 접속 추정치와 오류·응답 지연을 함께 확인하세요.</p></div>
+ </div>}{tab==="reports"&&<div className="admin-report-list">{reports.length?reports.map(r=><div className="bg-card admin-report-card" key={r.id}><div><b>{r.postTitle}</b><small>{r.authorNickname} · 신고자 {r.reporterNickname}</small></div><p>{r.targetContent}</p><p><b>신고사유:</b> {r.reason} {r.detail}</p><div className="admin-report-actions"><button onClick={()=>restrict(r,"1d")}>1일</button><button onClick={()=>restrict(r,"7d")}>7일</button><button onClick={()=>restrict(r,"30d")}>30일</button><button onClick={()=>restrict(r,"permanent")}>영구 제한</button><button onClick={()=>unblock(r)}>제한 해제</button><button onClick={()=>resolve(r)}>검토 완료</button></div></div>):<div className="bg-card">신고가 없어요.</div>}</div>}
+   {tab==="inquiries"&&<div className="admin-report-list">{inq.length?inq.map(x=><div className="bg-card admin-report-card" key={x.id}><b>{x.title}</b><small>{x.nickname} · {x.is_public?"공개":"비공개"} · {x.status}</small><p>{x.body}</p><textarea className="bg-input support-textarea" value={reply[x.id]??x.admin_reply??""} onChange={e=>setReply({...reply,[x.id]:e.target.value})}/><button className="bg-btn" onClick={async()=>{if(!window.confirm("이 답변을 등록할까요?"))return;try{await adminReplyInquiry(x.id,reply[x.id]??x.admin_reply??"");window.alert("답변을 등록했어요.");await load()}catch(e){window.alert(e.message)}}}>답변 등록</button></div>):<div className="bg-card">문의가 없어요.</div>}</div>}
+   {tab==="notices"&&<div className="bg-card admin-notice-form"><h2>공지 작성</h2><input className="bg-input" placeholder="공지 제목" value={notice.title} onChange={e=>setNotice({...notice,title:e.target.value})}/><textarea className="bg-input support-textarea" placeholder="공지 내용" value={notice.body} onChange={e=>setNotice({...notice,body:e.target.value})}/><label><input type="checkbox" checked={notice.pinned} onChange={e=>setNotice({...notice,pinned:e.target.checked})}/> 중요공지 상단 고정</label><label><input type="checkbox" checked={notice.popup} onChange={e=>setNotice({...notice,popup:e.target.checked})}/> 팝업 공지</label><button className="bg-btn" onClick={async()=>{if(!window.confirm("이 공지를 게시할까요?"))return;try{await adminCreateNotice(notice);setNotice({title:"",body:"",category:"notice",pinned:false,popup:false});window.alert("공지를 게시했어요.")}catch(e){window.alert(e.message)}}}>공지 게시</button></div>}
+   {tab==="ads"&&<div className="admin-adops-grid">
+  <div className="bg-card">
+    <h2>📣 Google 광고</h2>
+    <p><b>웹:</b> AdSense · <b>앱:</b> AdMob</p>
+    <p className="bg-sub">Google 광고는 Google에서 허용한 광고 단위/형식으로만 사용해요. PetGrow 프로모션 모달에는 AdSense/AdMob 광고 코드를 넣지 않습니다.</p>
+    <div className="ad-policy-safe">✅ Google 광고 → 일반 콘텐츠 영역의 정식 광고 슬롯</div>
+  </div>
+  <div className="bg-card">
+    <h2>🤝 직접광고 / 제휴</h2>
+    <p>업체와 PetGrow가 직접 계약한 배너·제휴·프로모션을 관리하는 영역이에요.</p>
+    <div className="ad-policy-safe">✅ 배너 광고 · 사이트 내부 프로모션 모달 사용 가능</div>
+    <div className="ad-policy-warn">⚠️ 프로모션 모달은 Google 광고가 아닌 직접광고만 사용</div>
+  </div>
+</div>}
+   {tab==="logs"&&<div className="admin-log-list">{logs.map((l,i)=><div className="admin-log-row" key={l.id||i}><div><b>{l.action}</b><small>{l.admin_nickname}{l.target_nickname?` → ${l.target_nickname}`:""}</small></div><span>{new Date(l.created_at).toLocaleString("ko-KR")}</span></div>)}</div>}
+   {tab==="admins"&&role==="superadmin"&&<div className="admin-manage">
+     <div className="bg-card"><h2>관리자 추가</h2><div className="admin-search-row"><input className="bg-input" placeholder="정확한 닉네임 검색" value={query} onChange={e=>setQuery(e.target.value)}/><button className="bg-btn" onClick={async()=>{try{setFound((await adminSearchUser(query)).users||[])}catch(e){window.alert(e.message)}}}>검색</button></div>{found.map(x=><div className="admin-found" key={x.id}><span><b>{x.nickname}</b><small>{new Date(x.created_at).toLocaleDateString("ko-KR")}</small></span>{x.is_admin?<em>이미 관리자</em>:<select defaultValue="operator" onChange={e=>x._role=e.target.value}><option value="operator">운영관리자</option><option value="report">신고관리자</option><option value="ads">광고관리자</option></select>} {!x.is_admin&&<button onClick={async()=>{const rr=x._role||"operator";if(!window.confirm(`${x.nickname}님을 관리자로 추가할까요?`))return;try{await adminAddUser(x.id,rr);window.alert("관리자를 추가했어요. 해당 관리자는 첫 접속 시 자기 PIN을 설정합니다.");await load()}catch(e){window.alert(e.message)}}}>추가</button>}</div>)}</div>
+     <div className="bg-card"><h2>관리자 목록</h2>{admins.map(a=><div className="admin-member-row" key={a.user_id}><div><b>{a.nickname}</b><small>{({superadmin:"최고관리자",operator:"운영관리자",report:"신고관리자",ads:"광고관리자"}[a.role])} · PIN {a.pin_set?"설정":"재설정 필요"} · 최근접속 {a.last_admin_login_at?new Date(a.last_admin_login_at).toLocaleString("ko-KR"):"없음"}</small></div>{a.role!=="superadmin"&&<div><select value={a.role} onChange={async e=>{if(!window.confirm("관리자 권한을 변경할까요?"))return;await adminChangeRole(a.user_id,e.target.value);await load()}}><option value="operator">운영관리자</option><option value="report">신고관리자</option><option value="ads">광고관리자</option></select><button onClick={async()=>{if(!window.confirm(`${a.nickname}님의 관리자 PIN을 초기화할까요?\n다음 접속 때 새 PIN을 설정해야 합니다.`))return;await adminResetPin(a.user_id);await load()}}>PIN 초기화</button><button onClick={async()=>{if(!window.confirm(`${a.nickname}님의 관리자 권한을 삭제할까요?`))return;await adminRemoveUser(a.user_id);await load()}}>관리자 삭제</button></div>}</div>)}</div>
+   </div>}
+ </div>
 }
 
 function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost, onOpenAdmin }) {
@@ -9779,6 +9736,8 @@ function AppInner({ lang, setLang }) {
   const needsLogin = GATED_VIEWS.includes(view) && !account;
   const effectiveView = needsLogin ? "login" : view;
   const [accountModalOpen, setAccountModalOpen] = useState(false);
+  useEffect(()=>{const h=e=>goView(e.detail);window.addEventListener("petgrow:navigate",h);return()=>window.removeEventListener("petgrow:navigate",h)},[]);
+
   const [hamOpen, setHamOpen] = useState(false);
   const [contentSubTab, setContentSubTab] = useState("all");
   const isNativeApp = Capacitor.isNativePlatform();
@@ -9836,8 +9795,9 @@ function AppInner({ lang, setLang }) {
         setTimeout(() => setLoginToast(null), loginResult === "success" ? 2400 : 3600);
       }
 
-      const me = await fetchMe();
-      setAccount(me);
+      const meResult = await fetchMe();
+      const me = meResult === undefined ? null : meResult;
+      if (meResult !== undefined) setAccount(meResult);
       setAuthChecked(true);
       // 로그인된 사용자는 새로 접속하거나 새로고침해도 홈에서 시작해요.
       if (me) {
@@ -9933,6 +9893,29 @@ function AppInner({ lang, setLang }) {
       SplashScreen.hide().catch(() => {});
     }, 80);
     return () => window.clearTimeout(timer);
+  }, []);
+
+  // 브라우저/앱이 다시 활성화될 때 세션을 조용히 재확인해요.
+  // 서버가 잠깐 느려 account가 비어 보였던 경우 로그인 버튼이 자동으로 정상 복구됩니다.
+  useEffect(() => {
+    let busy = false;
+    const refreshAccount = async () => {
+      if (busy) return;
+      busy = true;
+      try {
+        const me = await fetchMe();
+        if (me !== undefined) setAccount(me);
+      } finally {
+        busy = false;
+      }
+    };
+    const onVisibility = () => { if (document.visibilityState === "visible") refreshAccount(); };
+    window.addEventListener("focus", refreshAccount);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("focus", refreshAccount);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, []);
 
   // 앱 데이터와 로그인 확인이 모두 끝난 뒤 웹/모바일/PWA/앱 공통 스플래시를 페이드아웃해요.
@@ -10311,6 +10294,10 @@ function AppInner({ lang, setLang }) {
           onOpenPost={() => goView("community")} onOpenAdmin={() => goView("admin")} />
       ) : effectiveView === "admin" ? (
         <AdminReportsPage onBack={() => goView("my")} />
+      ) : effectiveView === "support" ? (
+        <SupportPage account={account} onBack={() => goView("my")} />
+      ) : effectiveView === "ad-inquiry" ? (
+        <AdInquiryPage onBack={() => goView("my")} />
       ) : effectiveView === "tips" ? (
         <TipsPage />
       ) : effectiveView === "saju" ? (
