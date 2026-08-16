@@ -324,24 +324,22 @@ const STRINGS = {
       { title: "8. 여러 마리 관리", body: "상단 탭에서 강아지·고양이를 나누고, 이름 칩을 눌러 최대 10마리까지 각자 따로 관리할 수 있어요." },
       { title: "9. 성장 그래프 읽는 법", body: "빨간 점이 우리 아이의 현재 위치예요. 연두색 밴드는 참고용 정상 범위(예상치의 ±15%)이고, 이 범위를 벗어나면 그래프에 세로선과 경고 문구가 함께 떠요." },
     ],
-    infoGuideTitle: "사용방법",
-    infoGuideIntro: "PetGrow의 기능을 처음이라도 쉽게 따라 할 수 있도록 정리했어요.",
+    infoGuideTitle: "정보가이드",
+    infoGuideIntro: "PetGrow의 주요 메뉴와 기능을 실제 화면 흐름에 맞춰 한곳에 정리했어요.",
     infoGuideSections: [
-      { title: "카카오 간편로그인", body: "PetGrow는 카카오 계정 하나로 간편하게 로그인해요. 별도 회원가입이나 비밀번호 없이 '카카오로 시작하기' 버튼만 누르면 돼요." },
-      { title: "우리 아이 등록", body: "이름·종류·품종·생년월일·현재 체중을 입력하면 예상 성체 체중과 성장 그래프가 바로 나와요. 대표 사진도 등록할 수 있어요." },
-      { title: "여러 반려동물 관리", body: "강아지·고양이를 나눠서 각각 여러 마리까지 등록할 수 있어요. 사진과 이름으로 아이를 선택하면 그 아이 기준으로 모든 결과가 표시돼요." },
-      { title: "계정 저장 · 다른 기기에서 정보 불러오기", body: "등록한 우리 아이 정보는 로그인한 카카오 계정에 안전하게 저장돼요. 다른 기기나 웹에서도 같은 카카오 계정으로 로그인하면 그대로 이어서 볼 수 있어요." },
-      { title: "성장정보", body: "체중을 기록할 때마다 예상보다 빠르게 크는지 느리게 크는지 자동으로 비교해주고, 사진을 모아 성장앨범도 만들 수 있어요." },
-      { title: "Pet사주", body: "등록한 우리 아이의 정보를 바탕으로 성격·궁합·행운 같은 재미있는 사주 콘텐츠를 볼 수 있어요. 결과는 참고와 재미를 위한 것이에요." },
-            { title: "PetBTI", body: "강아지·고양이 각각 20개의 구체적인 행동 질문에 답하면 우리 아이만의 16가지 성격 유형이 나와요." },
-      { title: "PetBTI 결과 저장", body: "완료한 결과는 자동으로 저장돼서 'PetBTI 결과 보기'로 언제든 다시 볼 수 있고, '다시 검사하기'로 새로 진행할 수도 있어요." },
-      { title: "Pet정보", body: "강아지·고양이·건강·생활·식단·훈련·안전·미용 8개 영역, 총 200개의 Pet정보를 확인할 수 있어요. 웹과 모바일 모두 20개씩 페이지로 나뉘며 검색은 전체 정보를 대상으로 해요." },
-      { title: "내 주변 Pet", body: "위치 권한을 허용하면 현재 위치를 기준으로 가까운 동물병원·동물약국·반려동물용품점·미용실·호텔/유치원을 거리순으로 확인할 수 있어요. 위치 권한을 사용하지 않을 때는 지역명을 직접 검색할 수 있어요. 현재 위치 좌표는 주변 장소 검색에만 일시적으로 사용하며 PetGrow 계정에 저장하지 않아요." },
-      { title: "Pet톡", body: "우리 아이 사진과 일상을 다른 보호자와 나누는 커뮤니티예요. 일상·자랑·질문·건강·정보공유·산책·훈련·용품추천·자유수다로 분류해서 글을 남기고 좋아요·댓글을 주고받을 수 있어요." },
-      { title: "닉네임 · 내 활동", body: "계정 설정에서 Pet톡에 표시할 닉네임을 변경할 수 있어요. 회원정보와 Pet톡의 내 활동에서는 내가 작성한 글·댓글·좋아요를 확인할 수 있어요." },
-      { title: "검색", body: "Pet정보 화면 상단 검색창에 원하는 키워드를 입력하면 현재 페이지가 아닌 전체 200개 정보에서 찾아줘요." },
-      { title: "로그아웃", body: "우측 상단 계정 버튼을 누르면 로그아웃할 수 있어요. 로그아웃해도 서버에 저장된 정보는 삭제되지 않고, 다시 로그인하면 그대로 남아있어요." },
-      { title: "회원탈퇴", body: "계정 설정에서 회원탈퇴를 진행하면 반려동물 정보·사진·PetBTI 결과·Pet톡 게시글과 댓글 등 계정에 연결된 데이터가 함께 삭제돼요. 삭제 후에는 복구할 수 없어요." },
+      { title: "홈 · 앱 대시보드", body: "홈에서는 우리 아이, Pet음악, 내 주변 Pet, Pet톡, PetBTI 같은 자주 쓰는 기능으로 빠르게 이동할 수 있어요. 웹·모바일·앱 화면 크기에 맞춰 메뉴 구성이 자동으로 정리돼요." },
+      { title: "카카오 간편로그인", body: "PetGrow는 카카오 계정으로 로그인해요. 별도 비밀번호를 만들지 않고 '카카오로 시작하기'로 이용할 수 있으며, 로그인한 계정 기준으로 저장 기능과 내 활동이 연결돼요." },
+      { title: "우리 아이 · 성장 기록", body: "강아지와 고양이를 여러 마리 등록하고 아이별 프로필, 현재 체중, 성장 기록, 성장 그래프와 성장앨범을 관리할 수 있어요. 다른 기기에서도 같은 계정으로 로그인하면 저장된 정보를 이어서 볼 수 있어요." },
+      { title: "PetBTI", body: "강아지와 고양이 각각 20개의 구체적인 행동 질문에 답하면 우리 아이의 성향을 16가지 유형으로 재미있게 확인할 수 있어요. 완료한 결과는 저장하고 다시 검사할 수도 있어요." },
+      { title: "Pet사주", body: "등록한 우리 아이 정보를 바탕으로 성격과 특징을 재미로 살펴보는 콘텐츠예요. 실제 성격이나 미래를 판단하는 자료가 아니라 가볍게 즐기는 콘텐츠로 이용해 주세요." },
+      { title: "Pet정보", body: "강아지·고양이·건강·생활·식단·영양·훈련·안전·미용·위생 등 카테고리별 반려생활 정보를 확인할 수 있어요. 목록은 페이지 단위로 나뉘고 검색과 즐겨찾기를 이용할 수 있으며, 정보는 지속적으로 추가·점검돼요." },
+      { title: "Pet음악", body: "강아지·고양이 음악을 재생하고 반복재생할 수 있어요. 인기 TOP5와 내가 좋아요 누른 음악을 따로 확인할 수 있고, 좋아요·댓글을 이용할 수 있어요. 본인 댓글은 수정·삭제할 수 있고 다른 이용자의 댓글은 신고할 수 있어요." },
+      { title: "내 주변 Pet", body: "위치 권한을 허용하면 현재 위치를 기준으로 동물병원·동물약국·펫샵·용품점·미용실·유치원·호텔 등 주변 시설을 거리순으로 찾아요. 지도에서 내 위치와 업체 위치를 확인하고 상호명·업종·주소·전화번호·거리를 볼 수 있어요. 로그인 회원은 별점·후기·좋아요를 남길 수 있고 본인 후기는 수정·삭제, 다른 후기는 신고할 수 있어요. 위치 좌표는 주변 검색에만 사용하고 계정에 저장하지 않아요." },
+      { title: "Pet톡", body: "일상·자랑·질문·건강·정보공유·산책·훈련·용품추천·자유수다 카테고리로 반려생활 이야기를 나누는 커뮤니티예요. 게시글과 댓글에 좋아요를 남길 수 있고, 본인이 작성한 글·댓글은 수정·삭제, 다른 이용자의 글·댓글은 신고할 수 있어요." },
+      { title: "회원정보 · 내 활동", body: "닉네임과 계정 정보를 관리하고, 내가 작성한 Pet톡 활동과 내가 좋아요 누른 Pet음악 등 계정 기준 활동을 한곳에서 확인할 수 있어요." },
+      { title: "고객지원", body: "공지사항, 공개 피드백, 내 문의, 문의하기를 이용할 수 있어요. 문의 공개 체크를 해제하면 운영진만 볼 수 있어요." },
+      { title: "관리자센터", body: "관리자 권한이 있는 계정에만 표시돼요. 메뉴 이용 통계, 웹·모바일 웹·PWA·앱 접속 통계, 신고 관리, Pet음악 관리, 일일·주간·월간 보고서 등 운영 기능을 확인할 수 있어요." },
+      { title: "로그아웃 · 회원탈퇴", body: "로그아웃해도 서버에 저장된 계정 정보는 유지돼요. 회원탈퇴를 진행하면 관계 법령에 따라 별도 보관해야 하는 정보를 제외하고 계정에 연결된 반려동물 정보, 저장 결과, 작성 콘텐츠 등 삭제 대상 데이터가 처리되며 복구할 수 없어요." },
     ],
     migrationTitle: "기존에 등록한 우리 아이 정보가 있어요 🐾",
     migrationBody: "이 정보를 내 PetGrow 계정에 저장할까요? 저장하면 다른 기기에서도 로그인만 하면 이어서 볼 수 있어요.",
@@ -868,21 +866,22 @@ const STRINGS = {
       { title: "8. Managing multiple pets", body: "Switch between dogs and cats with the top tabs, and tap a name chip to switch pets — up to 10 per species." },
       { title: "9. Reading the growth chart", body: "The red dot marks your pet's current spot. The green band is a reference healthy range (±15% of the prediction) — stepping outside it adds a vertical line and a warning note to the chart." },
     ],
-    infoGuideTitle: "How to use",
-    infoGuideIntro: "A simple walkthrough of everything PetGrow can do, even if it's your first time.",
+    infoGuideTitle: "Guide",
+    infoGuideIntro: "A practical guide to PetGrow's main menus and features, organized around the actual app flow.",
     infoGuideSections: [
-      { title: "Kakao Login", body: "PetGrow logs you in with a single Kakao account. No separate sign-up or password — just tap 'Start with Kakao'." },
-      { title: "Registering your pet", body: "Enter a name, species, breed, birth date, and current weight to instantly see the predicted adult weight and growth chart. You can add a profile photo too." },
-      { title: "Managing multiple pets", body: "Register several dogs and cats. Pick a pet by photo and name, and every result on the app follows that pet." },
-      { title: "Account storage & cross-device sync", body: "Your pet info is safely saved to your logged-in Kakao account. Log in with the same account on any device or the web to pick up right where you left off." },
-      { title: "Growth info", body: "Every weight you log is automatically compared to the prediction, and you can build a growth photo album over time." },
-      { title: "Saju", body: "Fun Saju-style content — personality, compatibility, luck — generated from your registered pet's info, for entertainment and reference." },
-            { title: "PetBTI", body: "Answer 20 behavior-based questions tailored separately for dogs and cats to get a fun 16-type personality result." },
-      { title: "Saving PetBTI results", body: "Your completed result is saved automatically — revisit it anytime with 'View PetBTI result', or take the test again." },
-      { title: "Pet Tips", body: "160 Pet info articles across 8 categories, shown 20 per page on both web and mobile. Search works across the full collection." },
-      { title: "Search", body: "Type a keyword to search across all 160 Pet info articles, not just the current page." },
-      { title: "Logging out", body: "Tap the account button in the top right to log out. Your data stays safely saved on the server and comes right back when you log in again." },
-      { title: "Deleting your account", body: "Deleting your account from account settings removes all data linked to it — pet info, photos, and PetBTI results included. This can't be undone." },
+      { title: "Home dashboard", body: "Use the home dashboard to jump quickly to My Pets, Pet Music, Nearby Pet, PetTalk, PetBTI and other frequently used features. The layout adapts automatically for web, mobile and app screens." },
+      { title: "Kakao Login", body: "Sign in with your Kakao account without creating a separate password. Saved features and activity are linked to the signed-in account." },
+      { title: "My Pets & growth records", body: "Register multiple dogs and cats and manage each pet's profile, weight records, growth chart and growth album. Sign in with the same account on another device to continue with saved data." },
+      { title: "PetBTI", body: "Answer 20 detailed behavior questions for dogs or 20 for cats to get a fun 16-type personality result. Results can be saved and the test can be taken again." },
+      { title: "Pet Saju", body: "A light entertainment feature based on your registered pet's information. It is not intended to determine a pet's actual personality or future." },
+      { title: "Pet Info", body: "Browse pet-life information by categories such as dogs, cats, health, lifestyle, food & nutrition, training, safety and grooming. Lists are paginated, searchable and bookmarkable, and content is continuously added and reviewed." },
+      { title: "Pet Music", body: "Play dog and cat music with repeat playback. See the Popular Top 5 and music you have liked, and use likes and comments. You can edit or delete your own comments and report other users' comments." },
+      { title: "Nearby Pet", body: "Allow location access to find nearby animal hospitals, pharmacies, pet shops, groomers, daycare and hotels sorted by distance. See your location and business locations on the map together with business name, category, address, phone number and distance. Signed-in users can leave ratings, reviews and likes; their own reviews can be edited or deleted and other reviews can be reported. Your coordinates are used only for nearby search and are not saved to your account." },
+      { title: "PetTalk", body: "Share pet-life stories in categories such as daily life, bragging, questions, health, information, walks, training, product recommendations and free chat. Users can like posts and comments; their own posts and comments can be edited or deleted, while other content can be reported." },
+      { title: "Account & My Activity", body: "Manage your nickname and account details, and review account-based activity such as your PetTalk activity and Pet Music likes." },
+      { title: "Customer Support", body: "Check notices, public feedback, your inquiries and the inquiry form. If public sharing is unchecked, the inquiry is visible only to the operations team." },
+      { title: "Admin Center", body: "Visible only to authorized admin accounts. It includes menu usage analytics, web/mobile web/PWA/app platform statistics, reports and moderation tools, Pet Music management, and daily, weekly and monthly reports." },
+      { title: "Log out & delete account", body: "Logging out keeps saved account data on the server. Account deletion processes account-linked pet data, saved results and user-created content as described in the privacy policy, except data that must be retained by law, and deleted data cannot be restored." },
     ],
     migrationTitle: "Looks like you had pets registered before 🐾",
     migrationBody: "Want to save this to your PetGrow account? Once saved, you can pick up right where you left off on any device.",
@@ -1966,6 +1965,7 @@ function UpdateModal({ open, config, onLater }) {
 
 function GuideModal({ open, onClose }) {
   const t = useT();
+  const lang = useLang();
   return (
     <Modal open={open} onClose={onClose} width={720}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
@@ -1980,11 +1980,11 @@ function GuideModal({ open, onClose }) {
           </div>
         ))}
         <div>
-          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 3 }}>📍 내 주변 Pet</div>
+          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 3 }}>{lang === "en" ? "10. 📍 Nearby Pet" : "10. 📍 내 주변 Pet"}</div>
           <div className="bg-sub" style={{ fontSize: 13, lineHeight: 1.6 }}>위치를 허용하면 가까운 동물병원·동물약국·펫샵·용품점·미용·호텔·유치원을 거리순으로 확인할 수 있어요. 장소별 업종·주소·전화번호가 표시되고, 로그인 회원은 별점·간단 후기·좋아요·신고를 남길 수 있어요.</div>
         </div>
         <div>
-          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 3 }}>🎵 Pet음악</div>
+          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 3 }}>{lang === "en" ? "11. 🎵 Pet Music" : "11. 🎵 Pet음악"}</div>
           <div className="bg-sub" style={{ fontSize: 13, lineHeight: 1.6 }}>강아지·고양이 음악을 듣고 1곡 반복·전체 반복으로 재생할 수 있어요. 좋아요와 댓글로 반려동물의 반응을 남길 수 있고, 음악 목록은 20곡씩 페이지로 나뉘어요.</div>
         </div>
       </div>
@@ -7434,14 +7434,20 @@ function SajuPage({ pet, onGoRegister }) {
     </div></div>
   );
 
-  const petName = pet.profile.name;
+  // 등록된 이름이 자모 분리(NFD)나 제어문자를 포함해도 오늘의 펫운세 제목이 깨지지 않도록
+  // 화면 표시용 이름을 NFC로 정규화하고, 비어 있으면 안전한 기본 이름을 사용해요.
+  const petName = String(pet?.profile?.name ?? "")
+    .normalize("NFC")
+    .replace(/[\u0000-\u001F\u007F]/g, "")
+    .trim()
+    .slice(0, 30) || (lang === "en" ? "My pet" : "우리 아이");
   const dailyMessages = lang === "en" ? ["A great day for a relaxed walk and lots of praise.", "A small new experience could become a happy memory today.", "Slow down and enjoy some cozy time together today."] : ["오늘은 여유로운 산책과 칭찬을 듬뿍 받으면 기분이 더 좋아지는 날이에요. 🐾", "작은 새로운 경험 하나가 즐거운 추억이 되기 좋은 날이에요. ✨", "오늘은 서두르기보다 보호자님과 포근하게 쉬는 시간이 행운을 불러와요. 💚"];
   const todayKey = new Date().toISOString().slice(0, 10);
   const dailySeed = `${petName}|${pet.profile.birthDate || ""}|${pet.profile.species || ""}|${todayKey}`;
   const idx = hashString(dailySeed) % dailyMessages.length;
 
   if (mode === "daily") return <div className="feature-module-shell"><div className="bg-card" style={{ textAlign: "center", background: "#F5F8F4" }}>
-    <div style={{ fontSize: 38, marginBottom: 8 }}>🌤️</div><h2 style={{ fontSize: 21, marginBottom: 10 }}>{lang === "en" ? `${petName}'s fortune today` : `${petName}의 오늘의 펫운세`}</h2>
+    <div style={{ fontSize: 38, marginBottom: 8 }}>🌤️</div><h2 style={{ fontSize: 21, marginBottom: 10, lineHeight: 1.45, wordBreak: "keep-all", overflowWrap: "anywhere" }}><span style={{ fontWeight: 900 }}>{petName}</span>{lang === "en" ? "'s fortune today" : "의 오늘의 펫운세"}</h2>
     <p style={{ fontSize: 15, lineHeight: 1.8 }}>{dailyMessages[idx]}</p><button className="bg-btn bg-btn-ghost" style={{ width: "100%", marginTop: 22 }} onClick={() => setMode("menu")}>{lang === "en" ? "Back" : "다른 Pet사주 보기"}</button>
   </div><div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 16 }}>{t.sajuDisclaimer}</div></div>;
 
@@ -9417,14 +9423,7 @@ function InfoGuidePage() {
             <div className="bg-sub" style={{ fontSize: 13, lineHeight: 1.7 }}>{s.body}</div>
           </div>
         ))}
-        <div className="bg-surface-card">
-          <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 5 }}>📍 내 주변 Pet</div>
-          <div className="bg-sub" style={{ fontSize: 13, lineHeight: 1.7 }}>현재 위치를 허용하면 주변 반려동물 시설을 거리순으로 검색해요. 업종 배지로 동물병원·동물약국·펫샵·용품점·미용·호텔·유치원을 구분하고, 상호명·주소·전화번호·거리와 지도 위치를 함께 확인할 수 있어요. 로그인 회원은 장소별 별점·후기·좋아요·신고를 이용할 수 있습니다.</div>
-        </div>
-        <div className="bg-surface-card">
-          <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 5 }}>🎵 Pet음악</div>
-          <div className="bg-sub" style={{ fontSize: 13, lineHeight: 1.7 }}>강아지·고양이·공용 음악을 들을 수 있어요. 인스트루멘탈을 중심으로 보컬 여부와 휴식·수면·놀이·자연 태그를 확인할 수 있고, 1곡 반복과 전체 반복을 지원해요. 좋아요·댓글·재생 반응을 바탕으로 인기 TOP5가 표시되며 음악 목록은 20곡씩 페이지로 구분됩니다.</div>
-        </div>
+
       </div>
     </div>
   );

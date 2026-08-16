@@ -21,9 +21,16 @@ function parseDataUrl(dataUrl, allowed, maxBytes) {
   return { mime:m[1], buffer };
 }
 async function requireAdmin(req,res){
-  const uid=getSessionUserId(req); if(!uid){res.status(401).json({error:"로그인이 필요해요."});return null;}
+  const uid=getSessionUserId(req);
+  if(!uid){res.status(401).json({error:"로그인이 필요해요."});return null;}
   const role=await getAdminRole(uid);
-  if(!role || !verifyToken(req.headers["x-petgrow-admin-token"],uid) || !roleCan(role,"ads")){
+  if(!role){res.status(403).json({error:"관리자 계정이 아니에요."});return null;}
+  const token=req.headers["x-petgrow-admin-token"];
+  if(!verifyToken(token,uid)){
+    res.status(403).json({error:"관리자 인증 시간이 만료됐어요. 관리자센터에서 PIN을 다시 입력해 주세요.",code:"ADMIN_TOKEN_EXPIRED"});
+    return null;
+  }
+  if(!roleCan(role,"music")){
     res.status(403).json({error:"Pet음악 관리 권한이 없어요."});return null;
   }
   return {uid,role};
@@ -155,7 +162,9 @@ export default async function handler(req,res){
           onBeforeGenerateToken:async(pathname,clientPayload)=>{
             const uid=getSessionUserId(req);if(!uid)throw new Error("로그인이 필요해요.");
             const role=await getAdminRole(uid);let payload={};try{payload=JSON.parse(clientPayload||"{}")}catch{}
-            if(!role||!verifyToken(payload.adminToken,uid)||!roleCan(role,"ads"))throw new Error("Pet음악 관리 권한이 없어요.");
+            if(!role)throw new Error("관리자 계정이 아니에요.");
+            if(!verifyToken(payload.adminToken,uid))throw new Error("관리자 인증 시간이 만료됐어요. 관리자센터에서 PIN을 다시 입력해 주세요.");
+            if(!roleCan(role,"music"))throw new Error("Pet음악 관리 권한이 없어요.");
             const isCover=String(pathname||"").includes("/covers/")||payload.kind==="cover";
             return {allowedContentTypes:isCover?["image/jpeg","image/png","image/webp"]:["audio/mpeg","audio/mp3","audio/wav","audio/x-wav","audio/mp4","audio/aac"],maximumSizeInBytes:isCover?MAX_COVER_BYTES:MAX_AUDIO_BYTES,addRandomSuffix:true,tokenPayload:JSON.stringify({uid,kind:isCover?"cover":"audio"})};
           },

@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import { sql } from "@vercel/postgres";
 import { ensureSchema, ensureAuthSchema } from "./db.js";
-const TTL=10*60*1000, attempts=new Map();
+const TTL=2*60*60*1000, attempts=new Map();
 const secret=()=>String(process.env.SESSION_SECRET||"");
 export async function isAdminUserId(userId){await ensureAuthSchema();if(!userId)return false;const {rows}=await sql`select 1 from pg_admins where user_id=${userId}`;return !!rows[0]}
 export async function adminExists(){await ensureAuthSchema();const {rows}=await sql`select exists(select 1 from pg_admins) ok`;return !!rows[0]?.ok}
@@ -22,10 +22,10 @@ export async function getAdminRole(userId){
 }
 export function roleCan(role,cap){
   const map={
-    superadmin:new Set(["dashboard","reports","logs","ads","notices","inquiries","admins","service"]),
-    operator:new Set(["dashboard","reports","logs","ads","notices","inquiries","service"]),
+    superadmin:new Set(["dashboard","reports","logs","ads","music","notices","inquiries","admins","service"]),
+    operator:new Set(["dashboard","reports","logs","ads","music","notices","inquiries","service"]),
     report:new Set(["reports"]),
-    ads:new Set(["ads"])
+    ads:new Set(["ads","music"])
   };
   return !!map[role]?.has(cap);
 }
