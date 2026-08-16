@@ -2598,6 +2598,8 @@ const GlobalStyle = () => (
     }
     .bboggl-root *{box-sizing:border-box;}
     .bboggl-root h1,.bboggl-root h2,.bboggl-root h3{font-family:'Jua','Gowun Dodum','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif; font-weight:400; margin:0;}
+    /* 사용자 입력 이름은 WebView/모바일에서도 자형이 안정적인 시스템 한글 폰트를 사용 */
+    .pet-user-name,.profile-header-name,.dash-pet-copy h2,.feature-pet-name{font-family:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic','Segoe UI',sans-serif!important;font-weight:800!important;letter-spacing:-.02em!important;font-variant-ligatures:none;}
     .bg-btn{border-radius:999px;padding:13px 22px;font-weight:700;background:var(--primary);color:#fff;border:none;
       box-shadow:0 5px 0 var(--primary-dark);cursor:pointer;transition:.12s; font-size:15px; font-family:inherit;}
     .bg-btn:hover{transform:translateY(-2px); box-shadow:0 7px 0 var(--primary-dark);}
@@ -2706,7 +2708,7 @@ const GlobalStyle = () => (
       border-radius:50%; background:var(--primary); display:flex; align-items:center; justify-content:center;
       border:2px solid #fff;}
     .profile-header-avatar .avatar-edit-badge .icon{width:14px; height:14px; fill:#fff;}
-    .profile-header-name{font-family:'Jua',sans-serif; font-size:24px; color:var(--text);}
+    .profile-header-name{font-family:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic','Segoe UI',sans-serif; font-size:24px; font-weight:800; color:var(--text); letter-spacing:-.02em;}
     .profile-header-meta{font-size:13px; color:var(--sub); margin-top:6px;}
     .account-modal-close{position:absolute; right:16px; top:14px; width:36px; height:36px; border-radius:50%; border:1px solid #DEE7E0; background:#F4F7F4; color:#243229; font-size:24px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:2; box-shadow:0 3px 10px rgba(28,28,28,.08);}
     .account-modal-close:hover{background:#EAF3EB; color:var(--primary); transform:translateY(-1px);}
@@ -7384,7 +7386,7 @@ function SajuResultView({ input, onRestart }) {
               </span>
             )}
           </span>
-          <div style={{ fontSize: 18, fontWeight: 800 }}>{input.name}</div>
+          <div className="pet-user-name" style={{ fontSize: 18 }}>{normalizePetDisplayText(input.name, lang === "en" ? "My Pet" : "우리 아이")}</div>
         </div>
         <div style={{ fontSize: 16, color: "var(--sub)", fontWeight: 700 }}>🐾 {t.sajuResultHeading(input.name)}</div>
         <h2 style={{ fontSize: 28, marginTop: 10, lineHeight: 1.45 }}>{result.summary}</h2>
@@ -7459,7 +7461,7 @@ function SajuPage({ pet, onGoRegister }) {
   const idx = hashString(dailySeed) % dailyMessages.length;
 
   if (mode === "daily") return <div className="feature-module-shell"><div className="bg-card" style={{ textAlign: "center", background: "#F5F8F4" }}>
-    <div style={{ fontSize: 38, marginBottom: 8 }}>🌤️</div><h2 style={{ fontSize: 21, marginBottom: 10, lineHeight: 1.45, wordBreak: "keep-all", overflowWrap: "anywhere" }}><span style={{ fontWeight: 900 }}>{petName}</span>{lang === "en" ? "'s fortune today" : "의 오늘의 펫운세"}</h2>
+    <div style={{ fontSize: 38, marginBottom: 8 }}>🌤️</div><h2 style={{ fontSize: 21, marginBottom: 10, lineHeight: 1.45, wordBreak: "keep-all", overflowWrap: "anywhere" }}><span className="pet-user-name">{petName}</span>{lang === "en" ? "'s fortune today" : "의 오늘의 펫운세"}</h2>
     <p style={{ fontSize: 15, lineHeight: 1.8 }}>{dailyMessages[idx]}</p><button className="bg-btn bg-btn-ghost" style={{ width: "100%", marginTop: 22 }} onClick={() => setMode("menu")}>{lang === "en" ? "Back" : "다른 Pet사주 보기"}</button>
   </div><div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 16 }}>{t.sajuDisclaimer}</div></div>;
 
@@ -7510,7 +7512,7 @@ function SajuPage({ pet, onGoRegister }) {
     { id: "daily", icon: "🌤️", title: lang === "en" ? "Today's Pet Fortune" : "오늘의 펫운세", desc: lang === "en" ? "A light daily fortune for your pet" : "오늘 우리 아이에게 어울리는 행운 메시지를 확인해요.", bg: "#F5F8F4", click: () => setMode("daily") },
     { id: "compat", icon: "🫶", title: lang === "en" ? "Guardian Compatibility" : "보호자 궁합", desc: lang === "en" ? "See the fun chemistry between you two" : "우리 아이와 보호자님의 케미와 유대감을 재미로 확인해요.", bg: "#F1F6F2", click: () => setMode("compat") },
   ];
-  return <div className="feature-module-shell"><div style={{ textAlign: "center", marginBottom: 18 }}><FeaturePetHeader pet={pet} /><h2 style={{ fontSize: 21, marginTop: 10 }}>{lang === "en" ? `Choose ${petName}'s Pet Saju` : `${petName}와 어떤 Pet사주를 볼까요?`}</h2><p className="bg-sub" style={{ fontSize: 13, marginTop: 6 }}>{lang === "en" ? "Choose one of three fun contents." : "원하는 콘텐츠를 골라 재미로 즐겨보세요."}</p></div>
+  return <div className="feature-module-shell"><div style={{ textAlign: "center", marginBottom: 18 }}><FeaturePetHeader pet={pet} /><h2 className="pet-user-name" style={{ fontSize: 21, marginTop: 10 }}>{lang === "en" ? `Choose ${petName}'s Pet Saju` : `${petName}와 어떤 Pet사주를 볼까요?`}</h2><p className="bg-sub" style={{ fontSize: 13, marginTop: 6 }}>{lang === "en" ? "Choose one of three fun contents." : "원하는 콘텐츠를 골라 재미로 즐겨보세요."}</p></div>
     <div style={{ display: "grid", gap: 12 }}>{modes.map(m => <button key={m.id} type="button" onClick={m.click} className="bg-surface-card" style={{ border: 0, cursor: "pointer", background: m.bg, padding: "20px", textAlign: "left", display: "flex", alignItems: "center", gap: 16 }}><span style={{ fontSize: 34 }}>{m.icon}</span><span><strong style={{ display: "block", fontSize: 17, marginBottom: 5 }}>{m.title}</strong><span className="bg-sub" style={{ fontSize: 13, lineHeight: 1.55 }}>{m.desc}</span></span><span style={{ marginLeft: "auto", fontSize: 22, color: "var(--primary)" }}>›</span></button>)}</div>
     <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 20, lineHeight: 1.6 }}>{t.sajuDisclaimer}</div>
   </div>;
@@ -8102,7 +8104,7 @@ function PetBtiResultView({ input, result, lang, onRestart }) {
               </span>
             )}
           </span>
-          <div style={{ fontSize: 18, fontWeight: 800 }}>{input.name}</div>
+          <div className="pet-user-name" style={{ fontSize: 18 }}>{normalizePetDisplayText(input.name, lang === "en" ? "My Pet" : "우리 아이")}</div>
         </div>
         <div style={{ fontSize: 16, color: "var(--sub)", fontWeight: 700 }}>{t.petBtiResultHeading(input.name)}</div>
         <div style={{ fontSize: 42, fontWeight: 800, color: "var(--primary)", marginTop: 10 }}>{result.type}</div>
@@ -8229,7 +8231,7 @@ function PetBtiPage({ pet, onUpdatePetBti, onGoRegister }) {
         <p className="bg-sub" style={{ fontSize: 13, marginBottom: 4, whiteSpace: "pre-line" }}>{t.petBtiMainDesc}</p>
         {savedBti && (
           <div className="bg-surface-card" style={{ margin: "16px 0", textAlign: "left" }}>
-            <div style={{ fontSize: 12, color: "var(--sub)", fontWeight: 700, marginBottom: 4 }}>{t.petBtiPreviousResult(pet.profile.name)}</div>
+            <div style={{ fontSize: 12, color: "var(--sub)", fontWeight: 700, marginBottom: 4 }}>{t.petBtiPreviousResult(normalizePetDisplayText(pet.profile?.name, lang === "en" ? "My Pet" : "우리 아이"))}</div>
             <div style={{ fontWeight: 800, fontSize: 16 }}>
               {savedBti.type} {PETBTI_TYPES[savedBti.type] && PETBTI_TYPES[savedBti.type].emoji} {PETBTI_TYPES[savedBti.type] && (lang === "en" ? PETBTI_TYPES[savedBti.type].en : PETBTI_TYPES[savedBti.type].ko)}
             </div>
@@ -8253,7 +8255,7 @@ function PetSwitcher({ species, pets, activePetId, onSelect, onAddNew }) {
     <div className="pet-switcher">
       {pets.map((p) => (
         <button key={p.id} className={`bg-chip ${p.id === activePetId ? "active" : ""}`} onClick={() => onSelect(p.id)}>
-          {p.profile.name}
+          {normalizePetDisplayText(p.profile?.name, "우리 아이")}
         </button>
       ))}
       {pets.length < 10 ? (
@@ -8288,7 +8290,7 @@ function PetPicker({ pets, activeId, onSelect }) {
             )}
           </span>
           <span style={{ fontSize: 11, fontWeight: 700, maxWidth: 56, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-            {p.profile.name}
+            {normalizePetDisplayText(p.profile?.name, "우리 아이")}
           </span>
         </button>
       ))}
@@ -8299,6 +8301,7 @@ function PetPicker({ pets, activeId, onSelect }) {
 // 결과 카드 상단 중앙에 표시하는 선택된 반려동물의 원형 프로필 사진 + 이름 (Pet사주/PetBTI 공통)
 function FeaturePetHeader({ pet }) {
   if (!pet) return null;
+  const displayName = normalizePetDisplayText(pet?.profile?.name, "우리 아이");
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, marginBottom: 6 }}>
       <span style={{ width: 68, height: 68, borderRadius: "50%", overflow: "hidden", display: "block",
@@ -8311,7 +8314,7 @@ function FeaturePetHeader({ pet }) {
           </span>
         )}
       </span>
-      <span style={{ fontWeight: 800, fontSize: 16 }}>{pet.profile.name}</span>
+      <span className="feature-pet-name pet-user-name" style={{ fontSize: 16 }}>{displayName}</span>
     </div>
   );
 }
@@ -8323,6 +8326,7 @@ function ResultPage({ pet, breedGroups, onAddRecord, onDeleteRecord, onAddPhoto,
   const lang = useLang();
   const t = useT();
   const { profile, records, photos } = pet;
+  const displayPetName = normalizePetDisplayText(profile?.name, lang === "en" ? "My Pet" : "우리 아이");
   const [now] = useState(() => new Date());
   const ageMonthsNow = monthsBetween(new Date(profile.birthDate), now);
   const allBreedsFlat = useMemo(() => breedGroups.flatMap((g) => g.breeds), [breedGroups]);
@@ -8381,7 +8385,7 @@ function ResultPage({ pet, breedGroups, onAddRecord, onDeleteRecord, onAddPhoto,
         <div className="profile-header">
           <div className="profile-header-avatar" onClick={() => avatarInputRef.current && avatarInputRef.current.click()}>
             {profile.profileImage ? (
-              <img src={profile.profileImage} alt={profile.name} />
+              <img src={profile.profileImage} alt={displayPetName} />
             ) : profile.species === "cat" ? (
               <CatIcon style={{ width: 46, height: 46, color: "var(--sub)" }} />
             ) : (
@@ -8391,7 +8395,7 @@ function ResultPage({ pet, breedGroups, onAddRecord, onDeleteRecord, onAddPhoto,
             <input ref={avatarInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handlePickAvatar} />
           </div>
           <div>
-            <div className="profile-header-name">{profile.name}</div>
+            <div className="profile-header-name pet-user-name">{displayPetName}</div>
             <button type="button" onClick={() => setBreedInfoOpen(true)}
               style={{ background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}>
               <div className="profile-header-meta" style={{ textDecoration: "underline" }}>
@@ -9335,7 +9339,7 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
       <section className={`dash-pet-spotlight ${pet ? "has-pet" : "empty"}`} onClick={onGoPets}>
         {pet ? <>
           <div className="dash-pet-photo">{pet.profile.profileImage ? <img src={pet.profile.profileImage} alt={`${petName || "반려동물"} 프로필`} fetchPriority="high" /> : <span>{pet.species === "cat" ? "🐱" : "🐶"}</span>}</div>
-          <div className="dash-pet-copy"><small>{lang === "en" ? "TODAY WITH MY PET" : "오늘의 우리 아이"}</small><h2>{petName}</h2><p>{[pet.profile.breedName, petAgeLabel(pet.profile.birthDate, lang)].filter(Boolean).join(" · ")}</p><div className="dash-pet-metrics"><span><b>{weight ? `${Number(weight).toFixed(1)}kg` : "—"}</b><small>{lang === "en" ? "Weight" : "현재 체중"}</small></span><span><b>{pet.profile.gender === "male" ? "♂" : pet.profile.gender === "female" ? "♀" : "—"}</b><small>{lang === "en" ? "Gender" : "성별"}</small></span><span><b>{pet.species === "cat" ? "CAT" : "DOG"}</b><small>{lang === "en" ? "Type" : "구분"}</small></span></div></div>
+          <div className="dash-pet-copy"><small>{lang === "en" ? "TODAY WITH MY PET" : "오늘의 우리 아이"}</small><h2 className="pet-user-name">{petName}</h2><p>{[pet.profile.breedName, petAgeLabel(pet.profile.birthDate, lang)].filter(Boolean).join(" · ")}</p><div className="dash-pet-metrics"><span><b>{weight ? `${Number(weight).toFixed(1)}kg` : "—"}</b><small>{lang === "en" ? "Weight" : "현재 체중"}</small></span><span><b>{pet.profile.gender === "male" ? "♂" : pet.profile.gender === "female" ? "♀" : "—"}</b><small>{lang === "en" ? "Gender" : "성별"}</small></span><span><b>{pet.species === "cat" ? "CAT" : "DOG"}</b><small>{lang === "en" ? "Type" : "구분"}</small></span></div></div>
           <div className="dash-pet-arrow">›</div>
         </> : <><div className="dash-empty-icon">＋</div><div><h2>{lang === "en" ? "Add your pet" : "우리 아이를 등록해보세요"}</h2><p>{lang === "en" ? "Start growth records and personalized features." : "성장 기록과 맞춤 기능을 바로 시작할 수 있어요."}</p></div><div className="dash-pet-arrow">›</div></>}
       </section>
@@ -10306,9 +10310,9 @@ function AdminMusicPanel(){
   const pickAudio=e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>12*1024*1024){window.alert("음원 파일은 12MB 이하로 올려주세요.");e.target.value="";return;}setForm(x=>({...x,audioFile:f}))};
   const pickCover=e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>4*1024*1024){window.alert("커버 이미지는 4MB 이하로 올려주세요.");e.target.value="";return;}setForm(x=>({...x,coverFile:f}))};
   const uploadDirect=async(file,kind)=>{const {upload}=await import("@vercel/blob/client");const ext=(file.name.split(".").pop()||(kind==="cover"?"jpg":"mp3")).toLowerCase();const path=`petmusic/${kind==="cover"?"covers/":""}${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;return await upload(path,file,{access:"public",handleUploadUrl:"/api/music?action=upload",clientPayload:JSON.stringify({adminToken:sessionStorage.getItem("petgrow_admin_token")||"",kind})})};
-  const save=async()=>{if(!form.title.trim())return window.alert("노래 제목을 입력해 주세요.");if(!editing&&!form.audioFile)return window.alert("음원 파일을 선택해 주세요.");if(!editing&&!form.coverFile)return window.alert("커버 이미지를 선택해 주세요.");setBusy(true);try{let audioUrl=editing?.audio_url||form.audioUrl||"",coverUrl=editing?.cover_url||form.coverUrl||"";if(form.audioFile){setUploadStage("음원을 빠르게 업로드하는 중…");try{audioUrl=(await uploadDirect(form.audioFile,"audio")).url}catch{setUploadStage("음원을 안전하게 업로드하는 중…");const d=await fileToDataUrl(form.audioFile);const r=await adminMusicSave({title:form.title,description:form.description,species:form.species,vocalType:form.vocalType,mood:form.mood,active:form.active,id:editing?.id||undefined,audioDataUrl:d,audioUrl,coverUrl});audioUrl=r.audioUrl||audioUrl;}}if(form.coverFile){setUploadStage("커버 이미지를 업로드하는 중…");try{coverUrl=(await uploadDirect(form.coverFile,"cover")).url}catch{const d=await fileToCompressedDataUrl(form.coverFile,1000,.82);const r=await adminMusicSave({title:form.title,description:form.description,species:form.species,vocalType:form.vocalType,mood:form.mood,active:form.active,id:editing?.id||undefined,coverDataUrl:d,audioUrl,coverUrl});coverUrl=r.coverUrl||coverUrl;}}setUploadStage("등록 정보를 저장하는 중…");await adminMusicSave({title:form.title,description:form.description,species:form.species,vocalType:form.vocalType,mood:form.mood,active:form.active,id:editing?.id||undefined,audioUrl,coverUrl});window.alert(editing?"Pet음악을 수정했어요.":"Pet음악을 등록했어요.");setEditing(null);setForm(blank);await load()}catch(e){window.alert(e.message)}finally{setBusy(false);setUploadStage("")}};
+  const save=async()=>{if(!form.title.trim())return window.alert("노래 제목을 입력해 주세요.");if(!editing&&!form.audioFile)return window.alert("음원 파일을 선택해 주세요.");if(!editing&&!form.coverFile)return window.alert("커버 이미지를 선택해 주세요.");setBusy(true);try{let audioUrl=editing?.audio_url||form.audioUrl||"",coverUrl=editing?.cover_url||form.coverUrl||"";if(form.audioFile){setUploadStage("음원을 빠르게 업로드하는 중…");try{audioUrl=(await uploadDirect(form.audioFile,"audio")).url}catch{setUploadStage("음원을 안전하게 업로드하는 중…");const d=await fileToDataUrl(form.audioFile);const r=await adminMusicSave({title:form.title,description:form.description,species:form.species,vocalType:form.vocalType,mood:form.mood,active:form.active,id:editing?.id||undefined,audioDataUrl:d,audioUrl,coverUrl});audioUrl=r.audioUrl||audioUrl;}}if(form.coverFile){setUploadStage("새 커버 이미지를 적용하는 중…");const d=await fileToCompressedDataUrl(form.coverFile,900,.84);const r=await adminMusicSave({title:form.title,description:form.description,species:form.species,vocalType:form.vocalType,mood:form.mood,active:form.active,id:editing?.id||undefined,coverDataUrl:d,audioUrl,coverUrl});coverUrl=r.coverUrl||coverUrl;}setUploadStage("등록 정보를 저장하는 중…");await adminMusicSave({title:form.title,description:form.description,species:form.species,vocalType:form.vocalType,mood:form.mood,active:form.active,id:editing?.id||undefined,audioUrl,coverUrl});window.alert(editing?"Pet음악을 수정했어요.":"Pet음악을 등록했어요.");setEditing(null);setForm(blank);await load()}catch(e){window.alert(e.message)}finally{setBusy(false);setUploadStage("")}};
   const edit=x=>{setEditing(x);setForm({title:x.title||"",description:x.description||"",species:x.species||"all",vocalType:x.vocal_type||"instrumental",mood:x.mood||"relax",active:x.active!==false,audioFile:null,coverFile:null,audioUrl:x.audio_url||"",coverUrl:x.cover_url||""});window.scrollTo({top:0,behavior:"smooth"});};
-  return <div className="admin-report-list"><div className="bg-card"><h2>🎵 Pet음악 관리</h2><p className="bg-sub">음원·제목·커버 이미지를 등록하면 사용자 Pet음악 메뉴에 연결돼요. 보컬 여부와 분위기 태그도 지정할 수 있고, 업로드일은 자동 기록되며 좋아요·댓글·재생수로 인기 TOP5가 계산됩니다.</p><div className="admin-music-form" style={{marginTop:14}}><input className="bg-input" placeholder="노래 제목" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/><select className="bg-input" value={form.species} onChange={e=>setForm({...form,species:e.target.value})}><option value="all">🐾 공용</option><option value="dog">🐶 강아지</option><option value="cat">🐱 고양이</option></select><select className="bg-input" value={form.vocalType} onChange={e=>setForm({...form,vocalType:e.target.value})}><option value="instrumental">🎼 인스트루멘탈</option><option value="vocal">🎤 보컬 있음</option></select><select className="bg-input" value={form.mood} onChange={e=>setForm({...form,mood:e.target.value})}><option value="relax">😌 휴식</option><option value="sleep">🌙 수면</option><option value="play">🐾 놀이</option><option value="nature">🌿 자연</option></select><textarea className="bg-input support-textarea full" placeholder="간단한 설명 (선택)" value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/><label className="bg-card" style={{padding:12}}><b style={{fontSize:12}}>음원 파일 {editing?"(교체할 때만 선택)":""}</b><input type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/mp4,audio/aac" onChange={pickAudio} style={{display:"block",marginTop:8,width:"100%"}}/><small className="bg-sub">MP3/WAV/M4A · 최대 12MB</small></label><label className="bg-card" style={{padding:12}}><b style={{fontSize:12}}>커버 이미지</b><input type="file" accept="image/*" onChange={pickCover} style={{display:"block",marginTop:8,width:"100%"}}/><small className="bg-sub">정사각형 이미지 권장</small></label><label className="full" style={{fontSize:12,fontWeight:700}}><input type="checkbox" checked={form.active} onChange={e=>setForm({...form,active:e.target.checked})}/> 사용자에게 공개</label><div className="full" style={{display:"flex",gap:8}}><button className="bg-btn" disabled={busy} onClick={save}>{busy?(uploadStage||"업로드 중…"):editing?"수정 저장":"음악 등록"}</button>{editing&&<button className="bg-btn bg-btn-ghost" onClick={()=>{setEditing(null);setForm(blank)}}>취소</button>}</div></div></div><div className="bg-card"><h3>등록된 음악 {items.length}곡</h3><div className="admin-music-list">{items.length?items.map(x=><div className="admin-music-row" key={x.id}>{x.cover_url?<img className="admin-music-thumb" src={x.cover_url} alt=""/>:<div className="admin-music-thumb">🎵</div>}<div><b>{x.title}</b><small>{x.species==="dog"?"강아지":x.species==="cat"?"고양이":"공용"} · {x.vocal_type==="vocal"?"보컬":"인스트루멘탈"} · {({relax:"휴식",sleep:"수면",play:"놀이",nature:"자연"}[x.mood]||"휴식")} · {new Date(x.created_at).toLocaleDateString("ko-KR")} · ▶ {Number(x.play_count)||0} · ♥ {Number(x.like_count)||0} · 💬 {Number(x.comment_count)||0}</small></div><div className="admin-music-actions"><button onClick={()=>edit(x)}>수정</button><button onClick={async()=>{await adminMusicToggle(x.id,!x.active);await load()}}>{x.active?"비공개":"공개"}</button><button onClick={async()=>{if(!window.confirm(`'${x.title}' 음악을 삭제할까요?`))return;await adminMusicDelete(x.id);await load()}}>삭제</button></div></div>):<p className="bg-sub">등록된 음악이 없어요.</p>}</div></div></div>;
+  return <div className="admin-report-list"><div className="bg-card"><h2>🎵 Pet음악 관리</h2><p className="bg-sub">음원·제목·커버 이미지를 등록하면 사용자 Pet음악 메뉴에 연결돼요. 보컬 여부와 분위기 태그도 지정할 수 있고, 업로드일은 자동 기록되며 좋아요·댓글·재생수로 인기 TOP5가 계산됩니다.</p><div className="admin-music-form" style={{marginTop:14}}><input className="bg-input" placeholder="노래 제목" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/><select className="bg-input" value={form.species} onChange={e=>setForm({...form,species:e.target.value})}><option value="all">🐾 공용</option><option value="dog">🐶 강아지</option><option value="cat">🐱 고양이</option></select><select className="bg-input" value={form.vocalType} onChange={e=>setForm({...form,vocalType:e.target.value})}><option value="instrumental">🎼 인스트루멘탈</option><option value="vocal">🎤 보컬 있음</option></select><select className="bg-input" value={form.mood} onChange={e=>setForm({...form,mood:e.target.value})}><option value="relax">😌 휴식</option><option value="sleep">🌙 수면</option><option value="play">🐾 놀이</option><option value="nature">🌿 자연</option></select><textarea className="bg-input support-textarea full" placeholder="간단한 설명 (선택)" value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/><label className="bg-card" style={{padding:12}}><b style={{fontSize:12}}>음원 파일 {editing?"(교체할 때만 선택)":""}</b><input type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/mp4,audio/aac" onChange={pickAudio} style={{display:"block",marginTop:8,width:"100%"}}/><small className="bg-sub">MP3/WAV/M4A · 최대 12MB</small></label><label className="bg-card" style={{padding:12}}><b style={{fontSize:12}}>커버 이미지 {editing?"(새 사진을 선택하면 교체)":""}</b>{editing&&form.coverUrl&&<img src={form.coverUrl} alt="현재 커버" style={{display:"block",width:72,height:72,objectFit:"cover",borderRadius:14,marginTop:8,border:"1px solid var(--border)"}}/>}<input type="file" accept="image/jpeg,image/png,image/webp" onChange={pickCover} style={{display:"block",marginTop:8,width:"100%"}}/><small className="bg-sub">{form.coverFile?`새 커버 선택됨: ${form.coverFile.name}`:"정사각형 이미지 권장 · JPG/PNG/WebP"}</small></label><label className="full" style={{fontSize:12,fontWeight:700}}><input type="checkbox" checked={form.active} onChange={e=>setForm({...form,active:e.target.checked})}/> 사용자에게 공개</label><div className="full" style={{display:"flex",gap:8}}><button className="bg-btn" disabled={busy} onClick={save}>{busy?(uploadStage||"업로드 중…"):editing?"수정 저장":"음악 등록"}</button>{editing&&<button className="bg-btn bg-btn-ghost" onClick={()=>{setEditing(null);setForm(blank)}}>취소</button>}</div></div></div><div className="bg-card"><h3>등록된 음악 {items.length}곡</h3><div className="admin-music-list">{items.length?items.map(x=><div className="admin-music-row" key={x.id}>{x.cover_url?<img className="admin-music-thumb" src={x.cover_url} alt=""/>:<div className="admin-music-thumb">🎵</div>}<div><b>{x.title}</b><small>{x.species==="dog"?"강아지":x.species==="cat"?"고양이":"공용"} · {x.vocal_type==="vocal"?"보컬":"인스트루멘탈"} · {({relax:"휴식",sleep:"수면",play:"놀이",nature:"자연"}[x.mood]||"휴식")} · {new Date(x.created_at).toLocaleDateString("ko-KR")} · ▶ {Number(x.play_count)||0} · ♥ {Number(x.like_count)||0} · 💬 {Number(x.comment_count)||0}</small></div><div className="admin-music-actions"><button onClick={()=>edit(x)}>수정</button><button onClick={async()=>{await adminMusicToggle(x.id,!x.active);await load()}}>{x.active?"비공개":"공개"}</button><button onClick={async()=>{if(!window.confirm(`'${x.title}' 음악을 삭제할까요?`))return;await adminMusicDelete(x.id);await load()}}>삭제</button></div></div>):<p className="bg-sub">등록된 음악이 없어요.</p>}</div></div></div>;
 }
 
 function SupportPage({account,onBack}){
