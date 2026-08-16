@@ -34,29 +34,60 @@ function speciesWhere(species){
 }
 
 async function ensureStarterTracks(){
-  const seedKey="petmusic-starter-twelve-v2";
+  const seedKey="petmusic-starter-four-v1";
+  // 예전에 넣었던 데모곡은 더 이상 사용하지 않습니다. 기존 DB에 남아 있어도 자동 정리해요.
   await sql`delete from pg_music_tracks where id='demo-pink-day' or audio_url='/petmusic/pink-day.mp3'`;
   await sql`delete from pg_app_meta where key in ('petmusic-demo-pink-day-v2','petmusic-demo-pink-day-v1')`;
+
   const {rows:meta}=await sql`select value from pg_app_meta where key=${seedKey} limit 1`;
   if(meta[0]) return;
+
   const tracks = [
-    {id:'starter-cat-soft-steps',title:'사뿐사뿐 낮잠길',description:'편안한 분위기의 사람 보컬이 함께 들어간 고양이 휴식 시간용 음악이에요.',species:'cat',vocalType:'vocal',mood:'relax',cover:'/petmusic/covers/cover-01.webp',audio:'/petmusic/cat-soft-steps.mp3'},
-    {id:'starter-cat-moonlight-steps',title:'달빛 아래 고양이 발걸음',description:'조용한 저녁과 수면 전 시간에 어울리는 부드러운 고양이용 음악이에요.',species:'cat',vocalType:'instrumental',mood:'sleep',cover:'/petmusic/covers/cover-02.webp',audio:'/petmusic/cat-moonlight-steps.mp3'},
-    {id:'starter-dog-happy-walk',title:'꼬리콩콩 산책길',description:'산책 전후나 기분 좋은 놀이 시간에 함께 듣기 좋은 밝은 강아지용 음악이에요.',species:'dog',vocalType:'instrumental',mood:'play',cover:'/petmusic/covers/cover-03.webp',audio:'/petmusic/dog-happy-walk.mp3'},
-    {id:'starter-dog-sunshine-steps',title:'햇살 따라 총총',description:'편안한 낮 시간에 강아지와 함께 반복재생하기 좋은 포근한 음악이에요.',species:'dog',vocalType:'instrumental',mood:'relax',cover:'/petmusic/covers/cover-04.webp',audio:'/petmusic/dog-sunshine-steps.mp3'},
-    {id:'starter-cat-clink-evening',title:'달그락, 저녁 준비',description:'사료 그릇 소리에 귀를 쫑긋 세우는 고양이의 저녁 전 설렘을 담은 잔잔한 인스트루멘탈이에요.',species:'cat',vocalType:'instrumental',mood:'relax',cover:'/petmusic/covers/cover-05.webp',audio:'/petmusic/cat-clink-evening.mp3'},
-    {id:'starter-cat-clink-dinner',title:'사각사각 고양이 식탁',description:'익숙한 밥시간의 분위기를 부드럽게 그린 편안한 고양이 인스트루멘탈이에요.',species:'cat',vocalType:'instrumental',mood:'relax',cover:'/petmusic/covers/cover-06.webp',audio:'/petmusic/cat-clink-dinner.mp3'},
-    {id:'starter-cat-bowl-wait',title:'그릇 앞의 기다림',description:'그릇 앞에서 조용히 기다리는 고양이의 차분한 순간을 담은 음악이에요.',species:'cat',vocalType:'instrumental',mood:'relax',cover:'/petmusic/covers/cover-07.webp',audio:'/petmusic/cat-bowl-wait.mp3'},
-    {id:'starter-cat-small-paws-evening',title:'작은 발끝, 저녁 시간',description:'사뿐한 발걸음과 함께 찾아오는 익숙한 저녁의 감성을 담은 고양이 인스트루멘탈이에요.',species:'cat',vocalType:'instrumental',mood:'relax',cover:'/petmusic/covers/cover-08.webp',audio:'/petmusic/cat-small-paws-evening.mp3'},
-    {id:'starter-dog-bowl-tail',title:'사료그릇 앞 꼬리춤',description:'밥시간이 다가오면 꼬리를 흔드는 강아지의 들뜬 마음을 표현한 밝은 인스트루멘탈이에요.',species:'dog',vocalType:'instrumental',mood:'relax',cover:'/petmusic/covers/cover-09.webp',audio:'/petmusic/dog-bowl-tail.mp3'},
-    {id:'starter-dog-mealtime-heart',title:'밥시간 두근두근',description:'사료그릇 앞에서 반짝이는 눈빛과 기대감을 담은 경쾌한 강아지 인스트루멘탈이에요.',species:'dog',vocalType:'instrumental',mood:'play',cover:'/petmusic/covers/cover-10.webp',audio:'/petmusic/dog-mealtime-heart.mp3'},
-    {id:'starter-dog-soft-breath',title:'포근한 숨소리',description:'깊이 잠든 강아지의 평온한 숨결을 닮은 부드러운 휴식 음악이에요.',species:'dog',vocalType:'instrumental',mood:'sleep',cover:'/petmusic/covers/cover-11.webp',audio:'/petmusic/dog-soft-breath.mp3'},
-    {id:'starter-dog-dreaming',title:'꿈꾸는 강아지',description:'햇살 아래 편안히 잠든 강아지의 따뜻한 분위기를 담은 잔잔한 인스트루멘탈이에요.',species:'dog',vocalType:'instrumental',mood:'sleep',cover:'/petmusic/covers/cover-12.webp',audio:'/petmusic/dog-dreaming.mp3'}
+    {
+      id:'starter-cat-soft-steps',
+      title:'사뿐사뿐 낮잠길',
+      description:'고양이가 편안하게 쉬는 시간에 가볍게 틀어두기 좋은 잔잔한 인스트루멘탈이에요.',
+      species:'cat', vocalType:'instrumental', mood:'relax',
+      cover:'/pettalk-demo-cat.webp', audio:'/petmusic/cat-soft-steps.mp3'
+    },
+    {
+      id:'starter-cat-moonlight-steps',
+      title:'달빛 아래 고양이 발걸음',
+      description:'조용한 저녁과 수면 전 시간에 어울리는 부드러운 고양이용 인스트루멘탈이에요.',
+      species:'cat', vocalType:'instrumental', mood:'sleep',
+      cover:'/pettalk-demo-cat.webp', audio:'/petmusic/cat-moonlight-steps.mp3'
+    },
+    {
+      id:'starter-dog-happy-walk',
+      title:'꼬리콩콩 산책길',
+      description:'산책 전후나 기분 좋은 놀이 시간에 함께 듣기 좋은 밝은 강아지용 인스트루멘탈이에요.',
+      species:'dog', vocalType:'instrumental', mood:'play',
+      cover:'/pettalk-demo-dog.webp', audio:'/petmusic/dog-happy-walk.mp3'
+    },
+    {
+      id:'starter-dog-sunshine-steps',
+      title:'햇살 따라 총총',
+      description:'편안한 낮 시간에 강아지와 함께 반복재생하기 좋은 포근한 인스트루멘탈이에요.',
+      species:'dog', vocalType:'instrumental', mood:'relax',
+      cover:'/pettalk-demo-dog.webp', audio:'/petmusic/dog-sunshine-steps.mp3'
+    }
   ];
+
   for (const track of tracks) {
-    await sql`insert into pg_music_tracks(id,title,description,species,vocal_type,mood,cover_url,audio_url,active,created_by)
+    await sql`
+      insert into pg_music_tracks(id,title,description,species,vocal_type,mood,cover_url,audio_url,active,created_by)
       values(${track.id},${track.title},${track.description},${track.species},${track.vocalType},${track.mood},${track.cover},${track.audio},true,null)
-      on conflict(id) do update set title=excluded.title,description=excluded.description,species=excluded.species,vocal_type=excluded.vocal_type,mood=excluded.mood,cover_url=excluded.cover_url,audio_url=excluded.audio_url,active=true,updated_at=now()`;
+      on conflict(id) do update set
+        title=excluded.title,
+        description=excluded.description,
+        species=excluded.species,
+        vocal_type=excluded.vocal_type,
+        mood=excluded.mood,
+        cover_url=excluded.cover_url,
+        audio_url=excluded.audio_url,
+        active=true,
+        updated_at=now()
+    `;
   }
   await sql`insert into pg_app_meta(key,value) values(${seedKey},'done') on conflict(key) do update set value='done',updated_at=now()`;
 }

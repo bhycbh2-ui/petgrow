@@ -1433,7 +1433,7 @@ function goToKakaoLogin() {
   // 전체 페이지 이동으로 카카오 로그인 화면으로 리다이렉트해요 (실제 OAuth 인가 흐름).
   window.location.href = "/api/auth/kakao/login";
 }
-async function fetchMe(timeoutMs = 2200) {
+async function fetchMe(timeoutMs = 8000) {
   // 401만 실제 로그아웃으로 판단해요. 서버 cold start/DB 지연은 한 번 재시도해서
   // 로그인된 사용자가 UI에서 다시 "로그인"으로 보이는 현상을 막습니다.
   for (let attempt = 0; attempt < 2; attempt += 1) {
@@ -1450,7 +1450,7 @@ async function fetchMe(timeoutMs = 2200) {
       return await res.json();
     } catch (err) {
       console.warn(`로그인 상태 확인 재시도 ${attempt + 1}/2:`, err);
-      if (attempt === 0) await new Promise((resolve) => window.setTimeout(resolve, 180));
+      if (attempt === 0) await new Promise((resolve) => window.setTimeout(resolve, 700));
     } finally {
       window.clearTimeout(timer);
     }
@@ -1604,7 +1604,6 @@ function adminLogs(){return adminApi("logs");}
 
 function musicApi(action,options={}){return apiJson(`/api/music?action=${action}`,options);}
 function musicList(species="all",page=1){return musicApi(`list&species=${encodeURIComponent(species)}&page=${page}`);}
-function musicLiked(){return musicApi("liked");}
 function musicTrackPlay(id){return musicApi("play",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id})});}
 function musicToggleLike(id){return musicApi("like",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id})});}
 function musicComments(id){return musicApi(`comments&id=${encodeURIComponent(id)}`);}
@@ -1628,11 +1627,8 @@ function getAnonymousAnalyticsSessionId() {
   }
 }
 function getAnalyticsPlatform() {
-  if (Capacitor.isNativePlatform()) return Capacitor.getPlatform() === "ios" ? "ios" : "android";
-  const standalone = window.matchMedia?.("(display-mode: standalone)")?.matches || window.navigator.standalone === true;
-  if (standalone) return "pwa";
-  const mobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || "");
-  return mobile ? "mobile_web" : "web";
+  if (!Capacitor.isNativePlatform()) return "web";
+  return Capacitor.getPlatform() === "ios" ? "ios" : "android";
 }
 function analyticsEvent(event, page) {
   return fetch("/api/analytics", {
@@ -2424,7 +2420,7 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
 
   const showAdminEntry = !!adminEntry && (!adminEntry.adminExists || adminEntry.isAdmin || adminEntry.recoveryAvailable);
   const adminLabel = adminEntry?.isAdmin
-    ? "관리자센터"
+    ? "관리자 센터"
     : (adminEntry?.adminExists ? "관리자 등록/복구" : "최초 관리자 등록");
 
   return (
@@ -3064,16 +3060,11 @@ const GlobalStyle = () => (
     .info-guide-list .bg-surface-card:nth-child(6n){background:#F2F6F1;}
     .cm-filter-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
     .cm-filter-wrap .tab-pill{flex:0 0 auto;}
-    .cm-demo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:4px;}
-    .cm-sample-showcase{margin:12px 0 18px;padding:16px;border-radius:22px;background:linear-gradient(145deg,#F3FAF4,#FFF9F0);border:1px solid #DDE9DF;box-shadow:0 8px 24px rgba(34,48,39,.045)}.cm-sample-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;margin-bottom:12px}.cm-sample-head>div{display:grid;gap:2px}.cm-sample-head span{font-size:9px;letter-spacing:.12em;font-weight:900;color:#3E7C4A}.cm-sample-head b{font-size:15px;color:#203128}.cm-sample-head small{font-size:10px;color:var(--sub);text-align:right;max-width:240px;line-height:1.5}@media(max-width:640px){.cm-sample-head{display:grid;align-items:start}.cm-sample-head small{text-align:left;max-width:none}}
-    .cm-demo-card{--demo-accent:#4F8F5B;--demo-soft:#EEF7F0;background:linear-gradient(180deg,#fff 0%,var(--demo-soft) 165%);border:1px solid #DDE9DF;border-radius:20px;padding:16px;box-shadow:0 7px 20px rgba(34,48,39,.055);position:relative;overflow:hidden;}
-    .cm-demo-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--demo-accent);opacity:.9}
-    .cm-demo-card[data-tone="coral"]{--demo-accent:#D87967;--demo-soft:#FFF1ED}.cm-demo-card[data-tone="amber"]{--demo-accent:#B8842F;--demo-soft:#FFF7E7}.cm-demo-card[data-tone="blue"]{--demo-accent:#5A84A8;--demo-soft:#EEF6FC}.cm-demo-card[data-tone="violet"]{--demo-accent:#7B6DA8;--demo-soft:#F4F0FB}.cm-demo-card[data-tone="mint"]{--demo-accent:#4F8F5B;--demo-soft:#EEF7F0}.cm-demo-card[data-tone="teal"]{--demo-accent:#458B83;--demo-soft:#ECF8F6}.cm-demo-card[data-tone="rose"]{--demo-accent:#B96E83;--demo-soft:#FCEFF3}.cm-demo-card[data-tone="olive"]{--demo-accent:#73864B;--demo-soft:#F3F6E9}.cm-demo-card[data-tone="slate"]{--demo-accent:#657269;--demo-soft:#F0F3F1}
-    .cm-demo-badge{display:inline-flex;padding:4px 9px;border-radius:999px;background:var(--demo-soft);color:var(--demo-accent);border:1px solid rgba(79,143,91,.16);font-size:10px;font-weight:900;margin-bottom:8px;}
-    .cm-demo-card .cm-cat-chip{background:var(--demo-soft)!important;color:var(--demo-accent)!important;border:1px solid rgba(79,143,91,.13)}
-    .cm-demo-card .cm-title{color:#203128}.cm-demo-card .cm-meta-row{color:var(--demo-accent);font-weight:800}
-    @media(max-width:980px){.cm-demo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media(max-width:640px){.cm-demo-grid{grid-template-columns:1fr}.cm-demo-card{padding:15px 15px 14px}}
+    .cm-demo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:4px;}
+    .cm-sample-showcase{margin:12px 0 18px;padding:16px;border-radius:22px;background:linear-gradient(145deg,#F4FAF5,#FFF9F0);border:1px solid #E1EBE3}.cm-sample-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;margin-bottom:12px}.cm-sample-head>div{display:grid;gap:2px}.cm-sample-head span{font-size:9px;letter-spacing:.12em;font-weight:900;color:#579163}.cm-sample-head b{font-size:15px}.cm-sample-head small{font-size:10px;color:var(--sub);text-align:right;max-width:240px;line-height:1.5}@media(max-width:640px){.cm-sample-head{display:grid;align-items:start}.cm-sample-head small{text-align:left;max-width:none}}
+    .cm-demo-card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:0 5px 16px rgba(0,0,0,.035);}
+    .cm-demo-badge{display:inline-flex;padding:3px 8px;border-radius:999px;background:#F2F6F1;color:#786326;font-size:10px;font-weight:800;margin-bottom:8px;}
+    @media(max-width:640px){.cm-demo-grid{grid-template-columns:1fr}}
     @media(max-width:680px){.bboggl-root{font-family:'Gowun Dodum','Noto Sans KR','Malgun Gothic',Arial,sans-serif}.bboggl-root h1,.bboggl-root h2,.bboggl-root h3{font-family:'Jua','Gowun Dodum','Malgun Gothic',sans-serif}.landing-headline,.home-hero-copy h1{word-break:keep-all}.desktop-nav-link,.ham-nav-item,.app-bottom-nav-item{letter-spacing:-.02em}}
     @media(max-width:560px){
       .cm-search-input{min-width:0;}
@@ -3151,7 +3142,7 @@ const GlobalStyle = () => (
     .bg-input,.cm-search-input{border:1px solid #DDE7DF;border-radius:14px;box-shadow:0 1px 2px rgba(35,50,32,.025);transition:border-color .16s,box-shadow .16s;}
     .bg-input:focus,.cm-search-input:focus{border-color:#79AA84;box-shadow:0 0 0 3px rgba(75,149,96,.11);}
     .bg-chip{border:1px solid #DDE7DF;background:rgba(255,255,255,.92);font-weight:650;}
-    .bg-chip.active{background:linear-gradient(135deg,#4F8F5B,#3E7C4A);color:#fff;border-color:#4F8F5B;font-weight:800;box-shadow:0 5px 14px rgba(79,143,91,.20);}
+    .bg-chip.active{background:#E7F2E5;color:#3D704A;border-color:#BFD7C0;font-weight:800;}
     .desktop-nav-link{border-radius:999px;padding:8px 11px;}
     .desktop-nav-link.active{color:#3D704A;background:#E8F2E5;}
     .lang-toggle{box-shadow:0 3px 12px rgba(35,50,32,.045);}
@@ -4135,7 +4126,7 @@ const GlobalStyle = () => (
       }
     }
 
-    /* 관리자센터: 모바일 웹/PWA/Android 앱 공통 */
+    /* 관리자 센터: 모바일 웹/PWA/Android 앱 공통 */
     .admin-inline-warning{
       max-width:100%;
       margin:0 0 14px;
@@ -4239,7 +4230,7 @@ const GlobalStyle = () => (
     .support-page{max-width:920px;margin:0 auto;padding:8px 20px 70px}.support-head{display:flex;gap:14px;align-items:center;margin-bottom:14px}.support-head h1{font-size:24px}.support-head p{color:#738078;font-size:12px}
 .support-head{justify-content:space-between}.support-head>div:first-child{min-width:0}.support-back-right{margin-left:auto;flex:0 0 auto}
 /* PetGrow 공통 모바일 카테고리 / 페이지네이션 */
-.responsive-category-shell{margin-bottom:20px}.responsive-category-desktop{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.responsive-category-desktop .bg-chip,.responsive-category-primary .bg-chip,.responsive-category-more-panel .bg-chip{display:inline-flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap}.responsive-category-mobile{display:none}.responsive-pagination{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:26px;flex-wrap:nowrap}.responsive-pages-mobile,.responsive-pages-desktop{display:flex;gap:6px;align-items:center}.responsive-pages-mobile{display:none}.responsive-page-number,.responsive-page-arrow{height:42px;min-width:42px;border-radius:999px;border:1px solid #DDE7DF;background:#fff;color:var(--text);font-family:inherit;font-weight:800;cursor:pointer;padding:0 13px;transition:transform .16s ease,background .16s ease,border-color .16s ease,color .16s ease}.responsive-page-number:hover,.responsive-page-arrow:hover:not(:disabled){transform:translateY(-1px);border-color:#BFD7C0}.responsive-page-number.active{background:#4F8F5B;color:#fff;border-color:#4F8F5B;box-shadow:0 4px 12px rgba(79,143,91,.18)}.responsive-page-arrow:disabled,.responsive-page-number:disabled{opacity:.38;cursor:default;transform:none}
+.responsive-category-shell{margin-bottom:20px}.responsive-category-desktop{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.responsive-category-desktop .bg-chip,.responsive-category-primary .bg-chip,.responsive-category-more-panel .bg-chip{display:inline-flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap}.responsive-category-mobile{display:none}.responsive-pagination{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:26px;flex-wrap:nowrap}.responsive-pages-mobile,.responsive-pages-desktop{display:flex;gap:6px;align-items:center}.responsive-pages-mobile{display:none}.responsive-page-number,.responsive-page-arrow{height:42px;min-width:42px;border-radius:999px;border:1px solid #DDE7DF;background:#fff;color:var(--text);font-family:inherit;font-weight:800;cursor:pointer;padding:0 13px;transition:transform .16s ease,background .16s ease,border-color .16s ease,color .16s ease}.responsive-page-number:hover,.responsive-page-arrow:hover:not(:disabled){transform:translateY(-1px);border-color:#BFD7C0}.responsive-page-number.active{background:#E7F2E5;color:#3D704A;border-color:#BFD7C0}.responsive-page-arrow:disabled,.responsive-page-number:disabled{opacity:.38;cursor:default;transform:none}
 @media(max-width:640px){.responsive-category-desktop{display:none}.responsive-category-mobile{display:block}.responsive-category-primary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.responsive-category-primary .bg-chip{min-width:0;padding:9px 5px;font-size:12px;overflow:hidden;text-overflow:ellipsis}.responsive-category-more{background:#F5F8F5!important;color:#526057!important}.responsive-category-more-panel{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;padding:10px;border:1px solid #E3EBE4;border-radius:16px;background:rgba(248,251,248,.92);animation:petgrow-category-open .18s ease both}.responsive-category-more-panel .bg-chip{padding:9px 11px;font-size:12px}.responsive-pagination{width:100%;gap:5px;margin-top:22px}.responsive-pages-desktop{display:none}.responsive-pages-mobile{display:flex;gap:5px}.responsive-page-number{min-width:36px;width:36px;height:36px;padding:0;font-size:13px}.responsive-page-arrow{height:36px;min-width:52px;padding:0 9px;font-size:12px}.community-responsive-categories{margin-bottom:10px}}@media(max-width:390px){.responsive-category-primary{gap:4px}.responsive-category-primary .bg-chip{padding:8px 3px;font-size:11px}.responsive-page-number{min-width:34px;width:34px}.responsive-page-arrow{min-width:48px;padding:0 7px}}@keyframes petgrow-category-open{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 
 .petmusic-page{max-width:980px;margin:0 auto;padding:4px 20px 80px}.petmusic-hero{border-radius:24px;padding:24px;background:linear-gradient(135deg,#f2f8f3,#fff);border:1px solid #dfece1;margin-bottom:18px;overflow:hidden;position:relative}.petmusic-hero:after{content:"♫";position:absolute;right:26px;top:10px;font-size:72px;color:rgba(79,138,91,.10);font-family:serif}.petmusic-hero h1{font-size:26px;margin:0 0 6px}.petmusic-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 20px}.petmusic-tabs button{border:1px solid #d7e6da;background:#fff;border-radius:999px;padding:9px 15px;font-weight:800;color:#66736a;cursor:pointer}.petmusic-tabs button.active{background:var(--primary);color:#fff;border-color:var(--primary)}.petmusic-top5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:24px}.petmusic-rank{background:#fff;border:1px solid #e2ebe3;border-radius:18px;padding:9px;cursor:pointer;box-shadow:0 6px 18px rgba(39,77,50,.05)}.petmusic-rank img,.petmusic-rank-cover{width:100%;aspect-ratio:1;border-radius:13px;object-fit:cover;background:linear-gradient(145deg,#e7f3ea,#f8efe7);display:grid;place-items:center;font-size:34px}.petmusic-rank b{display:block;font-size:12px;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.petmusic-rank small{font-size:10px;color:#869188}.petmusic-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.petmusic-card{display:grid;grid-template-columns:126px minmax(0,1fr);gap:15px;border:1px solid #e0ebe2;border-radius:22px;background:#fff;padding:13px;box-shadow:0 7px 22px rgba(38,78,50,.055)}.petmusic-cover{width:126px;height:126px;border-radius:17px;object-fit:cover;background:linear-gradient(145deg,#e9f5ec,#fbf1eb);display:grid;place-items:center;font-size:40px}.petmusic-title{font-size:16px;font-weight:900;margin-bottom:3px}.petmusic-date{font-size:11px;color:#8b958e}.petmusic-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.petmusic-actions button{border:1px solid #dce8de;background:#f8fbf9;border-radius:10px;padding:7px 9px;font-size:11px;font-weight:800;cursor:pointer}.petmusic-actions button.liked{background:#fff0f4;border-color:#f4c6d2;color:#cf4e6c}.petmusic-player{display:flex;align-items:center;gap:8px;margin-top:8px}.petmusic-play{width:38px;height:38px;border:0;border-radius:50%;background:var(--primary);color:#fff;font-size:16px;cursor:pointer}.petmusic-loop{font-size:10px;border:1px solid #dce8de;background:#fff;border-radius:9px;padding:6px 8px;cursor:pointer}.petmusic-loop.active{background:#eaf5ed;color:var(--primary-dark);border-color:#bcd6c2}.petmusic-pagination{display:flex;justify-content:center;gap:6px;margin-top:24px;flex-wrap:wrap}.petmusic-pagination button{min-width:34px;height:34px;border-radius:10px;border:1px solid #dce8de;background:#fff;font-weight:800;cursor:pointer}.petmusic-pagination button.active{background:var(--primary);color:#fff}.petmusic-comments{margin-top:10px;border-top:1px solid #edf2ee;padding-top:9px}.petmusic-comment-row{font-size:11px;padding:6px 0;border-bottom:1px dashed #edf1ee}.petmusic-comment-form{display:flex;gap:6px;margin-top:7px}.petmusic-comment-form input{flex:1;min-width:0;border:1px solid #dfe9e1;border-radius:10px;padding:8px 9px;font-size:11px}.petmusic-comment-form button{border:0;border-radius:10px;background:var(--primary);color:#fff;font-weight:800;padding:0 10px}.admin-music-form{display:grid;grid-template-columns:1fr 170px;gap:12px}.admin-music-form .full{grid-column:1/-1}.admin-music-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}.admin-music-row{display:grid;grid-template-columns:54px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px;border:1px solid #e2ebe3;border-radius:15px}.admin-music-thumb{width:54px;height:54px;object-fit:cover;border-radius:12px;background:#eef6f0;display:grid;place-items:center}.admin-music-row small{display:block;color:#88938b;font-size:10px}.admin-music-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.admin-music-actions button{border:1px solid #dce8de;background:#fff;border-radius:9px;padding:7px 9px;font-size:11px;font-weight:800;cursor:pointer}
@@ -4599,16 +4590,6 @@ const GlobalStyle = () => (
   .admin-menu-analytics{margin-top:14px;padding:18px}.admin-menu-analytics-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:14px}.admin-menu-analytics-head h3{margin:0;font-size:18px}.admin-menu-analytics-head small{color:var(--sub)}.admin-menu-row{display:grid;grid-template-columns:110px 1fr 72px;gap:10px;align-items:center;margin:10px 0}.admin-menu-name{font-size:12px;font-weight:800}.admin-menu-bar{height:9px;background:#EDF1ED;border-radius:999px;overflow:hidden}.admin-menu-bar i{display:block;height:100%;background:linear-gradient(90deg,#9FC4A6,#4F8A5B);border-radius:inherit}.admin-menu-value{text-align:right;font-size:11px;color:#657269}.admin-menu-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#315B39;font-weight:850}
   @media(max-width:700px){.nearby-page{padding:12px 12px 36px}.nearby-hero{padding:18px;display:grid}.nearby-hero h1{font-size:25px}.nearby-locate-btn{width:100%;justify-content:center}.nearby-map{height:330px}.nearby-place{grid-template-columns:auto 1fr}.nearby-place-actions{grid-column:2;justify-content:flex-start}.nearby-place-title{display:block}.nearby-place-title strong{display:block;margin-top:3px}.nearby-review-head{display:grid}.nearby-review-head .bg-btn{width:100%}.nearby-review-compose-foot{align-items:flex-start;flex-direction:column}.nearby-review-compose-foot .bg-btn{width:100%}.nearby-review-meta small{margin-left:0;width:100%}.admin-menu-row{grid-template-columns:82px 1fr 60px}}
 
-
-    /* 2026-08-17 PetGrow app-dashboard refresh */
-    .petgrow-dashboard-home{max-width:1180px!important;padding-bottom:28px}
-    .dash-welcome{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:4px 0 18px;padding:4px 2px}.dash-welcome h1{margin:3px 0 4px;font-size:25px;line-height:1.25}.dash-welcome p{margin:0;color:#7B867E;font-size:13px}.dash-eyebrow{font-size:10px;letter-spacing:.14em;color:#4F8A5B;font-weight:900}.dash-profile-dot{width:42px;height:42px;border:0;border-radius:15px;background:#EAF4EB;color:#347A4A;font-size:16px;font-weight:900;cursor:pointer}
-    .dash-pet-spotlight{display:flex;align-items:center;gap:18px;min-height:190px;padding:22px;border:1px solid #DCE9DE;border-radius:28px;background:linear-gradient(125deg,#E8F5EA 0%,#F5FAF5 52%,#FFF 100%);box-shadow:0 12px 36px rgba(45,82,54,.07);cursor:pointer;overflow:hidden;position:relative;transition:transform .18s ease,box-shadow .18s ease}.dash-pet-spotlight:hover{transform:translateY(-2px);box-shadow:0 16px 42px rgba(45,82,54,.10)}.dash-pet-photo{width:150px;height:150px;border-radius:26px;background:#fff;overflow:hidden;display:grid;place-items:center;flex:0 0 auto}.dash-pet-photo img{width:100%;height:100%;object-fit:cover}.dash-pet-photo span{font-size:60px}.dash-pet-copy{min-width:0;flex:1}.dash-pet-copy>small{font-size:10px;font-weight:900;letter-spacing:.08em;color:#4F8A5B}.dash-pet-copy h2{margin:6px 0 4px;font-size:24px}.dash-pet-copy>p{margin:0 0 16px;color:#7F8982;font-size:13px}.dash-pet-metrics{display:flex;gap:8px;flex-wrap:wrap}.dash-pet-metrics span{min-width:95px;padding:9px 12px;border-radius:14px;background:rgba(255,255,255,.78);border:1px solid rgba(218,231,220,.9);display:flex;flex-direction:column;gap:2px}.dash-pet-metrics b{font-size:14px}.dash-pet-metrics small{font-size:9px;color:#98A19B}.dash-pet-arrow{font-size:30px;color:#6C8D74;padding:0 4px}.dash-pet-spotlight.empty{min-height:110px}.dash-empty-icon{width:54px;height:54px;border-radius:18px;background:#fff;display:grid;place-items:center;color:#4F8A5B;font-size:28px}
-    .dash-section{margin-top:22px}.dash-section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.dash-section-head h2{font-size:16px;margin:0}.dash-section-head span{font-size:10px;color:#9AA39D}.dash-quick-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.dash-quick-grid button{border:1px solid #E1E9E2;background:#fff;border-radius:20px;min-height:96px;padding:13px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-family:inherit;font-weight:800;color:#38433B;cursor:pointer;box-shadow:0 6px 18px rgba(34,48,39,.035);transition:.16s}.dash-quick-grid button:hover{transform:translateY(-2px);border-color:#CFE0D2}.dash-quick-grid i{width:43px;height:43px;border-radius:15px;background:#F0F6F0;display:grid;place-items:center;font-style:normal;font-size:20px}.dash-quick-grid span{font-size:11px}
-    .dash-widget-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.dash-widget{border:1px solid #E0E9E1;background:#fff;border-radius:22px;padding:18px;display:flex;align-items:center;text-align:left;gap:14px;font-family:inherit;color:#253029;cursor:pointer;box-shadow:0 8px 24px rgba(34,48,39,.04);transition:.18s}.dash-widget:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(34,48,39,.07)}.dash-widget-icon{width:50px;height:50px;border-radius:17px;display:grid;place-items:center;font-size:24px;flex:0 0 auto}.dash-widget>div:nth-child(2){min-width:0;flex:1}.dash-widget small{font-size:9px;font-weight:900;letter-spacing:.08em;color:#7D8A80}.dash-widget h3{margin:4px 0;font-size:14px}.dash-widget p{margin:0;color:#8A958D;font-size:10.5px;line-height:1.5}.dash-widget>b{font-size:22px;color:#8AA292}.dash-widget-music .dash-widget-icon{background:#F1EDFF}.dash-widget-nearby .dash-widget-icon{background:#FFF1E6}.dash-widget-talk .dash-widget-icon{background:#EAF3FF}.dash-widget-content .dash-widget-icon{background:#FCEEF3}
-    .sidebar-section-label{padding:12px 12px 4px;font-size:8px;font-weight:900;letter-spacing:.10em;color:#A2AAA4}.petgrow-sidebar-nav-grouped{overflow:auto;padding-right:2px}.petgrow-sidebar-nav-grouped::-webkit-scrollbar{width:0}
-    @media(max-width:899px){.petgrow-dashboard-home{padding-left:14px!important;padding-right:14px!important}.dash-welcome h1{font-size:20px}.dash-welcome p{font-size:11px;line-height:1.55}.dash-pet-spotlight{min-height:0;padding:16px;border-radius:23px;gap:13px}.dash-pet-photo{width:82px;height:82px;border-radius:22px}.dash-pet-copy h2{font-size:18px}.dash-pet-copy>p{font-size:10.5px;margin-bottom:9px}.dash-pet-metrics{gap:5px}.dash-pet-metrics span{min-width:62px;padding:6px 8px;border-radius:11px}.dash-pet-metrics b{font-size:11px}.dash-pet-metrics small{font-size:7.5px}.dash-quick-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.dash-quick-grid button{min-height:77px;border-radius:17px;padding:9px 3px}.dash-quick-grid i{width:36px;height:36px;border-radius:13px;font-size:17px}.dash-quick-grid span{font-size:9px;letter-spacing:-.04em}.dash-widget-grid{grid-template-columns:1fr;gap:9px}.dash-widget{padding:14px;border-radius:19px}.dash-widget-icon{width:44px;height:44px;border-radius:15px}.dash-widget p{font-size:9.5px}.dash-widget h3{font-size:13px}}
-    @media(max-width:390px){.dash-quick-grid span{font-size:8.3px}.dash-quick-grid button{padding-left:1px;padding-right:1px}.dash-pet-arrow{display:none}}
 `}</style>
 );
 
@@ -8920,7 +8901,7 @@ function AboutPage({ onStart, onNavigate }) {
             <LandingFeatureCard Illust={IllustPetBti} title={t.landingCardPetBtiTitle} desc={t.landingCardPetBtiDesc} />
             <LandingFeatureCard Illust={MusicIcon} title={lang === "en" ? "🎵 Pet Music" : "🎵 Pet음악"} desc={lang === "en" ? "Music for dogs and cats with loop playback, likes, comments and a live Top 5." : "강아지·고양이 음악을 반복재생하고 좋아요·댓글로 인기 TOP5를 함께 만들어요."} />
             <LandingFeatureCard Illust={IllustTips} title={t.landingCardTipsTitle} desc={t.landingCardTipsDesc} />
-            <LandingFeatureCard Illust={MapPinIcon} title={t.landingCardNearbyTitle} desc={t.landingCardNearbyDesc} />
+            <LandingFeatureCard Illust={IllustTips} title={t.landingCardNearbyTitle} desc={t.landingCardNearbyDesc} />
             <LandingFeatureCard Illust={IllustCommunity} title={t.landingCardCommunityTitle} desc={t.landingCardCommunityDesc} />
           </div>
         </div>
@@ -9015,15 +8996,6 @@ function AboutPage({ onStart, onNavigate }) {
             </button>
 
           </div>
-        </div>
-      </section>
-
-      {/* 내 주변 Pet */}
-      <section className="landing-section landing-section-white">
-        <div className="landing-wrap">
-          <h2 className="landing-section-title" style={{ marginBottom: 6 }}>{lang === "en" ? "Nearby Pet" : "내 주변 Pet"}</h2>
-          <p style={{ textAlign:"center",color:"#89928C",fontSize:15,maxWidth:620,margin:"0 auto 18px" }}>{lang === "en" ? "Find nearby veterinary hospitals, pharmacies, pet shops, grooming salons and daycare/hotels from your current location." : "현재 위치를 기준으로 가까운 동물병원·동물약국·펫샵·미용·유치원/호텔을 거리순으로 찾고 PetGrow 회원 후기도 확인해요."}</p>
-          <div className="landing-mini-teaser"><button type="button" className="landing-mini-teaser-item" onClick={() => go("nearby")}><span className="landing-mini-teaser-icon"><MapPinIcon style={{width:20,height:20}}/></span><span className="landing-mini-teaser-label">{lang === "en" ? "Find nearby pet places" : "내 주변 Pet 찾기"}</span></button></div>
         </div>
       </section>
 
@@ -9277,39 +9249,61 @@ function NearbyPetPage(){
 
 function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
   const t = useT();
+  // 비로그인 상태에서는 브라우저에 남아 있는 이전 반려동물 정보를 홈에 노출하지 않아요.
   const visiblePets = account ? pets : [];
-  const pet = visiblePets[0] || null;
-  const weight = pet?.records?.length ? pet.records[pet.records.length - 1]?.weightKg : pet?.profile?.initialWeightKg;
-  const quick = [
-    ["pets", "🐾", lang === "en" ? "My Pet" : "우리 아이"],
-    ["music", "🎵", lang === "en" ? "Pet Music" : "Pet음악"],
-    ["nearby", "📍", lang === "en" ? "Nearby Pet" : "내 주변 Pet"],
-    ["community", "💬", lang === "en" ? "Pet Talk" : "Pet톡"],
-    ["more", "•••", lang === "en" ? "More" : "더보기"],
-  ];
+
   return (
-    <div className="legal-page-shell petgrow-dashboard-home">
-      <section className="dash-welcome">
-        <div><span className="dash-eyebrow">PetGrow</span><h1>{account?.name ? t.homeGreeting(account.name) : (lang === "en" ? "Welcome to PetGrow! 🐾" : "오늘도 우리 아이와 행복한 하루 🐾")}</h1><p>{lang === "en" ? "Everything your pet needs, in one simple dashboard." : "우리 아이의 성장·음악·주변 시설·커뮤니티를 한곳에서 확인해요."}</p></div>
-        <button type="button" className="dash-profile-dot" onClick={() => onGoView(account ? "my" : "pets")} aria-label="마이페이지">{account?.name?.slice(0,1) || "🐾"}</button>
-      </section>
+    <div className="legal-page-shell">
+      <div className="home-hero-copy">
+        <h1>{account?.name ? t.homeGreeting(account.name) : (lang === "en" ? "Welcome to PetGrow! 🐾" : "PetGrow에 오신 걸 환영해요! 🐾")}</h1>
+        <p className="bg-sub">{t.homeSubGreeting}</p>
+      </div>
 
-      <section className={`dash-pet-spotlight ${pet ? "has-pet" : "empty"}`} onClick={onGoPets}>
-        {pet ? <>
-          <div className="dash-pet-photo">{pet.profile.profileImage ? <img src={pet.profile.profileImage} alt={`${pet.profile.name || "반려동물"} 프로필`} fetchPriority="high" /> : <span>{pet.species === "cat" ? "🐱" : "🐶"}</span>}</div>
-          <div className="dash-pet-copy"><small>{lang === "en" ? "TODAY WITH MY PET" : "오늘의 우리 아이"}</small><h2>{pet.profile.name || (lang === "en" ? "My Pet" : "우리 아이")}</h2><p>{[pet.profile.breedName, petAgeLabel(pet.profile.birthDate, lang)].filter(Boolean).join(" · ")}</p><div className="dash-pet-metrics"><span><b>{weight ? `${Number(weight).toFixed(1)}kg` : "—"}</b><small>{lang === "en" ? "Weight" : "현재 체중"}</small></span><span><b>{pet.profile.gender === "male" ? "♂" : pet.profile.gender === "female" ? "♀" : "—"}</b><small>{lang === "en" ? "Gender" : "성별"}</small></span><span><b>{pet.species === "cat" ? "CAT" : "DOG"}</b><small>{lang === "en" ? "Type" : "구분"}</small></span></div></div>
-          <div className="dash-pet-arrow">›</div>
-        </> : <><div className="dash-empty-icon">＋</div><div><h2>{lang === "en" ? "Add your pet" : "우리 아이를 등록해보세요"}</h2><p>{lang === "en" ? "Start growth records and personalized features." : "성장 기록과 맞춤 기능을 바로 시작할 수 있어요."}</p></div><div className="dash-pet-arrow">›</div></>}
-      </section>
+      {visiblePets.length ? (
+        <div className="home-pet-list">
+          {visiblePets.map((pet) => (
+            <div className="home-pet-card" key={pet.id} onClick={onGoPets}>
+              <span className="home-pet-avatar">
+                {pet.profile.profileImage ? (
+                  <img src={pet.profile.profileImage} alt={`${pet.profile.name || "반려동물"} 프로필`} loading="lazy" />
+                ) : (
+                  <span style={{ fontSize: 26 }}>{pet.species === "cat" ? "🐱" : "🐶"}</span>
+                )}
+              </span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div className="home-pet-name">{pet.profile.name}</div>
+                <div className="bg-sub" style={{ fontSize: 13 }}>
+                  {[pet.profile.breedName, petAgeLabel(pet.profile.birthDate, lang)].filter(Boolean).join(" · ")}
+                </div>
+              </div>
+              <button type="button" className="bg-btn bg-btn-ghost" style={{ fontSize: 12, padding: "8px 14px", flexShrink: 0 }} onClick={onGoPets}>
+                {t.homePetCardBtn}
+              </button>
+            </div>
+          ))}
+          <button type="button" className="home-pet-card home-pet-card-empty" onClick={onGoPets}>
+            <PlusIcon style={{ width: 20, height: 20, color: "var(--primary)" }} />
+            <span>{t.homeAddPetBtn}</span>
+          </button>
+        </div>
+      ) : (
+        <button type="button" className="home-pet-card home-pet-card-empty" onClick={onGoPets}>
+          <PlusIcon style={{ width: 20, height: 20, color: "var(--primary)" }} />
+          <span>{t.homeAddPetBtn}</span>
+        </button>
+      )}
 
-      <section className="dash-section"><div className="dash-section-head"><h2>{lang === "en" ? "Quick access" : "자주 사용하는 메뉴"}</h2><span>{lang === "en" ? "Tap to open" : "빠르게 이동"}</span></div><div className="dash-quick-grid">{quick.map(([key,icon,label])=><button type="button" key={key} onClick={()=>key==="pets"?onGoPets():key==="more"?onGoView("about"):onGoView(key)}><i>{icon}</i><span>{label}</span></button>)}</div></section>
-
-      <section className="dash-widget-grid">
-        <button type="button" className="dash-widget dash-widget-music" onClick={()=>onGoView("music")}><div className="dash-widget-icon">🎵</div><div><small>{lang === "en" ? "PET MUSIC" : "PET MUSIC"}</small><h3>{lang === "en" ? "Popular TOP5 & my likes" : "인기 TOP5 · 내가 좋아요한 음악"}</h3><p>{lang === "en" ? "Play, loop and keep your favorites close." : "좋아하는 음악을 바로 듣고 반복재생해요."}</p></div><b>›</b></button>
-        <button type="button" className="dash-widget dash-widget-nearby" onClick={()=>onGoView("nearby")}><div className="dash-widget-icon">📍</div><div><small>{lang === "en" ? "NEARBY PET" : "내 주변 PET"}</small><h3>{lang === "en" ? "Find pet places near me" : "가까운 반려동물 시설 찾기"}</h3><p>{lang === "en" ? "Hospitals, shops, grooming and daycare." : "병원·약국·펫샵·미용·유치원을 거리순으로 확인해요."}</p></div><b>›</b></button>
-        <button type="button" className="dash-widget dash-widget-talk" onClick={()=>onGoView("community")}><div className="dash-widget-icon">💬</div><div><small>PET TALK</small><h3>{lang === "en" ? "Share everyday moments" : "우리 아이 이야기를 나눠요"}</h3><p>{lang === "en" ? "Questions, tips and cute moments." : "질문·정보·일상 이야기를 편하게 공유해요."}</p></div><b>›</b></button>
-        <button type="button" className="dash-widget dash-widget-content" onClick={()=>onGoView("petbti")}><div className="dash-widget-icon">🧠</div><div><small>PET CONTENT</small><h3>{lang === "en" ? "PetBTI & useful info" : "PetBTI · Pet정보"}</h3><p>{lang === "en" ? "Learn more about your pet every day." : "성향과 생활 정보를 더 쉽고 재미있게 확인해요."}</p></div><b>›</b></button>
-      </section>
+      <h2 style={{ fontSize: 17, marginTop: 24, marginBottom: 14 }}>{t.homeServicesTitle}</h2>
+      <div className="home-service-grid">
+        <HomeServiceCard Illust={InfoIcon} bg="#EEF5EC" title={t.aboutNav} desc={lang === "en" ? "See PetGrow features and services at a glance" : "PetGrow의 기능과 서비스를 한눈에 보기"} onClick={() => onGoView("about")} />
+        <HomeServiceCard Illust={IllustGrowth} bg="#EDF5EE" title={t.homeCardGrowthTitle} desc={t.homeCardGrowthDesc} onClick={onGoPets} />
+        <HomeServiceCard Illust={IllustTips} bg="#EAF5ED" title={t.landingCardNearbyTitle.replace(/^\S+\s/, "")} desc={t.homeCardNearbyDesc} onClick={() => onGoView("nearby")} />
+        <HomeServiceCard Illust={IllustCommunity} bg="#FBE9EF" title={t.landingCardCommunityTitle.replace(/^\S+\s/, "")} desc={t.homeCardCommunityDesc} onClick={() => onGoView("community")} />
+        <HomeServiceCard Illust={IllustSaju} bg="#F1F5F1" title={t.landingCardSajuTitle.replace(/^\S+\s/, "")} desc={t.homeCardSajuDesc} onClick={() => onGoView("saju")} />
+        <HomeServiceCard Illust={IllustPetBti} bg="#EEF5EF" title={t.landingCardPetBtiTitle.replace(/^\S+\s/, "")} desc={t.homeCardPetBtiDesc} onClick={() => onGoView("petbti")} />
+        <HomeServiceCard Illust={MusicIcon} bg="#EEF6F0" title={lang === "en" ? "Pet Music" : "Pet음악"} desc={lang === "en" ? "Play and loop music your dog or cat may enjoy" : "강아지·고양이가 좋아할 음악을 듣고 반복재생해요"} onClick={() => onGoView("music")} />
+        <HomeServiceCard Illust={IllustTips} bg="#F3F7F3" title={t.landingCardTipsTitle.replace(/^\S+\s/, "")} desc={t.homeCardTipsDesc} onClick={() => onGoView("tips")} />
+      </div>
     </div>
   );
 }
@@ -9320,8 +9314,8 @@ function AppBottomNav({ active, onNavigate }) {
   const items = [
     { key: "home", label: t.hamNavHome, Icon: HomeIcon },
     { key: "pets", label: t.appTabPetInfo, Icon: PawIcon },
-    { key: "music", label: "Pet음악", Icon: MusicIcon },
-    { key: "nearby", label: "내 주변 Pet", Icon: MapPinIcon },
+    { key: "content", label: t.appTabPetContent, Icon: LightbulbIcon },
+    { key: "community", label: t.communityNav, Icon: TalkIcon },
     { key: "my", label: t.hamNavMy, Icon: UserIcon },
   ];
   return (
@@ -10054,29 +10048,25 @@ function CommunityFeed({ pets, lang, onOpenPost, onWrite, onMyActivity }) {
       </div>
 
       <div className="cm-sample-showcase">
-        <div className="cm-sample-head"><div><span>PET TALK PREVIEW</span><b>{lang === "en" ? "See sample posts first" : "카테고리별 Pet톡 예시"}</b></div><small>{lang === "en" ? "One sample for every category." : "카테고리마다 예시글 1개씩 바로 확인할 수 있어요."}</small></div>
+        <div className="cm-sample-head"><div><span>PET TALK PREVIEW</span><b>{lang === "en" ? "See sample posts first" : "Pet톡은 이렇게 보여요"}</b></div><small>{lang === "en" ? "Samples stay visible while real posts load." : "실제 게시글이 로딩되기 전에도 예시글이 바로 보여요."}</small></div>
         <div className="cm-demo-grid">
-          {[
-            ["daily","mint","🐶","버터네 보호자","말티푸 · 4개월","오늘 첫 산책 다녀왔어요 🐾","처음엔 조금 긴장하더니 마지막에는 꼬리도 살랑살랑 흔들었어요. 천천히 익숙해지는 모습이 너무 기특하네요!",8,2],
-            ["brag","coral","🐱","모모네 가족","코리안숏헤어 · 1살","우리 집 모델 포즈 자랑해요 📸","창가에 앉아 있길래 사진 찍었는데 표정이 너무 근엄해서 자랑하러 왔어요. 오늘도 귀여움 한도 초과예요!",13,3],
-            ["question","blue","🐶","두부네 보호자","비숑 · 7개월","산책 중 갑자기 멈춰요, 괜찮을까요?","요즘 산책하다가 몇 분씩 가만히 서 있을 때가 있어요. 냄새 맡는 건지 쉬는 건지 비슷한 경험 있으셨나요?",5,6],
-            ["health","rose","🐱","구름네 집사","랙돌 · 2살","물을 평소보다 자주 마셔요","며칠 전부터 물 마시는 횟수가 늘어난 것 같아서 기록 중이에요. 계속되면 병원 상담도 받아보려고 해요.",7,4],
-            ["info","teal","🐶","콩이네 보호자","푸들 · 3살","여름 산책 전 바닥 온도 체크 팁","손등을 바닥에 잠깐 대보고 너무 뜨거우면 시간을 늦춰 산책하고 있어요. 물도 꼭 챙겨가요!",18,5],
-            ["walk","olive","🐶","보리네 보호자","말티푸 · 1살","오늘은 천천히 냄새 산책 🌿","평소보다 짧게 걷고 냄새 맡는 시간을 충분히 줬더니 집에 와서 편안하게 쉬네요.",11,2],
-            ["training","violet","🐶","밤이네 보호자","토이푸들 · 10개월","기다려 연습 5초 성공했어요!","간식 앞에서 1초부터 시작해서 오늘 처음 5초까지 성공했어요. 짧게 자주 연습하니 조금씩 늘고 있어요.",16,5],
-            ["shopping","amber","🐱","나비네 집사","코리안숏헤어 · 3살","털 날림 적은 방석 추천 부탁해요","세탁하기 쉽고 털이 너무 달라붙지 않는 방석을 찾고 있어요. 직접 써보신 제품이 있다면 알려주세요!",6,7],
-            ["free","slate","🐱","호두네 가족","브리티시숏헤어 · 2살","오늘도 박스가 제일 좋은 호두 📦","새 장난감보다 택배 박스에 먼저 들어가네요. 다들 우리 아이만의 최애 장소가 있나요?",12,4],
-          ].map(([key,tone,emoji,author,pet,title,body,likes,comments]) => (
-            <div className="cm-demo-card" data-tone={tone} key={key}>
-              <span className="cm-demo-badge">{lang === "en" ? "Sample" : "예시"}</span>
-              <div className="cm-pet-row"><span className="cm-pet-avatar-fallback">{emoji}</span><div><div style={{fontWeight:800,fontSize:13}}>{author}</div><div className="bg-sub" style={{fontSize:11}}>{pet}</div></div></div>
-              <div className="cm-cat-chip">{t.communityCategoryLabels[key]}</div>
-              <div className="cm-title">{title}</div>
-              <div className="cm-content-preview">{body}</div>
-              <div className="cm-meta-row"><span>♡ {likes}</span><span>💬 {comments}</span></div>
+            <div className="cm-demo-card">
+              <span className="cm-demo-badge">{lang === "en" ? "Sample post" : "예시 게시글"}</span>
+              <div className="cm-pet-row"><span className="cm-pet-avatar-fallback">🐶</span><div><div style={{fontWeight:800,fontSize:13}}>{lang === "en" ? "Butter's guardian" : "버터네 보호자"}</div><div className="bg-sub" style={{fontSize:11}}>{lang === "en" ? "Maltipoo · 4 months" : "말티푸 · 4개월"}</div></div></div>
+              <div className="cm-cat-chip">{lang === "en" ? "Daily" : "일상"}</div>
+              <div className="cm-title">{lang === "en" ? "First walk today 🐾" : "오늘 첫 산책 다녀왔어요 🐾"}</div>
+              <div className="cm-content-preview">{lang === "en" ? "Still a little nervous, but the tail started wagging near the end. So proud!" : "처음엔 조금 긴장하더니 마지막에는 꼬리도 살랑살랑 흔들었어요. 너무 기특하네요!"}</div>
+              <div className="cm-meta-row"><span>♡ 8</span><span>💬 2</span></div>
             </div>
-          ))}
-        </div>
+            <div className="cm-demo-card">
+              <span className="cm-demo-badge">{lang === "en" ? "Sample post" : "예시 게시글"}</span>
+              <div className="cm-pet-row"><span className="cm-pet-avatar-fallback">🐱</span><div><div style={{fontWeight:800,fontSize:13}}>{lang === "en" ? "Momo's family" : "모모네 가족"}</div><div className="bg-sub" style={{fontSize:11}}>{lang === "en" ? "Korean Shorthair · 1 year" : "코리안숏헤어 · 1살"}</div></div></div>
+              <div className="cm-cat-chip">{lang === "en" ? "Gear" : "용품추천"}</div>
+              <div className="cm-title">{lang === "en" ? "Any comfy harness recommendations?" : "편한 하네스 추천 있을까요?"}</div>
+              <div className="cm-content-preview">{lang === "en" ? "Looking for something light and easy to put on. I'd love to hear what worked for you." : "가볍고 착용하기 쉬운 제품을 찾고 있어요. 직접 써보신 제품 있으면 추천 부탁드려요!"}</div>
+              <div className="cm-meta-row"><span>♡ 5</span><span>💬 4</span></div>
+            </div>
+          </div>
       </div>
 
       {posts.length === 0 && !loading ? (
@@ -10224,17 +10214,15 @@ function PetMusicPage({ account, lang }) {
   const togglePlay=track=>{if(current?.id!==track.id)return playTrack(track);const a=audioRef.current;if(!a)return;if(a.paused){a.play().then(()=>setPlaying(true)).catch(()=>{})}else{a.pause();setPlaying(false)}};
   const onEnded=()=>{if(!current)return;if(repeatMode==="one"){audioRef.current.currentTime=0;audioRef.current.play().catch(()=>{});return;}if(repeatMode==="all"&&data.items.length){const i=data.items.findIndex(x=>x.id===current.id),next=data.items[(i+1+data.items.length)%data.items.length];if(next)playTrack(next);return;}setPlaying(false)};
   const cycleRepeat=()=>setRepeatMode(x=>x==="one"?"all":x==="all"?"off":"one");
-  const likedTracks=data.items.filter(x=>x.liked);
-  const doLike=async(track)=>{if(!account){window.alert(lang==="en"?"Please log in to like a track.":"좋아요는 로그인 후 이용할 수 있어요.");return;}const before=!!track.liked;const patch=x=>x.id===track.id?{...x,liked:!before,like_count:Math.max(0,Number(x.like_count||0)+(before?-1:1))}:x;setData(d=>({...d,items:d.items.map(patch),top5:d.top5.map(patch)}));try{const r=await musicToggleLike(track.id);setData(d=>({...d,items:d.items.map(x=>x.id===track.id?{...x,liked:!!r.liked}:x),top5:d.top5.map(x=>x.id===track.id?{...x,liked:!!r.liked}:x)}))}catch(e){setData(d=>({...d,items:d.items.map(x=>x.id===track.id?{...x,liked:before,like_count:Number(track.like_count||0)}:x),top5:d.top5.map(x=>x.id===track.id?{...x,liked:before,like_count:Number(track.like_count||0)}:x)}));window.alert(e.message)}};
+  const doLike=async(track)=>{if(!account){window.alert(lang==="en"?"Please log in to like a track.":"좋아요는 로그인 후 이용할 수 있어요.");return;}try{await musicToggleLike(track.id);await load()}catch(e){window.alert(e.message)}};
   const toggleComments=async(track)=>{if(openComments===track.id){setOpenComments(null);return;}setOpenComments(track.id);try{const r=await musicComments(track.id);setComments(c=>({...c,[track.id]:r.items||[]}))}catch{setComments(c=>({...c,[track.id]:[]}))}};
-  const addComment=async(track)=>{const text=commentText.trim();if(!account){window.alert(lang==="en"?"Please log in to comment.":"댓글은 로그인 후 이용할 수 있어요.");return;}if(!text)return;const temp={id:`temp-${Date.now()}`,nickname:account?.name||"나",content:text,is_owner:true,created_at:new Date().toISOString()};setCommentText("");setComments(c=>({...c,[track.id]:[...(c[track.id]||[]),temp]}));setData(d=>({...d,items:d.items.map(x=>x.id===track.id?{...x,comment_count:Number(x.comment_count||0)+1}:x),top5:d.top5.map(x=>x.id===track.id?{...x,comment_count:Number(x.comment_count||0)+1}:x)}));try{await musicAddComment(track.id,text);const r=await musicComments(track.id);setComments(c=>({...c,[track.id]:r.items||[]}))}catch(e){setComments(c=>({...c,[track.id]:(c[track.id]||[]).filter(x=>x.id!==temp.id)}));setData(d=>({...d,items:d.items.map(x=>x.id===track.id?{...x,comment_count:Math.max(0,Number(x.comment_count||0)-1)}:x),top5:d.top5.map(x=>x.id===track.id?{...x,comment_count:Math.max(0,Number(x.comment_count||0)-1)}:x)}));window.alert(e.message)}};
+  const addComment=async(track)=>{const text=commentText.trim();if(!account){window.alert(lang==="en"?"Please log in to comment.":"댓글은 로그인 후 이용할 수 있어요.");return;}if(!text)return;try{await musicAddComment(track.id,text);setCommentText("");const r=await musicComments(track.id);setComments(c=>({...c,[track.id]:r.items||[]}));await load()}catch(e){window.alert(e.message)}};
   const speciesLabel=x=>x==="dog"?(lang==="en"?"Dog":"강아지"):x==="cat"?(lang==="en"?"Cat":"고양이"):(lang==="en"?"All":"전체");
   const vocalLabel=x=>x==="vocal"?(lang==="en"?"Vocal":"🎤 보컬"):(lang==="en"?"Instrumental":"🎼 인스트루멘탈");
   const moodLabel=x=>({relax:lang==="en"?"Relax":"😌 휴식",sleep:lang==="en"?"Sleep":"🌙 수면",play:lang==="en"?"Play":"🐾 놀이",nature:lang==="en"?"Nature":"🌿 자연"}[x]||(lang==="en"?"Relax":"😌 휴식"));
   return <div className="petmusic-page">
     <section className="petmusic-hero"><small style={{fontWeight:900,color:"var(--primary)"}}>PETGROW SOUND</small><h1>🎵 {lang==="en"?"Pet Music":"Pet음악"}</h1><p className="bg-sub">{lang==="en"?"Music for dogs and cats. Loop favorites and share your pet's reaction with likes and comments.":"강아지·고양이를 위한 음악을 편하게 듣고 반복재생해보세요. 인스트루멘탈을 중심으로 제공하고 좋아요와 댓글로 우리 아이의 반응도 함께 남겨요."}</p></section>
     <div className="petmusic-tabs">{["all","dog","cat"].map(x=><button key={x} className={species===x?"active":""} onClick={()=>setSpecies(x)}>{x==="dog"?"🐶 ":x==="cat"?"🐱 ":"🎧 "}{speciesLabel(x)}</button>)}</div>
-    {!!likedTracks.length&&<><h2 style={{fontSize:18,margin:"0 0 12px"}}>❤️ {lang==="en"?"My liked music":"내가 좋아요 누른 음악"}</h2><div className="petmusic-top5">{likedTracks.slice(0,5).map(x=><button key={x.id} className="petmusic-rank" onClick={()=>playTrack(x)}><div>{x.cover_url?<img src={x.cover_url} alt="" loading="lazy"/>:<div className="petmusic-rank-cover">🎵</div>}</div><b>{x.title}</b><small>♥ {Number(x.like_count)||0} · 💬 {Number(x.comment_count)||0}</small></button>)}</div></>}
     {!!data.top5.length&&<><h2 style={{fontSize:18,margin:"0 0 12px"}}>🏆 {lang==="en"?"Popular TOP 5":"인기 TOP 5"}</h2><div className="petmusic-top5">{data.top5.map((x,i)=><button key={x.id} className="petmusic-rank" onClick={()=>playTrack(x)}><div style={{position:"relative"}}>{x.cover_url?<img src={x.cover_url} alt=""/>:<div className="petmusic-rank-cover">🎵</div>}<span style={{position:"absolute",left:7,top:7,width:24,height:24,borderRadius:99,display:"grid",placeItems:"center",background:"rgba(255,255,255,.93)",fontSize:11,fontWeight:900}}>#{i+1}</span></div><b>{x.title}</b><small>♥ {Number(x.like_count)||0} · 💬 {Number(x.comment_count)||0}</small></button>)}</div></>}
     {current&&<div className="bg-card" style={{display:"flex",gap:12,alignItems:"center",marginBottom:18,padding:12,position:"sticky",top:8,zIndex:4}}>{current.cover_url?<img src={current.cover_url} alt="" style={{width:52,height:52,borderRadius:13,objectFit:"cover"}}/>:<div className="petmusic-rank-cover" style={{width:52,height:52,flex:"0 0 52px",fontSize:22}}>🎵</div>}<div style={{flex:1,minWidth:0}}><b style={{display:"block",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{current.title}</b><small className="bg-sub">{playing?(lang==="en"?"Playing now":"재생 중"):(lang==="en"?"Paused":"일시정지")}</small></div><button className="petmusic-play" onClick={()=>togglePlay(current)}>{playing?"Ⅱ":"▶"}</button><button className={`petmusic-loop ${repeatMode!=="off"?"active":""}`} onClick={cycleRepeat}>{repeatMode==="one"?"🔂 1곡":repeatMode==="all"?"🔁 전체":"↪ 반복 OFF"}</button></div>}
     <audio ref={audioRef} src={current?.audio_url||""} onPlay={()=>setPlaying(true)} onPause={()=>setPlaying(false)} onEnded={onEnded}/>
@@ -10366,14 +10354,14 @@ function AdminReportsPage({onBack}){
  if(!status.adminExists)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>🛡️ 최초 관리자 등록</h2><input className="bg-input" type="password" placeholder="ADMIN_SETUP_CODE" value={setupCode} onChange={e=>setSetupCode(e.target.value)}/><input name="petgrow-pin-code" inputMode="numeric" pattern="[0-9]*" maxLength={6} autoComplete="one-time-code" data-lpignore="true" data-1p-ignore="true" data-form-type="other" spellCheck={false} className="bg-input admin-pin-input admin-pin-no-save" type="text" placeholder="관리자 PIN 6자리" value={setupPin} onChange={e=>setSetupPin(e.target.value.replace(/\D/g,"").slice(0,6))}/><button className="bg-btn" onClick={bootstrap}>현재 계정을 최고관리자로 등록</button></div></div>;
  if(!status.isAdmin)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>관리자 전용</h2><p>현재 계정에는 관리자 권한이 없어요.</p><button className="bg-btn bg-btn-ghost" onClick={onBack}>돌아가기</button></div></div>;
  if(status.pinSetupRequired)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>🔐 관리자 PIN 최초 설정</h2><p>본인만 사용할 숫자 6자리 PIN을 설정하세요.</p><input name="petgrow-pin-code" inputMode="numeric" pattern="[0-9]*" maxLength={6} autoComplete="one-time-code" data-lpignore="true" data-1p-ignore="true" data-form-type="other" spellCheck={false} className="bg-input admin-pin-input admin-pin-no-save" type="text" value={setupPin} onChange={e=>setSetupPin(e.target.value.replace(/\D/g,"").slice(0,6))}/><button className="bg-btn" onClick={setNewPin}>PIN 설정</button></div></div>;
- if(!unlocked)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>🔐 {status.roleLabel||"관리자"} PIN</h2><input name="petgrow-pin-code" inputMode="numeric" pattern="[0-9]*" maxLength={6} autoComplete="one-time-code" data-lpignore="true" data-1p-ignore="true" data-form-type="other" spellCheck={false} className="bg-input admin-pin-input admin-pin-no-save" type="text" value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,"").slice(0,6))} placeholder="PIN 6자리"/><button className="bg-btn admin-open-center-btn" disabled={pin.length!==6} onClick={unlock}>관리자센터 열기</button></div></div>;
+ if(!unlocked)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>🔐 {status.roleLabel||"관리자"} PIN</h2><input name="petgrow-pin-code" inputMode="numeric" pattern="[0-9]*" maxLength={6} autoComplete="one-time-code" data-lpignore="true" data-1p-ignore="true" data-form-type="other" spellCheck={false} className="bg-input admin-pin-input admin-pin-no-save" type="text" value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,"").slice(0,6))} placeholder="PIN 6자리"/><button className="bg-btn admin-open-center-btn" disabled={pin.length!==6} onClick={unlock}>관리자 센터 열기</button></div></div>;
  const tabs=role==="superadmin"?[["dashboard","대시보드"],["service","서비스상태"],["reports","신고관리"],["inquiries","문의관리"],["notices","공지관리"],["music","Pet음악"],["ads","광고운영"],["logs","운영로그"],["admins","관리자관리"]]:
  role==="operator"?[["dashboard","대시보드"],["service","서비스상태"],["reports","신고관리"],["inquiries","문의관리"],["notices","공지관리"],["music","Pet음악"],["ads","광고운영"],["logs","운영로그"]]:
  role==="report"?[["reports","신고관리"]]:[["music","Pet음악"],["ads","광고운영"]];
  const c=stats?.cards||{};
  return <div className="admin-reports-page">
    <div className="admin-hero admin-hero-toolbar admin-mobile-safe-header">
-  <div><small>{status.roleLabel}</small><h1>PetGrow 관리자센터</h1><p className="bg-sub">서비스 운영·신고·문의·광고를 한 곳에서 관리해요.</p></div>
+  <div><small>{status.roleLabel}</small><h1>PetGrow 관리자 센터</h1><p className="bg-sub">서비스 운영·신고·문의·광고를 한 곳에서 관리해요.</p></div>
   <button className="bg-btn bg-btn-ghost admin-exit-btn" onClick={onBack}>← 회원정보</button>
 </div>
    <div className="admin-tabs">{tabs.map(([k,l])=><button key={k} className={tab===k?"active":""} onClick={()=>setTab(k)}>{l}</button>)}</div>
@@ -10383,7 +10371,6 @@ function AdminReportsPage({onBack}){
        <div className="admin-menu-analytics-head"><div><h3>메뉴 이용 통계</h3><small>페이지 진입 기준 · 오늘 / 7일 / 30일 이용량을 확인해요.</small></div><span className="bg-chip active">30일</span></div>
        {(()=>{const labels={home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"회원정보",support:"고객지원",admin:"관리자"};const rows=(stats?.menuUsage||[]).filter(x=>labels[x.dimension]);const max=Math.max(1,...rows.map(x=>Number(x.d30)||0));return rows.length?<><div className="admin-menu-top">🏆 가장 자주 이용 <span>{labels[rows[0]?.dimension]||rows[0]?.dimension}</span></div>{rows.map((x,i)=><div className="admin-menu-row" key={x.dimension}><div className="admin-menu-name">{i<3?["🥇 ","🥈 ","🥉 "][i]:""}{labels[x.dimension]||x.dimension}</div><div className="admin-menu-bar"><i style={{width:`${Math.max(3,Math.round((Number(x.d30)||0)/max*100))}%`}}/></div><div className="admin-menu-value"><b>{Number(x.d30)||0}회</b><br/><small>7일 {Number(x.d7)||0} · 오늘 {Number(x.today)||0}</small></div></div>)}</>:<div className="bg-sub" style={{padding:"10px 0"}}>아직 메뉴 이용 데이터가 충분하지 않아요. 배포 후 방문부터 자동 집계됩니다.</div>})()}
      </div>
-     <div className="bg-card"><h3 style={{marginTop:0}}>📱 접속 환경 통계</h3><p className="bg-sub" style={{fontSize:12}}>웹사이트 · 모바일 웹/PWA · 앱 이용을 익명 세션 기준으로 구분해요.</p>{(stats?.platformUsage||[]).length?<div className="admin-platform-grid">{stats.platformUsage.map(x=><div className="admin-platform-card" key={x.platform}><b>{{web:"🖥️ 웹사이트",mobile_web:"📱 모바일 웹",pwa:"📲 PWA",android:"🤖 Android 앱",ios:"🍎 iOS 앱"}[x.platform]||x.platform}</b><strong>{Number(x.d30)||0}</strong><small>30일 · 7일 {Number(x.d7)||0} · 오늘 {Number(x.today)||0}</small></div>)}</div>:<div className="bg-sub" style={{padding:"10px 0"}}>접속 환경 통계가 아직 없어요.</div>}</div>
    </>}
    {tab==="service"&&<div className="service-health-wrap">
  <div className={`service-health-hero ${health?.level||"healthy"}`}><div className="service-health-dot">{health?.level==="down"?"🔴":health?.level==="warning"?"🟡":"🟢"}</div><div><small>현재 서비스 상태</small><h2>{health?.level==="down"?"장애":health?.level==="warning"?"주의":"정상"}</h2>{health?.reason && !["정상","주의","장애"].includes(health.reason) ? <p>{health.reason}</p> : <p className="service-health-subtext">{health?.level==="healthy"?"모든 주요 기능이 정상적으로 동작하고 있어요.":health?.level==="warning"?"일부 요청 지연이나 오류가 감지됐어요.":"서비스 장애 징후가 감지됐어요."}</p>}</div><button className="bg-btn bg-btn-ghost" onClick={async()=>{try{setHealth(await adminHealth())}catch(e){window.alert(e.message)}}}>새로고침</button></div>
@@ -10483,13 +10470,6 @@ function AdminReportsPage({onBack}){
 function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost, onOpenAdmin }) {
   const t = useT();
   const [adminEntry, setAdminEntry] = useState(null);
-  const [likedMusic, setLikedMusic] = useState([]);
-  useEffect(() => {
-    let alive=true;
-    if(!account){setLikedMusic([]);return()=>{alive=false}}
-    musicLiked().then(r=>{if(alive)setLikedMusic(r.items||[])}).catch(()=>{});
-    return()=>{alive=false};
-  },[account?.id]);
   useEffect(() => {
     let alive = true;
     if (!account) { setAdminEntry(null); return () => { alive = false; }; }
@@ -10506,7 +10486,7 @@ function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost, o
     { key: "activity", icon: "💬", title: lang === "en" ? "Pet Talk activity" : "Pet톡 내 활동", desc: lang === "en" ? "See your posts, comments and likes in one place." : "내가 작성한 글·댓글·좋아요를 한곳에서 확인해요.", cls: "my-menu-purple", action: goActivity },
     ...(adminEntry && (!adminEntry.adminExists || adminEntry.isAdmin || adminEntry.recoveryAvailable) ? [{
       key:"admin", icon:"🛡️",
-      title: adminEntry.isAdmin ? "관리자센터" : (adminEntry.adminExists ? "관리자 등록/복구" : "최초 관리자 등록"),
+      title: adminEntry.isAdmin ? "관리자 센터" : (adminEntry.adminExists ? "관리자 등록/복구" : "최초 관리자 등록"),
       desc: adminEntry.isAdmin ? "통계·Pet톡 신고·이용제한·운영로그 관리" : (adminEntry.adminExists ? "ADMIN_SETUP_CODE로 현재 계정을 관리자에 연결해요." : "PetGrow의 첫 관리자 계정을 안전하게 등록해요."),
       cls:"my-menu-mint", action:onOpenAdmin
     }] : []),
@@ -10530,12 +10510,6 @@ function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost, o
             <span className="my-menu-card-arrow">›</span>
           </button>
         ))}
-      </div>
-
-      <div className="bg-card my-activity-card" style={{marginBottom:14}}>
-        <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 6 }}>❤️ {lang === "en" ? "Liked Pet Music" : "내가 좋아요 누른 Pet음악"}</div>
-        <div className="bg-sub" style={{ fontSize: 12, marginBottom: 12 }}>{lang === "en" ? "Music you liked is saved to your account." : "좋아요한 음악을 계정 기준으로 모아볼 수 있어요."}</div>
-        {likedMusic.length?<div style={{display:"grid",gap:8}}>{likedMusic.slice(0,20).map(x=><div key={x.id} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:"1px solid #edf2ee"}}>{x.cover_url?<img src={x.cover_url} alt="" loading="lazy" style={{width:44,height:44,borderRadius:11,objectFit:"cover"}}/>:<span style={{width:44,height:44,borderRadius:11,display:"grid",placeItems:"center",background:"#eef6f0"}}>🎵</span>}<div style={{minWidth:0}}><b style={{fontSize:13}}>{x.title}</b><div className="bg-sub" style={{fontSize:10}}>{x.species==="dog"?"강아지":x.species==="cat"?"고양이":"공용"} · ♥ {Number(x.like_count)||0}</div></div></div>)}</div>:<div className="bg-sub" style={{fontSize:12,padding:"8px 0"}}>아직 좋아요한 Pet음악이 없어요.</div>}
       </div>
 
       <div id="my-pettalk-activity" className="bg-card my-activity-card">
@@ -10735,8 +10709,6 @@ function AppInner({ lang, setLang }) {
       const me = meResult === undefined ? null : meResult;
       if (meResult !== undefined) setAccount(meResult);
       setAuthChecked(true);
-      // 로그인 확인만 끝나면 홈부터 먼저 보여주고, 반려동물 데이터는 아래에서 비동기로 채워요.
-      setLoaded(true);
       // 로그인 직전에 받은 약관/개인정보 동의 기록을 계정 상태에도 저장해요.
       if (me) {
         try {
@@ -10825,6 +10797,7 @@ function AppInner({ lang, setLang }) {
           safeSet("bboggl:lastWelcomeDate", today, me);
         }
       }
+      setLoaded(true);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -11161,19 +11134,16 @@ function AppInner({ lang, setLang }) {
       {!isNativeApp && (
         <aside className="petgrow-sidebar">
           <button type="button" className="petgrow-sidebar-brand" onClick={() => goView("home")}><img src="/petgrow-splash-logo.png" alt="" /><span><strong>Pet<b>Grow</b></strong><small>{lang === "en" ? "Healthy growth, together" : "우리 아이의 건강한 성장을 함께"}</small></span></button>
-          <nav className="petgrow-sidebar-nav petgrow-sidebar-nav-grouped">
+          <nav className="petgrow-sidebar-nav">
             <button className={view === "home" ? "active" : ""} onClick={() => goView("home")}><HomeIcon /><span>{t.hamNavHome}</span></button>
-            <div className="sidebar-section-label">{lang === "en" ? "PET LIFE" : "반려생활"}</div>
+            <button className={view === "about" ? "active" : ""} onClick={() => goView("about")}><InfoIcon /><span>{t.aboutNav}</span></button>
             <button className={view === "pets" ? "active" : ""} onClick={() => goView("pets")}><HeartOutlineIcon /><span>{t.myPetsNav}</span></button>
             <button className={view === "nearby" ? "active" : ""} onClick={() => goView("nearby")}><MapPinIcon /><span>{t.nearbyNav}</span></button>
-            <button className={view === "music" ? "active" : ""} onClick={() => goView("music")}><MusicIcon /><span>{lang === "en" ? "Pet Music" : "Pet음악"}</span></button>
-            <div className="sidebar-section-label">{lang === "en" ? "COMMUNITY · CONTENT" : "커뮤니티 · 콘텐츠"}</div>
             <button className={view === "community" ? "active" : ""} onClick={() => goView("community")}><TalkIcon /><span>{t.communityNav}</span></button>
-            <button className={view === "petbti" ? "active" : ""} onClick={() => goView("petbti")}><PetBtiIcon /><span>{t.petBtiNav}</span></button>
             <button className={view === "saju" ? "active" : ""} onClick={() => goView("saju")}><SajuIcon /><span>{t.sajuNav}</span></button>
-            <div className="sidebar-section-label">{lang === "en" ? "INFO · SUPPORT" : "정보 · 지원"}</div>
+            <button className={view === "petbti" ? "active" : ""} onClick={() => goView("petbti")}><PetBtiIcon /><span>{t.petBtiNav}</span></button>
+            <button className={view === "music" ? "active" : ""} onClick={() => goView("music")}><MusicIcon /><span>{lang === "en" ? "Pet Music" : "Pet음악"}</span></button>
             <button className={view === "tips" ? "active" : ""} onClick={() => goView("tips")}><LightbulbIcon /><span>{t.tipsTitle}</span></button>
-            <button className={view === "about" ? "active" : ""} onClick={() => goView("about")}><InfoIcon /><span>{t.aboutNav}</span></button>
           </nav>
           <div className="petgrow-sidebar-bottom"><div className="petgrow-sidebar-message">♡ <span>{lang === "en" ? "A happier day with your pet" : "우리 아이와 더 행복한 하루"}</span></div><LangToggle lang={lang} onChange={setLang} /><AccountButton account={account} onOpen={() => (account ? setAccountModalOpen(true) : goView("pets"))} /></div>
         </aside>
@@ -11369,7 +11339,7 @@ function AppInner({ lang, setLang }) {
 
       {isNativeApp && (
         <AppBottomNav
-          active={view === "home" ? "home" : view === "pets" ? "pets" : view === "music" ? "music" : view === "nearby" ? "nearby" : view === "my" ? "my" : ""}
+          active={view === "home" ? "home" : view === "pets" ? "pets" : view === "content" ? "content" : view === "community" ? "community" : view === "my" ? "my" : ""}
           onNavigate={(key) => goView(key)}
         />
       )}
