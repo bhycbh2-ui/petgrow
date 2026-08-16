@@ -1523,6 +1523,7 @@ function communityMyActivity(type, page) {
 function adminApi(action, options={}) { const tok=sessionStorage.getItem("petgrow_admin_token")||""; return apiJson(`/api/admin?action=${action}`, {...options,headers:{...(options.headers||{}),...(tok?{"X-PetGrow-Admin-Token":tok}:{})}}); }
 function adminStatus(){return adminApi("status");}
 function adminBootstrap(setupCode,pin){return adminApi("bootstrap",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({setupCode,pin})});}
+function adminRecover(setupCode,pin){return adminApi("recover",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({setupCode,pin})});}
 function adminVerify(pin){return adminApi("verify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pin})});}
 function adminListReports(){return adminApi("reports");}
 function adminRestrictUser(payload){return adminApi("restrict",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});}
@@ -2160,13 +2161,11 @@ function HamburgerMenu({ open, onClose, view, onNavigate, onOpenAccount, account
 function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNicknameUpdated, onOpenAdmin }) {
   const t = useT();
   const [nickname, setNickname] = useState(account?.name || "");
-  const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [adminEntry, setAdminEntry] = useState(null);
 
   useEffect(() => {
     setNickname(account?.name || "");
-    setEditing(false);
   }, [account?.name, open]);
 
   useEffect(() => {
@@ -2189,8 +2188,7 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
       return;
     }
     if (normalizeNickname(account?.name || "") === checked.nickname) {
-      setEditing(false);
-      window.alert("현재 사용 중인 닉네임과 같아요.");
+        window.alert("현재 사용 중인 닉네임과 같아요.");
       return;
     }
 
@@ -2204,8 +2202,7 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
       const savedName = result?.name || checked.nickname;
       setNickname(savedName);
       onNicknameUpdated?.(savedName);
-      setEditing(false);
-      window.alert("닉네임이 저장되었어요.");
+        window.alert("닉네임이 저장되었어요.");
     } catch (e) {
       window.alert(e?.message || "닉네임 저장 중 오류가 발생했어요.");
     } finally {
@@ -2213,8 +2210,10 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
     }
   }
 
-  const showAdminEntry = !!adminEntry && (!adminEntry.adminExists || adminEntry.isAdmin);
-  const adminLabel = adminEntry?.adminExists ? "관리자 센터" : "최초 관리자 등록";
+  const showAdminEntry = !!adminEntry && (!adminEntry.adminExists || adminEntry.isAdmin || adminEntry.recoveryAvailable);
+  const adminLabel = adminEntry?.isAdmin
+    ? "관리자 센터"
+    : (adminEntry?.adminExists ? "관리자 등록/복구" : "최초 관리자 등록");
 
   return (
     <Modal open={open} onClose={onClose} width={380}>
@@ -2247,29 +2246,18 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
             className="bg-input"
             value={nickname}
             maxLength={8}
-            disabled={!editing}
             onChange={(e) => setNickname(e.target.value)}
           />
           <div className="bg-sub" style={{ fontSize: 11, marginTop: 6 }}>2~8자 · Pet톡 게시글과 댓글에 표시돼요.</div>
 
-          <div className="nickname-action-row">
+          <div className="nickname-action-row nickname-action-single">
             <button
               type="button"
-              className="bg-btn bg-btn-ghost nickname-change-btn"
-              onClick={() => {
-                setEditing(true);
-                window.alert("닉네임을 변경할 수 있어요. 2~8자 이내로 입력해 주세요.");
-              }}
-            >
-              변경하기
-            </button>
-            <button
-              type="button"
-              className="bg-btn nickname-save-btn"
+              className="bg-btn nickname-change-btn"
               onClick={saveNickname}
-              disabled={!editing || saving}
+              disabled={saving}
             >
-              {saving ? "저장 중..." : "저장하기"}
+              {saving ? "변경 중..." : "변경하기"}
             </button>
           </div>
         </div>
@@ -3752,6 +3740,35 @@ const GlobalStyle = () => (
       border:1px solid #D8E7DA;
       box-shadow:none;
     }
+
+    /* PetGrow language toggle equal-width center alignment */
+    .petgrow-sidebar-bottom .lang-toggle{
+      display:flex;
+      flex:1 1 0;
+      min-width:0;
+    }
+    .petgrow-sidebar-bottom .lang-toggle button{
+      flex:1 1 50%;
+      width:50%;
+      min-width:0;
+      padding:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+    }
+    .mobile-topbar-premium .lang-toggle button,
+    .native-app-topbar .lang-toggle button{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+    }
+
+    .bg-input[readonly]{background:#fff!important;color:#67736B!important;cursor:text!important;opacity:1!important}
+
+    .nickname-action-single{display:block!important}
+    .nickname-action-single .nickname-change-btn{width:100%!important}
 `}</style>
 );
 
@@ -9138,6 +9155,17 @@ function AdminReportsPage({ onBack }) {
       setStatus({adminExists:true,isAdmin:true});
     }catch(e){window.alert(e.message)}
   };
+  const recoverAdmin=async()=>{
+    if(!/^\d{6}$/.test(setupPin)){window.alert("새 관리자 PIN은 숫자 6자리로 입력해 주세요.");return}
+    if(!window.confirm("현재 로그인한 카카오 계정을 PetGrow 관리자 계정으로 복구할까요? 기존 관리자 지정은 해제됩니다."))return;
+    try{
+      await adminRecover(setupCode,setupPin);
+      sessionStorage.removeItem("petgrow_admin_token");
+      window.alert("현재 로그인 계정이 관리자 계정으로 복구됐어요. 이제 새 PIN으로 관리자 센터에 들어갈 수 있어요.");
+      setSetupCode(""); setSetupPin("");
+      setStatus({adminExists:true,isAdmin:true,recoveryAvailable:true});
+    }catch(e){window.alert(e.message||"관리자 복구에 실패했어요.")}
+  };
   const reloadReports=async()=>{
     const r=await adminListReports(); setReports(r.reports||[]);
     const s=await adminStats(); setStats(s);
@@ -9157,7 +9185,22 @@ function AdminReportsPage({ onBack }) {
 
   if(!status)return <div className="bg-card">관리자 정보를 확인하는 중...</div>;
   if(!status.adminExists)return <div className="admin-reports-page"><button className="bg-btn bg-btn-ghost" onClick={onBack}>← 회원정보</button><div className="bg-card" style={{maxWidth:560,margin:"18px auto"}}><h2>🛡️ 최초 관리자 등록</h2><p>Vercel에 설정한 최초 등록 코드와 앞으로 사용할 숫자 6자리 PIN을 입력하세요.</p><input className="bg-input" type="password" value={setupCode} onChange={e=>setSetupCode(e.target.value)} placeholder="최초 등록 코드"/><input className="bg-input" type="password" inputMode="numeric" maxLength={6} value={setupPin} onChange={e=>setSetupPin(e.target.value.replace(/\D/g,""))} placeholder="관리자 PIN 6자리"/><button className="bg-btn" onClick={bootstrap}>현재 계정을 관리자로 등록</button></div></div>;
-  if(!status.isAdmin)return <div className="bg-card">관리자 계정만 접근할 수 있어요.</div>;
+  if(!status.isAdmin)return <div className="admin-reports-page">
+    <button className="bg-btn bg-btn-ghost" onClick={onBack}>← 회원정보</button>
+    <div className="bg-card" style={{maxWidth:560,margin:"18px auto"}}>
+      <h2>🛡️ 관리자 계정 등록/복구</h2>
+      <p style={{lineHeight:1.7,color:"#68736B"}}>
+        현재 로그인 계정은 관리자로 등록되어 있지 않아요.<br/>
+        Vercel의 <b>ADMIN_SETUP_CODE</b>를 정확히 아는 경우에만 현재 카카오 계정을 관리자로 복구할 수 있어요.
+      </p>
+      <input className="bg-input" type="password" value={setupCode} onChange={e=>setSetupCode(e.target.value)} placeholder="ADMIN_SETUP_CODE 값"/>
+      <input className="bg-input" type="password" inputMode="numeric" maxLength={6} value={setupPin} onChange={e=>setSetupPin(e.target.value.replace(/\D/g,""))} placeholder="새 관리자 PIN 숫자 6자리"/>
+      <button className="bg-btn" disabled={!status.recoveryAvailable} onClick={recoverAdmin}>현재 계정을 관리자로 복구</button>
+      <p style={{fontSize:11,color:"#89928C",lineHeight:1.6,marginTop:10}}>
+        복구 성공 후에는 보안을 위해 Vercel의 ADMIN_SETUP_CODE를 새 값으로 변경해두는 것을 권장해요.
+      </p>
+    </div>
+  </div>;
   if(!unlocked)return <div className="admin-reports-page"><button className="bg-btn bg-btn-ghost" onClick={onBack}>← 회원정보</button><div className="bg-card" style={{maxWidth:520,margin:"18px auto"}}><h2>🔐 관리자 PIN</h2><p>관리자 기능을 사용하려면 6자리 PIN을 입력하세요. 인증 토큰은 10분 후 만료되고, 5회 오류 시 15분 잠깁니다.</p><input className="bg-input" type="password" inputMode="numeric" maxLength={6} value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,""))} placeholder="PIN 6자리"/><button className="bg-btn" disabled={pin.length!==6} onClick={unlock}>관리자 센터 열기</button></div></div>;
 
   const c=stats?.cards||{};
@@ -9242,10 +9285,10 @@ function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost, o
     { key: "edit", icon: "✏️", title: lang === "en" ? "Edit info" : "정보 수정", desc: lang === "en" ? "Change the nickname shown in Pet Talk and manage your account." : "Pet톡에 보이는 닉네임과 계정 정보를 수정해요.", cls: "my-menu-pink", action: onOpenAccount },
     { key: "pets", icon: "🐾", title: lang === "en" ? "Manage pets" : "반려동물 관리", desc: lang === "en" ? `Manage ${allPets.length} registered pet(s).` : `등록한 아이 ${allPets.length}마리의 정보와 성장기록을 관리해요.`, cls: "my-menu-blue", action: onGoPets },
     { key: "activity", icon: "💬", title: lang === "en" ? "Pet Talk activity" : "Pet톡 내 활동", desc: lang === "en" ? "See your posts, comments and likes in one place." : "내가 작성한 글·댓글·좋아요를 한곳에서 확인해요.", cls: "my-menu-purple", action: goActivity },
-    ...(adminEntry && (!adminEntry.adminExists || adminEntry.isAdmin) ? [{
+    ...(adminEntry && (!adminEntry.adminExists || adminEntry.isAdmin || adminEntry.recoveryAvailable) ? [{
       key:"admin", icon:"🛡️",
-      title: adminEntry.adminExists ? "관리자 센터" : "최초 관리자 등록",
-      desc: adminEntry.adminExists ? "통계·Pet톡 신고·이용제한·운영로그 관리" : "PetGrow의 첫 관리자 계정을 안전하게 등록해요.",
+      title: adminEntry.isAdmin ? "관리자 센터" : (adminEntry.adminExists ? "관리자 등록/복구" : "최초 관리자 등록"),
+      desc: adminEntry.isAdmin ? "통계·Pet톡 신고·이용제한·운영로그 관리" : (adminEntry.adminExists ? "ADMIN_SETUP_CODE로 현재 계정을 관리자에 연결해요." : "PetGrow의 첫 관리자 계정을 안전하게 등록해요."),
       cls:"my-menu-mint", action:onOpenAdmin
     }] : []),
   ];

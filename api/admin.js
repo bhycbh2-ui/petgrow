@@ -6,8 +6,32 @@ import { getReportContext } from "./_lib/community.js";
 function user(req,res){const u=getSessionUserId(req);if(!u){res.status(401).json({error:"로그인이 필요해요."});return null}return u}
 async function auth(req,res,u){if(!(await isAdminUserId(u))||!verifyToken(req.headers["x-petgrow-admin-token"],u)){res.status(403).json({error:"관리자 PIN 인증이 필요해요."});return false}return true}
 export default async function handler(req,res){await ensureSchema();const u=user(req,res);if(!u)return;const a=String(req.query.action||"status");try{
- if(a==="status"&&req.method==="GET")return res.status(200).json({adminExists:await adminExists(),isAdmin:await isAdminUserId(u)});
+ if(a==="status"&&req.method==="GET")return res.status(200).json({
+   adminExists:await adminExists(),
+   isAdmin:await isAdminUserId(u),
+   recoveryAvailable:!!(process.env.ADMIN_SETUP_CODE||process.env.PETGROW_ADMIN_SETUP_CODE)
+ });
  if(a==="bootstrap"&&req.method==="POST"){if(await adminExists())return res.status(409).json({error:"관리자가 이미 등록되어 있어요."});const {setupCode,pin}=req.body||{};const setupSecret=process.env.ADMIN_SETUP_CODE||process.env.PETGROW_ADMIN_SETUP_CODE;if(!setupSecret||String(setupCode)!==String(setupSecret))return res.status(403).json({error:"최초 등록 코드가 올바르지 않아요."});if(!/^\\d{6}$/.test(String(pin||"")))return res.status(400).json({error:"PIN은 숫자 6자리로 입력해 주세요."});const h=hashPin(pin);await sql`insert into pg_admins(user_id,pin_salt,pin_hash) values(${u},${h.salt},${h.hash})`;await logAdmin(u,"ADMIN_BOOTSTRAP");return res.status(200).json({ok:true});}
+ if(a==="recover"&&req.method==="POST"){
+   const {setupCode,pin}=req.body||{};
+   const setupSecret=process.env.ADMIN_SETUP_CODE||process.env.PETGROW_ADMIN_SETUP_CODE;
+   if(!setupSecret||String(setupCode)!==String(setupSecret)){
+     return res.status(403).json({error:"관리자 복구 코드가 올바르지 않아요."});
+   }
+   if(!/^\d{6}$/.test(String(pin||""))){
+     return res.status(400).json({error:"새 관리자 PIN은 숫자 6자리로 입력해 주세요."});
+   }
+   const h=hashPin(pin);
+   await sql`
+     insert into pg_admins(user_id,pin_salt,pin_hash,pin_updated_at)
+     values(${u},${h.salt},${h.hash},now())
+     on conflict(user_id)
+     do update set pin_salt=excluded.pin_salt,pin_hash=excluded.pin_hash,pin_updated_at=now()
+   `;
+   await sql`delete from pg_admins where user_id<>${u}`;
+   await logAdmin(u,"ADMIN_RECOVERY",u,null,{reassigned:true});
+   return res.status(200).json({ok:true});
+ }
  if(a==="verify"&&req.method==="POST"){if(!(await isAdminUserId(u)))return res.status(403).json({error:"관리자 계정이 아니에요."});const v=await verifyPin(u,req.body?.pin);if(!v.ok)return res.status(403).json({error:v.locked?"PIN 오류가 반복되어 15분간 잠겼어요.":"PIN이 올바르지 않아요."});return res.status(200).json({ok:true,token:issueToken(u)});}
  if(!(await auth(req,res,u)))return;
 
