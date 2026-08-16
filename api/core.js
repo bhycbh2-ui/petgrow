@@ -198,6 +198,13 @@ async function kakaoRegionForCoord(key, lat, lng) {
     return { province:road.region_1depth_name||"", district:road.region_2depth_name||"", dong:road.region_3depth_name||"" };
   } catch { return null; }
 }
+function isMaskedPublicAddress(v) {
+  const s=String(v||"").trim();
+  return !s || /\*{2,}|○○|OOO|상세주소\s*비공개/i.test(s);
+}
+function publicRegionFallback(region) {
+  return [region?.province, region?.district, region?.dong].filter(Boolean).join(" ").trim();
+}
 async function fetchPublicNearby(type, region, refLat, refLng) {
   const cfg=PUBLIC_NEARBY_SOURCES[type];
   if(!cfg)return [];
@@ -205,28 +212,39 @@ async function fetchPublicNearby(type, region, refLat, refLng) {
   if(!serviceKey)return [];
   const district=String(region?.district||"").trim();
   const province=String(region?.province||"").trim();
-  const filters=[district, province].filter(Boolean);
-  // 구/시 단위로 공식 인허가 데이터를 가져온 뒤 실제 좌표거리로 1km를 판정합니다.
-  const queryAddr=filters[0]||"";
+  const queryAddr=district||province;
   const rows=[];
+  const seenRows=new Set();
   try {
     const base=`https://apis.data.go.kr/1741000/${cfg.base}/info`;
-    const pageSize=500;
-    for(let page=1;page<=3;page++){
-      const tail=[`pageNo=${page}`,`numOfRows=${pageSize}`,`returnType=json`];
-      if(queryAddr)tail.push(`cond%5BROAD_NM_ADDR%3A%3ALIKE%5D=${encodeURIComponent(queryAddr)}`);
-      const url=`${base}?serviceKey=${serviceKey}&${tail.join("&")}`;
-      const r=await fetch(url,{headers:{Accept:"application/json"}});
-      if(!r.ok)break;
-      const text=await r.text();
-      let j;try{j=JSON.parse(text);}catch{break;}
-      const batch=deepRows(j);
-      if(!batch.length)break;
-      rows.push(...batch);
-      if(batch.length<pageSize)break;
+    const pageSize=1000;
+    // 도로명주소만 조회하면 지번주소만 있는 업체가 빠질 수 있으므로 두 주소 필드를 각각 조회해 합칩니다.
+    const addrFields=queryAddr?["ROAD_NM_ADDR","LOTNO_ADDR"]:[null];
+    for(const addrField of addrFields){
+      for(let page=1;page<=5;page++){
+        const tail=[`pageNo=${page}`,`numOfRows=${pageSize}`,`returnType=json`];
+        if(addrField&&queryAddr)tail.push(`cond%5B${addrField}%3A%3ALIKE%5D=${encodeURIComponent(queryAddr)}`);
+        const url=`${base}?serviceKey=${serviceKey}&${tail.join("&")}`;
+        const r=await fetch(url,{headers:{Accept:"application/json"}});
+        if(!r.ok)break;
+        const text=await r.text();
+        let j;try{j=JSON.parse(text);}catch{break;}
+        const batch=deepRows(j);
+        if(!batch.length)break;
+        for(const row of batch){
+          const rid=String(pickField(row,["MNG_NO","mngNo","관리번호","MANAGE_NO"])||"");
+          const road=String(pickField(row,["ROAD_NM_ADDR","roadNmAddr","도로명전체주소","RDNWHLADDR","도로명주소"])||"");
+          const lot=String(pickField(row,["LOTNO_ADDR","lotnoAddr","소재지전체주소","SITEWHLADDR","지번주소"])||"");
+          const k=rid||`${String(pickField(row,["BPLC_NM","bplcNm","사업장명","업소명"])||"")}|${road}|${lot}`;
+          if(seenRows.has(k))continue;
+          seenRows.add(k);rows.push(row);
+        }
+        if(batch.length<pageSize)break;
+      }
     }
   } catch(e){console.warn("public nearby failed",type,e?.message);return [];}
   const out=[];
+  const regionText=publicRegionFallback(region);
   for(const row of rows){
     const status=String(pickField(row,["DTL_SALS_STTS_NM","dtlSalsSttsNm","SALS_STTS_NM","salesStatusName","영업상태명","TRDSTATENM","영업상태"] )||"");
     const statusCode=String(pickField(row,["DTL_SALS_STTS_CD","dtlSalsSttsCd","SALS_STTS_CD","salesStatusCode","영업상태구분코드","TRDSTATEGBN"] )||"");
@@ -236,13 +254,16 @@ async function fetchPublicNearby(type, region, refLat, refLng) {
     if(!name)continue;
     const road=String(pickField(row,["ROAD_NM_ADDR","roadNmAddr","도로명전체주소","RDNWHLADDR","도로명주소"] )||"").trim();
     const lot=String(pickField(row,["LOTNO_ADDR","lotnoAddr","소재지전체주소","SITEWHLADDR","지번주소"] )||"").trim();
-    const address=road||lot;
+    const rawAddress=road||lot;
     const coord=publicCoordToWgs84(row,refLat,refLng);
     if(!coord)continue;
     const phone=String(pickField(row,["TELNO","telno","전화번호","SITETEL","SITE_TELNO","전화번호정보"] )||"").trim();
     out.push({
-      id:`public-${type}-${String(pickField(row,["MNG_NO","mngNo","관리번호","MANAGE_NO"])||name+address).replace(/[^0-9A-Za-z가-힣]/g,"").slice(0,80)}`,
-      sourceId:String(pickField(row,["MNG_NO","mngNo","관리번호","MANAGE_NO"])||""),name,phone,address,roadAddress:road,
+      id:`public-${type}-${String(pickField(row,["MNG_NO","mngNo","관리번호","MANAGE_NO"])||name+rawAddress).replace(/[^0-9A-Za-z가-힣]/g,"").slice(0,80)}`,
+      sourceId:String(pickField(row,["MNG_NO","mngNo","관리번호","MANAGE_NO"])||""),name,phone,
+      address:isMaskedPublicAddress(rawAddress)?regionText:rawAddress,
+      roadAddress:isMaskedPublicAddress(road)?"":road,
+      rawPublicAddress:rawAddress,addressMasked:isMaskedPublicAddress(rawAddress),
       category:cfg.label,typeKey:type,typeLabel:cfg.label,typeIcon:cfg.icon,lat:coord.lat,lng:coord.lng,
       distance:null,url:"",source:"public",official:true,status:status||"영업"
     });
@@ -404,19 +425,40 @@ async function handleNearby(req, res) {
     } catch(e) { console.warn("Nominatim nearby fallback failed", e?.message); }
   }
 
-  // 보조 데이터의 전화번호/카카오맵 링크를 카카오 상호명 대조로 보완합니다.
+  // 공공데이터의 마스킹 주소/빈 전화번호는 같은 좌표 주변 카카오 장소정보로 보완합니다.
   if (key && hasCoord) {
-    const missing = all.filter(x => (!x.phone || !x.url) && x.name && x.source !== "kakao").slice(0,20);
+    const typeQuery={hospital:"동물병원",pharmacy:"동물약국",grooming:"펫미용",hotel:"애견호텔",shop:"펫샵"};
+    const missing = all.filter(x => x.source !== "kakao" && x.name && Number(x.distance) <= 1500 && (!x.phone || !x.url || x.addressMasked || isMaskedPublicAddress(x.address))).slice(0,35);
     await Promise.all(missing.map(async x => {
       try {
-        const u = new URL("https://dapi.kakao.com/v2/local/search/keyword.json");
-        u.searchParams.set("query", x.name);u.searchParams.set("size","5");u.searchParams.set("x",String(x.lng||nLng));u.searchParams.set("y",String(x.lat||nLat));u.searchParams.set("radius","3000");u.searchParams.set("sort","distance");
-        const r=await fetch(u,{headers:{Authorization:`KakaoAK ${key}`}});if(!r.ok)return;const j=await r.json();
+        const searchOnce=async(q)=>{
+          const u=new URL("https://dapi.kakao.com/v2/local/search/keyword.json");
+          u.searchParams.set("query",q);u.searchParams.set("size","10");u.searchParams.set("x",String(x.lng||nLng));u.searchParams.set("y",String(x.lat||nLat));u.searchParams.set("radius","700");u.searchParams.set("sort","distance");
+          const r=await fetch(u,{headers:{Authorization:`KakaoAK ${key}`}});if(!r.ok)return [];const j=await r.json();return j.documents||[];
+        };
+        let docs=await searchOnce(x.name);
+        if(!docs.length)docs=await searchOnce(typeQuery[x.typeKey]||x.typeLabel||"반려동물");
         const target=norm(x.name);
-        const hit=(j.documents||[]).find(d=>norm(d.place_name)===target)||(j.documents||[]).find(d=>Number(d.distance||999999)<250);
-        if(hit){x.phone=hit.phone||x.phone||"";x.url=hit.place_url||x.url||"";x.address=hit.road_address_name||hit.address_name||x.address;x.roadAddress=hit.road_address_name||x.roadAddress||"";}
+        let hit=docs.find(d=>norm(d.place_name)===target);
+        if(!hit)hit=docs.find(d=>Number(d.distance||999999)<=120);
+        if(!hit)return;
+        const hd=Number(hit.distance||999999);
+        // 좌표가 매우 가까운 경우 카카오 상호명도 사용자 표시명으로 사용해 깨진/축약된 공공데이터명을 보완합니다.
+        if(hd<=80 && hit.place_name)x.name=hit.place_name;
+        x.phone=hit.phone||x.phone||"";
+        x.url=hit.place_url||x.url||"";
+        const ka=hit.road_address_name||hit.address_name||"";
+        if(ka && (x.addressMasked || isMaskedPublicAddress(x.address))) x.address=ka;
+        if(hit.road_address_name)x.roadAddress=hit.road_address_name;
+        x.addressMasked=false;
       } catch {}
     }));
+  }
+  // 카카오에서도 주소를 보완하지 못한 마스킹 주소는 구·동 정도까지만 깔끔하게 표시합니다.
+  if(hasCoord){
+    const region = await kakaoRegionForCoord(key,nLat,nLng);
+    const safeRegion=publicRegionFallback(region);
+    for(const x of all){ if(x.addressMasked || isMaskedPublicAddress(x.address)) x.address=safeRegion||x.address||""; }
   }
 
   // 이름+근접좌표 기준 중복 제거. 카카오 결과를 우선 보존합니다.
