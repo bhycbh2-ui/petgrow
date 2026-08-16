@@ -506,7 +506,7 @@ const STRINGS = {
     accountCodeLabel: "카카오 계정 구분번호",
     accountNicknameLabel: "Pet톡 닉네임",
     accountNicknameHelp: "2~8자 · Pet톡 게시글과 댓글에 표시돼요.",
-    accountNicknameSave: "닉네임 저장",
+    accountNicknameSave: "저장하기",
     accountNicknameSaved: "닉네임이 변경됐어요.",
     accountNicknameError: "닉네임은 2~8자로 입력해주세요.",
     accountFreshLoginHelp: "로그아웃 후 다시 로그인하면 저장된 카카오 계정 중 원하는 계정을 선택할 수 있어요.",
@@ -1043,7 +1043,7 @@ const STRINGS = {
     accountKakaoTag: "Logged in with Kakao",
     accountCodeLabel: "Kakao account code",
     accountNicknameLabel: "Pet Talk nickname",
-    accountNicknameHelp: "2–20 characters · Shown on Pet Talk posts and comments.",
+    accountNicknameHelp: "2–8 characters · Shown on Pet Talk posts and comments.",
     accountNicknameSave: "Save nickname",
     accountNicknameSaved: "Nickname updated.",
     accountNicknameError: "Please enter 2–20 characters.",
@@ -2147,116 +2147,143 @@ function HamburgerMenu({ open, onClose, view, onNavigate, onOpenAccount, account
   );
 }
 
-function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNicknameUpdated }) {
+function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNicknameUpdated, onOpenAdmin }) {
   const t = useT();
   const [nickname, setNickname] = useState(account?.name || "");
+  const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [msg, setMsg] = useState("");
-  const [savedOpen, setSavedOpen] = useState(false);
-  useEffect(() => { setNickname(account?.name || ""); setMsg(""); setSavedOpen(false); }, [account?.name, open]);
+  const [adminEntry, setAdminEntry] = useState(null);
+
+  useEffect(() => {
+    setNickname(account?.name || "");
+    setEditing(false);
+  }, [account?.name, open]);
+
+  useEffect(() => {
+    let alive = true;
+    if (!open || !account) {
+      setAdminEntry(null);
+      return () => { alive = false; };
+    }
+    adminStatus()
+      .then((s) => { if (alive) setAdminEntry(s); })
+      .catch(() => { if (alive) setAdminEntry(null); });
+    return () => { alive = false; };
+  }, [open, account?.id]);
+
   async function saveNickname() {
-    if (nicknameSaving) return;
-    const checked = validateNicknameLocal(nicknameDraft);
+    if (saving) return;
+    const checked = validateNicknameLocal(nickname);
     if (!checked.ok) {
       window.alert(checked.message);
       return;
     }
-    const nickname = checked.nickname;
-
-    if (account?.nickname && normalizeNickname(account.nickname) === nickname) {
+    if (normalizeNickname(account?.name || "") === checked.nickname) {
+      setEditing(false);
       window.alert("현재 사용 중인 닉네임과 같아요.");
-      setNicknameEditMode(false);
       return;
     }
 
+    setSaving(true);
     try {
-      setNicknameSaving(true);
-
-      const checkRes = await fetch("/api/account/nickname/check", {
-        method: "POST",
+      const result = await apiJson("/api/account", {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ nickname })
+        body: JSON.stringify({ nickname: checked.nickname }),
       });
-
-      if (checkRes.ok) {
-        const checkData = await checkRes.json().catch(() => ({}));
-        if (checkData?.available === false || checkData?.duplicate === true || checkData?.reason === "duplicate") {
-          window.alert("이미 사용 중인 닉네임이에요. 다른 닉네임을 사용해 주세요.");
-          return;
-        }
-        if (checkData?.blocked === true || checkData?.reason === "blocked") {
-          window.alert("사용할 수 없는 표현이 포함된 닉네임이에요. 다른 닉네임을 사용해 주세요.");
-          return;
-        }
-      } else if (checkRes.status === 409) {
-        window.alert("이미 사용 중인 닉네임이에요. 다른 닉네임을 사용해 주세요.");
-        return;
-      }
-
-      const saveRes = await fetch("/api/account/nickname", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ nickname })
-      });
-
-      const saveData = await saveRes.json().catch(() => ({}));
-      if (!saveRes.ok) {
-        if (saveRes.status === 409 || saveData?.reason === "duplicate") {
-          window.alert("이미 사용 중인 닉네임이에요. 다른 닉네임을 사용해 주세요.");
-          return;
-        }
-        if (saveData?.reason === "blocked") {
-          window.alert("사용할 수 없는 표현이 포함된 닉네임이에요. 다른 닉네임을 사용해 주세요.");
-          return;
-        }
-        throw new Error(saveData?.message || "닉네임 저장에 실패했어요.");
-      }
-
-      setAccount((prev) => prev ? { ...prev, nickname } : prev);
-      setNicknameDraft(nickname);
-      setNicknameEditMode(false);
+      const savedName = result?.name || checked.nickname;
+      setNickname(savedName);
+      onNicknameUpdated?.(savedName);
+      setEditing(false);
       window.alert("닉네임이 저장되었어요.");
     } catch (e) {
-      console.error(e);
-      window.alert(e?.message || "닉네임 저장 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.");
+      window.alert(e?.message || "닉네임 저장 중 오류가 발생했어요.");
     } finally {
-      setNicknameSaving(false);
+      setSaving(false);
     }
   }
+
+  const showAdminEntry = !!adminEntry && (!adminEntry.adminExists || adminEntry.isAdmin);
+  const adminLabel = adminEntry?.adminExists ? "관리자 센터" : "최초 관리자 등록";
+
   return (
-    <>
     <Modal open={open} onClose={onClose} width={380}>
       <button type="button" onClick={onClose} aria-label={t.accountCloseBtn} title={t.accountCloseBtn} className="account-modal-close">×</button>
+
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18, paddingRight: 30 }}>
         <UserIcon style={{ width: 20, height: 20, color: "var(--primary)" }} />
         <h3 style={{ fontSize: 18 }}>{t.accountSettingsTitle}</h3>
       </div>
+
       {account && (<>
         <div className="bg-surface-card" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-          {account.profileImage ? <img src={account.profileImage} alt="" style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover" }} /> :
-            <div style={{ width: 40, height: 40, borderRadius: "50%", background: "var(--primary)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}><UserIcon style={{ width: 20, height: 20 }} /></div>}
-          <div><div style={{ fontWeight: 800, fontSize: 15 }}>{account.name}</div><div className="bg-sub" style={{ fontSize: 12 }}>{t.accountKakaoTag}</div>
-          {account.accountCode && <div className="bg-sub" style={{ fontSize: 11, marginTop: 2 }}>{t.accountCodeLabel} · ••••{account.accountCode}</div>}</div>
+          {account.profileImage ? (
+            <img src={account.profileImage} alt="" style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover" }} />
+          ) : (
+            <div style={{ width: 40, height: 40, borderRadius: "50%", background: "var(--primary)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <UserIcon style={{ width: 20, height: 20 }} />
+            </div>
+          )}
+          <div>
+            <div style={{ fontWeight: 800, fontSize: 15 }}>{account.name}</div>
+            <div className="bg-sub" style={{ fontSize: 12 }}>{t.accountKakaoTag}</div>
+            {account.accountCode && <div className="bg-sub" style={{ fontSize: 11, marginTop: 2 }}>{t.accountCodeLabel} · ••••{account.accountCode}</div>}
+          </div>
         </div>
+
         <div className="bg-surface-card" style={{ marginBottom: 14 }}>
           <label className="bg-label">{t.accountNicknameLabel}</label>
-          <input className="bg-input" value={nickname} maxLength={20} onChange={(e) => setNickname(e.target.value)} />
-          <div className="bg-sub" style={{ fontSize: 11, marginTop: 6 }}>{t.accountNicknameHelp}</div>
-          {msg && <div style={{ fontSize: 11, marginTop: 6, color: msg === t.accountNicknameSaved ? "var(--primary)" : "#C0392B" }}>{msg}</div>}
-          <button type="button" className="bg-btn" style={{ width: "100%", marginTop: 10 }} onClick={saveNickname} disabled={saving}>{saving ? "..." : t.accountNicknameSave}</button>
+          <input
+            className="bg-input"
+            value={nickname}
+            maxLength={8}
+            disabled={!editing}
+            onChange={(e) => setNickname(e.target.value)}
+          />
+          <div className="bg-sub" style={{ fontSize: 11, marginTop: 6 }}>2~8자 · Pet톡 게시글과 댓글에 표시돼요.</div>
+
+          <div className="nickname-action-row">
+            <button
+              type="button"
+              className="bg-btn bg-btn-ghost nickname-change-btn"
+              onClick={() => {
+                setEditing(true);
+                window.alert("닉네임을 변경할 수 있어요. 2~8자 이내로 입력해 주세요.");
+              }}
+            >
+              변경하기
+            </button>
+            <button
+              type="button"
+              className="bg-btn nickname-save-btn"
+              onClick={saveNickname}
+              disabled={!editing || saving}
+            >
+              {saving ? "저장 중..." : "저장하기"}
+            </button>
+          </div>
         </div>
+
+        {showAdminEntry && (
+          <button
+            type="button"
+            className="bg-btn admin-entry-account-btn"
+            style={{ width: "100%", marginBottom: 12 }}
+            onClick={() => { onClose(); onOpenAdmin?.(); }}
+          >
+            🛡️ {adminLabel}
+          </button>
+        )}
+
         <div className="bg-sub" style={{ fontSize: 11, lineHeight: 1.6, marginBottom: 12 }}>{t.accountFreshLoginHelp}</div>
       </>)}
+
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         <button type="button" className="bg-btn account-modal-close-btn" onClick={onClose}>{t.accountCloseBtn}</button>
         <button type="button" className="bg-btn bg-btn-ghost" onClick={onLogout}>{t.accountLogoutBtn}</button>
         <button type="button" className="bg-btn bg-btn-ghost" style={{ color: "#C0392B" }} onClick={onRequestDelete}>{t.accountDeleteBtn}</button>
       </div>
     </Modal>
-    <AlertModal open={savedOpen} message={t.accountNicknameSaved} onClose={() => setSavedOpen(false)} />
-    </>
   );
 }
 
@@ -3706,6 +3733,15 @@ const GlobalStyle = () => (
     .admin-stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}.admin-stat-card{background:#fff;border:1px solid #E2E9E3;border-radius:17px;padding:16px;display:grid;grid-template-columns:auto 1fr;column-gap:9px;align-items:center;box-shadow:0 6px 18px rgba(34,48,39,.035)}.admin-stat-card>span{grid-row:1/3;font-size:22px}.admin-stat-card strong{font-size:22px;line-height:1;color:#223027}.admin-stat-card small{font-size:10.5px;color:#78837B;margin-top:5px}
     .admin-dashboard-columns{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:12px;margin-bottom:12px}.admin-dashboard-panel{margin:0!important}.admin-panel-title{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}.admin-panel-title b{display:block;font-size:15px}.admin-panel-title small{display:block;color:#89928C;font-size:10.5px;margin-top:4px}.admin-ranking{display:flex;flex-direction:column;gap:7px}.admin-ranking>div{display:flex;justify-content:space-between;gap:12px;padding:9px 10px;border-radius:10px;background:#F7FAF7;font-size:12px}.admin-ranking>div b{color:#3D704A}.admin-ad-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.admin-ad-grid>div{padding:12px 8px;border-radius:12px;background:#F5F9F5;text-align:center}.admin-ad-grid b{display:block;font-size:18px;color:#3D704A}.admin-ad-grid span{display:block;font-size:9.5px;color:#7A857D;margin-top:4px}.admin-privacy-note{font-size:10.5px!important;color:#89928C!important;line-height:1.55!important;margin:12px 0 0!important}.admin-log-list{display:flex;flex-direction:column;gap:8px}.admin-log-row{display:flex;justify-content:space-between;gap:12px;align-items:center;background:#fff;border:1px solid #E2E9E3;border-radius:14px;padding:12px 14px}.admin-log-row b{display:block;font-size:12px}.admin-log-row small{display:block;margin-top:3px;color:#89928C;font-size:9.5px}.admin-log-row>span{font-size:10px;color:#89928C;white-space:nowrap}
     @media(max-width:1050px){.admin-stat-grid{grid-template-columns:repeat(3,1fr)}.admin-dashboard-columns{grid-template-columns:1fr}.admin-ad-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.admin-stat-grid{grid-template-columns:repeat(2,1fr)}.admin-stat-card{padding:13px}.admin-stat-card strong{font-size:19px}.admin-log-row{align-items:flex-start;flex-direction:column}.admin-log-row>span{white-space:normal}}
+
+    .admin-entry-account-btn{
+      min-height:48px;
+      border-radius:14px;
+      background:#EFF6F0;
+      color:#356B43;
+      border:1px solid #D8E7DA;
+      box-shadow:none;
+    }
 `}</style>
 );
 
@@ -9369,8 +9405,6 @@ function AppInner({ lang, setLang }) {
   const [account, setAccount] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [accountModalOpen, setAccountModalOpen] = useState(false);
-  const [nicknameEditMode, setNicknameEditMode] = useState(false);
-  const [nicknameSaving, setNicknameSaving] = useState(false);
   const [hamOpen, setHamOpen] = useState(false);
   const [contentSubTab, setContentSubTab] = useState("all");
   const isNativeApp = Capacitor.isNativePlatform();
@@ -9996,6 +10030,7 @@ function AppInner({ lang, setLang }) {
         onLogout={handleLogout}
         onRequestDelete={() => { setAccountModalOpen(false); setDeleteAccountConfirmOpen(true); }}
         onNicknameUpdated={(name) => setAccount((prev) => prev ? { ...prev, name } : prev)}
+        onOpenAdmin={() => goView("admin")}
       />
       <ConfirmModal
         open={deleteAccountConfirmOpen}

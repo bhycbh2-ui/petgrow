@@ -144,6 +144,14 @@ export function ensureSchema() {
           created_at timestamptz not null default now()
         )
       `;
+      await sql`
+        create table if not exists pg_nickname_registry (
+          user_id text primary key references pg_users(id) on delete cascade,
+          normalized_nickname text not null unique,
+          updated_at timestamptz not null default now()
+        )
+      `;
+
       // ---- 개인정보 최소화 운영 통계 ----
       // IP, 이메일, 카카오 ID, User-Agent 원문은 이 통계 테이블에 저장하지 않아요.
       await sql`
@@ -205,8 +213,28 @@ export async function getUserById(id) {
 
 export async function updateUserNickname(id, nickname) {
   await ensureSchema();
-  const clean = String(nickname || "").trim();
-  if (clean.length < 2 || clean.length > 20) throw new Error("invalid nickname");
+  const clean = String(nickname || "").trim().replace(/\s+/g, " ");
+  if (clean.length < 2 || clean.length > 8) {
+    const err = new Error("nickname must be 2-8 characters");
+    err.code = "INVALID_NICKNAME";
+    throw err;
+  }
+  const normalized = clean.toLocaleLowerCase("ko-KR");
+  try {
+    await sql`
+      insert into pg_nickname_registry(user_id, normalized_nickname, updated_at)
+      values(${id}, ${normalized}, now())
+      on conflict(user_id)
+      do update set normalized_nickname = excluded.normalized_nickname, updated_at = now()
+    `;
+  } catch (e) {
+    if (e?.code === "23505") {
+      const err = new Error("nickname already in use");
+      err.code = "NICKNAME_DUPLICATE";
+      throw err;
+    }
+    throw e;
+  }
   const { rows } = await sql`
     update pg_users set nickname = ${clean}
     where id = ${id}

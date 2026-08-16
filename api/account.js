@@ -1,6 +1,7 @@
 import { SESSION_COOKIE } from "./_lib/config.js";
 import { getSessionUserId } from "./_lib/session.js";
 import { deleteUser, updateUserNickname } from "./_lib/db.js";
+import { validateNickname } from "./_nicknamePolicy.js";
 
 // 회원탈퇴: PetGrow 계정, 카카오 인증 연동 정보, 반려동물 정보·사진·성장기록·PetBTI 결과 등
 // pg_user_state 에 저장된 모든 데이터가 DB의 ON DELETE CASCADE 로 함께 삭제돼요.
@@ -15,17 +16,29 @@ export default async function handler(req, res) {
     return;
   }
   if (req.method === "PATCH") {
-    const nickname = String(req.body?.nickname || "").trim();
-    if (nickname.length < 2 || nickname.length > 20) {
-      res.status(400).json({ error: "nickname must be 2-20 characters" });
+    const checked = validateNickname(req.body?.nickname);
+    if (!checked.ok) {
+      res.status(400).json({ error: checked.message, reason: checked.reason || "blocked" });
       return;
     }
-    const user = await updateUserNickname(uid, nickname);
-    if (!user) {
-      res.status(404).json({ error: "user not found" });
-      return;
+    try {
+      const user = await updateUserNickname(uid, checked.nickname);
+      if (!user) {
+        res.status(404).json({ error: "user not found" });
+        return;
+      }
+      res.status(200).json({ ok: true, name: user.nickname });
+    } catch (e) {
+      if (e?.code === "NICKNAME_DUPLICATE" || e?.code === "23505") {
+        res.status(409).json({ error: "이미 사용 중인 닉네임이에요. 다른 닉네임을 사용해 주세요.", reason: "duplicate" });
+        return;
+      }
+      if (e?.code === "INVALID_NICKNAME") {
+        res.status(400).json({ error: "닉네임은 2~8자 이내로 입력해 주세요.", reason: "length" });
+        return;
+      }
+      throw e;
     }
-    res.status(200).json({ ok: true, name: user.nickname });
     return;
   }
 
