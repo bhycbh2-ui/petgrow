@@ -3916,6 +3916,36 @@ const GlobalStyle = () => (
       cursor:pointer!important;
       box-shadow:0 2px 7px rgba(35,55,42,.07)!important;
     }
+
+    /* 로그인 화면 카카오 버튼: 화면 전체 폭 대신 중앙 컴팩트 카드형 */
+    .kakao-login-wrap,
+    .login-kakao-wrap{
+      width:100%!important;
+      display:flex!important;
+      justify-content:center!important;
+      padding:0 20px!important;
+      box-sizing:border-box!important;
+    }
+    .kakao-login-btn,
+    .login-kakao-btn,
+    .kakao-btn{
+      width:min(100%, 520px)!important;
+      max-width:520px!important;
+      min-height:58px!important;
+      margin:0 auto!important;
+      border-radius:16px!important;
+      box-shadow:0 8px 22px rgba(40,35,15,.08)!important;
+    }
+    @media (max-width:560px){
+      .kakao-login-btn,
+      .login-kakao-btn,
+      .kakao-btn{
+        width:calc(100% - 28px)!important;
+        max-width:none!important;
+        min-height:54px!important;
+        border-radius:14px!important;
+      }
+    }
 `}</style>
 );
 
@@ -9309,7 +9339,7 @@ function AdminReportsPage({ onBack }) {
   const bootstrap=async()=>{
     if(!/^\d{6}$/.test(setupPin)){window.alert("PIN은 숫자 6자리로 입력해 주세요.");return}
     try{
-      await adminBootstrap(setupCode,setupPin);
+      await adminBootstrap(String(setupCode||"").trim(), String(setupPin||"").trim());
       window.alert("관리자 등록이 완료됐어요. 앞으로 관리자 센터에 들어갈 때마다 설정한 6자리 PIN을 입력해야 해요.");
       setStatus({adminExists:true,isAdmin:true});
     }catch(e){window.alert(e.message)}

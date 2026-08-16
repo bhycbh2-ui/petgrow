@@ -11,7 +11,7 @@ export default async function handler(req,res){await ensureSchema();const u=user
    isAdmin:await isAdminUserId(u),
    recoveryAvailable:!!(process.env.ADMIN_SETUP_CODE||process.env.PETGROW_ADMIN_SETUP_CODE)
  });
- if(a==="bootstrap"&&req.method==="POST"){if(await adminExists())return res.status(409).json({error:"관리자가 이미 등록되어 있어요."});const {setupCode,pin}=req.body||{};const setupSecret=process.env.ADMIN_SETUP_CODE||process.env.PETGROW_ADMIN_SETUP_CODE;if(!setupSecret||String(setupCode)!==String(setupSecret))return res.status(403).json({error:"최초 등록 코드가 올바르지 않아요."});if(!/^\\d{6}$/.test(String(pin||"")))return res.status(400).json({error:"PIN은 숫자 6자리로 입력해 주세요."});const h=hashPin(pin);await sql`insert into pg_admins(user_id,pin_salt,pin_hash) values(${u},${h.salt},${h.hash})`;await logAdmin(u,"ADMIN_BOOTSTRAP");return res.status(200).json({ok:true});}
+ if(a==="bootstrap"&&req.method==="POST"){if(await adminExists())return res.status(409).json({error:"관리자가 이미 등록되어 있어요."});const {setupCode,pin}=req.body||{};const setupSecret=process.env.ADMIN_SETUP_CODE||process.env.PETGROW_ADMIN_SETUP_CODE;if(!setupSecret||String(setupCode)!==String(setupSecret))return res.status(403).json({error:"최초 등록 코드가 올바르지 않아요."});if(!/^\d{6}$/.test(String(pin||"")))return res.status(400).json({error:"PIN은 숫자 6자리로 입력해 주세요."});const h=hashPin(pin);await sql`insert into pg_admins(user_id,pin_salt,pin_hash) values(${u},${h.salt},${h.hash})`;await logAdmin(u,"ADMIN_BOOTSTRAP");return res.status(200).json({ok:true});}
  if(a==="recover"&&req.method==="POST"){
    const {setupCode,pin}=req.body||{};
    const setupSecret=process.env.ADMIN_SETUP_CODE||process.env.PETGROW_ADMIN_SETUP_CODE;
