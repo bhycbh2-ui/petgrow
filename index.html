@@ -71,7 +71,7 @@
 
       .petgrow-runners{position:absolute;left:0;right:0;bottom:max(6vh,42px);height:92px;overflow:hidden;pointer-events:none;z-index:1}
       .petgrow-runners:after{content:"";position:absolute;left:7%;right:7%;bottom:8px;height:1px;background:linear-gradient(90deg,transparent,rgba(79,138,91,.18),transparent)}
-      .petgrow-runner{position:absolute;left:-100px;bottom:8px;width:72px;height:62px;filter:drop-shadow(0 6px 7px rgba(34,48,39,.09));will-change:transform}
+      .petgrow-runner{position:absolute;right:-100px;bottom:8px;width:72px;height:62px;filter:drop-shadow(0 6px 7px rgba(34,48,39,.09));will-change:transform}
       .petgrow-runner svg{width:100%;height:100%;overflow:visible}
       .petgrow-runner--dog{animation:petgrow-run-dog 4.6s linear infinite}
       .petgrow-runner--cat{animation:petgrow-run-cat 4.6s linear .92s infinite}
@@ -80,8 +80,8 @@
       .petgrow-leg--back{transform-origin:50% 15%;animation:petgrow-leg-back .34s ease-in-out infinite alternate}
       .petgrow-tail{transform-origin:0 50%;animation:petgrow-tail .26s ease-in-out infinite alternate}
       .petgrow-speedline{animation:petgrow-speedline .55s ease-in-out infinite}
-      @keyframes petgrow-run-dog{0%{transform:translate3d(-120px,0,0)}12%{transform:translate3d(calc(12vw - 90px),-4px,0)}25%{transform:translate3d(calc(25vw - 60px),0,0)}38%{transform:translate3d(calc(38vw - 30px),-5px,0)}50%{transform:translate3d(50vw,0,0)}63%{transform:translate3d(calc(63vw + 25px),-4px,0)}75%{transform:translate3d(calc(75vw + 55px),0,0)}88%{transform:translate3d(calc(88vw + 85px),-5px,0)}100%{transform:translate3d(calc(100vw + 150px),0,0)}}
-      @keyframes petgrow-run-cat{0%{transform:translate3d(-145px,0,0) scale(.84)}12%{transform:translate3d(calc(12vw - 105px),-6px,0) scale(.84)}25%{transform:translate3d(calc(25vw - 70px),0,0) scale(.84)}38%{transform:translate3d(calc(38vw - 35px),-7px,0) scale(.84)}50%{transform:translate3d(50vw,0,0) scale(.84)}63%{transform:translate3d(calc(63vw + 30px),-6px,0) scale(.84)}75%{transform:translate3d(calc(75vw + 65px),0,0) scale(.84)}88%{transform:translate3d(calc(88vw + 100px),-7px,0) scale(.84)}100%{transform:translate3d(calc(100vw + 175px),0,0) scale(.84)}}
+      @keyframes petgrow-run-dog{0%{transform:translate3d(120px,0,0)}12%{transform:translate3d(calc(-12vw + 90px),-4px,0)}25%{transform:translate3d(calc(-25vw + 60px),0,0)}38%{transform:translate3d(calc(-38vw + 30px),-5px,0)}50%{transform:translate3d(-50vw,0,0)}63%{transform:translate3d(calc(-63vw - 25px),-4px,0)}75%{transform:translate3d(calc(-75vw - 55px),0,0)}88%{transform:translate3d(calc(-88vw - 85px),-5px,0)}100%{transform:translate3d(calc(-100vw - 150px),0,0)}}
+      @keyframes petgrow-run-cat{0%{transform:translate3d(145px,0,0) scale(.84)}12%{transform:translate3d(calc(-12vw + 105px),-6px,0) scale(.84)}25%{transform:translate3d(calc(-25vw + 70px),0,0) scale(.84)}38%{transform:translate3d(calc(-38vw + 35px),-7px,0) scale(.84)}50%{transform:translate3d(-50vw,0,0) scale(.84)}63%{transform:translate3d(calc(-63vw - 30px),-6px,0) scale(.84)}75%{transform:translate3d(calc(-75vw - 65px),0,0) scale(.84)}88%{transform:translate3d(calc(-88vw - 100px),-7px,0) scale(.84)}100%{transform:translate3d(calc(-100vw - 175px),0,0) scale(.84)}}
       @keyframes petgrow-gallop{from{transform:translateY(2px) scaleX(1.035) scaleY(.96) rotate(-1deg)}to{transform:translateY(-5px) scaleX(.97) scaleY(1.04) rotate(1deg)}}
       @keyframes petgrow-leg-front{from{transform:rotate(32deg) translateY(-1px)}to{transform:rotate(-38deg) translateY(1px)}}
       @keyframes petgrow-leg-back{from{transform:rotate(-34deg) translateY(1px)}to{transform:rotate(38deg) translateY(-1px)}}
