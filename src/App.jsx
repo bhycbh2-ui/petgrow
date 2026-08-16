@@ -9180,6 +9180,13 @@ function AdminReportsPage({ onBack }) {
 
 function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost, onOpenAdmin }) {
   const t = useT();
+  const [adminEntry, setAdminEntry] = useState(null);
+  useEffect(() => {
+    let alive = true;
+    if (!account) { setAdminEntry(null); return () => { alive = false; }; }
+    adminStatus().then((s) => { if (alive) setAdminEntry(s); }).catch(() => { if (alive) setAdminEntry(null); });
+    return () => { alive = false; };
+  }, [account?.id]);
   const goActivity = () => {
     const el = document.getElementById("my-pettalk-activity");
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -9189,7 +9196,12 @@ function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost, o
     { key: "edit", icon: "✏️", title: lang === "en" ? "Edit info" : "정보 수정", desc: lang === "en" ? "Change the nickname shown in Pet Talk and manage your account." : "Pet톡에 보이는 닉네임과 계정 정보를 수정해요.", cls: "my-menu-pink", action: onOpenAccount },
     { key: "pets", icon: "🐾", title: lang === "en" ? "Manage pets" : "반려동물 관리", desc: lang === "en" ? `Manage ${allPets.length} registered pet(s).` : `등록한 아이 ${allPets.length}마리의 정보와 성장기록을 관리해요.`, cls: "my-menu-blue", action: onGoPets },
     { key: "activity", icon: "💬", title: lang === "en" ? "Pet Talk activity" : "Pet톡 내 활동", desc: lang === "en" ? "See your posts, comments and likes in one place." : "내가 작성한 글·댓글·좋아요를 한곳에서 확인해요.", cls: "my-menu-purple", action: goActivity },
-    ...(account?.isAdmin ? [{ key:"admin", icon:"🛡️", title:"관리자 센터", desc:"통계·Pet톡 신고·이용제한·운영로그 관리", cls:"my-menu-mint", action:onOpenAdmin }] : []),
+    ...(adminEntry && (!adminEntry.adminExists || adminEntry.isAdmin) ? [{
+      key:"admin", icon:"🛡️",
+      title: adminEntry.adminExists ? "관리자 센터" : "최초 관리자 등록",
+      desc: adminEntry.adminExists ? "통계·Pet톡 신고·이용제한·운영로그 관리" : "PetGrow의 첫 관리자 계정을 안전하게 등록해요.",
+      cls:"my-menu-mint", action:onOpenAdmin
+    }] : []),
   ];
   return (
     <div style={{ maxWidth: 760, margin: "0 auto", padding: "0 20px 70px" }}>
