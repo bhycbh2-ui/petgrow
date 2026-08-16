@@ -1,7 +1,7 @@
 import { SESSION_COOKIE } from "./_lib/config.js";
 import { getSessionUserId } from "./_lib/session.js";
 import { deleteUser, updateUserNickname } from "./_lib/db.js";
-import { validateNickname } from "./_nicknamePolicy.js";
+import { validateNickname } from "./_lib/nicknamePolicy.js";
 import { isAdminUserId } from "./_lib/admin.js";
 
 // 회원탈퇴: PetGrow 계정, 카카오 인증 연동 정보, 반려동물 정보·사진·성장기록·PetBTI 결과 등

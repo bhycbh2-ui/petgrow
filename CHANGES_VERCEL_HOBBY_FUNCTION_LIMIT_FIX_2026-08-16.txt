@@ -1,0 +1,6 @@
+PetGrow Vercel Hobby 배포 제한 수정
+- Vercel Hobby의 서버리스 함수 개수 제한 대응
+- /api/me, /api/state, /api/health-event, /api/nearby 를 /api/core.js 한 함수로 통합
+- 기존 API 주소는 vercel.json 호환 라우팅으로 유지
+- 닉네임 정책 helper를 api/_lib 로 이동해 불필요한 함수 생성 방지
+- Pet음악, 내 주변 Pet, 로그인, 관리자, 커뮤니티 기존 기능 유지
