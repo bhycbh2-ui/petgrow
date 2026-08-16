@@ -138,9 +138,12 @@ async function handleNearby(req, res) {
   const key = process.env.KAKAO_REST_API_KEY;
   const { lat, lng, category = "all", area = "" } = req.query || {};
   const keywords = {
-    all: ["동물병원", "동물약국", "반려동물용품", "펫샵", "애견미용", "고양이미용", "반려동물 미용", "애견호텔", "반려동물 호텔", "반려동물 유치원"],
-    hospital: ["동물병원", "24시 동물병원"], pharmacy: ["동물약국"], shop: ["반려동물용품", "펫샵", "애견용품"],
-    grooming: ["애견미용", "고양이미용", "반려동물 미용"], hotel: ["애견호텔", "반려동물 호텔", "반려동물 유치원", "애견유치원"]
+    all: ["동물병원", "24시 동물병원", "동물약국", "반려동물용품", "펫샵", "애견미용", "고양이미용", "반려동물 미용", "애견호텔", "반려동물 호텔", "반려동물 유치원", "애견유치원"],
+    hospital: ["동물병원", "24시 동물병원", "동물의료센터", "동물메디컬센터"],
+    pharmacy: ["동물약국"],
+    shop: ["반려동물용품", "펫샵", "애견용품", "고양이용품"],
+    grooming: ["애견미용", "고양이미용", "반려동물 미용", "펫미용"],
+    hotel: ["애견호텔", "반려동물 호텔", "반려동물 유치원", "애견유치원", "펫호텔"]
   };
   const qs = keywords[category] || keywords.all;
   const nLat = Number(lat), nLng = Number(lng);
@@ -148,87 +151,111 @@ async function handleNearby(req, res) {
   const all = [];
   let kakaoOk = false;
   let kakaoStatus = null;
-
-  // 1) 카카오 장소검색: 1km를 먼저 찾고 결과가 적을 때만 3km → 5km로 자동 확장합니다.
-  //    가까운 장소를 놓치지 않으면서 불필요하게 먼 장소가 먼저 섞이는 문제를 줄입니다.
   let searchRadius = hasCoord ? 1000 : null;
+
+  const norm = (v) => String(v || "").replace(/[^0-9A-Za-z가-힣]/g, "").toLowerCase();
   const uniqueCount = (rows) => {
     const set = new Set();
-    for (const x of rows) set.add(`${String(x.name||"").replace(/\s/g,"").toLowerCase()}|${String(x.address||"").replace(/\s/g,"").toLowerCase()}`);
+    for (const x of rows) {
+      const coord = Number.isFinite(Number(x.lat)) && Number.isFinite(Number(x.lng)) ? `${Number(x.lat).toFixed(4)},${Number(x.lng).toFixed(4)}` : "";
+      set.add(`${norm(x.name)}|${coord || norm(x.address)}`);
+    }
     return set.size;
   };
+  const calcDistance = (a,b,c,d) => {
+    const rad=Math.PI/180,R=6371000,x=(c-a)*rad,y=(d-b)*rad;
+    const aa=Math.sin(x/2)**2+Math.cos(a*rad)*Math.cos(c*rad)*Math.sin(y/2)**2;
+    return Math.round(2*R*Math.asin(Math.sqrt(aa)));
+  };
+
+  // 카카오: 좌표 반경 + 거리순. 페이지 1~3까지 조회해서 가까운 업체 누락을 줄입니다.
   const fetchKakaoAtRadius = async (radius) => {
     if (!key) return [];
     const batches = await Promise.all(qs.map(async (kw) => {
-      try {
-        const u = new URL("https://dapi.kakao.com/v2/local/search/keyword.json");
-        u.searchParams.set("query", area ? `${area} ${kw}` : kw);
-        u.searchParams.set("size", "15");
-        u.searchParams.set("page", "1");
-        if (hasCoord) {
-          u.searchParams.set("x", String(nLng)); u.searchParams.set("y", String(nLat));
-          u.searchParams.set("radius", String(radius)); u.searchParams.set("sort", "distance");
-        }
-        const r = await fetch(u, { headers: { Authorization: `KakaoAK ${key}` } });
-        kakaoStatus = r.status;
-        if (!r.ok) return [];
-        kakaoOk = true;
-        const j = await r.json();
-        return (j.documents || []).map((d) => {
-          const type = placeType(d.category_name, kw);
-          return {
-            id: d.id, sourceId:d.id, name: d.place_name, phone: d.phone || "", address: d.road_address_name || d.address_name || "",
-            roadAddress: d.road_address_name || "", category: d.category_name || "", typeKey:type.key, typeLabel:type.label, typeIcon:type.icon,
-            lat: Number(d.y), lng: Number(d.x), distance: d.distance ? Number(d.distance) : null, url: d.place_url || "", source:"kakao"
-          };
-        });
-      } catch (e) { console.warn("kakao nearby keyword failed", kw, e?.message); return []; }
+      const rows=[];
+      for (let page=1; page<=5; page++) {
+        try {
+          const u = new URL("https://dapi.kakao.com/v2/local/search/keyword.json");
+          u.searchParams.set("query", area ? `${area} ${kw}` : kw);
+          u.searchParams.set("size", "15");
+          u.searchParams.set("page", String(page));
+          if (hasCoord) {
+            u.searchParams.set("x", String(nLng)); u.searchParams.set("y", String(nLat));
+            u.searchParams.set("radius", String(radius)); u.searchParams.set("sort", "distance");
+          }
+          const r = await fetch(u, { headers: { Authorization: `KakaoAK ${key}` } });
+          kakaoStatus = r.status;
+          if (!r.ok) break;
+          kakaoOk = true;
+          const j = await r.json();
+          const docs=j.documents||[];
+          rows.push(...docs.map((d) => {
+            const type = placeType(d.category_name, kw);
+            const plat=Number(d.y), plng=Number(d.x);
+            return {
+              id: d.id, sourceId:d.id, name: d.place_name, phone: d.phone || "", address: d.road_address_name || d.address_name || "",
+              roadAddress: d.road_address_name || "", category: d.category_name || "", typeKey:type.key, typeLabel:type.label, typeIcon:type.icon,
+              lat: plat, lng: plng, distance: d.distance ? Number(d.distance) : (hasCoord ? calcDistance(nLat,nLng,plat,plng) : null), url: d.place_url || "", source:"kakao"
+            };
+          }));
+          if (j.meta?.is_end || docs.length < 15) break;
+        } catch (e) { console.warn("kakao nearby keyword failed", kw, e?.message); break; }
+      }
+      return rows;
     }));
     return batches.flat();
   };
 
-  if (key) {
-    if (hasCoord) {
-      for (const radius of [1000, 3000, 5000]) {
-        searchRadius = radius;
-        all.push(...await fetchKakaoAtRadius(radius));
-        // 1km에서 충분히 나오면 더 넓은 범위를 호출하지 않습니다.
-        if (uniqueCount(all) >= 10) break;
-      }
-    } else {
-      all.push(...await fetchKakaoAtRadius(5000));
-    }
-  }
-
-  // 2) 현재 위치 검색인데 카카오 결과가 없으면 OSM을 보조 소스로 사용합니다.
-  //    키 설정/일시 장애 때문에 '내 위치만 나오고 0곳'이 되는 상황을 줄이는 안전장치입니다.
-  if (hasCoord && all.length === 0) {
+  // OSM 보조 검색을 '카카오가 0건일 때만'이 아니라 매 반경에서 함께 사용합니다.
+  // 카카오 DB에 누락된 1km 이내 병원/매장도 보완할 수 있습니다.
+  const fetchOsmAtRadius = async (radius) => {
+    if (!hasCoord) return [];
     try {
-      const typeFilter = category === "hospital" ? 'nwr(around:5000,LAT,LNG)["amenity"="veterinary"];' :
-        category === "shop" ? 'nwr(around:5000,LAT,LNG)["shop"="pet"];' :
-        category === "grooming" ? 'nwr(around:5000,LAT,LNG)["shop"="pet_grooming"];' :
-        category === "hotel" ? 'nwr(around:5000,LAT,LNG)["amenity"="animal_boarding"];' :
-        category === "pharmacy" ? 'nwr(around:5000,LAT,LNG)["name"~"동물약국",i];' :
-        'nwr(around:5000,LAT,LNG)["amenity"="veterinary"];nwr(around:5000,LAT,LNG)["shop"="pet"];nwr(around:5000,LAT,LNG)["shop"="pet_grooming"];nwr(around:5000,LAT,LNG)["amenity"="animal_boarding"];nwr(around:5000,LAT,LNG)["name"~"동물병원|동물약국|펫|애견|애묘|반려동물",i];';
-      const body = `[out:json][timeout:10];(${typeFilter.replaceAll('LAT',String(nLat)).replaceAll('LNG',String(nLng))});out center tags 60;`;
+      const typeFilter = category === "hospital" ? `nwr(around:${radius},LAT,LNG)["amenity"="veterinary"];` :
+        category === "shop" ? `nwr(around:${radius},LAT,LNG)["shop"="pet"];` :
+        category === "grooming" ? `nwr(around:${radius},LAT,LNG)["shop"="pet_grooming"];` :
+        category === "hotel" ? `nwr(around:${radius},LAT,LNG)["amenity"="animal_boarding"];` :
+        category === "pharmacy" ? `nwr(around:${radius},LAT,LNG)["name"~"동물약국",i];` :
+        `nwr(around:${radius},LAT,LNG)["amenity"="veterinary"];nwr(around:${radius},LAT,LNG)["shop"="pet"];nwr(around:${radius},LAT,LNG)["shop"="pet_grooming"];nwr(around:${radius},LAT,LNG)["amenity"="animal_boarding"];nwr(around:${radius},LAT,LNG)["name"~"동물병원|동물약국|펫|애견|애묘|반려동물",i];`;
+      const body = `[out:json][timeout:9];(${typeFilter.replaceAll('LAT',String(nLat)).replaceAll('LNG',String(nLng))});out center tags 80;`;
       const or = await fetch("https://overpass-api.de/api/interpreter", { method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"}, body:`data=${encodeURIComponent(body)}` });
-      if (or.ok) {
-        const oj = await or.json();
-        const rad = Math.PI/180;
-        const dist=(a,b,c,d)=>{const R=6371000,x=(c-a)*rad,y=(d-b)*rad,aa=Math.sin(x/2)**2+Math.cos(a*rad)*Math.cos(c*rad)*Math.sin(y/2)**2;return Math.round(2*R*Math.asin(Math.sqrt(aa)));};
-        for (const e of oj.elements || []) {
-          const tags=e.tags||{}, plat=Number(e.lat ?? e.center?.lat), plng=Number(e.lon ?? e.center?.lon);
-          if(!Number.isFinite(plat)||!Number.isFinite(plng)||!tags.name) continue;
-          const raw=`${tags.amenity||""} ${tags.shop||""} ${tags.name||""}`;
-          const type = /veterinary|동물병원/.test(raw) ? {key:"hospital",label:"동물병원",icon:"🏥"} : /pet_grooming|미용/.test(raw) ? {key:"grooming",label:"펫미용",icon:"✂️"} : /animal_boarding|호텔|유치원/.test(raw) ? {key:"hotel",label:"호텔·유치원",icon:"🏡"} : /약국/.test(raw) ? {key:"pharmacy",label:"동물약국",icon:"💊"} : {key:"shop",label:"펫샵·용품",icon:"🛍️"};
-          const addr=[tags["addr:road"],tags["addr:housenumber"],tags["addr:district"]].filter(Boolean).join(" ") || tags["addr:full"] || "주소 상세정보 없음";
-          all.push({id:`osm-${e.type}-${e.id}`,sourceId:String(e.id),name:tags.name,phone:tags.phone||tags["contact:phone"]||"",address:addr,roadAddress:addr,category:type.label,typeKey:type.key,typeLabel:type.label,typeIcon:type.icon,lat:plat,lng:plng,distance:dist(nLat,nLng,plat,plng),url:tags.website||tags["contact:website"]||"",source:"osm"});
-        }
+      if (!or.ok) return [];
+      const oj = await or.json();
+      const rows=[];
+      for (const e of oj.elements || []) {
+        const tags=e.tags||{}, plat=Number(e.lat ?? e.center?.lat), plng=Number(e.lon ?? e.center?.lon);
+        if(!Number.isFinite(plat)||!Number.isFinite(plng)||!tags.name) continue;
+        const raw=`${tags.amenity||""} ${tags.shop||""} ${tags.name||""}`;
+        const type = /veterinary|동물병원/.test(raw) ? {key:"hospital",label:"동물병원",icon:"🏥"} : /pet_grooming|미용/.test(raw) ? {key:"grooming",label:"펫미용",icon:"✂️"} : /animal_boarding|호텔|유치원/.test(raw) ? {key:"hotel",label:"호텔·유치원",icon:"🏡"} : /약국/.test(raw) ? {key:"pharmacy",label:"동물약국",icon:"💊"} : {key:"shop",label:"펫샵·용품",icon:"🛍️"};
+        const addr=[tags["addr:road"],tags["addr:housenumber"],tags["addr:district"]].filter(Boolean).join(" ") || tags["addr:full"] || "";
+        rows.push({id:`osm-${e.type}-${e.id}`,sourceId:String(e.id),name:tags.name,phone:tags.phone||tags["contact:phone"]||"",address:addr,roadAddress:addr,category:type.label,typeKey:type.key,typeLabel:type.label,typeIcon:type.icon,lat:plat,lng:plng,distance:calcDistance(nLat,nLng,plat,plng),url:tags.website||tags["contact:website"]||"",source:"osm"});
       }
-    } catch(e) { console.warn("OSM nearby fallback failed", e?.message); }
+      return rows;
+    } catch(e) { console.warn("OSM nearby supplemental failed", e?.message); return []; }
+  };
+
+  if (hasCoord) {
+    // 핵심 원칙: 1km 결과가 하나라도 있으면 그 결과만 보여줍니다.
+    // 먼 3~5km 결과가 가까운 장소를 밀어내지 않게 하고, 1km를 가장 촘촘하게 검색합니다.
+    const firstRadius = 1000;
+    searchRadius = firstRadius;
+    const [kakao1km, osm1km] = await Promise.all([fetchKakaoAtRadius(firstRadius), fetchOsmAtRadius(firstRadius)]);
+    all.push(...kakao1km, ...osm1km);
+
+    // 1km에서 정말 아무 장소도 못 찾았을 때만 3km, 이후 5km를 안전장치로 사용합니다.
+    if (uniqueCount(all.filter(x => Number(x.distance) <= 1000)) === 0) {
+      for (const radius of [3000, 5000]) {
+        searchRadius = radius;
+        const [kakaoRows, osmRows] = await Promise.all([fetchKakaoAtRadius(radius), fetchOsmAtRadius(radius)]);
+        all.push(...kakaoRows, ...osmRows);
+        if (uniqueCount(all.filter(x => Number(x.distance) <= radius)) > 0) break;
+      }
+    }
+  } else if (key) {
+    all.push(...await fetchKakaoAtRadius(5000));
   }
 
-  // 3) Overpass가 일시적으로 응답하지 않는 경우 Nominatim의 bounded 검색으로 한 번 더 보완합니다.
+  // 모든 보조 소스가 비었을 때만 Nominatim을 최종 안전장치로 사용합니다.
   if (hasCoord && all.length === 0) {
     try {
       const delta = 0.05;
@@ -236,7 +263,7 @@ async function handleNearby(req, res) {
       const fallbackTerms = category === "hospital" ? ["동물병원","veterinary"] : category === "pharmacy" ? ["동물약국"] : category === "shop" ? ["펫샵","pet shop"] : category === "grooming" ? ["애견미용","pet grooming"] : category === "hotel" ? ["애견호텔","반려동물 유치원"] : ["동물병원","펫샵","애견미용","애견호텔","동물약국"];
       for (const term of fallbackTerms) {
         const nu = new URL("https://nominatim.openstreetmap.org/search");
-        nu.searchParams.set("format","jsonv2"); nu.searchParams.set("q",term); nu.searchParams.set("limit","8"); nu.searchParams.set("bounded","1"); nu.searchParams.set("viewbox",viewbox); nu.searchParams.set("addressdetails","1");
+        nu.searchParams.set("format","jsonv2"); nu.searchParams.set("q",term); nu.searchParams.set("limit","10"); nu.searchParams.set("bounded","1"); nu.searchParams.set("viewbox",viewbox); nu.searchParams.set("addressdetails","1");
         const nr = await fetch(nu,{headers:{"User-Agent":"PetGrow/1.0 (help.petgrow@gmail.com)","Accept-Language":"ko"}});
         if(!nr.ok) continue;
         const nj=await nr.json();
@@ -244,37 +271,55 @@ async function handleNearby(req, res) {
           const plat=Number(d.lat),plng=Number(d.lon); if(!Number.isFinite(plat)||!Number.isFinite(plng)) continue;
           const raw=`${d.type||""} ${d.category||""} ${d.display_name||""} ${term}`;
           const type=/veterinary|동물병원/.test(raw)?{key:"hospital",label:"동물병원",icon:"🏥"}:/groom|미용/.test(raw)?{key:"grooming",label:"펫미용",icon:"✂️"}:/hotel|boarding|유치원/.test(raw)?{key:"hotel",label:"호텔·유치원",icon:"🏡"}:/약국/.test(raw)?{key:"pharmacy",label:"동물약국",icon:"💊"}:{key:"shop",label:"펫샵·용품",icon:"🛍️"};
-          const rad=Math.PI/180,R=6371000,x=(plat-nLat)*rad,y=(plng-nLng)*rad,aa=Math.sin(x/2)**2+Math.cos(nLat*rad)*Math.cos(plat*rad)*Math.sin(y/2)**2,distance=Math.round(2*R*Math.asin(Math.sqrt(aa)));
+          const distance=calcDistance(nLat,nLng,plat,plng);
           all.push({id:`nom-${d.osm_type||"x"}-${d.osm_id||crypto.randomUUID()}`,sourceId:String(d.osm_id||""),name:String(d.name||String(d.display_name||"").split(',')[0]||term),phone:"",address:String(d.display_name||""),roadAddress:String(d.display_name||""),category:type.label,typeKey:type.key,typeLabel:type.label,typeIcon:type.icon,lat:plat,lng:plng,distance,url:"",source:"nominatim"});
         }
       }
     } catch(e) { console.warn("Nominatim nearby fallback failed", e?.message); }
   }
 
-  // Fallback 결과에 전화번호가 없을 때 카카오 장소검색으로 상호명을 다시 대조해 전화번호를 보완합니다.
-  // 최대 12곳만 병렬 조회해 검색 속도 저하를 제한합니다.
+  // 보조 데이터의 전화번호/카카오맵 링크를 카카오 상호명 대조로 보완합니다.
   if (key && hasCoord) {
-    const missing = all.filter(x => !x.phone && x.name && x.source !== "kakao").slice(0,12);
+    const missing = all.filter(x => (!x.phone || !x.url) && x.name && x.source !== "kakao").slice(0,20);
     await Promise.all(missing.map(async x => {
       try {
         const u = new URL("https://dapi.kakao.com/v2/local/search/keyword.json");
-        u.searchParams.set("query", x.name);u.searchParams.set("size","5");u.searchParams.set("x",String(x.lng||nLng));u.searchParams.set("y",String(x.lat||nLat));u.searchParams.set("radius","5000");u.searchParams.set("sort","distance");
+        u.searchParams.set("query", x.name);u.searchParams.set("size","5");u.searchParams.set("x",String(x.lng||nLng));u.searchParams.set("y",String(x.lat||nLat));u.searchParams.set("radius","3000");u.searchParams.set("sort","distance");
         const r=await fetch(u,{headers:{Authorization:`KakaoAK ${key}`}});if(!r.ok)return;const j=await r.json();
-        const norm=v=>String(v||"").replace(/[^0-9A-Za-z가-힣]/g,"").toLowerCase();const target=norm(x.name);
-        const hit=(j.documents||[]).find(d=>norm(d.place_name)===target)||(j.documents||[])[0];
+        const target=norm(x.name);
+        const hit=(j.documents||[]).find(d=>norm(d.place_name)===target)||(j.documents||[]).find(d=>Number(d.distance||999999)<250);
         if(hit){x.phone=hit.phone||x.phone||"";x.url=hit.place_url||x.url||"";x.address=hit.road_address_name||hit.address_name||x.address;x.roadAddress=hit.road_address_name||x.roadAddress||"";}
       } catch {}
     }));
   }
 
-  const seen = new Set(), items = [];
+  // 이름+근접좌표 기준 중복 제거. 카카오 결과를 우선 보존합니다.
+  all.sort((a,b)=>(a.source==="kakao"?-1:0)-(b.source==="kakao"?-1:0));
+  const items=[];
   for (const x of all) {
-    const key2 = `${String(x.name||"").replace(/\s/g,"").toLowerCase()}|${String(x.address||"").replace(/\s/g,"").toLowerCase()}`;
-    if (!x.id || seen.has(key2)) continue; seen.add(key2); items.push(x);
+    if (!x.id || !Number.isFinite(Number(x.lat)) || !Number.isFinite(Number(x.lng))) continue;
+    const dup=items.find(y => {
+      if (y.source === x.source && y.sourceId && x.sourceId && String(y.sourceId) === String(x.sourceId)) return true;
+      const near = calcDistance(Number(y.lat), Number(y.lng), Number(x.lat), Number(x.lng)) <= 30;
+      const sameName = norm(y.name) && norm(y.name) === norm(x.name);
+      // 같은 상호라도 멀리 떨어진 지점은 별도 업체로 유지합니다.
+      return near && sameName;
+    });
+    if (dup) {
+      if(!dup.phone&&x.phone)dup.phone=x.phone;
+      if(!dup.url&&x.url)dup.url=x.url;
+      if(!dup.address&&x.address)dup.address=x.address;
+      dup.distance=Math.min(Number(dup.distance??1e12),Number(x.distance??1e12));
+      continue;
+    }
+    items.push(x);
   }
   items.sort((a, b) => (a.distance ?? 1e12) - (b.distance ?? 1e12));
-  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=180");
-  return res.status(200).json({ items: items.slice(0, 60), searchRadius, source: kakaoOk ? (items.some(x=>x.source!=="kakao")?"kakao+fallback":"kakao") : (items[0]?.source||"fallback"), kakaoStatus });
+  const within1km=items.filter(x=>Number(x.distance)<=1000).length;
+  // 1km 결과가 있으면 사용자에게는 1km 결과만 노출합니다.
+  const visibleItems = within1km > 0 ? items.filter(x=>Number(x.distance)<=1000) : items.filter(x=>Number(x.distance)<=Number(searchRadius||5000));
+  res.setHeader("Cache-Control", "s-maxage=20, stale-while-revalidate=40");
+  return res.status(200).json({ items: visibleItems.slice(0, 80), searchRadius: within1km > 0 ? 1000 : searchRadius, within1km, source: kakaoOk ? (visibleItems.some(x=>x.source!=="kakao")?"kakao+fallback":"kakao") : (visibleItems[0]?.source||"fallback"), kakaoStatus });
 }
 
 export default async function handler(req, res) {

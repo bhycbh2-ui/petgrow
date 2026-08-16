@@ -4600,8 +4600,9 @@ const GlobalStyle = () => (
   .nearby-locate-btn{position:relative;z-index:2;border:0;border-radius:16px;background:#4F8A5B;color:#fff;padding:14px 18px;font-weight:800;display:flex;align-items:center;gap:7px;box-shadow:0 10px 24px rgba(79,138,91,.22);cursor:pointer;white-space:nowrap}.nearby-locate-btn .icon{width:18px}
   .nearby-search-row{display:grid;grid-template-columns:1fr auto;gap:9px;margin:12px 0}.nearby-search-row .bg-btn{min-width:82px}
   .nearby-cats{display:flex;gap:7px;flex-wrap:wrap;overflow:visible;padding:2px 0 12px}.nearby-cats::-webkit-scrollbar{display:none}.nearby-cats button{border:1px solid #DDE8DF;background:#fff;border-radius:999px;padding:9px 13px;font-weight:750;color:#657269;white-space:nowrap;cursor:pointer}.nearby-cats button.active{background:#4F8A5B;border-color:#4F8A5B;color:#fff}
-  .nearby-map-card{padding:0;overflow:hidden}.nearby-map-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #EDF1ED}.nearby-map-head>div{display:flex;flex-direction:column;gap:2px}.nearby-map-head small{color:var(--sub)}.nearby-live-pill{font-size:11px;font-weight:850;color:#397447;background:#EDF7EF;border-radius:999px;padding:7px 9px}
-  .nearby-map{height:410px;position:relative;background:linear-gradient(145deg,#EEF5EF,#F8FBF8)}.nearby-map-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:7px;color:#607067;padding:20px}.nearby-map-fallback .icon{width:38px;color:#4F8A5B}.nearby-map-fallback span{font-size:12px;max-width:390px;line-height:1.6}
+  .nearby-map-card{padding:0;overflow:hidden;position:relative;z-index:0;isolation:isolate;contain:paint}
+  body .leaflet-container{isolation:isolate;} .nearby-map-card{transform:translateZ(0)}.nearby-map-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #EDF1ED}.nearby-map-head>div{display:flex;flex-direction:column;gap:2px}.nearby-map-head small{color:var(--sub)}.nearby-live-pill{font-size:11px;font-weight:850;color:#397447;background:#EDF7EF;border-radius:999px;padding:7px 9px}
+  .nearby-map{height:410px;position:relative;z-index:0;overflow:hidden;background:linear-gradient(145deg,#EEF5EF,#F8FBF8)}.nearby-map-card .leaflet-container{position:relative!important;z-index:0!important;width:100%;height:100%;}.nearby-map-card .leaflet-control-container,.nearby-map-card .leaflet-pane{max-width:100%;}.nearby-map-card .leaflet-popup-pane{z-index:700;}.nearby-map-card .leaflet-control{z-index:800;}.nearby-map-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:7px;color:#607067;padding:20px}.nearby-map-fallback .icon{width:38px;color:#4F8A5B}.nearby-map-fallback span{font-size:12px;max-width:390px;line-height:1.6}
   .nearby-me-pin{display:grid;place-items:center;position:relative}.nearby-me-pin span{width:18px;height:18px;border-radius:50%;background:#4F8A5B;border:4px solid #fff;box-shadow:0 0 0 9px rgba(79,138,91,.18),0 3px 12px rgba(44,83,53,.28);animation:nearbyPulse 1.8s ease-out infinite}.nearby-me-pin b{margin-top:10px;background:#26372C;color:#fff;border-radius:999px;padding:5px 8px;font-size:10px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.15)}
   @keyframes nearbyPulse{0%{box-shadow:0 0 0 0 rgba(79,138,91,.3),0 3px 12px rgba(44,83,53,.28)}70%{box-shadow:0 0 0 14px rgba(79,138,91,0),0 3px 12px rgba(44,83,53,.28)}100%{box-shadow:0 0 0 0 rgba(79,138,91,0),0 3px 12px rgba(44,83,53,.28)}}
   .nearby-map-marker{width:34px;height:40px;border:0;background:#fff;border-radius:16px 16px 16px 3px;transform:rotate(-45deg);box-shadow:0 6px 16px rgba(35,54,40,.2);display:grid;place-items:center;cursor:pointer}.nearby-map-marker span{transform:rotate(45deg);width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#4F8A5B;color:#fff;font-size:11px;font-weight:900}
@@ -9171,6 +9172,8 @@ function NearbyPetPage(){
   const [loading,setLoading]=useState(false);
   const [msg,setMsg]=useState("");
   const [searchRadius,setSearchRadius]=useState(1000);
+  const [positionAccuracy,setPositionAccuracy]=useState(null);
+  const [within1km,setWithin1km]=useState(0);
   const [selected,setSelected]=useState(null);
   const [reviews,setReviews]=useState({items:[],summary:{count:0,avg:0}});
   const [reviewOpen,setReviewOpen]=useState(false);
@@ -9188,6 +9191,14 @@ function NearbyPetPage(){
   };
 
   useEffect(()=>{loadReviews(selected)},[selected?.id]);
+
+  // 다른 메뉴로 이동할 때 Leaflet 인스턴스를 즉시 제거해 지도가 다른 화면 위에 남는 현상을 방지합니다.
+  useEffect(()=>()=>{
+    overlays.current.forEach(o=>{try{mapObj.current?.removeLayer(o)}catch{}});
+    overlays.current=[];
+    if(mapObj.current){try{mapObj.current.off();mapObj.current.remove();}catch{}mapObj.current=null;}
+    if(mapRef.current) mapRef.current.innerHTML="";
+  },[]);
 
   const loadMap=async(center,places)=>{
     if(!mapRef.current)return;
@@ -9219,7 +9230,7 @@ function NearbyPetPage(){
       const popup=`<div style="min-width:200px"><div style="font-size:11px;font-weight:800;color:#4F8A5B;margin-bottom:5px">${String(p.typeIcon||"🐾")} ${String(p.typeLabel||"반려동물 관련")}</div><b style="font-size:14px">${String(p.name||"").replace(/[<>&]/g,"")}</b><div style="margin-top:5px;font-size:12px;font-weight:800;color:#4F8A5B">${p.distance==null?"":p.distance<1000?`${p.distance}m`:`${(p.distance/1000).toFixed(1)}km`}</div><div style="margin-top:4px;font-size:11px;line-height:1.45">${String(p.address||"").replace(/[<>&]/g,"")}</div>${p.phone?`<div style="margin-top:4px;font-size:11px">☎ ${String(p.phone).replace(/[<>&]/g,"")}</div>`:""}</div>`;
       m.bindPopup(popup);overlays.current.push(m);bounds.extend([p.lat,p.lng]);
     });
-    if(places.length)map.fitBounds(bounds.pad(.12),{maxZoom:15,padding:[28,28]});
+    if(places.length){const close=places.filter(p=>Number(p.distance)<=1000);if(close.length){const b2=L.latLngBounds([[center.lat,center.lng]]);close.slice(0,12).forEach(p=>b2.extend([p.lat,p.lng]));map.fitBounds(b2.pad(.16),{maxZoom:16,padding:[28,28]});}else{map.setView([center.lat,center.lng],14);}}
     window.setTimeout(()=>map.invalidateSize(),60);
   };
 
@@ -9232,22 +9243,38 @@ function NearbyPetPage(){
       if(manualArea.trim())q.set("area",manualArea.trim());
       const r=await fetch(`/api/nearby?${q}`);const j=await r.json();
       if(!r.ok) throw new Error(j.error||"주변 정보를 불러오지 못했어요.");
-      setItems(j.items||[]);setSelected(j.items?.[0]||null);if(Number(j.searchRadius))setSearchRadius(Number(j.searchRadius));
+      setItems(j.items||[]);setSelected(j.items?.[0]||null);if(Number(j.searchRadius))setSearchRadius(Number(j.searchRadius));setWithin1km(Number(j.within1km)||0);
       if(coords)loadMap(coords,j.items||[]).catch(()=>{});
       if(!(j.items||[]).length)setMsg("검색 결과가 없어요. 검색 범위나 지역명을 바꿔보세요.");
     }catch(e){setMsg(e.message)}finally{setLoading(false)}
   };
   const locate=()=>{
     if(!navigator.geolocation){setMsg("이 기기에서는 현재 위치를 사용할 수 없어요. 지역명으로 검색해주세요.");return;}
-    setLoading(true);setMsg("현재 위치를 확인하고 있어요…");
-    navigator.geolocation.getCurrentPosition(
-      p=>{const c={lat:p.coords.latitude,lng:p.coords.longitude};setPos(c);setArea("");setMsg("");search(cat,c,"");},
+    setLoading(true);setMsg("현재 위치를 정밀하게 확인하고 있어요…");
+    let best=null, finished=false, sampleCount=0;
+    const finish=(watchId)=>{
+      if(finished||!best)return;finished=true;
+      try{navigator.geolocation.clearWatch(watchId);}catch{}
+      const c={lat:best.coords.latitude,lng:best.coords.longitude};
+      setPositionAccuracy(Math.round(Number(best.coords.accuracy)||0));
+      setPos(c);setArea("");setMsg("");search(cat,c,"");
+    };
+    let watchId=null;
+    const timer=window.setTimeout(()=>finish(watchId),4200);
+    watchId=navigator.geolocation.watchPosition(
+      p=>{
+        sampleCount++;
+        if(!best || Number(p.coords.accuracy||1e9)<Number(best.coords.accuracy||1e9))best=p;
+        if(Number(p.coords.accuracy||1e9)<=45 || sampleCount>=3){window.clearTimeout(timer);finish(watchId);}
+      },
       err=>{
+        window.clearTimeout(timer);try{if(watchId!=null)navigator.geolocation.clearWatch(watchId);}catch{}
+        if(best){finish(watchId);return;}
         setLoading(false);
         if(err?.code===1) setMsg("위치 권한이 꺼져 있어요. 브라우저 또는 앱 설정에서 위치를 허용하거나 아래에서 지역명을 검색해주세요.");
         else setMsg("현재 위치를 확인하지 못했어요. 다시 시도하거나 아래에서 지역명을 검색해주세요.");
       },
-      {enableHighAccuracy:true,timeout:9000,maximumAge:120000}
+      {enableHighAccuracy:true,timeout:5000,maximumAge:0}
     );
   };
   useEffect(()=>{
@@ -9281,11 +9308,11 @@ function NearbyPetPage(){
     <div className="nearby-search-row"><input className="bg-input" value={area} onChange={e=>setArea(e.target.value)} onKeyDown={e=>e.key==="Enter"&&search(cat,null,area)} placeholder={t.nearbySearchPlaceholder}/><button className="bg-btn" onClick={()=>search(cat,null,area)}>검색</button></div>
     <div className="nearby-cats">{cats.map(([k,l])=><button key={k} className={cat===k?"active":""} onClick={()=>{setCat(k);if(!pos&&area.trim())search(k,null,area)}}>{l}</button>)}</div>
     <section className="nearby-map-card bg-card">
-      <div className="nearby-map-head"><div><b>{pos?"현재 위치 기준":"지역 검색"}</b><small>{pos?"민트색 원이 내 현재 위치예요":"위치 권한 없이도 지역명으로 검색할 수 있어요"}</small></div>{pos&&<span className="nearby-live-pill">● LIVE 위치</span>}</div>
+      <div className="nearby-map-head"><div><b>{pos?"현재 위치 기준":"지역 검색"}</b><small>{pos?`민트색 원이 내 현재 위치예요${positionAccuracy?` · 위치 오차 약 ±${positionAccuracy}m`:""}`:"위치 권한 없이도 지역명으로 검색할 수 있어요"}</small></div>{pos&&<span className="nearby-live-pill">● LIVE 위치</span>}</div>
       <div ref={mapRef} className="nearby-map"><div className="nearby-map-fallback"><MapPinIcon/><b>내 위치 지도를 준비하고 있어요</b><span>위치 허용 후 주변 업체가 지도에 표시됩니다.</span></div></div>
     </section>
     {msg&&<div className="nearby-message">{msg}</div>}
-    <div className="nearby-results-head"><div><h2>가까운 곳</h2><span>{items.length}곳</span></div><small>{pos ? `현재 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`} 범위 · 거리순` : "거리순으로 정렬돼요"}</small></div>
+    <div className="nearby-results-head"><div><h2>가까운 곳</h2><span>{items.length}곳</span></div><small>{pos ? `1km 이내 ${within1km}곳 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`} · 거리순` : "거리순으로 정렬돼요"}</small></div>
     <div className="nearby-list">
       {loading&&!items.length?<div className="bg-card nearby-empty">주변 Pet 정보를 찾는 중…</div>:
       items.map((p,i)=><article id={`nearby-place-${p.id}`} key={p.id} className={`bg-card nearby-place ${selected?.id===p.id?"selected":""}`} onClick={()=>setSelected(p)}>
@@ -10305,61 +10332,15 @@ function PetMusicPage({ account, lang }) {
 function AdminMusicPanel(){
   const [items,setItems]=useState([]),[busy,setBusy]=useState(false),[editing,setEditing]=useState(null);
   const blank={title:"",description:"",species:"all",vocalType:"instrumental",mood:"relax",active:true,audioFile:null,coverFile:null,audioUrl:"",coverUrl:""};
-  const [form,setForm]=useState(blank),[uploadStage,setUploadStage]=useState(""),[coverPreview,setCoverPreview]=useState("");
+  const [form,setForm]=useState(blank),[uploadStage,setUploadStage]=useState("");
   const load=async()=>{try{const r=await adminMusicList();setItems(r.items||[])}catch(e){window.alert(e.message)}};
   useEffect(()=>{load()},[]);
   const pickAudio=e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>12*1024*1024){window.alert("음원 파일은 12MB 이하로 올려주세요.");e.target.value="";return;}setForm(x=>({...x,audioFile:f}))};
-  const pickCover=e=>{
-    const f=e.target.files?.[0];
-    if(!f)return;
-    if(f.size>4*1024*1024){window.alert("커버 이미지는 4MB 이하로 올려주세요.");e.target.value="";return;}
-    if(coverPreview&&coverPreview.startsWith("blob:")) URL.revokeObjectURL(coverPreview);
-    const preview=URL.createObjectURL(f);
-    setCoverPreview(preview);
-    setForm(x=>({...x,coverFile:f}));
-  };
+  const pickCover=e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>4*1024*1024){window.alert("커버 이미지는 4MB 이하로 올려주세요.");e.target.value="";return;}setForm(x=>({...x,coverFile:f}))};
   const uploadDirect=async(file,kind)=>{const {upload}=await import("@vercel/blob/client");const ext=(file.name.split(".").pop()||(kind==="cover"?"jpg":"mp3")).toLowerCase();const path=`petmusic/${kind==="cover"?"covers/":""}${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;return await upload(path,file,{access:"public",handleUploadUrl:"/api/music?action=upload",clientPayload:JSON.stringify({adminToken:sessionStorage.getItem("petgrow_admin_token")||"",kind})})};
-  const save=async()=>{
-    if(!form.title.trim())return window.alert("노래 제목을 입력해 주세요.");
-    if(!editing&&!form.audioFile)return window.alert("음원 파일을 선택해 주세요.");
-    if(!editing&&!form.coverFile)return window.alert("커버 이미지를 선택해 주세요.");
-    setBusy(true);
-    try{
-      let audioUrl=editing?.audio_url||form.audioUrl||"";
-      let coverUrl=editing?.cover_url||form.coverUrl||"";
-      if(form.audioFile){
-        setUploadStage("음원을 업로드하는 중…");
-        try{audioUrl=(await uploadDirect(form.audioFile,"audio")).url}
-        catch{
-          setUploadStage("음원을 안전하게 업로드하는 중…");
-          const d=await fileToDataUrl(form.audioFile);
-          const r=await adminMusicSave({title:form.title,description:form.description,species:form.species,vocalType:form.vocalType,mood:form.mood,active:form.active,id:editing?.id||undefined,audioDataUrl:d,audioUrl,coverUrl});
-          audioUrl=r.audioUrl||audioUrl;
-        }
-      }
-      let coverDataUrl="";
-      if(form.coverFile){
-        setUploadStage("새 커버 이미지를 적용하는 중…");
-        coverDataUrl=await fileToCompressedDataUrl(form.coverFile,900,.82);
-      }
-      setUploadStage("등록 정보를 저장하는 중…");
-      const saved=await adminMusicSave({title:form.title,description:form.description,species:form.species,vocalType:form.vocalType,mood:form.mood,active:form.active,id:editing?.id||undefined,audioUrl,coverUrl,coverDataUrl});
-      if(saved?.coverUrl) coverUrl=saved.coverUrl;
-      window.alert(editing?"Pet음악을 수정했어요.":"Pet음악을 등록했어요.");
-      if(coverPreview&&coverPreview.startsWith("blob:")) URL.revokeObjectURL(coverPreview);
-      setCoverPreview("");
-      setEditing(null);setForm(blank);
-      await load();
-    }catch(e){window.alert(e.message)}finally{setBusy(false);setUploadStage("")}
-  };
-  const edit=x=>{
-    if(coverPreview&&coverPreview.startsWith("blob:")) URL.revokeObjectURL(coverPreview);
-    setCoverPreview("");
-    setEditing(x);
-    setForm({title:x.title||"",description:x.description||"",species:x.species||"all",vocalType:x.vocal_type||"instrumental",mood:x.mood||"relax",active:x.active!==false,audioFile:null,coverFile:null,audioUrl:x.audio_url||"",coverUrl:x.cover_url||""});
-    window.scrollTo({top:0,behavior:"smooth"});
-  };
-  return <div className="admin-report-list"><div className="bg-card"><h2>🎵 Pet음악 관리</h2><p className="bg-sub">음원·제목·커버 이미지를 등록하면 사용자 Pet음악 메뉴에 연결돼요. 보컬 여부와 분위기 태그도 지정할 수 있고, 업로드일은 자동 기록되며 좋아요·댓글·재생수로 인기 TOP5가 계산됩니다.</p><div className="admin-music-form" style={{marginTop:14}}><input className="bg-input" placeholder="노래 제목" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/><select className="bg-input" value={form.species} onChange={e=>setForm({...form,species:e.target.value})}><option value="all">🐾 공용</option><option value="dog">🐶 강아지</option><option value="cat">🐱 고양이</option></select><select className="bg-input" value={form.vocalType} onChange={e=>setForm({...form,vocalType:e.target.value})}><option value="instrumental">🎼 인스트루멘탈</option><option value="vocal">🎤 보컬 있음</option></select><select className="bg-input" value={form.mood} onChange={e=>setForm({...form,mood:e.target.value})}><option value="relax">😌 휴식</option><option value="sleep">🌙 수면</option><option value="play">🐾 놀이</option><option value="nature">🌿 자연</option></select><textarea className="bg-input support-textarea full" placeholder="간단한 설명 (선택)" value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/><label className="bg-card" style={{padding:12}}><b style={{fontSize:12}}>음원 파일 {editing?"(교체할 때만 선택)":""}</b><input type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/mp4,audio/aac" onChange={pickAudio} style={{display:"block",marginTop:8,width:"100%"}}/><small className="bg-sub">MP3/WAV/M4A · 최대 12MB</small></label><label className="bg-card" style={{padding:12}}><b style={{fontSize:12}}>커버 이미지 {editing?"(새 사진을 선택하면 교체)":""}</b>{editing&&(coverPreview||form.coverUrl)&&<img src={coverPreview||form.coverUrl} alt="현재 커버" style={{display:"block",width:72,height:72,objectFit:"cover",borderRadius:14,marginTop:8,border:"1px solid var(--border)"}}/>}<input type="file" accept="image/jpeg,image/png,image/webp" onChange={pickCover} style={{display:"block",marginTop:8,width:"100%"}}/><small className="bg-sub">{form.coverFile?`새 커버 선택됨: ${form.coverFile.name}`:"정사각형 이미지 권장 · JPG/PNG/WebP"}</small></label><label className="full" style={{fontSize:12,fontWeight:700}}><input type="checkbox" checked={form.active} onChange={e=>setForm({...form,active:e.target.checked})}/> 사용자에게 공개</label><div className="full" style={{display:"flex",gap:8}}><button className="bg-btn" disabled={busy} onClick={save}>{busy?(uploadStage||"업로드 중…"):editing?"수정 저장":"음악 등록"}</button>{editing&&<button className="bg-btn bg-btn-ghost" onClick={()=>{if(coverPreview&&coverPreview.startsWith("blob:")) URL.revokeObjectURL(coverPreview);setCoverPreview("");setEditing(null);setForm(blank)}}>취소</button>}</div></div></div><div className="bg-card"><h3>등록된 음악 {items.length}곡</h3><div className="admin-music-list">{items.length?items.map(x=><div className="admin-music-row" key={x.id}>{x.cover_url?<img className="admin-music-thumb" src={x.cover_url} alt=""/>:<div className="admin-music-thumb">🎵</div>}<div><b>{x.title}</b><small>{x.species==="dog"?"강아지":x.species==="cat"?"고양이":"공용"} · {x.vocal_type==="vocal"?"보컬":"인스트루멘탈"} · {({relax:"휴식",sleep:"수면",play:"놀이",nature:"자연"}[x.mood]||"휴식")} · {new Date(x.created_at).toLocaleDateString("ko-KR")} · ▶ {Number(x.play_count)||0} · ♥ {Number(x.like_count)||0} · 💬 {Number(x.comment_count)||0}</small></div><div className="admin-music-actions"><button onClick={()=>edit(x)}>수정</button><button onClick={async()=>{await adminMusicToggle(x.id,!x.active);await load()}}>{x.active?"비공개":"공개"}</button><button onClick={async()=>{if(!window.confirm(`'${x.title}' 음악을 삭제할까요?`))return;await adminMusicDelete(x.id);await load()}}>삭제</button></div></div>):<p className="bg-sub">등록된 음악이 없어요.</p>}</div></div></div>;
+  const save=async()=>{if(!form.title.trim())return window.alert("노래 제목을 입력해 주세요.");if(!editing&&!form.audioFile)return window.alert("음원 파일을 선택해 주세요.");if(!editing&&!form.coverFile)return window.alert("커버 이미지를 선택해 주세요.");setBusy(true);try{let audioUrl=editing?.audio_url||form.audioUrl||"",coverUrl=editing?.cover_url||form.coverUrl||"";if(form.audioFile){setUploadStage("음원을 빠르게 업로드하는 중…");try{audioUrl=(await uploadDirect(form.audioFile,"audio")).url}catch{setUploadStage("음원을 안전하게 업로드하는 중…");const d=await fileToDataUrl(form.audioFile);const r=await adminMusicSave({title:form.title,description:form.description,species:form.species,vocalType:form.vocalType,mood:form.mood,active:form.active,id:editing?.id||undefined,audioDataUrl:d,audioUrl,coverUrl});audioUrl=r.audioUrl||audioUrl;}}if(form.coverFile){setUploadStage("새 커버 이미지를 업로드하는 중…");try{coverUrl=(await uploadDirect(form.coverFile,"cover")).url}catch{setUploadStage("새 커버 이미지를 안전하게 적용하는 중…");const d=await fileToCompressedDataUrl(form.coverFile,760,.78);const r=await adminMusicSave({title:form.title,description:form.description,species:form.species,vocalType:form.vocalType,mood:form.mood,active:form.active,id:editing?.id||undefined,coverDataUrl:d,audioUrl,coverUrl});coverUrl=r.coverUrl||coverUrl;}}setUploadStage("등록 정보를 저장하는 중…");await adminMusicSave({title:form.title,description:form.description,species:form.species,vocalType:form.vocalType,mood:form.mood,active:form.active,id:editing?.id||undefined,audioUrl,coverUrl});window.alert(editing?"Pet음악을 수정했어요.":"Pet음악을 등록했어요.");setEditing(null);setForm(blank);await load()}catch(e){window.alert(e.message)}finally{setBusy(false);setUploadStage("")}};
+  const edit=x=>{setEditing(x);setForm({title:x.title||"",description:x.description||"",species:x.species||"all",vocalType:x.vocal_type||"instrumental",mood:x.mood||"relax",active:x.active!==false,audioFile:null,coverFile:null,audioUrl:x.audio_url||"",coverUrl:x.cover_url||""});window.scrollTo({top:0,behavior:"smooth"});};
+  return <div className="admin-report-list"><div className="bg-card"><h2>🎵 Pet음악 관리</h2><p className="bg-sub">음원·제목·커버 이미지를 등록하면 사용자 Pet음악 메뉴에 연결돼요. 보컬 여부와 분위기 태그도 지정할 수 있고, 업로드일은 자동 기록되며 좋아요·댓글·재생수로 인기 TOP5가 계산됩니다.</p><div className="admin-music-form" style={{marginTop:14}}><input className="bg-input" placeholder="노래 제목" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/><select className="bg-input" value={form.species} onChange={e=>setForm({...form,species:e.target.value})}><option value="all">🐾 공용</option><option value="dog">🐶 강아지</option><option value="cat">🐱 고양이</option></select><select className="bg-input" value={form.vocalType} onChange={e=>setForm({...form,vocalType:e.target.value})}><option value="instrumental">🎼 인스트루멘탈</option><option value="vocal">🎤 보컬 있음</option></select><select className="bg-input" value={form.mood} onChange={e=>setForm({...form,mood:e.target.value})}><option value="relax">😌 휴식</option><option value="sleep">🌙 수면</option><option value="play">🐾 놀이</option><option value="nature">🌿 자연</option></select><textarea className="bg-input support-textarea full" placeholder="간단한 설명 (선택)" value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/><label className="bg-card" style={{padding:12}}><b style={{fontSize:12}}>음원 파일 {editing?"(교체할 때만 선택)":""}</b><input type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/mp4,audio/aac" onChange={pickAudio} style={{display:"block",marginTop:8,width:"100%"}}/><small className="bg-sub">MP3/WAV/M4A · 최대 12MB</small></label><label className="bg-card" style={{padding:12}}><b style={{fontSize:12}}>커버 이미지 {editing?"(새 사진을 선택하면 교체)":""}</b>{editing&&form.coverUrl&&<img src={form.coverUrl} alt="현재 커버" style={{display:"block",width:72,height:72,objectFit:"cover",borderRadius:14,marginTop:8,border:"1px solid var(--border)"}}/>}<input type="file" accept="image/jpeg,image/png,image/webp" onChange={pickCover} style={{display:"block",marginTop:8,width:"100%"}}/><small className="bg-sub">{form.coverFile?`새 커버 선택됨: ${form.coverFile.name}`:"정사각형 이미지 권장 · JPG/PNG/WebP"}</small></label><label className="full" style={{fontSize:12,fontWeight:700}}><input type="checkbox" checked={form.active} onChange={e=>setForm({...form,active:e.target.checked})}/> 사용자에게 공개</label><div className="full" style={{display:"flex",gap:8}}><button className="bg-btn" disabled={busy} onClick={save}>{busy?(uploadStage||"업로드 중…"):editing?"수정 저장":"음악 등록"}</button>{editing&&<button className="bg-btn bg-btn-ghost" onClick={()=>{setEditing(null);setForm(blank)}}>취소</button>}</div></div></div><div className="bg-card"><h3>등록된 음악 {items.length}곡</h3><div className="admin-music-list">{items.length?items.map(x=><div className="admin-music-row" key={x.id}>{x.cover_url?<img className="admin-music-thumb" src={x.cover_url} alt=""/>:<div className="admin-music-thumb">🎵</div>}<div><b>{x.title}</b><small>{x.species==="dog"?"강아지":x.species==="cat"?"고양이":"공용"} · {x.vocal_type==="vocal"?"보컬":"인스트루멘탈"} · {({relax:"휴식",sleep:"수면",play:"놀이",nature:"자연"}[x.mood]||"휴식")} · {new Date(x.created_at).toLocaleDateString("ko-KR")} · ▶ {Number(x.play_count)||0} · ♥ {Number(x.like_count)||0} · 💬 {Number(x.comment_count)||0}</small></div><div className="admin-music-actions"><button onClick={()=>edit(x)}>수정</button><button onClick={async()=>{await adminMusicToggle(x.id,!x.active);await load()}}>{x.active?"비공개":"공개"}</button><button onClick={async()=>{if(!window.confirm(`'${x.title}' 음악을 삭제할까요?`))return;await adminMusicDelete(x.id);await load()}}>삭제</button></div></div>):<p className="bg-sub">등록된 음악이 없어요.</p>}</div></div></div>;
 }
 
 function SupportPage({account,onBack}){
