@@ -9414,6 +9414,11 @@ function AppInner({ lang, setLang }) {
   // ---- 계정(카카오 로그인) ----
   const [account, setAccount] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
+
+  // 로그인 필요 화면 여부는 모든 effect보다 먼저 계산해야 해요.
+  // 아래 통계/광고 effect에서 effectiveView를 참조하므로 TDZ(선언 전 접근) 오류를 방지합니다.
+  const needsLogin = GATED_VIEWS.includes(view) && !account;
+  const effectiveView = needsLogin ? "login" : view;
   const [accountModalOpen, setAccountModalOpen] = useState(false);
   const [hamOpen, setHamOpen] = useState(false);
   const [contentSubTab, setContentSubTab] = useState("all");
@@ -9831,10 +9836,6 @@ function AppInner({ lang, setLang }) {
   const breedGroups = species === "dog" ? DOG_BREED_GROUPS : CAT_BREED_GROUPS;
   const sizeOptions = species === "dog" ? DOG_SIZE_OPTIONS : CAT_SIZE_OPTIONS;
   const showOnboarding = mode === "onboarding" || mode === "edit" || (mode === "view" && !currentPet);
-
-  // 로그인이 필요한 화면인데 로그인이 안 되어 있으면 로그인 화면을 보여줘요
-  const needsLogin = GATED_VIEWS.includes(view) && !account;
-  const effectiveView = needsLogin ? "login" : view;
 
   return (
     <div className={`bboggl-root ${!isNativeApp ? "petgrow-web-layout" : ""}`} style={{ minHeight: "100vh", paddingBottom: isNativeApp ? 74 : 0 }}>
