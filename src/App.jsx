@@ -3101,6 +3101,241 @@ const GlobalStyle = () => (
 .petgrow-sidebar{display:none}
 @media(min-width:900px){.petgrow-web-layout{padding-left:236px;background:#FAFCFA}.petgrow-web-layout .desktop-nav-shell{display:none!important}.petgrow-web-layout .petgrow-page-top{max-width:1180px!important}.petgrow-web-layout>div[style*="max-width: 900"]{max-width:1180px!important}.petgrow-sidebar{display:flex;position:fixed;z-index:180;left:14px;top:14px;bottom:14px;width:208px;flex-direction:column;padding:16px 13px 14px;background:rgba(255,255,255,.96);border:1px solid #E2E9E3;border-radius:26px;box-shadow:0 14px 42px rgba(34,48,39,.09);backdrop-filter:blur(20px)}.petgrow-sidebar-brand{display:flex;align-items:center;gap:10px;width:100%;padding:5px 6px 16px;margin-bottom:10px;background:none;border:0;border-bottom:1px solid #EDF1ED;cursor:pointer;text-align:left}.petgrow-sidebar-brand img{width:50px;height:50px;object-fit:contain}.petgrow-sidebar-brand>span{display:flex;flex-direction:column;gap:4px}.petgrow-sidebar-brand strong{font-family:'Jua',sans-serif;font-size:20px;color:#223027}.petgrow-sidebar-brand strong b{color:#4F8A5B;font-weight:inherit}.petgrow-sidebar-brand small{font-size:8px;font-weight:700;color:#98A19B;white-space:nowrap}.petgrow-sidebar-nav{display:flex;flex-direction:column;gap:5px;flex:1}.petgrow-sidebar-nav button{position:relative;width:100%;height:46px;display:flex;align-items:center;gap:12px;padding:0 13px;background:transparent;border:1px solid transparent;border-radius:15px;color:#5F6B63;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;transition:.18s}.petgrow-sidebar-nav button .icon{width:19px;height:19px}.petgrow-sidebar-nav button:hover{background:#F4F8F4;color:#3D704A;transform:translateX(2px)}.petgrow-sidebar-nav button.active{background:linear-gradient(90deg,#EAF3EB,#F2F7F2);border-color:#DDE8DF;color:#356A43}.petgrow-sidebar-nav button.active:before{content:"";position:absolute;left:-4px;width:4px;height:22px;border-radius:9px;background:#5A9766}.petgrow-sidebar-bottom{display:flex;flex-wrap:wrap;gap:8px;padding-top:12px;border-top:1px solid #EDF1ED}.petgrow-sidebar-message{width:100%;padding:11px 12px;border-radius:15px;background:#F0F6F0;color:#3D704A;font-size:11px;font-weight:800}.petgrow-sidebar-bottom .lang-toggle{flex:1}.petgrow-sidebar-bottom .account-btn{height:38px;max-width:96px;padding:0 10px;font-size:11px}}
 @media(min-width:900px) and (max-width:1120px){.petgrow-web-layout{padding-left:204px}.petgrow-sidebar{left:10px;top:10px;bottom:10px;width:180px;padding:12px 10px}.petgrow-sidebar-brand small{display:none}.petgrow-sidebar-brand img{width:43px;height:43px}.petgrow-sidebar-brand strong{font-size:17px}.petgrow-sidebar-nav button{font-size:12.5px;gap:9px;padding:0 10px}}
+
+    /* ============================================================
+       PetGrow Mobile / App Navigation Safety Fix
+       - PC navigation never leaks into mobile
+       - Sidebar only desktop
+       - compact mobile/native headers for narrow screens
+       ============================================================ */
+
+    /* Premium desktop bar is legacy after fixed sidebar adoption.
+       Keep it completely hidden to prevent CSS-order leakage. */
+    .desktop-nav.desktop-nav-shell{
+      display:none !important;
+    }
+
+    /* Mobile web header is the only web header below desktop breakpoint */
+    .mobile-topbar.mobile-topbar-premium{
+      display:flex !important;
+      width:100%;
+      max-width:100%;
+      box-sizing:border-box;
+      min-width:0;
+    }
+
+    @media (min-width:900px){
+      .mobile-topbar.mobile-topbar-premium{
+        display:none !important;
+      }
+      .petgrow-sidebar{
+        display:flex;
+      }
+    }
+
+    @media (max-width:899px){
+      .petgrow-sidebar{
+        display:none !important;
+      }
+      .petgrow-web-layout{
+        padding-left:0 !important;
+      }
+      .petgrow-web-layout .petgrow-page-top{
+        max-width:100% !important;
+        width:100%;
+        box-sizing:border-box;
+        padding:
+          max(12px, env(safe-area-inset-top, 0px))
+          12px
+          0 !important;
+      }
+      .mobile-topbar.mobile-topbar-premium{
+        position:relative;
+        min-height:58px;
+        gap:7px !important;
+        padding:7px 8px;
+        border-radius:18px;
+        overflow:hidden;
+      }
+      .mobile-topbar-premium > button.icon-btn{
+        flex:0 0 38px;
+        width:38px;
+        height:38px;
+        padding:0;
+      }
+      .mobile-topbar-premium > button[aria-label="홈으로 이동"]{
+        flex:1 1 auto;
+        min-width:0;
+        justify-content:flex-start;
+        overflow:hidden;
+      }
+      .mobile-topbar-premium .mobile-brand-logo{
+        flex:0 0 32px;
+        width:32px;
+        height:32px;
+      }
+      .mobile-topbar-premium > button[aria-label="홈으로 이동"] > span{
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+      }
+      .mobile-topbar-premium > div:last-child{
+        flex:0 0 auto;
+        min-width:0;
+        gap:5px !important;
+      }
+      .mobile-topbar-premium .lang-toggle{
+        flex:0 0 auto;
+        height:38px;
+        padding:2px;
+      }
+      .mobile-topbar-premium .lang-toggle button{
+        min-width:34px;
+        height:32px;
+        padding:0 7px;
+        font-size:11px;
+      }
+      .mobile-topbar-premium .account-btn{
+        flex:0 1 auto;
+        height:38px;
+        max-width:92px;
+        min-width:42px;
+        padding:0 10px;
+        overflow:hidden;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+        font-size:11px;
+      }
+    }
+
+    /* iPhone / compact phones */
+    @media (max-width:480px){
+      .mobile-topbar.mobile-topbar-premium{
+        gap:5px !important;
+        padding:6px;
+        border-radius:16px;
+      }
+      .mobile-topbar-premium > button.icon-btn{
+        flex-basis:36px;
+        width:36px;
+        height:36px;
+      }
+      .mobile-topbar-premium .mobile-brand-logo{
+        width:30px;
+        height:30px;
+        flex-basis:30px;
+      }
+      .mobile-topbar-premium > button[aria-label="홈으로 이동"]{
+        gap:5px !important;
+      }
+      .mobile-topbar-premium > button[aria-label="홈으로 이동"] > span{
+        font-size:15px !important;
+      }
+      .mobile-topbar-premium .lang-toggle{
+        height:36px;
+      }
+      .mobile-topbar-premium .lang-toggle button{
+        min-width:29px;
+        height:30px;
+        padding:0 5px;
+        font-size:10px;
+      }
+      .mobile-topbar-premium .account-btn{
+        height:36px;
+        max-width:72px;
+        padding:0 8px;
+        font-size:10.5px;
+      }
+    }
+
+    @media (max-width:390px){
+      .mobile-topbar-premium > button[aria-label="홈으로 이동"] > span{
+        display:none;
+      }
+      .mobile-topbar-premium > button[aria-label="홈으로 이동"]{
+        flex:0 0 34px;
+      }
+      .mobile-topbar-premium .account-btn{
+        max-width:68px;
+      }
+    }
+
+    /* Native app top bar: separate from mobile-web header */
+    .native-app-topbar{
+      width:100%;
+      max-width:100%;
+      box-sizing:border-box;
+      min-width:0;
+      gap:8px;
+      padding:
+        max(8px, env(safe-area-inset-top, 0px))
+        4px
+        2px;
+    }
+    .native-app-topbar > button[aria-label="홈으로 이동"]{
+      flex:1 1 auto;
+      min-width:0;
+      overflow:hidden;
+    }
+    .native-app-topbar > button[aria-label="홈으로 이동"] > span{
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .native-app-topbar > div:last-child{
+      flex:0 0 auto;
+      min-width:0;
+      gap:5px !important;
+    }
+    .native-app-topbar .lang-toggle{
+      height:38px;
+      padding:2px;
+    }
+    .native-app-topbar .lang-toggle button{
+      min-width:32px;
+      height:32px;
+      padding:0 6px;
+      font-size:10.5px;
+    }
+    .native-app-topbar .account-btn{
+      height:38px;
+      max-width:88px;
+      min-width:42px;
+      padding:0 9px;
+      overflow:hidden;
+      white-space:nowrap;
+      text-overflow:ellipsis;
+      font-size:11px;
+    }
+
+    @media (max-width:430px){
+      .native-app-topbar .mobile-brand-logo{
+        width:31px;
+        height:31px;
+      }
+      .native-app-topbar > button[aria-label="홈으로 이동"] > span{
+        font-size:15px !important;
+      }
+      .native-app-topbar .lang-toggle button{
+        min-width:28px;
+        padding:0 5px;
+      }
+      .native-app-topbar .account-btn{
+        max-width:72px;
+        padding:0 7px;
+        font-size:10.5px;
+      }
+    }
+
+    /* Main content spacing: prevent every page from touching the top header */
+    @media (max-width:899px){
+      .bboggl-root > main,
+      .bboggl-root > .home-page,
+      .bboggl-root > .about-page,
+      .bboggl-root > .community-page{
+        scroll-margin-top:76px;
+      }
+    }
 `}</style>
 );
 
@@ -9068,7 +9303,7 @@ function AppInner({ lang, setLang }) {
 
         {/* 앱(Capacitor 네이티브): 하단 5탭이 내비게이션을 담당하므로 상단은 로고 한 줄만 */}
         {isNativeApp && (
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+          <div className="native-app-topbar" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
             <button type="button" onClick={() => goView("home")} aria-label="홈으로 이동"
               style={{ display: "flex", alignItems: "center", gap: 7, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
               <img className="mobile-brand-logo" src="/petgrow-splash-logo.png" alt="" />
