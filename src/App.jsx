@@ -3425,6 +3425,148 @@ const GlobalStyle = () => (
         --pg-content-max:calc(100vw - 248px);
       }
     }
+
+    /* ============================================================
+       PetGrow Desktop Right Panel Unification
+       소개 페이지의 넓은 콘텐츠 폭을 기준으로
+       Pet사주 / PetBTI / Pet정보 / Pet톡 / 우리 아이를 통일
+       모바일/앱에는 영향 없음
+       ============================================================ */
+    @media (min-width:900px){
+      .petgrow-web-layout{
+        --pg-unified-panel-max:1180px;
+        --pg-unified-panel-left:32px;
+        --pg-unified-panel-right:32px;
+      }
+
+      /* 모든 우측 페이지가 동일한 폭과 시작선 사용 */
+      .petgrow-web-layout .petgrow-content-stage{
+        width:calc(100% - var(--pg-unified-panel-left) - var(--pg-unified-panel-right)) !important;
+        max-width:var(--pg-unified-panel-max) !important;
+        margin-left:var(--pg-unified-panel-left) !important;
+        margin-right:auto !important;
+      }
+
+      .petgrow-web-layout .petgrow-content-stage > .legal-page-shell,
+      .petgrow-web-layout .petgrow-content-stage > div > .legal-page-shell,
+      .petgrow-web-layout .feature-page-shell{
+        width:100% !important;
+        max-width:100% !important;
+        margin-left:0 !important;
+        margin-right:0 !important;
+        padding-left:0 !important;
+        padding-right:0 !important;
+        box-sizing:border-box;
+      }
+
+      /* Pet사주 / PetBTI의 가운데 작은 박스를 소개 페이지 폭 수준으로 확대 */
+      .petgrow-web-layout .feature-page-shell .feature-module-shell{
+        width:100% !important;
+        max-width:100% !important;
+        margin:0 !important;
+        box-sizing:border-box;
+      }
+
+      .petgrow-web-layout .feature-page-shell .feature-module-shell > .bg-card{
+        width:100%;
+        box-sizing:border-box;
+      }
+
+      /* Pet사주 메뉴 카드도 너무 좁게 보이지 않도록 전체 폭 사용 */
+      .petgrow-web-layout .feature-page-saju .feature-module-shell > div[style*="display: grid"]{
+        width:100%;
+      }
+      .petgrow-web-layout .feature-page-saju .bg-surface-card{
+        min-height:104px;
+        padding:22px 26px !important;
+        border-radius:20px;
+      }
+
+      /* PetBTI 첫 화면의 중앙 카드 확대 */
+      .petgrow-web-layout .feature-page-petbti .feature-module-shell > .bg-card{
+        max-width:none !important;
+        padding:30px 34px;
+        border-radius:22px;
+      }
+      .petgrow-web-layout .feature-page-petbti .feature-module-shell > .bg-card .bg-btn{
+        min-height:54px;
+      }
+
+      /* 강아지 선택부를 본문 위에 붙은 하나의 영역처럼 정돈 */
+      .petgrow-web-layout .feature-page-shell .feature-pet-picker{
+        width:100%;
+        min-height:86px;
+        align-items:center;
+        gap:14px !important;
+        margin:0 0 18px !important;
+        padding:14px 18px !important;
+        background:#fff;
+        border:1px solid #E2E9E3;
+        border-radius:20px;
+        box-shadow:0 6px 20px rgba(34,48,39,.035);
+        box-sizing:border-box;
+      }
+      .petgrow-web-layout .feature-page-shell .feature-pet-picker button span:first-child{
+        width:54px !important;
+        height:54px !important;
+      }
+      .petgrow-web-layout .feature-page-shell .feature-pet-picker button span:last-child{
+        font-size:12px !important;
+        max-width:80px !important;
+      }
+
+      /* Pet정보는 소개와 같은 전체 폭 */
+      .petgrow-web-layout .petgrow-content-stage > .legal-page-shell{
+        max-width:100% !important;
+      }
+      .petgrow-web-layout .result-columns{
+        width:100%;
+      }
+
+      /* Pet톡의 피드/작성/상세 페이지도 공통 폭으로 확장 */
+      .petgrow-web-layout .petgrow-content-stage .cm-feed-grid,
+      .petgrow-web-layout .petgrow-content-stage .cm-detail-body-card,
+      .petgrow-web-layout .petgrow-content-stage .community-compose-shell{
+        max-width:100% !important;
+      }
+
+      /* 우리 아이 멍그로우/냥그로우 탭을 상단에서 살짝 내려 다른 메뉴와 리듬 통일 */
+      .petgrow-web-layout .petgrow-page-top.pets-page-top{
+        margin-top:18px !important;
+        margin-bottom:18px !important;
+      }
+      .petgrow-web-layout .pets-page-top .bg-chip{
+        min-height:48px;
+        border-radius:16px;
+      }
+
+      /* 우리 아이 결과 화면도 동일 최대폭 안에서 정리 */
+      .petgrow-web-layout .petgrow-content-stage .pet-result-page{
+        width:100% !important;
+        max-width:100% !important;
+        margin-left:0 !important;
+        margin-right:0 !important;
+      }
+    }
+
+    @media (min-width:1450px){
+      .petgrow-web-layout{
+        --pg-unified-panel-left:44px;
+        --pg-unified-panel-right:44px;
+        --pg-unified-panel-max:1240px;
+      }
+    }
+
+    @media (min-width:900px) and (max-width:1120px){
+      .petgrow-web-layout{
+        --pg-unified-panel-left:22px;
+        --pg-unified-panel-right:22px;
+        --pg-unified-panel-max:calc(100vw - 248px);
+      }
+      .petgrow-web-layout .feature-page-petbti .feature-module-shell > .bg-card{
+        padding:24px;
+      }
+    }
 `}</style>
 );
 
@@ -6204,7 +6346,7 @@ function SajuPage({ pet, onGoRegister }) {
   if (input) return <SajuResultView input={input} onRestart={() => { setInput(null); setMode("menu"); }} />;
 
   if (!pet) return (
-    <div style={{ maxWidth: 480, margin: "0 auto" }}><div className="bg-card" style={{ textAlign: "center" }}>
+    <div className="feature-module-shell"><div className="bg-card" style={{ textAlign: "center" }}>
       <SajuIcon style={{ width: 40, height: 40, color: "var(--primary)", margin: "0 auto 14px" }} />
       <h2 style={{ fontSize: 19, marginBottom: 6 }}>{t.sajuNeedPetTitle}</h2><p className="bg-sub" style={{ fontSize: 13, marginBottom: 22 }}>{t.sajuNeedPetBody}</p>
       <button className="bg-btn" style={{ width: "100%", fontSize: 15 }} onClick={onGoRegister}>{t.sajuGoRegisterBtn}</button>
@@ -6217,7 +6359,7 @@ function SajuPage({ pet, onGoRegister }) {
   const dailySeed = `${petName}|${pet.profile.birthDate || ""}|${pet.profile.species || ""}|${todayKey}`;
   const idx = hashString(dailySeed) % dailyMessages.length;
 
-  if (mode === "daily") return <div style={{ maxWidth: 520, margin: "0 auto" }}><div className="bg-card" style={{ textAlign: "center", background: "#F5F8F4" }}>
+  if (mode === "daily") return <div className="feature-module-shell"><div className="bg-card" style={{ textAlign: "center", background: "#F5F8F4" }}>
     <div style={{ fontSize: 38, marginBottom: 8 }}>🌤️</div><h2 style={{ fontSize: 21, marginBottom: 10 }}>{lang === "en" ? `${petName}'s fortune today` : `${petName}의 오늘의 펫운세`}</h2>
     <p style={{ fontSize: 15, lineHeight: 1.8 }}>{dailyMessages[idx]}</p><button className="bg-btn bg-btn-ghost" style={{ width: "100%", marginTop: 22 }} onClick={() => setMode("menu")}>{lang === "en" ? "Back" : "다른 Pet사주 보기"}</button>
   </div><div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 16 }}>{t.sajuDisclaimer}</div></div>;
@@ -6245,7 +6387,7 @@ function SajuPage({ pet, onGoRegister }) {
       const message = messages[hashString(seed + "|compat-message") % messages.length];
       setCompatResult({ score, message });
     };
-    return <div style={{ maxWidth: 520, margin: "0 auto" }}>
+    return <div className="feature-module-shell">
       <div className="bg-card" style={{ background: "#F1F6F2" }}>
         <div style={{ textAlign: "center" }}><div style={{ fontSize: 38, marginBottom: 8 }}>🫶</div><h2 style={{ fontSize: 21, marginBottom: 8 }}>{lang === "en" ? "Guardian compatibility" : "보호자 궁합"}</h2>
         <p className="bg-sub" style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 18 }}>{lang === "en" ? "Enter guardian information to see the compatibility result." : "보호자 정보를 입력하면 우리 아이와의 궁합을 확인할 수 있어요."}</p></div>
@@ -6269,7 +6411,7 @@ function SajuPage({ pet, onGoRegister }) {
     { id: "daily", icon: "🌤️", title: lang === "en" ? "Today's Pet Fortune" : "오늘의 펫운세", desc: lang === "en" ? "A light daily fortune for your pet" : "오늘 우리 아이에게 어울리는 행운 메시지를 확인해요.", bg: "#F5F8F4", click: () => setMode("daily") },
     { id: "compat", icon: "🫶", title: lang === "en" ? "Guardian Compatibility" : "보호자 궁합", desc: lang === "en" ? "See the fun chemistry between you two" : "우리 아이와 보호자님의 케미와 유대감을 재미로 확인해요.", bg: "#F1F6F2", click: () => setMode("compat") },
   ];
-  return <div style={{ maxWidth: 620, margin: "0 auto" }}><div style={{ textAlign: "center", marginBottom: 18 }}><FeaturePetHeader pet={pet} /><h2 style={{ fontSize: 21, marginTop: 10 }}>{lang === "en" ? `Choose ${petName}'s Pet Saju` : `${petName}와 어떤 Pet사주를 볼까요?`}</h2><p className="bg-sub" style={{ fontSize: 13, marginTop: 6 }}>{lang === "en" ? "Choose one of three fun contents." : "원하는 콘텐츠를 골라 재미로 즐겨보세요."}</p></div>
+  return <div className="feature-module-shell"><div style={{ textAlign: "center", marginBottom: 18 }}><FeaturePetHeader pet={pet} /><h2 style={{ fontSize: 21, marginTop: 10 }}>{lang === "en" ? `Choose ${petName}'s Pet Saju` : `${petName}와 어떤 Pet사주를 볼까요?`}</h2><p className="bg-sub" style={{ fontSize: 13, marginTop: 6 }}>{lang === "en" ? "Choose one of three fun contents." : "원하는 콘텐츠를 골라 재미로 즐겨보세요."}</p></div>
     <div style={{ display: "grid", gap: 12 }}>{modes.map(m => <button key={m.id} type="button" onClick={m.click} className="bg-surface-card" style={{ border: 0, cursor: "pointer", background: m.bg, padding: "20px", textAlign: "left", display: "flex", alignItems: "center", gap: 16 }}><span style={{ fontSize: 34 }}>{m.icon}</span><span><strong style={{ display: "block", fontSize: 17, marginBottom: 5 }}>{m.title}</strong><span className="bg-sub" style={{ fontSize: 13, lineHeight: 1.55 }}>{m.desc}</span></span><span style={{ marginLeft: "auto", fontSize: 22, color: "var(--primary)" }}>›</span></button>)}</div>
     <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 20, lineHeight: 1.6 }}>{t.sajuDisclaimer}</div>
   </div>;
@@ -6935,7 +7077,7 @@ function PetBtiPage({ pet, onUpdatePetBti, onGoRegister }) {
 
   if (!pet) {
     return (
-      <div style={{ maxWidth: 480, margin: "0 auto", textAlign: "center" }} className="bg-card">
+      <div className="bg-card feature-module-shell" style={{ textAlign: "center" }}>
         <PetBtiIcon style={{ width: 40, height: 40, color: "var(--primary)", margin: "0 auto 14px" }} />
         <p className="bg-sub" style={{ fontSize: 14, marginBottom: 18 }}>{t.petBtiNoPet}</p>
         <button className="bg-btn" style={{ width: "100%", fontSize: 15 }} onClick={onGoRegister}>
@@ -6954,7 +7096,7 @@ function PetBtiPage({ pet, onUpdatePetBti, onGoRegister }) {
 
   if (phase === "quiz") {
     return (
-      <div style={{ maxWidth: 480, margin: "0 auto" }}>
+      <div className="feature-module-shell">
         <PetBtiQuestionFlow species={pet.profile.species} onComplete={handleComplete} />
       </div>
     );
@@ -6962,7 +7104,7 @@ function PetBtiPage({ pet, onUpdatePetBti, onGoRegister }) {
 
   // intro
   return (
-    <div style={{ maxWidth: 480, margin: "0 auto" }}>
+    <div className="feature-module-shell">
       <div className="bg-card" style={{ textAlign: "center" }}>
         <FeaturePetHeader pet={pet} />
         <h2 style={{ fontSize: 19, marginBottom: 6, marginTop: 10 }}>{t.petBtiMainTitle}</h2>
@@ -7012,7 +7154,7 @@ function PetSwitcher({ species, pets, activePetId, onSelect, onAddNew }) {
 function PetPicker({ pets, activeId, onSelect }) {
   if (!pets || pets.length < 2) return null;
   return (
-    <div style={{ display: "flex", gap: 8, overflowX: "auto", padding: "2px 2px 12px", WebkitOverflowScrolling: "touch" }}>
+    <div className="feature-pet-picker" style={{ display: "flex", gap: 8, overflowX: "auto", padding: "2px 2px 12px", WebkitOverflowScrolling: "touch" }}>
       {pets.map((p) => (
         <button key={p.id} type="button" onClick={() => onSelect(p.id)}
           style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flex: "0 0 auto",
@@ -9340,7 +9482,7 @@ function AppInner({ lang, setLang }) {
           <div className="petgrow-sidebar-bottom"><div className="petgrow-sidebar-message">♡ <span>{lang === "en" ? "A happier day with your pet" : "우리 아이와 더 행복한 하루"}</span></div><LangToggle lang={lang} onChange={setLang} /><AccountButton account={account} onOpen={() => (account ? setAccountModalOpen(true) : goView("pets"))} /></div>
         </aside>
       )}
-      <div className="petgrow-page-top" style={{ maxWidth: 900, margin: "0 auto", padding: "16px 20px 0" }}>
+      <div className={`petgrow-page-top ${effectiveView === "pets" ? "pets-page-top" : ""}`} style={{ maxWidth: 900, margin: "0 auto", padding: "16px 20px 0" }}>
         {!isNativeApp && (
           <>
             {/* PC: 프리미엄 글래스 상단 메뉴 (900px 이상) */}
@@ -9438,12 +9580,12 @@ function AppInner({ lang, setLang }) {
       ) : effectiveView === "tips" ? (
         <TipsPage />
       ) : effectiveView === "saju" ? (
-        <div className="legal-page-shell">
+        <div className="legal-page-shell feature-page-shell feature-page-saju">
           <PetPicker pets={allPets} activeId={featurePet?.id} onSelect={setFeaturePetId} />
           <SajuPage pet={featurePet} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} />
         </div>
       ) : effectiveView === "petbti" ? (
-        <div className="legal-page-shell">
+        <div className="legal-page-shell feature-page-shell feature-page-petbti">
           <PetPicker pets={allPets} activeId={featurePet?.id} onSelect={setFeaturePetId} />
           <PetBtiPage pet={featurePet} onUpdatePetBti={handleUpdatePetBti} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} />
         </div>
