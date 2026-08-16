@@ -69,17 +69,25 @@
       }
 
 
-      .petgrow-runners{position:absolute;left:0;right:0;bottom:max(6vh,42px);height:70px;overflow:hidden;pointer-events:none;z-index:1}
-      .petgrow-runners:after{content:"";position:absolute;left:7%;right:7%;bottom:6px;height:1px;background:linear-gradient(90deg,transparent,rgba(79,138,91,.18),transparent)}
-      .petgrow-runner{position:absolute;left:-90px;bottom:7px;width:62px;height:50px;filter:drop-shadow(0 5px 8px rgba(34,48,39,.08));will-change:transform}
-      .petgrow-runner svg{width:100%;height:100%}
-      .petgrow-runner--dog{animation:petgrow-run-dog 5.2s linear infinite}
-      .petgrow-runner--cat{animation:petgrow-run-cat 5.2s linear 1.05s infinite}
-      .petgrow-runner__body{transform-origin:50% 70%;animation:petgrow-run-bob .38s ease-in-out infinite alternate}
-      @keyframes petgrow-run-dog{from{transform:translate3d(-100px,0,0)}to{transform:translate3d(calc(100vw + 170px),0,0)}}
-      @keyframes petgrow-run-cat{from{transform:translate3d(-130px,0,0) scale(.82)}to{transform:translate3d(calc(100vw + 190px),0,0) scale(.82)}}
-      @keyframes petgrow-run-bob{from{transform:translateY(1px) rotate(-1deg)}to{transform:translateY(-3px) rotate(1.4deg)}}
-      @media(min-width:900px){.petgrow-runners{height:82px}.petgrow-runner{width:70px;height:58px}}
+      .petgrow-runners{position:absolute;left:0;right:0;bottom:max(6vh,42px);height:92px;overflow:hidden;pointer-events:none;z-index:1}
+      .petgrow-runners:after{content:"";position:absolute;left:7%;right:7%;bottom:8px;height:1px;background:linear-gradient(90deg,transparent,rgba(79,138,91,.18),transparent)}
+      .petgrow-runner{position:absolute;left:-100px;bottom:8px;width:72px;height:62px;filter:drop-shadow(0 6px 7px rgba(34,48,39,.09));will-change:transform}
+      .petgrow-runner svg{width:100%;height:100%;overflow:visible}
+      .petgrow-runner--dog{animation:petgrow-run-dog 4.6s linear infinite}
+      .petgrow-runner--cat{animation:petgrow-run-cat 4.6s linear .92s infinite}
+      .petgrow-runner__body{transform-origin:50% 65%;animation:petgrow-gallop .34s cubic-bezier(.45,0,.55,1) infinite alternate}
+      .petgrow-leg--front{transform-origin:50% 15%;animation:petgrow-leg-front .34s ease-in-out infinite alternate}
+      .petgrow-leg--back{transform-origin:50% 15%;animation:petgrow-leg-back .34s ease-in-out infinite alternate}
+      .petgrow-tail{transform-origin:0 50%;animation:petgrow-tail .26s ease-in-out infinite alternate}
+      .petgrow-speedline{animation:petgrow-speedline .55s ease-in-out infinite}
+      @keyframes petgrow-run-dog{0%{transform:translate3d(-120px,0,0)}12%{transform:translate3d(calc(12vw - 90px),-4px,0)}25%{transform:translate3d(calc(25vw - 60px),0,0)}38%{transform:translate3d(calc(38vw - 30px),-5px,0)}50%{transform:translate3d(50vw,0,0)}63%{transform:translate3d(calc(63vw + 25px),-4px,0)}75%{transform:translate3d(calc(75vw + 55px),0,0)}88%{transform:translate3d(calc(88vw + 85px),-5px,0)}100%{transform:translate3d(calc(100vw + 150px),0,0)}}
+      @keyframes petgrow-run-cat{0%{transform:translate3d(-145px,0,0) scale(.84)}12%{transform:translate3d(calc(12vw - 105px),-6px,0) scale(.84)}25%{transform:translate3d(calc(25vw - 70px),0,0) scale(.84)}38%{transform:translate3d(calc(38vw - 35px),-7px,0) scale(.84)}50%{transform:translate3d(50vw,0,0) scale(.84)}63%{transform:translate3d(calc(63vw + 30px),-6px,0) scale(.84)}75%{transform:translate3d(calc(75vw + 65px),0,0) scale(.84)}88%{transform:translate3d(calc(88vw + 100px),-7px,0) scale(.84)}100%{transform:translate3d(calc(100vw + 175px),0,0) scale(.84)}}
+      @keyframes petgrow-gallop{from{transform:translateY(2px) scaleX(1.035) scaleY(.96) rotate(-1deg)}to{transform:translateY(-5px) scaleX(.97) scaleY(1.04) rotate(1deg)}}
+      @keyframes petgrow-leg-front{from{transform:rotate(32deg) translateY(-1px)}to{transform:rotate(-38deg) translateY(1px)}}
+      @keyframes petgrow-leg-back{from{transform:rotate(-34deg) translateY(1px)}to{transform:rotate(38deg) translateY(-1px)}}
+      @keyframes petgrow-tail{from{transform:rotate(-12deg)}to{transform:rotate(18deg)}}
+      @keyframes petgrow-speedline{0%,100%{opacity:.12;transform:translateX(4px)}50%{opacity:.48;transform:translateX(-4px)}}
+      @media(min-width:900px){.petgrow-runners{height:104px}.petgrow-runner{width:82px;height:70px}}
 
       .petgrow-splash__content {
         position: relative;
@@ -267,22 +275,34 @@
     <div id="petgrow-initial-splash" role="status" aria-live="polite" aria-label="PetGrow 불러오는 중">
       <div class="petgrow-runners" aria-hidden="true">
         <div class="petgrow-runner petgrow-runner--dog">
-          <svg viewBox="0 0 72 54"><g class="petgrow-runner__body">
-            <path d="M19 27c3-9 12-14 24-12 8 1 13 6 14 13 5 0 8 3 8 6 0 4-4 6-9 6H28c-9 0-14-5-9-13Z" fill="#E6C58F"/>
-            <circle cx="19" cy="22" r="10" fill="#E6C58F"/><path d="M12 16c-7 1-8 10-4 15 4-3 8-7 10-13Z" fill="#C99E63"/>
-            <circle cx="21" cy="20" r="1.6" fill="#223027"/><circle cx="26" cy="24" r="1.8" fill="#223027"/>
-            <path d="M30 39l-4 10M42 40l3 9M53 38l7 8" stroke="#B58A50" stroke-width="4" stroke-linecap="round"/>
-            <path d="M57 28c8 0 10-5 7-8" fill="none" stroke="#B58A50" stroke-width="4" stroke-linecap="round"/>
-          </g></svg>
+          <svg viewBox="0 0 92 68">
+            <g class="petgrow-speedline" fill="none" stroke="#A9C8AE" stroke-width="2" stroke-linecap="round"><path d="M2 36h14"/><path d="M7 45h10"/></g>
+            <g class="petgrow-runner__body">
+              <ellipse cx="49" cy="34" rx="25" ry="15" fill="#E8C58E"/><circle cx="25" cy="27" r="13" fill="#E8C58E"/>
+              <path d="M16 18c-10 2-10 15-5 21 5-5 10-10 12-18Z" fill="#C99A5B"/><circle cx="27" cy="25" r="2" fill="#223027"/><ellipse cx="18" cy="31" rx="3" ry="2.3" fill="#5A4633"/>
+              <path d="M20 35c4 4 8 4 12 0" fill="none" stroke="#8B6644" stroke-width="1.8" stroke-linecap="round"/>
+              <g class="petgrow-leg--front"><path d="M62 42c3 7 6 12 12 16" fill="none" stroke="#C08D4E" stroke-width="6" stroke-linecap="round"/></g>
+              <g class="petgrow-leg--back"><path d="M43 43c-4 8-8 12-14 16" fill="none" stroke="#C08D4E" stroke-width="6" stroke-linecap="round"/></g>
+              <g class="petgrow-leg--front"><path d="M55 43c-1 8 1 13 5 18" fill="none" stroke="#D5A866" stroke-width="5" stroke-linecap="round"/></g>
+              <g class="petgrow-leg--back"><path d="M36 42c-5 5-9 9-14 12" fill="none" stroke="#D5A866" stroke-width="5" stroke-linecap="round"/></g>
+              <g class="petgrow-tail"><path d="M72 28c10-12 17-8 16-2-1 6-7 8-13 8" fill="none" stroke="#C08D4E" stroke-width="5" stroke-linecap="round"/></g>
+            </g>
+          </svg>
         </div>
         <div class="petgrow-runner petgrow-runner--cat">
-          <svg viewBox="0 0 72 54"><g class="petgrow-runner__body">
-            <path d="M21 29c2-8 10-13 22-13 10 0 16 5 16 14 0 7-7 10-17 10H29c-8 0-12-4-8-11Z" fill="#8F9891"/>
-            <circle cx="20" cy="23" r="9" fill="#8F9891"/><path d="M14 17l2-8 5 7M22 16l6-7 1 9" fill="#8F9891"/>
-            <circle cx="18" cy="22" r="1.4" fill="#223027"/><circle cx="23" cy="22" r="1.4" fill="#223027"/>
-            <path d="M30 39l-5 9M43 40l4 8M53 38l7 7" stroke="#69736C" stroke-width="3.5" stroke-linecap="round"/>
-            <path d="M57 27c9-8 14-5 13 1-1 6-9 7-12 4" fill="none" stroke="#69736C" stroke-width="3.5" stroke-linecap="round"/>
-          </g></svg>
+          <svg viewBox="0 0 92 68">
+            <g class="petgrow-speedline" fill="none" stroke="#A9C8AE" stroke-width="2" stroke-linecap="round"><path d="M2 34h15"/><path d="M6 44h12"/></g>
+            <g class="petgrow-runner__body">
+              <ellipse cx="50" cy="35" rx="25" ry="14" fill="#8F9891"/><circle cx="25" cy="27" r="12" fill="#8F9891"/>
+              <path d="M16 20l3-12 8 10M27 18l9-10 1 14" fill="#8F9891"/><circle cx="22" cy="26" r="1.8" fill="#223027"/><circle cx="29" cy="26" r="1.8" fill="#223027"/>
+              <path d="M25 30l2 2 2-2M17 32l-8 1M17 35l-8 4M34 32l8 1M34 35l8 4" fill="none" stroke="#526158" stroke-width="1.3" stroke-linecap="round"/>
+              <g class="petgrow-leg--front"><path d="M62 42c4 7 8 11 14 15" fill="none" stroke="#69736C" stroke-width="5" stroke-linecap="round"/></g>
+              <g class="petgrow-leg--back"><path d="M43 43c-5 7-10 11-16 14" fill="none" stroke="#69736C" stroke-width="5" stroke-linecap="round"/></g>
+              <g class="petgrow-leg--front"><path d="M55 43c0 8 2 13 7 17" fill="none" stroke="#7D8780" stroke-width="4.5" stroke-linecap="round"/></g>
+              <g class="petgrow-leg--back"><path d="M36 42c-6 5-10 8-15 11" fill="none" stroke="#7D8780" stroke-width="4.5" stroke-linecap="round"/></g>
+              <g class="petgrow-tail"><path d="M72 30c12-13 19-8 17-1-2 8-10 9-15 5" fill="none" stroke="#69736C" stroke-width="4.5" stroke-linecap="round"/></g>
+            </g>
+          </svg>
         </div>
       </div>
 
@@ -290,7 +310,7 @@
         <div class="petgrow-splash__logo-wrap">
           <img
             class="petgrow-splash__logo"
-            src="/petgrow-splash-logo.webp"
+            src="/petgrow-splash-logo.png"
             alt="PetGrow"
             width="384"
             height="384"
