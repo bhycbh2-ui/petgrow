@@ -42,7 +42,7 @@ function speciesWhere(species){
 }
 
 async function ensureStarterTracks(){
-  const seedKey="petmusic-starter-thirtytwo-v4";
+  const seedKey="petmusic-starter-thirtysix-v5";
   await sql`delete from pg_music_tracks where id='demo-pink-day' or audio_url='/petmusic/pink-day.mp3'`;
   await sql`delete from pg_app_meta where key in ('petmusic-demo-pink-day-v2','petmusic-demo-pink-day-v1')`;
   const {rows:meta}=await sql`select value from pg_app_meta where key=${seedKey} limit 1`;

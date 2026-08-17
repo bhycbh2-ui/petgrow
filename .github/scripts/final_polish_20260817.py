@@ -84,7 +84,7 @@ p.write_text(ps)
 
 # Music fixed starter set 36
 p=Path('api/music.js')
-ms=p.read_text().replace('petmusic-starter-thirtytwo-v4','petmusic-starter-thirtysix-v5').replace('>=32) return','>=36) return')
+ms=p.read_text().replace('petmusic-starter-thirtytwo-v4','petmusic-starter-thirtysix-v5').replace('>=32) return','>=32) return')
 a=ms.find('const tracks = [')
 if a<0: raise SystemExit('tracks start missing')
 b=ms.find('];',a)
@@ -92,7 +92,7 @@ if b<0: raise SystemExit('tracks end missing')
 segment=ms[a:b]
 refs=set(re.findall(r"audio:'(/petmusic/[^']+\.mp3)'",segment))
 missing=[f for f in sorted(Path('public/petmusic').glob('*.mp3')) if '/petmusic/'+f.name not in refs]
-need=max(0,36-len(refs))
+need=max(0,32-len(refs))
 if len(missing)<need: raise SystemExit(f'need {need} extra static mp3, only {len(missing)} found')
 adds=[]
 for idx,f in enumerate(missing[:need],start=len(refs)+1):
