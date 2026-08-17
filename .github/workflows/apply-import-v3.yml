@@ -1,0 +1,27 @@
+name: Apply Final Batch V3 Stylesheet Import
+on:
+  push:
+    branches:
+      - work/final-batch-20260818-v3
+    paths:
+      - '.github/import-v3-trigger.txt'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/final-batch-20260818-v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/add-final-batch-import.mjs
+      - run: |
+          git config user.name petgrow-automation
+          git config user.email actions@users.noreply.github.com
+          git add src/App.jsx
+          git diff --cached --quiet && exit 0
+          git commit -m 'style: load final batch responsive polish'
+          git push origin work/final-batch-20260818-v3
