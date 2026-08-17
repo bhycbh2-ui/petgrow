@@ -1,4 +1,5 @@
 const API_BASE = "https://naverapihub.apigw.ntruss.com/search/v1/news";
+const GOOGLE_RSS = "https://news.google.com/rss/search";
 
 const SEARCH_QUERIES = [
   "반려동물",
@@ -27,15 +28,18 @@ const CATEGORY_RULES = [
 
 function stripHtml(value="") {
   return String(value)
+    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
     .replace(/<[^>]*>/g, "")
     .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
+    .replace(/&#39;|&apos;/g, "'")
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/\s+/g, " ")
     .trim();
 }
+
+function decodeXml(value="") { return stripHtml(value); }
 
 function isPetRelevant(item) {
   const hay = `${stripHtml(item.title)} ${stripHtml(item.description)}`.toLowerCase();
@@ -51,11 +55,8 @@ function categoryFor(item) {
 }
 
 function sourceFromUrl(url) {
-  try {
-    return new URL(url).hostname.replace(/^www\./, "");
-  } catch {
-    return "언론사";
-  }
+  try { return new URL(url).hostname.replace(/^www\./, ""); }
+  catch { return "언론사"; }
 }
 
 function normalizeItem(item) {
@@ -63,88 +64,89 @@ function normalizeItem(item) {
   const title = stripHtml(item.title);
   const description = stripHtml(item.description);
   const publishedAt = item.pubDate ? new Date(item.pubDate).toISOString() : null;
-  return {
-    id: `${title}|${link}`,
-    title,
-    description,
-    category: categoryFor(item),
-    source: sourceFromUrl(link),
-    link,
-    naverLink: item.link || link,
-    publishedAt
-  };
+  return { id: `${title}|${link}`, title, description, category: categoryFor(item), source: item.source || sourceFromUrl(link), link, naverLink: item.link || link, publishedAt };
 }
 
 function dedupe(items) {
-  const seenLinks = new Set();
-  const seenTitles = new Set();
-  const result = [];
+  const seenLinks = new Set(), seenTitles = new Set(), result = [];
   for (const item of items) {
     const titleKey = item.title.toLowerCase().replace(/[^0-9a-z가-힣]/g, "").slice(0, 80);
     if (!item.link || seenLinks.has(item.link) || seenTitles.has(titleKey)) continue;
-    seenLinks.add(item.link);
-    seenTitles.add(titleKey);
-    result.push(item);
+    seenLinks.add(item.link); seenTitles.add(titleKey); result.push(item);
   }
   return result;
 }
 
+function tag(xml, name) {
+  const m = xml.match(new RegExp(`<${name}(?:\\s[^>]*)?>([\\s\\S]*?)<\\/${name}>`, "i"));
+  return m ? decodeXml(m[1]) : "";
+}
+
+function parseGoogleRss(xml) {
+  const items = [];
+  for (const match of xml.matchAll(/<item>([\s\S]*?)<\/item>/gi)) {
+    const block = match[1];
+    const sourceMatch = block.match(/<source(?:\s+url="([^"]*)")?>([\s\S]*?)<\/source>/i);
+    const rawTitle = tag(block, "title");
+    const source = sourceMatch ? decodeXml(sourceMatch[2]) : "Google News";
+    const suffix = source ? ` - ${source}` : "";
+    const title = suffix && rawTitle.endsWith(suffix) ? rawTitle.slice(0, -suffix.length).trim() : rawTitle;
+    const description = tag(block, "description").replace(/\s+-\s+[^-]+$/, "").trim();
+    const link = tag(block, "link");
+    const pubDate = tag(block, "pubDate");
+    if (title && link) items.push({ title, description, link, originallink: link, pubDate, source });
+  }
+  return items;
+}
+
+async function fetchNaver(clientId, clientSecret) {
+  const responses = await Promise.all(SEARCH_QUERIES.map(async query => {
+    const url = `${API_BASE}?query=${encodeURIComponent(query)}&display=20&start=1&sort=date&format=json`;
+    const response = await fetch(url, { headers: { "X-NCP-APIGW-API-KEY-ID": clientId, "X-NCP-APIGW-API-KEY": clientSecret } });
+    if (!response.ok) throw new Error(`NAVER API HUB ${response.status}`);
+    return response.json();
+  }));
+  return responses.flatMap(r => Array.isArray(r.items) ? r.items : []);
+}
+
+async function fetchGoogleFallback() {
+  const queries = ["반려동물", "반려견 OR 강아지", "반려묘 OR 고양이", "동물병원 OR 펫보험", "유기동물 OR 동물보호"];
+  const responses = await Promise.all(queries.map(async query => {
+    const url = `${GOOGLE_RSS}?q=${encodeURIComponent(query)}&hl=ko&gl=KR&ceid=KR:ko`;
+    const response = await fetch(url, { headers: { "User-Agent": "PetGrow/1.0" } });
+    if (!response.ok) throw new Error(`Google News RSS ${response.status}`);
+    return parseGoogleRss(await response.text());
+  }));
+  return responses.flat();
+}
+
+function prepare(raw) {
+  const normalized = dedupe(raw.filter(isPetRelevant).map(normalizeItem))
+    .sort((a,b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0));
+  const now = Date.now(), sevenDays = 7 * 24 * 60 * 60 * 1000;
+  const recent = normalized.filter(item => item.publishedAt && now - new Date(item.publishedAt).getTime() <= sevenDays);
+  return (recent.length >= 20 ? recent : normalized).slice(0, 60);
+}
+
 export default async function handler(req, res) {
   if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
-
   const clientId = process.env.NAVER_API_HUB_CLIENT_ID;
   const clientSecret = process.env.NAVER_API_HUB_CLIENT_SECRET;
-  if (!clientId || !clientSecret) {
-    res.setHeader("Cache-Control", "no-store");
-    return res.status(503).json({
-      configured: false,
-      items: [],
-      error: "뉴스를 불러오지 못했어요. 잠시 후 다시 시도해 주세요."
-    });
-  }
-
+  let provider = "google-news-rss";
   try {
-    const responses = await Promise.all(
-      SEARCH_QUERIES.map(async query => {
-        const url = `${API_BASE}?query=${encodeURIComponent(query)}&display=20&start=1&sort=date&format=json`;
-        const response = await fetch(url, {
-          headers: {
-            "X-NCP-APIGW-API-KEY-ID": clientId,
-            "X-NCP-APIGW-API-KEY": clientSecret
-          }
-        });
-        if (!response.ok) {
-          const text = await response.text().catch(() => "");
-          throw new Error(`NAVER API HUB ${response.status}: ${text.slice(0, 200)}`);
-        }
-        return response.json();
-      })
-    );
-
-    const merged = responses.flatMap(r => Array.isArray(r.items) ? r.items : []);
-    const normalized = dedupe(merged.filter(isPetRelevant).map(normalizeItem))
-      .sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0));
-
-    const now = Date.now();
-    const sevenDays = 7 * 24 * 60 * 60 * 1000;
-    const recent = normalized.filter(item => item.publishedAt && now - new Date(item.publishedAt).getTime() <= sevenDays);
-    const items = (recent.length >= 20 ? recent : normalized).slice(0, 60);
-
+    let raw = [];
+    if (clientId && clientSecret) {
+      try { raw = await fetchNaver(clientId, clientSecret); provider = "naver-api-hub"; }
+      catch (e) { console.warn("Pet news primary provider failed; using fallback", e?.message || e); }
+    }
+    if (!raw.length) { raw = await fetchGoogleFallback(); provider = "google-news-rss"; }
+    const items = prepare(raw);
+    if (!items.length) throw new Error("No pet news items after filtering");
     res.setHeader("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=1800");
-    return res.status(200).json({
-      configured: true,
-      updatedAt: new Date().toISOString(),
-      refreshSeconds: 3600,
-      total: items.length,
-      items
-    });
+    return res.status(200).json({ configured: true, provider, updatedAt: new Date().toISOString(), refreshSeconds: 3600, total: items.length, items });
   } catch (error) {
-    console.error("Pet news fetch failed", error);
+    console.error("Pet news fetch failed", error?.message || error);
     res.setHeader("Cache-Control", "no-store");
-    return res.status(502).json({
-      configured: true,
-      items: [],
-      error: "뉴스를 불러오지 못했어요. 잠시 후 다시 시도해 주세요."
-    });
+    return res.status(502).json({ configured: true, items: [], error: "뉴스를 불러오지 못했어요. 잠시 후 다시 시도해 주세요." });
   }
 }
