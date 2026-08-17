@@ -23,7 +23,7 @@ async function getAccessToken(serviceAccount) {
   const signature = crypto.sign('RSA-SHA256', Buffer.from(unsigned), serviceAccount.private_key);
   const assertion = `${unsigned}.${b64url(signature)}`;
   const body = new URLSearchParams({
-    grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+    grant_type: 'urn:ietf:params:oauth-bearer',
     assertion,
   });
   const res = await fetch('https://oauth2.googleapis.com/token', {
@@ -56,6 +56,9 @@ const track = required('PLAY_TRACK');
 const aabPath = required('AAB_PATH');
 const releaseName = process.env.PLAY_RELEASE_NAME || `PetGrow ${new Date().toISOString().slice(0, 10)}`;
 const releaseNotes = process.env.PLAY_RELEASE_NOTES || 'PetGrow 기능 및 사용성 개선';
+const requestedStatus = String(process.env.PLAY_RELEASE_STATUS || 'draft').trim().toLowerCase();
+const safeNonProductionTracks = new Set(['alpha', 'beta', 'internal', 'internalsharing']);
+const releaseStatus = requestedStatus === 'completed' && safeNonProductionTracks.has(track.toLowerCase()) ? 'completed' : 'draft';
 const serviceAccount = JSON.parse(required('PLAY_SERVICE_ACCOUNT_JSON'));
 const token = await getAccessToken(serviceAccount);
 
@@ -78,11 +81,11 @@ await api(`${base}/edits/${encodeURIComponent(editId)}/tracks/${encodeURICompone
     releases: [{
       name: releaseName,
       versionCodes: [String(bundle.versionCode)],
-      status: 'draft',
+      status: releaseStatus,
       releaseNotes: [{ language: 'ko-KR', text: releaseNotes.slice(0, 500) }],
     }],
   }),
 });
 
 await api(`${base}/edits/${encodeURIComponent(editId)}:commit`, token, { method: 'POST', body: '{}' });
-console.log(`Uploaded versionCode ${bundle.versionCode} to Play track '${track}' as draft.`);
+console.log(`Uploaded versionCode ${bundle.versionCode} to Play track '${track}' with status '${releaseStatus}'.`);
