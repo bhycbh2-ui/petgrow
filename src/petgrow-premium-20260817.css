@@ -57,7 +57,7 @@ input:focus,textarea:focus,select:focus,.bg-input:focus{border-color:#8eae95!imp
 
 /* Header / navigation */
 header,.header,.topbar,.app-header,.site-header{background:rgba(247,245,239,.93)!important;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(210,217,209,.75)!important;box-shadow:none!important}
-nav a,.nav-item,.menu-item,.top-menu button,.mobile-menu button{font-size:14px!important;font-weight:650!important;color:var(--pg-text-2)!important;border-radius:12px}
+nav a,.nav-item,.menu-item,.top-menu button,.mobile-menu button{font-size:14px!important;font-weight:600!important;color:var(--pg-text-2)!important;border-radius:12px}
 nav a.active,.nav-item.active,.menu-item.active,.top-menu button.active,.mobile-menu button.active{color:var(--pg-primary)!important;background:var(--pg-primary-soft)!important}
 
 /* Hero / introduction */
@@ -152,3 +152,12 @@ nav a.active,.nav-item.active,.menu-item.active,.top-menu button.active,.mobile-
   .mypage-tabs button,.activity-tabs button,.profile-tabs button,.member-tabs button,.mypage-tab,.activity-tab,.profile-tab,.member-tab{font-size:11.5px!important}
   .nearby-map,.map-container,.leaflet-container{height:350px!important;max-height:350px!important}
 }
+
+
+/* MAP_STABILITY_FINAL_20260817 */
+.map-wrap,.map-container,.nearby-map,.leaflet-container,[id*="map"]{transition:none!important;animation:none!important}
+.nearby-map,.map-container,.leaflet-container{width:100%!important;contain:layout paint}
+@media (min-width:1025px){.nearby-map,.map-container,.leaflet-container{height:500px!important;min-height:500px!important;max-height:500px!important}}
+@media (min-width:761px) and (max-width:1024px){.nearby-map,.map-container,.leaflet-container{height:440px!important;min-height:440px!important;max-height:440px!important}}
+@media (max-width:760px){.nearby-map,.map-container,.leaflet-container{height:390px!important;min-height:390px!important;max-height:390px!important}}
+@media (max-width:390px){.nearby-map,.map-container,.leaflet-container{height:350px!important;min-height:350px!important;max-height:350px!important}}
