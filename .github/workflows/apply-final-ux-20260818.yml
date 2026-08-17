@@ -7,6 +7,7 @@ on:
       - "scripts/patch-final-points-20260818.py"
       - "scripts/patch-final-mypage-20260818.py"
       - "scripts/patch-final-news-20260818.py"
+      - "scripts/patch-final-news-v2-20260818.py"
       - ".github/workflows/apply-final-ux-20260818.yml"
       - ".github/final-ux-trigger-20260818.txt"
   workflow_dispatch:
@@ -27,8 +28,16 @@ jobs:
       - run: python3 scripts/patch-final-core-20260818.py
       - run: python3 scripts/patch-final-points-20260818.py
       - run: python3 scripts/patch-final-mypage-20260818.py
-      - run: python3 scripts/patch-final-news-20260818.py
+      - run: python3 scripts/patch-final-news-v2-20260818.py
       - run: npm ci
+      - name: Check server syntax
+        run: |
+          node --check api/news-community.js
+          node --check api/news-detail.js
+          node --check api/news-localize.js
+          node --check api/activity.js
+          node --check api/community.js
+          node --check api/points.js
       - run: npm run build
       - name: Commit verified source
         run: |
