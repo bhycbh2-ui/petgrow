@@ -1,0 +1,40 @@
+name: Apply Final PetGrow UX 20260818
+on:
+  push:
+    branches: ["chatgpt/final-ux-20260818"]
+    paths:
+      - "scripts/patch-final-core-20260818.py"
+      - "scripts/patch-final-points-20260818.py"
+      - "scripts/patch-final-mypage-20260818.py"
+      - "scripts/patch-final-news-20260818.py"
+      - ".github/workflows/apply-final-ux-20260818.yml"
+      - ".github/final-ux-trigger-20260818.txt"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  apply-build-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: chatgpt/final-ux-20260818
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: python3 scripts/patch-final-core-20260818.py
+      - run: python3 scripts/patch-final-points-20260818.py
+      - run: python3 scripts/patch-final-mypage-20260818.py
+      - run: python3 scripts/patch-final-news-20260818.py
+      - run: npm ci
+      - run: npm run build
+      - name: Commit verified source
+        run: |
+          git config user.name "petgrow-automation"
+          git config user.email "actions@github.com"
+          git add src/App.jsx src/main.jsx src/PetDailyWidgets.jsx src/final-ux-20260818.css api/community.js api/points.js api/news-community.js api/news-detail.js api/news-localize.js api/activity.js server_lib/points.js
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "feat: complete PetGrow final UX activity news locale and point safeguards"
+          git push origin HEAD:chatgpt/final-ux-20260818
