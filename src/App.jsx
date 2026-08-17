@@ -332,7 +332,7 @@ const STRINGS = {
       { title: "카카오 간편로그인", body: "PetGrow는 카카오 계정으로 로그인해요. 별도 비밀번호를 만들지 않고 '카카오로 시작하기'로 이용할 수 있으며, 로그인한 계정 기준으로 저장 기능과 내 활동이 연결돼요." },
       { title: "우리 아이 · 성장 기록", body: "강아지와 고양이를 여러 마리 등록하고 아이별 프로필, 현재 체중, 성장 기록, 성장 그래프와 성장앨범을 관리할 수 있어요. 다른 기기에서도 같은 계정으로 로그인하면 저장된 정보를 이어서 볼 수 있어요." },
       { title: "PetBTI", body: "강아지와 고양이 각각 20개의 구체적인 행동 질문에 답하면 우리 아이의 성향을 16가지 유형으로 재미있게 확인할 수 있어요. 완료한 결과는 저장하고 다시 검사할 수도 있어요." },
-      { title: "Pet사주", body: "등록한 우리 아이 정보를 바탕으로 기본 Pet사주, 오늘의 펫운세, 오늘의 Pet타로, 보호자 궁합을 재미로 즐길 수 있어요. 타로는 메이저 아르카나 22장의 전통적인 상징을 PetGrow식 반려생활 메시지로 재해석하며, 직전에 뽑은 카드와 같은 카드는 연속으로 나오지 않아요. 실제 성격이나 미래를 판단하는 자료는 아니에요." },
+      { title: "Pet사주", body: "등록한 우리 아이 정보를 바탕으로 기본 Pet사주, 오늘의 펫운세, 오늘의 Pet타로, 보호자 궁합을 재미로 즐길 수 있어요. Pet타로는 메이저 아르카나 22장의 전통적인 상징을 PetGrow식 반려생활 메시지로 재해석하며, 각 주제별로 반려동물 1마리당 하루 1회만 뽑을 수 있어요. 실제 성격이나 미래를 판단하는 자료는 아니에요." },
       { title: "Pet정보", body: "강아지·고양이·건강·생활·식단·영양·훈련·안전·미용·위생 등 카테고리별 반려생활 정보를 확인할 수 있어요. 목록은 페이지 단위로 나뉘고 검색과 즐겨찾기를 이용할 수 있으며, 정보는 지속적으로 추가·점검돼요." },
       { title: "Pet음악", body: "강아지·고양이 음악을 재생하고 반복재생할 수 있어요. 인기 TOP5와 내가 좋아요 누른 음악을 따로 확인할 수 있고, 좋아요·댓글을 이용할 수 있어요. 본인 댓글은 수정·삭제할 수 있고 다른 이용자의 댓글은 신고할 수 있어요." },
       { title: "내 주변 Pet", body: "주소를 직접 입력해 검색하거나, 위치 권한을 허용해 현재 위치 주변의 동물병원·동물약국·펫샵·용품점·미용실·유치원·호텔 등을 찾을 수 있어요. 현재 위치는 이용자가 현재 위치 검색 또는 지도 표시를 사용할 때 주변 검색·거리 계산·지도 표시에 일시적으로 사용하며 계정에 저장하지 않아요. 로그인 회원은 별점·후기·좋아요를 남길 수 있고 본인 후기는 수정·삭제, 다른 후기는 신고할 수 있어요." },
@@ -1999,11 +1999,11 @@ function GuideModal({ open, onClose }) {
    ============================================================ */
 const PRIVACY_SECTIONS_KO = [
   { title: "1. 개인정보의 처리 목적", body: "PetGrow는 카카오 간편로그인을 통한 회원 식별·계정 관리, 로그인 유지, 공지사항 제공, 문의·피드백 접수 및 답변 관리, 광고 문의 접수 및 상담(회사/브랜드명, 담당자명, 이메일, 선택 입력 연락처·예산), 직접광고 캠페인 운영 및 노출기간 관리, 반려동물 정보 저장 및 기기 간 동기화, PetBTI 등 서비스 결과 저장·다시보기, Pet음악 재생·반복재생·즐겨찾기·좋아요·댓글 제공, 보호자 궁합 계산, 고객 문의, 서비스 안정성·품질 개선, 광고 제공 및 성과 측정, 부정 이용 방지, 회원탈퇴 및 개인정보 삭제 처리, 이용자가 입력한 주소를 기준으로 주변 반려동물 시설을 검색하고, 이용자가 선택적으로 위치 권한을 허용한 경우 지도에 현재 위치를 표시하고 장소까지의 거리를 계산하기 위하여 필요한 범위에서 정보를 처리할 수 있습니다." },
-  { title: "2. 처리하는 개인정보 항목", body: "가. 카카오 간편로그인\n- 카카오가 제공하는 사용자 고유 식별정보\n- 닉네임, 프로필 이미지 등은 실제로 동의받아 제공받고 서비스에서 사용하는 경우에만 처리\n- 이메일 등 추가 정보는 실제 구현상 필요한 경우에만 동의를 받아 처리\n\n나. 반려동물 및 서비스 정보\n- 반려동물 이름, 종류, 품종, 생년월일, 성별, 현재 체중 및 성장 관련 정보\n- 반려동물 프로필 사진\n- PetBTI 결과 및 검사일\n- Pet사주·오늘의 펫운세·저장한 Pet타로 등 저장이 필요한 서비스 정보\n- Pet음악 좋아요·댓글 등 이용자가 직접 남긴 참여 기록\n\n다. 보호자 궁합 입력정보\n- 보호자 이름, 보호자 생년월일\n- 위 정보는 보호자 궁합 결과를 계산하기 위해 해당 화면에서만 일시적으로 사용하며, 현재 구현상 PetGrow 서버 또는 계정에 저장하지 않습니다.\n\n라. 광고·제휴 문의 정보\n- 필수: 회사/브랜드명, 담당자명, 이메일, 문의 내용\n- 선택: 연락처, 광고 유형, 예산 등 이용자가 직접 입력한 상담 정보\n- 처리 목적: 광고·제휴 상담, 견적·캠페인 협의 및 문의 이력 관리\n\n마. 자동으로 처리될 수 있는 정보\n- IP 주소, 기기·운영체제·브라우저 또는 앱 정보\n- 접속 및 서비스 이용기록, 오류·보안 관련 기록\n- Google Mobile Ads SDK 사용 시 광고 제공·분석·부정행위 방지를 위해 IP 주소, 앱 실행·탭·동영상 조회 등 이용 상호작용 정보, 앱/SDK 성능 관련 진단정보, Android 광고 ID·App Set ID 등 기기 또는 계정 식별자가 Google에 의해 자동으로 수집·공유될 수 있습니다. 광고 ID의 수집 여부는 앱 설정 및 SDK 구성에 따라 달라질 수 있습니다.\n\nPetGrow는 서비스 제공에 필요하지 않은 전화번호, 친구목록 등의 개인정보를 불필요하게 요청하지 않는 것을 원칙으로 합니다. 보호자 궁합에서 입력하는 보호자 이름·생년월일은 궁합 계산에만 일시적으로 사용되며 현재 구현상 서버로 전송하거나 계정에 저장하지 않습니다." },
+  { title: "2. 처리하는 개인정보 항목", body: "가. 카카오 간편로그인\n- 카카오가 제공하는 사용자 고유 식별정보\n- 닉네임, 프로필 이미지 등은 실제로 동의받아 제공받고 서비스에서 사용하는 경우에만 처리\n- 이메일 등 추가 정보는 실제 구현상 필요한 경우에만 동의를 받아 처리\n\n나. 반려동물 및 서비스 정보\n- 반려동물 이름, 종류, 품종, 생년월일, 성별, 현재 체중 및 성장 관련 정보\n- 반려동물 프로필 사진\n- PetBTI 결과 및 검사일\n- Pet사주·오늘의 펫운세 및 Pet타로의 선택 주제·뽑은 카드·저장 여부 등 저장이 필요한 서비스 정보\n- Pet음악 좋아요·댓글 등 이용자가 직접 남긴 참여 기록\n\n다. 보호자 궁합 입력정보\n- 보호자 이름, 보호자 생년월일\n- 위 정보는 보호자 궁합 결과를 계산하기 위해 해당 화면에서만 일시적으로 사용하며, 현재 구현상 PetGrow 서버 또는 계정에 저장하지 않습니다.\n\n라. 광고·제휴 문의 정보\n- 필수: 회사/브랜드명, 담당자명, 이메일, 문의 내용\n- 선택: 연락처, 광고 유형, 예산 등 이용자가 직접 입력한 상담 정보\n- 처리 목적: 광고·제휴 상담, 견적·캠페인 협의 및 문의 이력 관리\n\n마. 자동으로 처리될 수 있는 정보\n- IP 주소, 기기·운영체제·브라우저 또는 앱 정보\n- 접속 및 서비스 이용기록, 오류·보안 관련 기록\n- Google Mobile Ads SDK 사용 시 광고 제공·분석·부정행위 방지를 위해 IP 주소, 앱 실행·탭·동영상 조회 등 이용 상호작용 정보, 앱/SDK 성능 관련 진단정보, Android 광고 ID·App Set ID 등 기기 또는 계정 식별자가 Google에 의해 자동으로 수집·공유될 수 있습니다. 광고 ID의 수집 여부는 앱 설정 및 SDK 구성에 따라 달라질 수 있습니다.\n\nPetGrow는 서비스 제공에 필요하지 않은 전화번호, 친구목록 등의 개인정보를 불필요하게 요청하지 않는 것을 원칙으로 합니다. 보호자 궁합에서 입력하는 보호자 이름·생년월일은 궁합 계산에만 일시적으로 사용되며 현재 구현상 서버로 전송하거나 계정에 저장하지 않습니다." },
   { title: "3. 개인정보의 저장 방식", body: "로그인 후 이용자가 등록하거나 생성한 정보는 단순히 '이 기기' 또는 '이 브라우저'에만 저장되는 구조를 원칙으로 하지 않으며, 로그인한 PetGrow 계정에 연결하여 서버 또는 클라우드 저장소에 저장·동기화될 수 있습니다. 동일한 카카오 계정으로 로그인하면 지원되는 다른 기기 또는 웹 환경에서 저장된 정보를 불러올 수 있습니다. 로그인 기능 도입 이전의 기존 기기 저장정보는 이용자의 선택에 따라 계정으로 이전될 수 있습니다." },
   { title: "4. 개인정보의 처리 및 보유기간", body: "회원계정 및 계정에 연결된 개인정보는 원칙적으로 회원탈퇴 시까지 보유·이용합니다. 회원탈퇴 시 관계 법령에 따라 별도로 보관할 필요가 있는 정보를 제외하고 계정 및 관련 개인정보를 삭제합니다. Pet음악 좋아요와 댓글 등 계정에 연결된 참여 기록도 회원탈퇴 또는 해당 댓글 삭제 시 함께 삭제될 수 있습니다. 광고·제휴 문의를 통해 입력된 회사/브랜드명, 담당자명, 이메일, 선택 연락처·예산 및 문의 내용은 상담·제휴 검토 등 처리 목적이 달성될 때까지 보유하며, 목적 달성 후 지체 없이 삭제하는 것을 원칙으로 합니다. 분쟁 대응이나 법령상 보관 의무가 있는 경우에는 필요한 범위와 기간에 한해 별도로 보관할 수 있습니다. 외부 인증·광고·호스팅 사업자가 자체적으로 처리하는 정보는 해당 사업자의 정책 및 실제 처리 구조에 따를 수 있습니다." },
   { title: "5. 카카오 간편로그인", body: "PetGrow는 이용 편의를 위해 카카오 간편로그인을 제공할 수 있습니다. 로그인 과정에서 카카오의 동의 화면을 통해 이용자가 동의한 범위의 정보만 PetGrow에 제공될 수 있습니다. 처리 목적은 회원 식별, 계정 생성·관리, 사용자별 데이터 저장·동기화, 회원탈퇴 및 고객지원 등입니다." },
-  { title: "6. 반려동물 정보 및 프로필 사진", body: "이용자가 등록한 반려동물 정보와 프로필 사진은 해당 PetGrow 계정과 연결하여 저장될 수 있으며, 우리 아이, 성장정보, Pet사주(기본 Pet사주·오늘의 펫운세·오늘의 Pet타로·보호자 궁합), PetBTI 등 반려동물별 기능 제공에 이용될 수 있습니다." },
+  { title: "6. 반려동물 정보 및 프로필 사진", body: "이용자가 등록한 반려동물 정보와 프로필 사진은 해당 PetGrow 계정과 연결하여 저장될 수 있으며, 우리 아이, 성장정보, Pet사주(기본 Pet사주·오늘의 펫운세·보호자 궁합), Pet타로(주제별 하루 1회), PetBTI 등 반려동물별 기능 제공에 이용될 수 있습니다." },
   { title: "7. 기존 기기 저장정보의 계정 이전", body: "카카오 간편로그인 도입 이전에 기기 또는 브라우저에 저장되어 있던 반려동물 정보가 있는 경우 이용자의 선택과 동의에 따라 로그인 계정으로 이전할 수 있습니다. 서버 저장이 정상 완료되기 전에 기존 데이터를 임의로 삭제하지 않도록 운영합니다." },
   { title: "8. 개인정보의 제3자 제공·처리위탁 및 국외 이전", body: "PetGrow는 이용자의 개인정보를 임의로 판매하지 않습니다. 제3자 제공, 처리위탁 또는 국외 이전이 발생하는 경우 실제 데이터 흐름, 제공자, 처리 목적, 항목, 보유기간 및 관련 법령상 고지·동의 필요 여부를 확인하여 본 방침에 반영합니다. 실제 사용하는 DB, Storage 및 호스팅 사업자는 최종 배포 구조에 맞추어 구체적으로 기재합니다.\n\n현재 PetGrow는 회원 데이터 저장을 위해 Vercel(호스팅 및 서버리스 인프라), Vercel Postgres(데이터베이스, Neon 기반), Vercel Blob(Pet톡 게시글 사진 및 Pet음악 음원·커버 이미지 저장)을 사용하고 있으며, 이 과정에서 이용자의 반려동물 정보 및 Pet톡 게시물 등이 해당 사업자의 서버(국외 소재 가능)에 저장·처리될 수 있습니다." },
   { title: "9. 주소기반 주변 시설 검색 및 선택적 위치 권한", body: "PetGrow의 '내 주변 Pet'은 이용자가 직접 입력한 주소 또는 이용자가 선택한 현재 위치를 기준으로 주변 장소를 검색할 수 있습니다. 위치 권한은 선택사항이며, 허용한 경우 기기 또는 브라우저가 제공하는 현재 위치 좌표를 현재 위치 주변 검색, 지도 내 위치 표시, 각 장소까지의 거리 계산에 일시적으로 사용합니다. 현재 위치 좌표는 PetGrow 회원 계정 또는 장소 후기 DB에 별도로 저장하지 않습니다. 위치 권한을 허용하지 않아도 주소 검색은 그대로 이용할 수 있고, 권한은 언제든 기기 또는 브라우저 설정에서 철회할 수 있습니다. 장소명·주소·전화번호·업종 등 업체 정보는 카카오 장소검색 등 외부 장소정보를 검색 시점에 불러오므로 실제 영업정보와 차이가 있을 수 있습니다." },
@@ -2060,7 +2060,7 @@ const TERMS_SECTIONS_KO = [
   { title: "제11조 (회원탈퇴 및 이용계약 해지)", body: "회원은 언제든지 서비스 내 회원탈퇴 기능을 통해 이용계약을 해지할 수 있습니다. 회원탈퇴가 완료되면 관계 법령에 따라 별도로 보관해야 하는 정보가 있는 경우를 제외하고 회원계정 및 계정과 연결된 개인정보와 저장정보를 삭제합니다." },
   { title: "제12조 (반려동물 관련 정보 및 계산 결과)", body: "PetGrow의 성장 예상, 체중 계산 및 기타 반려동물 관련 정보는 일반적인 자료와 이용자가 입력한 정보를 기반으로 제공되는 참고용 정보이며 실제 결과를 보장하지 않습니다." },
   { title: "제13조 (건강 관련 정보)", body: "PetGrow에서 제공하는 건강, 식단, 영양 및 관리 정보는 일반적인 참고정보이며 수의사의 진료, 진단 또는 처방을 대신하지 않습니다. 반려동물에게 이상 증상이나 응급상황이 있는 경우 수의사 또는 동물병원의 진료를 받아야 합니다." },
-  { title: "제14조 (Pet사주·PetBTI 등 재미 콘텐츠)", body: "기본 Pet사주, 오늘의 펫운세, 오늘의 Pet타로, 보호자 궁합 및 PetBTI는 재미와 참고를 위한 콘텐츠이며 과학적 진단, 의학적 판단, 성격 진단 또는 미래 결과를 보장하는 자료가 아닙니다. 보호자 궁합을 위해 입력한 보호자 이름과 생년월일은 현재 구현상 결과 계산에만 일시적으로 사용되며 PetGrow 서버 또는 계정에 저장되지 않습니다." },
+  { title: "제14조 (Pet사주·PetBTI 등 재미 콘텐츠)", body: "기본 Pet사주, 오늘의 펫운세, 보호자 궁합, Pet타로 및 PetBTI는 재미와 참고를 위한 콘텐츠이며 과학적 진단, 의학적 판단, 성격 진단 또는 미래 결과를 보장하는 자료가 아닙니다. 보호자 궁합을 위해 입력한 보호자 이름과 생년월일은 현재 구현상 결과 계산에만 일시적으로 사용되며 PetGrow 서버 또는 계정에 저장되지 않습니다." },
   { title: "제14조의2 (Pet음악)", body: "① PetGrow는 강아지·고양이 등을 위한 음원 재생, 1곡 반복·전체 반복, 좋아요, 댓글 및 인기순위 기능을 제공할 수 있으며, 인스트루멘탈·보컬 여부와 휴식·수면·놀이·자연 등 음악 특성 태그를 표시할 수 있습니다.\n② Pet음악은 서비스 내 스트리밍 재생을 원칙으로 하며 별도의 음원 다운로드 기능을 제공하지 않을 수 있습니다. 이용자는 서비스에서 제공되는 음원을 무단 추출·복제·재판매 또는 재배포해서는 안 됩니다.\n③ 즐겨찾기·좋아요·댓글 등 이용자 반응은 개인화된 이용 편의 제공 및 서비스 개선에 활용될 수 있습니다. 댓글에는 Pet톡 게시물과 동일하게 타인의 권리 침해, 불법·유해 콘텐츠 등 금지행위 기준이 적용될 수 있습니다.\n④ PetGrow가 직접 등록하는 음원은 서비스 운영에 필요한 이용 권한을 확인한 범위에서 제공하는 것을 원칙으로 합니다." },
   { title: "제14조의3 (내 주변 Pet 및 장소 이용후기)", body: "① PetGrow는 이용자가 직접 입력한 주소 또는 이용자가 선택한 현재 위치를 기준으로 동물병원·동물약국·펫샵·용품점·미용·호텔·유치원 등 주변 반려동물 관련 장소를 검색해 안내할 수 있습니다. 위치 권한은 선택사항이며, 허용한 경우 현재 위치는 주변 검색, 지도 표시와 각 장소까지의 거리 계산에 사용할 수 있습니다. 위치 권한을 허용하지 않아도 주소 검색은 이용할 수 있습니다. 장소명·업종·주소·전화번호·거리 등 장소정보는 외부 장소정보 제공자의 검색 결과를 기반으로 하며 PetGrow가 해당 업체의 영업상태·서비스 품질·정보 정확성을 보증하지 않습니다.\n② 현재 위치는 이용자가 위치 권한을 허용한 경우에만 현재 위치 주변 검색, 지도 표시와 장소까지의 거리 계산을 위해 일시적으로 사용하며, PetGrow는 현재 구현상 정확한 현재 위치 좌표를 회원 계정이나 장소 후기 DB에 저장하지 않습니다.\n③ 회원은 장소별로 1~5점의 별점과 간단한 이용후기를 작성하고 다른 후기의 좋아요 또는 신고 기능을 이용할 수 있습니다. 후기 내용에 대한 책임은 작성자에게 있으며 욕설·비속어·음란·혐오 표현, 타인의 개인정보, 광고·도배, 허위 또는 권리침해 내용 등 부적절한 내용을 작성해서는 안 됩니다.\n④ PetGrow는 일부 금지 표현과 개인정보 노출을 자동 필터링할 수 있으나 모든 부적절한 내용을 완전히 탐지하는 것을 보장하지 않습니다. 신고된 후기는 운영진 검토 후 숨김 또는 신고 종결 처리될 수 있으며 신고만으로 자동 삭제되지 않습니다.\n⑤ 장소 이용후기는 회원 개인의 경험과 의견이며 해당 업체 또는 PetGrow의 공식 평가·보증이 아닙니다. 진료·건강 관련 판단은 반드시 수의사 등 전문가의 안내를 확인해야 합니다." },
   { title: "제15조 (광고 및 외부 서비스)", body: "① PetGrow는 서비스의 유지·운영을 위해 직접광고, 제휴광고 및 Google AdMob 등 외부 광고 서비스를 제공할 수 있습니다.\n② Google Mobile Ads SDK 사용 시 광고 제공, 분석 및 부정행위 방지를 위해 IP 주소, 앱 실행·탭·동영상 조회 등 이용 상호작용, 앱/SDK 진단정보, Android 광고 ID·App Set ID 등 기기 또는 계정 식별자가 Google에 의해 자동으로 처리될 수 있습니다. 구체적인 처리 범위는 앱 버전, SDK 설정 및 이용자의 기기 설정에 따라 달라질 수 있습니다.\n③ 개인 맞춤형 광고가 제공되는 경우 적용 법령과 Google의 동의 관리 절차에 따라 필요한 안내·동의 또는 선택권을 제공합니다. 이용자는 기기 설정에서 광고 ID를 재설정·삭제하거나 광고 개인정보 보호 관련 설정을 변경할 수 있습니다.\n④ PetGrow는 직접광고의 노출·클릭 및 광고 표시 요청·성공·오류 등의 집계 통계를 운영할 수 있습니다. PetGrow 관리자 화면의 자체 통계는 Google AdMob의 실제 광고 노출수·클릭수·수익 보고서와 구분됩니다.\n⑤ 외부 광고 서비스에는 해당 제공자의 이용약관 및 개인정보처리방침이 적용될 수 있습니다." },
@@ -2310,6 +2310,7 @@ function HamburgerMenu({ open, onClose, view, onNavigate, onOpenAccount, account
     { key: "news", label: lang === "en" ? "Pet News" : "Pet뉴스", Icon: InfoIcon }, // PETNEWS_MOBILE_NAV_20260817
     { key: "community", label: t.communityNav, Icon: TalkIcon },
     { key: "saju", label: t.sajuNav, Icon: SajuIcon },
+    { key: "tarot", label: lang === "en" ? "Pet Tarot" : "Pet타로", Icon: SajuIcon },
     { key: "petbti", label: t.petBtiNav, Icon: PetBtiIcon },
     { key: "music", label: lang === "en" ? "Pet Music" : "Pet음악", Icon: MusicIcon },
     { key: "tips", label: t.tipsTitle, Icon: LightbulbIcon },
@@ -7542,7 +7543,6 @@ function SajuPage({ pet, onGoRegister }) {
   const modes = [
     { id: "basic", icon: "🔮", title: lang === "en" ? "Basic Pet Saju" : "기본 Pet사주", desc: lang === "en" ? "Personality, bonds, play style and luck" : "타고난 성격·인연·놀이 스타일·복을 재미로 봐요.", bg: "#F1F5F1", click: startBasic },
     { id: "daily", icon: "🌤️", title: lang === "en" ? "Today's Pet Fortune" : "오늘의 펫운세", desc: lang === "en" ? "A light daily fortune for your pet" : "오늘 우리 아이에게 어울리는 행운 메시지를 확인해요.", bg: "#F5F8F4", click: () => setMode("daily") },
-    { id: "tarot", icon: "🃏", title: lang === "en" ? "Today's Pet Tarot" : "오늘의 Pet타로", desc: lang === "en" ? "Pick a Major Arcana card and read today's message" : "마음이 가는 카드를 골라 오늘의 메시지를 확인해요.", bg: "#F7F3EB", click: () => setMode("tarot") },
     { id: "compat", icon: "🫶", title: lang === "en" ? "Guardian Compatibility" : "보호자 궁합", desc: lang === "en" ? "See the fun chemistry between you two" : "우리 아이와 보호자님의 케미와 유대감을 재미로 확인해요.", bg: "#F1F6F2", click: () => setMode("compat") },
   ];
   return <div className="feature-module-shell"><div style={{ textAlign: "center", marginBottom: 18 }}><FeaturePetHeader pet={pet} /><h2 className="pet-user-name" style={{ fontSize: 21, marginTop: 10 }}>{lang === "en" ? `Choose ${petName}'s Pet Saju` : `${petName}와 어떤 Pet사주를 볼까요?`}</h2><p className="bg-sub" style={{ fontSize: 13, marginTop: 6 }}>{lang === "en" ? "Choose one of four fun contents." : "원하는 콘텐츠를 골라 재미로 즐겨보세요."}</p></div>
@@ -8983,6 +8983,7 @@ function AboutPage({ onStart, onNavigate }) {
             <LandingFeatureCard Illust={IllustMyPets} title={t.landingCardMyPetsTitle} desc={t.landingCardMyPetsDesc} />
             <LandingFeatureCard Illust={IllustGrowth} title={t.landingCardGrowthTitle} desc={t.landingCardGrowthDesc} />
             <LandingFeatureCard Illust={IllustSaju} title={t.landingCardSajuTitle} desc={t.landingCardSajuDesc} />
+            <LandingFeatureCard Illust={SajuIcon} title={lang === "en" ? "🃏 Pet Tarot" : "🃏 Pet타로"} desc={lang === "en" ? "Draw one Major Arcana card per topic each day and save the reading." : "오늘·궁합·마음·산책·조언 주제별로 하루 한 장을 뽑고 결과를 저장해요."} />
             <LandingFeatureCard Illust={IllustPetBti} title={t.landingCardPetBtiTitle} desc={t.landingCardPetBtiDesc} />
             <LandingFeatureCard Illust={MusicIcon} title={lang === "en" ? "🎵 Pet Music" : "🎵 Pet음악"} desc={lang === "en" ? "Music for dogs and cats with loop playback, likes, comments and a live Top 5." : "강아지·고양이 음악을 반복재생하고 좋아요·댓글로 인기 TOP5를 함께 만들어요."} />
             <LandingFeatureCard Illust={IllustTips} title={t.landingCardTipsTitle} desc={t.landingCardTipsDesc} />
@@ -9508,6 +9509,7 @@ function UnifiedMenuHero({ view, lang='ko' }) {
     community:{eyebrow:'PETGROW TALK',ko:'Pet톡',en:'Pet Talk',koDesc:'우리 아이의 일상과 궁금한 점, 반려생활 정보를 회원들과 편하게 나눠보세요.',enDesc:'Share everyday moments, questions and useful pet-life tips.'},
     tips:{eyebrow:'PETGROW INFO',ko:'Pet정보',en:'Pet Info',koDesc:'건강·식단·생활·훈련 등 반려생활에 바로 활용할 수 있는 정보를 모아봤어요.',enDesc:'Browse practical information for health, food, daily care and training.'},
     saju:{eyebrow:'PETGROW CONTENT',ko:'Pet사주',en:'Pet Saju',koDesc:'우리 아이의 생년월일을 바탕으로 재미로 즐기는 특별한 이야기를 만나보세요.',enDesc:'Enjoy a lighthearted pet fortune story based on your pet profile.'},
+    tarot:{eyebrow:'PETGROW TAROT',ko:'Pet타로',en:'Pet Tarot',koDesc:'22장의 메이저 아르카나에서 오늘·궁합·마음·산책·조언 주제별로 하루 한 장의 메시지를 만나보세요.',enDesc:'Draw one Major Arcana card per topic each day for a lighthearted pet-life message.'},
     petbti:{eyebrow:'PETGROW CONTENT',ko:'PetBTI',en:'PetBTI',koDesc:'강아지와 고양이의 행동 성향을 질문으로 살펴보고 우리 아이의 개성을 알아봐요.',enDesc:'Explore your pet personality through a simple behavior questionnaire.'},
     guide:{eyebrow:'PETGROW GUIDE',ko:'정보가이드',en:'Guide',koDesc:'PetGrow의 주요 기능과 이용 방법을 한곳에서 쉽고 빠르게 확인해요.',enDesc:'See how PetGrow features work and how to use them.'},
     my:{eyebrow:'PETGROW MY',ko:'마이페이지',en:'My Page',koDesc:'회원정보와 내가 남긴 활동, 좋아요한 콘텐츠를 한곳에서 관리해요.',enDesc:'Manage your account, activity and saved favorites.'},
@@ -9534,6 +9536,7 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
     ["community", "💬", lang === "en" ? "Pet Talk" : "Pet톡"],
     ["petbti", "🧠", "PetBTI"],
     ["saju", "🔮", lang === "en" ? "Pet Saju" : "Pet사주"],
+    ["tarot", "🃏", lang === "en" ? "Pet Tarot" : "Pet타로"],
     ["tips", "💡", lang === "en" ? "Pet Info" : "Pet정보"],
     ["guide", "📚", lang === "en" ? "Guide" : "정보가이드"]
   ];
@@ -9617,6 +9620,7 @@ function MoreMenuPage({ lang, onNavigate }) {
   const items = [
     ["news","📰","Pet뉴스",lang==="en"?"Latest pet news":"반려견·반려묘·건강·정책 등 최신 뉴스"],
     ["saju","🔮","Pet사주",lang==="en"?"Fun pet fortune content":"우리 아이의 재미있는 Pet사주"],
+    ["tarot","🃏","Pet타로",lang==="en"?"One card per topic each day":"오늘·궁합·마음·산책·조언 주제별 하루 한 장"],
     ["petbti","🧠","PetBTI",lang==="en"?"20-question personality test":"강아지·고양이 20문항 성향 테스트"],
     ["tips","💡","Pet정보",lang==="en"?"Health and daily pet guides":"건강·식단·훈련·생활 정보"],
     ["pets","📈",lang==="en"?"Growth records":"성장 기록",lang==="en"?"Track weight and growth":"체중과 성장 변화를 기록해요"],
@@ -11002,7 +11006,8 @@ const MENU_HELP = {
   about: { icon: "🌱", koTitle: "PetGrow 소개", koBody: "PetGrow가 어떤 서비스인지, 어떤 기능을 제공하는지 한눈에 살펴볼 수 있어요.", enTitle: "About PetGrow", enBody: "See what PetGrow is and what you can do here." },
   pets: { icon: "🐾", koTitle: "우리 아이", koBody: "반려동물 정보를 등록하고 체중·성장기록·사진을 꾸준히 관리해보세요.", enTitle: "My Pets", enBody: "Register your pets and manage growth, weight, and photos." },
   community: { icon: "💬", koTitle: "Pet톡", koBody: "다른 보호자들과 일상·질문·건강·산책·훈련 이야기를 나눠요. 닉네임은 회원정보에서 바꿀 수 있어요.", enTitle: "Pet Talk", enBody: "Share daily life, questions, health, walks and training with other pet guardians." },
-  saju: { icon: "🔮", koTitle: "Pet사주", koBody: "기본 Pet사주, 오늘의 펫운세, 오늘의 Pet타로, 보호자 궁합 중 원하는 콘텐츠를 골라 재미로 즐겨보세요.", enTitle: "Pet Saju", enBody: "Enjoy Pet Saju, today's fortune, Pet Tarot, or guardian compatibility for fun." },
+  saju: { icon: "🔮", koTitle: "Pet사주", koBody: "기본 Pet사주, 오늘의 펫운세, 보호자 궁합을 재미로 즐겨보세요.", enTitle: "Pet Saju", enBody: "Enjoy Pet Saju, today's fortune, or guardian compatibility for fun." },
+  tarot: { icon: "🃏", koTitle: "Pet타로", koBody: "22장의 메이저 아르카나에서 주제별로 하루 한 장을 뽑고 오늘의 메시지를 저장해보세요.", enTitle: "Pet Tarot", enBody: "Draw one card per topic each day and save the reading to your account." },
   petbti: { icon: "🧩", koTitle: "PetBTI", koBody: "강아지·고양이별 20개 행동 질문으로 우리 아이의 성향을 더 구체적으로 알아봐요.", enTitle: "PetBTI", enBody: "Answer behavior questions and discover a fun personality type for your pet." },
   music: { icon: "🎵", koTitle: "Pet음악", koBody: "강아지·고양이를 위한 음악을 듣고 반복재생하며 좋아요와 댓글로 우리 아이의 반응을 나눠보세요.", enTitle: "Pet Music", enBody: "Listen to pet-friendly music, loop favorites, and share reactions with likes and comments." },
   tips: { icon: "💡", koTitle: "Pet정보", koBody: "건강·식단·생활·훈련 등 반려생활에 바로 써먹기 좋은 정보를 모아봤어요.", enTitle: "Pet Tips", enBody: "Browse practical tips for health, food, daily care and training." },
@@ -11560,6 +11565,7 @@ function AppInner({ lang, setLang }) {
             <button className={view === "community" ? "active" : ""} onClick={() => goView("community")}><TalkIcon /><span>{t.communityNav}</span></button>
             <button className={view === "petbti" ? "active" : ""} onClick={() => goView("petbti")}><PetBtiIcon /><span>{t.petBtiNav}</span></button>
             <button className={view === "saju" ? "active" : ""} onClick={() => goView("saju")}><SajuIcon /><span>{t.sajuNav}</span></button>
+            <button className={view === "tarot" ? "active" : ""} onClick={() => goView("tarot")}><span style={{fontSize:18}}>🃏</span><span>{lang === "en" ? "Pet Tarot" : "Pet타로"}</span></button>
             <div className="sidebar-section-label">{lang === "en" ? "INFO · SUPPORT" : "정보 · 지원"}</div>
             <button className={view === "tips" ? "active" : ""} onClick={() => goView("tips")}><LightbulbIcon /><span>{t.tipsTitle}</span></button>
             <button className={view === "news" ? "active" : ""} onClick={() => goView("news")}><InfoIcon /><span>{lang === "en" ? "Pet News" : "Pet뉴스"}</span></button>
@@ -11588,6 +11594,7 @@ function AppInner({ lang, setLang }) {
                 <button type="button" className={`desktop-nav-link ${view === "nearby" ? "active" : ""}`} onClick={() => goView("nearby")}><MapPinIcon />{t.nearbyNav}</button>
                 <button type="button" className={`desktop-nav-link ${view === "community" ? "active" : ""}`} onClick={() => goView("community")}><TalkIcon />{t.communityNav}</button>
                 <button type="button" className={`desktop-nav-link ${view === "saju" ? "active" : ""}`} onClick={() => goView("saju")}><SajuIcon />{t.sajuNav}</button>
+                <button type="button" className={`desktop-nav-link ${view === "tarot" ? "active" : ""}`} onClick={() => goView("tarot")}><span style={{fontSize:15}}>🃏</span>{lang === "en" ? "Pet Tarot" : "Pet타로"}</button>
                 <button type="button" className={`desktop-nav-link ${view === "petbti" ? "active" : ""}`} onClick={() => goView("petbti")}><PetBtiIcon />{t.petBtiNav}</button>
                 <button type="button" className={`desktop-nav-link ${view === "music" ? "active" : ""}`} onClick={() => goView("music")}><MusicIcon />{lang === "en" ? "Pet Music" : "Pet음악"}</button>
                 <button type="button" className={`desktop-nav-link ${view === "tips" ? "active" : ""}`} onClick={() => goView("tips")}><LightbulbIcon />{t.tipsTitle}</button>
@@ -11646,7 +11653,7 @@ function AppInner({ lang, setLang }) {
       </div>
 
       <div className="petgrow-content-stage">
-      {["community","tips","saju","petbti","guide","my","more","support","ad-inquiry"].includes(effectiveView) && <UnifiedMenuHero view={effectiveView} lang={lang} />}
+      {["community","tips","saju","tarot","petbti","guide","my","more","support","ad-inquiry"].includes(effectiveView) && <UnifiedMenuHero view={effectiveView} lang={lang} />}
       {effectiveView === "login" ? (
         <LoginScreen onGoTerms={() => goView("terms")} onGoPrivacy={() => goView("privacy")} />
       ) : effectiveView === "privacy" ? (
@@ -11690,6 +11697,11 @@ function AppInner({ lang, setLang }) {
         <div className="legal-page-shell feature-page-shell feature-page-saju">
           <PetPicker pets={allPets} activeId={featurePet?.id} onSelect={setFeaturePetId} />
           <SajuPage pet={featurePet} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} />
+        </div>
+      ) : effectiveView === "tarot" ? (
+        <div className="legal-page-shell feature-page-shell feature-page-tarot">
+          <PetPicker pets={allPets} activeId={featurePet?.id} onSelect={setFeaturePetId} />
+          {featurePet ? <PetTarotPanel pet={featurePet} lang={lang} /> : <div className="bg-card" style={{textAlign:"center",padding:28}}><b>Pet타로를 보려면 우리 아이를 먼저 등록해 주세요.</b><button className="bg-btn" style={{display:"block",margin:"14px auto 0"}} onClick={()=>{setMode("onboarding");goView("pets")}}>우리 아이 등록</button></div>}
         </div>
       ) : effectiveView === "petbti" ? (
         <div className="legal-page-shell feature-page-shell feature-page-petbti">

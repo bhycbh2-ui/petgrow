@@ -27,6 +27,25 @@ const CARDS=[
 [21,"world","세계","The World","🌎","완성과 만족","익숙한 사람과 공간 속에서 안정감과 만족을 크게 느끼는 하루예요.","좋아하는 일상을 함께하며 충분히 행복을 표현해 주세요.","함께하는 시간"]
 ].map(([id,key,name,en,symbol,keyword,meaning,tip,luck])=>({id,key,name,en,symbol,keyword,meaning,tip,luck}));
 
+const TAROT_TOPICS={
+  daily:{label:"오늘의 타로",guide:"오늘 하루 우리 아이와 함께할 분위기와 포인트를 가볍게 살펴봐요."},
+  bond:{label:"보호자 궁합 타로",guide:"오늘 보호자와 우리 아이 사이의 교감 포인트를 살펴봐요."},
+  heart:{label:"우리 아이 마음 타로",guide:"오늘 우리 아이의 기분과 마음을 이해하는 힌트를 찾아봐요."},
+  activity:{label:"산책·활동 타로",guide:"오늘 산책과 놀이에서 잘 맞을 흐름을 재미로 확인해봐요."},
+  advice:{label:"오늘의 조언 타로",guide:"오늘 우리 아이를 위해 보호자가 챙기면 좋은 작은 포인트를 살펴봐요."}
+};
+const cleanTopic=(v)=>Object.prototype.hasOwnProperty.call(TAROT_TOPICS,String(v||""))?String(v):"daily";
+const deckFor=(uid,petId,topic,today)=>{
+  const seed=crypto.createHash("sha256").update([uid,petId,topic,today].join("|")).digest("hex");
+  const score=(id)=>crypto.createHash("sha256").update(seed+"|"+id).digest("hex");
+  return [...CARDS].sort((a,b)=>score(a.id).localeCompare(score(b.id)));
+};
+const topicReading=(topic,card)=>{
+  const label=TAROT_TOPICS[topic]?.label||TAROT_TOPICS.daily.label;
+  const prefix={daily:"오늘의 흐름에서는",bond:"보호자와의 교감에서는",heart:"우리 아이의 마음을 바라볼 때는",activity:"산책과 놀이에서는",advice:"오늘 보호자가 기억하면 좋은 점은"}[topic]||"오늘은";
+  return {label,guide:TAROT_TOPICS[topic]?.guide||"",topicMeaning:prefix+" ‘"+card.keyword+"’의 의미가 잘 어울려요. "+card.meaning,topicTip:card.tip};
+};
+
 const clean=(v,max=120)=>String(v||"").trim().slice(0,max);
 const todayKst=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Seoul",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 async function ensure(){await sql`create table if not exists pg_pet_daily_content(id text primary key,user_id text not null,pet_id text not null,pet_name text not null,content_type text not null,content_date text not null,result_json jsonb not null,saved boolean not null default false,created_at timestamptz not null default now(),updated_at timestamptz not null default now())`;await sql`create index if not exists pg_pet_daily_content_user_date_idx on pg_pet_daily_content(user_id,content_date,content_type)`;}
@@ -39,7 +58,19 @@ export async function handleTarot(req,res){
   if(req.method==="GET"&&action==="today"){const {rows}=await sql`select id,pet_id,pet_name,content_type,result_json,saved,created_at from pg_pet_daily_content where user_id=${uid} and content_date=${today} order by created_at desc`;return res.status(200).json({date:today,items:rows});}
   if(req.method==="GET"&&action==="history"){const {rows}=await sql`select id,pet_id,pet_name,content_type,content_date,result_json,saved,created_at from pg_pet_daily_content where user_id=${uid} and saved=true order by created_at desc limit 60`;return res.status(200).json({items:rows});}
   if(req.method==="POST"&&action==="fortune"){const petId=clean(req.body?.petId,100),petName=clean(req.body?.petName,60),message=clean(req.body?.message,600);if(!petId||!petName||!message)return res.status(400).json({error:"운세 정보가 부족해요."});const id=`fortune:${uid}:${petId}:${today}`,result={message};await sql`insert into pg_pet_daily_content(id,user_id,pet_id,pet_name,content_type,content_date,result_json,saved) values(${id},${uid},${petId},${petName},'fortune',${today},${JSON.stringify(result)}::jsonb,true) on conflict(id) do update set result_json=excluded.result_json,saved=true,updated_at=now()`;await stat(uid,"saju_daily");return res.status(200).json({ok:true,id,date:today,result});}
-  if(req.method==="POST"&&action==="draw"){const petId=clean(req.body?.petId,100),petName=clean(req.body?.petName,60);if(!petId||!petName)return res.status(400).json({error:"반려동물 정보가 부족해요."});const {rows:last}=await sql`select result_json from pg_pet_daily_content where user_id=${uid} and pet_id=${petId} and content_type='tarot' order by created_at desc limit 1`;const lastId=Number(last[0]?.result_json?.cardId),pool=CARDS.filter(c=>c.id!==lastId),card=pool[crypto.randomInt(0,pool.length)],result={cardId:card.id,key:card.key,name:card.name,en:card.en,symbol:card.symbol,keyword:card.keyword,meaning:card.meaning,tip:card.tip,luck:card.luck},id=crypto.randomUUID();await sql`insert into pg_pet_daily_content(id,user_id,pet_id,pet_name,content_type,content_date,result_json,saved) values(${id},${uid},${petId},${petName},'tarot',${today},${JSON.stringify(result)}::jsonb,false)`;await stat(uid,"saju_tarot_draw");return res.status(201).json({ok:true,id,date:today,result});}
+  if(req.method==="POST"&&action==="draw"){
+    const petId=clean(req.body?.petId,100),petName=clean(req.body?.petName,60),topic=cleanTopic(req.body?.topic),cardIndex=Math.max(0,Math.min(21,Number(req.body?.cardIndex)||0));
+    if(!petId||!petName)return res.status(400).json({error:"반려동물 정보가 부족해요."});
+    const {rows:existing}=await sql`select id,result_json,saved from pg_pet_daily_content where user_id=${uid} and pet_id=${petId} and content_type='tarot' and content_date=${today} and result_json->>'topicKey'=${topic} order by created_at desc limit 1`;
+    if(existing[0])return res.status(200).json({ok:true,alreadyDrawn:true,id:existing[0].id,date:today,result:existing[0].result_json,saved:!!existing[0].saved});
+    const card=deckFor(uid,petId,topic,today)[cardIndex],reading=topicReading(topic,card);
+    const result={cardId:card.id,key:card.key,name:card.name,en:card.en,symbol:card.symbol,keyword:card.keyword,meaning:card.meaning,tip:card.tip,luck:card.luck,topicKey:topic,topicLabel:reading.label,topicGuide:reading.guide,topicMeaning:reading.topicMeaning,topicTip:reading.topicTip};
+    const id=["tarot",uid,petId,topic,today].join(":");
+    await sql`insert into pg_pet_daily_content(id,user_id,pet_id,pet_name,content_type,content_date,result_json,saved) values(${id},${uid},${petId},${petName},'tarot',${today},${JSON.stringify(result)}::jsonb,false) on conflict(id) do nothing`;
+    const {rows:row}=await sql`select id,result_json,saved from pg_pet_daily_content where id=${id} and user_id=${uid}`;
+    await stat(uid,"tarot_"+topic);
+    return res.status(201).json({ok:true,id:row[0]?.id||id,date:today,result:row[0]?.result_json||result,saved:!!row[0]?.saved});
+  }
   if(req.method==="POST"&&action==="save"){const id=clean(req.body?.id,100);const {rowCount}=await sql`update pg_pet_daily_content set saved=true,updated_at=now() where id=${id} and user_id=${uid} and content_type='tarot'`;if(!rowCount)return res.status(404).json({error:"저장할 타로 결과를 찾지 못했어요."});await stat(uid,"saju_tarot_save");return res.status(200).json({ok:true});}
   return res.status(405).json({error:"지원하지 않는 요청이에요."});
  }catch(e){console.error("core tarot error",e?.message||e);return res.status(500).json({error:"결과를 처리하지 못했어요. 잠시 후 다시 시도해 주세요."});}
