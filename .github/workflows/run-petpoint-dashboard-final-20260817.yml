@@ -1,0 +1,40 @@
+name: Run PetPoint Dashboard Final 20260817
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.petpoint-dashboard-final-trigger-20260817'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Apply PetPoint dashboard final
+        run: python .github/scripts/petpoint_dashboard_final_20260817.py
+      - name: Validate markers
+        run: |
+          grep -q 'PETPOINT_DASHBOARD_FINAL_20260817' src/App.jsx
+          grep -q '포인트 이용내역' src/App.jsx
+          grep -q 'today_earned' server_lib/points.js
+      - name: Build
+        run: |
+          npm install
+          npm run build
+      - name: Commit changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/App.jsx server_lib/points.js
+          if git diff --cached --quiet; then
+            echo 'No changes to commit'
+          else
+            git commit -m 'feat: finalize live PetPoint balance and history'
+            git push origin main
+          fi
