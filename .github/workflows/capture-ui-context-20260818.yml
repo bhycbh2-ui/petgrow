@@ -1,0 +1,39 @@
+name: Capture UI Context 20260818
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'CAPTURE_UI_20260818.txt'
+permissions:
+  contents: write
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Capture contexts
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('src/App.jsx').read_text(encoding='utf-8')
+          lines=s.splitlines()
+          needles=['포인트 현황','MY PETPOINT RANK','PetPointDashboard','Pet뉴스','PET NEWS','Pet정보','PETGROW TALK','Pet톡을 불러오는 중','오늘의 Pet타로','Pet타로','위치 새로고침','내 위치','우리 아이','활동하고 모으고 즐겨요','정보가이드']
+          out=[]
+          for needle in needles:
+              out.append('\n### '+needle)
+              for i,l in enumerate(lines):
+                  if needle in l:
+                      a=max(0,i-12); b=min(len(lines),i+13)
+                      out.append(f'--- {a+1}-{b} ---')
+                      out.extend(f'{j+1}: {lines[j]}' for j in range(a,b))
+          Path('UI_CONTEXT_20260818.txt').write_text('\n'.join(out),encoding='utf-8')
+          PY
+          git config user.name petgrow-automation
+          git config user.email actions@users.noreply.github.com
+          git add UI_CONTEXT_20260818.txt
+          git commit -m 'chore: capture UI target contexts' || exit 0
+          git push origin main
