@@ -41,15 +41,13 @@ function speciesWhere(species){
   return sql``;
 }
 
-let starterTracksReadyPromise=null;
 async function ensureStarterTracks(){
-  if(starterTracksReadyPromise) return starterTracksReadyPromise;
-  starterTracksReadyPromise=(async()=>{
   const seedKey="petmusic-starter-thirtytwo-v4";
   await sql`delete from pg_music_tracks where id='demo-pink-day' or audio_url='/petmusic/pink-day.mp3'`;
   await sql`delete from pg_app_meta where key in ('petmusic-demo-pink-day-v2','petmusic-demo-pink-day-v1')`;
   const {rows:meta}=await sql`select value from pg_app_meta where key=${seedKey} limit 1`;
-  if(meta[0]) return;
+  const {rows:existing}=await sql`select count(*)::int n from pg_music_tracks where active=true`;
+  if(meta[0] && Number(existing?.[0]?.n||0)>=16) return;
   const tracks = [
     {id:'starter-cat-soft-steps',title:'사뿐사뿐 낮잠길',description:'편안한 분위기의 사람 보컬이 함께 들어간 고양이 휴식 시간용 음악이에요.',species:'cat',vocalType:'vocal',mood:'relax',cover:'/petmusic/covers/cover-01.webp',audio:'/petmusic/cat-soft-steps.mp3'},
     {id:'starter-cat-moonlight-steps',title:'달빛 아래 고양이 발걸음',description:'조용한 저녁과 수면 전 시간에 어울리는 부드러운 고양이용 음악이에요.',species:'cat',vocalType:'instrumental',mood:'sleep',cover:'/petmusic/covers/cover-02.webp',audio:'/petmusic/cat-moonlight-steps.mp3'},
