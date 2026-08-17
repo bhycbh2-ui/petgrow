@@ -23,7 +23,7 @@ async function getAccessToken(serviceAccount) {
   const signature = crypto.sign('RSA-SHA256', Buffer.from(unsigned), serviceAccount.private_key);
   const assertion = `${unsigned}.${b64url(signature)}`;
   const body = new URLSearchParams({
-    grant_type: 'urn:ietf:params:oauth-bearer',
+    grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
     assertion,
   });
   const res = await fetch('https://oauth2.googleapis.com/token', {
