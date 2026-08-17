@@ -1,0 +1,39 @@
+name: Apply Account Delete Complete 20260817
+on:
+  push:
+    branches:
+      - work/account-delete-complete-20260817
+    paths:
+      - '.account-delete-complete-trigger-20260817'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/account-delete-complete-20260817
+          fetch-depth: 0
+      - name: Apply cleanup patch
+        run: python .github/scripts/fix_account_delete_complete_20260817.py
+      - name: Validate deletion coverage
+        run: |
+          grep -q 'pg_point_ledger where user_id' server_lib/db.js
+          grep -q 'pg_point_accounts where user_id' server_lib/db.js
+          grep -q 'pg_pet_daily_content where user_id' server_lib/db.js
+          grep -q 'pg_feature_usage where user_id' server_lib/db.js
+          grep -q 'target_user_id=null' server_lib/db.js
+          grep -q 'await Promise.all(urls.map((u) => blobDel(u)))' server_lib/community.js
+      - name: Build
+        run: |
+          npm install
+          npm run build
+      - name: Commit to work branch only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add server_lib/db.js server_lib/community.js
+          git diff --cached --quiet && exit 0
+          git commit -m 'fix: fully delete account-linked PetGrow data'
+          git push origin HEAD:work/account-delete-complete-20260817
