@@ -9296,9 +9296,8 @@ function NearbyPetPage(){
           mapRef.current.innerHTML="";
           overlays.current.forEach(o=>{try{o?.setMap?.(null)}catch{}});overlays.current=[];
           const centerPos=new K.LatLng(center.lat,center.lng);
-          const map=new K.Map(mapRef.current,{center:centerPos,level:4});mapObj.current=map;mapObj.current.__engine="kakao";
-          window.setTimeout(()=>{try{map.relayout();map.setCenter(centerPos)}catch{}},60);
-          window.setTimeout(()=>{try{map.relayout()}catch{}},260);
+          const map=new K.Map(mapRef.current,{center:centerPos,level:5});mapObj.current=map;mapObj.current.__engine="kakao";
+          window.setTimeout(()=>{try{map.relayout();map.setCenter(centerPos);map.setLevel(5)}catch{}},80);
           const makeOverlay=(lat,lng,html,z=3,click)=>{const el=document.createElement("div");el.innerHTML=html;const node=el.firstElementChild;if(click)node.addEventListener("click",click);const ov=new K.CustomOverlay({position:new K.LatLng(lat,lng),content:node,yAnchor:1,zIndex:z});ov.setMap(map);overlays.current.push(ov);return ov;};
           if(showSearchPin)makeOverlay(center.lat,center.lng,'<div class="nearby-search-pin"><span>⌖</span><b>검색 주소</b></div>',8);
           if(userPos&&Number.isFinite(Number(userPos.lat))&&Number.isFinite(Number(userPos.lng)))makeOverlay(userPos.lat,userPos.lng,'<div class="nearby-me-pin"><span></span><b>내 위치</b></div>',9);
@@ -9308,8 +9307,8 @@ function NearbyPetPage(){
             makeOverlay(p.lat,p.lng,html,5,()=>{setSelected(p);document.getElementById(`nearby-place-${p.id}`)?.scrollIntoView({behavior:"smooth",block:"center"});});
             bounds.extend(new K.LatLng(p.lat,p.lng));
           });
-          if(places.length){if(places.length===1){map.setCenter(new K.LatLng(places[0].lat,places[0].lng));map.setLevel(3);}else{map.setBounds(bounds,40,40,40,40);}}
-          window.setTimeout(()=>map.relayout?.(),60);
+          if(places.length){map.setCenter(centerPos);map.setLevel(5);}
+          window.setTimeout(()=>{try{map.relayout?.();map.setCenter(centerPos);map.setLevel(5)}catch{}},80);
           return;
         }
       }catch(e){console.warn("Kakao map load failed; using fallback map",e);}
@@ -9347,9 +9346,8 @@ function NearbyPetPage(){
       const popup=`<div style="min-width:200px"><div style="font-size:11px;font-weight:800;color:#4F8A5B;margin-bottom:5px">${String(p.typeIcon||"🐾")} ${String(p.typeLabel||"반려동물 관련")}</div><b style="font-size:14px">${String(p.name||"").replace(/[<>&]/g,"")}</b><div style="margin-top:5px;font-size:12px;font-weight:800;color:#4F8A5B">${p.userDistance!=null?`내 위치에서 ${p.userDistance<1000?`${p.userDistance}m`:`${(p.userDistance/1000).toFixed(1)}km`}`:(p.distance==null?"":`검색 주소에서 ${p.distance<1000?`${p.distance}m`:`${(p.distance/1000).toFixed(1)}km`}`)}</div><div style="margin-top:4px;font-size:11px;line-height:1.45">${String(p.address||"").replace(/[<>&]/g,"")}</div>${p.phone?`<div style="margin-top:4px;font-size:11px">☎ ${String(p.phone).replace(/[<>&]/g,"")}</div>`:""}</div>`;
       m.bindPopup(popup);overlays.current.push(m);bounds.extend([p.lat,p.lng]);
     });
-    if(places.length){if(places.length===1){map.setView([places[0].lat,places[0].lng],16);}else{const close=places.filter(p=>Number(p.distance)<=1000);if(close.length){const b2=L.latLngBounds([[center.lat,center.lng]]);close.slice(0,12).forEach(p=>b2.extend([p.lat,p.lng]));map.fitBounds(b2.pad(.16),{maxZoom:16,padding:[28,28]});}else{map.setView([center.lat,center.lng],14);}}}
-    window.setTimeout(()=>map.invalidateSize(),60);
-    window.setTimeout(()=>map.invalidateSize(),260);
+    map.setView(c,14,{animate:false});
+    window.setTimeout(()=>{try{map.invalidateSize({pan:false});map.setView(c,14,{animate:false})}catch{}},80);
   };
 
   useEffect(()=>{
