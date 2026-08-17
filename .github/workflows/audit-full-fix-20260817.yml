@@ -11,25 +11,21 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Inspect App targets
+      - name: Inspect exact routing targets
         run: |
           python - <<'PY'
           from pathlib import Path
-          p=Path('src/App.jsx')
-          s=p.read_text(encoding='utf-8')
-          keys=['GATED_VIEWS','pettalk','petnews','renderPetTalk','renderPetNews','타로 기록','좋아요','Pet사주','Pet타로','setLevel','setZoom','setCenter','fitBounds','setBounds','relayout','nearby','mapRef','kakao.maps.Map']
-          print('APP_CHARS',len(s))
+          s=Path('src/App.jsx').read_text(encoding='utf-8')
+          keys=['function Community','function PetNews','function Saju','function PetTarot','function Tarot','effectiveView ===','effectiveView===','view === "community"','view === "news"','view==="community"','view==="news"','case "community"','case "news"','newsList','newsLoading','communityList','<MyPage','my-menu-grid','tarotHistory','tarot-history','오늘의 Pet타로']
           for key in keys:
-              print('\n### KEY',key,'COUNT',s.count(key))
+              print('\n###',key,'COUNT',s.count(key))
               start=0
-              shown=0
-              while shown<8:
+              for n in range(6):
                   i=s.find(key,start)
                   if i<0: break
-                  a=max(0,i-700); b=min(len(s),i+1100)
-                  print(f'--- {key} @{i} ---')
-                  print(s[a:b].replace('\r',''))
-                  start=i+len(key); shown+=1
+                  print('---',i,'---')
+                  print(s[max(0,i-450):min(len(s),i+900)].replace('\r',''))
+                  start=i+len(key)
           PY
       - name: Build baseline
         run: npm install && npm run build
