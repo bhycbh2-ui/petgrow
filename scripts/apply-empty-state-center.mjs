@@ -13,10 +13,10 @@ if(!app.includes(sajuOld)) throw new Error('Saju empty state target not found');
 if(!app.includes(btiOld)) throw new Error('PetBTI empty state target not found');
 app=app.replace(sajuOld,sajuNew).replace(btiOld,btiNew);
 
-const cssAnchor='.feature-module-shell';
 const css=`\n/* Centered empty state for Pet사주 / PetBTI */\n.feature-empty-shell{display:flex;justify-content:center;align-items:flex-start;padding-top:26px;padding-bottom:34px}\n.feature-empty-card{width:min(100%,560px);margin:0 auto;padding:34px 34px 30px!important;text-align:center;border:1px solid #E7ECE8;box-shadow:0 10px 28px rgba(57,83,64,.055)}\n.feature-empty-icon{width:66px;height:66px;margin:0 auto 17px;border-radius:20px;display:grid;place-items:center;background:#F3F8F4}\n.feature-empty-card h2{font-size:20px;line-height:1.4;margin:0 0 9px;color:var(--text)}\n.feature-empty-card p{max-width:440px;margin:0 auto 22px;font-size:13px;line-height:1.7;word-break:keep-all}\n.feature-empty-btn{width:auto!important;min-width:230px;max-width:100%;padding:13px 24px!important;font-size:14px!important;border-radius:13px!important}\n@media(max-width:700px){.feature-empty-shell{padding-top:14px}.feature-empty-card{width:100%;padding:28px 20px 24px!important}.feature-empty-icon{width:58px;height:58px;border-radius:18px}.feature-empty-card h2{font-size:19px}.feature-empty-card p{font-size:12.5px;margin-bottom:20px}.feature-empty-btn{width:100%!important;min-width:0}}\n`;
 const styleEnd=app.lastIndexOf('</style>');
 if(styleEnd<0) throw new Error('style end not found');
 app=app.slice(0,styleEnd)+css+app.slice(styleEnd);
 fs.writeFileSync(path,app);
 console.log('Centered PetSaju/PetBTI empty states applied');
+// trigger: 2026-08-17
