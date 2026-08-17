@@ -41,7 +41,10 @@ function speciesWhere(species){
   return sql``;
 }
 
+let starterTracksReadyPromise=null;
 async function ensureStarterTracks(){
+  if(starterTracksReadyPromise) return starterTracksReadyPromise;
+  starterTracksReadyPromise=(async()=>{
   const seedKey="petmusic-starter-thirtytwo-v4";
   await sql`delete from pg_music_tracks where id='demo-pink-day' or audio_url='/petmusic/pink-day.mp3'`;
   await sql`delete from pg_app_meta where key in ('petmusic-demo-pink-day-v2','petmusic-demo-pink-day-v1')`;
@@ -205,7 +208,7 @@ export default async function handler(req,res){
       let audioUrl=String(body.audioUrl||""), coverUrl=String(body.coverUrl||"");
       const id=String(body.id||crypto.randomUUID());
       if(body.audioDataUrl){const f=parseDataUrl(body.audioDataUrl,AUDIO_MIME,MAX_AUDIO_BYTES);const ext=f.mime.includes("wav")?"wav":f.mime.includes("mp4")?"m4a":"mp3";const b=await put(`petmusic/${id}-${Date.now()}.${ext}`,f.buffer,{access:"public",contentType:f.mime,token:process.env.BLOB_READ_WRITE_TOKEN});audioUrl=b.url;}
-      if(body.coverDataUrl){const f=parseDataUrl(body.coverDataUrl,IMAGE_MIME,MAX_COVER_BYTES);const ext=f.mime.includes("png")?"png":f.mime.includes("webp")?"webp":"jpg";const b=await put(`petmusic/covers/${id}-${Date.now()}.${ext}`,f.buffer,{access:"public",contentType:f.mime,token:process.env.BLOB_READ_WRITE_TOKEN});coverUrl=b.url;}
+      if(body.coverDataUrl){const f=parseDataUrl(body.coverDataUrl,IMAGE_MIME,MAX_COVER_BYTES);if(process.env.BLOB_READ_WRITE_TOKEN){const ext=f.mime.includes("png")?"png":f.mime.includes("webp")?"webp":"jpg";const b=await put(`petmusic/covers/${id}-${Date.now()}.${ext}`,f.buffer,{access:"public",contentType:f.mime,token:process.env.BLOB_READ_WRITE_TOKEN});coverUrl=b.url;}else{coverUrl=String(body.coverDataUrl);}}
       if(!audioUrl)return res.status(400).json({error:"음원 파일을 선택해 주세요."});
       await sql`insert into pg_music_tracks(id,title,description,species,vocal_type,mood,cover_url,audio_url,active,created_by) values(${id},${title},${String(body.description||"").trim()||null},${species},${vocalType},${mood},${coverUrl||null},${audioUrl},${body.active!==false},${admin.uid}) on conflict(id) do update set title=excluded.title,description=excluded.description,species=excluded.species,vocal_type=excluded.vocal_type,mood=excluded.mood,cover_url=excluded.cover_url,audio_url=excluded.audio_url,active=excluded.active,updated_at=now()`;
       await logAdmin(admin.uid,body.id?"MUSIC_UPDATE":"MUSIC_CREATE",null,null,{trackId:id,title,species,vocalType,mood});
