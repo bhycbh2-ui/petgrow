@@ -1,0 +1,43 @@
+name: Run Final Bundle News PetTalk 20260817
+on:
+  push:
+    branches:
+      - work/petpoint-music-live-20260817
+    paths:
+      - '.final-bundle-news-pettalk-trigger-20260817'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/petpoint-music-live-20260817
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Apply final bundle
+        run: python .github/scripts/final_bundle_news_pettalk_20260817.py
+      - name: Validate bundle
+        run: |
+          grep -q 'const PAGE=8' src/App.jsx
+          grep -q 'fallbackVisual=n=>' src/App.jsx
+          grep -q 'aspect-ratio:16/9' src/App.jsx
+          grep -q 'ResponsivePagination page={safe}' src/App.jsx
+          grep -q 'const enriched=await enrichArticleImages(picked)' api/news.js
+          grep -n 'GATED_VIEWS' src/App.jsx | head -n 5 || true
+          grep -n 'view === "community"\|view==="community"' src/App.jsx | head -n 40 || true
+      - name: Build
+        run: |
+          npm install
+          npm run build
+      - name: Commit final bundle to work branch only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/App.jsx api/news.js
+          git diff --cached --quiet && exit 0
+          git commit -m 'feat: finalize Pet News thumbnails search paging and PetTalk access'
+          git push origin HEAD:work/petpoint-music-live-20260817
