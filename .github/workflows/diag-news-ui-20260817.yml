@@ -1,0 +1,17 @@
+name: Diagnose News UI 20260817
+on:
+  push:
+    branches:
+      - work/petpoint-music-live-20260817
+    paths:
+      - '.news-ui-diag-trigger-20260817'
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/petpoint-music-live-20260817
+      - name: Show news UI contexts
+        run: |
+          grep -n -C 14 'Pet뉴스\|Pet News\|news-card\|news-grid\|newsSearch\|newsItems\|/api/news\|뉴스를' src/App.jsx | head -n 650 || true

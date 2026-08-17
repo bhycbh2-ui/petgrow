@@ -97,7 +97,6 @@ export default async function handler(req,res){
   const action=String(req.query.action||"list");
   try{
     if(action==="list" && req.method==="GET"){
-      await ensureStarterTracks();
       const species=["dog","cat","all"].includes(String(req.query.species))?String(req.query.species):"all";
       const page=Math.max(1,parseInt(req.query.page||"1",10)||1), pageSize=10, offset=(page-1)*pageSize;
       const uid=getSessionUserId(req);
@@ -191,9 +190,13 @@ export default async function handler(req,res){
         return res.status(200).json(json);
       }catch(e){return res.status(400).json({error:e?.message||"파일 업로드를 시작하지 못했어요."});}
     }
-    if(action==="admin-list" && req.method==="GET"){
+    if(action==="admin-seed" && req.method==="POST"){
       if(!(await requireAdmin(req,res)))return;
       await ensureStarterTracks();
+      return res.status(200).json({ok:true});
+    }
+    if(action==="admin-list" && req.method==="GET"){
+      if(!(await requireAdmin(req,res)))return;
       const {rows}=await sql`select * from pg_music_tracks order by created_at desc`;
       return res.status(200).json({items:rows});
     }

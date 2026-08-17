@@ -1,0 +1,31 @@
+name: Apply Final Typography 20260817
+on:
+  push:
+    branches:
+      - work/petpoint-music-live-20260817
+    paths:
+      - '.final-typography-trigger-20260817'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/petpoint-music-live-20260817
+          fetch-depth: 0
+      - name: Apply final typography patch
+        run: python .github/scripts/apply_final_typography_20260817.py
+      - name: Build
+        run: |
+          npm install
+          npm run build
+      - name: Commit to work branch only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/App.jsx
+          git diff --cached --quiet && exit 0
+          git commit -m 'fix: unify typography and PetPoint guide copy'
+          git push origin HEAD:work/petpoint-music-live-20260817

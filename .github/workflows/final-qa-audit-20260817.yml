@@ -1,0 +1,45 @@
+name: Final QA Audit 20260817
+on:
+  push:
+    branches:
+      - work/petpoint-music-live-20260817
+    paths:
+      - '.final-qa-audit-trigger-20260817'
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/petpoint-music-live-20260817
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install and build
+        run: |
+          npm install
+          npm run build
+      - name: Audit key pages and routes
+        run: |
+          echo '=== ROUTES / KEY PAGE COMPONENTS ==='
+          grep -nE 'function (HomePage|AboutPage|InfoGuidePage|PetNewsPage|AdminReportsPage)|Community|PetTalk|community|effectiveView.*admin|view === "about"|view === "guide"|view === "news"' src/App.jsx | head -n 500 || true
+          echo '=== PETPOINT REFERENCES ==='
+          grep -nE '300P|1,000P|1000P|PetPoint|petpoint|START_POINTS|topPercent|memberCount|rank' src/App.jsx server_lib/points.js api/points.js | head -n 600 || true
+          echo '=== ADMIN COVERAGE ==='
+          grep -nE 'AdminReportsPage|admin-list|admin-|dashboard|stats|music|notice|ad|report|inquir|support|PetPoint|points' src/App.jsx api/*.js server_lib/*.js | head -n 800 || true
+          echo '=== ABOUT / GUIDE / HOME COPY ==='
+          grep -nE '소개|정보가이드|Pet뉴스|Pet음악|Pet톡|PetPoint|시작 포인트|기본 300P|기본 1,000P|오늘의 우리 아이' src/App.jsx | head -n 700 || true
+          echo '=== NEWS UI ==='
+          grep -nE 'PetNewsPage|PAGE=|petnews-grid|petnews-card-v10|뉴스 제목·내용 검색|image-fallback|enrichArticleImages' src/App.jsx api/news.js | head -n 500 || true
+          echo '=== MUSIC LOADING ==='
+          grep -nE 'ensureStarterTracks|action==="list"|action==="admin-list"|업로드 중|업로드중|loading' api/music.js src/App.jsx | head -n 700 || true
+          echo '=== POSSIBLE PLACEHOLDERS / BROKEN COPY ==='
+          grep -nE 'ㅇㅇ|OO|TODO|FIXME|undefined|null null|NaN|기본 300P|처음 이용하면 기본 300P' src/App.jsx api/*.js server_lib/*.js | head -n 500 || true
+      - name: Basic syntax and asset references
+        run: |
+          node --check api/news.js
+          node --check api/music.js
+          node --check api/points.js
+          node --check server_lib/points.js
+          test -f public/petgrow-splash-logo.png
+          echo 'syntax/assets ok'
