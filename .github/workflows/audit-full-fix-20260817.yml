@@ -1,31 +1,45 @@
-name: Audit PetGrow Full Fix 20260817
+name: Build Consolidated PetGrow Fixes 20260817
 on:
   push:
     branches: [work/full-fix-redesign-20260817]
-    paths: ['.github/workflows/audit-full-fix-20260817.yml', '.audit-full-fix-trigger']
+    paths: ['.github/workflows/audit-full-fix-20260817.yml']
+permissions:
+  contents: write
 jobs:
-  audit:
+  finalize:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Inspect exact routing targets
+      - name: Apply consolidated source fixes
+        run: python .github/scripts/full_fix_20260817.py
+      - name: Verify critical targets
         run: |
+          grep -q 'PETGROW_FULL_FIX_REDESIGN_20260817' src/petgrow-premium-20260817.css
+          grep -q 'Promise.allSettled' api/news.js
+          grep -q 'map.setLevel(5)' src/App.jsx
+          grep -q 'map.setView(c,14,{animate:false})' src/App.jsx
+          grep -q 'key:"community"' src/App.jsx
+          grep -q 'key:"news"' src/App.jsx
+          grep -q 'key:"tarot"' src/App.jsx
+          test ! -e api/auth/logout.js
           python - <<'PY'
           from pathlib import Path
-          s=Path('src/App.jsx').read_text(encoding='utf-8')
-          keys=['function Community','function PetNews','function Saju','function PetTarot','function Tarot','effectiveView ===','effectiveView===','view === "community"','view === "news"','view==="community"','view==="news"','case "community"','case "news"','newsList','newsLoading','communityList','<MyPage','my-menu-grid','tarotHistory','tarot-history','오늘의 Pet타로']
-          for key in keys:
-              print('\n###',key,'COUNT',s.count(key))
-              start=0
-              for n in range(6):
-                  i=s.find(key,start)
-                  if i<0: break
-                  print('---',i,'---')
-                  print(s[max(0,i-450):min(len(s),i+900)].replace('\r',''))
-                  start=i+len(key)
+          funcs=sorted(str(p) for p in Path('api').rglob('*.js'))
+          print('API_JS_FILES',len(funcs),funcs)
+          if len(funcs)>12: raise SystemExit('Vercel Hobby function limit exceeded')
           PY
-      - name: Build baseline
+      - name: Production build
         run: npm install && npm run build
+      - name: Commit final work branch
+        run: |
+          rm -f .github/workflows/audit-full-fix-20260817.yml .github/workflows/finalize-full-fix-20260817.yml .github/scripts/full_fix_20260817.py
+          git config user.name 'bhycbh2-ui'
+          git config user.email 'bhycbh2@gmail.com'
+          git add -A
+          git commit -m 'fix: complete PetGrow navigation design and stability pass'
+          git push origin HEAD:work/full-fix-redesign-20260817
