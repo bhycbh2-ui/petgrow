@@ -1,0 +1,46 @@
+name: PetGrow Android Auto Release
+
+on:
+  schedule:
+    - cron: '0 1 * * *' # 10:00 Asia/Seoul
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  schedule-alpha-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Decide whether today is a release day
+        id: gate
+        shell: bash
+        run: |
+          KST_DATE=$(TZ=Asia/Seoul date +%F)
+          KST_DOW=$(TZ=Asia/Seoul date +%u)
+          SHOULD_RUN=false
+
+          if [[ "$KST_DATE" >= "2026-08-18" && "$KST_DATE" <= "2026-08-23" ]]; then
+            SHOULD_RUN=true
+          elif [[ "$KST_DATE" > "2026-08-23" && ( "$KST_DOW" == "1" || "$KST_DOW" == "4" ) ]]; then
+            SHOULD_RUN=true
+          fi
+
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            SHOULD_RUN=true
+          fi
+
+          echo "date=$KST_DATE" >> "$GITHUB_OUTPUT"
+          echo "should_run=$SHOULD_RUN" >> "$GITHUB_OUTPUT"
+          echo "PetGrow Android release gate: date=$KST_DATE dow=$KST_DOW run=$SHOULD_RUN"
+
+      - name: Dispatch Android AAB completed Alpha release
+        if: steps.gate.outputs.should_run == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run android-aab.yml --ref main -f release_status=completed
+
+      - name: Skip non-release day
+        if: steps.gate.outputs.should_run != 'true'
+        run: echo "Not a scheduled PetGrow Android release day."
