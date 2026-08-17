@@ -15,8 +15,9 @@ export default async function handler(req,res){
     }
     if(req.method==="POST"&&action==="spend"){
       const feature=String(req.body?.feature||"");
+      const refKey=String(req.body?.refKey||"").trim()||null;
       if(!["saju_basic","saju_daily","saju_compat"].includes(feature))return res.status(400).json({error:"지원하지 않는 포인트 사용 항목이에요."});
-      return res.status(200).json({ok:true,...await spendPoints(uid,feature,POINT_COSTS[feature],null)});
+      return res.status(200).json({ok:true,...await spendPoints(uid,feature,POINT_COSTS[feature],refKey)});
     }
     return res.status(405).json({error:"지원하지 않는 요청이에요."});
   }catch(e){
