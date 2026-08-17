@@ -46,7 +46,7 @@ function safeRemoteUrl(value=""){
 async function fetchOgMeta(startUrl){
   let current=safeRemoteUrl(startUrl);if(!current)return {image:"",url:startUrl};
   for(let hop=0;hop<4;hop++){
-    const ac=new AbortController(),timer=setTimeout(()=>ac.abort(),2200);
+    const ac=new AbortController(),timer=setTimeout(()=>ac.abort(),1200);
     try{
       const r=await fetch(current,{redirect:"manual",signal:ac.signal,headers:{"User-Agent":"Mozilla/5.0 (compatible; PetGrowNews/1.0)","Accept":"text/html,application/xhtml+xml"}});
       if(r.status>=300&&r.status<400){const loc=r.headers.get("location");if(!loc)break;const next=safeRemoteUrl(new URL(loc,current).toString());if(!next)break;current=next;continue;}
@@ -62,12 +62,12 @@ async function fetchOgMeta(startUrl){
   return {image:"",url:current?.toString()||startUrl};
 }
 async function enrichArticleImages(items){
-  const candidates=items.slice(0,32),out=[];
-  for(let i=0;i<candidates.length;i+=4){
-    const batch=candidates.slice(i,i+4);
+  const candidates=items.slice(0,16),out=[];
+  for(let i=0;i<candidates.length;i+=8){
+    const batch=candidates.slice(i,i+8);
     const enriched=await Promise.all(batch.map(async item=>{if(item.image)return item;const meta=await fetchOgMeta(item.link);return {...item,link:meta.url||item.link,image:meta.image||"",source:meta.url?sourceFromUrl(meta.url):item.source};}));
     out.push(...enriched);
-    if(out.filter(x=>x.image).length>=24)break;
+    if(out.filter(x=>x.image).length>=12)break;
   }
   return out;
 }
@@ -87,7 +87,7 @@ function parseGoogleRss(xml){
 }
 async function fetchNaver(clientId,clientSecret){const responses=await Promise.all(SEARCH_QUERIES.map(async query=>{const url=`${API_BASE}?query=${encodeURIComponent(query)}&display=20&start=1&sort=date&format=json`;const response=await fetch(url,{headers:{"X-NCP-APIGW-API-KEY-ID":clientId,"X-NCP-APIGW-API-KEY":clientSecret}});if(!response.ok)throw new Error(`NAVER API HUB ${response.status}`);return response.json();}));return responses.flatMap(r=>Array.isArray(r.items)?r.items:[]);}
 async function fetchGoogleFallback(){const queries=["반려동물","반려견 OR 강아지","반려묘 OR 고양이","동물병원 OR 펫보험","유기동물 OR 동물보호"];const responses=await Promise.all(queries.map(async query=>{const url=`${GOOGLE_RSS}?q=${encodeURIComponent(query)}&hl=ko&gl=KR&ceid=KR:ko`;const response=await fetch(url,{headers:{"User-Agent":"PetGrow/1.0"}});if(!response.ok)throw new Error(`Google News RSS ${response.status}`);return parseGoogleRss(await response.text());}));return responses.flat();}
-async function prepare(raw){const normalized=dedupe(raw.filter(isPetRelevant).map(normalizeItem)).sort((a,b)=>new Date(b.publishedAt||0)-new Date(a.publishedAt||0));const now=Date.now(),sevenDays=7*24*60*60*1000,recent=normalized.filter(item=>item.publishedAt&&now-new Date(item.publishedAt).getTime()<=sevenDays);return(recent.length>=12?recent:normalized).slice(0,40);}
+async function prepare(raw){const normalized=dedupe(raw.filter(isPetRelevant).map(normalizeItem)).sort((a,b)=>new Date(b.publishedAt||0)-new Date(a.publishedAt||0));const now=Date.now(),sevenDays=7*24*60*60*1000,recent=normalized.filter(item=>item.publishedAt&&now-new Date(item.publishedAt).getTime()<=sevenDays);const picked=(recent.length>=12?recent:normalized).slice(0,40);const enriched=await enrichArticleImages(picked);const byId=new Map(enriched.map(x=>[x.id,x]));return picked.map(x=>byId.get(x.id)||x);}
 export default async function handler(req,res){
   if(req.method!=="GET")return res.status(405).json({error:"Method not allowed"});
   const clientId=process.env.NAVER_API_HUB_CLIENT_ID,clientSecret=process.env.NAVER_API_HUB_CLIENT_SECRET;let provider="google-news-rss";
