@@ -36,6 +36,7 @@
     { "src": "/api/health-event", "dest": "/api/core?route=health-event" },
     { "src": "/api/nearby", "dest": "/api/core?route=nearby" },
     { "src": "/api/nearby-reviews", "dest": "/api/core?route=nearby-reviews" },
+    { "src": "/api/tarot", "dest": "/api/core?route=tarot" },
     { "handle": "filesystem" },
     { "src": "/.*", "dest": "/index.html" }
   ]
