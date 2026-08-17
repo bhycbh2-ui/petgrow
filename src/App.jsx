@@ -9232,6 +9232,14 @@ function NearbyPetPage(){
 
   const loadMap=async(center,places,userPos=pos,showSearchPin=true)=>{
     if(!mapRef.current)return;
+    const mobileNearby=typeof window!=="undefined"&&window.matchMedia&&window.matchMedia("(max-width: 700px)").matches;
+    if(mobileNearby){
+      const within2km=(places||[]).filter((p)=>{
+        const d=Number(p?.distance ?? p?.userDistance);
+        return !Number.isFinite(d)||d<=2000;
+      });
+      places=within2km.slice(0,25);
+    }
     const kakaoJsKey=String(import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY||"").trim();
     if(kakaoJsKey){
       try{
