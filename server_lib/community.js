@@ -81,8 +81,9 @@ function shapeComment(row, viewerId) {
 
 async function imagesForPosts(postIds) {
   if (!postIds.length) return {};
+  const idList=postIds.join(",");
   const { rows } = await sql`
-    select * from pg_post_images where post_id = ANY(${postIds}) order by post_id, sort_order asc
+    select * from pg_post_images where post_id = any(string_to_array(${idList}, ',')) order by post_id, sort_order asc
   `;
   const map = {};
   rows.forEach((r) => {
@@ -94,8 +95,9 @@ async function imagesForPosts(postIds) {
 
 async function likedPostIds(viewerId, postIds) {
   if (!viewerId || !postIds.length) return new Set();
+  const idList=postIds.join(",");
   const { rows } = await sql`
-    select post_id from pg_likes where user_id = ${viewerId} and post_id = ANY(${postIds})
+    select post_id from pg_likes where user_id = ${viewerId} and post_id = any(string_to_array(${idList}, ','))
   `;
   return new Set(rows.map((r) => r.post_id));
 }
@@ -138,9 +140,10 @@ export async function listPosts({ category, sort, search, page, pageSize, viewer
   const hasMore = rows.length > size;
   const pageRows = rows.slice(0, size);
   const ids = pageRows.map((r) => r.id);
-  const [imgMap, liked] = await Promise.all([imagesForPosts(ids), likedPostIds(viewerId, ids)]);
+  let imgMap={},liked=new Set();
+  try{[imgMap,liked]=await Promise.all([imagesForPosts(ids),likedPostIds(viewerId,ids)]);}catch(e){console.error("PetTalk list decoration failed",e?.message||e);}
   return {
-    posts: pageRows.map((r) => shapePost(r, viewerId, imgMap[r.id], liked.has(r.id))),
+    posts: pageRows.map((r) => shapePost(r, viewerId, imgMap[r.id]||[], liked.has(r.id))),
     hasMore,
     page: p,
   };
@@ -155,8 +158,9 @@ export async function getPostById(id, viewerId) {
       and (p.is_public = true or p.user_id = ${viewerId || ""})
   `;
   if (!rows[0]) return null;
-  const [imgMap, liked] = await Promise.all([imagesForPosts([id]), likedPostIds(viewerId, [id])]);
-  return shapePost(rows[0], viewerId, imgMap[id], liked.has(id));
+  let imgMap={},liked=new Set();
+  try{[imgMap,liked]=await Promise.all([imagesForPosts([id]),likedPostIds(viewerId,[id])]);}catch(e){console.error("PetTalk detail decoration failed",e?.message||e);}
+  return shapePost(rows[0], viewerId, imgMap[id]||[], liked.has(id));
 }
 
 export async function createPost({ userId, pet, category, title, content, imageUrls, isPublic = true }) {
