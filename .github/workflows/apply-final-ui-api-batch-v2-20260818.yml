@@ -1,0 +1,37 @@
+name: Apply Final PetGrow Batch V2 20260818
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/final-ui-api-batch-v2-trigger-20260818.txt'
+permissions:
+  contents: write
+jobs:
+  apply-build-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Prepare narrowed PetTalk replacement
+        run: python scripts/prepare-final-ui-api-batch-v2-20260818.py
+      - name: Apply all requested UI and API changes
+        run: python scripts/apply-final-ui-api-batch-20260818.py
+      - name: Install dependencies
+        run: npm ci
+      - name: Production build
+        run: npm run build
+      - name: Commit verified final batch to main
+        shell: bash
+        run: |
+          git config user.name petgrow-automation
+          git config user.email actions@users.noreply.github.com
+          git add src/App.jsx src/PetDailyWidgets.jsx server_lib/community.js
+          git diff --cached --quiet && exit 0
+          git commit -m 'fix: complete PetGrow UI points map news and PetTalk batch'
+          git push origin main
