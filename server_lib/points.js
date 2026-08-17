@@ -59,7 +59,18 @@ export async function spendPoints(uid, feature, cost, refKey) {
 }
 export async function getPointSummary(uid,{dailyLogin=true}={}) {
   await ensureAccount(uid);let pointEvent=null;if(dailyLogin){const e=await awardPoints(uid,"daily_login",`daily-login:${kstDate()}`);if(e.awarded)pointEvent=e;}
-  const [{rows:b},{rows:l}]=await Promise.all([sql`select balance from pg_point_accounts where user_id=${uid}`,sql`select amount,reason,label,created_at from pg_point_ledger where user_id=${uid} order by created_at desc limit 20`]);
-  return {balance:Number(b[0]?.balance)||0,startPoints:START_POINTS,costs:POINT_COSTS,recent:l,pointEvent,earnGuide:[{label:"Pet톡 글 작성",points:30,limit:"하루 3회"},{label:"Pet톡 댓글 작성",points:10,limit:"하루 10회"},{label:"좋아요 받기",points:3,limit:"하루 30회"},{label:"하루 첫 접속",points:10,limit:"하루 1회"}]};
+  const [{rows:b},{rows:l},{rows:stats}]=await Promise.all([
+    sql`select balance from pg_point_accounts where user_id=${uid}`,
+    sql`select amount,reason,label,created_at from pg_point_ledger where user_id=${uid} order by created_at desc limit 20`,
+    sql`select
+      coalesce(sum(case when amount>0 and (created_at at time zone 'Asia/Seoul')::date=${kstDate()}::date then amount else 0 end),0)::int as today_earned,
+      coalesce(sum(case when amount<0 and (created_at at time zone 'Asia/Seoul')::date=${kstDate()}::date then -amount else 0 end),0)::int as today_spent,
+      coalesce(sum(case when amount<0 and created_at>=now()-interval '7 days' then -amount else 0 end),0)::int as week_spent,
+      coalesce(sum(case when amount>0 then amount else 0 end),0)::int as total_earned,
+      coalesce(sum(case when amount<0 then -amount else 0 end),0)::int as total_spent
+      from pg_point_ledger where user_id=${uid}`
+  ]);
+  const st=stats[0]||{};
+  return {balance:Number(b[0]?.balance)||0,startPoints:START_POINTS,costs:POINT_COSTS,recent:l,pointEvent,todayEarned:Number(st.today_earned)||0,todaySpent:Number(st.today_spent)||0,weekSpent:Number(st.week_spent)||0,totalEarned:Number(st.total_earned)||0,totalSpent:Number(st.total_spent)||0,earnGuide:[{label:"Pet톡 글 작성",points:30,limit:"하루 3회"},{label:"Pet톡 댓글 작성",points:10,limit:"하루 10회"},{label:"좋아요 받기",points:3,limit:"하루 30회"},{label:"하루 첫 접속",points:10,limit:"하루 1회"}]};
 }
 export async function getPointAdminStats(){await ensure();const [{rows:a},{rows:l}]=await Promise.all([sql`select count(*)::int users,coalesce(sum(balance),0)::int balance from pg_point_accounts`,sql`select coalesce(sum(case when amount>0 then amount else 0 end),0)::int earned,coalesce(sum(case when amount<0 then -amount else 0 end),0)::int spent,count(*)::int events from pg_point_ledger`]);return {...(a[0]||{}),...(l[0]||{})};}
