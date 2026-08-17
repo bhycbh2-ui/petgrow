@@ -10,20 +10,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Find about/home design regions
+      - name: Find design and map regions
         run: |
           python - <<'PY'
           from pathlib import Path
-          p=Path('src/App.jsx')
-          s=p.read_text(encoding='utf-8')
-          terms=['PetGrow 소개','소개','About','about','우리아이','PetBTI','Pet톡','Pet음악','Pet사주','Pet타로','기능을 소개','성장 기록']
-          lines=s.splitlines()
-          for term in terms:
-            hits=[i for i,l in enumerate(lines) if term in l]
-            print('\n### TERM',term,'hits',hits[:20])
-            for i in hits[:8]:
-              lo=max(0,i-12); hi=min(len(lines),i+40)
-              print(f'--- lines {lo+1}-{hi} ---')
-              print('\n'.join(f'{j+1}: {lines[j]}' for j in range(lo,hi)))
-          print('\nTOTAL LINES',len(lines),'SIZE',len(s))
+          files=['src/App.jsx','src/PetDailyWidgets.jsx']
+          terms=['타로 기록','타로기록','좋아요','마이페이지','회원정보','내 활동','HomePage','오늘의 우리 아이','PetGrow 소개','소개','setZoom','setView','fitBounds','panTo','setLevel','setCenter','invalidateSize','zoom','level','kakao.maps','leaflet','MapContainer']
+          for fn in files:
+            p=Path(fn)
+            if not p.exists(): continue
+            lines=p.read_text(encoding='utf-8').splitlines()
+            print(f'\n===== FILE {fn} lines={len(lines)} =====')
+            for term in terms:
+              hits=[i for i,l in enumerate(lines) if term.lower() in l.lower()]
+              if not hits: continue
+              print(f'\n### TERM {term} hits={hits[:30]}')
+              for i in hits[:12]:
+                lo=max(0,i-18); hi=min(len(lines),i+36)
+                print(f'--- lines {lo+1}-{hi} ---')
+                print('\n'.join(f'{j+1}: {lines[j]}' for j in range(lo,hi)))
           PY
