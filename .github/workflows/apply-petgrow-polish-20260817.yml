@@ -1,0 +1,38 @@
+name: Apply PetGrow Polish 20260817
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/apply-petgrow-polish-20260817.py'
+      - 'scripts/trigger-petgrow-polish-20260817.txt'
+permissions:
+  contents: write
+jobs:
+  patch-build-commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - name: Apply PetGrow polish patch
+        run: python3 scripts/apply-petgrow-polish-20260817.py
+      - name: Build
+        run: npm run build
+      - name: Commit generated changes
+        run: |
+          git config user.name 'petgrow-automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git add src/App.jsx src/PetDailyWidgets.jsx api/music.js
+          if git diff --cached --quiet; then
+            echo 'No generated changes.'
+            exit 0
+          fi
+          git commit -m 'fix: polish guide news map music cover and PetTarot'
+          git push origin main
