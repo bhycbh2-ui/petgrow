@@ -1,3 +1,4 @@
+// PETGROW_FINAL_POLISH_TRIGGER_20260817
 import fs from 'node:fs';
 
 function mustReplace(s,from,to,label){if(!s.includes(from))throw new Error(`missing ${label}`);return s.replace(from,to);}
@@ -21,7 +22,6 @@ if(app.includes(dailyMode)&&!app.includes('{ id: "tarot", icon: "🃏"')){
  app=app.replace(dailyMode,dailyMode+'\n    { id: "tarot", icon: "🃏", title: lang === "en" ? "Today\'s Pet Tarot" : "오늘의 Pet타로", desc: lang === "en" ? "Pick a Major Arcana card and read today\'s message" : "마음이 가는 카드를 골라 오늘의 메시지를 확인해요.", bg: "#F7F3EB", click: () => setMode("tarot") },');
 }
 app=app.replace('Choose one of three fun contents.','Choose one of four fun contents.');
-app=app.replace('원하는 콘텐츠를 골라 재미로 즐겨보세요.','원하는 콘텐츠를 골라 재미로 즐겨보세요.');
 
 const quickMarker='      <section className="dash-section"><div className="dash-section-head"><h2>{lang === "en" ? "Quick access" : "자주 사용하는 메뉴"}</h2>';
 if(app.includes(quickMarker)&&!app.includes('<TodayPetHomeCard account={account}')){
