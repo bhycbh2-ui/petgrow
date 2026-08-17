@@ -1,0 +1,29 @@
+name: Audit PetGrow About Design 20260817
+on:
+  push:
+    branches: [work/design-unify-20260817]
+    paths:
+      - '.design-about-audit-trigger'
+      - '.github/workflows/audit-design-about-20260817.yml'
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Find about/home design regions
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('src/App.jsx')
+          s=p.read_text(encoding='utf-8')
+          terms=['PetGrow 소개','소개','About','about','우리아이','PetBTI','Pet톡','Pet음악','Pet사주','Pet타로','기능을 소개','성장 기록']
+          lines=s.splitlines()
+          for term in terms:
+            hits=[i for i,l in enumerate(lines) if term in l]
+            print('\n### TERM',term,'hits',hits[:20])
+            for i in hits[:8]:
+              lo=max(0,i-12); hi=min(len(lines),i+40)
+              print(f'--- lines {lo+1}-{hi} ---')
+              print('\n'.join(f'{j+1}: {lines[j]}' for j in range(lo,hi)))
+          print('\nTOTAL LINES',len(lines),'SIZE',len(s))
+          PY
