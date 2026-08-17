@@ -1,0 +1,38 @@
+name: Apply Mobile Nearby 2km
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/apply-mobile-nearby-2km.py'
+      - 'scripts/trigger-mobile-nearby-2km.txt'
+permissions:
+  contents: write
+jobs:
+  patch-build-commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - name: Apply mobile nearby 2km patch
+        run: python3 scripts/apply-mobile-nearby-2km.py
+      - name: Build
+        run: npm run build
+      - name: Commit generated changes
+        run: |
+          git config user.name 'petgrow-automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git add src/App.jsx
+          if git diff --cached --quiet; then
+            echo 'No generated changes.'
+            exit 0
+          fi
+          git commit -m 'fix: limit mobile nearby map to 2km and 25 smaller markers'
+          git push origin main
