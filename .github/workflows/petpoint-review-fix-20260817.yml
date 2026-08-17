@@ -1,0 +1,67 @@
+name: PetPoint Review Fix 20260817
+on:
+  push:
+    paths:
+      - '.github/petpoint-review-fix-trigger.txt'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Apply review fixes
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('api/points.js')
+          s=p.read_text()
+          old="if(req.method==='POST'&&action==='spend'){const feature=String(req.body?.feature||'');if(!['saju_basic','saju_daily','saju_compat'].includes(feature))return res.status(400).json({error:'지원하지 않는 포인트 사용 항목이에요.'});return res.status(200).json({ok:true,...await spendPoints(uid,feature,POINT_COSTS[feature],null)});}"
+          new="if(req.method==='POST'&&action==='spend'){const feature=String(req.body?.feature||'');const refKey=String(req.body?.refKey||'').slice(0,180)||null;if(!['saju_basic','saju_daily','saju_compat'].includes(feature))return res.status(400).json({error:'지원하지 않는 포인트 사용 항목이에요.'});return res.status(200).json({ok:true,...await spendPoints(uid,feature,POINT_COSTS[feature],refKey)});}"
+          if old not in s: raise SystemExit('api points spend anchor not found')
+          p.write_text(s.replace(old,new))
+
+          p=Path('src/App.jsx')
+          s=p.read_text()
+          old='async function petPointSpend(feature){const r=await apiJson("/api/points?action=spend",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({feature})});if(r?.spent)window.dispatchEvent(new CustomEvent("petgrow:points",{detail:{amount:-r.spent,balance:r.balance,label:r.label||"PetPoint 사용"}}));return r;}'
+          new='const petPointKstDate=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Seoul",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());\nasync function petPointSpend(feature,refKey=null){const r=await apiJson("/api/points?action=spend",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({feature,refKey})});if(r?.spent)window.dispatchEvent(new CustomEvent("petgrow:points",{detail:{amount:-r.spent,balance:r.balance,label:r.label||"PetPoint 사용"}}));return r;}'
+          if old not in s: raise SystemExit('petPointSpend anchor not found')
+          s=s.replace(old,new)
+          old='const setMode=(next)=>{if(next==="daily"||next==="fortune"){petPointSpend("saju_daily").then(()=>setModeRaw(next)).catch(e=>window.alert(e.message));return;}setModeRaw(next);};'
+          new='const setMode=(next)=>{if(next==="daily"||next==="fortune"){const ref=`saju-daily:${pet?.id||pet?.profile?.id||pet?.profile?.name||"pet"}:${petPointKstDate()}`;petPointSpend("saju_daily",ref).then(()=>setModeRaw(next)).catch(e=>window.alert(e.message));return;}setModeRaw(next);};'
+          if old not in s: raise SystemExit('setMode anchor not found')
+          s=s.replace(old,new)
+          old='try{await petPointSpend("saju_compat")}catch(e){window.alert(e.message);return;}'
+          new='try{const ref=`saju-compat:${pet?.id||pet?.profile?.id||petName}:${guardianBirthDate}:${name.toLowerCase()}`;await petPointSpend("saju_compat",ref)}catch(e){window.alert(e.message);return;}'
+          if old not in s: raise SystemExit('compat anchor not found')
+          s=s.replace(old,new)
+          old='const startBasic = () => setInput({ name: pet.profile.name, species: pet.profile.species, birthDate: pet.profile.birthDate, gender: pet.profile.gender, birthTime: "", breed: pet.profile.breedName, profileImage: pet.profile.profileImage || null });'
+          new='const startBasic = async () => {try{const ref=`saju-basic:${pet?.id||pet?.profile?.id||pet?.profile?.name||"pet"}`;await petPointSpend("saju_basic",ref)}catch(e){window.alert(e.message);return;}setInput({ name: pet.profile.name, species: pet.profile.species, birthDate: pet.profile.birthDate, gender: pet.profile.gender, birthTime: "", breed: pet.profile.breedName, profileImage: pet.profile.profileImage || null });};'
+          if old not in s: raise SystemExit('basic anchor not found')
+          s=s.replace(old,new)
+          p.write_text(s)
+
+          p=Path('src/PetDailyWidgets.jsx')
+          s=p.read_text()
+          old='@media(max-width:760px){.pet-tarot-deck22{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important}.pet-tarot-back22{min-height:126px!important}.pet-tarot-reading-detail{grid-template-columns:1fr}.pet-tarot-reading-detail .wide{grid-column:auto}}'
+          new='@media(max-width:760px){.pet-tarot-deck22{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;padding-left:2px!important;padding-right:2px!important}.pet-tarot-back22{min-height:0!important;aspect-ratio:2/3!important}.pet-tarot-back22:nth-last-child(2):nth-child(4n+1){grid-column:2}.pet-tarot-reading-detail{grid-template-columns:1fr}.pet-tarot-reading-detail .wide{grid-column:auto}}'
+          if old not in s: raise SystemExit('tarot mobile css anchor not found')
+          p.write_text(s.replace(old,new))
+          PY
+      - name: Build
+        run: npm ci && npm run build
+      - name: Commit changes
+        shell: bash
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name petgrow-automation
+          git config user.email actions@users.noreply.github.com
+          git add api/points.js src/App.jsx src/PetDailyWidgets.jsx
+          git commit -m "fix: polish PetPoint charging and mobile Tarot layout"
+          git push
