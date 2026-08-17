@@ -1,0 +1,34 @@
+name: Fix PetMusic 32 Tracks and Empty Copy 20260817
+on:
+  push:
+    paths:
+      - 'scripts/fix-petmusic-32-and-empty-copy-20260817.mjs'
+      - '.github/workflows/fix-petmusic-32-and-empty-copy-20260817.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: node scripts/fix-petmusic-32-and-empty-copy-20260817.mjs
+      - run: npm run build
+      - name: Commit changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/App.jsx api/music.js
+          if git diff --cached --quiet; then
+            echo 'No changes to commit'
+          else
+            git commit -m 'fix: restore 32 PetMusic tracks and simplify empty state'
+            git push origin main
+          fi
