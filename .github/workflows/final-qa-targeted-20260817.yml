@@ -1,0 +1,28 @@
+name: Final QA Targeted 20260817
+on:
+  push:
+    branches:
+      - work/petpoint-music-live-20260817
+    paths:
+      - '.final-qa-targeted-trigger-20260817'
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/petpoint-music-live-20260817
+      - name: Targeted checks
+        run: |
+          echo '=== STALE POINT COPY ==='
+          grep -RInE '300P|300 P|기본 300|300포인트' src api server_lib public || true
+          echo '=== TAROT HOME / PLACEHOLDER ==='
+          grep -n -C 18 -E 'TodayPetHomeCard|pet_name|tarot.*name|ㅇㅇ|OO' src/App.jsx | head -n 600 || true
+          echo '=== TAROT MOBILE LAYOUT ==='
+          grep -n -C 14 -E 'pet-tarot.*deck|tarot.*card|pet-tarot.*spread|grid-template-columns.*repeat\(4' src/App.jsx | head -n 600 || true
+          echo '=== MEMBER TAROT FORTUNE HISTORY ==='
+          grep -n -C 18 -E '타로|운세|fortune|tarot|myPageActivity|회원정보|usage|history' src/App.jsx | grep -E '^[0-9]+|tarot|fortune|운세|타로|history|usage' | head -n 900 || true
+          echo '=== ABOUT PAGE ==='
+          grep -n -C 22 -E 'function About|AboutPage|소개|about-feature|PetPoint|Pet뉴스|Pet음악' src/App.jsx | head -n 900 || true
+          echo '=== ADMIN TABS ==='
+          grep -n -C 12 -E 'admin.*tab|setTab\(|tab===|music|stats|reports|support|notice|ads|points|news' src/App.jsx | tail -n 1000 || true
