@@ -1,0 +1,52 @@
+name: Import PetMusic 16 Tracks
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/import-petmusic-16.mjs'
+      - 'scripts/patch-petmusic-32.py'
+      - '.github/workflows/import-petmusic-16.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import-build-commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - name: Install Drive client
+        run: npm install googleapis@144 --no-save
+      - name: Download 16 PetMusic files from Drive
+        run: node scripts/import-petmusic-16.mjs
+      - name: Patch 32-track starter seed
+        run: python3 scripts/patch-petmusic-32.py
+      - name: Verify downloaded audio
+        run: |
+          test $(find public/petmusic -maxdepth 1 -name 'new-*.mp3' | wc -l) -eq 16
+          find public/petmusic -maxdepth 1 -name 'new-*.mp3' -size -100k -print -quit | grep -q . && exit 1 || true
+      - name: Verify server syntax
+        run: node --check api/music.js
+      - name: Build
+        run: npm run build
+      - name: Commit imported music
+        run: |
+          git config user.name 'petgrow-automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git add api/music.js public/petmusic/new-*.mp3
+          if git diff --cached --quiet; then
+            echo 'No PetMusic changes.'
+            exit 0
+          fi
+          git commit -m 'feat: add 16 PetMusic tracks for 32 total'
+          git push origin main
