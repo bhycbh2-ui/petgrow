@@ -85,19 +85,14 @@ export default async function handler(req,res){
       const uid=getSessionUserId(req);
       let rows,countRows,topRows;
       if(species==="dog"){
-        ({rows}=await sql`select t.*,exists(select 1 from pg_music_likes l where l.track_id=t.id and l.user_id=${uid||""}) liked from pg_music_tracks t where active=true and species in ('dog','all') order by created_at desc limit ${pageSize} offset ${offset}`);
-        ({rows:countRows}=await sql`select count(*)::int n from pg_music_tracks where active=true and species in ('dog','all')`);
-        ({rows:topRows}=await sql`select * from pg_music_tracks where active=true and species in ('dog','all') order by (like_count*4+comment_count*3+play_count)::numeric desc,created_at desc limit 5`);
+        const [listResult,countResult,topResult]=await Promise.all([sql`select t.*,exists(select 1 from pg_music_likes l where l.track_id=t.id and l.user_id=${uid||""}) liked from pg_music_tracks t where active=true and species in ('dog','all') order by created_at desc limit ${pageSize} offset ${offset}`,sql`select count(*)::int n from pg_music_tracks where active=true and species in ('dog','all')`,sql`select * from pg_music_tracks where active=true and species in ('dog','all') order by (like_count*4+comment_count*3+play_count)::numeric desc,created_at desc limit 5`]);rows=listResult.rows;countRows=countResult.rows;topRows=topResult.rows;
       } else if(species==="cat"){
-        ({rows}=await sql`select t.*,exists(select 1 from pg_music_likes l where l.track_id=t.id and l.user_id=${uid||""}) liked from pg_music_tracks t where active=true and species in ('cat','all') order by created_at desc limit ${pageSize} offset ${offset}`);
-        ({rows:countRows}=await sql`select count(*)::int n from pg_music_tracks where active=true and species in ('cat','all')`);
-        ({rows:topRows}=await sql`select * from pg_music_tracks where active=true and species in ('cat','all') order by (like_count*4+comment_count*3+play_count)::numeric desc,created_at desc limit 5`);
+        const [listResult,countResult,topResult]=await Promise.all([sql`select t.*,exists(select 1 from pg_music_likes l where l.track_id=t.id and l.user_id=${uid||""}) liked from pg_music_tracks t where active=true and species in ('cat','all') order by created_at desc limit ${pageSize} offset ${offset}`,sql`select count(*)::int n from pg_music_tracks where active=true and species in ('cat','all')`,sql`select * from pg_music_tracks where active=true and species in ('cat','all') order by (like_count*4+comment_count*3+play_count)::numeric desc,created_at desc limit 5`]);rows=listResult.rows;countRows=countResult.rows;topRows=topResult.rows;
       } else {
-        ({rows}=await sql`select t.*,exists(select 1 from pg_music_likes l where l.track_id=t.id and l.user_id=${uid||""}) liked from pg_music_tracks t where active=true order by created_at desc limit ${pageSize} offset ${offset}`);
-        ({rows:countRows}=await sql`select count(*)::int n from pg_music_tracks where active=true`);
-        ({rows:topRows}=await sql`select * from pg_music_tracks where active=true order by (like_count*4+comment_count*3+play_count)::numeric desc,created_at desc limit 5`);
+        const [listResult,countResult,topResult]=await Promise.all([sql`select t.*,exists(select 1 from pg_music_likes l where l.track_id=t.id and l.user_id=${uid||""}) liked from pg_music_tracks t where active=true order by created_at desc limit ${pageSize} offset ${offset}`,sql`select count(*)::int n from pg_music_tracks where active=true`,sql`select * from pg_music_tracks where active=true order by (like_count*4+comment_count*3+play_count)::numeric desc,created_at desc limit 5`]);rows=listResult.rows;countRows=countResult.rows;topRows=topResult.rows;
       }
       const total=countRows?.[0]?.n||0;
+      res.setHeader("Cache-Control",uid?"private, max-age=15":"public, s-maxage=60, stale-while-revalidate=300");
       return res.status(200).json({items:rows,top5:topRows,total,page,pages:Math.max(1,Math.ceil(total/pageSize))});
     }
     if(action==="liked" && req.method==="GET"){
