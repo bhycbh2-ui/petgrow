@@ -1,0 +1,1 @@
+Apply items 1-12: unified titles; PetInfo/PetTalk/News duplicate cleanup; PetNews readability; MyPage PetPoint system; Tarot full stage; Guide cleanup; PetTalk 500 hardening; realtime red map location; responsive mobile/tablet; 10-card home menu.
