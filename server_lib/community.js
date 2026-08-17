@@ -366,5 +366,8 @@ export async function deleteAllBlobsForUser(userId) {
     join pg_posts p on p.id = i.post_id
     where p.user_id = ${userId}
   `;
-  await Promise.all(rows.filter((r) => /^https?:\/\//i.test(r.storage_url || "")).map((r) => blobDel(r.storage_url).catch(() => {})));
+  const urls = rows.map((r) => r.storage_url).filter((u) => /^https?:\/\//i.test(u || ""));
+  // 회원탈퇴에서는 Blob 삭제 오류를 숨기지 않습니다. 파일 정리가 실패하면 계정 삭제도 완료 처리하지 않아
+  // 사용자가 다시 시도할 수 있고, 개인정보 파일만 고아 상태로 남는 일을 막습니다.
+  await Promise.all(urls.map((u) => blobDel(u)));
 }
