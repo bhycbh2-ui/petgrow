@@ -490,8 +490,8 @@ const STRINGS = {
     sizeTitle: { dog: "옷 사이즈 참고", cat: "하네스/이동장 사이즈 참고" },
     sizeBody: (size, neck, chest) => `현재 체중 기준 참고 사이즈는 ${size} (목둘레 ${neck} / 가슴둘레 ${chest}) 대예요.`,
     sizeNote: "브랜드마다 사이즈 기준이 달라 실제 구매 전에는 실측을 확인해주세요.",
-    tabDog: (n) => `멍그로우${n > 0 ? ` (${n})` : ""}`,
-    tabCat: (n) => `냥그로우${n > 0 ? ` (${n})` : ""}`,
+    tabDog: (n) => `강아지 정보${n > 0 ? ` (${n})` : ""}`,
+    tabCat: (n) => `고양이 정보${n > 0 ? ` (${n})` : ""}`,
     addPetLabel: { dog: "강아지 추가", cat: "고양이 추가" },
     maxPetsReached: "최대 10마리까지 등록할 수 있어요",
     reportTitle: (name) => `${name}의 성장 리포트`,
@@ -1032,8 +1032,8 @@ const STRINGS = {
     sizeTitle: { dog: "Clothing size reference", cat: "Harness/carrier size reference" },
     sizeBody: (size, neck, chest) => `Based on the current weight, a reasonable reference size is ${size} (neck ${neck} / chest ${chest}).`,
     sizeNote: "Sizing varies by brand — check actual measurements before buying.",
-    tabDog: (n) => `Bark-Grow${n > 0 ? ` (${n})` : ""}`,
-    tabCat: (n) => `Meow-Grow${n > 0 ? ` (${n})` : ""}`,
+    tabDog: (n) => `Dog profile${n > 0 ? ` (${n})` : ""}`,
+    tabCat: (n) => `Cat profile${n > 0 ? ` (${n})` : ""}`,
     addPetLabel: { dog: "Add a dog", cat: "Add a cat" },
     maxPetsReached: "You can register up to 10 pets",
     reportTitle: (name) => `${name}'s growth report`,
@@ -7462,7 +7462,7 @@ function SajuPage({ pet, onGoRegister }) {
   if (input) return <SajuResultView input={input} onRestart={() => { setInput(null); setMode("menu"); }} />;
 
   if (!pet) return (
-    <div className="feature-module-shell"><div className="bg-card" style={{ textAlign: "center" }}>
+    <div className="feature-module-shell" style={{ display: "flex", justifyContent: "center", padding: "24px 20px 40px" }}><div className="bg-card" style={{ textAlign: "center", width: "100%", maxWidth: 560, padding: "34px 30px" }}>
       <SajuIcon style={{ width: 40, height: 40, color: "var(--primary)", margin: "0 auto 14px" }} />
       <h2 style={{ fontSize: 19, marginBottom: 6 }}>{t.sajuNeedPetTitle}</h2><p className="bg-sub" style={{ fontSize: 13, marginBottom: 22 }}>{t.sajuNeedPetBody}</p>
       <button className="bg-btn" style={{ width: "100%", fontSize: 15 }} onClick={onGoRegister}>{t.sajuGoRegisterBtn}</button>
@@ -8216,7 +8216,7 @@ function PetBtiPage({ pet, onUpdatePetBti, onGoRegister }) {
   };
 
   if (!pet) return (
-    <div className="feature-module-shell"><div className="bg-card" style={{ textAlign: "center" }}>
+    <div className="feature-module-shell" style={{ display: "flex", justifyContent: "center", padding: "24px 20px 40px" }}><div className="bg-card" style={{ textAlign: "center", width: "100%", maxWidth: 560, padding: "34px 30px" }}>
       <PetBtiIcon style={{ width: 40, height: 40, color: "var(--primary)", margin: "0 auto 14px" }} />
       <h2 style={{ fontSize: 19, marginBottom: 6 }}>{t.sajuNeedPetTitle}</h2>
       <p className="bg-sub" style={{ fontSize: 13, marginBottom: 22 }}>
@@ -8431,7 +8431,7 @@ function ResultPage({ pet, breedGroups, onAddRecord, onDeleteRecord, onAddPhoto,
         </div>
       </div>
 
-      <div className="result-columns">
+      <div className="result-columns" style={{ display: "flex", flexDirection: "column", gap: 16, columnCount: "auto" }}>
         <div className="result-block">
           <AdultWeightHero profile={profile} estimate={estimate} ageMonths={ageMonthsNow} breedDisplayName={breedDisplayName} />
           <button type="button" className="bg-btn" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", marginTop: 16 }}
