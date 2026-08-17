@@ -1,0 +1,30 @@
+name: Run PetPoint V2
+on:
+  push:
+    paths:
+      - '.github/petpoint-v2-run.txt'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Apply patches
+        run: python .github/scripts/apply_petpoint_v2.py
+      - name: Build
+        run: |
+          npm ci
+          npm run build
+      - name: Commit changes
+        run: |
+          git config user.name petgrow-automation
+          git config user.email actions@users.noreply.github.com
+          git add api/community.js server_lib/tarot.js src/PetDailyWidgets.jsx src/App.jsx
+          git commit -m "feat: integrate PetPoint and premium Tarot" || exit 0
+          git push
