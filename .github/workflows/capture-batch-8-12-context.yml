@@ -1,0 +1,39 @@
+name: Capture Batch 8-12 Context
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/batch-8-12-trigger.txt'
+permissions:
+  contents: write
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Capture
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('src/App.jsx'); lines=p.read_text(encoding='utf-8').splitlines(); out=[]
+          needles=['function HomePage','function NearbyPetPage','PetPointDashboard','petpoint-dashboard-final','home-quick','home-service','service-grid','nearby-map','kakao-map','map-wrap','currentLocation','현재 위치','내 위치','위치 새로고침','function MoreMenuPage']
+          seen=set()
+          for needle in needles:
+            hits=[i for i,l in enumerate(lines) if needle in l]
+            out.append(f'### {needle} hits={hits[:30]}')
+            for i in hits[:8]:
+              a=max(0,i-28);b=min(len(lines),i+75);k=(a,b)
+              if k in seen:continue
+              seen.add(k);out.append(f'--- {a+1}-{b} ---');out.extend(f'{j+1}: {lines[j]}' for j in range(a,b))
+          Path('BATCH_8_12_CONTEXT.txt').write_text('\n'.join(out),encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          git config user.name petgrow-automation
+          git config user.email actions@users.noreply.github.com
+          git add BATCH_8_12_CONTEXT.txt
+          git commit -m 'chore: capture batch 8-12 contexts' || exit 0
+          git push origin main
