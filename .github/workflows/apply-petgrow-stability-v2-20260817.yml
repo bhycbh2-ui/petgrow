@@ -1,0 +1,38 @@
+name: Apply PetGrow Stability V2 20260817
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/apply-petgrow-stability-v2-20260817.py'
+      - 'scripts/trigger-petgrow-stability-v2-20260817.txt'
+permissions:
+  contents: write
+jobs:
+  patch-build-commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - name: Apply stability v2 patch
+        run: python3 scripts/apply-petgrow-stability-v2-20260817.py
+      - name: Build
+        run: npm run build
+      - name: Commit generated changes
+        run: |
+          git config user.name 'petgrow-automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git add src/App.jsx src/PetDailyWidgets.jsx
+          if git diff --cached --quiet; then
+            echo 'No generated changes.'
+            exit 0
+          fi
+          git commit -m 'fix: stabilize PetTalk profile music admin and Tarot sequence'
+          git push origin main
