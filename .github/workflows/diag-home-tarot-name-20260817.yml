@@ -1,0 +1,13 @@
+name: Diagnose Home Tarot Name 20260817
+on:
+  push:
+    paths:
+      - '.diag-home-tarot-name-trigger-20260817'
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Show tarot name contexts
+        run: |
+          grep -n -C 8 'ㅇㅇ\|오늘의 Pet타로\|todayTarot\|latestTarot\|pet_name' src/App.jsx | head -n 240 || true
