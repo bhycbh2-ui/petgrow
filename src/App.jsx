@@ -2176,7 +2176,7 @@ function TermsPage() {
     <div className="bboggl-root" style={{ minHeight: "100vh" }}>
       <GlobalStyle />
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 0 0" }}>
-        <TermsContent />
+        <><TermsContent /><PetNewsTermsAddendum /></>
       </div>
     </div>
   );
@@ -8974,6 +8974,7 @@ function AboutPage({ onStart, onNavigate }) {
             <LandingFeatureCard Illust={IllustPetBti} title={t.landingCardPetBtiTitle} desc={t.landingCardPetBtiDesc} />
             <LandingFeatureCard Illust={MusicIcon} title={lang === "en" ? "🎵 Pet Music" : "🎵 Pet음악"} desc={lang === "en" ? "Music for dogs and cats with loop playback, likes, comments and a live Top 5." : "강아지·고양이 음악을 반복재생하고 좋아요·댓글로 인기 TOP5를 함께 만들어요."} />
             <LandingFeatureCard Illust={IllustTips} title={t.landingCardTipsTitle} desc={t.landingCardTipsDesc} />
+            <LandingFeatureCard Illust={InfoIcon} title={lang === "en" ? "📰 Pet News" : "📰 Pet뉴스"} desc={lang === "en" ? "Recent pet-related news with direct links to original publishers." : "반려동물 관련 최신 뉴스만 모아보고 원문까지 바로 확인해요."} />
             <LandingFeatureCard Illust={MapPinIcon} title={t.landingCardNearbyTitle} desc={t.landingCardNearbyDesc} />
             <LandingFeatureCard Illust={IllustCommunity} title={t.landingCardCommunityTitle} desc={t.landingCardCommunityDesc} />
           </div>
@@ -9209,6 +9210,8 @@ function NearbyPetPage(){
   const locationRequested=useRef(false);
   const nearbyCache=useRef(new Map());
   const requestSeq=useRef(0);
+  const [followMyLocation,setFollowMyLocation]=useState(true);
+  const locationWatchId=useRef(null);
 
   const loadReviews=async(place)=>{
     if(!place?.id){setReviews({items:[],summary:{count:0,avg:0}});return;}
@@ -9400,7 +9403,21 @@ function NearbyPetPage(){
     );
   };
   const calcClientDistance=(a,b,c,d)=>{const rad=Math.PI/180,R=6371000,x=(c-a)*rad,y=(d-b)*rad,aa=Math.sin(x/2)**2+Math.cos(a*rad)*Math.cos(c*rad)*Math.sin(y/2)**2;return Math.round(2*R*Math.asin(Math.sqrt(aa)));};
-  useEffect(()=>{ if(!locationRequested.current){locationRequested.current=true;locate();} },[]);
+  useEffect(()=>{
+    if(!followMyLocation||!navigator.geolocation)return;
+    locationWatchId.current=navigator.geolocation.watchPosition(p=>{
+      const c={lat:p.coords.latitude,lng:p.coords.longitude};
+      setPositionAccuracy(Math.round(Number(p.coords.accuracy)||0));
+      setPos(c);
+      setItems(prev=>{
+        const updated=(prev||[]).map(x=>({...x,userDistance:calcClientDistance(c.lat,c.lng,Number(x.lat),Number(x.lng))})).sort((a,b)=>(a.userDistance??1e12)-(b.userDistance??1e12));
+        loadMap(c,updated,c,false).catch(()=>{});
+        return updated;
+      });
+    },()=>{}, {enableHighAccuracy:true,maximumAge:15000,timeout:10000});
+    return()=>{if(locationWatchId.current!=null){navigator.geolocation.clearWatch(locationWatchId.current);locationWatchId.current=null;}};
+  },[followMyLocation]);
+    useEffect(()=>{ if(!locationRequested.current){locationRequested.current=true;locate();} },[]);
   useEffect(()=>{
     if(searchMode==="address"&&area.trim())search(cat,null,area,{background:false,mode:"address"});
     else if(searchMode==="current"&&pos)search(cat,pos,"",{background:false,mode:"current",userCoords:pos});
@@ -9429,6 +9446,7 @@ function NearbyPetPage(){
       <div><span className="nearby-eyebrow">PETGROW LOCAL</span><h1>{t.nearbyTitle}</h1><p>{t.nearbySubtitle}</p><small className="nearby-search-help">📍 주소로 검색하거나 현재 위치 주변을 바로 검색할 수 있어요. 위치를 허용하면 현재 위치 주변 검색과 지도 표시, 업체까지의 거리 확인도 할 수 있어요.</small></div>
     </section>
     <div className="nearby-search-row"><input className="bg-input" value={area} onChange={e=>setArea(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"){if(area.trim())search(cat,null,area,{mode:"address"});else setMsg("검색할 주소를 입력해 주세요.");}}} placeholder="구·동·도로명·지번 검색 (예: 강남구, 역삼동, 역삼동 695-26)"/><button className="bg-btn nearby-address-search-btn" onClick={()=>area.trim()?search(cat,null,area,{mode:"address"}):setMsg("검색할 주소를 입력해 주세요.")}>{loading?"검색 중…":"주소 검색"}</button><button type="button" className="nearby-current-search-btn" onClick={searchCurrentLocation} disabled={loading}><MapPinIcon/>{loading&&searchMode==="current"?"찾는 중…":"현재 위치로 검색"}</button></div>
+    <div style={{display:'flex',justifyContent:'flex-end',margin:'8px 0 10px'}}><button type="button" className={`bg-chip ${followMyLocation?'active':''}`} onClick={()=>setFollowMyLocation(v=>!v)}>📍 내 위치 따라가기 {followMyLocation?'ON':'OFF'}</button></div>
     <ResponsiveCategoryMenu className="nearby-responsive-categories" primaryCount={3} items={cats.map(([id,label])=>({id,label}))} activeId={cat} onSelect={setCat} lang={"ko"} />
     <section className="nearby-map-card bg-card">
       <div className="nearby-map-head"><div><b>🗺️ {searchMode==="current"?"현재 위치 기준 지도":"검색 주소 기준 지도"}</b><small className="nearby-map-description">{searchMode==="current"?"현재 위치를 중심으로 가까운 장소를 표시해요. 번호 마커를 누르면 업체 정보를 바로 확인할 수 있어요.":pos?"입력한 주소 기준으로 검색하고 지도에는 내 위치와 업체 거리를 함께 표시해요.":"입력한 주소 기준으로 검색해요. 위치 허용 시 내 위치도 표시해요."}</small></div><div className="nearby-location-controls">{pos&&<span className="nearby-live-pill">● 내 위치</span>}<button type="button" className="nearby-location-btn" onClick={locate}>{pos?"위치 새로고침":"내 위치 표시"}</button></div></div>
@@ -9470,6 +9488,25 @@ function normalizePetDisplayText(value, fallback="") {
   } catch { return String(value ?? fallback).trim() || fallback; }
 }
 
+
+/* PETGROW_FINAL_UX_20260817 */
+function UnifiedMenuHero({ view, lang='ko' }) {
+  const meta={
+    pets:{eyebrow:'MY PET',ko:'우리 아이',en:'My Pet',koDesc:'반려동물의 기본정보부터 성장기록, 사진, 건강정보까지 한곳에서 관리해요.',enDesc:'Keep profiles, growth records, photos and care information together.'},
+    community:{eyebrow:'PETGROW TALK',ko:'Pet톡',en:'Pet Talk',koDesc:'우리 아이의 일상과 궁금한 점, 반려생활 정보를 회원들과 편하게 나눠보세요.',enDesc:'Share everyday moments, questions and useful pet-life tips.'},
+    tips:{eyebrow:'PETGROW INFO',ko:'Pet정보',en:'Pet Info',koDesc:'건강·식단·생활·훈련 등 반려생활에 바로 활용할 수 있는 정보를 모아봤어요.',enDesc:'Browse practical information for health, food, daily care and training.'},
+    saju:{eyebrow:'PETGROW CONTENT',ko:'Pet사주',en:'Pet Saju',koDesc:'우리 아이의 생년월일을 바탕으로 재미로 즐기는 특별한 이야기를 만나보세요.',enDesc:'Enjoy a lighthearted pet fortune story based on your pet profile.'},
+    petbti:{eyebrow:'PETGROW CONTENT',ko:'PetBTI',en:'PetBTI',koDesc:'강아지와 고양이의 행동 성향을 질문으로 살펴보고 우리 아이의 개성을 알아봐요.',enDesc:'Explore your pet personality through a simple behavior questionnaire.'},
+    guide:{eyebrow:'PETGROW GUIDE',ko:'정보가이드',en:'Guide',koDesc:'PetGrow의 주요 기능과 이용 방법을 한곳에서 쉽고 빠르게 확인해요.',enDesc:'See how PetGrow features work and how to use them.'},
+    my:{eyebrow:'PETGROW MY',ko:'마이페이지',en:'My Page',koDesc:'회원정보와 내가 남긴 활동, 좋아요한 콘텐츠를 한곳에서 관리해요.',enDesc:'Manage your account, activity and saved favorites.'},
+    more:{eyebrow:'PETGROW MENU',ko:'더보기',en:'More',koDesc:'PetGrow의 다양한 기능과 고객지원 메뉴를 한곳에서 확인해요.',enDesc:'Find additional PetGrow features and support options.'},
+    support:{eyebrow:'PETGROW SUPPORT',ko:'고객지원',en:'Support',koDesc:'서비스 이용 중 궁금한 점이나 도움이 필요한 내용을 남겨주세요.',enDesc:'Ask questions or get help using PetGrow.'},
+    'ad-inquiry':{eyebrow:'PETGROW PARTNERS',ko:'광고 문의',en:'Advertising',koDesc:'PetGrow와 함께할 광고·제휴 문의를 편하게 남겨주세요.',enDesc:'Contact PetGrow about advertising and partnership opportunities.'}
+  };
+  const x=meta[view]; if(!x)return null;
+  return <section className="nearby-hero bg-card petgrow-unified-hero" style={{maxWidth:900,margin:'0 auto 18px'}}><div><span className="nearby-eyebrow">{x.eyebrow}</span><h1>{lang==='en'?x.en:x.ko}</h1><p>{lang==='en'?x.enDesc:x.koDesc}</p>{view==='pets'&&<small className="nearby-search-help">🐾 {lang==='en'?'Register dogs and cats separately and keep their changes organized over time.':'강아지와 고양이 정보를 각각 등록하고 우리 아이의 변화를 차곡차곡 기록해보세요.'}</small>}</div></section>;
+}
+
 function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
   const t = useT();
   const visiblePets = account ? pets : [];
@@ -9477,14 +9514,36 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
   const petName = pet ? normalizePetDisplayText(pet.profile?.name, lang === "en" ? "My Pet" : "우리 아이") : "";
   const accountName = normalizePetDisplayText(account?.name, "");
   const weight = pet?.records?.length ? pet.records[pet.records.length - 1]?.weightKg : pet?.profile?.initialWeightKg;
-  const quick = [
+  const allQuick = [
     ["pets", "🐾", lang === "en" ? "My Pet" : "우리 아이"],
     ["music", "🎵", lang === "en" ? "Pet Music" : "Pet음악"],
+    ["news", "📰", lang === "en" ? "Pet News" : "Pet뉴스"],
     ["nearby", "📍", lang === "en" ? "Nearby Pet" : "내 주변 Pet"],
     ["community", "💬", lang === "en" ? "Pet Talk" : "Pet톡"],
     ["petbti", "🧠", "PetBTI"],
-    ["more", "•••", lang === "en" ? "More" : "더보기"],
+    ["saju", "🔮", lang === "en" ? "Pet Saju" : "Pet사주"],
+    ["tips", "💡", lang === "en" ? "Pet Info" : "Pet정보"],
+    ["guide", "📚", lang === "en" ? "Guide" : "정보가이드"]
   ];
+  const defaultQuickKeys=["pets","music","news","nearby","community","petbti"];
+  const quickStorageKey=account?.id?`petgrow_quick_${account.id}`:"petgrow_quick_guest";
+  const [quickKeys,setQuickKeys]=useState(()=>{try{const v=JSON.parse(localStorage.getItem(quickStorageKey)||"null");return Array.isArray(v)&&v.length?v.slice(0,6):defaultQuickKeys;}catch{return defaultQuickKeys;}});
+  const [quickEditing,setQuickEditing]=useState(false);
+  const [homeNews,setHomeNews]=useState([]);
+  useEffect(()=>{
+    let cancelled=false;
+    fetch('/api/news').then(r=>r.ok?r.json():null).then(j=>{if(cancelled)return;const items=Array.isArray(j?.items)?j.items:[];const score=x=>{const h=(x.title+' '+x.description);let n=0;if(/정책|법|제도|정부|지자체|동물보호법/.test(h))n+=4;if(/건강|질병|감염|백신|병원|수의|안전|주의|리콜/.test(h))n+=5;if(/유기|보호|입양|학대/.test(h))n+=3;return n;};setHomeNews([...items].sort((a,b)=>score(b)-score(a)||new Date(b.publishedAt||0)-new Date(a.publishedAt||0)).slice(0,3));}).catch(()=>{});
+    return()=>{cancelled=true};
+  },[]);
+  useEffect(()=>{
+    let cancelled=false;
+    if(!account?.id)return;
+    fetch('/api/core?action=state&key=home_quick_menu').then(r=>r.ok?r.json():null).then(j=>{if(cancelled)return;const v=j?.value;if(Array.isArray(v)&&v.length)setQuickKeys(v.filter(k=>allQuick.some(x=>x[0]===k)).slice(0,6));}).catch(()=>{});
+    return()=>{cancelled=true};
+  },[account?.id]);
+  const saveQuick=(next)=>{const clean=next.filter(k=>allQuick.some(x=>x[0]===k)).slice(0,6);setQuickKeys(clean);try{localStorage.setItem(quickStorageKey,JSON.stringify(clean));}catch{}if(account?.id)fetch('/api/core?action=state',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:'home_quick_menu',value:clean})}).catch(()=>{});};
+  const toggleQuick=(key)=>{if(quickKeys.includes(key))saveQuick(quickKeys.filter(k=>k!==key));else if(quickKeys.length<6)saveQuick([...quickKeys,key]);};
+  const quick=quickKeys.map(k=>allQuick.find(x=>x[0]===k)).filter(Boolean);
   return (
     <div className="legal-page-shell petgrow-dashboard-home">
       <section className="dash-welcome">
@@ -9500,7 +9559,9 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
         </> : <><div className="dash-empty-icon">＋</div><div><h2>{lang === "en" ? "Add your pet" : "우리 아이를 등록해보세요"}</h2><p>{lang === "en" ? "Start growth records and personalized features." : "성장 기록과 맞춤 기능을 바로 시작할 수 있어요."}</p></div><div className="dash-pet-arrow">›</div></>}
       </section>
 
-      <section className="dash-section"><div className="dash-section-head"><h2>{lang === "en" ? "Quick access" : "자주 사용하는 메뉴"}</h2><span>{lang === "en" ? "Tap to open" : "빠르게 이동"}</span></div><div className="dash-quick-grid">{quick.map(([key,icon,label])=><button type="button" key={key} onClick={()=>key==="pets"?onGoPets():key==="more"?onGoView("more"):onGoView(key)}><i>{icon}</i><span>{label}</span></button>)}</div></section>
+      <section className="dash-section"><div className="dash-section-head"><h2>{lang === "en" ? "Quick access" : "자주 사용하는 메뉴"}</h2><button type="button" className="bg-chip" onClick={()=>setQuickEditing(v=>!v)}>{quickEditing?(lang==='en'?'Done':'완료'):(lang==='en'?'Edit':'편집')}</button></div>{quickEditing&&<div className="bg-card" style={{padding:14,marginBottom:12}}><p className="bg-sub" style={{fontSize:12,margin:'0 0 10px'}}>{lang==='en'?'Choose up to six shortcuts. Signed-in choices sync to your account.':'원하는 메뉴를 최대 6개까지 선택할 수 있어요. 로그인하면 계정에 저장돼 다른 기기에서도 이어서 사용할 수 있어요.'}</p><div style={{display:'flex',gap:8,flexWrap:'wrap'}}>{allQuick.map(([key,icon,label])=><button type="button" key={key} className={`bg-chip ${quickKeys.includes(key)?'active':''}`} onClick={()=>toggleQuick(key)}>{icon} {label}</button>)}</div></div>}<div className="dash-quick-grid">{quick.map(([key,icon,label])=><button type="button" key={key} onClick={()=>key==="pets"?onGoPets():onGoView(key)}><i>{icon}</i><span>{label}</span></button>)}</div></section>
+
+      {homeNews.length>0&&<section className="dash-section"><div className="dash-section-head"><h2>{lang==='en'?'Important Pet News':'주요 Pet뉴스'}</h2><button type="button" className="bg-chip" onClick={()=>onGoView('news')}>{lang==='en'?'View all':'전체보기'}</button></div><div style={{display:'grid',gap:10}}>{homeNews.map(n=><button key={n.id} type="button" className="bg-card" onClick={()=>onGoView('news')} style={{padding:'15px 16px',textAlign:'left',border:'1px solid var(--border)',cursor:'pointer'}}><small style={{fontWeight:800,color:'var(--primary)'}}>{n.category||'Pet뉴스'} · {n.source||''}</small><div style={{fontWeight:850,fontSize:15,lineHeight:1.5,marginTop:5}}>{n.title}</div><small className="bg-sub">{n.publishedAt?new Date(n.publishedAt).toLocaleDateString('ko-KR'):''}</small></button>)}</div></section>}
 
       <section className="dash-widget-grid">
         <button type="button" className="dash-widget dash-widget-music" onClick={()=>onGoView("music")}><div className="dash-widget-icon">🎵</div><div><small>{lang === "en" ? "PET MUSIC" : "PET MUSIC"}</small><h3>{lang === "en" ? "Popular TOP5 & my likes" : "인기 TOP5 · 내가 좋아요한 음악"}</h3><p>{lang === "en" ? "Play, loop and keep your favorites close." : "좋아하는 음악을 바로 듣고 반복재생해요."}</p></div><b>›</b></button>
@@ -10505,6 +10566,28 @@ function SupportPage({account,onBack}){
 }
 
 
+/* PETNEWS_UI_FIXED_20260817 */
+function PetNewsPage({ lang = "ko" }) {
+  const [data,setData]=useState({items:[],updatedAt:null});
+  const [loading,setLoading]=useState(true);
+  const [error,setError]=useState("");
+  const [category,setCategory]=useState("전체");
+  const load=async()=>{setLoading(true);setError("");try{const r=await fetch("/api/news");const j=await r.json();if(!r.ok)throw new Error(j.error||"뉴스를 불러오지 못했어요.");setData(j);}catch(e){setError(e?.message||"뉴스를 불러오지 못했어요.");}finally{setLoading(false);}};
+  useEffect(()=>{load();},[]);
+  const cats=["전체","반려견","반려묘","건강","정책·제도","입양·보호","산업·서비스","반려동물"];
+  const items=category==="전체"?(data.items||[]):(data.items||[]).filter(x=>x.category===category);
+  const timeLabel=(iso)=>{if(!iso)return "";const d=new Date(iso),diff=Date.now()-d.getTime();if(diff<3600000)return Math.max(1,Math.floor(diff/60000))+"분 전";if(diff<86400000)return Math.floor(diff/3600000)+"시간 전";return d.toLocaleDateString("ko-KR");};
+  return <div className="legal-page-shell" style={{maxWidth:980,margin:"0 auto",padding:"0 16px 48px"}}>
+    <section className="nearby-hero bg-card" style={{marginBottom:16}}><div><span className="nearby-eyebrow">PETGROW NEWS</span><h1>{lang==="en"?"Pet News":"Pet뉴스"}</h1><p>{lang==="en"?"Recent pet-related news with direct links to original publishers.":"강아지·고양이·건강·정책·입양 등 반려동물 관련 최신 뉴스만 모아봐요."}</p><small className="nearby-search-help">📰 약 1시간 단위로 갱신되며 기사 전문은 원문 언론사에서 확인해요.</small></div></section>
+    <div style={{display:"flex",gap:8,overflowX:"auto",padding:"2px 0 14px"}}>{cats.map(c=><button key={c} type="button" className={"bg-chip "+(category===c?"active":"")} onClick={()=>setCategory(c)} style={{whiteSpace:"nowrap"}}>{c}</button>)}</div>
+    {loading?<div className="bg-card" style={{padding:28,textAlign:"center"}}>최신 펫뉴스를 불러오는 중이에요…</div>:error?<div className="bg-card" style={{padding:28,textAlign:"center"}}><b>Pet뉴스를 불러오지 못했어요.</b><p className="bg-sub">{error}</p><button className="bg-btn" onClick={load}>다시 시도</button></div>:items.length===0?<div className="bg-card" style={{padding:28,textAlign:"center"}}>선택한 카테고리의 최신 뉴스가 아직 없어요.</div>:<div style={{display:"grid",gap:12}}>{items.map(item=><article key={item.id} className="bg-card" style={{padding:"18px 20px"}}><div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap",marginBottom:8}}><span className="bg-chip active">{item.category}</span><small style={{color:"var(--sub)"}}>{item.source+" · "+timeLabel(item.publishedAt)}</small></div><h2 style={{fontSize:18,lineHeight:1.45,margin:"0 0 8px"}}>{item.title}</h2><p className="bg-sub" style={{fontSize:14,lineHeight:1.7,margin:"0 0 12px"}}>{item.description}</p><a href={item.link} target="_blank" rel="noopener noreferrer" className="bg-btn bg-btn-ghost" style={{display:"inline-flex",textDecoration:"none"}}>원문 보기 ↗</a></article>)}</div>}
+    {data.updatedAt&&<p className="bg-sub" style={{fontSize:12,marginTop:14}}>최근 갱신: {new Date(data.updatedAt).toLocaleString("ko-KR")}</p>}
+    <p className="bg-sub" style={{fontSize:12,lineHeight:1.65,marginTop:8}}>Pet뉴스는 외부 뉴스 검색 결과의 제목·요약·출처·링크를 제공하며 기사 전문을 PetGrow가 복제해 제공하지 않습니다.</p>
+  </div>;
+}
+
+function PetNewsPrivacyAddendum(){return <section className="bg-card" style={{maxWidth:900,margin:"14px auto 36px",padding:22}}><h2 style={{fontSize:18,marginTop:0}}>Pet뉴스 관련 개인정보 안내</h2><p className="bg-sub" style={{lineHeight:1.75}}>Pet뉴스는 공개 뉴스 검색 API를 이용합니다. 뉴스 조회를 위해 이용자의 이름, 계정정보, 반려동물 정보 등 개인정보를 뉴스 검색 제공자에게 전송하지 않습니다. 원문 보기를 선택하면 외부 언론사 페이지로 이동하며 이후 개인정보 처리는 해당 서비스의 정책이 적용됩니다.</p></section>}
+function PetNewsTermsAddendum(){return <section className="bg-card" style={{maxWidth:900,margin:"14px auto 36px",padding:22}}><h2 style={{fontSize:18,marginTop:0}}>Pet뉴스 서비스 이용조건</h2><p className="bg-sub" style={{lineHeight:1.75}}>Pet뉴스는 외부 검색 API 기반의 뉴스 탐색 기능입니다. 기사 내용과 저작권은 각 기사 제공자에게 있으며, 건강·의료·정책 관련 뉴스는 전문적인 진단이나 법률·행정 자문을 대체하지 않습니다.</p></section>}
 function AdminReportsPage({onBack}){
  const adminAutofillTrap=<div className="admin-autofill-trap" aria-hidden="true">
    <input type="text" name="username" autoComplete="username" tabIndex={-1}/>
@@ -11430,6 +11513,7 @@ function AppInner({ lang, setLang }) {
             <button className={view === "saju" ? "active" : ""} onClick={() => goView("saju")}><SajuIcon /><span>{t.sajuNav}</span></button>
             <div className="sidebar-section-label">{lang === "en" ? "INFO · SUPPORT" : "정보 · 지원"}</div>
             <button className={view === "tips" ? "active" : ""} onClick={() => goView("tips")}><LightbulbIcon /><span>{t.tipsTitle}</span></button>
+            <button className={view === "news" ? "active" : ""} onClick={() => goView("news")}><InfoIcon /><span>{lang === "en" ? "Pet News" : "Pet뉴스"}</span></button>
             <button className={view === "about" ? "active" : ""} onClick={() => goView("about")}><InfoIcon /><span>{t.aboutNav}</span></button>
           </nav>
           <div className="petgrow-sidebar-bottom"><div className="petgrow-sidebar-message">♡ <span>{lang === "en" ? "A happier day with your pet" : "우리 아이와 더 행복한 하루"}</span></div><LangToggle lang={lang} onChange={setLang} /><AccountButton account={account} onOpen={() => (account ? setAccountModalOpen(true) : goView("pets"))} /></div>
@@ -11458,6 +11542,7 @@ function AppInner({ lang, setLang }) {
                 <button type="button" className={`desktop-nav-link ${view === "petbti" ? "active" : ""}`} onClick={() => goView("petbti")}><PetBtiIcon />{t.petBtiNav}</button>
                 <button type="button" className={`desktop-nav-link ${view === "music" ? "active" : ""}`} onClick={() => goView("music")}><MusicIcon />{lang === "en" ? "Pet Music" : "Pet음악"}</button>
                 <button type="button" className={`desktop-nav-link ${view === "tips" ? "active" : ""}`} onClick={() => goView("tips")}><LightbulbIcon />{t.tipsTitle}</button>
+                <button type="button" className={`desktop-nav-link ${view === "news" ? "active" : ""}`} onClick={() => goView("news")}><InfoIcon />{lang === "en" ? "Pet News" : "Pet뉴스"}</button>
               </nav>
 
               <div className="desktop-nav-actions">
@@ -11504,17 +11589,19 @@ function AppInner({ lang, setLang }) {
           </div>
         )}
 
-        {effectiveView === "pets" && (
+        {effectiveView === "pets" && <>
+          <UnifiedMenuHero view="pets" lang={lang} />
           <SpeciesTabBar species={species} dogCount={pets.dog.length} catCount={pets.cat.length}
             onChange={(s) => { setSpecies(s); setMode("view"); }} />
-        )}
+        </>}
       </div>
 
       <div className="petgrow-content-stage">
+      {["community","tips","saju","petbti","guide","my","more","support","ad-inquiry"].includes(effectiveView) && <UnifiedMenuHero view={effectiveView} lang={lang} />}
       {effectiveView === "login" ? (
         <LoginScreen onGoTerms={() => goView("terms")} onGoPrivacy={() => goView("privacy")} />
       ) : effectiveView === "privacy" ? (
-        <PrivacyContent />
+        <><PrivacyContent /><PetNewsPrivacyAddendum /></>
       ) : effectiveView === "terms" ? (
         <TermsContent />
       ) : effectiveView === "about" ? (
@@ -11546,6 +11633,8 @@ function AppInner({ lang, setLang }) {
         <SupportPage account={account} onBack={() => goView("my")} />
       ) : effectiveView === "ad-inquiry" ? (
         <AdInquiryPage onBack={() => goView("home")} />
+      ) : effectiveView === "news" ? (
+        <PetNewsPage lang={lang} />
       ) : effectiveView === "tips" ? (
         <TipsPage />
       ) : effectiveView === "saju" ? (

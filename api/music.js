@@ -81,7 +81,7 @@ export default async function handler(req,res){
     if(action==="list" && req.method==="GET"){
       await ensureStarterTracks();
       const species=["dog","cat","all"].includes(String(req.query.species))?String(req.query.species):"all";
-      const page=Math.max(1,parseInt(req.query.page||"1",10)||1), pageSize=20, offset=(page-1)*pageSize;
+      const page=Math.max(1,parseInt(req.query.page||"1",10)||1), pageSize=10, offset=(page-1)*pageSize;
       const uid=getSessionUserId(req);
       let rows,countRows,topRows;
       if(species==="dog"){
