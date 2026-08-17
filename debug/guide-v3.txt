@@ -1,0 +1,190 @@
+);const h=e=>{const ev=e.detail||{};setSummary(v=>v?{...v,balance:ev.balance??v.balance}:v);setTimeout(()=>{if(alive)load()},180)};window.addEventListener('petgrow:points',h);const poll=setInterval(()=>{if(alive)load()},5000);return()=>{alive=false;clearInterval(poll);window.removeEventListener('petgrow:points',h)}},[account?.id]);
+  const balance=summary?.balance;
+  return <section className={'petpoint-visible '+(compact?'compact':'about')}><div className="petpoint-visible-icon">🪙</div><div className="petpoint-visible-copy"><small>PETPOINT · LIVE</small><h2>{compact?'현재 PetPoint를 바로 확인하세요':'PetPoint로 PetGrow를 더 재미있게'}</h2><p>{account?.id?(balance==null?'포인트를 불러오는 중이에요.':`현재 ${Number(balance).toLocaleString()}P · 적립과 사용이 바로 반영돼요.`):'처음 로그인하면 1,000P가 지급돼요. 하루 첫 접속·Pet톡 활동으로 더 모을 수 있어요.'}</p></div><div className="petpoint-visible-actions"><b>{account?.id&&balance!=null?`${Number(balance).toLocaleString()}P`:'시작 1,000P'}</b><span>오늘 운세 20P · 기본 사주 50P · 궁합 40P</span></div></section>;
+}
+
+function InfoGuidePage() {
+  const [guideSearch,setGuideSearch]=useState("");
+  const [activeKey,setActiveKey]=useState("pets");
+  const guides=[
+    {key:"pets",icon:"🐾",title:"우리 아이",sub:"프로필과 기본정보를 한곳에서",tone:"mint",intro:"반려동물 정보를 먼저 등록하면 PetGrow의 다른 기능을 더 편하게 이용할 수 있어요.",steps:["우리 아이 메뉴에서 강아지 또는 고양이를 선택해요.","이름·생년월일·품종·성별·현재 체중과 사진을 입력해요.","등록 후 성장기록과 각 콘텐츠에서 우리 아이를 선택해 이용해요."],faq:"여러 마리를 등록해도 아이 선택 메뉴에서 바로 바꿀 수 있어요.",tip:"처음이라면 가장 먼저 우리 아이 등록부터 시작해 보세요."},
+    {key:"growth",icon:"📈",title:"성장 기록",sub:"사진과 체중 변화를 차곡차곡",tone:"sage",intro:"하루하루 달라지는 모습을 사진과 체중 기록으로 모아볼 수 있어요.",steps:["우리 아이에서 성장 기록을 열어요.","날짜와 체중을 입력하고 필요하면 사진을 추가해요.","누적된 기록과 그래프로 변화 흐름을 확인해요."],faq:"사진은 성장앨범에서 수정하거나 삭제할 수 있어요.",tip:"같은 시간대와 비슷한 조건으로 체중을 기록하면 변화 비교가 쉬워요."},
+    {key:"saju",icon:"🔮",title:"Pet사주",sub:"재미로 보는 우리 아이 이야기",tone:"cream",intro:"등록한 생년월일을 바탕으로 성격·인연·놀이 스타일과 오늘의 운세를 재미로 살펴봐요.",steps:["등록된 우리 아이를 선택해요.","기본 Pet사주·오늘의 펫운세·보호자 궁합 중 원하는 메뉴를 골라요.","필요한 PetPoint를 확인한 뒤 결과를 읽어봐요."],faq:"Pet사주는 재미와 참고용 콘텐츠이며 실제 미래를 판단하는 자료가 아니에요.",tip:"결과는 우리 아이의 실제 행동과 함께 가볍게 참고해 주세요."},
+    {key:"tarot",icon:"🃏",title:"Pet타로",sub:"22장 중 마음이 가는 카드 한 장",tone:"gold",intro:"카드를 천천히 섞고 펼친 뒤 마음이 가는 한 장을 골라 오늘의 메시지를 확인해요.",steps:["오늘·궁합·마음·산책·조언 중 주제를 선택해요.","카드가 섞이고 펼쳐지는 동안 우리 아이를 떠올려요.","22장 중 한 장을 선택하고 상세 해석을 확인해요."],faq:"같은 아이·같은 주제의 오늘 카드는 하루 동안 바뀌지 않아요.",tip:"카드 한 장보다 결과의 ‘오늘의 실천 포인트’를 가볍게 활용해 보세요."},
+    {key:"petbti",icon:"🧠",title:"PetBTI",sub:"20문항으로 알아보는 행동 성향",tone:"blue",intro:"평소 행동을 기준으로 질문에 답하면 우리 아이의 성향을 재미있게 확인할 수 있어요.",steps:["검사할 우리 아이를 선택해요.","20개 질문에 평소 행동을 떠올리며 답해요.","완료 후 성향 결과와 세부 특징을 확인해요."],faq:"전문 행동진단이 아니라 반려생활 이해를 돕는 재미 콘텐츠예요.",tip:"특별한 날보다 평소 모습에 가까운 답을 고르는 게 좋아요."},
+    {key:"music",icon:"🎵",title:"Pet음악",sub:"강아지·고양이 음악을 편하게",tone:"rose",intro:"휴식·수면·놀이 등에 어울리는 음악을 듣고 좋아요와 댓글로 반응을 남길 수 있어요.",steps:["전체·강아지·고양이 탭에서 음악을 찾아요.","원하는 곡을 눌러 재생하고 반복 방식을 선택해요.","좋아하는 음악은 좋아요를 눌러 회원정보에서 다시 확인해요."],faq:"관리자가 등록한 음악과 커버는 관리자센터에서 수정할 수 있어요.",tip:"음악은 반려동물의 반응을 보면서 편안한 볼륨으로 들려주세요."},
+    {key:"nearby",icon:"📍",title:"내 주변 Pet",sub:"1km 안의 가까운 업체를 가볍게",tone:"mint",intro:"주소나 현재 위치를 기준으로 가까운 동물병원·약국·미용·펫샵 등을 찾아볼 수 있어요.",steps:["주소를 검색하거나 현재 위치 검색을 선택해요.","1km 안의 가까운 업체를 목록과 지도에서 확인해요.","목록에서 업체를 누르면 지도에서 해당 위치를 집중해서 볼 수 있어요."],faq:"현재 위치는 주변 검색과 거리 계산에 일시적으로만 사용돼요.",tip:"업체 정보와 영업시간은 방문 전에 전화나 지도 원문에서 한 번 더 확인해 주세요."},
+    {key:"community",icon:"💬",title:"Pet톡",sub:"반려생활 이야기를 나누는 커뮤니티",tone:"sage",intro:"일상·질문·건강·산책 등 다양한 주제로 다른 보호자들과 이야기를 나눌 수 있어요.",steps:["Pet톡에서 원하는 카테고리나 글을 찾아봐요.","글쓰기에서 우리 아이와 제목·내용·사진을 등록해요.","댓글과 좋아요로 소통하고 회원정보에서 내 활동을 확인해요."],faq:"글과 댓글 활동으로 PetPoint를 모을 수 있으며 일일 적립 한도가 있어요.",tip:"개인정보나 타인의 권리를 침해하는 내용은 게시하지 말아 주세요."},
+    {key:"news",icon:"📰",title:"Pet뉴스",sub:"최신 반려동물 소식을 보기 쉽게",tone:"cream",intro:"반려견·반려묘·건강·정책 등 최신 뉴스를 요약과 함께 확인할 수 있어요.",steps:["Pet뉴스 목록에서 관심 있는 기사를 선택해요.","PetGrow 안에서 핵심 요약을 먼저 확인해요.","자세한 내용은 원문 전체보기를 통해 언론사 페이지에서 확인해요."],faq:"뉴스는 기사 전문을 복사하지 않고 검색 결과의 설명을 바탕으로 요약해 보여줘요.",tip:"의료·정책 관련 내용은 기사 작성일과 원문을 함께 확인해 주세요."},
+    {key:"points",icon:"🪙",title:"PetPoint",sub:"활동하고 모아서 재미 콘텐츠 이용",tone:"gold",intro:"현금 결제가 아닌 PetGrow 내부 무료 활동 포인트예요. Pet톡 활동과 하루 첫 접속으로 모을 수 있어요.",steps:["처음 이용하면 기본 1,000P가 지급돼요.","Pet톡 글·댓글·좋아요 받기와 하루 첫 접속으로 포인트를 모아요.","Pet사주·오늘의 운세·보호자 궁합·Pet타로 이용 시 안내된 포인트가 차감돼요."],faq:"현금 구매·환전·출금·양도는 지원하지 않아요.",tip:"회원정보와 홈에서 현재 포인트를 실시간으로 확인할 수 있어요."},
+    {key:"my",icon:"👤",title:"회원정보",sub:"계정·내 활동·저장 기록 관리",tone:"blue",intro:"닉네임과 계정 정보, Pet톡 활동, 좋아요한 음악과 저장 기록을 한곳에서 관리해요.",steps:["회원정보에서 현재 계정과 PetPoint를 확인해요.","Pet톡 내 활동과 좋아요한 콘텐츠를 펼쳐 확인해요.","필요하면 정보 수정·로그아웃·회원탈퇴 메뉴를 이용해요."],faq:"동일한 카카오 계정으로 로그인하면 서버에 저장된 지원 데이터가 동기화돼요.",tip:"회원탈퇴 전 필요한 기록이 남아 있는지 먼저 확인해 주세요."}
+  ];
+  const q=guideSearch.trim().toLowerCase();
+  const filtered=guides.filter(g=>!q||`${g.title} ${g.sub} ${g.intro} ${g.steps.join(" ")} ${g.faq} ${g.tip}`.toLowerCase().includes(q));
+  const active=guides.find(g=>g.key===activeKey)||guides[0];
+  const quick=["pets","growth","saju","tarot","petbti","music","nearby","community","news","my"];
+  return <div className="guide-premium-page">
+    <section className="guide-search-only bg-card"><div className="guide-search-box"><span>⌕</span><input value={guideSearch} onChange={e=>setGuideSearch(e.target.value)} placeholder="무엇을 도와드릴까요? 예: 타로, 음악, 포인트" /></div></section>
+    {!q&&<section className="guide-start-card"><div className="guide-section-title"><div><small>START HERE</small><h2>처음 시작 3단계</h2></div><span>처음이라면 이 순서대로 해보세요</span></div><div className="guide-start-grid"><article><b>1</b><span>🐾</span><h3>우리 아이 등록</h3><p>기본 정보를 입력하고 프로필을 만들어보세요.</p></article><article><b>2</b><span>▦</span><h3>기능 선택</h3><p>필요한 기능을 골라 PetGrow를 둘러보세요.</p></article><article><b>3</b><span>💬</span><h3>기록 · 커뮤니티</h3><p>기록을 남기고 Pet톡에서 함께 소통해보세요.</p></article></div></section>}
+    {!q&&<section className="guide-quick-section"><div className="guide-section-title"><div><small>POPULAR</small><h2>자주 찾는 기능</h2></div><span>카드를 누르면 바로 설명을 볼 수 있어요</span></div><div className="guide-quick-grid">{quick.map(k=>{const g=guides.find(x=>x.key===k);return <button key={k} type="button" className={`guide-quick-card tone-${g.tone} ${activeKey===k?"active":""}`} onClick={()=>{setActiveKey(k);document.getElementById("guide-detail")?.scrollIntoView({behavior:"smooth",block:"start"})}}><span>{g.icon}</span><b>{g.title}</b><small>{g.sub}</small></button>})}</div></section>}
+    {q&&<section className="guide-search-results"><div className="guide-section-title"><div><small>SEARCH</small><h2>검색 결과 {filtered.length}개</h2></div></div><div className="guide-search-result-grid">{filtered.map(g=><button key={g.key} type="button" onClick={()=>{setActiveKey(g.key);setGuideSearch("");setTimeout(()=>document.getElementById("guide-detail")?.scrollIntoView({behavior:"smooth",block:"start"}),30)}}><span>{g.icon}</span><div><b>{g.title}</b><small>{g.sub}</small></div><em>›</em></button>)}</div>{!filtered.length&&<div className="guide-empty">검색 결과가 없어요. 다른 단어로 검색해보세요.</div>}</section>}
+    <section id="guide-detail" className={`guide-detail-card tone-${active.tone}`}><div className="guide-detail-visual"><div className="guide-detail-orb">{active.icon}</div><span>PetGrow</span><i>✦</i></div><div className="guide-detail-main"><small>FEATURE GUIDE</small><h2>{active.title}</h2><p className="guide-detail-intro">{active.intro}</p><div className="guide-detail-tabs"><span className="active">이용 방법</span><span>초보자 팁</span><span>꼭 알아두기</span></div><div className="guide-step-list">{active.steps.map((step,i)=><article key={i}><b>{i+1}</b><div><h3>{i===0?"시작하기":i===1?"이용하기":"확인하기"}</h3><p>{step}</p></div></article>)}</div><div className="guide-note-grid"><div><b>💡 초보자 TIP</b><p>{active.tip}</p></div><div><b>✓ 꼭 알아두기</b><p>{active.faq}</p></div></div></div></section>
+  </div>;
+}
+function CmPetAvatar({ pet, size = 34 }) {
+  const style = { width: size, height: size };
+  if (pet && pet.photo) {
+    return <img src={pet.photo} alt="" className="cm-pet-avatar" style={style} />;
+  }
+  return (
+    <span className="cm-pet-avatar-fallback" style={style}>
+      {pet && pet.species === "cat" ? "🐱" : "🐶"}
+    </span>
+  );
+}
+
+function CmPetLine({ pet, lang, right, authorNickname }) {
+  const t = useT();
+  return (
+    <div className="cm-pet-row">
+      <CmPetAvatar pet={pet} />
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontWeight: 800, fontSize: 13 }}>{authorNickname || pet.name}</div>
+        <div className="bg-sub" style={{ fontSize: 11 }}>
+          {[pet.name, pet.breed, petAgeLabel(pet.birthDate, lang)].filter(Boolean).join(" · ")}
+        </div>
+      </div>
+      {right}
+    </div>
+  );
+}
+
+function PostCard({ post, lang, onOpen }) {
+  const t = useT();
+  return (
+    <div className="cm-card" onClick={onOpen}>
+      {post.images && post.images[0] && <img src={post.images[0]} alt="" className="cm-card-img" />}
+      <div className="cm-card-body">
+        <CmPetLine pet={post.pet} lang={lang} authorNickname={post.authorNickname} right={<span className="bg-sub" style={{ fontSize: 11 }}>{timeAgoLabel(post.createdAt, lang)}</span>} />
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
+        <span className="cm-cat-chip" style={{ marginBottom: 0 }}>{t.communityCategoryLabels[post.category]}</span>
+        {post.isOwner && (
+          <span className="cm-cat-chip" style={{ marginBottom: 0, background: post.isPublic ? "#EDF5EE" : "#F1F1F1", color: post.isPublic ? "var(--primary)" : "var(--sub)" }}>
+            {post.isPublic ? `🌐 ${t.communityVisibilityPublic}` : `🔒 ${t.communityVisibilityPrivate}`}
+          </span>
+        )}
+      </div>
+        <div className="cm-title">{post.title}</div>
+        <div className="cm-content-preview">{post.content}</div>
+        <div className="cm-meta-row">
+          <span>{post.likedByMe ? "❤️" : "🤍"} {post.likeCount}</span>
+          <span>💬 {post.commentCount}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ImagePickerGrid({ images, onAdd, onRemove, uploading }) {
+  const t = useT();
+  const fileRef = useRef(null);
+  return (
+    <div className="cm-photo-grid">
+      {images.map((url, i) => (
+        <div key={url + i} className="cm-photo-tile">
+          <img src={url} alt="" />
+          <button type="button" className="cm-photo-remove" onClick={() => onRemove(i)}>
+            <PlusIcon style={{ width: 12, height: 12, transform: "rotate(45deg)" }} />
+          </button>
+        </div>
+      ))}
+      {images.length < 5 && (
+        <button type="button" className="cm-photo-add" disabled={uploading} onClick={() => fileRef.current && fileRef.current.click()}>
+          {uploading ? "..." : <PlusIcon style={{ width: 22, height: 22 }} />}
+        </button>
+      )}
+      <input ref={fileRef} type="file" accept="image/*" style={{ display: "none" }}
+        onChange={(e) => { const f = e.target.files && e.target.files[0]; if (f) onAdd(f); e.target.value = ""; }} />
+    </div>
+  );
+}
+
+function PostComposer({ pets, initialPost, onCancel, onSaved }) {
+  const t = useT();
+  const lang = useLang();
+  const isEdit = !!initialPost;
+  const [petId, setPetId] = useState(initialPost ? initialPost.pet.id : (pets[0] && pets[0].id));
+  const [category, setCategory] = useState(initialPost ? initialPost.category : "daily");
+  const [title, setTitle] = useState(initialPost ? initialPost.title : "");
+  const [content, setContent] = useState(initialPost ? initialPost.content : "");
+  const [images, setImages] = useState(initialPost ? initialPost.images : []);
+  const [isPublic, setIsPublic] = useState(initialPost ? initialPost.isPublic !== false : true);
+  const [uploading, setUploading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleAddImage = async (file) => {
+    if (images.length >= 5) { setErrors((e) => ({ ...e, images: t.communityImageTooMany })); return; }
+    // iPhone 사진은 HEIC/HEIF로 전달되는 경우가 있어 원본 MIME만으로 차단하지 않아요.
+    // 브라우저가 읽을 수 있는 이미지라면 canvas에서 JPEG로 변환·축소한 뒤 서버에 업로드합니다.
+    if (!file || !(file.type || "").startsWith("image/")) {
+      setErrors((e) => ({ ...e, images: t.communityImageInvalidType })); return;
+    }
+    setErrors((e) => ({ ...e, images: "" }));
+    setUploading(true);
+    try {
+      let uploadDataUrl = await fileToCompressedDataUrl(file, 1280, 0.74);
+      // 서버리스 요청/DB 대체 저장 모두 안정적으로 처리되도록 단계적으로 압축해요.
+      if (uploadDataUrl.length > 1_600_000) uploadDataUrl = await fileToCompressedDataUrl(file, 960, 0.64);
+      if (uploadDataUrl.length > 900_000) uploadDataUrl = await fileToCompressedDataUrl(file, 720, 0.56);
+      const url = await communityUploadImage(uploadDataUrl);
+      setImages((prev) => [...prev, url]);
+    } catch (err) {
+      console.error("community image upload failed", err);
+      const msg = String(err?.message || "");
+      const friendly = msg.includes("too large") ? "사진 용량이 너무 커요. 다른 사진을 선택해주세요."
+        : msg.includes("unauthenticated") ? "로그인 상태를 확인한 뒤 다시 시도해주세요."
+        : msg.includes("invalid") ? "이 사진 형식을 읽지 못했어요. JPG 또는 PNG 사진으로 다시 시도해주세요."
+        : t.communityUploadFailed;
+      setErrors((e) => ({ ...e, images: friendly }));
+    }
+    setUploading(false);
+  };
+  const handleRemoveImage = (i) => setImages((prev) => prev.filter((_, idx) => idx !== i));
+
+  const submit = async () => {
+    const next = {};
+    if (!petId) next.pet = t.communityComposeErrPet;
+    if (!title.trim()) next.title = t.communityComposeErrTitle;
+    if (!content.trim()) next.content = t.communityComposeErrContent;
+    const blockedMessage = validatePetTalkText(title, content);
+    if (blockedMessage) next.submit = blockedMessage;
+    if (Object.keys(next).length) { setErrors(next); return; }
+    setSubmitting(true);
+    try {
+      const pet = pets.find((p) => p.id === petId);
+      if (isEdit) {
+        await communityUpdatePost(initialPost.id, { category, title: title.trim(), content: content.trim(), imageUrls: images, isPublic });
+      } else {
+        await communityCreatePost({ pet: petSnapshot(pet), category, title: title.trim(), content: content.trim(), imageUrls: images, isPublic });
+      }
+      onSaved();
+    } catch (err) {
+      setErrors({ submit: err?.message || t.communityUploadFailed });
+      if (err?.message) window.alert(err.message);
+    }
+    setSubmitting(false);
+  };
+
+  return (
+    <div style={{ maxWidth: 560, margin: "0 auto" }}>
+      <div className="bg-card">
+        <label className="bg-label">{t.communityComposeTitlePet}</label>
+        {!isEdit && <PetPicker pets={pets} activeId={petId} onSelect={setPetId} />}
+        {isEdit && <CmPetLine pet={initialPost.pet} lang={lang} />}
+        {errors.pet && <div className="field-error">{errors.pet}</div>}
+
+        <label className="bg-label" style={{ marginTop: 14 }}>{t.communityComposeTitleCategory}</label>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          {COMMUNITY_CATEGORY_KEYS.map((k) => (
+            <button key={k} 

@@ -1,0 +1,230 @@
+><span>🐾</span><div><small>COMMUNITY REWARD</small><h2>활동이 혜택이 되는 PetPoint</h2><p>Pet톡에서 이야기를 나누고 댓글을 남기며 포인트를 모아 Pet사주·운세 같은 재미 콘텐츠를 즐길 수 있어요. 유료 충전 없이 PetGrow 안의 건강한 참여를 보상하는 방식이에요.</p></div></section>}
+function PetPointGuideCard(){return <section className="bg-card petpoint-guide-hero"><div><small>PETPOINT GUIDE</small><h2>🐾 활동하고, 모으고, 즐겨요</h2><p>처음 1,000P로 시작하고 Pet톡 활동과 하루 첫 접속으로 포인트를 모을 수 있어요. 포인트는 PetGrow 재미 콘텐츠에서만 사용돼요.</p></div><div className="petpoint-mini-grid"><span><b>+50P</b> 글 작성</span><span><b>+20P</b> 댓글</span><span><b>+5P</b> 좋아요 받기</span><span><b>+30P</b> 하루 첫 접속</span></div></section>}
+function PetPointAdminOverview(){const [d,setD]=useState(null);useEffect(()=>{apiJson("/api/points?action=admin").then(setD).catch(()=>{})},[]);if(!d)return null;return <section className="bg-card petpoint-admin"><h2>🐾 PetPoint 운영 현황</h2><div><span><small>포인트 회원</small><b>{Number(d.users||0).toLocaleString()}</b></span><span><small>현재 잔액 합계</small><b>{Number(d.balance||0).toLocaleString()}P</b></span><span><small>누적 적립</small><b>+{Number(d.earned||0).toLocaleString()}P</b></span><span><small>누적 사용·회수</small><b>-{Number(d.spent||0).toLocaleString()}P</b></span></div></section>}
+
+function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost, onOpenAdmin }) {
+  const t = useT();
+  const [adminEntry, setAdminEntry] = useState(null);
+  const [likedMusic, setLikedMusic] = useState([]);
+  const [likedMusicLoaded, setLikedMusicLoaded] = useState(false);
+  const [likedMusicLoading, setLikedMusicLoading] = useState(false);
+  const [openActivity, setOpenActivity] = useState(null); // "pettalk" | "music" | null
+
+  const loadLikedMusic = async (force = false) => {
+    if (!account) { setLikedMusic([]); setLikedMusicLoaded(true); return; }
+    if (likedMusicLoading || (likedMusicLoaded && !force)) return;
+    setLikedMusicLoading(true);
+    try {
+      const r = await musicLiked();
+      setLikedMusic(r.items || []);
+      setLikedMusicLoaded(true);
+    } catch (e) {
+      console.warn("Liked music load skipped:", e);
+    } finally {
+      setLikedMusicLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    setLikedMusic([]);
+    setLikedMusicLoaded(false);
+    setOpenActivity(null);
+  }, [account?.id]);
+
+  useEffect(() => {
+    let alive = true;
+    if (!account) { setAdminEntry(null); return () => { alive = false; }; }
+    adminStatus().then((st) => { if (alive) setAdminEntry(st); }).catch(() => { if (alive) setAdminEntry(null); });
+    return () => { alive = false; };
+  }, [account?.id]);
+
+  const togglePetTalkActivity = () => setOpenActivity((v) => v === "pettalk" ? null : "pettalk");
+  const toggleLikedMusic = () => {
+    const willOpen = openActivity !== "music";
+    setOpenActivity(willOpen ? "music" : null);
+    if (willOpen) loadLikedMusic(true);
+  };
+
+  const menuItems = [
+    { key: "edit", icon: "✏️", title: lang === "en" ? "Edit info" : "정보 수정", desc: lang === "en" ? "Change the nickname shown in Pet Talk and manage your account." : "Pet톡에 보이는 닉네임과 계정 정보를 수정해요.", cls: "my-menu-pink", action: onOpenAccount },
+    { key: "pets", icon: "🐾", title: lang === "en" ? "Manage pets" : "반려동물 관리", desc: lang === "en" ? `Manage ${allPets.length} registered pet(s).` : `등록한 아이 ${allPets.length}마리의 정보와 성장기록을 관리해요.`, cls: "my-menu-blue", action: onGoPets },
+    { key: "activity", icon: "💬", title: lang === "en" ? "Pet Talk activity" : "Pet톡 내 활동", desc: lang === "en" ? "Tap to view your posts, comments and likes." : "눌러서 내가 작성한 글·댓글·좋아요를 확인해요.", cls: "my-menu-purple", action: togglePetTalkActivity, open: openActivity === "pettalk" },
+    { key: "likedmusic", icon: "❤️", title: lang === "en" ? "Liked Pet Music" : "내가 좋아요 누른 Pet음악", desc: lang === "en" ? "Tap to see all music you liked." : "눌러서 좋아요한 음악을 확인해요.", cls: "my-menu-mint", action: toggleLikedMusic, open: openActivity === "music" },
+  ];
+
+  return (
+    <div style={{ maxWidth: 760, margin: "0 auto", padding: "0 20px 70px" }}>
+      <div className="my-page-head">
+        <div>
+          <div className="my-page-kicker">MY PETGROW</div>
+          <h1>{lang === "en" ? "Member info" : "회원정보"}</h1>
+          <p style={{ fontSize: 13 }}>{lang === "en" ? "Manage your profile, pets, and activity." : "회원정보부터 우리 아이와 활동까지 한곳에서 관리해요."}</p>
+        </div>
+        <span className="my-page-head-icon" style={{ fontSize: 30 }}>🐶</span>
+      </div>
+
+      <section className="mypage-petpoint-section"><PetPointDashboard /></section>
+
+      <div className="my-menu-grid my-menu-grid-top">
+        {menuItems.slice(0,2).map((item, i) => (
+          <button key={item.key} type="button" className={`my-menu-card ${item.cls}`} onClick={item.action} style={{ animationDelay: `${i * 70}ms` }}>
+            <span className="my-menu-card-icon">{item.icon}</span><span className="my-menu-card-copy"><strong>{item.title}</strong><small>{item.desc}</small></span><span className="my-menu-card-arrow">›</span>
+          </button>
+        ))}
+      </div>
+      <div className="my-activity-stack">
+        <button type="button" className={`my-menu-card my-menu-purple my-menu-card-wide${openActivity==="pettalk"?" is-open":""}`} onClick={togglePetTalkActivity}><span className="my-menu-card-icon">💬</span><span className="my-menu-card-copy"><strong>{lang==="en"?"Pet Talk activity":"Pet톡 내 활동"}</strong><small>{lang==="en"?"Tap to view your posts, comments and likes.":"눌러서 내가 작성한 글·댓글·좋아요를 확인해요."}</small></span><span className="my-menu-card-arrow">{openActivity==="pettalk"?"⌃":"›"}</span></button>
+        {openActivity === "pettalk" && <div id="my-pettalk-activity" className="bg-card my-activity-card my-accordion-panel"><div style={{fontSize:15,fontWeight:800,marginBottom:6}}>{t.myPageActivityTitle}</div><MyActivityPage lang={lang} onOpenPost={onOpenPost} embedded /></div>}
+        <button type="button" className={`my-menu-card my-menu-mint my-menu-card-wide${openActivity==="music"?" is-open":""}`} onClick={toggleLikedMusic}><span className="my-menu-card-icon">❤️</span><span className="my-menu-card-copy"><strong>{lang==="en"?"Liked Pet Music":"내가 좋아요 누른 Pet음악"}</strong><small>{lang==="en"?"Tap to see all music you liked.":"눌러서 좋아요한 음악을 확인해요."}</small></span><span className="my-menu-card-arrow">{openActivity==="music"?"⌃":"›"}</span></button>
+        {openActivity === "music" && <div id="my-liked-music" className="bg-card my-activity-card my-accordion-panel"><div style={{fontSize:15,fontWeight:800,marginBottom:8}}>❤️ {lang==="en"?"Liked Pet Music":"내가 좋아요 누른 Pet음악"}</div>{likedMusicLoading&&!likedMusicLoaded?<div className="bg-sub">좋아요한 음악을 불러오는 중...</div>:likedMusic.length?<div style={{display:"grid",gap:8}}>{likedMusic.slice(0,20).map(x=><div key={x.id} className="my-liked-music-row">{x.cover_url?<img src={x.cover_url} alt="" loading="lazy"/>:<span>🎵</span>}<div><b>{x.title}</b><small>{x.species==="dog"?"강아지":x.species==="cat"?"고양이":"공용"} · ♥ {Number(x.like_count)||0}</small></div></div>)}</div>:<div className="bg-sub">아직 좋아요한 Pet음악이 없어요.</div>}</div>}
+        <PetDailyHistory account={account} lang={lang} />
+      </div>
+
+      {adminEntry && (!adminEntry.adminExists || adminEntry.isAdmin || adminEntry.recoveryAvailable) && (
+        <button type="button" className="my-admin-below-activity" onClick={onOpenAdmin}>
+          <span>🛡️</span><div><b>{adminEntry.isAdmin ? "관리자센터" : (adminEntry.adminExists ? "관리자 등록/복구" : "최초 관리자 등록")}</b><small>{adminEntry.isAdmin ? "통계·신고·보고서·운영 기능을 관리해요." : "관리자 권한을 안전하게 연결해요."}</small></div><em>›</em>
+        </button>
+      )}
+    </div>
+  );
+}
+
+class PetTalkErrorBoundary extends React.Component {
+  constructor(props){super(props);this.state={error:false};}
+  static getDerivedStateFromError(){return {error:true};}
+  componentDidCatch(err){console.error("PetTalk render error",err);}
+  render(){return this.state.error?<PetTalkFallback/>:this.props.children;}
+}
+function PetTalkFallback(){
+  const [items,setItems]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState("");
+  const load=()=>{setLoading(true);setError("");fetch("/api/community?action=posts&category=all&sort=latest&page=1",{credentials:"include"}).then(async r=>{const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j?.message||j?.error||`Pet톡 접속 오류 (${r.status})`);return j;}).then(j=>setItems(j.posts||[])).catch(e=>setError(e.message||"Pet톡을 불러오지 못했어요.")).finally(()=>setLoading(false));};
+  useEffect(()=>{load()},[]);
+  return <div className="legal-page-shell pettalk-safe-fallback"><div className="pettalk-fallback-toolbar"><span>게시글을 다시 불러올 수 있어요.</span><button className="bg-chip" onClick={load}>새로고침</button></div>{loading?<div className="pettalk-state">Pet톡을 불러오는 중…</div>:error?<div className="pettalk-state error"><b>Pet톡 접속에 문제가 있어요.</b><span>{error}</span><button className="bg-btn" onClick={load}>다시 시도</button></div>:<div className="pettalk-fallback-list">{items.length?items.map(p=><div key={p.id} className="bg-card pettalk-fallback-item"><small>{p.authorNickname||'PetGrow 회원'} · {p.pet?.name||'우리 아이'}</small><b>{p.title}</b><p>{String(p.content||'').slice(0,180)}</p></div>):<div className="pettalk-state">아직 등록된 Pet톡이 없어요.</div>}</div>}</div>;
+}
+
+// allPets: 강아지+고양이 통합 목록, onGoRegister: 등록된 아이가 없을 때 '우리 아이' 등록으로 보내는 콜백
+function CommunityPage({ allPets, account, onGoRegister }) {
+  const t = useT();
+  const lang = useLang();
+  const [sub, setSub] = useState("feed"); // feed | detail | compose | edit | my
+  const [activePostId, setActivePostId] = useState(null);
+  const [editingPost, setEditingPost] = useState(null);
+
+  const openPost = (id) => { setActivePostId(id); setSub("detail"); };
+  const backToFeed = () => { setSub("feed"); setActivePostId(null); };
+
+  if (sub === "compose" || sub === "edit") {
+    if (sub === "compose" && allPets.length === 0) {
+      return (
+        <div style={{ maxWidth: 420, margin: "0 auto", textAlign: "center" }} className="bg-card">
+          <p style={{ fontSize: 15, fontWeight: 700, marginBottom: 8 }}>{t.communityNeedPetTitle}</p>
+          <p className="bg-sub" style={{ fontSize: 13, marginBottom: 18 }}>{t.communityNeedPetBody}</p>
+          <button className="bg-btn" style={{ width: "100%" }} onClick={onGoRegister}>{t.sajuGoRegisterBtn}</button>
+        </div>
+      );
+    }
+    return (
+      <PostComposer pets={allPets} initialPost={sub === "edit" ? editingPost : null}
+        onCancel={() => setSub(sub === "edit" ? "detail" : "feed")}
+        onSaved={() => setSub("detail")} />
+    );
+  }
+
+  if (sub === "detail" && activePostId) {
+    return (
+      <PostDetail postId={activePostId} pets={allPets} account={account}
+        onBack={backToFeed} onDeleted={backToFeed}
+        onEdit={async () => {
+          const p = await communityGetPost(activePostId);
+          setEditingPost(p);
+          setSub("edit");
+        }} />
+    );
+  }
+
+  if (sub === "my") {
+    return (
+      <div>
+        <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px" }}>
+          <button type="button" onClick={backToFeed}
+            style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer", padding: 0, marginBottom: 14, fontSize: 13, fontWeight: 700, color: "var(--sub)" }}>
+            ← {t.communityBack}
+          </button>
+        </div>
+        <MyActivityPage lang={lang} onOpenPost={openPost} />
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <CommunityFeed pets={allPets} lang={lang} onOpenPost={openPost} onWrite={() => setSub("compose")} onMyActivity={() => setSub("my")} />
+    </div>
+  );
+}
+
+const MENU_HELP = {
+  home: { icon: "🏠", koTitle: "홈", koBody: "우리 아이와 PetGrow의 주요 기능을 한눈에 보고 원하는 메뉴로 바로 이동할 수 있어요.", enTitle: "Home", enBody: "See your pets and jump into PetGrow features from one place." },
+  about: { icon: "🌱", koTitle: "PetGrow 소개", koBody: "PetGrow가 어떤 서비스인지, 어떤 기능을 제공하는지 한눈에 살펴볼 수 있어요.", enTitle: "About PetGrow", enBody: "See what PetGrow is and what you can do here." },
+  pets: { icon: "🐾", koTitle: "우리 아이", koBody: "반려동물 정보를 등록하고 체중·성장기록·사진을 꾸준히 관리해보세요.", enTitle: "My Pets", enBody: "Register your pets and manage growth, weight, and photos." },
+  community: { icon: "💬", koTitle: "Pet톡", koBody: "다른 보호자들과 일상·질문·건강·산책·훈련 이야기를 나눠요. 닉네임은 회원정보에서 바꿀 수 있어요.", enTitle: "Pet Talk", enBody: "Share daily life, questions, health, walks and training with other pet guardians." },
+  saju: { icon: "🔮", koTitle: "Pet사주", koBody: "기본 Pet사주, 오늘의 펫운세, 보호자 궁합을 재미로 즐겨보세요.", enTitle: "Pet Saju", enBody: "Enjoy Pet Saju, today's fortune, or guardian compatibility for fun." },
+  tarot: { icon: "🃏", koTitle: "Pet타로", koBody: "22장의 메이저 아르카나에서 주제별로 하루 한 장을 뽑고 오늘의 메시지를 저장해보세요.", enTitle: "Pet Tarot", enBody: "Draw one card per topic each day and save the reading to your account." },
+  petbti: { icon: "🧩", koTitle: "PetBTI", koBody: "강아지·고양이별 20개 행동 질문으로 우리 아이의 성향을 더 구체적으로 알아봐요.", enTitle: "PetBTI", enBody: "Answer behavior questions and discover a fun personality type for your pet." },
+  music: { icon: "🎵", koTitle: "Pet음악", koBody: "강아지·고양이를 위한 음악을 듣고 반복재생하며 좋아요와 댓글로 우리 아이의 반응을 나눠보세요.", enTitle: "Pet Music", enBody: "Listen to pet-friendly music, loop favorites, and share reactions with likes and comments." },
+  tips: { icon: "💡", koTitle: "Pet정보", koBody: "건강·식단·생활·훈련 등 반려생활에 바로 써먹기 좋은 정보를 모아봤어요.", enTitle: "Pet Tips", enBody: "Browse practical tips for health, food, daily care and training." },
+  my: { icon: "👤", koTitle: "회원정보", koBody: "닉네임과 계정 정보를 수정하고, 반려동물 관리와 Pet톡 내 활동을 확인할 수 있어요.", enTitle: "Member info", enBody: "Edit your nickname and account, manage pets, and review your Pet Talk activity." },
+  content: { icon: "✨", koTitle: "Pet 콘텐츠", koBody: "Pet사주·PetBTI·Pet정보을 한곳에서 골라 이용할 수 있어요.", enTitle: "Pet Content", enBody: "Choose Pet Saju, PetBTI and Pet Tips in one place." },
+};
+
+function MenuHelpCoach({ view, lang, open, onClose, onOpen }) {
+  const data = MENU_HELP[view];
+  if (!data) return null;
+  const title = lang === "en" ? data.enTitle : data.koTitle;
+  const body = lang === "en" ? data.enBody : data.koBody;
+  return (
+    <>
+      <button type="button" className="menu-help-fab" onClick={onOpen} aria-label={lang === "en" ? "Open page guide" : "이 페이지 설명 보기"}>?</button>
+      <div className={`menu-help-dim ${open ? "open" : ""}`} onClick={onClose} />
+      <aside className={`menu-help-coach ${open ? "open" : ""}`} aria-hidden={!open}>
+        <div className="menu-help-top">
+          <span className="menu-help-emoji">{data.icon}</span>
+          <button type="button" className="menu-help-close" onClick={onClose} aria-label="close">×</button>
+        </div>
+        <div className="menu-help-kicker">PETGROW HELP</div>
+        <h3>{title}</h3>
+        <p>{body}</p>
+        <div className="menu-help-actions">
+          <button type="button" className="menu-help-primary" onClick={onClose}>{lang === "en" ? "Close" : "닫기"}</button>
+        </div>
+      </aside>
+    </>
+  );
+}
+
+function AppInner({ lang, setLang }) {
+  const t = useT();
+  const [species, setSpecies] = useState("dog");
+  const [pets, setPets] = useState({ dog: [], cat: [] });
+  const [activeId, setActiveId] = useState({ dog: null, cat: null });
+  const [mode, setMode] = useState("view"); // 'view' | 'onboarding' | 'edit'
+  const [loaded, setLoaded] = useState(false);
+  const [welcomeBackOpen, setWelcomeBackOpen] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
+  const [menuHelpOpen, setMenuHelpOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null); // {id, name} | null
+
+  // 'about' | 'pets' | 'saju' | 'petbti' | 'tips' | 'guide' | 'privacy' | 'terms'
+  const [view, setView] = useState("home");
+  const GATED_VIEWS = ["pets", "saju", "petbti", "tips", "guide", "content", "my", "admin"];
+
+  // ---- 계정(카카오 로그인) ----
+  const [account, setAccount] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  // 로그인 필요 화면 여부는 모든 effect보다 먼저 계산해야 해요.
+  // 아래 통계/광고 effect에서 effectiveView를 참조하므로 TDZ(선언 전 접근) 오류를 방지합니다.
+  const needsLogin = GATED_VIEWS.includes(view) && !account;
+  const effectiveView = needsLogin ? "login" : view;
+  const [accountModalOpen, setAccountModalOpen] = useState(false);
+  useEffect(()=>{if(account?.id)adminStatusFast().ca

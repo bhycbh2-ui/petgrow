@@ -1,0 +1,255 @@
+nge={async e=>{if(!window.confirm("관리자 권한을 변경할까요?"))return;await adminChangeRole(a.user_id,e.target.value);await loadAll()}}><option value="operator">운영관리자</option><option value="report">신고관리자</option><option value="ads">광고관리자</option></select><button onClick={async()=>{if(!window.confirm(`${a.nickname}님의 관리자 PIN을 초기화할까요?\n다음 접속 때 새 PIN을 설정해야 합니다.`))return;await adminResetPin(a.user_id);await loadAll()}}>PIN 초기화</button><button onClick={async()=>{if(!window.confirm(`${a.nickname}님의 관리자 권한을 삭제할까요?`))return;await adminRemoveUser(a.user_id);await loadAll()}}>관리자 삭제</button></div>}</div>)}</div>
+   </div>}
+ </div>
+}
+
+async function petPointSummary(){return apiJson("/api/points?action=summary");}
+const petPointKstDate=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Seoul",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+async function petPointSpend(feature,refKey=null){const r=await apiJson("/api/points?action=spend",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({feature,refKey})});if(r?.spent)window.dispatchEvent(new CustomEvent("petgrow:points",{detail:{amount:-r.spent,balance:r.balance,label:r.label||"PetPoint 사용"}}));return r;}
+function PetPointDashboard({compact=false}){
+  const [d,setD]=useState(null),[toast,setToast]=useState(null),[filter,setFilter]=useState("all"),[refreshing,setRefreshing]=useState(false);
+  const toastTimer=React.useRef(null);
+  const load=async(silent=false)=>{if(!silent)setRefreshing(true);try{const x=await petPointSummary();setD(x);if(x?.pointEvent?.awarded){setToast({amount:x.pointEvent.awarded,label:x.pointEvent.label,balance:x.pointEvent.balance});clearTimeout(toastTimer.current);toastTimer.current=setTimeout(()=>setToast(null),2600)}}catch{}finally{if(!silent)setRefreshing(false)}};
+  useEffect(()=>{load();const h=e=>{const ev=e.detail||{};setToast(ev);setD(v=>v?{...v,balance:ev.balance??v.balance}:v);clearTimeout(toastTimer.current);toastTimer.current=setTimeout(()=>setToast(null),2600);setTimeout(()=>load(true),180)};window.addEventListener("petgrow:points",h);const poll=setInterval(()=>load(true),5000);return()=>{window.removeEventListener("petgrow:points",h);clearInterval(poll);clearTimeout(toastTimer.current)}},[]);
+  if(!d)return <div className="petpoint-card petpoint-loading">🐾 PetPoint 확인 중…</div>;
+  const recent=Array.isArray(d.recent)?d.recent:[];
+  const shown=recent.filter(x=>filter==="all"||(filter==="earn"?Number(x.amount)>0:Number(x.amount)<0));
+  const fmtDate=v=>{try{return new Date(v).toLocaleString("ko-KR",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"})}catch{return ""}};
+  return <section className={`petpoint-card petpoint-dashboard-final ${compact?"compact":""}`}>
+    <div className="petpoint-head"><div><small>PETGROW REWARD · 실시간 반영</small><h2>🐾 PetPoint</h2><p>적립·사용 즉시 잔액에 반영되고 최근 이용내역도 여기서 확인할 수 있어요.</p></div><strong>{Number(d.balance||0).toLocaleString()}<em>P</em></strong></div>
+    {!compact&&<>
+      <div className="petpoint-live-stats"><div><small>현재 보유</small><b>{Number(d.balance||0).toLocaleString()}P</b></div><div className="plus"><small>오늘 적립</small><b>+{Number(d.todayEarned||0).toLocaleString()}P</b></div><div className="minus"><small>오늘 사용</small><b>-{Number(d.todaySpent||0).toLocaleString()}P</b></div><div><small>최근 7일 사용</small><b>-{Number(d.weekSpent||0).toLocaleString()}P</b></div></div>
+      <div className="petpoint-costs"><span>🌤️ 오늘 운세 <b>{d.costs?.saju_daily||20}P</b></span><span>🔮 기본 사주 <b>{d.costs?.saju_basic||50}P</b></span><span>🫶 보호자 궁합 <b>{d.costs?.saju_compat||40}P</b></span></div>
+      <details className="petpoint-guide" open><summary>포인트는 어떻게 모아요?</summary><div>{(d.earnGuide||[]).map((x,i)=><p key={i}><b>+{x.points}P</b><span>{x.label}</span><small>{x.limit}</small></p>)}</div></details>
+      <div className="petpoint-history-head"><div><b>포인트 이용내역</b><small>최근 20건 · 실시간 반영 · 5초 자동 동기화</small></div><button type="button" className="bg-chip" onClick={()=>load()} disabled={refreshing}>{refreshing?"확인 중…":"새로고침"}</button></div>
+      <div className="petpoint-history-tabs"><button className={filter==="all"?"active":""} onClick={()=>setFilter("all")}>전체</button><button className={filter==="earn"?"active":""} onClick={()=>setFilter("earn")}>적립</button><button className={filter==="spend"?"active":""} onClick={()=>setFilter("spend")}>사용</button></div>
+      <div className="petpoint-history-list">{shown.length?shown.map((x,i)=><div className="petpoint-history-row" key={`${x.created_at||i}-${i}`}><span className={Number(x.amount)>=0?"earn":"spend"}>{Number(x.amount)>=0?"적립":"사용"}</span><div><b>{x.label||"PetPoint"}</b><small>{fmtDate(x.created_at)}</small></div><strong className={Number(x.amount)>=0?"plus":"minus"}>{Number(x.amount)>=0?"+":""}{Number(x.amount||0).toLocaleString()}P</strong></div>):<div className="petpoint-history-empty">아직 표시할 이용내역이 없어요.</div>}</div>
+    </>}
+    {toast&&<div className={`petpoint-toast ${Number(toast.amount)>=0?"plus":"minus"}`}><b>{Number(toast.amount)>=0?`+${Number(toast.amount).toLocaleString()}P 적립`:`${Number(toast.amount).toLocaleString()}P 사용`}</b><span>{toast.label||"PetPoint"}{toast.balance!=null?` · 잔액 ${Number(toast.balance).toLocaleString()}P`:""}</span></div>}
+  </section>
+}
+function PetPointPolicyAddendum({type}){return <section className="bg-card petpoint-policy"><h2>🐾 PetPoint 운영 안내</h2><p>PetPoint는 PetGrow 서비스 안에서만 사용하는 무료 활동 포인트이며 현금으로 구매·환전·출금하거나 다른 사람에게 양도할 수 없어요. 첫 이용 시 기본 포인트가 지급되고 Pet톡 글·댓글·좋아요 받기·하루 첫 접속 등 정상적인 활동에 따라 포인트가 적립될 수 있어요.</p><p>Pet사주·오늘의 펫운세·보호자 궁합 등 일부 재미 콘텐츠 이용 시 안내된 포인트가 차감됩니다. 반복 도배·비정상 활동·운영정책 위반 등 부정한 방식으로 적립한 포인트는 지급 취소 또는 회수될 수 있고, 글이나 댓글을 삭제하면 해당 활동으로 적립된 포인트가 회수될 수 있어요.</p>{type==="privacy"&&<p className="bg-sub">포인트 운영을 위해 회원 내부 식별자, 적립·사용 사유, 증감 포인트, 처리 시각과 활동 참조값을 계정에 연결해 저장하며 회원탈퇴 시 관계 법령상 보관 의무가 있는 경우를 제외하고 삭제합니다.</p>}</section>}
+function PetPointAboutCard(){return <section className="bg-card petpoint-about"><span>🐾</span><div><small>COMMUNITY REWARD</small><h2>활동이 혜택이 되는 PetPoint</h2><p>Pet톡에서 이야기를 나누고 댓글을 남기며 포인트를 모아 Pet사주·운세 같은 재미 콘텐츠를 즐길 수 있어요. 유료 충전 없이 PetGrow 안의 건강한 참여를 보상하는 방식이에요.</p></div></section>}
+function PetPointGuideCard(){return <section className="bg-card petpoint-guide-hero"><div><small>PETPOINT GUIDE</small><h2>🐾 활동하고, 모으고, 즐겨요</h2><p>처음 1,000P로 시작하고 Pet톡 활동과 하루 첫 접속으로 포인트를 모을 수 있어요. 포인트는 PetGrow 재미 콘텐츠에서만 사용돼요.</p></div><div className="petpoint-mini-grid"><span><b>+50P</b> 글 작성</span><span><b>+20P</b> 댓글</span><span><b>+5P</b> 좋아요 받기</span><span><b>+30P</b> 하루 첫 접속</span></div></section>}
+function PetPointAdminOverview(){const [d,setD]=useState(null);useEffect(()=>{apiJson("/api/points?action=admin").then(setD).catch(()=>{})},[]);if(!d)return null;return <section className="bg-card petpoint-admin"><h2>🐾 PetPoint 운영 현황</h2><div><span><small>포인트 회원</small><b>{Number(d.users||0).toLocaleString()}</b></span><span><small>현재 잔액 합계</small><b>{Number(d.balance||0).toLocaleString()}P</b></span><span><small>누적 적립</small><b>+{Number(d.earned||0).toLocaleString()}P</b></span><span><small>누적 사용·회수</small><b>-{Number(d.spent||0).toLocaleString()}P</b></span></div></section>}
+
+function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost, onOpenAdmin }) {
+  const t = useT();
+  const [adminEntry, setAdminEntry] = useState(null);
+  const [likedMusic, setLikedMusic] = useState([]);
+  const [likedMusicLoaded, setLikedMusicLoaded] = useState(false);
+  const [likedMusicLoading, setLikedMusicLoading] = useState(false);
+  const [openActivity, setOpenActivity] = useState(null); // "pettalk" | "music" | null
+
+  const loadLikedMusic = async (force = false) => {
+    if (!account) { setLikedMusic([]); setLikedMusicLoaded(true); return; }
+    if (likedMusicLoading || (likedMusicLoaded && !force)) return;
+    setLikedMusicLoading(true);
+    try {
+      const r = await musicLiked();
+      setLikedMusic(r.items || []);
+      setLikedMusicLoaded(true);
+    } catch (e) {
+      console.warn("Liked music load skipped:", e);
+    } finally {
+      setLikedMusicLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    setLikedMusic([]);
+    setLikedMusicLoaded(false);
+    setOpenActivity(null);
+  }, [account?.id]);
+
+  useEffect(() => {
+    let alive = true;
+    if (!account) { setAdminEntry(null); return () => { alive = false; }; }
+    adminStatus().then((st) => { if (alive) setAdminEntry(st); }).catch(() => { if (alive) setAdminEntry(null); });
+    return () => { alive = false; };
+  }, [account?.id]);
+
+  const togglePetTalkActivity = () => setOpenActivity((v) => v === "pettalk" ? null : "pettalk");
+  const toggleLikedMusic = () => {
+    const willOpen = openActivity !== "music";
+    setOpenActivity(willOpen ? "music" : null);
+    if (willOpen) loadLikedMusic(true);
+  };
+
+  const menuItems = [
+    { key: "edit", icon: "✏️", title: lang === "en" ? "Edit info" : "정보 수정", desc: lang === "en" ? "Change the nickname shown in Pet Talk and manage your account." : "Pet톡에 보이는 닉네임과 계정 정보를 수정해요.", cls: "my-menu-pink", action: onOpenAccount },
+    { key: "pets", icon: "🐾", title: lang === "en" ? "Manage pets" : "반려동물 관리", desc: lang === "en" ? `Manage ${allPets.length} registered pet(s).` : `등록한 아이 ${allPets.length}마리의 정보와 성장기록을 관리해요.`, cls: "my-menu-blue", action: onGoPets },
+    { key: "activity", icon: "💬", title: lang === "en" ? "Pet Talk activity" : "Pet톡 내 활동", desc: lang === "en" ? "Tap to view your posts, comments and likes." : "눌러서 내가 작성한 글·댓글·좋아요를 확인해요.", cls: "my-menu-purple", action: togglePetTalkActivity, open: openActivity === "pettalk" },
+    { key: "likedmusic", icon: "❤️", title: lang === "en" ? "Liked Pet Music" : "내가 좋아요 누른 Pet음악", desc: lang === "en" ? "Tap to see all music you liked." : "눌러서 좋아요한 음악을 확인해요.", cls: "my-menu-mint", action: toggleLikedMusic, open: openActivity === "music" },
+  ];
+
+  return (
+    <div style={{ maxWidth: 760, margin: "0 auto", padding: "0 20px 70px" }}>
+      <div className="my-page-head">
+        <div>
+          <div className="my-page-kicker">MY PETGROW</div>
+          <h1>{lang === "en" ? "Member info" : "회원정보"}</h1>
+          <p style={{ fontSize: 13 }}>{lang === "en" ? "Manage your profile, pets, and activity." : "회원정보부터 우리 아이와 활동까지 한곳에서 관리해요."}</p>
+        </div>
+        <span className="my-page-head-icon" style={{ fontSize: 30 }}>🐶</span>
+      </div>
+
+      <section className="mypage-petpoint-section"><PetPointDashboard /></section>
+
+      <div className="my-menu-grid my-menu-grid-top">
+        {menuItems.slice(0,2).map((item, i) => (
+          <button key={item.key} type="button" className={`my-menu-card ${item.cls}`} onClick={item.action} style={{ animationDelay: `${i * 70}ms` }}>
+            <span className="my-menu-card-icon">{item.icon}</span><span className="my-menu-card-copy"><strong>{item.title}</strong><small>{item.desc}</small></span><span className="my-menu-card-arrow">›</span>
+          </button>
+        ))}
+      </div>
+      <div className="my-activity-stack">
+        <button type="button" className={`my-menu-card my-menu-purple my-menu-card-wide${openActivity==="pettalk"?" is-open":""}`} onClick={togglePetTalkActivity}><span className="my-menu-card-icon">💬</span><span className="my-menu-card-copy"><strong>{lang==="en"?"Pet Talk activity":"Pet톡 내 활동"}</strong><small>{lang==="en"?"Tap to view your posts, comments and likes.":"눌러서 내가 작성한 글·댓글·좋아요를 확인해요."}</small></span><span className="my-menu-card-arrow">{openActivity==="pettalk"?"⌃":"›"}</span></button>
+        {openActivity === "pettalk" && <div id="my-pettalk-activity" className="bg-card my-activity-card my-accordion-panel"><div style={{fontSize:15,fontWeight:800,marginBottom:6}}>{t.myPageActivityTitle}</div><MyActivityPage lang={lang} onOpenPost={onOpenPost} embedded /></div>}
+        <button type="button" className={`my-menu-card my-menu-mint my-menu-card-wide${openActivity==="music"?" is-open":""}`} onClick={toggleLikedMusic}><span className="my-menu-card-icon">❤️</span><span className="my-menu-card-copy"><strong>{lang==="en"?"Liked Pet Music":"내가 좋아요 누른 Pet음악"}</strong><small>{lang==="en"?"Tap to see all music you liked.":"눌러서 좋아요한 음악을 확인해요."}</small></span><span className="my-menu-card-arrow">{openActivity==="music"?"⌃":"›"}</span></button>
+        {openActivity === "music" && <div id="my-liked-music" className="bg-card my-activity-card my-accordion-panel"><div style={{fontSize:15,fontWeight:800,marginBottom:8}}>❤️ {lang==="en"?"Liked Pet Music":"내가 좋아요 누른 Pet음악"}</div>{likedMusicLoading&&!likedMusicLoaded?<div className="bg-sub">좋아요한 음악을 불러오는 중...</div>:likedMusic.length?<div style={{display:"grid",gap:8}}>{likedMusic.slice(0,20).map(x=><div key={x.id} className="my-liked-music-row">{x.cover_url?<img src={x.cover_url} alt="" loading="lazy"/>:<span>🎵</span>}<div><b>{x.title}</b><small>{x.species==="dog"?"강아지":x.species==="cat"?"고양이":"공용"} · ♥ {Number(x.like_count)||0}</small></div></div>)}</div>:<div className="bg-sub">아직 좋아요한 Pet음악이 없어요.</div>}</div>}
+        <PetDailyHistory account={account} lang={lang} />
+      </div>
+
+      {adminEntry && (!adminEntry.adminExists || adminEntry.isAdmin || adminEntry.recoveryAvailable) && (
+        <button type="button" className="my-admin-below-activity" onClick={onOpenAdmin}>
+          <span>🛡️</span><div><b>{adminEntry.isAdmin ? "관리자센터" : (adminEntry.adminExists ? "관리자 등록/복구" : "최초 관리자 등록")}</b><small>{adminEntry.isAdmin ? "통계·신고·보고서·운영 기능을 관리해요." : "관리자 권한을 안전하게 연결해요."}</small></div><em>›</em>
+        </button>
+      )}
+    </div>
+  );
+}
+
+class PetTalkErrorBoundary extends React.Component {
+  constructor(props){super(props);this.state={error:false};}
+  static getDerivedStateFromError(){return {error:true};}
+  componentDidCatch(err){console.error("PetTalk render error",err);}
+  render(){return this.state.error?<PetTalkFallback/>:this.props.children;}
+}
+function PetTalkFallback(){
+  const [items,setItems]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState("");
+  const load=()=>{setLoading(true);setError("");fetch("/api/community?action=posts&category=all&sort=latest&page=1",{credentials:"include"}).then(async r=>{const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j?.message||j?.error||`Pet톡 접속 오류 (${r.status
+--- hit 1 @891667 ---
+ount)>0:Number(x.amount)<0));
+  const fmtDate=v=>{try{return new Date(v).toLocaleString("ko-KR",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"})}catch{return ""}};
+  return <section className={`petpoint-card petpoint-dashboard-final ${compact?"compact":""}`}>
+    <div className="petpoint-head"><div><small>PETGROW REWARD · 실시간 반영</small><h2>🐾 PetPoint</h2><p>적립·사용 즉시 잔액에 반영되고 최근 이용내역도 여기서 확인할 수 있어요.</p></div><strong>{Number(d.balance||0).toLocaleString()}<em>P</em></strong></div>
+    {!compact&&<>
+      <div className="petpoint-live-stats"><div><small>현재 보유</small><b>{Number(d.balance||0).toLocaleString()}P</b></div><div className="plus"><small>오늘 적립</small><b>+{Number(d.todayEarned||0).toLocaleString()}P</b></div><div className="minus"><small>오늘 사용</small><b>-{Number(d.todaySpent||0).toLocaleString()}P</b></div><div><small>최근 7일 사용</small><b>-{Number(d.weekSpent||0).toLocaleString()}P</b></div></div>
+      <div className="petpoint-costs"><span>🌤️ 오늘 운세 <b>{d.costs?.saju_daily||20}P</b></span><span>🔮 기본 사주 <b>{d.costs?.saju_basic||50}P</b></span><span>🫶 보호자 궁합 <b>{d.costs?.saju_compat||40}P</b></span></div>
+      <details className="petpoint-guide" open><summary>포인트는 어떻게 모아요?</summary><div>{(d.earnGuide||[]).map((x,i)=><p key={i}><b>+{x.points}P</b><span>{x.label}</span><small>{x.limit}</small></p>)}</div></details>
+      <div className="petpoint-history-head"><div><b>포인트 이용내역</b><small>최근 20건 · 실시간 반영 · 5초 자동 동기화</small></div><button type="button" className="bg-chip" onClick={()=>load()} disabled={refreshing}>{refreshing?"확인 중…":"새로고침"}</button></div>
+      <div className="petpoint-history-tabs"><button className={filter==="all"?"active":""} onClick={()=>setFilter("all")}>전체</button><button className={filter==="earn"?"active":""} onClick={()=>setFilter("earn")}>적립</button><button className={filter==="spend"?"active":""} onClick={()=>setFilter("spend")}>사용</button></div>
+      <div className="petpoint-history-list">{shown.length?shown.map((x,i)=><div className="petpoint-history-row" key={`${x.created_at||i}-${i}`}><span className={Number(x.amount)>=0?"earn":"spend"}>{Number(x.amount)>=0?"적립":"사용"}</span><div><b>{x.label||"PetPoint"}</b><small>{fmtDate(x.created_at)}</small></div><strong className={Number(x.amount)>=0?"plus":"minus"}>{Number(x.amount)>=0?"+":""}{Number(x.amount||0).toLocaleString()}P</strong></div>):<div className="petpoint-history-empty">아직 표시할 이용내역이 없어요.</div>}</div>
+    </>}
+    {toast&&<div className={`petpoint-toast ${Number(toast.amount)>=0?"plus":"minus"}`}><b>{Number(toast.amount)>=0?`+${Number(toast.amount).toLocaleString()}P 적립`:`${Number(toast.amount).toLocaleString()}P 사용`}</b><span>{toast.label||"PetPoint"}{toast.balance!=null?` · 잔액 ${Number(toast.balance).toLocaleString()}P`:""}</span></div>}
+  </section>
+}
+function PetPointPolicyAddendum({type}){return <section className="bg-card petpoint-policy"><h2>🐾 PetPoint 운영 안내</h2><p>PetPoint는 PetGrow 서비스 안에서만 사용하는 무료 활동 포인트이며 현금으로 구매·환전·출금하거나 다른 사람에게 양도할 수 없어요. 첫 이용 시 기본 포인트가 지급되고 Pet톡 글·댓글·좋아요 받기·하루 첫 접속 등 정상적인 활동에 따라 포인트가 적립될 수 있어요.</p><p>Pet사주·오늘의 펫운세·보호자 궁합 등 일부 재미 콘텐츠 이용 시 안내된 포인트가 차감됩니다. 반복 도배·비정상 활동·운영정책 위반 등 부정한 방식으로 적립한 포인트는 지급 취소 또는 회수될 수 있고, 글이나 댓글을 삭제하면 해당 활동으로 적립된 포인트가 회수될 수 있어요.</p>{type==="privacy"&&<p className="bg-sub">포인트 운영을 위해 회원 내부 식별자, 적립·사용 사유, 증감 포인트, 처리 시각과 활동 참조값을 계정에 연결해 저장하며 회원탈퇴 시 관계 법령상 보관 의무가 있는 경우를 제외하고 삭제합니다.</p>}</section>}
+function PetPointAboutCard(){return <section className="bg-card petpoint-about"><span>🐾</span><div><small>COMMUNITY REWARD</small><h2>활동이 혜택이 되는 PetPoint</h2><p>Pet톡에서 이야기를 나누고 댓글을 남기며 포인트를 모아 Pet사주·운세 같은 재미 콘텐츠를 즐길 수 있어요. 유료 충전 없이 PetGrow 안의 건강한 참여를 보상하는 방식이에요.</p></div></section>}
+function PetPointGuideCard(){return <section className="bg-card petpoint-guide-hero"><div><small>PETPOINT GUIDE</small><h2>🐾 활동하고, 모으고, 즐겨요</h2><p>처음 1,000P로 시작하고 Pet톡 활동과 하루 첫 접속으로 포인트를 모을 수 있어요. 포인트는 PetGrow 재미 콘텐츠에서만 사용돼요.</p></div><div className="petpoint-mini-grid"><span><b>+50P</b> 글 작성</span><span><b>+20P</b> 댓글</span><span><b>+5P</b> 좋아요 받기</span><span><b>+30P</b> 하루 첫 접속</span></div></section>}
+function PetPointAdminOverview(){const [d,setD]=useState(null);useEffect(()=>{apiJson("/api/points?action=admin").then(setD).catch(()=>{})},[]);if(!d)return null;return <section className="bg-card petpoint-admin"><h2>🐾 PetPoint 운영 현황</h2><div><span><small>포인트 회원</small><b>{Number(d.users||0).toLocaleString()}</b></span><span><small>현재 잔액 합계</small><b>{Number(d.balance||0).toLocaleString()}P</b></span><span><small>누적 적립</small><b>+{Number(d.earned||0).toLocaleString()}P</b></span><span><small>누적 사용·회수</small><b>-{Number(d.spent||0).toLocaleString()}P</b></span></div></section>}
+
+function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost, onOpenAdmin }) {
+  const t = useT();
+  const [adminEntry, setAdminEntry] = useState(null);
+  const [likedMusic, setLikedMusic] = useState([]);
+  const [likedMusicLoaded, setLikedMusicLoaded] = useState(false);
+  const [likedMusicLoading, setLikedMusicLoading] = useState(false);
+  const [openActivity, setOpenActivity] = useState(null); // "pettalk" | "music" | null
+
+  const loadLikedMusic = async (force = false) => {
+    if (!account) { setLikedMusic([]); setLikedMusicLoaded(true); return; }
+    if (likedMusicLoading || (likedMusicLoaded && !force)) return;
+    setLikedMusicLoading(true);
+    try {
+      const r = await musicLiked();
+      setLikedMusic(r.items || []);
+      setLikedMusicLoaded(true);
+    } catch (e) {
+      console.warn("Liked music load skipped:", e);
+    } finally {
+      setLikedMusicLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    setLikedMusic([]);
+    setLikedMusicLoaded(false);
+    setOpenActivity(null);
+  }, [account?.id]);
+
+  useEffect(() => {
+    let alive = true;
+    if (!account) { setAdminEntry(null); return () => { alive = false; }; }
+    adminStatus().then((st) => { if (alive) setAdminEntry(st); }).catch(() => { if (alive) setAdminEntry(null); });
+    return () => { alive = false; };
+  }, [account?.id]);
+
+  const togglePetTalkActivity = () => setOpenActivity((v) => v === "pettalk" ? null : "pettalk");
+  const toggleLikedMusic = () => {
+    const willOpen = openActivity !==
+--- hit 1 @891877 ---
+petpoint-card petpoint-dashboard-final ${compact?"compact":""}`}>
+    <div className="petpoint-head"><div><small>PETGROW REWARD · 실시간 반영</small><h2>🐾 PetPoint</h2><p>적립·사용 즉시 잔액에 반영되고 최근 이용내역도 여기서 확인할 수 있어요.</p></div><strong>{Number(d.balance||0).toLocaleString()}<em>P</em></strong></div>
+    {!compact&&<>
+      <div className="petpoint-live-stats"><div><small>현재 보유</small><b>{Number(d.balance||0).toLocaleString()}P</b></div><div className="plus"><small>오늘 적립</small><b>+{Number(d.todayEarned||0).toLocaleString()}P</b></div><div className="minus"><small>오늘 사용</small><b>-{Number(d.todaySpent||0).toLocaleString()}P</b></div><div><small>최근 7일 사용</small><b>-{Number(d.weekSpent||0).toLocaleString()}P</b></div></div>
+      <div className="petpoint-costs"><span>🌤️ 오늘 운세 <b>{d.costs?.saju_daily||20}P</b></span><span>🔮 기본 사주 <b>{d.costs?.saju_basic||50}P</b></span><span>🫶 보호자 궁합 <b>{d.costs?.saju_compat||40}P</b></span></div>
+      <details className="petpoint-guide" open><summary>포인트는 어떻게 모아요?</summary><div>{(d.earnGuide||[]).map((x,i)=><p key={i}><b>+{x.points}P</b><span>{x.label}</span><small>{x.limit}</small></p>)}</div></details>
+      <div className="petpoint-history-head"><div><b>포인트 이용내역</b><small>최근 20건 · 실시간 반영 · 5초 자동 동기화</small></div><button type="button" className="bg-chip" onClick={()=>load()} disabled={refreshing}>{refreshing?"확인 중…":"새로고침"}</button></div>
+      <div className="petpoint-history-tabs"><button className={filter==="all"?"active":""} onClick={()=>setFilter("all")}>전체</button><button className={filter==="earn"?"active":""} onClick={()=>setFilter("earn")}>적립</button><button className={filter==="spend"?"active":""} onClick={()=>setFilter("spend")}>사용</button></div>
+      <div className="petpoint-history-list">{shown.length?shown.map((x,i)=><div className="petpoint-history-row" key={`${x.created_at||i}-${i}`}><span className={Number(x.amount)>=0?"earn":"spend"}>{Number(x.amount)>=0?"적립":"사용"}</span><div><b>{x.label||"PetPoint"}</b><small>{fmtDate(x.created_at)}</small></div><strong className={Number(x.amount)>=0?"plus":"minus"}>{Number(x.amount)>=0?"+":""}{Number(x.amount||0).toLocaleString()}P</strong></div>):<div className="petpoint-history-empty">아직 표시할 이용내역이 없어요.</div>}</div>
+    </>}
+    {toast&&<div className={`petpoint-toast ${Number(toast.amount)>=0?"plus":"minus"}`}><b>{Number(toast.amount)>=0?`+${Number(toast.amount).toLocaleString()}P 적립`:`${Number(toast.amount).toLocaleString()}P 사용`}</b><span>{toast.label||"PetPoint"}{toast.balance!=null?` · 잔액 ${Number(toast.balance).toLocaleString()}P`:""}</span></div>}
+  </section>
+}
+function PetPointPolicyAddendum({type}){return <section className="bg-card petpoint-policy"><h2>🐾 PetPoint 운영 안내</h2><p>PetPoint는 PetGrow 서비스 안에서만 사용하는 무료 활동 포인트이며 현금으로 구매·환전·출금하거나 다른 사람에게 양도할 수 없어요. 첫 이용 시 기본 포인트가 지급되고 Pet톡 글·댓글·좋아요 받기·하루 첫 접속 등 정상적인 활동에 따라 포인트가 적립될 수 있어요.</p><p>Pet사주·오늘의 펫운세·보호자 궁합 등 일부 재미 콘텐츠 이용 시 안내된 포인트가 차감됩니다. 반복 도배·비정상 활동·운영정책 위반 등 부정한 방식으로 적립한 포인트는 지급 취소 또는 회수될 수 있고, 글이나 댓글을 삭제하면 해당 활동으로 적립된 포인트가 회수될 수 있어요.</p>{type==="privacy"&&<p className="bg-sub">포인트 운영을 위해 회원 내부 식별자, 적립·사용 사유, 증감 포인트, 처리 시각과 활동 참조값을 계정에 연결해 저장하며 회원탈퇴 시 관계 법령상 보관 의무가 있는 경우를 제외하고 삭제합니다.</p>}</section>}
+function PetPointAboutCard(){return <section className="bg-card petpoint-about"><span>🐾</span><div><small>COMMUNITY REWARD</small><h2>활동이 혜택이 되는 PetPoint</h2><p>Pet톡에서 이야기를 나누고 댓글을 남기며 포인트를 모아 Pet사주·운세 같은 재미 콘텐츠를 즐길 수 있어요. 유료 충전 없이 PetGrow 안의 건강한 참여를 보상하는 방식이에요.</p></div></section>}
+function PetPointGuideCard(){return <section className="bg-card petpoint-guide-hero"><div><small>PETPOINT GUIDE</small><h2>🐾 활동하고, 모으고, 즐겨요</h2><p>처음 1,000P로 시작하고 Pet톡 활동과 하루 첫 접속으로 포인트를 모을 수 있어요. 포인트는 PetGrow 재미 콘텐츠에서만 사용돼요.</p></div><div className="petpoint-mini-grid"><span><b>+50P</b> 글 작성</span><span><b>+20P</b> 댓글</span><span><b>+5P</b> 좋아요 받기</span><span><b>+30P</b> 하루 첫 접속</span></div></section>}
+function PetPointAdminOverview(){const [d,setD]=useState(null);useEffect(()=>{apiJson("/api/points?action=admin").then(setD).catch(()=>{})},[]);if(!d)return null;return <section className="bg-card petpoint-admin"><h2>🐾 PetPoint 운영 현황</h2><div><span><small>포인트 회원</small><b>{Number(d.users||0).toLocaleString()}</b></span><span><small>현재 잔액 합계</small><b>{Number(d.balance||0).toLocaleString()}P</b></span><span><small>누적 적립</small><b>+{Number(d.earned||0).toLocaleString()}P</b></span><span><small>누적 사용·회수</small><b>-{Number(d.spent||0).toLocaleString()}P</b></span></div></section>}
+
+function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost, onOpenAdmin }) {
+  const t = useT();
+  const [adminEntry, setAdminEntry] = useState(null);
+  const [likedMusic, setLikedMusic] = useState([]);
+  const [likedMusicLoaded, setLikedMusicLoaded] = useState(false);
+  const [likedMusicLoading, setLikedMusicLoading] = useState(false);
+  const [openActivity, setOpenActivity] = useState(null); // "pettalk" | "music" | null
+
+  const loadLikedMusic = async (force = false) => {
+    if (!account) { setLikedMusic([]); setLikedMusicLoaded(true); return; }
+    if (likedMusicLoading || (likedMusicLoaded && !force)) return;
+    setLikedMusicLoading(true);
+    try {
+      const r = await musicLiked();
+      setLikedMusic(r.items || []);
+      setLikedMusicLoaded(true);
+    } catch (e) {
+      console.warn("Liked music load skipped:", e);
+    } finally {
+      setLikedMusicLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    setLikedMusic([]);
+    setLikedMusicLoaded(false);
+    setOpenActivity(null);
+  }, [account?.id]);
+
+  useEffect(() => {
+    let alive = true;
+    if (!account) { setAdminEntry(null); return () => { alive = false; }; }
+    adminStatus().then((st) => { if (alive) setAdminEntry(st); }).catch(() => { if (alive) setAdminEntry(null); });
+    return () => { alive = false; };
+  }, [account?.id]);
+
+  const togglePetTalkActivity = () => setOpenActivity((v) => v === "pettalk" ? null : "pettalk");
+  const toggleLikedMusic = () => {
+    const willOpen = openActivity !== "music";
+    setOpenActivity(willOpen ? "music" : null);
+    if (willOpen) loadLikedMusic(true);
+  };
+
+  const menuItems = [
+    { key: "edit", icon: "✏️", title: lang === "en" ? "Edit info" : "정보 수정", desc: l

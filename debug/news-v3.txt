@@ -1,0 +1,118 @@
+length===0?<div className="bg-card">아직 등록된 내용이 없어요.</div>:(data.items||[]).map(x=><button className="bg-card support-row" key={x.id} onClick={()=>setOpen(open===x.id?null:x.id)}>
+        <div><span className="support-badge">{x.category==="suggestion"?"기능제안":x.category==="bug"?"오류신고":x.category==="notice"?"공지":x.category||"문의"}</span>{x.pinned&&<span className="support-pin">중요</span>}<b>{x.title}</b></div>
+        <div className="support-meta">{x.nickname&&<span>{x.nickname}</span>}<span>{x.status==="answered"?"답변완료":x.status==="checking"?"확인중":x.status==="waiting"?"답변대기":""}</span><span>{new Date(x.created_at).toLocaleDateString("ko-KR")}</span></div>
+        {open===x.id&&<div className="support-detail"><p>{x.body}</p>{x.admin_reply&&<div className="support-reply"><b>PetGrow 운영팀 답변</b><p>{x.admin_reply}</p></div>}</div>}
+      </button>)}
+      <ResponsivePagination page={page} totalPages={pages} lang="ko" onChange={setPage} />
+    </div>}
+  </div>
+}
+
+
+/* PETNEWS_UI_FIXED_20260817 */
+function PetNewsPage({ lang = "ko" }) {
+  const [items,setItems]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState("");
+  const [category,setCategory]=useState("전체"),[query,setQuery]=useState(""),[page,setPage]=useState(1),[selected,setSelected]=useState(null);
+  const PAGE=8,cats=["전체","반려견","반려묘","건강","정책·제도","입양·보호","산업·서비스","반려동물"];
+  const load=async()=>{setLoading(true);setError("");try{const j=await apiJson('/api/news');setItems(Array.isArray(j.items)?j.items:[]);if(!j.items?.length)setError(j.message||'새 반려동물 뉴스를 찾고 있어요. 잠시 후 다시 확인해 주세요.')}catch(e){setError(e.message||'뉴스를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.')}finally{setLoading(false)}};
+  useEffect(()=>{load()},[]);
+  const clean=v=>String(v||'').replace(/&nbsp;|&#160;|&#xA0;/gi,' ').replace(/\s+/g,' ').trim();
+  const q=query.trim().toLowerCase();
+  const filtered=items.filter(x=>(category==='전체'||x.category===category)&&(!q||`${x.title||''} ${x.description||''} ${x.source||''} ${x.category||''}`.toLowerCase().includes(q)));
+  const fallbackVisual=n=>{const h=`${n.title||''} ${n.description||''} ${n.category||''}`;if(/병원|수의|건강|질병|백신|치료|예방/.test(h))return ['🏥','건강'];if(/입양|유기|보호소|구조|학대/.test(h))return ['💚','입양·보호'];if(/법|정책|정부|지자체|조례|제도/.test(h))return ['📋','정책·제도'];if(/보험|산업|서비스|용품|사료|펫푸드/.test(h))return ['🛍️','산업·서비스'];if(/고양이|반려묘|애묘/.test(h))return ['🐱','반려묘'];if(/강아지|반려견|애견/.test(h))return ['🐶','반려견'];return ['🐾','PetGrow News']};
+  const pages=Math.max(1,Math.ceil(filtered.length/PAGE)),safe=Math.min(page,pages),pageItems=filtered.slice((safe-1)*PAGE,safe*PAGE);
+  useEffect(()=>{setPage(1)},[category,query]);
+  const summary=v=>{const t=clean(v);if(!t)return '기사 설명을 확인하고 있어요. 원문에서 자세한 내용을 확인할 수 있어요.';const parts=t.split(/(?<=[.!?다요])\s+/).filter(Boolean);return parts.slice(0,2).join(' ').slice(0,230)};
+  return <div className="petnews-v10">
+    <div className="petnews-refresh-row"><span>최신 반려동물 뉴스를 핵심 요약과 함께 확인해보세요.</span><button type="button" className="bg-chip" onClick={load}>새로고침</button></div>
+    <div className="petnews-tools"><div className="petnews-cats">{cats.map(c=><button key={c} type="button" className={category===c?'active':''} onClick={()=>setCategory(c)}>{c}</button>)}</div><div className="petnews-search"><span>⌕</span><input className="bg-input" value={query} onChange={e=>setQuery(e.target.value)} placeholder="제목·내용·언론사 검색"/>{query&&<button type="button" onClick={()=>setQuery('')} aria-label="검색어 지우기">×</button>}</div></div><div className="petnews-result-count">{query||category!=='전체'?`검색 결과 ${filtered.length}건`:`최신 뉴스 ${items.length}건`} · 페이지당 {PAGE}건</div>
+    {loading?<div className="petnews-state">최신 Pet뉴스를 불러오는 중…</div>:error&&!items.length?<div className="petnews-state error"><b>뉴스를 불러오지 못했어요.</b><span>{error}</span><button className="bg-btn" onClick={load}>다시 불러오기</button></div>:<>
+      <div className="petnews-grid">{pageItems.map((n,i)=><article className="petnews-card-v10" key={n.id||n.link||i} onClick={()=>setSelected(n)}>{(()=>{const [ico,label]=fallbackVisual(n);return <div className="petnews-media">{n.image&&<img src={n.image} alt="" loading="lazy" onError={e=>{e.currentTarget.style.display='none';e.currentTarget.nextElementSibling?.classList.add('show')}}/>}<div className={`petnews-image-fallback ${n.image?'':'show'}`}><span>{ico}</span><small>{label}</small></div></div>})()}<div className="petnews-card-body"><div className="petnews-meta"><span>{n.category||'반려동물'}</span><small>{n.source||'언론사'}{n.publishedAt?` · ${new Date(n.publishedAt).toLocaleDateString('ko-KR')}`:''}</small></div><h2>{clean(n.title)}</h2><p>{summary(n.description)}</p><button type="button">요약 자세히 보기 →</button></div></article>)}</div>
+      {!pageItems.length&&<div className="petnews-state">조건에 맞는 뉴스가 없어요. 다른 카테고리나 검색어를 선택해 주세요.</div>}
+      {pages>1&&<ResponsivePagination page={safe} totalPages={pages} lang={lang} onChange={setPage} />}
+    </>}
+    {selected&&<div className="petnews-modal-backdrop" onClick={()=>setSelected(null)}><section className="petnews-modal" onClick={e=>e.stopPropagation()}><button className="petnews-close" onClick={()=>setSelected(null)}>×</button><small>{selected.category||'반려동물'} · {selected.source||'언론사'}</small><h2>{clean(selected.title)}</h2>{selected.image&&<img src={selected.image} alt="" onError={e=>{e.currentTarget.style.display='none'}}/>}<div className="petnews-summary-box"><b>핵심 요약</b><p>{summary(selected.description)}</p></div><p className="petnews-source-note">PetGrow는 기사 설명을 바탕으로 핵심 내용을 정리해 보여줘요. 정확한 세부 내용은 원문을 확인해 주세요.</p><a className="bg-btn" href={selected.link||selected.naverLink} target="_blank" rel="noreferrer">원문 전체보기</a></section></div>}
+  </div>;
+}
+
+function PetNewsPrivacyAddendum(){return <section className="bg-card" style={{maxWidth:900,margin:"14px auto 36px",padding:22}}><h2 style={{fontSize:18,marginTop:0}}>Pet뉴스 관련 개인정보 안내</h2><p className="bg-sub" style={{lineHeight:1.75}}>Pet뉴스는 공개 뉴스 검색 API를 이용합니다. 뉴스 조회를 위해 이용자의 이름, 계정정보, 반려동물 정보 등 개인정보를 뉴스 검색 제공자에게 전송하지 않습니다. 원문 보기를 선택하면 외부 언론사 페이지로 이동하며 이후 개인정보 처리는 해당 서비스의 정책이 적용됩니다.</p></section>}
+function PetNewsTermsAddendum(){return <section className="bg-card" style={{maxWidth:900,margin:"14px auto 36px",padding:22}}><h2 style={{fontSize:18,marginTop:0}}>Pet뉴스 서비스 이용조건</h2><p className="bg-sub" style={{lineHeight:1.75}}>Pet뉴스는 외부 검색 API 기반의 뉴스 탐색 기능입니다. 기사 내용과 저작권은 각 기사 제공자에게 있으며, 건강·의료·정책 관련 뉴스는 전문적인 진단이나 법률·행정 자문을 대체하지 않습니다.</p></section>}
+function AdminReportsPage({onBack}){
+ const onClose=onBack;
+ const adminAutofillTrap=<div className="admin-autofill-trap" aria-hidden="true">
+   <input type="text" name="username" autoComplete="username" tabIndex={-1}/>
+   <input type="password" name="password" autoComplete="current-password" tabIndex={-1}/>
+ </div>;
+
+ const [status,setStatus]=useState(null),[pin,setPin]=useState(""),[setupCode,setSetupCode]=useState(""),[setupPin,setSetupPin]=useState("");
+ const clearAdminPin=()=>{setPin("");setSetupPin("");};
+ useEffect(()=>{clearAdminPin();const h=()=>{if(document.visibilityState==="hidden")clearAdminPin()};document.addEventListener("visibilitychange",h);return()=>document.removeEventListener("visibilitychange",h)},[]);
+ const [unlocked,setUnlocked]=useState(false),[tab,setTab]=useState("dashboard"),[stats,setStats]=useState(null),[health,setHealth]=useState(null),[reports,setReports]=useState([]),[placeReports,setPlaceReports]=useState([]),[musicCommentReports,setMusicCommentReports]=useState([]),[logs,setLogs]=useState([]);
+ const [reportPeriod,setReportPeriod]=useState("daily"),[reportData,setReportData]=useState(null),[reportLoading,setReportLoading]=useState(false);
+ const [admins,setAdmins]=useState([]),[directAds,setDirectAds]=useState([]),[adInquiries,setAdInquiries]=useState([]),[adForm,setAdForm]=useState({name:"",placement:"banner",imageUrl:"",targetUrl:"",startsAt:"",endsAt:"",active:false,priority:0}),[query,setQuery]=useState(""),[found,setFound]=useState([]),[inq,setInq]=useState([]),[reply,setReply]=useState({}),[notice,setNotice]=useState({title:"",body:"",category:"notice",pinned:false,popup:false});
+ useEffect(()=>{sessionStorage.removeItem("petgrow_admin_token");adminStatus().then(setStatus).catch(e=>window.alert(e.message));return()=>sessionStorage.removeItem("petgrow_admin_token")},[]);
+ const role=status?.role,can=x=>role==="superadmin"||role==="operator"||role===x;
+ const loadAll=async({background=false}={})=>{
+   const tasks=[];
+   if(can("dashboard")){
+     tasks.push(adminStats().then(setStats).catch(()=>null));
+     if(typeof adminHealth==="function")tasks.push(adminHealth().then(setHealth).catch(()=>null));
+   }
+   if(can("report")){tasks.push(adminListReports().then(x=>setReports(x.reports||[])).catch(()=>null));tasks.push(adminListPlaceReviewReports().then(x=>setPlaceReports(x.reports||[])).catch(()=>null));tasks.push(adminListMusicCommentReports().then(x=>setMusicCommentReports(x.reports||[])).catch(()=>null));}
+   if(can("logs"))tasks.push(adminLogs().then(x=>setLogs(x.logs||[])).catch(()=>null));
+   if(role==="superadmin")tasks.push(adminListAdmins().then(x=>setAdmins(x.admins||[])).catch(()=>null));
+   if(role==="superadmin"||role==="operator"){
+     if(typeof adminSupportInquiries==="function")tasks.push(adminSupportInquiries().then(x=>setInq(x.items||[])).catch(()=>null));
+   }
+   if(role==="superadmin"||role==="operator"||role==="ads"){
+     if(typeof adminListDirectAds==="function")tasks.push(adminListDirectAds().then(x=>setDirectAds(x.items||[])).catch(()=>null));
+     if(typeof adminListAdInquiries==="function")tasks.push(adminListAdInquiries().then(x=>setAdInquiries(x.items||[])).catch(()=>null));
+   }
+   if(!background)setUnlocked(true);
+   await Promise.allSettled(tasks);
+ };
+ const unlock=async()=>{
+   const enteredPin=String(pin||"");
+   setPin("");
+   if(!/^\d{6}$/.test(enteredPin)){window.alert("PIN은 숫자 6자리로 입력해 주세요.");return;}
+   try{
+     const r=await adminVerify(enteredPin);
+     sessionStorage.setItem("petgrow_admin_token",r.token);
+     setStatus(s=>({...s,role:r.role,roleLabel:r.roleLabel}));
+     // 관리자 화면은 즉시 열고, 데이터는 뒤에서 병렬 로딩합니다.
+     setUnlocked(true);
+     loadAll({background:true});
+   }catch(e){
+     setPin("");
+     if(e.message==="PIN_SETUP_REQUIRED")setStatus(s=>({...s,pinSetupRequired:true}));
+     else window.alert(e.message);
+   }
+ };
+ const setNewPin=async()=>{if(!/^\d{6}$/.test(setupPin))return window.alert("PIN은 숫자 6자리로 입력해 주세요.");try{await adminSetPin(setupPin);setStatus(s=>({...s,pinSetupRequired:false}));setSetupPin("");window.alert("관리자 PIN을 설정했어요.")}catch(e){window.alert(e.message)}};
+ const bootstrap=async()=>{if(!/^\d{6}$/.test(setupPin))return window.alert("PIN은 숫자 6자리로 입력해 주세요.");try{await adminBootstrap(setupCode,setupPin);setStatus({adminExists:true,isAdmin:true,role:"superadmin",roleLabel:"최고관리자"});setSetupPin("");setSetupCode("");window.alert("최고관리자 등록이 완료됐어요.")}catch(e){window.alert(e.message)}};
+ const restrict=async(r,d)=>{const lab={ "1d":"1일","7d":"7일","30d":"30일",permanent:"영구"}[d];if(!window.confirm(`${r.authorNickname} 계정을 ${lab} 이용제한할까요?\n확인 시 즉시 Pet톡 글/댓글 작성이 제한됩니다.`))return;try{await adminRestrict(r.targetUserId,d,r.id);window.alert("이용제한을 적용했어요.");await loadAll()}catch(e){window.alert(e.message)}};
+ const unblock=async r=>{if(!window.confirm(`${r.authorNickname} 계정의 이용제한을 해제할까요?`))return;try{await adminUnblock(r.targetUserId,r.id);window.alert("제한을 해제했어요.");await loadAll()}catch(e){window.alert(e.message)}};
+ const resolve=async r=>{if(!window.confirm("이 신고를 검토 완료 처리할까요?"))return;try{await adminResolveReport(r.id);await loadAll()}catch(e){window.alert(e.message)}};
+ const hidePlaceReview=async r=>{if(!window.confirm(`'${r.place_name}'의 신고된 후기를 숨길까요?`))return;try{await adminHidePlaceReview(r.review_id,r.id);window.alert("후기를 숨기고 신고를 처리했어요.");await loadAll()}catch(e){window.alert(e.message)}};
+ const resolvePlaceReview=async r=>{if(!window.confirm("이 장소 후기 신고를 검토 완료 처리할까요? 후기는 계속 공개됩니다."))return;try{await adminResolvePlaceReviewReport(r.id);await loadAll()}catch(e){window.alert(e.message)}};
+ const hideMusicComment=async r=>{if(!window.confirm(`'${r.track_title}'의 신고된 댓글을 숨길까요?`))return;try{await adminHideMusicComment(r.comment_id,r.id);window.alert("음악 댓글을 숨기고 신고를 처리했어요.");await loadAll()}catch(e){window.alert(e.message)}};
+ const resolveMusicComment=async r=>{if(!window.confirm("이 음악 댓글 신고를 문제없음으로 처리할까요? 댓글은 계속 공개됩니다."))return;try{await adminResolveMusicCommentReport(r.id);await loadAll()}catch(e){window.alert(e.message)}};
+
+ const loadReport=async(period=reportPeriod)=>{
+   setReportPeriod(period);setReportData(null);setReportLoading(true);
+   try{const next=await adminReportSummary(period);setReportData(next);}catch(e){window.alert(e.message)}finally{setReportLoading(false)}
+ };
+ const reportRangeLabel=(data)=>{
+   if(!data?.start||!data?.end)return "";
+   const start=String(data.start).slice(0,10);
+   const endDate=new Date(`${String(data.end).slice(0,10)}T00:00:00`);endDate.setDate(endDate.getDate()-1);
+   const end=`${endDate.getFullYear()}-${String(endDate.getMonth()+1).padStart(2,"0")}-${String(endDate.getDate()).padStart(2,"0")}`;
+   const kind={daily:"전날",weekly:"최근 7일 · 오늘 제외",monthly:"지난달"}[data.period]||"집계 기간";
+   return `${start} ~ ${end} · ${kind}`;
+ };
+ useEffect(()=>{if(unlocked&&tab==="reporting"&&!reportData&&!reportLoading)loadReport("daily");},[unlocked,tab]);
+ const reportText=()=>{
+   if(!reportData)return "";const r=reportData.summary||{},pm={daily:"일일",weekly:"주간",monthly:"월간"}[reportData.period]||"운영";
+   const menu=(reportData.topMenus||[]).slice(0,5).map((x,i)=>`${i+1}. ${x.dimension} ${Number(x.count)||0}회`).join("\n")||"데이터 없음";
+   const plat=(reportData.platforms||[]).map(x=>`${x.platform}: ${Number(x.count)||0}`).join(" / ")||"데이터 없음";
+   return `[PetGrow] ${pm} 운영보고\n기간: ${String(reportData.start).slice(0,10)} ~ ${String(reportData.end).slice(0,10)} (종료일 전까지)\n\n방문 세션: ${r.sessions||0}\n신규 회원: ${r.newMembers||0}\nPet톡: 게시글 ${r.posts||0} / 댓글 ${r.comments||0}\nPet음악: 누적 재생 ${r.musicPlays||0} / 기
