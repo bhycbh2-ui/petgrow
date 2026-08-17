@@ -1,0 +1,53 @@
+name: Capture Fix Context 20260818
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/fix-context-trigger-20260818.txt'
+permissions:
+  contents: write
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Capture target source contexts
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          targets=[('src/App.jsx',[
+            'PETGROW TALK','아직 등록된 Pet톡이 없어요','Pet톡을 불러오는 중','반려생활 이야기를 편하게 나눠보세요',
+            'PETGROW NEWS','최신 뉴스 40건','제목·내용·언론사 검색','반려동물 소식을 제목만 나열하지 않고',
+            'Pet정보','function PetInfo','function InfoGuidePage','PetPointGuideCard','PetPointDashboard','function MyPage','effectiveView === "mypage"','effectiveView === "home"',
+            'MY PET','우리 아이','nearby-location-actions','현재 위치','위치 새로고침'
+          ]),('src/PetDailyWidgets.jsx',['pet-tarot','Pet타로','pet-tarot-shell','pet-tarot-menu','pet-tarot-home','pet-tarot-deck22'])]
+          out=[]
+          for fn,needles in targets:
+            s=Path(fn).read_text(encoding='utf-8')
+            lines=s.splitlines()
+            out.append(f'===== {fn} =====')
+            seen=set()
+            for needle in needles:
+              hits=[i for i,l in enumerate(lines) if needle in l]
+              out.append(f'\n### {needle} hits={hits[:20]}')
+              for i in hits[:10]:
+                a=max(0,i-14); b=min(len(lines),i+20)
+                key=(a,b)
+                if key in seen: continue
+                seen.add(key)
+                out.append(f'--- {a+1}-{b} ---')
+                out.extend(f'{j+1}: {lines[j]}' for j in range(a,b))
+          Path('FIX_CONTEXT_20260818.txt').write_text('\n'.join(out),encoding='utf-8')
+          PY
+      - name: Commit context file
+        shell: bash
+        run: |
+          git config user.name petgrow-automation
+          git config user.email actions@users.noreply.github.com
+          git add FIX_CONTEXT_20260818.txt
+          git commit -m 'chore: capture targeted UI fix contexts' || exit 0
+          git push origin main
