@@ -99,7 +99,7 @@ export default async function handler(req, res) {
     return res.status(503).json({
       configured: false,
       items: [],
-      error: "Pet뉴스 API 연결 준비 중이에요. NAVER API HUB 인증 정보를 연결해 주세요."
+      error: "뉴스를 불러오지 못했어요. 잠시 후 다시 시도해 주세요."
     });
   }
 
@@ -144,7 +144,7 @@ export default async function handler(req, res) {
     return res.status(502).json({
       configured: true,
       items: [],
-      error: "최신 펫뉴스를 불러오지 못했어요. 잠시 후 다시 시도해 주세요."
+      error: "뉴스를 불러오지 못했어요. 잠시 후 다시 시도해 주세요."
     });
   }
 }
