@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/apply-petnews-ui-fixed.mjs'
-      - 'scripts/run-petgrow-upgrade.mjs'
+      - 'scripts/apply-petgrow-final-ux.mjs'
       - '.github/workflows/apply-petgrow-upgrade.yml'
 
 permissions:
@@ -30,8 +30,8 @@ jobs:
         run: npm ci
       - name: Apply PetNews UI integration
         run: node scripts/apply-petnews-ui-fixed.mjs
-      - name: Apply UX consistency bundle
-        run: node scripts/run-petgrow-upgrade.mjs
+      - name: Apply final PetGrow UX bundle
+        run: node scripts/apply-petgrow-final-ux.mjs
       - name: Verify production web build
         run: npm run build
       - name: Commit verified changes
@@ -43,5 +43,5 @@ jobs:
           git config user.name 'petgrow-automation'
           git config user.email 'actions@users.noreply.github.com'
           git add src/App.jsx api/music.js
-          git commit -m 'feat: unify PetGrow menus and improve home and nearby UX'
+          git commit -m 'feat: add Pet News, unified menu UX, GPS follow and music pagination'
           git push origin main
