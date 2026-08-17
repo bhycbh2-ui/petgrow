@@ -334,7 +334,7 @@ const STRINGS = {
       { title: "카카오 간편로그인", body: "PetGrow는 카카오 계정으로 로그인해요. 별도 비밀번호를 만들지 않고 '카카오로 시작하기'로 이용할 수 있으며, 로그인한 계정 기준으로 저장 기능과 내 활동이 연결돼요." },
       { title: "우리 아이 · 성장 기록", body: "강아지와 고양이를 여러 마리 등록하고 아이별 프로필, 현재 체중, 성장 기록, 성장 그래프와 성장앨범을 관리할 수 있어요. 다른 기기에서도 같은 계정으로 로그인하면 저장된 정보를 이어서 볼 수 있어요." },
       { title: "PetBTI", body: "강아지와 고양이 각각 20개의 구체적인 행동 질문에 답하면 우리 아이의 성향을 16가지 유형으로 재미있게 확인할 수 있어요. 완료한 결과는 저장하고 다시 검사할 수도 있어요." },
-      { title: "Pet사주", body: "등록한 우리 아이 정보를 바탕으로 기본 Pet사주, 오늘의 펫운세, 오늘의 Pet타로, 보호자 궁합을 재미로 즐길 수 있어요. Pet타로는 메이저 아르카나 22장의 전통적인 상징을 PetGrow식 반려생활 메시지로 재해석하며, 각 주제별로 반려동물 1마리당 하루 1회만 뽑을 수 있어요. 실제 성격이나 미래를 판단하는 자료는 아니에요." },
+      { title: "Pet사주", body: "등록한 우리 아이 정보를 바탕으로 기본 Pet사주, 오늘의 펫운세, 보호자 궁합을 재미로 즐길 수 있어요. Pet타로는 메이저 아르카나 22장의 전통적인 상징을 PetGrow식 반려생활 메시지로 재해석하며, 각 주제별로 반려동물 1마리당 하루 1회만 뽑을 수 있어요. 실제 성격이나 미래를 판단하는 자료는 아니에요." },
       { title: "Pet정보", body: "강아지·고양이·건강·생활·식단·영양·훈련·안전·미용·위생 등 카테고리별 반려생활 정보를 확인할 수 있어요. 목록은 페이지 단위로 나뉘고 검색과 즐겨찾기를 이용할 수 있으며, 정보는 지속적으로 추가·점검돼요." },
       { title: "Pet음악", body: "강아지·고양이 음악을 재생하고 반복재생할 수 있어요. 인기 TOP5와 내가 좋아요 누른 음악을 따로 확인할 수 있고, 좋아요·댓글을 이용할 수 있어요. 본인 댓글은 수정·삭제할 수 있고 다른 이용자의 댓글은 신고할 수 있어요." },
       { title: "내 주변 Pet", body: "주소를 직접 입력해 검색하거나, 위치 권한을 허용해 현재 위치 주변의 동물병원·동물약국·펫샵·용품점·미용실·유치원·호텔 등을 찾을 수 있어요. 현재 위치는 이용자가 현재 위치 검색 또는 지도 표시를 사용할 때 주변 검색·거리 계산·지도 표시에 일시적으로 사용하며 계정에 저장하지 않아요. 로그인 회원은 별점·후기·좋아요를 남길 수 있고 본인 후기는 수정·삭제, 다른 후기는 신고할 수 있어요." },
@@ -2169,6 +2169,33 @@ function TermsContent() {
 function PrivacyPage() {
   
 <style>{`
+/* PETGROW_UI_BATCH_20260818 */
+:root{--pg-ink:#1f2a24;--pg-sub:#68736c;--pg-border:#e5e9e5;--pg-soft:#f7f9f7;--pg-accent:#467a56}
+.petpoint-card,.petpoint-policy,.petpoint-about,.petpoint-guide-hero,.petpoint-admin,.petpoint-visible{background:#fff!important;background-image:none!important;border-color:var(--pg-border)!important;box-shadow:0 10px 28px rgba(31,42,36,.06)!important;color:var(--pg-ink)!important}
+.petpoint-card p,.petpoint-guide-hero p,.petpoint-about p,.petpoint-policy p,.petpoint-visible p{color:var(--pg-sub)!important}
+.petpoint-head h2,.petpoint-history-head b,.petpoint-card b,.petpoint-card strong{color:var(--pg-ink)}
+.petpoint-head>strong{color:var(--pg-accent)!important}
+.petpoint-live-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+.petpoint-live-stats>div,.petpoint-costs span,.petpoint-guide p,.petpoint-history-list,.petpoint-mini-grid span{background:#fff!important;border-color:var(--pg-border)!important}
+.petpoint-costs{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.petpoint-mini-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.mypage-point-top{order:-20;width:100%;margin:0 0 16px}
+.mypage-point-top .petpoint-card{max-width:none!important;margin:0 0 16px!important}
+/* Ten-item menu / guide groups: two cards per row = 2 x 5 */
+.info-guide-grid,.guide-grid,.petinfo-guide-grid,.menu-guide-grid,.service-guide-grid,.feature-guide-grid,.more-menu-grid.ten-items,.quick-menu-grid.ten-items{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;background:#fff!important}
+.info-guide-grid>* ,.guide-grid>* ,.petinfo-guide-grid>* ,.menu-guide-grid>* ,.service-guide-grid>* ,.feature-guide-grid>*{background:#fff!important;border:1px solid var(--pg-border)!important;color:var(--pg-ink)!important;box-shadow:0 6px 20px rgba(31,42,36,.04)!important}
+/* Our Pet title uses the same left edge and vertical rhythm as other main pages */
+.pets-page .petgrow-unified-hero,.my-pets-page .petgrow-unified-hero,.pet-profile-page .petgrow-unified-hero{margin-top:0!important;text-align:left!important}
+.pets-page .petgrow-unified-hero h1,.my-pets-page .petgrow-unified-hero h1,.pet-profile-page .petgrow-unified-hero h1{margin-left:0!important;text-align:left!important}
+@media(max-width:760px){
+  .petpoint-card{margin-left:0!important;margin-right:0!important;border-radius:18px!important;padding:16px!important}
+  .petpoint-head{align-items:flex-start!important}.petpoint-head p{font-size:12px!important;line-height:1.55!important}.petpoint-head>strong{font-size:24px!important}
+  .petpoint-live-stats,.petpoint-costs,.petpoint-mini-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .info-guide-grid,.guide-grid,.petinfo-guide-grid,.menu-guide-grid,.service-guide-grid,.feature-guide-grid,.more-menu-grid.ten-items,.quick-menu-grid.ten-items{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+  .nearby-location-actions,.nearby-search-actions,.nearby-toolbar,.nearby-search-row,.nearby-location-row{display:flex!important;align-items:center!important;flex-wrap:nowrap!important;gap:8px!important;width:100%!important}
+  .nearby-location-actions>button,.nearby-search-actions>button,.nearby-toolbar>button,.nearby-search-row>button,.nearby-location-row>button{flex:1 1 0!important;min-width:0!important;white-space:nowrap!important;padding-left:8px!important;padding-right:8px!important}
+}
+
 /* PETGROW_FINAL_TYPOGRAPHY_20260817 */
 .bboggl-root,button,input,textarea,select{font-family:inherit}
 .bboggl-root{font-synthesis:none;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
@@ -7523,7 +7550,6 @@ function SajuPage({ pet, onGoRegister }) {
 
   if (mode === "daily") return <DailyFortunePanel pet={pet} lang={lang} message={dailyMessages[idx]} onBack={() => setMode("menu")} />;
 
-  if (mode === "tarot") return <PetTarotPanel pet={pet} lang={lang} onBack={() => setMode("menu")} />;
 
   if (mode === "compat") {
     const calculateCompat = async () => {
@@ -7571,10 +7597,9 @@ function SajuPage({ pet, onGoRegister }) {
   const modes = [
     { id: "basic", icon: "🔮", title: lang === "en" ? "Basic Pet Saju" : "기본 Pet사주", desc: lang === "en" ? "Personality, bonds, play style and luck" : "타고난 성격·인연·놀이 스타일·복을 재미로 봐요.", bg: "#F1F5F1", click: startBasic },
     { id: "daily", icon: "🌤️", title: lang === "en" ? "Today's Pet Fortune" : "오늘의 펫운세", desc: lang === "en" ? "A light daily fortune for your pet" : "오늘 우리 아이에게 어울리는 행운 메시지를 확인해요.", bg: "#F5F8F4", click: () => setMode("daily") },
-    { id: "tarot", icon: "🃏", title: lang === "en" ? "Today's Pet Tarot" : "오늘의 Pet타로", desc: lang === "en" ? "Pick a Major Arcana card and read today's message" : "마음이 가는 카드를 골라 오늘의 메시지를 확인해요.", bg: "#F7F3EB", click: () => setMode("tarot") },
     { id: "compat", icon: "🫶", title: lang === "en" ? "Guardian Compatibility" : "보호자 궁합", desc: lang === "en" ? "See the fun chemistry between you two" : "우리 아이와 보호자님의 케미와 유대감을 재미로 확인해요.", bg: "#F1F6F2", click: () => setMode("compat") },
   ];
-  return <div className="feature-module-shell"><div style={{ textAlign: "center", marginBottom: 18 }}><FeaturePetHeader pet={pet} /><h2 className="pet-user-name" style={{ fontSize: 21, marginTop: 10 }}>{lang === "en" ? `Choose ${petName}'s Pet Saju` : `${petName}와 어떤 Pet사주를 볼까요?`}</h2><p className="bg-sub" style={{ fontSize: 13, marginTop: 6 }}>{lang === "en" ? "Choose one of four fun contents." : "원하는 콘텐츠를 골라 재미로 즐겨보세요."}</p></div>
+  return <div className="feature-module-shell"><div style={{ textAlign: "center", marginBottom: 18 }}><FeaturePetHeader pet={pet} /><h2 className="pet-user-name" style={{ fontSize: 21, marginTop: 10 }}>{lang === "en" ? `Choose ${petName}'s Pet Saju` : `${petName}와 어떤 Pet사주를 볼까요?`}</h2><p className="bg-sub" style={{ fontSize: 13, marginTop: 6 }}>{lang === "en" ? "Choose one of three fun contents." : "원하는 콘텐츠를 골라 재미로 즐겨보세요."}</p></div>
     <div style={{ display: "grid", gap: 12 }}>{modes.map(m => <button key={m.id} type="button" onClick={m.click} className="bg-surface-card" style={{ border: 0, cursor: "pointer", background: m.bg, padding: "20px", textAlign: "left", display: "flex", alignItems: "center", gap: 16 }}><span style={{ fontSize: 34 }}>{m.icon}</span><span><strong style={{ display: "block", fontSize: 17, marginBottom: 5 }}>{m.title}</strong><span className="bg-sub" style={{ fontSize: 13, lineHeight: 1.55 }}>{m.desc}</span></span><span style={{ marginLeft: "auto", fontSize: 22, color: "var(--primary)" }}>›</span></button>)}</div>
     <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 20, lineHeight: 1.6 }}>{t.sajuDisclaimer}</div>
   </div>;
@@ -9719,7 +9744,7 @@ function PetPointVisibleCard({account,compact=false}){
   const load=()=>{if(!account?.id){setSummary(null);return}apiJson('/api/points?action=summary').then(setSummary).catch(()=>{})};
   useEffect(()=>{if(!account?.id){setSummary(null);return};let alive=true;apiJson('/api/points?action=summary').then(j=>{if(alive)setSummary(j)}).catch(()=>{});const h=e=>{const ev=e.detail||{};setSummary(v=>v?{...v,balance:ev.balance??v.balance}:v);setTimeout(()=>{if(alive)load()},180)};window.addEventListener('petgrow:points',h);const poll=setInterval(()=>{if(alive)load()},5000);return()=>{alive=false;clearInterval(poll);window.removeEventListener('petgrow:points',h)}},[account?.id]);
   const balance=summary?.balance;
-  return <section className={'petpoint-visible '+(compact?'compact':'about')}><div className="petpoint-visible-icon">🪙</div><div className="petpoint-visible-copy"><small>PETPOINT · LIVE</small><h2>{compact?'현재 PetPoint를 바로 확인하세요':'PetPoint로 PetGrow를 더 재미있게'}</h2><p>{account?.id?(balance==null?'포인트를 불러오는 중이에요.':`현재 ${Number(balance).toLocaleString()}P · 적립과 사용이 바로 반영돼요.`):'처음 로그인하면 1,000P가 지급돼요. 하루 첫 접속·Pet톡 활동으로 더 모을 수 있어요.'}</p></div><div className="petpoint-visible-actions"><b>{account?.id&&balance!=null?`${Number(balance).toLocaleString()}P`:'시작 1,000P'}</b><span>타로 30P · 오늘 운세 20P · 기본 사주 50P · 궁합 40P</span></div></section>;
+  return <section className={'petpoint-visible '+(compact?'compact':'about')}><div className="petpoint-visible-icon">🪙</div><div className="petpoint-visible-copy"><small>PETPOINT · LIVE</small><h2>{compact?'현재 PetPoint를 바로 확인하세요':'PetPoint로 PetGrow를 더 재미있게'}</h2><p>{account?.id?(balance==null?'포인트를 불러오는 중이에요.':`현재 ${Number(balance).toLocaleString()}P · 적립과 사용이 바로 반영돼요.`):'처음 로그인하면 1,000P가 지급돼요. 하루 첫 접속·Pet톡 활동으로 더 모을 수 있어요.'}</p></div><div className="petpoint-visible-actions"><b>{account?.id&&balance!=null?`${Number(balance).toLocaleString()}P`:'시작 1,000P'}</b><span>오늘 운세 20P · 기본 사주 50P · 궁합 40P</span></div></section>;
 }
 
 function InfoGuidePage() {
@@ -10794,8 +10819,7 @@ function PetPointDashboard({compact=false}){
     <div className="petpoint-head"><div><small>PETGROW REWARD · 실시간 반영</small><h2>🐾 PetPoint</h2><p>적립·사용 즉시 잔액에 반영되고 최근 이용내역도 여기서 확인할 수 있어요.</p></div><strong>{Number(d.balance||0).toLocaleString()}<em>P</em></strong></div>
     {!compact&&<>
       <div className="petpoint-live-stats"><div><small>현재 보유</small><b>{Number(d.balance||0).toLocaleString()}P</b></div><div className="plus"><small>오늘 적립</small><b>+{Number(d.todayEarned||0).toLocaleString()}P</b></div><div className="minus"><small>오늘 사용</small><b>-{Number(d.todaySpent||0).toLocaleString()}P</b></div><div><small>최근 7일 사용</small><b>-{Number(d.weekSpent||0).toLocaleString()}P</b></div></div>
-      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:18,margin:"12px 0 4px",padding:"16px 18px",border:"1px solid #dce9de",borderRadius:18,background:"linear-gradient(135deg,#f3faf4,#fffaf0)",flexWrap:"wrap"}}><div style={{display:"grid",gap:2,minWidth:155}}><small style={{fontSize:10,fontWeight:900,letterSpacing:".1em",color:"#73917a"}}>MY PETPOINT RANK</small><b style={{fontSize:23,color:"#416d4a"}}>상위 {Number(d.topPercent||100)}%</b><span style={{fontSize:11,color:"var(--sub)"}}>전체 {Number(d.memberCount||1).toLocaleString()}명 중 {Number(d.rank||1).toLocaleString()}위</span></div><p style={{margin:0,maxWidth:430,fontSize:12,lineHeight:1.55,color:"var(--sub)"}}>PetGrow 활동으로 포인트를 모을수록 순위가 올라가요. 순위는 현재 보유 포인트 기준으로 계산돼요.</p></div>
-      <div className="petpoint-costs"><span>🃏 타로 <b>{d.costs?.tarot||30}P</b></span><span>🌤️ 오늘 운세 <b>{d.costs?.saju_daily||20}P</b></span><span>🔮 기본 사주 <b>{d.costs?.saju_basic||50}P</b></span><span>🫶 보호자 궁합 <b>{d.costs?.saju_compat||40}P</b></span></div>
+      <div className="petpoint-costs"><span>🌤️ 오늘 운세 <b>{d.costs?.saju_daily||20}P</b></span><span>🔮 기본 사주 <b>{d.costs?.saju_basic||50}P</b></span><span>🫶 보호자 궁합 <b>{d.costs?.saju_compat||40}P</b></span></div>
       <details className="petpoint-guide" open><summary>포인트는 어떻게 모아요?</summary><div>{(d.earnGuide||[]).map((x,i)=><p key={i}><b>+{x.points}P</b><span>{x.label}</span><small>{x.limit}</small></p>)}</div></details>
       <div className="petpoint-history-head"><div><b>포인트 이용내역</b><small>최근 20건 · 실시간 반영 · 5초 자동 동기화</small></div><button type="button" className="bg-chip" onClick={()=>load()} disabled={refreshing}>{refreshing?"확인 중…":"새로고침"}</button></div>
       <div className="petpoint-history-tabs"><button className={filter==="all"?"active":""} onClick={()=>setFilter("all")}>전체</button><button className={filter==="earn"?"active":""} onClick={()=>setFilter("earn")}>적립</button><button className={filter==="spend"?"active":""} onClick={()=>setFilter("spend")}>사용</button></div>
@@ -10804,8 +10828,8 @@ function PetPointDashboard({compact=false}){
     {toast&&<div className={`petpoint-toast ${Number(toast.amount)>=0?"plus":"minus"}`}><b>{Number(toast.amount)>=0?`+${Number(toast.amount).toLocaleString()}P 적립`:`${Number(toast.amount).toLocaleString()}P 사용`}</b><span>{toast.label||"PetPoint"}{toast.balance!=null?` · 잔액 ${Number(toast.balance).toLocaleString()}P`:""}</span></div>}
   </section>
 }
-function PetPointPolicyAddendum({type}){return <section className="bg-card petpoint-policy"><h2>🐾 PetPoint 운영 안내</h2><p>PetPoint는 PetGrow 서비스 안에서만 사용하는 무료 활동 포인트이며 현금으로 구매·환전·출금하거나 다른 사람에게 양도할 수 없어요. 첫 이용 시 기본 포인트가 지급되고 Pet톡 글·댓글·좋아요 받기·하루 첫 접속 등 정상적인 활동에 따라 포인트가 적립될 수 있어요.</p><p>Pet사주·오늘의 펫운세·보호자 궁합·Pet타로 등 일부 재미 콘텐츠 이용 시 안내된 포인트가 차감됩니다. 반복 도배·비정상 활동·운영정책 위반 등 부정한 방식으로 적립한 포인트는 지급 취소 또는 회수될 수 있고, 글이나 댓글을 삭제하면 해당 활동으로 적립된 포인트가 회수될 수 있어요.</p>{type==="privacy"&&<p className="bg-sub">포인트 운영을 위해 회원 내부 식별자, 적립·사용 사유, 증감 포인트, 처리 시각과 활동 참조값을 계정에 연결해 저장하며 회원탈퇴 시 관계 법령상 보관 의무가 있는 경우를 제외하고 삭제합니다.</p>}</section>}
-function PetPointAboutCard(){return <section className="bg-card petpoint-about"><span>🐾</span><div><small>COMMUNITY REWARD</small><h2>활동이 혜택이 되는 PetPoint</h2><p>Pet톡에서 이야기를 나누고 댓글을 남기며 포인트를 모아 Pet사주·운세·타로 같은 재미 콘텐츠를 즐길 수 있어요. 유료 충전 없이 PetGrow 안의 건강한 참여를 보상하는 방식이에요.</p></div></section>}
+function PetPointPolicyAddendum({type}){return <section className="bg-card petpoint-policy"><h2>🐾 PetPoint 운영 안내</h2><p>PetPoint는 PetGrow 서비스 안에서만 사용하는 무료 활동 포인트이며 현금으로 구매·환전·출금하거나 다른 사람에게 양도할 수 없어요. 첫 이용 시 기본 포인트가 지급되고 Pet톡 글·댓글·좋아요 받기·하루 첫 접속 등 정상적인 활동에 따라 포인트가 적립될 수 있어요.</p><p>Pet사주·오늘의 펫운세·보호자 궁합 등 일부 재미 콘텐츠 이용 시 안내된 포인트가 차감됩니다. 반복 도배·비정상 활동·운영정책 위반 등 부정한 방식으로 적립한 포인트는 지급 취소 또는 회수될 수 있고, 글이나 댓글을 삭제하면 해당 활동으로 적립된 포인트가 회수될 수 있어요.</p>{type==="privacy"&&<p className="bg-sub">포인트 운영을 위해 회원 내부 식별자, 적립·사용 사유, 증감 포인트, 처리 시각과 활동 참조값을 계정에 연결해 저장하며 회원탈퇴 시 관계 법령상 보관 의무가 있는 경우를 제외하고 삭제합니다.</p>}</section>}
+function PetPointAboutCard(){return <section className="bg-card petpoint-about"><span>🐾</span><div><small>COMMUNITY REWARD</small><h2>활동이 혜택이 되는 PetPoint</h2><p>Pet톡에서 이야기를 나누고 댓글을 남기며 포인트를 모아 Pet사주·운세 같은 재미 콘텐츠를 즐길 수 있어요. 유료 충전 없이 PetGrow 안의 건강한 참여를 보상하는 방식이에요.</p></div></section>}
 function PetPointGuideCard(){return <section className="bg-card petpoint-guide-hero"><div><small>PETPOINT GUIDE</small><h2>🐾 활동하고, 모으고, 즐겨요</h2><p>처음 1,000P로 시작하고 Pet톡 활동과 하루 첫 접속으로 포인트를 모을 수 있어요. 포인트는 PetGrow 재미 콘텐츠에서만 사용돼요.</p></div><div className="petpoint-mini-grid"><span><b>+50P</b> 글 작성</span><span><b>+20P</b> 댓글</span><span><b>+5P</b> 좋아요 받기</span><span><b>+30P</b> 하루 첫 접속</span></div></section>}
 function PetPointAdminOverview(){const [d,setD]=useState(null);useEffect(()=>{apiJson("/api/points?action=admin").then(setD).catch(()=>{})},[]);if(!d)return null;return <section className="bg-card petpoint-admin"><h2>🐾 PetPoint 운영 현황</h2><div><span><small>포인트 회원</small><b>{Number(d.users||0).toLocaleString()}</b></span><span><small>현재 잔액 합계</small><b>{Number(d.balance||0).toLocaleString()}P</b></span><span><small>누적 적립</small><b>+{Number(d.earned||0).toLocaleString()}P</b></span><span><small>누적 사용·회수</small><b>-{Number(d.spent||0).toLocaleString()}P</b></span></div></section>}
 
@@ -10973,7 +10997,7 @@ const MENU_HELP = {
   about: { icon: "🌱", koTitle: "PetGrow 소개", koBody: "PetGrow가 어떤 서비스인지, 어떤 기능을 제공하는지 한눈에 살펴볼 수 있어요.", enTitle: "About PetGrow", enBody: "See what PetGrow is and what you can do here." },
   pets: { icon: "🐾", koTitle: "우리 아이", koBody: "반려동물 정보를 등록하고 체중·성장기록·사진을 꾸준히 관리해보세요.", enTitle: "My Pets", enBody: "Register your pets and manage growth, weight, and photos." },
   community: { icon: "💬", koTitle: "Pet톡", koBody: "다른 보호자들과 일상·질문·건강·산책·훈련 이야기를 나눠요. 닉네임은 회원정보에서 바꿀 수 있어요.", enTitle: "Pet Talk", enBody: "Share daily life, questions, health, walks and training with other pet guardians." },
-  saju: { icon: "🔮", koTitle: "Pet사주", koBody: "기본 Pet사주, 오늘의 펫운세, 보호자 궁합을 재미로 즐겨보세요.", enTitle: "Pet Saju", enBody: "Enjoy Pet Saju, today's fortune, Pet Tarot, or guardian compatibility for fun." },
+  saju: { icon: "🔮", koTitle: "Pet사주", koBody: "기본 Pet사주, 오늘의 펫운세, 보호자 궁합을 재미로 즐겨보세요.", enTitle: "Pet Saju", enBody: "Enjoy Pet Saju, today's fortune, or guardian compatibility for fun." },
   tarot: { icon: "🃏", koTitle: "Pet타로", koBody: "22장의 메이저 아르카나에서 주제별로 하루 한 장을 뽑고 오늘의 메시지를 저장해보세요.", enTitle: "Pet Tarot", enBody: "Draw one card per topic each day and save the reading to your account." },
   petbti: { icon: "🧩", koTitle: "PetBTI", koBody: "강아지·고양이별 20개 행동 질문으로 우리 아이의 성향을 더 구체적으로 알아봐요.", enTitle: "PetBTI", enBody: "Answer behavior questions and discover a fun personality type for your pet." },
   music: { icon: "🎵", koTitle: "Pet음악", koBody: "강아지·고양이를 위한 음악을 듣고 반복재생하며 좋아요와 댓글로 우리 아이의 반응을 나눠보세요.", enTitle: "Pet Music", enBody: "Listen to pet-friendly music, loop favorites, and share reactions with likes and comments." },
