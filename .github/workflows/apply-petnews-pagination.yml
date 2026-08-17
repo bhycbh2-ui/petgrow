@@ -1,0 +1,43 @@
+name: Apply Pet News Pagination
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/apply-petnews-pagination.mjs'
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Apply Pet News pagination
+        run: node scripts/apply-petnews-pagination.mjs
+      - name: Verify production web build
+        run: npm run build
+      - name: Commit verified changes
+        run: |
+          if git diff --quiet; then
+            echo 'No generated changes.'
+            exit 0
+          fi
+          git config user.name 'petgrow-automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git add src/App.jsx
+          git commit -m 'feat: paginate Pet News by category'
+          git push origin main
