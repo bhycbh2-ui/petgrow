@@ -1,30 +1,45 @@
-import { getSessionUserId } from "../server_lib/session.js";
-import { getAdminRole } from "../server_lib/admin.js";
-import { getPointSummary, getPointAdminStats, spendPoints, POINT_COSTS } from "../server_lib/points.js";
+/* Legacy compatibility endpoint after PetPoint removal - 2026-08-18.
+ * Existing clients may still call this URL briefly. Return zero/disabled data so
+ * no point balance is created, awarded, deducted, or required for content access.
+ */
 
-export default async function handler(req,res){
-  const uid=getSessionUserId(req);
-  if(!uid)return res.status(401).json({error:"로그인이 필요해요."});
-  try{
-    const action=String(req.query.action||"summary");
-    if(req.method==="GET"&&action==="summary"){
-      const data=await getPointSummary(uid,{dailyLogin:true});
-      data.earnGuide=(data.earnGuide||[]).map(x=>x.label==="Pet톡 댓글 작성"?{...x,limit:"하루 5회"}:x);
-      return res.status(200).json(data);
-    }
-    if(req.method==="GET"&&action==="admin"){
-      const role=await getAdminRole(uid);
-      if(!role)return res.status(403).json({error:"관리자 권한이 필요해요."});
-      return res.status(200).json(await getPointAdminStats());
-    }
-    if(req.method==="POST"&&action==="spend"){
-      const feature=String(req.body?.feature||"");
-      const refKey=String(req.body?.refKey||"").trim()||null;
-      if(!["saju_basic","saju_daily","saju_compat","tarot"].includes(feature))return res.status(400).json({error:"지원하지 않는 포인트 사용 항목이에요."});
-      return res.status(200).json({ok:true,...await spendPoints(uid,feature,POINT_COSTS[feature],refKey)});
-    }
-    return res.status(405).json({error:"지원하지 않는 요청이에요."});
-  }catch(e){
-    return res.status(e?.code==="POINTS_INSUFFICIENT"?402:500).json({error:e?.message||"PetPoint 처리 중 오류가 발생했어요.",code:e?.code||"POINT_ERROR"});
+const ZERO_COSTS = Object.freeze({
+  saju_basic: 0,
+  saju_daily: 0,
+  saju_compat: 0,
+  tarot: 0,
+});
+
+export default async function handler(req, res) {
+  const action = String(req.query.action || "summary");
+
+  if (req.method === "GET" && action === "summary") {
+    return res.status(200).json({
+      disabled: true,
+      balance: 0,
+      startPoints: 0,
+      costs: ZERO_COSTS,
+      recent: [],
+      pointEvent: null,
+      todayEarned: 0,
+      todaySpent: 0,
+      weekSpent: 0,
+      totalEarned: 0,
+      totalSpent: 0,
+      rank: 0,
+      memberCount: 0,
+      topPercent: 0,
+      earnGuide: [],
+    });
   }
+
+  if (req.method === "GET" && action === "admin") {
+    return res.status(200).json({ disabled: true, users: 0, balance: 0, earned: 0, spent: 0, events: 0 });
+  }
+
+  if (req.method === "POST" && action === "spend") {
+    return res.status(200).json({ ok: true, disabled: true, spent: 0, balance: 0, label: "" });
+  }
+
+  return res.status(404).json({ error: "지원하지 않는 요청이에요." });
 }
