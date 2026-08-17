@@ -2,6 +2,11 @@ name: Android AAB Build
 
 on:
   workflow_dispatch:
+    inputs:
+      release_status:
+        description: 'Google Play release status (draft or completed; completed is restricted to non-production tracks by uploader)'
+        required: false
+        default: 'draft'
   push:
     branches:
       - main
@@ -111,12 +116,13 @@ jobs:
             echo "Google Play upload skipped until signing + service-account + track secrets are configured."
           fi
 
-      - name: Upload signed AAB to Google Play as draft
+      - name: Upload signed AAB to Google Play
         if: steps.play.outputs.ready == 'true'
         env:
           AAB_PATH: android/app/build/outputs/bundle/release/app-release.aab
           PLAY_RELEASE_NAME: PetGrow ${{ steps.signing.outputs.version_code }}
           PLAY_RELEASE_NOTES: PetGrow 기능 및 사용성 개선
+          PLAY_RELEASE_STATUS: ${{ github.event.inputs.release_status || 'draft' }}
         run: node scripts/upload-google-play.mjs
 
       - name: Remove temporary keystore
