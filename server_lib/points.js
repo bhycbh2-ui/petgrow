@@ -1,13 +1,13 @@
 import crypto from "crypto";
 import { sql } from "@vercel/postgres";
 
-const START_POINTS = 300;
+const START_POINTS = 1000;
 export const POINT_COSTS = { saju_basic: 50, saju_daily: 20, saju_compat: 40, tarot: 30 };
 const REWARDS = {
-  daily_login: { label: "오늘의 첫 접속", amount: 10, cap: 1 },
-  community_post: { label: "Pet톡 글 작성", amount: 30, cap: 3 },
-  community_comment: { label: "Pet톡 댓글 작성", amount: 10, cap: 10 },
-  received_like: { label: "Pet톡 좋아요 받기", amount: 3, cap: 30 },
+  daily_login: { label: "오늘의 첫 접속", amount: 30, cap: 1 },
+  community_post: { label: "Pet톡 글 작성", amount: 50, cap: 5 },
+  community_comment: { label: "Pet톡 댓글 작성", amount: 20, cap: 15 },
+  received_like: { label: "Pet톡 좋아요 받기", amount: 5, cap: 50 },
 };
 const kstDate = () => new Intl.DateTimeFormat("en-CA", { timeZone:"Asia/Seoul", year:"numeric", month:"2-digit", day:"2-digit" }).format(new Date());
 
@@ -20,7 +20,21 @@ async function ensure() {
 async function ensureAccount(uid) {
   await ensure();
   const { rows } = await sql`select balance from pg_point_accounts where user_id=${uid}`;
-  if (rows[0]) return Number(rows[0].balance)||0;
+  if (rows[0]) {
+    const { rows:w } = await sql`select coalesce(sum(amount),0)::int welcome_total from pg_point_ledger where user_id=${uid} and reason in ('welcome','welcome_upgrade') and amount>0`;
+    const granted=Number(w[0]?.welcome_total)||0;
+    const delta=Math.max(0,START_POINTS-granted);
+    if(delta>0){
+      const ref=`welcome-upgrade-${START_POINTS}`;
+      const {rows:d}=await sql`select 1 from pg_point_ledger where user_id=${uid} and ref_key=${ref} limit 1`;
+      if(!d[0]){
+        await sql`insert into pg_point_ledger(id,user_id,amount,reason,label,ref_key) values(${crypto.randomUUID()},${uid},${delta},'welcome_upgrade','PetGrow 시작 포인트 상향 지급',${ref}) on conflict do nothing`;
+        await sql`update pg_point_accounts set balance=balance+${delta},updated_at=now() where user_id=${uid}`;
+      }
+    }
+    const {rows:r}=await sql`select balance from pg_point_accounts where user_id=${uid}`;
+    return Number(r[0]?.balance)||0;
+  }
   await sql`insert into pg_point_accounts(user_id,balance) values(${uid},${START_POINTS}) on conflict do nothing`;
   await sql`insert into pg_point_ledger(id,user_id,amount,reason,label,ref_key) values(${crypto.randomUUID()},${uid},${START_POINTS},'welcome','PetGrow 시작 포인트','welcome') on conflict do nothing`;
   const { rows:r } = await sql`select balance from pg_point_accounts where user_id=${uid}`;
@@ -70,7 +84,12 @@ export async function getPointSummary(uid,{dailyLogin=true}={}) {
       coalesce(sum(case when amount<0 then -amount else 0 end),0)::int as total_spent
       from pg_point_ledger where user_id=${uid}`
   ]);
+  const balance=Number(b[0]?.balance)||0;
+  const {rows:rankRows}=await sql`select count(*)::int total, count(*) filter (where balance>${balance})::int higher from pg_point_accounts`;
+  const total=Math.max(1,Number(rankRows[0]?.total)||1);
+  const rank=Math.min(total,(Number(rankRows[0]?.higher)||0)+1);
+  const topPercent=Math.max(1,Math.ceil((rank/total)*100));
   const st=stats[0]||{};
-  return {balance:Number(b[0]?.balance)||0,startPoints:START_POINTS,costs:POINT_COSTS,recent:l,pointEvent,todayEarned:Number(st.today_earned)||0,todaySpent:Number(st.today_spent)||0,weekSpent:Number(st.week_spent)||0,totalEarned:Number(st.total_earned)||0,totalSpent:Number(st.total_spent)||0,earnGuide:[{label:"Pet톡 글 작성",points:30,limit:"하루 3회"},{label:"Pet톡 댓글 작성",points:10,limit:"하루 10회"},{label:"좋아요 받기",points:3,limit:"하루 30회"},{label:"하루 첫 접속",points:10,limit:"하루 1회"}]};
+  return {balance,startPoints:START_POINTS,costs:POINT_COSTS,recent:l,pointEvent,todayEarned:Number(st.today_earned)||0,todaySpent:Number(st.today_spent)||0,weekSpent:Number(st.week_spent)||0,totalEarned:Number(st.total_earned)||0,totalSpent:Number(st.total_spent)||0,rank,memberCount:total,topPercent,earnGuide:[{label:"Pet톡 글 작성",points:50,limit:"하루 5회"},{label:"Pet톡 댓글 작성",points:20,limit:"하루 15회"},{label:"좋아요 받기",points:5,limit:"하루 50회"},{label:"하루 첫 접속",points:30,limit:"하루 1회"}]};
 }
 export async function getPointAdminStats(){await ensure();const [{rows:a},{rows:l}]=await Promise.all([sql`select count(*)::int users,coalesce(sum(balance),0)::int balance from pg_point_accounts`,sql`select coalesce(sum(case when amount>0 then amount else 0 end),0)::int earned,coalesce(sum(case when amount<0 then -amount else 0 end),0)::int spent,count(*)::int events from pg_point_ledger`]);return {...(a[0]||{}),...(l[0]||{})};}
