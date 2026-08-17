@@ -1,0 +1,40 @@
+name: PetGrow Live Smoke Check
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'api/news.js'
+      - 'public/sw.js'
+      - 'server_lib/tarot.js'
+      - 'vercel.json'
+      - '.github/workflows/live-petgrow-smoke.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Vercel deployment
+        run: sleep 55
+      - name: Check PetNews live endpoint
+        shell: bash
+        run: |
+          set +e
+          code=$(curl -L -sS -o /tmp/news.json -w "%{http_code}" --max-time 30 https://www.petgrow.co.kr/api/news)
+          echo "PETNEWS_HTTP=$code"
+          head -c 1800 /tmp/news.json || true
+          echo
+          if [ "$code" != "200" ]; then echo "::warning::PetNews live endpoint is not 200"; fi
+          node -e "const fs=require('fs');try{const j=JSON.parse(fs.readFileSync('/tmp/news.json','utf8'));console.log('PETNEWS_PROVIDER='+(j.provider||''));console.log('PETNEWS_TOTAL='+(j.total||0));if(!Array.isArray(j.items)||!j.items.length)console.log('::warning::PetNews returned no items')}catch(e){console.log('::warning::PetNews response was not valid JSON')}"
+      - name: Check PetTarot route exists
+        shell: bash
+        run: |
+          set +e
+          code=$(curl -L -sS -o /tmp/tarot.json -w "%{http_code}" --max-time 30 'https://www.petgrow.co.kr/api/tarot?action=today')
+          echo "PETTAROT_HTTP=$code"
+          cat /tmp/tarot.json | head -c 800 || true
+          echo
+          if [ "$code" != "401" ] && [ "$code" != "200" ]; then echo "::warning::PetTarot route is not reachable as expected"; fi
