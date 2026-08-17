@@ -9650,22 +9650,31 @@ function PetContentPage({ subTab, onSubTabChange, allPets, featurePet, onSelectF
 }
 
 function InfoGuidePage() {
+  const [guideSearch,setGuideSearch]=useState("");
+  const [openGuide,setOpenGuide]=useState("");
   const guides=[
-    ["🐾","우리 아이","반려동물 등록 → 프로필 사진·체중 기록 → 성장그래프와 성장앨범 확인. 여러 마리를 등록했다면 상단 아이 선택에서 바로 전환할 수 있어요."],
-    ["🎵","Pet음악","강아지/고양이 필터로 음악을 찾고 재생·반복재생을 이용해요. 마음에 드는 곡은 좋아요하고 댓글을 남길 수 있어요."],
-    ["📍","내 주변 Pet","주소를 검색하면 주변 동물병원·약국·펫샵·미용·호텔을 확인할 수 있어요. 위치 권한을 허용하면 내 위치와의 거리도 함께 볼 수 있어요."],
-    ["💬","Pet톡","카테고리를 선택해 글을 읽거나 작성해요. 댓글·좋아요·내 활동에서 내가 쓴 글과 반응을 다시 확인할 수 있어요."],
-    ["🔮","Pet사주","등록한 아이를 선택한 뒤 기본 Pet사주·오늘의 펫운세·보호자 궁합을 재미로 확인해요. 전문적인 진단이나 미래 예측 자료는 아니에요."],
-    ["🃏","Pet타로","아이와 주제를 선택한 뒤 메이저 아르카나 22장 중 한 장을 골라요. 오늘의 Pet타로·궁합·마음·산책·조언은 주제별 하루 1회이며 결과는 회원정보에 저장할 수 있어요."],
-    ["🧠","PetBTI","등록한 아이를 선택하고 20개 질문에 답하면 성향 결과를 확인할 수 있어요. 검사 결과는 우리 아이 정보와 함께 다시 볼 수 있어요."],
-    ["💡","Pet정보","건강·식단·훈련·생활 정보를 카테고리와 검색으로 찾아봐요. 건강 정보는 참고용이며 이상 증상은 동물병원 진료를 우선해 주세요."],
-    ["📰","Pet뉴스","대표이미지가 확인된 최신 반려동물 기사만 보여줘요. 카드를 누르면 PetGrow 안에서 제목·요약을 읽고 필요할 때 원문 전체보기를 이용해요."],
-    ["👤","회원정보","닉네임과 계정 정보를 관리하고 Pet톡 활동, 좋아요한 콘텐츠, 저장한 Pet사주·Pet타로 기록을 확인해요."],
-    ["⚙️","설정·지원","회원정보에서 로그아웃·회원탈퇴를 이용할 수 있고, 고객지원에서 공지사항·문의·피드백을 남길 수 있어요."]
+    {key:"pets",icon:"🐾",title:"우리 아이",keywords:"등록 프로필 체중 성장 기록 앨범 사진 예방접종",steps:["우리 아이에서 강아지 또는 고양이를 등록해요.","프로필 사진과 생년월일·품종·현재 체중을 입력해요.","체중 기록과 성장앨범에 사진을 추가하면 성장 과정을 한곳에서 볼 수 있어요."],tip:"여러 마리를 등록했다면 아이 선택 메뉴에서 바로 전환할 수 있어요."},
+    {key:"music",icon:"🎵",title:"Pet음악",keywords:"음악 재생 반복 좋아요 댓글 즐겨찾기 강아지 고양이",steps:["강아지·고양이 필터에서 원하는 음악을 찾아요.","곡을 눌러 재생하고 1곡 반복 또는 전체 반복을 선택할 수 있어요.","마음에 드는 곡은 좋아요하고 댓글로 반응을 남길 수 있어요."],tip:"좋아요한 음악은 회원정보에서 다시 확인할 수 있어요."},
+    {key:"nearby",icon:"📍",title:"내 주변 Pet",keywords:"주소 검색 지도 병원 약국 펫샵 미용 호텔 후기 위치",steps:["주소 검색창에 찾고 싶은 지역을 입력해요.","주변 동물병원·동물약국·펫샵·미용·호텔 등을 지도와 목록에서 확인해요.","이용한 장소는 별점과 후기를 남길 수 있어요."],tip:"위치 권한을 허용하면 현재 위치 기준 거리도 확인할 수 있어요."},
+    {key:"community",icon:"💬",title:"Pet톡",keywords:"커뮤니티 글쓰기 댓글 좋아요 내활동 신고",steps:["카테고리에서 관심 있는 글을 찾아 읽어요.","글쓰기에서 제목과 내용을 입력해 게시할 수 있어요.","댓글·좋아요를 이용하고 회원정보의 내 활동에서 다시 확인해요."],tip:"개인정보나 타인의 권리를 침해하는 내용은 게시하지 말아 주세요."},
+    {key:"saju",icon:"🔮",title:"Pet사주",keywords:"사주 운세 궁합 보호자 오늘 펫운세",steps:["등록한 우리 아이를 선택해요.","기본 Pet사주·오늘의 펫운세·보호자 궁합 중 원하는 기능을 선택해요.","결과를 재미와 참고용으로 확인해요."],tip:"Pet사주 결과는 의학적 진단이나 실제 미래를 판단하는 자료가 아니에요."},
+    {key:"tarot",icon:"🃏",title:"Pet타로",keywords:"타로 오늘의 Pet타로 궁합 마음 산책 활동 조언 저장 카드 22장",steps:["Pet타로에서 우리 아이와 원하는 주제를 선택해요.","메이저 아르카나 22장 중 마음이 가는 카드 한 장을 골라요.","결과와 해석을 확인하고 필요하면 회원정보에 저장해요."],tip:"오늘의 Pet타로·보호자 궁합·마음·산책·조언은 주제별로 하루 1회 뽑을 수 있어요."},
+    {key:"petbti",icon:"🧠",title:"PetBTI",keywords:"성향 검사 질문 mbti 결과",steps:["검사할 우리 아이를 선택해요.","20개 질문에 평소 행동을 기준으로 답해요.","완료하면 우리 아이의 PetBTI 성향 결과를 확인할 수 있어요."],tip:"PetBTI는 재미와 이해를 돕기 위한 콘텐츠이며 전문 행동진단이 아니에요."},
+    {key:"tips",icon:"💡",title:"Pet정보",keywords:"건강 식단 훈련 생활 정보 검색",steps:["카테고리 또는 검색창에서 궁금한 주제를 찾아요.","질문을 누르면 답변과 핵심 정보를 확인할 수 있어요.","필요한 내용은 반려생활 참고자료로 활용해요."],tip:"건강 이상이나 응급 증상은 정보글보다 동물병원 진료를 우선해 주세요."},
+    {key:"news",icon:"📰",title:"Pet뉴스",keywords:"뉴스 기사 이미지 요약 원문 정책 건강",steps:["대표이미지가 확인된 최신 반려동물 뉴스를 살펴봐요.","기사 카드를 누르면 PetGrow 안에서 요약과 핵심 포인트를 먼저 읽을 수 있어요.","더 자세한 내용이 필요하면 원문 전체보기를 눌러 언론사 기사를 확인해요."],tip:"PetGrow는 기사 전문을 복사하지 않고 제공된 기사 설명을 바탕으로 핵심을 정리해 보여줘요."},
+    {key:"my",icon:"👤",title:"회원정보",keywords:"회원정보 닉네임 기록 저장 좋아요 탈퇴 로그아웃",steps:["회원정보에서 닉네임과 계정 정보를 확인해요.","Pet톡 활동·좋아요한 콘텐츠·저장한 Pet사주·Pet타로 기록을 확인해요.","로그아웃이나 회원탈퇴도 회원정보에서 이용할 수 있어요."],tip:"회원탈퇴 전 필요한 기록이 있는지 먼저 확인해 주세요."},
+    {key:"support",icon:"📢",title:"고객지원",keywords:"공지 문의 피드백 오류 광고 제휴",steps:["공지사항에서 서비스 변경이나 안내를 확인해요.","궁금한 점이나 오류는 문의·피드백으로 남겨요.","광고·제휴 관련 문의는 광고문의 메뉴를 이용해요."],tip:"오류 문의에는 문제가 발생한 메뉴와 상황을 함께 적으면 확인이 빨라져요."}
   ];
-  return <div className="legal-page-shell info-guide-practical"><div className="bg-card info-guide-intro"><b>PetGrow 이용가이드</b><p className="bg-sub">궁금한 기능을 메뉴별로 바로 찾아보세요. 복잡한 설명보다 실제 이용 순서 중심으로 정리했어요.</p></div><div className="info-guide-grid">{guides.map(([ic,title,body])=><section className="bg-card info-guide-card" key={title}><span>{ic}</span><div><h3>{title}</h3><p>{body}</p></div></section>)}</div></div>;
+  const popular=["pets","tarot","music","news","nearby","my"];
+  const q=guideSearch.trim().toLowerCase();
+  const filtered=guides.filter(g=>!q||`${g.title} ${g.keywords} ${g.steps.join(" ")} ${g.tip}`.toLowerCase().includes(q));
+  const go=(key)=>window.dispatchEvent(new CustomEvent("petgrow:navigate",{detail:key}));
+  return <div className="legal-page-shell info-guide-v4">
+    <section className="bg-card info-guide-search-card"><h2>무엇이 궁금하세요?</h2><p className="bg-sub">메뉴 이름이나 하고 싶은 일을 검색해 보세요.</p><div className="info-guide-search-row"><span>🔎</span><input className="bg-input" value={guideSearch} onChange={e=>setGuideSearch(e.target.value)} placeholder="예: 타로 저장, 음악 반복재생, 주소 검색"/>{guideSearch&&<button type="button" className="bg-chip" onClick={()=>setGuideSearch("")}>초기화</button>}</div></section>
+    {!q&&<section className="info-guide-popular"><div className="info-guide-section-head"><h3>자주 찾는 이용방법</h3><small>바로 필요한 가이드부터 확인해요.</small></div><div className="info-guide-popular-grid">{popular.map(k=>{const g=guides.find(x=>x.key===k);return <button type="button" className="bg-card info-guide-popular-btn" key={k} onClick={()=>setOpenGuide(k)}><span>{g.icon}</span><b>{g.title}</b><small>{g.steps[0]}</small></button>})}</div></section>}
+    <section className="info-guide-all"><div className="info-guide-section-head"><h3>{q?`검색 결과 ${filtered.length}개`:"메뉴별 이용가이드"}</h3><small>필요한 메뉴만 펼쳐서 볼 수 있어요.</small></div><div className="info-guide-accordion-list">{filtered.length?filtered.map(g=>{const open=openGuide===g.key;return <article className={"bg-card info-guide-accordion "+(open?"open":"")} key={g.key}><button type="button" className="info-guide-accordion-head" onClick={()=>setOpenGuide(open?"":g.key)}><span>{g.icon}</span><div><b>{g.title}</b><small>{g.steps[0]}</small></div><em>{open?"−":"＋"}</em></button>{open&&<div className="info-guide-accordion-body"><ol>{g.steps.map((s,i)=><li key={i}><span>{i+1}</span><p>{s}</p></li>)}</ol><div className="info-guide-tip">💡 {g.tip}</div><button type="button" className="bg-btn info-guide-go" onClick={()=>go(g.key)}>{g.title} 바로 이용하기 →</button></div>}</article>}):<div className="bg-card info-guide-empty">검색 결과가 없어요. 다른 단어로 검색해 보세요.</div>}</div></section>
+  </div>;
 }
-
 function CmPetAvatar({ pet, size = 34 }) {
   const style = { width: size, height: size };
   if (pet && pet.photo) {
