@@ -7,7 +7,7 @@ export function DailyFortunePanel({pet,lang="ko",message,onBack,onAnalytics}){
   const petName=String(pet?.profile?.name||"우리 아이");
   useEffect(()=>{if(!message)return;jsonFetch("/api/tarot?action=fortune",{method:"POST",body:JSON.stringify({petId,petName,message})}).catch(()=>{});try{onAnalytics?.("feature_use","saju_daily")}catch{}},[petId,message]);
   return <div className="feature-module-shell"><div className="bg-card pet-daily-fortune-card">
-    <div className="pet-daily-orb">🌤️</div><small className="pet-daily-eyebrow">TODAY'S PET FORTUNE</small>
+    <div className="pet-daily-orb">🌤️</div><small className="pet-daily-eyebrow">{lang==="en"?"TODAY'S PET FORTUNE":"오늘의 펫운세"}</small>
     <h2><span className="pet-user-name">{petName}</span>{lang==="en"?"'s fortune today":"의 오늘의 펫운세"}</h2>
     <p>{message}</p><button className="bg-btn bg-btn-ghost" style={{width:"100%",marginTop:20}} onClick={onBack}>{lang==="en"?"Back to Pet Saju":"다른 Pet사주 보기"}</button>
   </div><div className="bg-sub" style={{fontSize:11,textAlign:"center",marginTop:16}}>{lang==="en"?"Fun content only; not a prediction of real events.":"재미로 보는 PetGrow 콘텐츠예요. 실제 미래를 판단하는 자료가 아니에요."}</div></div>;
@@ -32,12 +32,12 @@ export function PetTarotPanel({pet,lang="ko",onBack,onAnalytics}){
   const currentTopic=TAROT_TOPICS.find(x=>x.key===topic)||TAROT_TOPICS[0];
   return <div className="feature-module-shell pet-tarot-shell">
     <div className="bg-card pet-tarot-stage">
-      <small className="pet-daily-eyebrow">PETGROW TAROT · 22 MAJOR ARCANA</small><h2>🃏 {petName}{lang==="en"?"'s Tarot":"의 Pet타로"}</h2>
+      <small className="pet-daily-eyebrow">{lang==="en"?"PETGROW TAROT · 22 MAJOR ARCANA":"PETGROW TAROT · 메이저 아르카나 22장"}</small><h2>🃏 {petName}{lang==="en"?"'s Tarot":"의 Pet타로"}</h2>
       {phase==="topics"&&<><p className="bg-sub pet-tarot-intro">주제마다 하루에 한 번씩 뽑을 수 있어요. 오늘 뽑은 카드는 같은 날 다시 바뀌지 않아요.</p><div className="pet-tarot-topic-grid">{TAROT_TOPICS.map(x=><button key={x.key} type="button" className={"pet-tarot-topic "+(todayMap[x.key]?"done":"")} onClick={()=>chooseTopic(x.key)}><span>{x.icon}</span><div><b>{x.label}</b><small>{x.desc}</small>{todayMap[x.key]&&<em>오늘 뽑기 완료 · 다시 보기</em>}</div></button>)}</div>{loadingToday&&<div className="pet-tarot-loading">오늘의 타로 기록을 확인하는 중…</div>}</>}
       {phase==="choose"&&<><button type="button" className="pet-tarot-back-link" onClick={()=>setPhase("topics")}>← 다른 주제 선택</button><div className="pet-tarot-topic-title"><span>{currentTopic.icon}</span><div><b>{currentTopic.label}</b><small>{currentTopic.desc}</small></div></div><p className="bg-sub pet-tarot-intro">22장의 메이저 아르카나가 섞여 있어요. 마음이 가는 카드 한 장을 골라보세요.</p><div className="pet-tarot-deck22">{CARD_BACKS.map(i=><button key={i} type="button" aria-label={(i+1)+"번째 타로카드"} className={"pet-tarot-back22 "+(picked===i&&phase==="drawing"?"picked":"")} onClick={()=>draw(i)}><span>✦</span><b>PetGrow</b><em>🐾</em><small>{String(i+1).padStart(2,"0")}</small></button>)}</div></>}
       {phase==="drawing"&&<div className="pet-tarot-loading">선택한 카드의 메시지를 펼치는 중…</div>}
       {phase==="result"&&result&&<><button type="button" className="pet-tarot-back-link" onClick={()=>setPhase("topics")}>← 다른 주제 보기</button><div className="pet-tarot-result-topic">{currentTopic.icon} <b>{result.topicLabel||currentTopic.label}</b><span>오늘의 카드는 이미 정해졌어요</span></div><div className="pet-tarot-result-wrap">
-        <div className={"pet-tarot-face tarot-"+result.key}><div className="pet-tarot-number">{String(result.cardId).padStart(2,"0")}</div><div className="pet-tarot-art"><span>{result.symbol}</span><i>✦</i><i>•</i><i>✧</i></div><div className="pet-tarot-title"><b>{result.name}</b><small>{result.en}</small></div></div>
+        <div className={"pet-tarot-face tarot-"+result.key}><div className="pet-tarot-number">{String(result.cardId).padStart(2,"0")}</div><div className="pet-tarot-art"><span>{result.symbol}</span><i>✦</i><i>•</i><i>✧</i></div><div className="pet-tarot-title"><b>{lang==="en"?(result.en||result.name):result.name}</b>{lang==="en"&&result.name&&<small>{result.name}</small>}</div></div>
         <div className="pet-tarot-reading"><span className="bg-chip active">{result.keyword}</span><h3>{result.topicLabel||currentTopic.label}</h3><p>{result.topicMeaning||result.meaning}</p><h3>우리 아이에게</h3><p>{result.topicTip||result.tip}</p><div className="pet-tarot-luck">🍀 오늘의 행운 포인트 <b>{result.luck}</b></div></div>
         <div className="pet-tarot-actions"><button type="button" className="bg-btn" onClick={save} disabled={saved}>{saved?"✓ 회원정보에 저장됨":"타로카드 저장"}</button></div>
       </div><p className="pet-tarot-once-note">이 주제는 오늘 이미 뽑았어요. 내일 다시 새로운 카드를 만날 수 있어요.</p></>}
