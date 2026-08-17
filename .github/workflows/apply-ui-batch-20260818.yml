@@ -1,0 +1,34 @@
+name: Apply PetGrow UI Batch 20260818
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/apply-ui-batch-20260818.mjs'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - name: Apply consolidated UI fixes
+        run: node scripts/apply-ui-batch-20260818.mjs
+      - name: Build
+        run: npm ci && npm run build
+      - name: Commit generated UI changes
+        shell: bash
+        run: |
+          if git diff --quiet; then echo 'No source changes'; exit 0; fi
+          git config user.name petgrow-automation
+          git config user.email actions@users.noreply.github.com
+          git add src/App.jsx src/PetDailyWidgets.jsx
+          git commit -m "fix: consolidate PetGrow readability and page layout"
+          git push origin main
