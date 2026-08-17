@@ -28,7 +28,7 @@ const CARDS=[
 ].map(([id,key,name,en,symbol,keyword,meaning,tip,luck])=>({id,key,name,en,symbol,keyword,meaning,tip,luck}));
 
 const TAROT_TOPICS={
-  daily:{label:"오늘의 타로",guide:"오늘 하루 우리 아이와 함께할 분위기와 포인트를 가볍게 살펴봐요."},
+  daily:{label:"오늘의 Pet타로",guide:"오늘 하루 우리 아이와 함께할 분위기와 포인트를 가볍게 살펴봐요."},
   bond:{label:"보호자 궁합 타로",guide:"오늘 보호자와 우리 아이 사이의 교감 포인트를 살펴봐요."},
   heart:{label:"우리 아이 마음 타로",guide:"오늘 우리 아이의 기분과 마음을 이해하는 힌트를 찾아봐요."},
   activity:{label:"산책·활동 타로",guide:"오늘 산책과 놀이에서 잘 맞을 흐름을 재미로 확인해봐요."},

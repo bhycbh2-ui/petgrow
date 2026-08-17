@@ -2060,7 +2060,7 @@ const TERMS_SECTIONS_KO = [
   { title: "제11조 (회원탈퇴 및 이용계약 해지)", body: "회원은 언제든지 서비스 내 회원탈퇴 기능을 통해 이용계약을 해지할 수 있습니다. 회원탈퇴가 완료되면 관계 법령에 따라 별도로 보관해야 하는 정보가 있는 경우를 제외하고 회원계정 및 계정과 연결된 개인정보와 저장정보를 삭제합니다." },
   { title: "제12조 (반려동물 관련 정보 및 계산 결과)", body: "PetGrow의 성장 예상, 체중 계산 및 기타 반려동물 관련 정보는 일반적인 자료와 이용자가 입력한 정보를 기반으로 제공되는 참고용 정보이며 실제 결과를 보장하지 않습니다." },
   { title: "제13조 (건강 관련 정보)", body: "PetGrow에서 제공하는 건강, 식단, 영양 및 관리 정보는 일반적인 참고정보이며 수의사의 진료, 진단 또는 처방을 대신하지 않습니다. 반려동물에게 이상 증상이나 응급상황이 있는 경우 수의사 또는 동물병원의 진료를 받아야 합니다." },
-  { title: "제14조 (Pet사주·PetBTI 등 재미 콘텐츠)", body: "기본 Pet사주, 오늘의 펫운세, 보호자 궁합, Pet타로 및 PetBTI는 재미와 참고를 위한 콘텐츠이며 과학적 진단, 의학적 판단, 성격 진단 또는 미래 결과를 보장하는 자료가 아닙니다. 보호자 궁합을 위해 입력한 보호자 이름과 생년월일은 현재 구현상 결과 계산에만 일시적으로 사용되며 PetGrow 서버 또는 계정에 저장되지 않습니다." },
+  { title: "제14조 (Pet사주·PetBTI 등 재미 콘텐츠)", body: "기본 Pet사주, 오늘의 펫운세, 보호자 궁합, Pet타로(오늘의 Pet타로·보호자 궁합·우리 아이 마음·산책·활동·오늘의 조언) 및 PetBTI는 재미와 참고를 위한 콘텐츠이며 과학적 진단, 의학적 판단, 성격 진단 또는 미래 결과를 보장하는 자료가 아닙니다. 보호자 궁합을 위해 입력한 보호자 이름과 생년월일은 현재 구현상 결과 계산에만 일시적으로 사용되며 PetGrow 서버 또는 계정에 저장되지 않습니다." },
   { title: "제14조의2 (Pet음악)", body: "① PetGrow는 강아지·고양이 등을 위한 음원 재생, 1곡 반복·전체 반복, 좋아요, 댓글 및 인기순위 기능을 제공할 수 있으며, 인스트루멘탈·보컬 여부와 휴식·수면·놀이·자연 등 음악 특성 태그를 표시할 수 있습니다.\n② Pet음악은 서비스 내 스트리밍 재생을 원칙으로 하며 별도의 음원 다운로드 기능을 제공하지 않을 수 있습니다. 이용자는 서비스에서 제공되는 음원을 무단 추출·복제·재판매 또는 재배포해서는 안 됩니다.\n③ 즐겨찾기·좋아요·댓글 등 이용자 반응은 개인화된 이용 편의 제공 및 서비스 개선에 활용될 수 있습니다. 댓글에는 Pet톡 게시물과 동일하게 타인의 권리 침해, 불법·유해 콘텐츠 등 금지행위 기준이 적용될 수 있습니다.\n④ PetGrow가 직접 등록하는 음원은 서비스 운영에 필요한 이용 권한을 확인한 범위에서 제공하는 것을 원칙으로 합니다." },
   { title: "제14조의3 (내 주변 Pet 및 장소 이용후기)", body: "① PetGrow는 이용자가 직접 입력한 주소 또는 이용자가 선택한 현재 위치를 기준으로 동물병원·동물약국·펫샵·용품점·미용·호텔·유치원 등 주변 반려동물 관련 장소를 검색해 안내할 수 있습니다. 위치 권한은 선택사항이며, 허용한 경우 현재 위치는 주변 검색, 지도 표시와 각 장소까지의 거리 계산에 사용할 수 있습니다. 위치 권한을 허용하지 않아도 주소 검색은 이용할 수 있습니다. 장소명·업종·주소·전화번호·거리 등 장소정보는 외부 장소정보 제공자의 검색 결과를 기반으로 하며 PetGrow가 해당 업체의 영업상태·서비스 품질·정보 정확성을 보증하지 않습니다.\n② 현재 위치는 이용자가 위치 권한을 허용한 경우에만 현재 위치 주변 검색, 지도 표시와 장소까지의 거리 계산을 위해 일시적으로 사용하며, PetGrow는 현재 구현상 정확한 현재 위치 좌표를 회원 계정이나 장소 후기 DB에 저장하지 않습니다.\n③ 회원은 장소별로 1~5점의 별점과 간단한 이용후기를 작성하고 다른 후기의 좋아요 또는 신고 기능을 이용할 수 있습니다. 후기 내용에 대한 책임은 작성자에게 있으며 욕설·비속어·음란·혐오 표현, 타인의 개인정보, 광고·도배, 허위 또는 권리침해 내용 등 부적절한 내용을 작성해서는 안 됩니다.\n④ PetGrow는 일부 금지 표현과 개인정보 노출을 자동 필터링할 수 있으나 모든 부적절한 내용을 완전히 탐지하는 것을 보장하지 않습니다. 신고된 후기는 운영진 검토 후 숨김 또는 신고 종결 처리될 수 있으며 신고만으로 자동 삭제되지 않습니다.\n⑤ 장소 이용후기는 회원 개인의 경험과 의견이며 해당 업체 또는 PetGrow의 공식 평가·보증이 아닙니다. 진료·건강 관련 판단은 반드시 수의사 등 전문가의 안내를 확인해야 합니다." },
   { title: "제15조 (광고 및 외부 서비스)", body: "① PetGrow는 서비스의 유지·운영을 위해 직접광고, 제휴광고 및 Google AdMob 등 외부 광고 서비스를 제공할 수 있습니다.\n② Google Mobile Ads SDK 사용 시 광고 제공, 분석 및 부정행위 방지를 위해 IP 주소, 앱 실행·탭·동영상 조회 등 이용 상호작용, 앱/SDK 진단정보, Android 광고 ID·App Set ID 등 기기 또는 계정 식별자가 Google에 의해 자동으로 처리될 수 있습니다. 구체적인 처리 범위는 앱 버전, SDK 설정 및 이용자의 기기 설정에 따라 달라질 수 있습니다.\n③ 개인 맞춤형 광고가 제공되는 경우 적용 법령과 Google의 동의 관리 절차에 따라 필요한 안내·동의 또는 선택권을 제공합니다. 이용자는 기기 설정에서 광고 ID를 재설정·삭제하거나 광고 개인정보 보호 관련 설정을 변경할 수 있습니다.\n④ PetGrow는 직접광고의 노출·클릭 및 광고 표시 요청·성공·오류 등의 집계 통계를 운영할 수 있습니다. PetGrow 관리자 화면의 자체 통계는 Google AdMob의 실제 광고 노출수·클릭수·수익 보고서와 구분됩니다.\n⑤ 외부 광고 서비스에는 해당 제공자의 이용약관 및 개인정보처리방침이 적용될 수 있습니다." },
@@ -2267,7 +2267,7 @@ function LoginScreen({ onGoTerms, onGoPrivacy }) {
 
       <Modal open={!!detail} onClose={()=>setDetail(null)} width={520}>
         {detail==="terms" && <><h3>이용약관 동의</h3><p className="consent-detail-text">PetGrow의 회원가입, 서비스 이용, 계정 및 데이터 저장·동기화, Pet톡 운영, 광고 및 외부서비스 등에 관한 이용약관에 동의합니다.</p><button className="bg-btn" onClick={()=>{setTermsOk(true);setDetail(null)}}>동의하고 닫기</button></>}
-        {detail==="privacy" && <><h3>개인정보 수집·이용 동의</h3><div className="consent-detail-text"><b>수집 항목</b><br/>카카오 사용자 고유 식별정보, 실제 동의받아 제공되는 닉네임·프로필 이미지, 반려동물 이름·종류·품종·생년월일·성별·현재 체중·프로필 사진, PetBTI 결과 및 저장되는 서비스 정보, 내 주변 Pet 후기·별점·좋아요·신고 기록. <br/><br/><b>선택적 위치 권한</b><br/>현재 위치는 필수 회원정보가 아닙니다. 위치 권한을 허용한 경우에만 현재 위치 주변 검색, 지도에 내 위치 표시, 장소까지의 거리 계산을 위해 일시적으로 사용하며 계정에 저장하지 않습니다. 위치 권한을 거부해도 주소 검색과 회원 기능은 이용할 수 있습니다.<br/><br/><b>이용 목적</b><br/>회원 식별·계정 관리, 반려동물 프로필 및 PetGrow 서비스 제공, 계정별 데이터 저장·동기화<br/><br/><b>보유 기간</b><br/>회원 탈퇴 시까지 또는 처리 목적 달성 시까지. 관계 법령상 보관 의무가 있는 경우 해당 기간 동안 보관할 수 있습니다.<br/><br/><b>동의 거부권</b><br/>동의를 거부할 수 있으나 필수 정보이므로 회원 서비스 이용이 제한될 수 있습니다.</div><button className="bg-btn" onClick={()=>{setPrivacyOk(true);setDetail(null)}}>동의하고 닫기</button></>}
+        {detail==="privacy" && <><h3>개인정보 수집·이용 동의</h3><div className="consent-detail-text"><b>수집 항목</b><br/>카카오 사용자 고유 식별정보, 실제 동의받아 제공되는 닉네임·프로필 이미지, 반려동물 이름·종류·품종·생년월일·성별·현재 체중·프로필 사진, PetBTI 결과, Pet사주·Pet타로 결과 및 이용자가 저장한 타로 기록 등 저장되는 서비스 정보, 내 주변 Pet 후기·별점·좋아요·신고 기록. <br/><br/><b>선택적 위치 권한</b><br/>현재 위치는 필수 회원정보가 아닙니다. 위치 권한을 허용한 경우에만 현재 위치 주변 검색, 지도에 내 위치 표시, 장소까지의 거리 계산을 위해 일시적으로 사용하며 계정에 저장하지 않습니다. 위치 권한을 거부해도 주소 검색과 회원 기능은 이용할 수 있습니다.<br/><br/><b>이용 목적</b><br/>회원 식별·계정 관리, 반려동물 프로필 및 PetGrow 서비스 제공, 계정별 데이터 저장·동기화<br/><br/><b>보유 기간</b><br/>회원 탈퇴 시까지 또는 처리 목적 달성 시까지. 관계 법령상 보관 의무가 있는 경우 해당 기간 동안 보관할 수 있습니다.<br/><br/><b>동의 거부권</b><br/>동의를 거부할 수 있으나 필수 정보이므로 회원 서비스 이용이 제한될 수 있습니다.</div><button className="bg-btn" onClick={()=>{setPrivacyOk(true);setDetail(null)}}>동의하고 닫기</button></>}
         {detail==="marketing" && <><h3>광고·마케팅 정보 수신 동의 (선택)</h3><div className="consent-detail-text">PetGrow의 이벤트, 새 기능, 제휴 또는 프로모션 관련 안내를 받을 수 있도록 선택 동의를 받습니다. 동의하지 않아도 기본 서비스 이용에는 제한이 없습니다. 실제 마케팅 발송 기능을 운영하는 경우 동의한 범위에서만 이용합니다.</div><button className="bg-btn" onClick={()=>{setMarketingOk(true);setDetail(null)}}>동의하고 닫기</button></>}
       </Modal>
     </div>
@@ -2293,61 +2293,16 @@ function AccountButton({ account, onOpen }) {
 
 // 모바일 웹 전용 햄버거 메뉴 — 슬라이드 애니메이션, 오버레이, X 닫기, 바깥 터치 시 닫힘, 뒤 스크롤 잠금
 function HamburgerMenu({ open, onClose, view, onNavigate, onOpenAccount, account }) {
-  const t = useT();
-  const lang = useLang();
-  useEffect(() => {
-    if (!open) return;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prevOverflow; };
-  }, [open]);
-
-  const items = [
-    { key: "home", label: t.hamNavHome, Icon: HomeIcon },
-    { key: "about", label: t.aboutNav, Icon: InfoIcon },
-    { key: "pets", label: t.myPetsNav, Icon: PawIcon },
-    { key: "nearby", label: t.nearbyNav, Icon: MapPinIcon },
-    { key: "news", label: lang === "en" ? "Pet News" : "Pet뉴스", Icon: InfoIcon }, // PETNEWS_MOBILE_NAV_20260817
-    { key: "community", label: t.communityNav, Icon: TalkIcon },
-    { key: "saju", label: t.sajuNav, Icon: SajuIcon },
-    { key: "tarot", label: lang === "en" ? "Pet Tarot" : "Pet타로", Icon: SajuIcon },
-    { key: "petbti", label: t.petBtiNav, Icon: PetBtiIcon },
-    { key: "music", label: lang === "en" ? "Pet Music" : "Pet음악", Icon: MusicIcon },
-    { key: "tips", label: t.tipsTitle, Icon: LightbulbIcon },
+  const t=useT(),lang=useLang();
+  useEffect(()=>{if(!open)return;const prev=document.body.style.overflow;document.body.style.overflow="hidden";return()=>{document.body.style.overflow=prev}},[open]);
+  const groups=[
+    {label:lang==="en"?"PET LIFE":"반려생활",items:[{key:"pets",label:t.myPetsNav,Icon:PawIcon},{key:"nearby",label:t.nearbyNav,Icon:MapPinIcon},{key:"music",label:lang==="en"?"Pet Music":"Pet음악",Icon:MusicIcon}]},
+    {label:lang==="en"?"COMMUNITY · CONTENT":"커뮤니티 · 콘텐츠",items:[{key:"community",label:t.communityNav,Icon:TalkIcon},{key:"petbti",label:t.petBtiNav,Icon:PetBtiIcon},{key:"saju",label:t.sajuNav,Icon:SajuIcon},{key:"tarot",label:lang==="en"?"Pet Tarot":"Pet타로",Icon:SajuIcon}]},
+    {label:lang==="en"?"INFO · SUPPORT":"정보 · 지원",items:[{key:"tips",label:t.tipsTitle,Icon:LightbulbIcon},{key:"news",label:lang==="en"?"Pet News":"Pet뉴스",Icon:InfoIcon},{key:"about",label:t.aboutNav,Icon:InfoIcon}]}
   ];
-
-  return (
-    <>
-      <div className={`ham-overlay ${open ? "open" : ""}`} onClick={onClose} aria-hidden={!open} />
-      <div className={`ham-panel ${open ? "open" : ""}`} role="dialog" aria-label={t.hamNavHome}>
-        <div className="ham-panel-header">
-          <span style={{ fontWeight: 800, fontFamily: "'Jua',sans-serif", fontSize: 16 }}>
-            <span style={{ color: "var(--text)" }}>Pet</span><span style={{ color: "var(--primary)" }}>Grow</span>
-          </span>
-          <button type="button" className="icon-btn" onClick={onClose} aria-label={t.hamCloseAria}>
-            <CloseIcon style={{ width: 18, height: 18 }} />
-          </button>
-        </div>
-        <nav className="ham-nav">
-          {items.map(({ key, label, Icon }) => (
-            <button key={key} type="button" className={`ham-nav-item ${view === key ? "active" : ""}`}
-              onClick={() => { onNavigate(key); onClose(); }}>
-              <Icon style={{ width: 18, height: 18 }} /> {label}
-            </button>
-          ))}
-          <div className="ham-divider" />
-          <button type="button" className={`ham-nav-item ${view === "my" ? "active" : ""}`} onClick={() => { onNavigate("my"); onClose(); }}>
-            <UserIcon style={{ width: 18, height: 18 }} /> {t.hamNavMy}
-          </button>
-          <button type="button" className="ham-nav-item" onClick={() => { onOpenAccount(); onClose(); }}>
-            <SettingsIcon style={{ width: 18, height: 18 }} /> {t.hamNavSettings}
-          </button>
-        </nav>
-      </div>
-    </>
-  );
+  const Btn=({item})=>{const Icon=item.Icon;return <button type="button" className={`ham-nav-item ${view===item.key?"active":""}`} onClick={()=>{onNavigate(item.key);onClose()}}><Icon style={{width:18,height:18}}/><span>{item.label}</span></button>};
+  return <><div className={`ham-overlay ${open?"open":""}`} onClick={onClose}/><div className={`ham-panel ${open?"open":""}`} role="dialog"><div className="ham-panel-header"><span style={{fontWeight:800,fontFamily:"'Jua',sans-serif",fontSize:16}}><span style={{color:"var(--text)"}}>Pet</span><span style={{color:"var(--primary)"}}>Grow</span></span><button type="button" className="icon-btn" onClick={onClose} aria-label={t.hamCloseAria}><CloseIcon style={{width:18,height:18}}/></button></div><nav className="ham-nav ham-nav-grouped"><Btn item={{key:"home",label:t.hamNavHome,Icon:HomeIcon}}/>{groups.map(g=><div className="ham-nav-group" key={g.label}><div className="ham-section-label">{g.label}</div>{g.items.map(x=><Btn key={x.key} item={x}/>)}</div>)}<div className="ham-divider"/><Btn item={{key:"my",label:t.hamNavMy,Icon:UserIcon}}/><button type="button" className="ham-nav-item" onClick={()=>{onOpenAccount();onClose()}}><SettingsIcon style={{width:18,height:18}}/><span>{t.hamNavSettings}</span></button></nav></div></>;
 }
-
 
 function normalizeNickname(value = "") {
   return String(value).trim().replace(/\s+/g, " ");
@@ -2798,6 +2753,10 @@ const GlobalStyle = () => (
 .petgrow-footer-email,.petgrow-footer-copy{font-size:11px;color:var(--sub);line-height:1.6}.petgrow-footer-copy{margin-top:2px}.petgrow-footer-links{display:flex;justify-content:center;align-items:center;gap:8px 18px;flex-wrap:wrap;margin-top:12px}.petgrow-footer-links button,.petgrow-footer-links a{font:600 11px/1.4 inherit;color:var(--primary);background:none;border:0;padding:3px 0;text-decoration:none;cursor:pointer}
 .petnews-list{display:grid;gap:12px}.petnews-card{display:grid;grid-template-columns:180px minmax(0,1fr);gap:16px;padding:0!important;overflow:hidden;text-align:left;border:1px solid var(--border)!important;cursor:pointer}.petnews-card-media{min-height:145px;background:#eef4ee;overflow:hidden}.petnews-card-media img{width:100%;height:100%;min-height:145px;object-fit:cover;display:block}.petnews-card-body{padding:16px 18px 16px 0;min-width:0}.petnews-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--sub);margin-bottom:7px}.petnews-meta b{color:var(--primary)}.petnews-title{font-size:17px;line-height:1.42;font-weight:900;letter-spacing:-.025em;word-break:keep-all}.petnews-summary{font-size:13px;line-height:1.68;color:var(--sub);margin:7px 0 0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all}.petnews-detail{max-width:820px;margin:0 auto}.petnews-detail-back{margin:0 0 12px}.petnews-detail-hero{overflow:hidden;padding:0!important}.petnews-detail-image{width:100%;max-height:420px;object-fit:cover;display:block;background:#eef4ee}.petnews-detail-copy{padding:22px}.petnews-detail-copy h2{font-size:26px;line-height:1.35;letter-spacing:-.035em;margin:8px 0 14px;word-break:keep-all}.petnews-detail-summary{font-size:15px;line-height:1.85;white-space:pre-line;word-break:keep-all}.petnews-source-note{margin-top:18px;padding:14px 16px;border-radius:14px;background:var(--surface);font-size:12px;line-height:1.7;color:var(--sub)}
 @media(max-width:700px){.petgrow-content-stage>.petgrow-unified-hero{width:calc(100% - 28px)!important;padding:20px 18px!important;min-height:118px!important}.petgrow-page-top>.petgrow-unified-hero{padding:20px 18px!important;min-height:118px!important}.petgrow-unified-hero h1{font-size:23px!important}.petgrow-unified-hero p{font-size:13px!important}.petgrow-footer{width:calc(100% - 28px);padding:18px 0 92px}.petnews-card{grid-template-columns:112px minmax(0,1fr);gap:12px}.petnews-card-media,.petnews-card-media img{min-height:128px}.petnews-card-body{padding:12px 12px 12px 0}.petnews-title{font-size:15px}.petnews-summary{font-size:12px;-webkit-line-clamp:3}.petnews-detail-copy{padding:18px}.petnews-detail-copy h2{font-size:21px}.petnews-detail-summary{font-size:14px}}
+
+
+/* PETGROW_POLISH_V3 */
+.petgrow-sidebar-nav button,.ham-nav-item{font-weight:550!important;color:#425048!important}.petgrow-sidebar-nav button span,.ham-nav-item span{font-weight:inherit!important}.petgrow-sidebar-nav button.active,.ham-nav-item.active{font-weight:850!important;color:var(--primary)!important}.ham-nav-group{margin-top:12px}.ham-section-label{padding:8px 13px 5px;font-size:10px;letter-spacing:.12em;font-weight:800;color:#8a948d}.ham-nav-grouped .ham-nav-item{margin:2px 0}.info-guide-practical{max-width:900px;margin:0 auto;padding:0 20px 60px}.info-guide-intro{margin-bottom:14px}.info-guide-intro>b{font-size:19px}.info-guide-intro p{margin:7px 0 0;line-height:1.7}.info-guide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.info-guide-card{display:flex;gap:13px;align-items:flex-start;padding:18px!important}.info-guide-card>span{font-size:25px}.info-guide-card h3{font-family:inherit!important;font-size:15px!important;font-weight:850!important;margin:0 0 7px!important}.info-guide-card p{font-size:12.5px;line-height:1.72;color:var(--sub);margin:0;word-break:keep-all}@media(max-width:650px){.info-guide-practical{padding:0 14px 90px}.info-guide-grid{grid-template-columns:1fr}.info-guide-card{padding:16px!important}}
 
 .app-bottom-nav{position:fixed; left:0; right:0; bottom:0; z-index:150; background:#fff;
       border-top:1px solid var(--border); display:flex; padding-bottom:env(safe-area-inset-bottom,0);
@@ -9691,142 +9650,20 @@ function PetContentPage({ subTab, onSubTabChange, allPets, featurePet, onSelectF
 }
 
 function InfoGuidePage() {
-  const t = useT();
-  return (
-    <div style={{ maxWidth: 720, margin: "0 auto", padding: "0 20px 60px" }}>
-      <div style={{ textAlign: "center", marginBottom: 28 }}>
-        <HelpIcon style={{ width: 34, height: 34, color: "var(--primary)", margin: "0 auto 10px" }} />
-        <h1 style={{ fontSize: 21 }}>{t.infoGuideTitle}</h1>
-        <p className="bg-sub" style={{ fontSize: 13, marginTop: 6 }}>{t.infoGuideIntro}</p>
-      </div>
-      <div className="info-guide-list" style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-        {t.infoGuideSections.map((s) => (
-          <div key={s.title} className="bg-surface-card">
-            <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 5 }}>{s.title}</div>
-            <div className="bg-sub" style={{ fontSize: 13, lineHeight: 1.7 }}>{s.body}</div>
-          </div>
-        ))}
-
-      </div>
-    </div>
-  );
-}
-
-/* ============================================================
-   /delete-account — 로그인 없이도 접근 가능한 독립 페이지 (Google Play 계정삭제 요건 대응)
-   ============================================================ */
-function DeleteAccountPage() {
-  const t = useT();
-
-  // /delete-account is a standalone public page, so it must not wait for AppInner's
-  // authentication/data initialization before dismissing the common startup splash.
-  useEffect(() => {
-    if (typeof window !== "undefined" && typeof window.__hidePetGrowSplash === "function") {
-      window.__hidePetGrowSplash();
-    }
-  }, []);
-
-  const [account, setAccount] = useState(null);
-  const [checked, setChecked] = useState(false);
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  const [done, setDone] = useState(false);
-
-  useEffect(() => {
-    (async () => {
-      setAccount(await fetchMe());
-      setChecked(true);
-    })();
-  }, []);
-
-  const runDelete = async () => {
-    setDeleting(true);
-    const ok = await apiDeleteAccount();
-    setDeleting(false);
-    setConfirmOpen(false);
-    if (ok) setDone(true);
-  };
-
-  return (
-    <div className="bboggl-root" style={{ minHeight: "100vh" }}>
-      <GlobalStyle />
-      <div style={{ maxWidth: 640, margin: "0 auto", padding: "32px 20px 60px" }}>
-        <a href="/" style={{ display: "inline-flex", alignItems: "center", gap: 8, textDecoration: "none", marginBottom: 24 }}>
-          <PetGrowLogo style={{ width: 22, height: 22 }} />
-          <span style={{ fontSize: 15, fontWeight: 800, fontFamily: "'Jua',sans-serif" }}>
-            <span style={{ color: "var(--text)" }}>Pet</span><span style={{ color: "var(--primary)" }}>Grow</span>
-          </span>
-        </a>
-        <h1 style={{ fontSize: 22, marginBottom: 10 }}>{t.deleteAccountPageTitle}</h1>
-        <p className="bg-sub" style={{ fontSize: 13, lineHeight: 1.8, marginBottom: 18 }}>{t.deleteAccountPageBody}</p>
-        <ul className="bg-sub" style={{ fontSize: 13, lineHeight: 2, marginBottom: 26, paddingLeft: 18 }}>
-          {t.deleteAccountItems.map((line) => <li key={line}>{line}</li>)}
-        </ul>
-
-        {done ? (
-          <div className="bg-surface-card" style={{ textAlign: "center" }}>
-            <div style={{ fontSize: 15, fontWeight: 700 }}>{t.deleteAccountDoneTitle}</div>
-            <div className="bg-sub" style={{ fontSize: 13, marginTop: 6 }}>{t.deleteAccountDoneBody}</div>
-          </div>
-        ) : !checked ? null : account ? (
-          <div className="bg-surface-card">
-            <div style={{ fontSize: 14, marginBottom: 12 }}>{t.deleteAccountLoggedInAs(account.name)}</div>
-            <button type="button" className="bg-btn" style={{ background: "#C0392B", boxShadow: "0 5px 0 #922B21" }}
-              onClick={() => setConfirmOpen(true)}>
-              {t.accountDeleteBtn}
-            </button>
-          </div>
-        ) : (
-          <div className="bg-surface-card">
-            <div style={{ fontSize: 14, marginBottom: 12 }}>{t.deleteAccountNeedLogin}</div>
-            <button type="button" className="kakao-login-btn" onClick={goToKakaoLogin}>
-              <KakaoIcon style={{ width: 20, height: 20 }} /> {t.loginContinueKakao}
-            </button>
-            <div className="bg-sub" style={{ fontSize: 12, marginTop: 14, lineHeight: 1.6 }}>
-              {t.deleteAccountEmailFallback}
-            </div>
-          </div>
-        )}
-      </div>
-      <ConfirmModal
-        open={confirmOpen}
-        title={t.deleteAccountConfirmTitle}
-        message={t.deleteAccountConfirmBody}
-        confirmLabel={deleting ? t.migrationSaving : t.accountDeleteBtn}
-        onConfirm={runDelete}
-        onCancel={() => setConfirmOpen(false)}
-        danger
-        busy={deleting}
-      />
-    </div>
-  );
-}
-
-/* ============================================================
-   Pet톡 — 반려동물 중심 커뮤니티
-   ============================================================ */
-const COMMUNITY_CATEGORY_KEYS = ["daily", "brag", "question", "health", "info", "walk", "training", "shopping", "free"];
-const REPORT_REASON_KEYS = ["ad", "abuse", "sexual", "animal_abuse", "privacy", "misinformation", "spam", "other"];
-
-const PETTALK_BLOCKED_RE = /씨발|시발|ㅅㅂ|병신|븅신|개새끼|개새|좆|존나|지랄|꺼져|닥쳐|섹스|sex|야동|porn|포르노|자위|딸딸|보지|자지|음란|나치|nazi|혐오/i;
-function validatePetTalkText(...parts) {
-  const joined = parts.filter(Boolean).join(" ");
-  const compact = joined.replace(/[\s._\-~!@#$%^&*()+=|\\/]/g, "");
-  if (PETTALK_BLOCKED_RE.test(compact)) return "사용할 수 없는 표현이 포함되어 있어요. 내용을 수정해 주세요.";
-  if (/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/.test(joined) || /(?:01[016789])[-\s]?\d{3,4}[-\s]?\d{4}/.test(joined)) return "전화번호나 이메일 같은 개인정보는 Pet톡에 직접 작성하지 말아 주세요.";
-  return "";
-}
-
-
-function petSnapshot(pet) {
-  return {
-    id: pet.id,
-    name: pet.profile.name,
-    species: pet.species || pet.profile.species,
-    breed: pet.profile.breedName || null,
-    birthDate: pet.profile.birthDate || null,
-    photo: pet.profile.profileImage || null,
-  };
+  const guides=[
+    ["🐾","우리 아이","반려동물 등록 → 프로필 사진·체중 기록 → 성장그래프와 성장앨범 확인. 여러 마리를 등록했다면 상단 아이 선택에서 바로 전환할 수 있어요."],
+    ["🎵","Pet음악","강아지/고양이 필터로 음악을 찾고 재생·반복재생을 이용해요. 마음에 드는 곡은 좋아요하고 댓글을 남길 수 있어요."],
+    ["📍","내 주변 Pet","주소를 검색하면 주변 동물병원·약국·펫샵·미용·호텔을 확인할 수 있어요. 위치 권한을 허용하면 내 위치와의 거리도 함께 볼 수 있어요."],
+    ["💬","Pet톡","카테고리를 선택해 글을 읽거나 작성해요. 댓글·좋아요·내 활동에서 내가 쓴 글과 반응을 다시 확인할 수 있어요."],
+    ["🔮","Pet사주","등록한 아이를 선택한 뒤 기본 Pet사주·오늘의 펫운세·보호자 궁합을 재미로 확인해요. 전문적인 진단이나 미래 예측 자료는 아니에요."],
+    ["🃏","Pet타로","아이와 주제를 선택한 뒤 메이저 아르카나 22장 중 한 장을 골라요. 오늘의 Pet타로·궁합·마음·산책·조언은 주제별 하루 1회이며 결과는 회원정보에 저장할 수 있어요."],
+    ["🧠","PetBTI","등록한 아이를 선택하고 20개 질문에 답하면 성향 결과를 확인할 수 있어요. 검사 결과는 우리 아이 정보와 함께 다시 볼 수 있어요."],
+    ["💡","Pet정보","건강·식단·훈련·생활 정보를 카테고리와 검색으로 찾아봐요. 건강 정보는 참고용이며 이상 증상은 동물병원 진료를 우선해 주세요."],
+    ["📰","Pet뉴스","대표이미지가 확인된 최신 반려동물 기사만 보여줘요. 카드를 누르면 PetGrow 안에서 제목·요약을 읽고 필요할 때 원문 전체보기를 이용해요."],
+    ["👤","회원정보","닉네임과 계정 정보를 관리하고 Pet톡 활동, 좋아요한 콘텐츠, 저장한 Pet사주·Pet타로 기록을 확인해요."],
+    ["⚙️","설정·지원","회원정보에서 로그아웃·회원탈퇴를 이용할 수 있고, 고객지원에서 공지사항·문의·피드백을 남길 수 있어요."]
+  ];
+  return <div className="legal-page-shell info-guide-practical"><div className="bg-card info-guide-intro"><b>PetGrow 이용가이드</b><p className="bg-sub">궁금한 기능을 메뉴별로 바로 찾아보세요. 복잡한 설명보다 실제 이용 순서 중심으로 정리했어요.</p></div><div className="info-guide-grid">{guides.map(([ic,title,body])=><section className="bg-card info-guide-card" key={title}><span>{ic}</span><div><h3>{title}</h3><p>{body}</p></div></section>)}</div></div>;
 }
 
 function CmPetAvatar({ pet, size = 34 }) {
@@ -10614,19 +10451,19 @@ function PetNewsPage({ lang = "ko" }) {
   const [category,setCategory]=useState("전체"),[showAllCategories,setShowAllCategories]=useState(false),[searchInput,setSearchInput]=useState(""),[newsSearch,setNewsSearch]=useState(""),[newsPage,setNewsPage]=useState(1),[selectedNews,setSelectedNews]=useState(null);
   const NEWS_PAGE_SIZE=10,cats=["전체","반려견","반려묘","건강","정책·제도","입양·보호","산업·서비스","반려동물"],visibleCats=showAllCategories?cats:cats.slice(0,4);
   const clean=v=>String(v||"").replace(/&nbsp;|&#160;|&#xA0;/gi," ").replace(/\s+/g," ").trim();
-  const fallback=n=>n?.category==="반려견"?"/pettalk-demo-dog.webp":n?.category==="반려묘"?"/pettalk-demo-cat.webp":"/intro-video-poster.webp";
+  const fallback=()=>"";
   const load=async()=>{setLoading(true);setError("");try{const r=await fetch('/api/news');const j=await r.json();if(!r.ok)throw new Error();setData({...j,items:(j.items||[]).map(x=>({...x,title:clean(x.title),description:clean(x.description)}))});}catch{setError("뉴스를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.");}finally{setLoading(false)}};
   useEffect(()=>{load()},[]);
   const q=clean(newsSearch).toLowerCase();
-  const items=(data.items||[]).filter(x=>(category==="전체"||x.category===category)&&(!q||[x.title,x.description,x.source,x.category].some(v=>clean(v).toLowerCase().includes(q))));
+  const items=(data.items||[]).filter(x=>x.image&&(category==="전체"||x.category===category)&&(!q||[x.title,x.description,x.source,x.category].some(v=>clean(v).toLowerCase().includes(q))));
   const totalPages=Math.max(1,Math.ceil(items.length/NEWS_PAGE_SIZE)),safePage=Math.min(newsPage,totalPages),paged=items.slice((safePage-1)*NEWS_PAGE_SIZE,safePage*NEWS_PAGE_SIZE);
   const runSearch=()=>{setNewsSearch(searchInput);setNewsPage(1)},clearSearch=()=>{setSearchInput("");setNewsSearch("");setNewsPage(1)};
   const timeLabel=iso=>{if(!iso)return "";const d=new Date(iso),diff=Date.now()-d.getTime();if(diff<3600000)return Math.max(1,Math.floor(diff/60000))+"분 전";if(diff<86400000)return Math.floor(diff/3600000)+"시간 전";return d.toLocaleDateString("ko-KR")};
-  if(selectedNews){const n=selectedNews;return <div className="legal-page-shell petnews-detail"><button type="button" className="bg-btn bg-btn-ghost petnews-detail-back" onClick={()=>setSelectedNews(null)}>← 뉴스 목록</button><article className="bg-card petnews-detail-hero"><img className="petnews-detail-image" src={n.image||fallback(n)} alt="" loading="eager" onError={e=>{e.currentTarget.src=fallback(n)}}/><div className="petnews-detail-copy"><div className="petnews-meta"><b>{n.category||"Pet뉴스"}</b><span>{n.source||"언론사"}</span><span>·</span><span>{timeLabel(n.publishedAt)}</span></div><h2>{n.title}</h2><div className="petnews-detail-summary">{n.description||"기사의 핵심 내용은 원문에서 확인할 수 있어요."}</div><div className="petnews-source-note">PetGrow에서는 기사 제목과 제공된 요약을 보기 좋게 정리해 보여드려요. 기사 전문과 이미지의 권리는 각 언론사에 있으며, 자세한 내용은 원문에서 확인할 수 있어요.</div><a className="bg-btn" href={n.link} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",marginTop:16,textDecoration:"none"}}>원문 전체보기 ↗</a></div></article></div>}
+  if(selectedNews){const n=selectedNews;return <div className="legal-page-shell petnews-detail"><button type="button" className="bg-btn bg-btn-ghost petnews-detail-back" onClick={()=>setSelectedNews(null)}>← 뉴스 목록</button><article className="bg-card petnews-detail-hero"><img className="petnews-detail-image" src={n.image} alt="" loading="eager" onError={e=>{e.currentTarget.closest(".petnews-card")?.remove?.();e.currentTarget.style.display="none"}}/><div className="petnews-detail-copy"><div className="petnews-meta"><b>{n.category||"Pet뉴스"}</b><span>{n.source||"언론사"}</span><span>·</span><span>{timeLabel(n.publishedAt)}</span></div><h2>{n.title}</h2><div className="petnews-detail-summary">{n.description||"기사의 핵심 내용은 원문에서 확인할 수 있어요."}</div><div className="petnews-source-note">PetGrow에서는 기사 제목과 제공된 요약을 보기 좋게 정리해 보여드려요. 기사 전문과 이미지의 권리는 각 언론사에 있으며, 자세한 내용은 원문에서 확인할 수 있어요.</div><a className="bg-btn" href={n.link} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",marginTop:16,textDecoration:"none"}}>원문 전체보기 ↗</a></div></article></div>}
   return <div className="legal-page-shell" style={{maxWidth:900,margin:"0 auto",padding:"0 20px 48px"}}>
     <section className="bg-card petnews-tools" style={{padding:14,marginBottom:14}}><div style={{display:"grid",gridTemplateColumns:"minmax(0,1fr) auto",gap:8}}><input className="bg-input" value={searchInput} onChange={e=>setSearchInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")runSearch()}} placeholder="뉴스 제목·내용·언론사 검색"/><button className="bg-btn" onClick={runSearch}>검색</button></div>{newsSearch&&<button className="bg-chip" style={{marginTop:8}} onClick={clearSearch}>검색 초기화</button>}</section>
     <div style={{display:"flex",gap:7,flexWrap:"wrap",marginBottom:14}}>{visibleCats.map(c=><button key={c} className={"bg-chip "+(category===c?"active":"")} onClick={()=>{setCategory(c);setNewsPage(1)}}>{c}</button>)}<button className="bg-chip" onClick={()=>setShowAllCategories(v=>!v)}>{showAllCategories?"접기":`더보기 +${cats.length-4}`}</button></div>
-    {loading?<div className="bg-card" style={{textAlign:"center",padding:30}}>뉴스를 불러오는 중...</div>:error?<div className="bg-card" style={{textAlign:"center",padding:30}}>{error}<br/><button className="bg-btn" style={{marginTop:12}} onClick={load}>다시 시도</button></div>:paged.length?<div className="petnews-list">{paged.map(n=><button type="button" className="bg-card petnews-card" key={n.id} onClick={()=>{setSelectedNews(n);window.scrollTo({top:0,behavior:"smooth"})}}><div className="petnews-card-media"><img src={n.image||fallback(n)} alt="" loading="lazy" onError={e=>{e.currentTarget.src=fallback(n)}}/></div><div className="petnews-card-body"><div className="petnews-meta"><b>{n.category||"Pet뉴스"}</b><span>{n.source||"언론사"}</span><span>·</span><span>{timeLabel(n.publishedAt)}</span></div><div className="petnews-title">{n.title}</div><p className="petnews-summary">{n.description||"기사 내용을 눌러 자세히 확인해보세요."}</p></div></button>)}</div>:<div className="bg-card" style={{textAlign:"center",padding:30}}>조건에 맞는 뉴스가 없어요.</div>}
+    {loading?<div className="bg-card" style={{textAlign:"center",padding:30}}>뉴스를 불러오는 중...</div>:error?<div className="bg-card" style={{textAlign:"center",padding:30}}>{error}<br/><button className="bg-btn" style={{marginTop:12}} onClick={load}>다시 시도</button></div>:paged.length?<div className="petnews-list">{paged.map(n=><button type="button" className="bg-card petnews-card" key={n.id} onClick={()=>{setSelectedNews(n);window.scrollTo({top:0,behavior:"smooth"})}}><div className="petnews-card-media"><img src={n.image} alt="" loading="lazy" onError={e=>{e.currentTarget.closest(".petnews-card")?.remove?.();e.currentTarget.style.display="none"}}/></div><div className="petnews-card-body"><div className="petnews-meta"><b>{n.category||"Pet뉴스"}</b><span>{n.source||"언론사"}</span><span>·</span><span>{timeLabel(n.publishedAt)}</span></div><div className="petnews-title">{n.title}</div><p className="petnews-summary">{n.description||"기사 내용을 눌러 자세히 확인해보세요."}</p></div></button>)}</div>:<div className="bg-card" style={{textAlign:"center",padding:30}}>조건에 맞는 뉴스가 없어요.</div>}
     {!loading&&!error&&items.length>NEWS_PAGE_SIZE&&<div style={{display:"flex",justifyContent:"center",gap:8,flexWrap:"wrap",marginTop:18}}><button className="bg-chip" disabled={safePage<=1} onClick={()=>setNewsPage(p=>Math.max(1,p-1))}>‹ 이전</button>{Array.from({length:totalPages},(_,i)=>i+1).map(p=><button key={p} className={"bg-chip "+(p===safePage?"active":"")} onClick={()=>setNewsPage(p)}>{p}</button>)}<button className="bg-chip" disabled={safePage>=totalPages} onClick={()=>setNewsPage(p=>Math.min(totalPages,p+1))}>다음 ›</button></div>}
     <p className="bg-sub" style={{fontSize:12,lineHeight:1.7,marginTop:16}}>Pet뉴스는 공개 뉴스 검색 결과를 바탕으로 제목·요약을 제공하며 기사 전문과 저작권은 각 언론사에 있습니다.</p>
   </div>;
@@ -10751,7 +10588,7 @@ function AdminReportsPage({onBack}){
      </div>
      <div className="bg-card admin-menu-analytics">
        <div className="admin-menu-analytics-head"><div><h3>Pet사주 · Pet타로 이용 현황</h3><small>주제별 결과 생성 및 저장 이용량 · 오늘 / 7일 / 30일</small></div></div>
-       {(()=>{const labels={saju_daily:"오늘의 펫운세",tarot_daily:"오늘의 타로",tarot_bond:"보호자 궁합 타로",tarot_heart:"우리 아이 마음 타로",tarot_activity:"산책·활동 타로",tarot_advice:"오늘의 조언 타로",saju_tarot_save:"타로 저장"};const rows=stats?.featureUsage||[];return rows.length?rows.map(x=><div className="admin-menu-row" key={x.feature}><div className="admin-menu-name">{labels[x.feature]||x.feature}</div><div className="admin-menu-value"><b>{Number(x.d30)||0}회</b><br/><small>7일 {Number(x.d7)||0} · 오늘 {Number(x.today)||0}</small></div></div>):<div className="bg-sub" style={{padding:"10px 0"}}>아직 Pet타로·운세 이용 데이터가 없어요.</div>})()}
+       {(()=>{const labels={saju_daily:"오늘의 펫운세",tarot_daily:"오늘의 Pet타로",tarot_bond:"보호자 궁합 타로",tarot_heart:"우리 아이 마음 타로",tarot_activity:"산책·활동 타로",tarot_advice:"오늘의 조언 타로",saju_tarot_save:"타로 저장"};const rows=stats?.featureUsage||[];return rows.length?rows.map(x=><div className="admin-menu-row" key={x.feature}><div className="admin-menu-name">{labels[x.feature]||x.feature}</div><div className="admin-menu-value"><b>{Number(x.d30)||0}회</b><br/><small>7일 {Number(x.d7)||0} · 오늘 {Number(x.today)||0}</small></div></div>):<div className="bg-sub" style={{padding:"10px 0"}}>아직 Pet타로·운세 이용 데이터가 없어요.</div>})()}
      </div>
    </>}
    {tab==="reporting"&&<div className="admin-reporting-page">
@@ -11751,14 +11588,7 @@ function AppInner({ lang, setLang }) {
           </div>
         </footer>
       )}
-
-      {effectiveView !== "login" && MENU_HELP[effectiveView] && (
-        <MenuHelpCoach
-          view={effectiveView}
-          lang={lang}
-          open={menuHelpOpen}
-          onOpen={() => setMenuHelpOpen(true)}
-          onClose={() => setMenuHelpOpen(false)}
+onClose={() => setMenuHelpOpen(false)}
         />
       )}
 

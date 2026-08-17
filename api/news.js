@@ -33,12 +33,11 @@ function imageFromHtml(value="") {
 function isPetRelevant(item){const hay=`${stripHtml(item.title)} ${stripHtml(item.description)}`.toLowerCase();return PET_TERMS.some(term=>hay.includes(term.toLowerCase()));}
 function categoryFor(item){const hay=`${stripHtml(item.title)} ${stripHtml(item.description)}`;for(const [category,terms] of CATEGORY_RULES){if(terms.some(term=>hay.includes(term)))return category;}return "반려동물";}
 function sourceFromUrl(url){try{return new URL(url).hostname.replace(/^www\./,"");}catch{return "언론사";}}
-function fallbackImage(category){if(category==="반려견")return "/pettalk-demo-dog.webp";if(category==="반려묘")return "/pettalk-demo-cat.webp";return "/intro-video-poster.webp";}
 function normalizeItem(item){
   const link=item.originallink||item.link||"",title=stripHtml(item.title),description=stripHtml(item.description),category=categoryFor(item);
   const publishedAt=item.pubDate?new Date(item.pubDate).toISOString():null;
-  const image=item.image||imageFromHtml(item.rawDescription||item.description)||fallbackImage(category);
-  return {id:`${title}|${link}`,title,description,category,source:item.source||sourceFromUrl(link),link,naverLink:item.link||link,publishedAt,image,imageIsFallback:!item.image&&!imageFromHtml(item.rawDescription||item.description)};
+  const image=item.image||imageFromHtml(item.rawDescription||item.description)||"";
+  return {id:`${title}|${link}`,title,description,category,source:item.source||sourceFromUrl(link),link,naverLink:item.link||link,publishedAt,image,imageIsFallback:false};
 }
 function dedupe(items){const seenLinks=new Set(),seenTitles=new Set(),result=[];for(const item of items){const titleKey=item.title.toLowerCase().replace(/[^0-9a-z가-힣]/g,"").slice(0,80);if(!item.link||seenLinks.has(item.link)||seenTitles.has(titleKey))continue;seenLinks.add(item.link);seenTitles.add(titleKey);result.push(item);}return result;}
 function tagRaw(xml,name){const m=xml.match(new RegExp(`<${name}(?:\\s[^>]*)?>([\\s\\S]*?)<\\/${name}>`,"i"));return m?m[1]:"";}
@@ -55,7 +54,7 @@ function parseGoogleRss(xml){
 }
 async function fetchNaver(clientId,clientSecret){const responses=await Promise.all(SEARCH_QUERIES.map(async query=>{const url=`${API_BASE}?query=${encodeURIComponent(query)}&display=20&start=1&sort=date&format=json`;const response=await fetch(url,{headers:{"X-NCP-APIGW-API-KEY-ID":clientId,"X-NCP-APIGW-API-KEY":clientSecret}});if(!response.ok)throw new Error(`NAVER API HUB ${response.status}`);return response.json();}));return responses.flatMap(r=>Array.isArray(r.items)?r.items:[]);}
 async function fetchGoogleFallback(){const queries=["반려동물","반려견 OR 강아지","반려묘 OR 고양이","동물병원 OR 펫보험","유기동물 OR 동물보호"];const responses=await Promise.all(queries.map(async query=>{const url=`${GOOGLE_RSS}?q=${encodeURIComponent(query)}&hl=ko&gl=KR&ceid=KR:ko`;const response=await fetch(url,{headers:{"User-Agent":"PetGrow/1.0"}});if(!response.ok)throw new Error(`Google News RSS ${response.status}`);return parseGoogleRss(await response.text());}));return responses.flat();}
-function prepare(raw){const normalized=dedupe(raw.filter(isPetRelevant).map(normalizeItem)).sort((a,b)=>new Date(b.publishedAt||0)-new Date(a.publishedAt||0));const now=Date.now(),sevenDays=7*24*60*60*1000,recent=normalized.filter(item=>item.publishedAt&&now-new Date(item.publishedAt).getTime()<=sevenDays);return(recent.length>=20?recent:normalized).slice(0,60);}
+function prepare(raw){const normalized=dedupe(raw.filter(isPetRelevant).map(normalizeItem)).filter(item=>/^https?:\/\//i.test(item.image||"")).sort((a,b)=>new Date(b.publishedAt||0)-new Date(a.publishedAt||0));const now=Date.now(),sevenDays=7*24*60*60*1000,recent=normalized.filter(item=>item.publishedAt&&now-new Date(item.publishedAt).getTime()<=sevenDays);return(recent.length>=20?recent:normalized).slice(0,60);}
 export default async function handler(req,res){
   if(req.method!=="GET")return res.status(405).json({error:"Method not allowed"});
   const clientId=process.env.NAVER_API_HUB_CLIENT_ID,clientSecret=process.env.NAVER_API_HUB_CLIENT_SECRET;let provider="google-news-rss";
