@@ -117,7 +117,7 @@ export async function listPosts({ category, sort, search, page, pageSize, viewer
       select p.*, u.nickname as author_nickname from pg_posts p
       join pg_users u on u.id = p.user_id
       where p.is_hidden = false
-        and (p.is_public = true or (${viewerId}::text is not null and p.user_id = ${viewerId}))
+        and (p.is_public = true or p.user_id = ${viewerId || ""})
         and (${cat}::text is null or p.category = ${cat})
         and (${term}::text is null or p.title ilike ${term} or p.content ilike ${term})
       order by p.like_count desc, p.created_at desc
@@ -128,7 +128,7 @@ export async function listPosts({ category, sort, search, page, pageSize, viewer
       select p.*, u.nickname as author_nickname from pg_posts p
       join pg_users u on u.id = p.user_id
       where p.is_hidden = false
-        and (p.is_public = true or (${viewerId}::text is not null and p.user_id = ${viewerId}))
+        and (p.is_public = true or p.user_id = ${viewerId || ""})
         and (${cat}::text is null or p.category = ${cat})
         and (${term}::text is null or p.title ilike ${term} or p.content ilike ${term})
       order by p.created_at desc
@@ -152,7 +152,7 @@ export async function getPostById(id, viewerId) {
     select p.*, u.nickname as author_nickname from pg_posts p
     join pg_users u on u.id = p.user_id
     where p.id = ${id} and p.is_hidden = false
-      and (p.is_public = true or (${viewerId}::text is not null and p.user_id = ${viewerId}))
+      and (p.is_public = true or p.user_id = ${viewerId || ""})
   `;
   if (!rows[0]) return null;
   const [imgMap, liked] = await Promise.all([imagesForPosts([id]), likedPostIds(viewerId, [id])]);
