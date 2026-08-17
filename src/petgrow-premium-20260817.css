@@ -1,0 +1,154 @@
+/* PetGrow Premium Responsive Design System — 2026-08-17 */
+:root{
+  --pg-bg:#f7f5ef;
+  --pg-bg-soft:#fbfaf7;
+  --pg-surface:#ffffff;
+  --pg-surface-soft:#f4f7f1;
+  --pg-surface-warm:#fbf7ef;
+  --pg-text:#25312a;
+  --pg-text-2:#56625a;
+  --pg-text-3:#7a837d;
+  --pg-line:#e3e7e1;
+  --pg-line-strong:#d6ddd4;
+  --pg-primary:#315f40;
+  --pg-primary-2:#477a55;
+  --pg-primary-soft:#edf5ee;
+  --pg-shadow:0 12px 34px rgba(47,67,54,.075);
+  --pg-shadow-sm:0 6px 18px rgba(47,67,54,.055);
+  --pg-radius-xl:28px;
+  --pg-radius-lg:22px;
+  --pg-radius-md:16px;
+  --pg-radius-sm:12px;
+  --pg-max:1180px;
+}
+html{background:var(--pg-bg);scroll-behavior:smooth}
+body{margin:0;background:var(--pg-bg)!important;color:var(--pg-text)!important;font-family:Inter,"Pretendard","Noto Sans KR",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button,input,textarea,select{font:inherit}
+button{letter-spacing:-.01em}
+*{box-sizing:border-box}
+
+/* Global page rhythm */
+main,.page,.page-wrap,.content,.content-wrap,.app-content,.main-content,.view-content{max-width:var(--pg-max);margin-left:auto!important;margin-right:auto!important}
+.page,.page-wrap,.content-wrap,.app-content,.main-content,.view-content{padding-left:24px;padding-right:24px}
+section{scroll-margin-top:90px}
+
+/* Typography scale */
+h1,h2,h3,h4,h5,h6{color:var(--pg-text);font-family:inherit!important;letter-spacing:-.035em;margin-top:0}
+h1{font-size:clamp(30px,4vw,52px);line-height:1.08;font-weight:800}
+h2{font-size:clamp(24px,3vw,34px);line-height:1.18;font-weight:800}
+h3{font-size:20px;line-height:1.3;font-weight:700}
+h4{font-size:17px;line-height:1.35;font-weight:700}
+p,li,dd,dt,label{line-height:1.65}
+small,.muted,.sub,.helper,.caption{color:var(--pg-text-3)}
+
+/* Surfaces / cards */
+.card,.bg-card,.panel,.box,.section-card,.feature-card,.info-card,.mypage-card,.activity-card,.profile-card,.pet-card,.admin-card,.stat-card{background:var(--pg-surface)!important;border:1px solid var(--pg-line)!important;border-radius:var(--pg-radius-lg)!important;box-shadow:var(--pg-shadow-sm)!important}
+.card:hover,.feature-card:hover,.info-card:hover,.pet-card:hover{border-color:var(--pg-line-strong)!important;box-shadow:var(--pg-shadow)!important}
+
+/* Buttons */
+.bg-btn,.btn,.button,button.primary,.primary-btn,.cta-btn{min-height:42px;border-radius:14px!important;font-size:14px!important;font-weight:700!important;padding:10px 16px!important;transition:transform .16s ease,box-shadow .16s ease,background .16s ease,border-color .16s ease}
+.bg-btn:not(.bg-btn-ghost),.btn-primary,.primary-btn,.cta-btn,button.primary{background:var(--pg-primary)!important;border-color:var(--pg-primary)!important;color:#fff!important;box-shadow:0 7px 18px rgba(49,95,64,.18)}
+.bg-btn:hover,.btn:hover,.button:hover{transform:translateY(-1px)}
+.bg-btn-ghost,.btn-ghost,.secondary-btn{background:#fff!important;border:1px solid var(--pg-line-strong)!important;color:var(--pg-text)!important;box-shadow:none!important}
+
+/* Inputs */
+input,textarea,select,.bg-input{background:#fff!important;border:1px solid var(--pg-line-strong)!important;border-radius:14px!important;color:var(--pg-text)!important;box-shadow:none!important;outline:none;transition:border-color .15s ease,box-shadow .15s ease}
+input:focus,textarea:focus,select:focus,.bg-input:focus{border-color:#8eae95!important;box-shadow:0 0 0 4px rgba(71,122,85,.09)!important}
+
+/* Header / navigation */
+header,.header,.topbar,.app-header,.site-header{background:rgba(247,245,239,.93)!important;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(210,217,209,.75)!important;box-shadow:none!important}
+nav a,.nav-item,.menu-item,.top-menu button,.mobile-menu button{font-size:14px!important;font-weight:650!important;color:var(--pg-text-2)!important;border-radius:12px}
+nav a.active,.nav-item.active,.menu-item.active,.top-menu button.active,.mobile-menu button.active{color:var(--pg-primary)!important;background:var(--pg-primary-soft)!important}
+
+/* Hero / introduction */
+.hero,.home-hero,.about-hero,.intro-hero,.petnews-hero{border:1px solid var(--pg-line)!important;border-radius:32px!important;background:linear-gradient(135deg,#fffdf9 0%,#f1f6ef 58%,#eef5f3 100%)!important;box-shadow:var(--pg-shadow)!important;overflow:hidden}
+.hero p,.home-hero p,.about-hero p,.intro-hero p{color:var(--pg-text-2)!important;font-size:15px!important;line-height:1.75!important}
+
+/* Premium section spacing */
+.about-section,.home-section,.feature-section,.info-section,.service-section{margin-top:32px!important;margin-bottom:32px!important}
+.about-feature-grid,.about-features-grid,.intro-feature-grid,.intro-features-grid,.feature-grid,.service-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:18px!important}
+.about-feature-grid>*,.about-features-grid>*,.intro-feature-grid>*,.intro-features-grid>*,.feature-grid>*,.service-grid>*{border-radius:24px!important;border:1px solid var(--pg-line)!important;background:#fff!important;box-shadow:var(--pg-shadow-sm)!important;padding:24px!important}
+.about-feature-grid>*:nth-child(4n+1),.feature-grid>*:nth-child(4n+1){background:#eef6ef!important}
+.about-feature-grid>*:nth-child(4n+2),.feature-grid>*:nth-child(4n+2){background:#faf6ed!important}
+.about-feature-grid>*:nth-child(4n+3),.feature-grid>*:nth-child(4n+3){background:#eef6f5!important}
+.about-feature-grid>*:nth-child(4n),.feature-grid>*:nth-child(4n){background:#fbf1ed!important}
+
+/* Home */
+.home-page,.home-wrap,.home-container{background:transparent!important}
+.home-grid,.dashboard-grid,.quick-grid{gap:16px!important}
+.home-card,.quick-card,.dashboard-card{border-radius:22px!important;border:1px solid var(--pg-line)!important;box-shadow:var(--pg-shadow-sm)!important}
+
+/* My page / activity consistency */
+.mypage-tabs,.activity-tabs,.profile-tabs,.member-tabs{display:flex!important;flex-wrap:wrap!important;gap:8px!important;padding:6px!important;background:#eef1ec!important;border-radius:16px!important}
+.mypage-tabs button,.activity-tabs button,.profile-tabs button,.member-tabs button,.mypage-tab,.activity-tab,.profile-tab,.member-tab{background:transparent!important;color:var(--pg-text-2)!important;border:0!important;border-radius:11px!important;min-height:38px!important;padding:9px 13px!important;font-size:13px!important;font-weight:700!important;box-shadow:none!important}
+.mypage-tabs button.active,.activity-tabs button.active,.profile-tabs button.active,.member-tabs button.active,.mypage-tab.active,.activity-tab.active,.profile-tab.active,.member-tab.active{background:var(--pg-primary)!important;color:#fff!important;box-shadow:0 5px 13px rgba(49,95,64,.16)!important}
+/* Any isolated white activity buttons should blend with the same tab system */
+.mypage button[aria-selected="false"],.member-page button[aria-selected="false"],.profile-page button[aria-selected="false"]{background:transparent!important;color:var(--pg-text-2)!important;box-shadow:none!important}
+.mypage button[aria-selected="true"],.member-page button[aria-selected="true"],.profile-page button[aria-selected="true"]{background:var(--pg-primary)!important;color:#fff!important}
+
+/* PetTalk / Info / News / Music */
+.community-page,.pettalk-page,.petinfo-page,.petnews-v10,.music-page,.petmusic-page{max-width:var(--pg-max);margin:0 auto}
+.community-list>*,.pettalk-list>*,.info-list>*,.music-list>*{border-color:var(--pg-line)!important;border-radius:18px!important}
+.petnews-grid{gap:18px!important}.petnews-card-v10{border:1px solid var(--pg-line)!important;border-radius:22px!important;box-shadow:var(--pg-shadow-sm)!important;overflow:hidden;background:#fff!important}
+.petnews-card-v10 img,.news-card img{aspect-ratio:16/9;object-fit:cover}
+
+/* Forms / modals */
+.modal,.dialog,.popup,.sheet,.modal-card,.popup-card{border:1px solid var(--pg-line)!important;border-radius:26px!important;background:#fff!important;box-shadow:0 24px 70px rgba(35,50,40,.18)!important}
+.modal-backdrop,.popup-backdrop{backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+
+/* Maps — fixed container geometry prevents apparent grow/shrink */
+.map-wrap,.map-container,.nearby-map,.leaflet-container,[id*="map"]{border-radius:22px!important;overflow:hidden!important}
+.nearby-map,.map-container,.leaflet-container{min-height:360px;height:clamp(360px,46vw,520px)!important;max-height:520px!important}
+.leaflet-container{background:#edf1ec!important}
+
+/* Admin keeps the same visual language but denser */
+.admin-page,.admin-wrap,.admin-container{background:transparent!important}
+.admin-page .card,.admin-wrap .card,.admin-card{border-radius:18px!important}
+.admin-page table,.admin-wrap table{background:#fff;border-radius:16px;overflow:hidden}
+.admin-page th,.admin-wrap th{font-size:12px!important;font-weight:800!important;color:var(--pg-text-2)!important;background:#f3f5f1!important}
+.admin-page td,.admin-wrap td{font-size:12px!important}
+
+/* Tablet */
+@media (max-width:1024px){
+  :root{--pg-max:940px}
+  .page,.page-wrap,.content-wrap,.app-content,.main-content,.view-content{padding-left:20px;padding-right:20px}
+  h1{font-size:clamp(30px,5vw,44px)}
+  .hero,.home-hero,.about-hero,.intro-hero,.petnews-hero{border-radius:28px!important}
+  .about-feature-grid,.about-features-grid,.intro-feature-grid,.intro-features-grid,.feature-grid,.service-grid{gap:14px!important}
+  .about-feature-grid>*,.about-features-grid>*,.intro-feature-grid>*,.intro-features-grid>*,.feature-grid>*,.service-grid>*{padding:20px!important}
+  .petnews-card-v10{grid-template-columns:150px 1fr!important}
+}
+
+/* Mobile */
+@media (max-width:760px){
+  :root{--pg-radius-xl:24px;--pg-radius-lg:18px}
+  body{font-size:14px!important}
+  .page,.page-wrap,.content-wrap,.app-content,.main-content,.view-content{padding-left:14px!important;padding-right:14px!important}
+  h1{font-size:30px!important;line-height:1.12!important}
+  h2{font-size:23px!important}
+  h3{font-size:18px!important}
+  p{font-size:14px;line-height:1.7}
+  input,textarea,select{font-size:16px!important}
+  .bg-btn,.btn,.button,button.primary,.primary-btn,.cta-btn{font-size:14px!important;min-height:42px!important;padding:10px 14px!important}
+  .hero,.home-hero,.about-hero,.intro-hero,.petnews-hero{border-radius:22px!important;padding:20px!important}
+  .about-feature-grid,.about-features-grid,.intro-feature-grid,.intro-features-grid,.feature-grid,.service-grid{grid-template-columns:1fr!important;gap:12px!important}
+  .about-feature-grid>*,.about-features-grid>*,.intro-feature-grid>*,.intro-features-grid>*,.feature-grid>*,.service-grid>*{min-height:0!important;padding:18px!important;border-radius:19px!important}
+  .home-grid,.dashboard-grid,.quick-grid{grid-template-columns:1fr!important;gap:12px!important}
+  .petnews-grid{grid-template-columns:1fr!important}
+  .petnews-card-v10{grid-template-columns:1fr!important}
+  .petnews-card-v10>img,.petnews-image-fallback{width:100%!important;height:auto!important;min-height:0!important;aspect-ratio:16/9!important}
+  .mypage-tabs,.activity-tabs,.profile-tabs,.member-tabs{gap:5px!important;padding:5px!important}
+  .mypage-tabs button,.activity-tabs button,.profile-tabs button,.member-tabs button,.mypage-tab,.activity-tab,.profile-tab,.member-tab{flex:1 1 auto;min-width:0;font-size:12px!important;padding:8px 10px!important}
+  .nearby-map,.map-container,.leaflet-container{min-height:320px!important;height:390px!important;max-height:390px!important}
+  .modal,.dialog,.popup,.sheet,.modal-card,.popup-card{border-radius:22px!important;max-width:calc(100vw - 24px)!important}
+}
+
+/* Small phones */
+@media (max-width:390px){
+  .page,.page-wrap,.content-wrap,.app-content,.main-content,.view-content{padding-left:12px!important;padding-right:12px!important}
+  h1{font-size:27px!important}
+  h2{font-size:21px!important}
+  .bg-btn,.btn,.button,button.primary,.primary-btn,.cta-btn{font-size:13px!important}
+  .mypage-tabs button,.activity-tabs button,.profile-tabs button,.member-tabs button,.mypage-tab,.activity-tab,.profile-tab,.member-tab{font-size:11.5px!important}
+  .nearby-map,.map-container,.leaflet-container{height:350px!important;max-height:350px!important}
+}
