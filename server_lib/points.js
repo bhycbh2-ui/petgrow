@@ -6,7 +6,7 @@ export const POINT_COSTS = { saju_basic: 50, saju_daily: 20, saju_compat: 40, ta
 const REWARDS = {
   daily_login: { label: "오늘의 첫 접속", amount: 30, cap: 1 },
   community_post: { label: "Pet톡 글 작성", amount: 50, cap: 5 },
-  community_comment: { label: "Pet톡 댓글 작성", amount: 20, cap: 15 },
+  community_comment: { label: "Pet톡 댓글 작성", amount: 20, cap: 5 },
   received_like: { label: "Pet톡 좋아요 받기", amount: 5, cap: 50 },
 };
 const kstDate = () => new Intl.DateTimeFormat("en-CA", { timeZone:"Asia/Seoul", year:"numeric", month:"2-digit", day:"2-digit" }).format(new Date());
