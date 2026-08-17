@@ -4,6 +4,7 @@ import { getSessionUserId } from "../server_lib/session.js";
 import { getUserById, getState, setState, logServiceHealth, ensureSchema } from "../server_lib/db.js";
 import { isAdminUserId } from "../server_lib/admin.js";
 import proj4 from "proj4";
+import { handleTarot } from "../server_lib/tarot.js";
 
 async function handleMe(req, res) {
   const uid = getSessionUserId(req);
@@ -540,6 +541,7 @@ export default async function handler(req, res) {
     if (route === "health-event") return await handleHealthEvent(req, res);
     if (route === "nearby") return await handleNearby(req, res);
     if (route === "nearby-reviews") return await handleNearbyReviews(req, res);
+    if (route === "tarot") return await handleTarot(req, res);
     return res.status(404).json({ error: "not found" });
   } catch (error) {
     console.error("core api error", route, error);
