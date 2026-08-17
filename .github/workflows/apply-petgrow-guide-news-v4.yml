@@ -1,0 +1,37 @@
+name: Apply PetGrow Guide News V4
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/apply-petgrow-guide-news-v4.py'
+permissions:
+  contents: write
+jobs:
+  apply-build-commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - name: Apply guide/news v4
+        run: python3 scripts/apply-petgrow-guide-news-v4.py
+      - name: Build
+        run: npm run build
+      - name: Commit generated changes
+        run: |
+          git config user.name 'petgrow-automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git add src/App.jsx
+          if git diff --cached --quiet; then
+            echo 'No generated changes.'
+            exit 0
+          fi
+          git commit -m 'feat: add searchable usage guide and PetNews summaries'
+          git push origin main
