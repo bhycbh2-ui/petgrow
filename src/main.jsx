@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./petgrow-premium-20260817.css";
 import "./final-ux-20260818.css";
+import "./ui-fixes-20260818.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

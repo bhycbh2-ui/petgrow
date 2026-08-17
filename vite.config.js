@@ -1,8 +1,9 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import petgrowUiFixes from "./build/petgrow-ui-fixes.mjs";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [petgrowUiFixes(), react()],
   build: {
     // 큰 의존성을 별도 캐시 청크로 분리해 첫 재방문/메뉴 전환 시 다시 받는 양을 줄여요.
     rollupOptions: {
