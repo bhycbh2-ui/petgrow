@@ -1,0 +1,31 @@
+name: Fix Nearby Mobile Markers
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/fix-nearby-mobile-markers.py'
+      - 'scripts/trigger-nearby-mobile-markers.txt'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - run: python3 scripts/fix-nearby-mobile-markers.py
+      - run: npm run build
+      - run: |
+          git config user.name 'petgrow-automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git add src/App.jsx
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'fix: polish Nearby Pet mobile map markers'
+          git push origin main
