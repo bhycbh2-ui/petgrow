@@ -1,0 +1,42 @@
+name: Apply PetGrow Improvements
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/apply-petgrow-improvements.mjs'
+      - '.github/workflows/apply-improvements.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: ${{ !contains(github.event.head_commit.message, '[skip improvements]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Apply code improvements
+        run: node scripts/apply-petgrow-improvements.mjs
+
+      - name: Commit changes
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git config user.name "PetGrow Automation"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/App.jsx api/music.js
+          git commit -m "feat: improve music loading PetInfo readability and nearby map [skip improvements]"
+          git push origin main
