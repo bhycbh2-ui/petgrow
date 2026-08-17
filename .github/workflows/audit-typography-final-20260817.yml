@@ -1,0 +1,22 @@
+name: Audit Typography Final 20260817
+on:
+  push:
+    branches:
+      - work/petpoint-music-live-20260817
+    paths:
+      - '.typography-final-audit-trigger-20260817'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/petpoint-music-live-20260817
+      - name: Audit typography and key pages
+        run: python .github/scripts/audit_typography_final_20260817.py
+      - name: Build
+        run: |
+          npm install
+          npm run build
