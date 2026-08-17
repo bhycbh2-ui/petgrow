@@ -1,0 +1,1 @@
+1 UI/style fixes. 2 PetNews inline detail + reactions. 3 PetPoint anti-abuse + visual. 4 Tarot responsive. 5 MyPage activity. 6 Explicit pet save. 7 Admin dashboard gating. 8 Build. 9 Fast-forward main. 10 Android AAB.
