@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/apply-petgrow-final-bundle.py'
+      - 'api/news.js'
 permissions:
   contents: write
 jobs:
