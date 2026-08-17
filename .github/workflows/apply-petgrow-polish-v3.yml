@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/apply-petgrow-polish-v3.py'
+      - '.github/workflows/apply-petgrow-polish-v3.yml'
 permissions:
   contents: write
 jobs:
