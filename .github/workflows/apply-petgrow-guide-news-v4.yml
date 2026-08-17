@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/apply-petgrow-guide-news-v4.py'
+      - 'scripts/trigger-guide-news-v4.txt'
 permissions:
   contents: write
 jobs:
