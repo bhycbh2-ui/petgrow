@@ -1,5 +1,6 @@
 import fs from 'fs';
 
+// 2026-08-17 trigger: map visibility + PetInfo white-tone refinement
 function replaceOrFail(text, from, to, label) {
   if (!text.includes(from)) throw new Error(`Patch target not found: ${label}`);
   return text.replace(from, to);
