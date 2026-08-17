@@ -1,0 +1,35 @@
+name: Apply PetGrow Final Batch V3
+on:
+  push:
+    branches:
+      - work/final-batch-20260818-v3
+    paths:
+      - '.github/final-batch-v3-trigger.txt'
+permissions:
+  contents: write
+jobs:
+  patch-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/final-batch-20260818-v3
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Apply final batch v3
+        run: python scripts/apply-final-batch-v3.py
+      - name: Install
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Commit patched files
+        run: |
+          git config user.name petgrow-automation
+          git config user.email actions@users.noreply.github.com
+          git add src/App.jsx src/PetDailyWidgets.jsx api/community.js api/points.js server_lib/points.js
+          git diff --cached --quiet && exit 0
+          git commit -m 'fix: finalize PetGrow UX activity points tarot admin batch'
+          git push origin work/final-batch-20260818-v3
