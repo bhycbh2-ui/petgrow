@@ -2593,6 +2593,15 @@ function NotificationBell({ items, onSelect, onEnablePush, pushStatus }) {
 const GlobalStyle = () => (
   <style>{`${PET_DAILY_CSS}
 
+/* PETGROW_UNIFIED_HEADER_TYPOGRAPHY_20260817 */
+.nearby-hero,.petmusic-hero,.petgrow-unified-hero,.more-menu-head{box-sizing:border-box;width:100%;text-align:left}
+.nearby-hero .nearby-eyebrow,.petgrow-unified-hero .nearby-eyebrow,.petmusic-hero>small,.more-menu-head>span{display:block;font-size:11px!important;line-height:1.25!important;font-weight:900!important;letter-spacing:.08em!important;text-transform:uppercase;margin:0 0 8px!important;color:var(--primary)!important}
+.nearby-hero h1,.petgrow-unified-hero h1,.petmusic-hero h1,.more-menu-head h1{font-family:inherit!important;font-size:28px!important;line-height:1.25!important;font-weight:900!important;letter-spacing:-.035em!important;margin:0 0 9px!important;padding:0!important;color:var(--text)!important;text-align:left!important;word-break:keep-all;overflow-wrap:anywhere}
+.nearby-hero p,.petgrow-unified-hero p,.petmusic-hero p,.more-menu-head p{font-family:inherit!important;font-size:14px!important;line-height:1.65!important;font-weight:500!important;margin:0!important;color:var(--sub)!important;text-align:left!important;word-break:keep-all;overflow-wrap:anywhere}
+.nearby-hero,.petgrow-unified-hero,.petmusic-hero{padding:24px!important;border-radius:24px!important;margin-bottom:18px!important;min-height:0!important}
+.petgrow-page-top .petgrow-unified-hero{margin-left:0!important;margin-right:0!important}
+@media(max-width:760px){.nearby-hero,.petgrow-unified-hero,.petmusic-hero{padding:20px!important;border-radius:20px!important;margin-bottom:14px!important}.nearby-hero h1,.petgrow-unified-hero h1,.petmusic-hero h1,.more-menu-head h1{font-size:23px!important;line-height:1.3!important;margin-bottom:7px!important}.nearby-hero p,.petgrow-unified-hero p,.petmusic-hero p,.more-menu-head p{font-size:13px!important;line-height:1.6!important}.nearby-hero .nearby-eyebrow,.petgrow-unified-hero .nearby-eyebrow,.petmusic-hero>small,.more-menu-head>span{font-size:10px!important;margin-bottom:7px!important}}
+
     @import url('https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap');
     .bboggl-root{
       --primary:#4F8A5B;--primary-dark:#3D704A;--text:#223027;--sub:#68736B;--bg:#F8FAF7;--surface:#F1F5F1;--border:#E2E9E3;
