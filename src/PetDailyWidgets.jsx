@@ -32,6 +32,8 @@ export function PetTarotPanel({pet,lang="ko",onBack,onAnalytics}){
   const currentTopic=TAROT_TOPICS.find(x=>x.key===topic)||TAROT_TOPICS[0];
   return <div className="feature-module-shell pet-tarot-shell"><style>{`
 /* PETGROW_TAROT_PREMIUM_V2 */
+/* PETGROW_TAROT_SAJU_ALIGN_20260817 */
+.pet-tarot-stage>h2{font-family:inherit!important;font-size:24px!important;font-weight:900!important;letter-spacing:-.035em!important;color:var(--text)!important}.pet-tarot-topic{font-family:inherit!important}
 .pet-tarot-stage{background:radial-gradient(circle at 50% 0,#fffaf0 0,#fff 38%,#f8f4ec 100%)!important;border:1px solid #eadfca!important;box-shadow:0 20px 60px rgba(70,48,22,.08)!important}
 .pet-tarot-deck22{display:grid!important;grid-template-columns:repeat(11,minmax(42px,1fr))!important;gap:10px!important;transform:none!important;overflow:visible!important;padding:18px 4px 8px!important}
 .pet-tarot-back22{position:relative!important;inset:auto!important;transform:none!important;width:100%!important;aspect-ratio:2/3!important;min-height:112px!important;border-radius:13px!important;border:2px solid #c9a96a!important;background:linear-gradient(145deg,#20332d,#355248 58%,#1f302b)!important;box-shadow:0 8px 20px rgba(28,45,39,.18)!important;animation:tarotSpreadIn 1.15s cubic-bezier(.2,.75,.25,1) both!important;animation-delay:var(--delay)!important;color:#f6e5bb!important}
