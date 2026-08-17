@@ -1,0 +1,41 @@
+name: Run UI Polish 20260817
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.ui-polish-trigger-20260817'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Apply UI polish
+        run: python .github/scripts/ui_polish_20260817.py
+      - name: Validate syntax markers
+        run: |
+          grep -q 'PETGROW_UI_POLISH_20260817' src/App.jsx
+          grep -q 'petnews-v10' src/App.jsx
+          grep -q 'PetPointVisibleCard' src/App.jsx
+          grep -q 'refKey' api/points.js
+      - name: Build
+        run: |
+          npm install
+          npm run build
+      - name: Commit changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/App.jsx src/PetDailyWidgets.jsx api/points.js
+          if git diff --cached --quiet; then
+            echo 'No changes to commit'
+          else
+            git commit -m 'fix: polish nearby points tarot news and about layout'
+            git push origin main
+          fi
