@@ -1,0 +1,28 @@
+name: diag-petgrow-20260818
+on:
+  push:
+    paths:
+      - 'DIAG_PETGROW_20260818.txt'
+  workflow_dispatch:
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Print target contexts
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('src/App.jsx').read_text(encoding='utf-8')
+          lines=s.splitlines()
+          needles=['Pet톡을 불러오는 중','PETGROW TALK','Pet정보','위치 새로고침','내 위치','포인트 현황','PetPointDashboard','PetTarot','PetSaju','Pet타로','Pet사주','petgrow-unified-hero']
+          for needle in needles:
+              print('\n###',needle)
+              hits=[i for i,l in enumerate(lines) if needle in l]
+              print('hits',hits[:20])
+              for i in hits[:8]:
+                  a=max(0,i-5); b=min(len(lines),i+6)
+                  print(f'--- context {a+1}-{b} ---')
+                  for j in range(a,b): print(f'{j+1}: {lines[j]}')
+          PY
