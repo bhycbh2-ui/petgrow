@@ -1,0 +1,13 @@
+name: Diagnose Profile History 20260817
+on:
+  push:
+    paths:
+      - '.diag-profile-history-trigger-20260817'
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Show profile history contexts
+        run: |
+          grep -n -C 10 'saved.*tarot\|saju.*history\|tarot.*history\|내 활동\|회원정보 수정\|Pet타로\|오늘의 펫운세' src/App.jsx | head -n 320 || true
