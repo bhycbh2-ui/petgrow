@@ -9225,6 +9225,7 @@ function NearbyPetPage(){
   const [loading,setLoading]=useState(false);
   const [msg,setMsg]=useState("");
   const [searchRadius,setSearchRadius]=useState(1000);
+  const searchCenterRef=useRef(null);
   const [positionAccuracy,setPositionAccuracy]=useState(null);
   const [within1km,setWithin1km]=useState(0);
   const [selected,setSelected]=useState(null);
@@ -9294,7 +9295,7 @@ function NearbyPetPage(){
             makeOverlay(p.lat,p.lng,html,5,()=>{setSelected(p);document.getElementById(`nearby-place-${p.id}`)?.scrollIntoView({behavior:"smooth",block:"center"});});
             bounds.extend(new K.LatLng(p.lat,p.lng));
           });
-          if(places.length)map.setBounds(bounds,40,40,40,40);
+          if(places.length){if(places.length===1){map.setCenter(new K.LatLng(places[0].lat,places[0].lng));map.setLevel(3);}else{map.setBounds(bounds,40,40,40,40);}}
           window.setTimeout(()=>map.relayout?.(),60);
           return;
         }
@@ -9333,7 +9334,7 @@ function NearbyPetPage(){
       const popup=`<div style="min-width:200px"><div style="font-size:11px;font-weight:800;color:#4F8A5B;margin-bottom:5px">${String(p.typeIcon||"🐾")} ${String(p.typeLabel||"반려동물 관련")}</div><b style="font-size:14px">${String(p.name||"").replace(/[<>&]/g,"")}</b><div style="margin-top:5px;font-size:12px;font-weight:800;color:#4F8A5B">${p.userDistance!=null?`내 위치에서 ${p.userDistance<1000?`${p.userDistance}m`:`${(p.userDistance/1000).toFixed(1)}km`}`:(p.distance==null?"":`검색 주소에서 ${p.distance<1000?`${p.distance}m`:`${(p.distance/1000).toFixed(1)}km`}`)}</div><div style="margin-top:4px;font-size:11px;line-height:1.45">${String(p.address||"").replace(/[<>&]/g,"")}</div>${p.phone?`<div style="margin-top:4px;font-size:11px">☎ ${String(p.phone).replace(/[<>&]/g,"")}</div>`:""}</div>`;
       m.bindPopup(popup);overlays.current.push(m);bounds.extend([p.lat,p.lng]);
     });
-    if(places.length){const close=places.filter(p=>Number(p.distance)<=1000);if(close.length){const b2=L.latLngBounds([[center.lat,center.lng]]);close.slice(0,12).forEach(p=>b2.extend([p.lat,p.lng]));map.fitBounds(b2.pad(.16),{maxZoom:16,padding:[28,28]});}else{map.setView([center.lat,center.lng],14);}}
+    if(places.length){if(places.length===1){map.setView([places[0].lat,places[0].lng],16);}else{const close=places.filter(p=>Number(p.distance)<=1000);if(close.length){const b2=L.latLngBounds([[center.lat,center.lng]]);close.slice(0,12).forEach(p=>b2.extend([p.lat,p.lng]));map.fitBounds(b2.pad(.16),{maxZoom:16,padding:[28,28]});}else{map.setView([center.lat,center.lng],14);}}}
     window.setTimeout(()=>map.invalidateSize(),60);
     window.setTimeout(()=>map.invalidateSize(),260);
   };
@@ -9376,9 +9377,10 @@ function NearbyPetPage(){
     const cacheKey=`${activeMode}|${coords?`${Number(coords.lat).toFixed(4)},${Number(coords.lng).toFixed(4)}`:manualArea.trim()}|${nextCat}`;
     const cached=nearbyCache.current.get(cacheKey);
     if(cached){
-      const cachedItems=distanceOrigin?(cached.items||[]).map(x=>({...x,userDistance:calcClientDistance(distanceOrigin.lat,distanceOrigin.lng,Number(x.lat),Number(x.lng))})).sort((a,b)=>(a.userDistance??1e12)-(b.userDistance??1e12)):(cached.items||[]);
-      setItems(cachedItems);setPage(1);setSelected(cachedItems[0]||null);setSearchRadius(Number(cached.searchRadius)||1000);setWithin1km(Number(cached.within1km)||0);
-      if(cached.searchCenter)loadMap(cached.searchCenter,cachedItems,distanceOrigin).catch(()=>{});
+      const cachedItemsRaw=distanceOrigin?(cached.items||[]).map(x=>({...x,userDistance:calcClientDistance(distanceOrigin.lat,distanceOrigin.lng,Number(x.lat),Number(x.lng))})).sort((a,b)=>(a.userDistance??1e12)-(b.userDistance??1e12)):(cached.items||[]);
+      const cachedItems=cachedItemsRaw.filter(x=>Number(x.distance)<=1000);
+      setItems(cachedItems);setPage(1);setSelected(cachedItems[0]||null);setSearchRadius(1000);setWithin1km(cachedItems.length);
+      if(cached.searchCenter){searchCenterRef.current=cached.searchCenter;loadMap(cached.searchCenter,cachedItems.slice(0,30),distanceOrigin).catch(()=>{});}
       if(!background)return;
     }
     const seq=++requestSeq.current;
@@ -9393,16 +9395,17 @@ function NearbyPetPage(){
         for(const x of good){nearbyCache.current.set(`${coords?`${Number(coords.lat).toFixed(4)},${Number(coords.lng).toFixed(4)}`:manualArea.trim()}|${x.key}`,x.data);}
         const merged=mergeNearbyRows(good.map(x=>x.data.items||[]));
         const within=merged.filter(x=>Number(x.distance)<=1000).length;
-        const radius=Math.max(1000,...good.map(x=>Number(x.data.searchRadius)||1000));
-        j={items:merged.filter(x=>Number(x.distance)<=radius),within1km:within,searchRadius:radius,searchCenter:good[0]?.data?.searchCenter||null};
+        j={items:merged.filter(x=>Number(x.distance)<=1000),within1km:within,searchRadius:1000,searchCenter:good[0]?.data?.searchCenter||null};
       }else j=await fetchNearbyCategory(nextCat,coords,manualArea,distanceOrigin);
-      if(distanceOrigin && Array.isArray(j.items)){
-        j={...j,items:j.items.map(x=>({...x,userDistance:calcClientDistance(distanceOrigin.lat,distanceOrigin.lng,Number(x.lat),Number(x.lng))})).sort((a,b)=>(a.userDistance??1e12)-(b.userDistance??1e12))};
+      if(Array.isArray(j.items)){
+        let nextItems=j.items.filter(x=>Number(x.distance)<=1000);
+        if(distanceOrigin)nextItems=nextItems.map(x=>({...x,userDistance:calcClientDistance(distanceOrigin.lat,distanceOrigin.lng,Number(x.lat),Number(x.lng))})).sort((a,b)=>(a.userDistance??1e12)-(b.userDistance??1e12));
+        j={...j,items:nextItems,within1km:nextItems.length,searchRadius:1000};
       }
       nearbyCache.current.set(cacheKey,j);
       if(seq!==requestSeq.current && !background)return;
-      setItems(j.items||[]);setPage(1);setSelected(j.items?.[0]||null);if(Number(j.searchRadius))setSearchRadius(Number(j.searchRadius));setWithin1km(Number(j.within1km)||0);
-      if(j.searchCenter)loadMap(j.searchCenter,j.items||[],distanceOrigin).catch(()=>{});
+      setItems(j.items||[]);setPage(1);setSelected(j.items?.[0]||null);setSearchRadius(1000);setWithin1km(Number(j.within1km)||0);
+      if(j.searchCenter){searchCenterRef.current=j.searchCenter;loadMap(j.searchCenter,(j.items||[]).slice(0,30),distanceOrigin).catch(()=>{});}
       if(j.warning)setMsg(j.warning); else if(!(j.items||[]).length)setMsg("검색 결과가 없어요. 주소는 인식했지만 주변 업체 정보를 찾지 못했어요. 다른 카테고리를 눌러보거나 주소를 조금 더 구체적으로 입력해 주세요.");
     }catch(e){if(!cached)setMsg(e.message)}finally{if(seq===requestSeq.current)setLoading(false)}
   };
@@ -9487,14 +9490,14 @@ function NearbyPetPage(){
     <div style={{display:'flex',justifyContent:'flex-end',margin:'8px 0 10px'}}><button type="button" className={`bg-chip ${followMyLocation?'active':''}`} onClick={()=>setFollowMyLocation(v=>!v)}>📍 내 위치 따라가기 {followMyLocation?'ON':'OFF'}</button></div>
     <ResponsiveCategoryMenu className="nearby-responsive-categories" primaryCount={3} items={cats.map(([id,label])=>({id,label}))} activeId={cat} onSelect={setCat} lang={"ko"} />
     <section className="nearby-map-card bg-card">
-      <div className="nearby-map-head"><div><b>🗺️ {searchMode==="current"?"현재 위치 기준 지도":"검색 주소 기준 지도"}</b><small className="nearby-map-description">{searchMode==="current"?"현재 위치를 중심으로 가까운 장소를 표시해요. 번호 마커를 누르면 업체 정보를 바로 확인할 수 있어요.":pos?"입력한 주소 기준으로 검색하고 지도에는 내 위치와 업체 거리를 함께 표시해요.":"입력한 주소 기준으로 검색해요. 위치 허용 시 내 위치도 표시해요."}</small></div><div className="nearby-location-controls">{pos&&<span className="nearby-live-pill">● 내 위치</span>}<button type="button" className="nearby-location-btn" onClick={locate}>{pos?"위치 새로고침":"내 위치 표시"}</button></div></div>
-      <div ref={mapRef} className="nearby-map"><div className="nearby-map-fallback"><MapPinIcon/><b>지도를 불러오는 중이에요</b><span>주소를 검색하면 검색 지점과 주변 업체가 지도에 표시돼요.</span></div></div>
+      <div className="nearby-map-head"><div><b>🗺️ {searchMode==="current"?"현재 위치 기준 지도":"검색 주소 기준 지도"}</b><small className="nearby-map-description">{searchMode==="current"?"현재 위치 1km 안의 가까운 장소만 표시해요. 목록에서 업체를 누르면 지도에는 그 업체만 크게 표시돼요.":pos?"입력한 주소 기준으로 검색하고 지도에는 내 위치와 업체 거리를 함께 표시해요.":"입력한 주소 기준으로 검색해요. 위치 허용 시 내 위치도 표시해요."}</small></div><div className="nearby-location-controls">{pos&&<span className="nearby-live-pill">● 내 위치</span>}<button type="button" className="nearby-location-btn" onClick={locate}>{pos?"위치 새로고침":"내 위치 표시"}</button></div></div>
+      <div ref={mapRef} className="nearby-map"><div className="nearby-map-fallback"><MapPinIcon/><b>지도를 불러오는 중이에요</b><span>1km 안의 가까운 업체만 표시해 지도를 가볍게 유지해요.</span></div></div>
     </section>
     {msg&&<div className="nearby-message">{msg}</div>}
     <div className="nearby-results-head"><div><h2>{searchMode==="current"?"현재 위치 주변":"검색 주소 주변"}</h2><span>{items.length}곳</span></div><small className="nearby-results-detail">{searchMode==="current"?`내 위치에서 가까운 순 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`}`:pos?`내 위치에서 가까운 순 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`}`:`검색 주소 기준 가까운 순 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`}`}</small></div>
     <div className="nearby-list">
       {loading&&!items.length?<div className="bg-card nearby-empty">주변 Pet 정보를 찾는 중…</div>:
-      pageItems.map((p,i)=><article id={`nearby-place-${p.id}`} key={p.id} className={`bg-card nearby-place ${selected?.id===p.id?"selected":""}`} onClick={()=>setSelected(p)}>
+      pageItems.map((p,i)=><article id={`nearby-place-${p.id}`} key={p.id} className={`bg-card nearby-place ${selected?.id===p.id?"selected":""}`} onClick={()=>{setSelected(p);const c=searchCenterRef.current||{lat:Number(p.lat),lng:Number(p.lng)};loadMap(c,[p],pos,false).catch(()=>{});}}>
         <div className="nearby-rank">{(safePage-1)*pageSize+i+1}</div>
         <div className="nearby-place-main">
           <div className="nearby-type-row"><span className={`nearby-type-badge nearby-type-${p.typeKey||"other"}`}>{p.typeIcon||"🐾"} {p.typeLabel||"반려동물 관련"}</span></div>
