@@ -5,6 +5,7 @@ on:
     paths:
       - 'scripts/apply-petgrow-final-bundle.py'
       - 'api/news.js'
+      - 'scripts/final-bundle-trigger.txt'
 permissions:
   contents: write
 jobs:
