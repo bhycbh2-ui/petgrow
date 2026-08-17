@@ -1,0 +1,1 @@
+Final batch v3 scope: UI consistency, PetTalk loading recovery, PetNews inline detail/reactions/comments, PetPoint anti-abuse and visual polish, tarot mobile layout/follow fixes, About 2x5, MyPage activity hub, explicit pet save UX, admin dashboard gating.
