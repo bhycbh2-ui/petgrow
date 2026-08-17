@@ -1,0 +1,86 @@
+name: Nearby Pet Performance 20260817
+on:
+  push:
+    paths:
+      - '.github/nearby-map-performance-trigger.txt'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Apply Nearby Pet performance fixes
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('src/App.jsx')
+          s=p.read_text()
+          old='const [searchRadius,setSearchRadius]=useState(1000);'
+          new='const [searchRadius,setSearchRadius]=useState(1000);\n  const searchCenterRef=useRef(null);'
+          if old not in s: raise SystemExit('searchRadius anchor not found')
+          s=s.replace(old,new,1)
+
+          old='const cachedItems=distanceOrigin?(cached.items||[]).map(x=>({...x,userDistance:calcClientDistance(distanceOrigin.lat,distanceOrigin.lng,Number(x.lat),Number(x.lng))})).sort((a,b)=>(a.userDistance??1e12)-(b.userDistance??1e12)):(cached.items||[]);\n      setItems(cachedItems);setPage(1);setSelected(cachedItems[0]||null);setSearchRadius(Number(cached.searchRadius)||1000);setWithin1km(Number(cached.within1km)||0);\n      if(cached.searchCenter)loadMap(cached.searchCenter,cachedItems,distanceOrigin).catch(()=>{});'
+          new='const cachedItemsRaw=distanceOrigin?(cached.items||[]).map(x=>({...x,userDistance:calcClientDistance(distanceOrigin.lat,distanceOrigin.lng,Number(x.lat),Number(x.lng))})).sort((a,b)=>(a.userDistance??1e12)-(b.userDistance??1e12)):(cached.items||[]);\n      const cachedItems=cachedItemsRaw.filter(x=>Number(x.distance)<=1000);\n      setItems(cachedItems);setPage(1);setSelected(cachedItems[0]||null);setSearchRadius(1000);setWithin1km(cachedItems.length);\n      if(cached.searchCenter){searchCenterRef.current=cached.searchCenter;loadMap(cached.searchCenter,cachedItems.slice(0,30),distanceOrigin).catch(()=>{});}'
+          if old not in s: raise SystemExit('cached block anchor not found')
+          s=s.replace(old,new,1)
+
+          old='const radius=Math.max(1000,...good.map(x=>Number(x.data.searchRadius)||1000));\n        j={items:merged.filter(x=>Number(x.distance)<=radius),within1km:within,searchRadius:radius,searchCenter:good[0]?.data?.searchCenter||null};'
+          new='j={items:merged.filter(x=>Number(x.distance)<=1000),within1km:within,searchRadius:1000,searchCenter:good[0]?.data?.searchCenter||null};'
+          if old not in s: raise SystemExit('all radius anchor not found')
+          s=s.replace(old,new,1)
+
+          old='if(distanceOrigin && Array.isArray(j.items)){\n        j={...j,items:j.items.map(x=>({...x,userDistance:calcClientDistance(distanceOrigin.lat,distanceOrigin.lng,Number(x.lat),Number(x.lng))})).sort((a,b)=>(a.userDistance??1e12)-(b.userDistance??1e12))};\n      }'
+          new='if(Array.isArray(j.items)){\n        let nextItems=j.items.filter(x=>Number(x.distance)<=1000);\n        if(distanceOrigin)nextItems=nextItems.map(x=>({...x,userDistance:calcClientDistance(distanceOrigin.lat,distanceOrigin.lng,Number(x.lat),Number(x.lng))})).sort((a,b)=>(a.userDistance??1e12)-(b.userDistance??1e12));\n        j={...j,items:nextItems,within1km:nextItems.length,searchRadius:1000};\n      }'
+          if old not in s: raise SystemExit('distance block anchor not found')
+          s=s.replace(old,new,1)
+
+          old='setItems(j.items||[]);setPage(1);setSelected(j.items?.[0]||null);if(Number(j.searchRadius))setSearchRadius(Number(j.searchRadius));setWithin1km(Number(j.within1km)||0);\n      if(j.searchCenter)loadMap(j.searchCenter,j.items||[],distanceOrigin).catch(()=>{});'
+          new='setItems(j.items||[]);setPage(1);setSelected(j.items?.[0]||null);setSearchRadius(1000);setWithin1km(Number(j.within1km)||0);\n      if(j.searchCenter){searchCenterRef.current=j.searchCenter;loadMap(j.searchCenter,(j.items||[]).slice(0,30),distanceOrigin).catch(()=>{});}'
+          if old not in s: raise SystemExit('set items map anchor not found')
+          s=s.replace(old,new,1)
+
+          old='if(places.length)map.setBounds(bounds,40,40,40,40);'
+          new='if(places.length){if(places.length===1){map.setCenter(new K.LatLng(places[0].lat,places[0].lng));map.setLevel(3);}else{map.setBounds(bounds,40,40,40,40);}}'
+          if old not in s: raise SystemExit('kakao bounds anchor not found')
+          s=s.replace(old,new,1)
+
+          old='if(places.length){const close=places.filter(p=>Number(p.distance)<=1000);if(close.length){const b2=L.latLngBounds([[center.lat,center.lng]]);close.slice(0,12).forEach(p=>b2.extend([p.lat,p.lng]));map.fitBounds(b2.pad(.16),{maxZoom:16,padding:[28,28]});}else{map.setView([center.lat,center.lng],14);}}'
+          new='if(places.length){if(places.length===1){map.setView([places[0].lat,places[0].lng],16);}else{const close=places.filter(p=>Number(p.distance)<=1000);if(close.length){const b2=L.latLngBounds([[center.lat,center.lng]]);close.slice(0,12).forEach(p=>b2.extend([p.lat,p.lng]));map.fitBounds(b2.pad(.16),{maxZoom:16,padding:[28,28]});}else{map.setView([center.lat,center.lng],14);}}}'
+          if old not in s: raise SystemExit('leaflet bounds anchor not found')
+          s=s.replace(old,new,1)
+
+          old='pageItems.map((p,i)=><article id={`nearby-place-${p.id}`} key={p.id} className={`bg-card nearby-place ${selected?.id===p.id?"selected":""}`} onClick={()=>setSelected(p)}>'
+          new='pageItems.map((p,i)=><article id={`nearby-place-${p.id}`} key={p.id} className={`bg-card nearby-place ${selected?.id===p.id?"selected":""}`} onClick={()=>{setSelected(p);const c=searchCenterRef.current||{lat:Number(p.lat),lng:Number(p.lng)};loadMap(c,[p],pos,false).catch(()=>{});}}>'
+          if old not in s: raise SystemExit('place click anchor not found')
+          s=s.replace(old,new,1)
+
+          old='<div ref={mapRef} className="nearby-map"><div className="nearby-map-fallback"><MapPinIcon/><b>지도를 불러오는 중이에요</b><span>주소를 검색하면 검색 지점과 주변 업체가 지도에 표시돼요.</span></div></div>'
+          new='<div ref={mapRef} className="nearby-map"><div className="nearby-map-fallback"><MapPinIcon/><b>지도를 불러오는 중이에요</b><span>1km 안의 가까운 업체만 표시해 지도를 가볍게 유지해요.</span></div></div>'
+          if old not in s: raise SystemExit('map fallback anchor not found')
+          s=s.replace(old,new,1)
+
+          old='현재 위치를 중심으로 가까운 장소를 표시해요. 번호 마커를 누르면 업체 정보를 바로 확인할 수 있어요.'
+          new='현재 위치 1km 안의 가까운 장소만 표시해요. 목록에서 업체를 누르면 지도에는 그 업체만 크게 표시돼요.'
+          s=s.replace(old,new,1)
+
+          p.write_text(s)
+          PY
+      - name: Build
+        run: npm ci && npm run build
+      - name: Commit changes
+        shell: bash
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name petgrow-automation
+          git config user.email actions@users.noreply.github.com
+          git add src/App.jsx
+          git commit -m "fix: limit Nearby Pet to 1km and reduce map marker load"
+          git push
