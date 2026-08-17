@@ -39,6 +39,39 @@ function normalizeItem(item){
   const image=item.image||imageFromHtml(item.rawDescription||item.description)||"";
   return {id:`${title}|${link}`,title,description,category,source:item.source||sourceFromUrl(link),link,naverLink:item.link||link,publishedAt,image,imageIsFallback:false};
 }
+
+function safeRemoteUrl(value=""){
+  try{const u=new URL(value);if(!/^https?:$/.test(u.protocol))return null;const h=u.hostname.toLowerCase();if(h==="localhost"||h.endsWith(".local")||h==="0.0.0.0"||h==="127.0.0.1"||h==="::1"||/^10\./.test(h)||/^192\.168\./.test(h)||/^169\.254\./.test(h)||/^172\.(1[6-9]|2\d|3[01])\./.test(h))return null;return u;}catch{return null;}
+}
+async function fetchOgMeta(startUrl){
+  let current=safeRemoteUrl(startUrl);if(!current)return {image:"",url:startUrl};
+  for(let hop=0;hop<4;hop++){
+    const ac=new AbortController(),timer=setTimeout(()=>ac.abort(),2200);
+    try{
+      const r=await fetch(current,{redirect:"manual",signal:ac.signal,headers:{"User-Agent":"Mozilla/5.0 (compatible; PetGrowNews/1.0)","Accept":"text/html,application/xhtml+xml"}});
+      if(r.status>=300&&r.status<400){const loc=r.headers.get("location");if(!loc)break;const next=safeRemoteUrl(new URL(loc,current).toString());if(!next)break;current=next;continue;}
+      const type=r.headers.get("content-type")||"";if(!r.ok||!type.includes("text/html"))break;
+      const html=(await r.text()).slice(0,450000);
+      const pick=(prop)=>html.match(new RegExp(`<meta[^>]+(?:property|name)=["']${prop}["'][^>]+content=["']([^"']+)["']`,`i`))?.[1]||html.match(new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+(?:property|name)=["']${prop}["']`,`i`))?.[1]||"";
+      const img=decodeEntities(pick("og:image")||pick("twitter:image")).trim();
+      const canonical=html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i)?.[1]||current.toString();
+      return {image:/^https?:\/\//i.test(img)?img:"",url:safeRemoteUrl(canonical)?.toString()||current.toString()};
+    }catch{}finally{clearTimeout(timer)}
+    break;
+  }
+  return {image:"",url:current?.toString()||startUrl};
+}
+async function enrichArticleImages(items){
+  const candidates=items.slice(0,32),out=[];
+  for(let i=0;i<candidates.length;i+=4){
+    const batch=candidates.slice(i,i+4);
+    const enriched=await Promise.all(batch.map(async item=>{if(item.image)return item;const meta=await fetchOgMeta(item.link);return {...item,link:meta.url||item.link,image:meta.image||"",source:meta.url?sourceFromUrl(meta.url):item.source};}));
+    out.push(...enriched);
+    if(out.filter(x=>x.image).length>=24)break;
+  }
+  return out;
+}
+
 function dedupe(items){const seenLinks=new Set(),seenTitles=new Set(),result=[];for(const item of items){const titleKey=item.title.toLowerCase().replace(/[^0-9a-z가-힣]/g,"").slice(0,80);if(!item.link||seenLinks.has(item.link)||seenTitles.has(titleKey))continue;seenLinks.add(item.link);seenTitles.add(titleKey);result.push(item);}return result;}
 function tagRaw(xml,name){const m=xml.match(new RegExp(`<${name}(?:\\s[^>]*)?>([\\s\\S]*?)<\\/${name}>`,"i"));return m?m[1]:"";}
 function tag(xml,name){return stripHtml(tagRaw(xml,name));}
@@ -54,10 +87,10 @@ function parseGoogleRss(xml){
 }
 async function fetchNaver(clientId,clientSecret){const responses=await Promise.all(SEARCH_QUERIES.map(async query=>{const url=`${API_BASE}?query=${encodeURIComponent(query)}&display=20&start=1&sort=date&format=json`;const response=await fetch(url,{headers:{"X-NCP-APIGW-API-KEY-ID":clientId,"X-NCP-APIGW-API-KEY":clientSecret}});if(!response.ok)throw new Error(`NAVER API HUB ${response.status}`);return response.json();}));return responses.flatMap(r=>Array.isArray(r.items)?r.items:[]);}
 async function fetchGoogleFallback(){const queries=["반려동물","반려견 OR 강아지","반려묘 OR 고양이","동물병원 OR 펫보험","유기동물 OR 동물보호"];const responses=await Promise.all(queries.map(async query=>{const url=`${GOOGLE_RSS}?q=${encodeURIComponent(query)}&hl=ko&gl=KR&ceid=KR:ko`;const response=await fetch(url,{headers:{"User-Agent":"PetGrow/1.0"}});if(!response.ok)throw new Error(`Google News RSS ${response.status}`);return parseGoogleRss(await response.text());}));return responses.flat();}
-function prepare(raw){const normalized=dedupe(raw.filter(isPetRelevant).map(normalizeItem)).filter(item=>/^https?:\/\//i.test(item.image||"")).sort((a,b)=>new Date(b.publishedAt||0)-new Date(a.publishedAt||0));const now=Date.now(),sevenDays=7*24*60*60*1000,recent=normalized.filter(item=>item.publishedAt&&now-new Date(item.publishedAt).getTime()<=sevenDays);return(recent.length>=20?recent:normalized).slice(0,60);}
+async function prepare(raw){let normalized=dedupe(raw.filter(isPetRelevant).map(normalizeItem)).sort((a,b)=>new Date(b.publishedAt||0)-new Date(a.publishedAt||0));normalized=await enrichArticleImages(normalized);normalized=normalized.filter(item=>/^https?:\/\//i.test(item.image||""));const now=Date.now(),sevenDays=7*24*60*60*1000,recent=normalized.filter(item=>item.publishedAt&&now-new Date(item.publishedAt).getTime()<=sevenDays);return(recent.length>=12?recent:normalized).slice(0,40);}
 export default async function handler(req,res){
   if(req.method!=="GET")return res.status(405).json({error:"Method not allowed"});
   const clientId=process.env.NAVER_API_HUB_CLIENT_ID,clientSecret=process.env.NAVER_API_HUB_CLIENT_SECRET;let provider="google-news-rss";
-  try{let raw=[];if(clientId&&clientSecret){try{raw=await fetchNaver(clientId,clientSecret);provider="naver-api-hub";}catch(e){console.warn("Pet news primary provider failed; using fallback",e?.message||e);}}if(!raw.length){raw=await fetchGoogleFallback();provider="google-news-rss";}const items=prepare(raw);if(!items.length)throw new Error("No pet news items after filtering");res.setHeader("Cache-Control","public, s-maxage=1800, stale-while-revalidate=1800");return res.status(200).json({configured:true,provider,updatedAt:new Date().toISOString(),refreshSeconds:1800,total:items.length,items});}
+  try{let raw=[];if(clientId&&clientSecret){try{raw=await fetchNaver(clientId,clientSecret);provider="naver-api-hub";}catch(e){console.warn("Pet news primary provider failed; using fallback",e?.message||e);}}if(!raw.length){raw=await fetchGoogleFallback();provider="google-news-rss";}const items=await prepare(raw);res.setHeader("Cache-Control","public, s-maxage=1800, stale-while-revalidate=1800");return res.status(200).json({configured:true,provider,updatedAt:new Date().toISOString(),refreshSeconds:1800,total:items.length,items,message:items.length?"":"대표이미지가 확인된 새 기사를 찾고 있어요. 잠시 후 다시 확인해 주세요."});}
   catch(error){console.error("Pet news fetch failed",error?.message||error);res.setHeader("Cache-Control","no-store");return res.status(502).json({configured:true,items:[],error:"뉴스를 불러오지 못했어요. 잠시 후 다시 시도해 주세요."});}
 }

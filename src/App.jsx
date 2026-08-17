@@ -1,4 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef, useContext, createContext } from "react";
+import * as LeafletLib from "leaflet";
+import "leaflet/dist/leaflet.css";
 import {
   LineChart, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceDot, ReferenceLine, Label,
 } from "recharts";
@@ -2757,6 +2759,10 @@ const GlobalStyle = () => (
 
 /* PETGROW_POLISH_V3 */
 .petgrow-sidebar-nav button,.ham-nav-item{font-weight:550!important;color:#425048!important}.petgrow-sidebar-nav button span,.ham-nav-item span{font-weight:inherit!important}.petgrow-sidebar-nav button.active,.ham-nav-item.active{font-weight:850!important;color:var(--primary)!important}.ham-nav-group{margin-top:12px}.ham-section-label{padding:8px 13px 5px;font-size:10px;letter-spacing:.12em;font-weight:800;color:#8a948d}.ham-nav-grouped .ham-nav-item{margin:2px 0}.info-guide-practical{max-width:900px;margin:0 auto;padding:0 20px 60px}.info-guide-intro{margin-bottom:14px}.info-guide-intro>b{font-size:19px}.info-guide-intro p{margin:7px 0 0;line-height:1.7}.info-guide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.info-guide-card{display:flex;gap:13px;align-items:flex-start;padding:18px!important}.info-guide-card>span{font-size:25px}.info-guide-card h3{font-family:inherit!important;font-size:15px!important;font-weight:850!important;margin:0 0 7px!important}.info-guide-card p{font-size:12.5px;line-height:1.72;color:var(--sub);margin:0;word-break:keep-all}@media(max-width:650px){.info-guide-practical{padding:0 14px 90px}.info-guide-grid{grid-template-columns:1fr}.info-guide-card{padding:16px!important}}
+
+
+/* PETGROW_FIXES_V5 */
+.petgrow-sidebar-nav .tarot-nav{gap:9px!important}.sidebar-tarot-mark{width:20px;min-width:20px;height:20px;display:grid;place-items:center;font-size:17px;line-height:1;margin:0!important}.feature-empty-wrap{display:flex;justify-content:center;width:100%;padding:24px 20px 40px!important}.feature-empty-card{width:100%!important;max-width:560px!important;min-height:250px!important;padding:34px 30px!important;text-align:center!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important}.feature-empty-card h2{font-size:19px!important;margin:8px 0 7px!important}.feature-empty-card p{font-size:13px!important;line-height:1.65!important;margin:0 0 22px!important;max-width:430px!important;word-break:keep-all}.feature-empty-card .bg-btn{width:100%!important;max-width:430px!important;font-size:14px!important}.feature-empty-icon{font-size:40px;line-height:1;margin-bottom:5px}.info-guide-kicker{display:block;font-size:10px;font-weight:900;letter-spacing:.13em;color:var(--primary);margin-bottom:6px}.landing-feature-grid,.about-feature-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}@media(max-width:700px){.feature-empty-wrap{padding:14px 0 32px!important}.feature-empty-card{min-height:235px!important;padding:28px 20px!important}.landing-feature-grid,.about-feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}@media(max-width:420px){.landing-feature-grid,.about-feature-grid{grid-template-columns:1fr!important}}
 
 .app-bottom-nav{position:fixed; left:0; right:0; bottom:0; z-index:150; background:#fff;
       border-top:1px solid var(--border); display:flex; padding-bottom:env(safe-area-inset-bottom,0);
@@ -7449,7 +7455,7 @@ function SajuPage({ pet, onGoRegister }) {
   if (input) return <SajuResultView input={input} onRestart={() => { setInput(null); setMode("menu"); }} />;
 
   if (!pet) return (
-    <div className="feature-module-shell" style={{ display: "flex", justifyContent: "center", padding: "24px 20px 40px" }}><div className="bg-card" style={{ textAlign: "center", width: "100%", maxWidth: 560, padding: "34px 30px" }}>
+    <div className="feature-module-shell feature-empty-wrap"><div className="bg-card feature-empty-card">
       <SajuIcon style={{ width: 40, height: 40, color: "var(--primary)", margin: "0 auto 14px" }} />
       <h2 style={{ fontSize: 19, marginBottom: 6 }}>{t.sajuNeedPetTitle}</h2><p className="bg-sub" style={{ fontSize: 13, marginBottom: 22 }}>{t.sajuNeedPetBody}</p>
       <button className="bg-btn" style={{ width: "100%", fontSize: 15 }} onClick={onGoRegister}>{t.sajuGoRegisterBtn}</button>
@@ -8202,7 +8208,7 @@ function PetBtiPage({ pet, onUpdatePetBti, onGoRegister }) {
   };
 
   if (!pet) return (
-    <div className="feature-module-shell" style={{ display: "flex", justifyContent: "center", padding: "24px 20px 40px" }}><div className="bg-card" style={{ textAlign: "center", width: "100%", maxWidth: 560, padding: "34px 30px" }}>
+    <div className="feature-module-shell feature-empty-wrap"><div className="bg-card feature-empty-card">
       <PetBtiIcon style={{ width: 40, height: 40, color: "var(--primary)", margin: "0 auto 14px" }} />
       <h2 style={{ fontSize: 19, marginBottom: 6 }}>{t.sajuNeedPetTitle}</h2>
       <p className="bg-sub" style={{ fontSize: 13, marginBottom: 22 }}>
@@ -9250,6 +9256,7 @@ function NearbyPetPage(){
         }
       }catch(e){console.warn("Kakao map load failed; using fallback map",e);}
     }
+    if(!window.L) window.L=LeafletLib;
     if(!window.L){
       if(!document.getElementById("petgrow-leaflet-css")){
         const link=document.createElement("link");link.id="petgrow-leaflet-css";link.rel="stylesheet";link.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(link);
@@ -9604,7 +9611,6 @@ function MoreMenuPage({ lang, onNavigate }) {
     ["tarot","🃏","Pet타로",lang==="en"?"One card per topic each day":"오늘·궁합·마음·산책·조언 주제별 하루 한 장"],
     ["petbti","🧠","PetBTI",lang==="en"?"20-question personality test":"강아지·고양이 20문항 성향 테스트"],
     ["tips","💡","Pet정보",lang==="en"?"Health and daily pet guides":"건강·식단·훈련·생활 정보"],
-    ["pets","📈",lang==="en"?"Growth records":"성장 기록",lang==="en"?"Track weight and growth":"체중과 성장 변화를 기록해요"],
     ["my","👤",lang==="en"?"My page":"회원정보",lang==="en"?"Account and my activity":"계정·좋아요·내 활동 관리"],
     ["support","💬",lang==="en"?"Support":"고객지원",lang==="en"?"Notices and feedback":"공지·문의·피드백"],
     ["about","ℹ️",lang==="en"?"About PetGrow":"소개",lang==="en"?"Learn about PetGrow":"PetGrow 서비스 소개"],
@@ -9670,7 +9676,7 @@ function InfoGuidePage() {
   const filtered=guides.filter(g=>!q||`${g.title} ${g.keywords} ${g.steps.join(" ")} ${g.tip}`.toLowerCase().includes(q));
   const go=(key)=>window.dispatchEvent(new CustomEvent("petgrow:navigate",{detail:key}));
   return <div className="legal-page-shell info-guide-v4">
-    <section className="bg-card info-guide-search-card"><h2>무엇이 궁금하세요?</h2><p className="bg-sub">메뉴 이름이나 하고 싶은 일을 검색해 보세요.</p><div className="info-guide-search-row"><span>🔎</span><input className="bg-input" value={guideSearch} onChange={e=>setGuideSearch(e.target.value)} placeholder="예: 타로 저장, 음악 반복재생, 주소 검색"/>{guideSearch&&<button type="button" className="bg-chip" onClick={()=>setGuideSearch("")}>초기화</button>}</div></section>
+    <section className="bg-card info-guide-search-card"><small className="info-guide-kicker">QUICK HELP</small><h2>궁금한 기능을 찾아보세요</h2><p className="bg-sub">메뉴 이름이나 하고 싶은 일을 검색하면 바로 이용방법을 찾을 수 있어요.</p><div className="info-guide-search-row"><span>🔎</span><input className="bg-input" value={guideSearch} onChange={e=>setGuideSearch(e.target.value)} placeholder="예: 타로 저장, 음악 반복재생, 주소 검색"/>{guideSearch&&<button type="button" className="bg-chip" onClick={()=>setGuideSearch("")}>초기화</button>}</div></section>
     {!q&&<section className="info-guide-popular"><div className="info-guide-section-head"><h3>자주 찾는 이용방법</h3><small>바로 필요한 가이드부터 확인해요.</small></div><div className="info-guide-popular-grid">{popular.map(k=>{const g=guides.find(x=>x.key===k);return <button type="button" className="bg-card info-guide-popular-btn" key={k} onClick={()=>setOpenGuide(k)}><span>{g.icon}</span><b>{g.title}</b><small>{g.steps[0]}</small></button>})}</div></section>}
     <section className="info-guide-all"><div className="info-guide-section-head"><h3>{q?`검색 결과 ${filtered.length}개`:"메뉴별 이용가이드"}</h3><small>필요한 메뉴만 펼쳐서 볼 수 있어요.</small></div><div className="info-guide-accordion-list">{filtered.length?filtered.map(g=>{const open=openGuide===g.key;return <article className={"bg-card info-guide-accordion "+(open?"open":"")} key={g.key}><button type="button" className="info-guide-accordion-head" onClick={()=>setOpenGuide(open?"":g.key)}><span>{g.icon}</span><div><b>{g.title}</b><small>{g.steps[0]}</small></div><em>{open?"−":"＋"}</em></button>{open&&<div className="info-guide-accordion-body"><ol>{g.steps.map((s,i)=><li key={i}><span>{i+1}</span><p>{s}</p></li>)}</ol><div className="info-guide-tip">💡 {g.tip}</div><button type="button" className="bg-btn info-guide-go" onClick={()=>go(g.key)}>{g.title} 바로 이용하기 →</button></div>}</article>}):<div className="bg-card info-guide-empty">검색 결과가 없어요. 다른 단어로 검색해 보세요.</div>}</div></section>
   </div>;
@@ -10898,7 +10904,7 @@ function AppInner({ lang, setLang }) {
 
   // 'about' | 'pets' | 'saju' | 'petbti' | 'tips' | 'guide' | 'privacy' | 'terms'
   const [view, setView] = useState("home");
-  const GATED_VIEWS = ["pets", "saju", "petbti", "tips", "guide", "community", "content", "my", "admin"];
+  const GATED_VIEWS = ["pets", "saju", "petbti", "tips", "guide", "content", "my", "admin"];
 
   // ---- 계정(카카오 로그인) ----
   const [account, setAccount] = useState(null);
@@ -11409,7 +11415,7 @@ function AppInner({ lang, setLang }) {
             <button className={view === "community" ? "active" : ""} onClick={() => goView("community")}><TalkIcon /><span>{t.communityNav}</span></button>
             <button className={view === "petbti" ? "active" : ""} onClick={() => goView("petbti")}><PetBtiIcon /><span>{t.petBtiNav}</span></button>
             <button className={view === "saju" ? "active" : ""} onClick={() => goView("saju")}><SajuIcon /><span>{t.sajuNav}</span></button>
-            <button className={view === "tarot" ? "active" : ""} onClick={() => goView("tarot")}><span style={{fontSize:18}}>🃏</span><span>{lang === "en" ? "Pet Tarot" : "Pet타로"}</span></button>
+            <button className={`tarot-nav ${view === "tarot" ? "active" : ""}`} onClick={() => goView("tarot")}><span className="sidebar-tarot-mark">🃏</span><span>{lang === "en" ? "Pet Tarot" : "Pet타로"}</span></button>
             <div className="sidebar-section-label">{lang === "en" ? "INFO · SUPPORT" : "정보 · 지원"}</div>
             <button className={view === "tips" ? "active" : ""} onClick={() => goView("tips")}><LightbulbIcon /><span>{t.tipsTitle}</span></button>
             <button className={view === "news" ? "active" : ""} onClick={() => goView("news")}><InfoIcon /><span>{lang === "en" ? "Pet News" : "Pet뉴스"}</span></button>
@@ -11545,7 +11551,7 @@ function AppInner({ lang, setLang }) {
       ) : effectiveView === "tarot" ? (
         <div className="legal-page-shell feature-page-shell feature-page-tarot">
           <PetPicker pets={allPets} activeId={featurePet?.id} onSelect={setFeaturePetId} />
-          {featurePet ? <PetTarotPanel pet={featurePet} lang={lang} /> : <div className="bg-card" style={{textAlign:"center",padding:28}}><b>Pet타로를 보려면 우리 아이를 먼저 등록해 주세요.</b><button className="bg-btn" style={{display:"block",margin:"14px auto 0"}} onClick={()=>{setMode("onboarding");goView("pets")}}>우리 아이 등록</button></div>}
+          {featurePet ? <PetTarotPanel pet={featurePet} lang={lang} /> : <div className="feature-empty-wrap"><div className="bg-card feature-empty-card"><span className="feature-empty-icon">🃏</span><h2>등록된 아이가 아직 없어요</h2><p className="bg-sub">Pet타로는 '우리 아이'에 등록한 반려동물만 이용할 수 있어요. 먼저 반려동물을 등록해 주세요.</p><button className="bg-btn" onClick={()=>{setMode("onboarding");goView("pets")}}>우리 아이 등록하러 가기</button></div></div>}
         </div>
       ) : effectiveView === "petbti" ? (
         <div className="legal-page-shell feature-page-shell feature-page-petbti">

@@ -12,22 +12,23 @@
     "cap:android": "vite build && npx capacitor-assets generate --android && npx cap sync android && npx cap open android"
   },
   "dependencies": {
+    "@capacitor-community/admob": "^6.1.0",
+    "@capacitor/core": "^6.1.2",
+    "@capacitor/splash-screen": "^6.0.2",
+    "@vercel/blob": "^0.27.0",
+    "@vercel/postgres": "^0.10.0",
+    "leaflet": "^1.9.4",
+    "proj4": "^2.15.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "recharts": "^2.12.7",
-    "@capacitor/core": "^6.1.2",
-    "@capacitor-community/admob": "^6.1.0",
-    "@capacitor/splash-screen": "^6.0.2",
-    "@vercel/postgres": "^0.10.0",
-    "@vercel/blob": "^0.27.0",
-    "proj4": "^2.15.0"
+    "recharts": "^2.12.7"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.1",
-    "vite": "^5.4.0",
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^6.1.2",
     "@capacitor/ios": "^6.1.2",
-    "@capacitor/android": "^6.1.2",
-    "@capacitor/assets": "^3.0.5"
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.0"
   }
 }
