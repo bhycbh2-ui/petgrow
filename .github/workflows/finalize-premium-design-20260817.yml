@@ -1,0 +1,43 @@
+name: Finalize Premium PetGrow Design 20260817
+on:
+  push:
+    branches: [work/design-unify-20260817]
+    paths:
+      - '.finalize-premium-design-trigger-20260817'
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/design-unify-20260817
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Apply final premium design fixes
+        run: python .github/scripts/finalize_premium_design_20260817.py
+      - name: Install dependencies
+        run: npm install
+      - name: Production build
+        run: npm run build
+      - name: Verify responsive system
+        run: |
+          grep -q 'petgrow-premium-20260817.css' src/main.jsx
+          grep -q 'MAP_STABILITY_FINAL_20260817' src/petgrow-premium-20260817.css
+          grep -q '@media (max-width:1024px)' src/petgrow-premium-20260817.css
+          grep -q '@media (max-width:760px)' src/petgrow-premium-20260817.css
+          grep -q '@media (max-width:390px)' src/petgrow-premium-20260817.css
+      - name: Commit finalized branch
+        run: |
+          git config user.name 'bhycbh2-ui'
+          git config user.email 'bhycbh2@gmail.com'
+          git add src/App.jsx src/petgrow-premium-20260817.css
+          if git diff --cached --quiet; then
+            echo 'No generated changes to commit'
+          else
+            git commit -m 'style: finalize premium responsive PetGrow redesign'
+            git push origin HEAD:work/design-unify-20260817
+          fi
