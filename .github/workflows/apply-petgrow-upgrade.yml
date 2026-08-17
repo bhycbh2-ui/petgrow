@@ -4,7 +4,9 @@ on:
   push:
     branches: [main]
     paths:
+      - 'scripts/apply-petnews-ui-fixed.mjs'
       - 'scripts/run-petgrow-upgrade.mjs'
+      - '.github/workflows/apply-petgrow-upgrade.yml'
 
 permissions:
   contents: write
@@ -27,7 +29,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Apply PetNews UI integration
-        run: node scripts/apply-petnews-ui.mjs
+        run: node scripts/apply-petnews-ui-fixed.mjs
       - name: Apply UX consistency bundle
         run: node scripts/run-petgrow-upgrade.mjs
       - name: Verify production web build
