@@ -202,7 +202,7 @@ export default async function handler(req, res) {
         if (!content || !content.trim()) return res.status(400).json({ error: "content is required" });
         if (!pet || !pet.id || !pet.name) return res.status(400).json({ error: "pet is required" });
         const comment = await addComment({ postId, userId: uid, pet, content: content.trim() });
-        const pointEvent = await awardPoints(uid, "community_comment", `comment:${comment.id}`).catch(()=>null);
+        const pointEvent = await awardPoints(uid, "community_comment", `comment-post:${postId}`).catch(()=>null);
         return res.status(201).json({ ...comment, pointEvent });
       }
     }
@@ -214,7 +214,7 @@ export default async function handler(req, res) {
       const id = req.query.id;
       if (!id) return res.status(400).json({ error: "id is required" });
       const ok = await deleteComment({ id, userId: uid });
-      if(ok) await revokePoints(uid,`comment:${id}`,"Pet톡 댓글 삭제로 포인트 회수").catch(()=>{});
+      // 댓글 적립은 게시글당 최초 1회만 인정하며 삭제 후 재작성해도 재적립되지 않도록 참조값을 유지합니다.
       if (!ok) return res.status(403).json({ error: "not allowed" });
       return res.status(200).json({ ok: true });
     }

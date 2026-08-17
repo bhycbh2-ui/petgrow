@@ -403,10 +403,10 @@ const STRINGS = {
     neuteredYes: "완료",
     labelBodyCondition: "현재 체형",
     submitNew: (adultWord) => `예상 ${adultWord} 체중 확인하기`,
-    submitEdit: "수정 완료",
-    onboardingConfirmEditTitle: "정보를 수정하시겠습니까?",
+    submitEdit: "저장하기",
+    onboardingConfirmEditTitle: "저장하시겠습니까?",
     onboardingConfirmAddTitle: "이 정보로 등록하시겠습니까?",
-    onboardingConfirmMessage: (name) => `${name}의 정보를 저장할게요. 계속할까요?`,
+    onboardingConfirmMessage: (name) => `수정한 ${name}의 정보를 저장합니다. 계속할까요?`,
     onboardingConfirmBtn: "등록하기",
     ageUnder1Month: "1개월 미만",
     ageAbout: (n) => `약 ${n}개월`,
@@ -623,7 +623,7 @@ const STRINGS = {
     landingHeadline1: "우리 아이의 모든 순간을",
     landingGreeting: "안녕하세요, 펫그로우입니다 🐾",
     socialTitle: "PetGrow 공식 채널",
-    saveToastOk: "저장됐어요",
+    saveToastOk: "저장되었습니다.",
     saveToastError: "저장에 실패했어요 — 저장 공간이 가득 찼을 수 있어요. 오래된 사진을 정리해보세요.",
     welcomeBackMsg: (name) => name ? `다시 오셨군요! 🐾 ${name}의 기록을 이어가볼까요?` : "다시 오셨군요! 🐾 기록을 이어가볼까요?",
     socialLabels: { youtube: "유튜브", instagram: "인스타그램", threads: "스레드", tiktok: "틱톡", blog: "네이버 블로그" },
@@ -1258,9 +1258,12 @@ const STRINGS = {
   },
 };
 
+STRINGS.ja={...STRINGS.en,cancel:"キャンセル",hamNavHome:"ホーム",myPetsNav:"うちの子",sajuNav:"Pet占い",petBtiNav:"PetBTI",tipsTitle:"Pet情報",communityNav:"Petトーク",nearbyNav:"近くのPet",nearbyTitle:"近くのPet",infoGuideTitle:"情報ガイド",myPageTitle:"マイページ",accountLoginBtn:"ログイン",accountLogoutBtn:"ログアウト",accountDeleteBtn:"退会",privacyFooterLink:"プライバシー",termsFooterLink:"利用規約",loginContinueKakao:"Kakaoで始める",homeGreeting:(n)=>`こんにちは、${n}さん！ 🐾`,submitEdit:"保存",onboardingConfirmEditTitle:"保存しますか？",onboardingConfirmMessage:(n)=>`${n}の情報を保存します。続けますか？`,saveToastOk:"保存しました。"};
+STRINGS.zh={...STRINGS.en,cancel:"取消",hamNavHome:"首页",myPetsNav:"我的宠物",sajuNav:"Pet命理",petBtiNav:"PetBTI",tipsTitle:"Pet信息",communityNav:"Pet社区",nearbyNav:"附近Pet",nearbyTitle:"附近Pet",infoGuideTitle:"信息指南",myPageTitle:"我的页面",accountLoginBtn:"登录",accountLogoutBtn:"退出登录",accountDeleteBtn:"注销账号",privacyFooterLink:"隐私政策",termsFooterLink:"使用条款",loginContinueKakao:"使用Kakao开始",homeGreeting:(n)=>`你好，${n}！ 🐾`,submitEdit:"保存",onboardingConfirmEditTitle:"要保存吗？",onboardingConfirmMessage:(n)=>`将保存${n}的信息。是否继续？`,saveToastOk:"已保存。"};
+
 function useT() {
   const lang = useLang();
-  return STRINGS[lang];
+  return STRINGS[lang] || STRINGS.ko;
 }
 function breedName(breed, lang) {
   return lang === "en" ? breed.nameEn : breed.name;
@@ -1431,6 +1434,8 @@ async function safeSet(key, value, account) {
 /* ============================================================
    인증(카카오 간편로그인) — 서버 API 호출
    ============================================================ */
+function logPetActivity(payload={}) { try { fetch("/api/activity?action=log",{method:"POST",credentials:"include",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}).catch(()=>{}); } catch {} }
+
 function goToKakaoLogin() {
   // 전체 페이지 이동으로 카카오 로그인 화면으로 리다이렉트해요 (실제 OAuth 인가 흐름).
   window.location.href = "/api/auth/kakao/login";
@@ -6066,14 +6071,7 @@ function SpeciesTabBar({ species, onChange, dogCount, catCount }) {
   );
 }
 
-function LangToggle({ lang, onChange }) {
-  return (
-    <div className="lang-toggle">
-      <button type="button" className={lang === "ko" ? "active" : ""} onClick={() => onChange("ko")}>KO</button>
-      <button type="button" className={lang === "en" ? "active" : ""} onClick={() => onChange("en")}>EN</button>
-    </div>
-  );
-}
+function LangToggle({lang,onChange}){return <div className="lang-toggle" aria-label="Language"><button type="button" className={lang==="ko"?"active":""} onClick={()=>onChange("ko")}>KO</button><button type="button" className={lang==="en"?"active":""} onClick={()=>onChange("en")}>EN</button><button type="button" className={lang==="ja"?"active":""} onClick={()=>onChange("ja")} title="日本語">JA</button><button type="button" className={lang==="zh"?"active":""} onClick={()=>onChange("zh")} title="简体中文">中文</button></div>}
 
 /* ============================================================
    꿀팁 (건강·생활 정보) — 검색 + 카테고리 필터 + 즐겨찾기
@@ -9644,7 +9642,7 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
     <div className="legal-page-shell petgrow-dashboard-home">
       <section className="dash-welcome">
         <div><span className="dash-eyebrow">PetGrow</span><h1>{accountName ? t.homeGreeting(accountName) : (lang === "en" ? "Welcome to PetGrow! 🐾" : "오늘도 우리 아이와 행복한 하루 🐾")}</h1><p>{lang === "en" ? "Everything your pet needs, in one simple dashboard." : "우리 아이의 성장·음악·주변 시설·커뮤니티를 한곳에서 확인해요."}</p></div>
-        <button type="button" className="dash-profile-dot" onClick={() => onGoView(account ? "my" : "pets")} aria-label="마이페이지">{account?.name?.slice(0,1) || "🐾"}</button>
+        <button type="button" className="dash-profile-dot" onClick={() => onGoView(account ? "my" : "pets")} aria-label="마이페이지">{"MY"}</button>
       </section>
 
       <section className={`dash-pet-spotlight ${pet ? "has-pet" : "empty"}`} onClick={onGoPets}>
@@ -9775,8 +9773,7 @@ function InfoGuidePage() {
     {key:"points",icon:"🪙",title:"PetPoint",sub:"활동하고 모아서 재미 콘텐츠 이용",tone:"gold",intro:"현금 결제가 아닌 PetGrow 내부 무료 활동 포인트예요. Pet톡 활동과 하루 첫 접속으로 모을 수 있어요.",steps:["처음 이용하면 기본 1,000P가 지급돼요.","Pet톡 글·댓글·좋아요 받기와 하루 첫 접속으로 포인트를 모아요.","Pet사주·오늘의 운세·보호자 궁합·Pet타로 이용 시 안내된 포인트가 차감돼요."],faq:"현금 구매·환전·출금·양도는 지원하지 않아요.",tip:"회원정보와 홈에서 현재 포인트를 실시간으로 확인할 수 있어요."},
     {key:"my",icon:"👤",title:"회원정보",sub:"계정·내 활동·저장 기록 관리",tone:"blue",intro:"닉네임과 계정 정보, Pet톡 활동, 좋아요한 음악과 저장 기록을 한곳에서 관리해요.",steps:["회원정보에서 현재 계정과 PetPoint를 확인해요.","Pet톡 내 활동과 좋아요한 콘텐츠를 펼쳐 확인해요.","필요하면 정보 수정·로그아웃·회원탈퇴 메뉴를 이용해요."],faq:"동일한 카카오 계정으로 로그인하면 서버에 저장된 지원 데이터가 동기화돼요.",tip:"회원탈퇴 전 필요한 기록이 남아 있는지 먼저 확인해 주세요."}
   ];
-  const q=guideSearch.trim().toLowerCase();
-  const filtered=guides.filter(g=>!q||`${g.title} ${g.sub} ${g.intro} ${g.steps.join(" ")} ${g.faq} ${g.tip}`.toLowerCase().includes(q));
+  const filtered=guides;
   const active=guides.find(g=>g.key===activeKey)||guides[0];
   const quick=["pets","growth","saju","tarot","petbti","music","nearby","community","news","my"];
   return <div className="guide-premium-page">
@@ -10568,30 +10565,30 @@ function SupportPage({account,onBack}){
 }
 
 
-/* PETNEWS_UI_FIXED_20260817 */
-function PetNewsPage({ lang = "ko" }) {
+/* PETNEWS_FINAL_INLINE_20260818 */
+function PetNewsPage({lang="ko"}){
   const [items,setItems]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState("");
-  const [category,setCategory]=useState("전체"),[query,setQuery]=useState(""),[page,setPage]=useState(1),[selected,setSelected]=useState(null);
-  const PAGE=8,cats=["전체","반려견","반려묘","건강","정책·제도","입양·보호","산업·서비스","반려동물"];
-  const load=async()=>{setLoading(true);setError("");try{const j=await apiJson('/api/news');setItems(Array.isArray(j.items)?j.items:[]);if(!j.items?.length)setError(j.message||'새 반려동물 뉴스를 찾고 있어요. 잠시 후 다시 확인해 주세요.')}catch(e){setError(e.message||'뉴스를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.')}finally{setLoading(false)}};
-  useEffect(()=>{load()},[]);
+  const [category,setCategory]=useState("전체"),[query,setQuery]=useState(""),[page,setPage]=useState(1),[selected,setSelected]=useState(null),[localized,setLocalized]=useState({}),[detail,setDetail]=useState(null),[reaction,setReaction]=useState({likeCount:0,likedByMe:false,comments:[]}),[commentText,setCommentText]=useState(""),[busy,setBusy]=useState(false);
+  const detailRef=React.useRef(null),PAGE=8,cats=["전체","반려견","반려묘","건강","정책·제도","입양·보호","산업·서비스","반려동물"];
+  const ui={ko:["새로고침","뉴스 검색","기사 자세히 보기 →","기사 핵심 요약","원문 전체보기","좋아요","댓글을 남겨보세요","등록","조건에 맞는 뉴스가 없어요."],en:["Refresh","Search news","Read summary →","Article summary","Open original","Like","Write a comment","Post","No matching news."],ja:["更新","ニュース検索","要約を見る →","記事の要約","原文を見る","いいね","コメントを書く","投稿","該当するニュースがありません。"],zh:["刷新","搜索新闻","查看摘要 →","文章摘要","查看原文","点赞","发表评论","发布","没有符合条件的新闻。"]}[lang]||[];
+  const catLabel=c=>({en:{"전체":"All","반려견":"Dogs","반려묘":"Cats","건강":"Health","정책·제도":"Policy","입양·보호":"Adoption","산업·서비스":"Industry","반려동물":"Pets"},ja:{"전체":"すべて","반려견":"犬","반려묘":"猫","건강":"健康","정책·제도":"制度","입양·보호":"保護・譲渡","산업·서비스":"サービス","반려동물":"ペット"},zh:{"전체":"全部","반려견":"犬","반려묘":"猫","건강":"健康","정책·제도":"政策","입양·보호":"领养保护","산업·서비스":"产业服务","반려동물":"宠物"}}[lang]?.[c]||c);
   const clean=v=>String(v||'').replace(/&nbsp;|&#160;|&#xA0;/gi,' ').replace(/\s+/g,' ').trim();
-  const q=query.trim().toLowerCase();
-  const filtered=items.filter(x=>(category==='전체'||x.category===category)&&(!q||`${x.title||''} ${x.description||''} ${x.source||''} ${x.category||''}`.toLowerCase().includes(q)));
-  const fallbackVisual=n=>{const h=`${n.title||''} ${n.description||''} ${n.category||''}`;if(/병원|수의|건강|질병|백신|치료|예방/.test(h))return ['🏥','건강'];if(/입양|유기|보호소|구조|학대/.test(h))return ['💚','입양·보호'];if(/법|정책|정부|지자체|조례|제도/.test(h))return ['📋','정책·제도'];if(/보험|산업|서비스|용품|사료|펫푸드/.test(h))return ['🛍️','산업·서비스'];if(/고양이|반려묘|애묘/.test(h))return ['🐱','반려묘'];if(/강아지|반려견|애견/.test(h))return ['🐶','반려견'];return ['🐾','PetGrow News']};
-  const pages=Math.max(1,Math.ceil(filtered.length/PAGE)),safe=Math.min(page,pages),pageItems=filtered.slice((safe-1)*PAGE,safe*PAGE);
+  const summary=v=>{const t=clean(v);return t?t.slice(0,260):(lang==='en'?'Open the original for details.':'자세한 내용은 원문에서 확인해 주세요.')};
+  const load=async()=>{setLoading(true);setError('');try{const j=await apiJson('/api/news');setItems(Array.isArray(j.items)?j.items:[]);if(!j.items?.length)setError(j.message||'새 뉴스를 찾고 있어요.')}catch(e){setError(e.message||'뉴스를 불러오지 못했어요.')}finally{setLoading(false)}};
+  useEffect(()=>{load()},[]);
+  const q=query.trim().toLowerCase(),filtered=items.filter(x=>(category==='전체'||x.category===category)&&(!q||`${x.title||''} ${x.description||''} ${x.source||''}`.toLowerCase().includes(q))),pages=Math.max(1,Math.ceil(filtered.length/PAGE)),safe=Math.min(page,pages),pageItems=filtered.slice((safe-1)*PAGE,safe*PAGE);
   useEffect(()=>{setPage(1)},[category,query]);
-  const summary=v=>{const t=clean(v);if(!t)return '기사 설명을 확인하고 있어요. 원문에서 자세한 내용을 확인할 수 있어요.';const parts=t.split(/(?<=[.!?다요])\s+/).filter(Boolean);return parts.slice(0,2).join(' ').slice(0,230)};
-  return <div className="petnews-v10">
-    <div className="petnews-refresh-row"><span>최신 반려동물 뉴스를 핵심 요약과 함께 확인해보세요.</span><button type="button" className="bg-chip" onClick={load}>새로고침</button></div>
-    <div className="petnews-tools"><div className="petnews-cats">{cats.map(c=><button key={c} type="button" className={category===c?'active':''} onClick={()=>setCategory(c)}>{c}</button>)}</div><div className="petnews-search"><span>⌕</span><input className="bg-input" value={query} onChange={e=>setQuery(e.target.value)} placeholder="제목·내용·언론사 검색"/>{query&&<button type="button" onClick={()=>setQuery('')} aria-label="검색어 지우기">×</button>}</div></div><div className="petnews-result-count">{query||category!=='전체'?`검색 결과 ${filtered.length}건`:`최신 뉴스 ${items.length}건`} · 페이지당 {PAGE}건</div>
-    {loading?<div className="petnews-state">최신 Pet뉴스를 불러오는 중…</div>:error&&!items.length?<div className="petnews-state error"><b>뉴스를 불러오지 못했어요.</b><span>{error}</span><button className="bg-btn" onClick={load}>다시 불러오기</button></div>:<>
-      <div className="petnews-grid">{pageItems.map((n,i)=><article className="petnews-card-v10" key={n.id||n.link||i} onClick={()=>setSelected(n)}>{(()=>{const [ico,label]=fallbackVisual(n);return <div className="petnews-media">{n.image&&<img src={n.image} alt="" loading="lazy" onError={e=>{e.currentTarget.style.display='none';e.currentTarget.nextElementSibling?.classList.add('show')}}/>}<div className={`petnews-image-fallback ${n.image?'':'show'}`}><span>{ico}</span><small>{label}</small></div></div>})()}<div className="petnews-card-body"><div className="petnews-meta"><span>{n.category||'반려동물'}</span><small>{n.source||'언론사'}{n.publishedAt?` · ${new Date(n.publishedAt).toLocaleDateString('ko-KR')}`:''}</small></div><h2>{clean(n.title)}</h2><p>{summary(n.description)}</p><button type="button">요약 자세히 보기 →</button></div></article>)}</div>
-      {!pageItems.length&&<div className="petnews-state">조건에 맞는 뉴스가 없어요. 다른 카테고리나 검색어를 선택해 주세요.</div>}
-      {pages>1&&<ResponsivePagination page={safe} totalPages={pages} lang={lang} onChange={setPage} />}
-    </>}
-    {selected&&<div className="petnews-modal-backdrop" onClick={()=>setSelected(null)}><section className="petnews-modal" onClick={e=>e.stopPropagation()}><button className="petnews-close" onClick={()=>setSelected(null)}>×</button><small>{selected.category||'반려동물'} · {selected.source||'언론사'}</small><h2>{clean(selected.title)}</h2>{selected.image&&<img src={selected.image} alt="" onError={e=>{e.currentTarget.style.display='none'}}/>}<div className="petnews-summary-box"><b>핵심 요약</b><p>{summary(selected.description)}</p></div><p className="petnews-source-note">PetGrow는 기사 설명을 바탕으로 핵심 내용을 정리해 보여줘요. 정확한 세부 내용은 원문을 확인해 주세요.</p><a className="bg-btn" href={selected.link||selected.naverLink} target="_blank" rel="noreferrer">원문 전체보기</a></section></div>}
-  </div>;
+  useEffect(()=>{if(lang==='ko'){setLocalized({});return}const b=pageItems.map(x=>({id:String(x.id||x.link),title:x.title,description:x.description}));if(!b.length)return;fetch('/api/news-localize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lang,items:b})}).then(r=>r.ok?r.json():null).then(j=>{if(j?.items){const m={};j.items.forEach(x=>m[x.id]=x);setLocalized(m)}}).catch(()=>{})},[lang,safe,category,query,items.length]);
+  const key=n=>String(n?.id||n?.link||n?.title||'');
+  const open=n=>{setSelected(n);setDetail(null);setCommentText('');logPetActivity({section:'news',action:'article_view',title:n.title,refKey:key(n)});setTimeout(()=>detailRef.current?.scrollIntoView({behavior:'smooth',block:'start'}),60)};
+  useEffect(()=>{if(!selected)return;let alive=true;const loc=localized[key(selected)]||selected;Promise.all([fetch(`/api/news-detail?url=${encodeURIComponent(selected.link||selected.naverLink||'')}&title=${encodeURIComponent(loc.title||'')}&description=${encodeURIComponent(loc.description||'')}&lang=${lang}`).then(r=>r.ok?r.json():null).catch(()=>null),fetch(`/api/news-community?action=detail&articleKey=${encodeURIComponent(key(selected))}`,{credentials:'include'}).then(r=>r.ok?r.json():null).catch(()=>null)]).then(([d,r])=>{if(alive){setDetail(d||{title:loc.title,summary:summary(loc.description)});if(r)setReaction(r)}});return()=>{alive=false}},[selected,lang,localized]);
+  const like=async()=>{if(!selected||busy)return;setBusy(true);try{const r=await apiJson(`/api/news-community?action=like&articleKey=${encodeURIComponent(key(selected))}`,{method:'POST'});setReaction(v=>({...v,likedByMe:r.liked,likeCount:r.likeCount}))}catch(e){window.alert(e.message)}finally{setBusy(false)}};
+  const comment=async()=>{const text=commentText.trim();if(!selected||!text||busy)return;setBusy(true);try{const r=await apiJson(`/api/news-community?action=comment&articleKey=${encodeURIComponent(key(selected))}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:text})});setReaction(v=>({...v,comments:[...(v.comments||[]),r.comment]}));setCommentText('')}catch(e){window.alert(e.message)}finally{setBusy(false)}};
+  const del=async id=>{if(!window.confirm('댓글을 삭제할까요?'))return;try{await apiJson(`/api/news-community?action=comment&id=${encodeURIComponent(id)}&articleKey=${encodeURIComponent(key(selected))}`,{method:'DELETE'});setReaction(v=>({...v,comments:(v.comments||[]).filter(x=>x.id!==id)}))}catch(e){window.alert(e.message)}};
+  const fallback=n=>/고양이|반려묘/.test(`${n.title} ${n.category}`)?'🐱':/강아지|반려견/.test(`${n.title} ${n.category}`)?'🐶':/병원|건강|수의/.test(`${n.title} ${n.category}`)?'🏥':'🐾';
+  return <div className="petnews-v10"><div className="petnews-refresh-row"><span>{items.length?`${items.length} ${lang==='ko'?'개의 최신 기사':''}`:''}</span><button className="bg-chip" onClick={load}>{ui[0]}</button></div><div className="petnews-tools"><div className="petnews-cats">{cats.map(c=><button key={c} className={category===c?'active':''} onClick={()=>setCategory(c)}>{catLabel(c)}</button>)}</div><div className="petnews-search"><span>⌕</span><input className="bg-input" value={query} onChange={e=>setQuery(e.target.value)} placeholder={ui[1]}/></div></div><div className="petnews-result-count">{filtered.length} {lang==='ko'?'건':''}</div>
+  {loading?<div className="petnews-state">…</div>:error&&!items.length?<div className="petnews-state error"><b>{error}</b><button className="bg-btn" onClick={load}>{ui[0]}</button></div>:<><div className="petnews-grid">{pageItems.map((n,i)=>{const loc=localized[key(n)]||n;return <article className="petnews-card-v10" key={key(n)||i} onClick={()=>open(n)}><div className="petnews-media">{n.image&&<img src={n.image} alt="" loading="lazy" onError={e=>e.currentTarget.style.display='none'}/>}<div className={`petnews-image-fallback ${n.image?'':'show'}`}><span>{fallback(n)}</span><small>{catLabel(n.category||'반려동물')}</small></div></div><div className="petnews-card-body"><div className="petnews-meta"><span>{catLabel(n.category||'반려동물')}</span><small>{n.source||'Media'}{n.publishedAt?` · ${new Date(n.publishedAt).toLocaleDateString()}`:''}</small></div><h2>{clean(loc.title||n.title)}</h2><p>{summary(loc.description||n.description)}</p><button type="button">{ui[2]}</button></div></article>})}</div>{!pageItems.length&&<div className="petnews-state">{ui[8]}</div>}{pages>1&&<ResponsivePagination page={safe} totalPages={pages} lang={lang} onChange={setPage}/>}</>}
+  {selected&&<section ref={detailRef} className="bg-card petnews-inline-detail"><div className="petnews-inline-head"><div><small>{catLabel(selected.category||'반려동물')} · {selected.source||'Media'}</small><h2>{detail?.title||localized[key(selected)]?.title||clean(selected.title)}</h2></div><button className="petnews-inline-close" onClick={()=>setSelected(null)}>×</button></div><div className="petnews-inline-body"><div><div className="petnews-summary-box"><b>{ui[3]}</b><p>{detail?.summary||summary(localized[key(selected)]?.description||selected.description)}</p></div><p className="petnews-source-note">{lang==='en'?'PetGrow provides a concise overview based on the public article description. Open the original for full details.':lang==='ja'?'公開されている記事説明をもとに要点を短くまとめます。詳細は原文をご確認ください。':lang==='zh'?'根据公开的新闻简介整理简短要点，详细内容请查看原文。':'PetGrow는 공개된 기사 설명을 바탕으로 핵심 내용을 짧게 정리해 보여줘요. 세부 내용은 원문에서 확인해 주세요.'}</p><a className="bg-btn" href={selected.link||selected.naverLink} target="_blank" rel="noreferrer">{ui[4]}</a></div>{selected.image&&<img src={selected.image} alt=""/>}</div><div className="petnews-reactions"><div className="petnews-reaction-toolbar"><button className={`petnews-like-btn ${reaction.likedByMe?'active':''}`} disabled={busy} onClick={like}>{reaction.likedByMe?'♥':'♡'} {ui[5]} {Number(reaction.likeCount)||0}</button><span className="bg-sub">💬 {(reaction.comments||[]).length}</span></div><div className="petnews-comment-compose"><input className="bg-input" maxLength={500} value={commentText} onChange={e=>setCommentText(e.target.value)} placeholder={ui[6]}/><button className="bg-btn" disabled={busy||!commentText.trim()} onClick={comment}>{ui[7]}</button></div><div className="petnews-comment-list">{(reaction.comments||[]).map(c=><div className="petnews-comment" key={c.id}><div><b>{c.authorNickname}</b><p>{c.content}</p><small>{c.createdAt?new Date(c.createdAt).toLocaleString():''}</small></div>{c.isOwner&&<button onClick={()=>del(c.id)}>삭제</button>}</div>)}</div></div></section>}</div>
 }
 
 function PetNewsPrivacyAddendum(){return <section className="bg-card" style={{maxWidth:900,margin:"14px auto 36px",padding:22}}><h2 style={{fontSize:18,marginTop:0}}>Pet뉴스 관련 개인정보 안내</h2><p className="bg-sub" style={{lineHeight:1.75}}>Pet뉴스는 공개 뉴스 검색 API를 이용합니다. 뉴스 조회를 위해 이용자의 이름, 계정정보, 반려동물 정보 등 개인정보를 뉴스 검색 제공자에게 전송하지 않습니다. 원문 보기를 선택하면 외부 언론사 페이지로 이동하며 이후 개인정보 처리는 해당 서비스의 정책이 적용됩니다.</p></section>}
@@ -10707,6 +10704,7 @@ function AdminReportsPage({onBack}){
 </div>
    <div className="admin-tabs">{tabs.map(([k,l])=><button key={k} className={tab===k?"active":""} onClick={()=>setTab(k)}>{l}</button>)}</div>
    {tab==="dashboard"&&<>
+     <PetPointAdminOverview />
      <div className="admin-stat-grid">{[["미처리 신고",c.openReports||0],["답변대기 문의",c.waitingInquiries||0],["이용제한 중",c.restricted||0],["오늘 방문",c.todaySessions||0],["현재 접속 추정",c.onlineSessions5m||0],["7일 활성회원",c.active7d||0],["7일 신규회원",c.new7d||0],["오늘 Pet톡 글",c.postsToday||0]].map(([a,b])=><div className="admin-stat-card" key={a}><strong>{b}</strong><small>{a}</small></div>)}</div>
      <div className="bg-card admin-menu-analytics">
        <div className="admin-menu-analytics-head"><div><h3>메뉴 이용 통계</h3><small>페이지 진입 기준 · 오늘 / 7일 / 30일 이용량을 확인해요.</small></div><span className="bg-chip active admin-menu-period-chip">30일</span></div>
@@ -10820,117 +10818,48 @@ async function petPointSummary(){return apiJson("/api/points?action=summary");}
 const petPointKstDate=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Seoul",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 async function petPointSpend(feature,refKey=null){const r=await apiJson("/api/points?action=spend",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({feature,refKey})});if(r?.spent)window.dispatchEvent(new CustomEvent("petgrow:points",{detail:{amount:-r.spent,balance:r.balance,label:r.label||"PetPoint 사용"}}));return r;}
 function PetPointDashboard({compact=false}){
-  const [d,setD]=useState(null),[toast,setToast]=useState(null),[filter,setFilter]=useState("all"),[refreshing,setRefreshing]=useState(false);
+  const [d,setD]=useState(null),[toast,setToast]=useState(null),[helpOpen,setHelpOpen]=useState(false);
   const toastTimer=React.useRef(null);
-  const load=async(silent=false)=>{if(!silent)setRefreshing(true);try{const x=await petPointSummary();setD(x);if(x?.pointEvent?.awarded){setToast({amount:x.pointEvent.awarded,label:x.pointEvent.label,balance:x.pointEvent.balance});clearTimeout(toastTimer.current);toastTimer.current=setTimeout(()=>setToast(null),2600)}}catch{}finally{if(!silent)setRefreshing(false)}};
-  useEffect(()=>{load();const h=e=>{const ev=e.detail||{};setToast(ev);setD(v=>v?{...v,balance:ev.balance??v.balance}:v);clearTimeout(toastTimer.current);toastTimer.current=setTimeout(()=>setToast(null),2600);setTimeout(()=>load(true),180)};window.addEventListener("petgrow:points",h);const poll=setInterval(()=>load(true),5000);return()=>{window.removeEventListener("petgrow:points",h);clearInterval(poll);clearTimeout(toastTimer.current)}},[]);
+  const load=async()=>{try{const x=await petPointSummary();setD(x);if(x?.pointEvent?.awarded){setToast({amount:x.pointEvent.awarded,label:x.pointEvent.label,balance:x.pointEvent.balance});clearTimeout(toastTimer.current);toastTimer.current=setTimeout(()=>setToast(null),2600)}}catch{}};
+  useEffect(()=>{load();const h=e=>{const ev=e.detail||{};setToast(ev);setD(v=>v?{...v,balance:ev.balance??v.balance}:v);clearTimeout(toastTimer.current);toastTimer.current=setTimeout(()=>setToast(null),2600);setTimeout(load,180)};window.addEventListener("petgrow:points",h);const poll=setInterval(load,5000);return()=>{window.removeEventListener("petgrow:points",h);clearInterval(poll);clearTimeout(toastTimer.current)}},[]);
   if(!d)return <div className="petpoint-card petpoint-loading">🐾 PetPoint 확인 중…</div>;
-  const recent=Array.isArray(d.recent)?d.recent:[];
-  const shown=recent.filter(x=>filter==="all"||(filter==="earn"?Number(x.amount)>0:Number(x.amount)<0));
-  const fmtDate=v=>{try{return new Date(v).toLocaleString("ko-KR",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"})}catch{return ""}};
-  return <section className={`petpoint-card petpoint-dashboard-final ${compact?"compact":""}`}>
-    <div className="petpoint-head"><div><small>PETGROW REWARD · 실시간 반영</small><h2>🐾 PetPoint</h2><p>적립·사용 즉시 잔액에 반영되고 최근 이용내역도 여기서 확인할 수 있어요.</p></div><strong>{Number(d.balance||0).toLocaleString()}<em>P</em></strong></div>
-    {!compact&&<>
-      <div className="petpoint-live-stats"><div><small>현재 보유</small><b>{Number(d.balance||0).toLocaleString()}P</b></div><div className="plus"><small>오늘 적립</small><b>+{Number(d.todayEarned||0).toLocaleString()}P</b></div><div className="minus"><small>오늘 사용</small><b>-{Number(d.todaySpent||0).toLocaleString()}P</b></div><div><small>최근 7일 사용</small><b>-{Number(d.weekSpent||0).toLocaleString()}P</b></div></div>
-      <div className="petpoint-costs"><span>🌤️ 오늘 운세 <b>{d.costs?.saju_daily||20}P</b></span><span>🔮 기본 사주 <b>{d.costs?.saju_basic||50}P</b></span><span>🫶 보호자 궁합 <b>{d.costs?.saju_compat||40}P</b></span></div>
-      <details className="petpoint-guide" open><summary>포인트는 어떻게 모아요?</summary><div>{(d.earnGuide||[]).map((x,i)=><p key={i}><b>+{x.points}P</b><span>{x.label}</span><small>{x.limit}</small></p>)}</div></details>
-      <div className="petpoint-history-head"><div><b>포인트 이용내역</b><small>최근 20건 · 실시간 반영 · 5초 자동 동기화</small></div><button type="button" className="bg-chip" onClick={()=>load()} disabled={refreshing}>{refreshing?"확인 중…":"새로고침"}</button></div>
-      <div className="petpoint-history-tabs"><button className={filter==="all"?"active":""} onClick={()=>setFilter("all")}>전체</button><button className={filter==="earn"?"active":""} onClick={()=>setFilter("earn")}>적립</button><button className={filter==="spend"?"active":""} onClick={()=>setFilter("spend")}>사용</button></div>
-      <div className="petpoint-history-list">{shown.length?shown.map((x,i)=><div className="petpoint-history-row" key={`${x.created_at||i}-${i}`}><span className={Number(x.amount)>=0?"earn":"spend"}>{Number(x.amount)>=0?"적립":"사용"}</span><div><b>{x.label||"PetPoint"}</b><small>{fmtDate(x.created_at)}</small></div><strong className={Number(x.amount)>=0?"plus":"minus"}>{Number(x.amount)>=0?"+":""}{Number(x.amount||0).toLocaleString()}P</strong></div>):<div className="petpoint-history-empty">아직 표시할 이용내역이 없어요.</div>}</div>
-    </>}
-    {toast&&<div className={`petpoint-toast ${Number(toast.amount)>=0?"plus":"minus"}`}><b>{Number(toast.amount)>=0?`+${Number(toast.amount).toLocaleString()}P 적립`:`${Number(toast.amount).toLocaleString()}P 사용`}</b><span>{toast.label||"PetPoint"}{toast.balance!=null?` · 잔액 ${Number(toast.balance).toLocaleString()}P`:""}</span></div>}
-  </section>
+  return <section className={`petpoint-card petpoint-dashboard-simple ${compact?"compact":""}`}><button type="button" className="petpoint-help-btn" aria-label="포인트 적립 방법" title="포인트 적립 방법" onClick={()=>setHelpOpen(v=>!v)}>?</button><div className="petpoint-head"><div className="petpoint-balance-wrap"><small>PETPOINT · LIVE</small><h2>현재 포인트</h2></div><strong className="petpoint-big-balance">{Number(d.balance||0).toLocaleString()}<em>P</em></strong></div>{!compact&&<><div className="petpoint-mini-stats"><div className="plus"><small>오늘 적립</small><b>+{Number(d.todayEarned||0).toLocaleString()}P</b></div><div className="minus"><small>오늘 사용</small><b>-{Number(d.todaySpent||0).toLocaleString()}P</b></div></div><div className="petpoint-costs-simple"><span>🌤️ 운세 <b>{d.costs?.saju_daily||20}P</b></span><span>🔮 사주 <b>{d.costs?.saju_basic||50}P</b></span><span>🫶 궁합 <b>{d.costs?.saju_compat||40}P</b></span><span>🃏 타로 <b>{d.costs?.tarot||30}P</b></span></div>{helpOpen&&<div className="petpoint-help-panel"><h3>포인트는 어떻게 모아요?</h3>{(d.earnGuide||[]).map((x,i)=><p key={i}><b>+{x.points}P</b><span>{x.label}</span><small>{x.limit}</small></p>)}</div>}</>}{toast&&<div className={`petpoint-toast ${Number(toast.amount)>=0?"plus":"minus"}`}><b>{Number(toast.amount)>=0?`+${Number(toast.amount).toLocaleString()}P 적립`:`${Number(toast.amount).toLocaleString()}P 사용`}</b><span>{toast.label||"PetPoint"}{toast.balance!=null?` · 잔액 ${Number(toast.balance).toLocaleString()}P`:""}</span></div>}</section>
 }
-function PetPointPolicyAddendum({type}){return <section className="bg-card petpoint-policy"><h2>🐾 PetPoint 운영 안내</h2><p>PetPoint는 PetGrow 서비스 안에서만 사용하는 무료 활동 포인트이며 현금으로 구매·환전·출금하거나 다른 사람에게 양도할 수 없어요. 첫 이용 시 기본 포인트가 지급되고 Pet톡 글·댓글·좋아요 받기·하루 첫 접속 등 정상적인 활동에 따라 포인트가 적립될 수 있어요.</p><p>Pet사주·오늘의 펫운세·보호자 궁합 등 일부 재미 콘텐츠 이용 시 안내된 포인트가 차감됩니다. 반복 도배·비정상 활동·운영정책 위반 등 부정한 방식으로 적립한 포인트는 지급 취소 또는 회수될 수 있고, 글이나 댓글을 삭제하면 해당 활동으로 적립된 포인트가 회수될 수 있어요.</p>{type==="privacy"&&<p className="bg-sub">포인트 운영을 위해 회원 내부 식별자, 적립·사용 사유, 증감 포인트, 처리 시각과 활동 참조값을 계정에 연결해 저장하며 회원탈퇴 시 관계 법령상 보관 의무가 있는 경우를 제외하고 삭제합니다.</p>}</section>}
+function PetPointPolicyAddendum({type}){return <section className="bg-card petpoint-policy"><h2>🐾 PetPoint 운영 안내</h2><p>PetPoint는 PetGrow 서비스 안에서만 사용하는 무료 활동 포인트이며 현금으로 구매·환전·출금하거나 다른 사람에게 양도할 수 없어요. 첫 이용 시 기본 포인트가 지급되고 Pet톡 글·댓글·좋아요 받기·하루 첫 접속 등 정상적인 활동에 따라 포인트가 적립될 수 있어요.</p><p>Pet사주·오늘의 펫운세·보호자 궁합 등 일부 재미 콘텐츠 이용 시 안내된 포인트가 차감됩니다. 반복 도배·좋아요 취소 후 재좋아요 등 비정상 활동으로는 중복 적립되지 않으며, 부정 적립은 지급 취소 또는 회수될 수 있어요. 같은 게시글의 댓글 적립과 같은 글·같은 이용자의 좋아요 보상은 최초 1회만 인정돼요.</p>{type==="privacy"&&<p className="bg-sub">포인트 운영을 위해 회원 내부 식별자, 적립·사용 사유, 증감 포인트, 처리 시각과 활동 참조값을 계정에 연결해 저장하며 회원탈퇴 시 관계 법령상 보관 의무가 있는 경우를 제외하고 삭제합니다.</p>}</section>}
 function PetPointAboutCard(){return <section className="bg-card petpoint-about"><span>🐾</span><div><small>COMMUNITY REWARD</small><h2>활동이 혜택이 되는 PetPoint</h2><p>Pet톡에서 이야기를 나누고 댓글을 남기며 포인트를 모아 Pet사주·운세 같은 재미 콘텐츠를 즐길 수 있어요. 유료 충전 없이 PetGrow 안의 건강한 참여를 보상하는 방식이에요.</p></div></section>}
 function PetPointGuideCard(){return <section className="bg-card petpoint-guide-hero"><div><small>PETPOINT GUIDE</small><h2>🐾 활동하고, 모으고, 즐겨요</h2><p>처음 1,000P로 시작하고 Pet톡 활동과 하루 첫 접속으로 포인트를 모을 수 있어요. 포인트는 PetGrow 재미 콘텐츠에서만 사용돼요.</p></div><div className="petpoint-mini-grid"><span><b>+50P</b> 글 작성</span><span><b>+20P</b> 댓글</span><span><b>+5P</b> 좋아요 받기</span><span><b>+30P</b> 하루 첫 접속</span></div></section>}
 function PetPointAdminOverview(){const [d,setD]=useState(null);useEffect(()=>{apiJson("/api/points?action=admin").then(setD).catch(()=>{})},[]);if(!d)return null;return <section className="bg-card petpoint-admin"><h2>🐾 PetPoint 운영 현황</h2><div><span><small>포인트 회원</small><b>{Number(d.users||0).toLocaleString()}</b></span><span><small>현재 잔액 합계</small><b>{Number(d.balance||0).toLocaleString()}P</b></span><span><small>누적 적립</small><b>+{Number(d.earned||0).toLocaleString()}P</b></span><span><small>누적 사용·회수</small><b>-{Number(d.spent||0).toLocaleString()}P</b></span></div></section>}
 
-function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost, onOpenAdmin }) {
-  const t = useT();
-  const [adminEntry, setAdminEntry] = useState(null);
-  const [likedMusic, setLikedMusic] = useState([]);
-  const [likedMusicLoaded, setLikedMusicLoaded] = useState(false);
-  const [likedMusicLoading, setLikedMusicLoading] = useState(false);
-  const [openActivity, setOpenActivity] = useState(null); // "pettalk" | "music" | null
+function AccountActivityHub({lang}){
+  const [items,setItems]=useState([]),[loading,setLoading]=useState(true);
+  const load=async()=>{setLoading(true);try{const j=await apiJson("/api/activity?action=timeline");setItems(j.items||[])}catch{setItems([])}finally{setLoading(false)}};
+  useEffect(()=>{load()},[]);
+  const icon=t=>String(t||"").startsWith("news")?"📰":String(t||"").startsWith("music")?"🎵":String(t||"").startsWith("pettalk")?"💬":String(t||"").startsWith("support")?"✉️":String(t||"").startsWith("report")?"🚩":String(t||"").startsWith("tarot")?"🃏":String(t||"").startsWith("saju")?"🔮":String(t||"").startsWith("nearby")?"📍":"🐾";
+  const title=lang==="ja"?"最近のアクティビティ":lang==="zh"?"最近活动":lang==="en"?"Recent activity":"전체 활동내역";
+  return <section className="my-activity-hub"><div className="my-activity-hub-head"><div><h2>{title}</h2><small className="bg-sub">PetGrow 메뉴 이용·글·댓글·좋아요·신고·문의 등을 최근순으로 확인해요.</small></div><button onClick={load}>{loading?"…":"새로고침"}</button></div>{loading&&!items.length?<div className="bg-sub">활동내역을 불러오는 중…</div>:items.length?<div className="my-activity-timeline">{items.slice(0,40).map((x,i)=><div className="my-activity-row" key={`${x.type}-${x.createdAt}-${i}`}><span>{icon(x.type)}</span><div><b>{x.title||"PetGrow 활동"}</b>{x.detail&&<small>{x.detail}</small>}</div><time>{x.createdAt?new Date(x.createdAt).toLocaleString(lang==="ja"?"ja-JP":lang==="zh"?"zh-CN":lang==="en"?"en-US":"ko-KR",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"}):""}</time></div>)}</div>:<div className="bg-sub">아직 기록된 활동이 없어요. 앞으로 이용한 메뉴와 활동이 여기에 쌓여요.</div>}</section>
+}
 
-  const loadLikedMusic = async (force = false) => {
-    if (!account) { setLikedMusic([]); setLikedMusicLoaded(true); return; }
-    if (likedMusicLoading || (likedMusicLoaded && !force)) return;
-    setLikedMusicLoading(true);
-    try {
-      const r = await musicLiked();
-      setLikedMusic(r.items || []);
-      setLikedMusicLoaded(true);
-    } catch (e) {
-      console.warn("Liked music load skipped:", e);
-    } finally {
-      setLikedMusicLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    setLikedMusic([]);
-    setLikedMusicLoaded(false);
-    setOpenActivity(null);
-  }, [account?.id]);
-
-  useEffect(() => {
-    let alive = true;
-    if (!account) { setAdminEntry(null); return () => { alive = false; }; }
-    adminStatus().then((st) => { if (alive) setAdminEntry(st); }).catch(() => { if (alive) setAdminEntry(null); });
-    return () => { alive = false; };
-  }, [account?.id]);
-
-  const togglePetTalkActivity = () => setOpenActivity((v) => v === "pettalk" ? null : "pettalk");
-  const toggleLikedMusic = () => {
-    const willOpen = openActivity !== "music";
-    setOpenActivity(willOpen ? "music" : null);
-    if (willOpen) loadLikedMusic(true);
-  };
-
-  const menuItems = [
-    { key: "edit", icon: "✏️", title: lang === "en" ? "Edit info" : "정보 수정", desc: lang === "en" ? "Change the nickname shown in Pet Talk and manage your account." : "Pet톡에 보이는 닉네임과 계정 정보를 수정해요.", cls: "my-menu-pink", action: onOpenAccount },
-    { key: "pets", icon: "🐾", title: lang === "en" ? "Manage pets" : "반려동물 관리", desc: lang === "en" ? `Manage ${allPets.length} registered pet(s).` : `등록한 아이 ${allPets.length}마리의 정보와 성장기록을 관리해요.`, cls: "my-menu-blue", action: onGoPets },
-    { key: "activity", icon: "💬", title: lang === "en" ? "Pet Talk activity" : "Pet톡 내 활동", desc: lang === "en" ? "Tap to view your posts, comments and likes." : "눌러서 내가 작성한 글·댓글·좋아요를 확인해요.", cls: "my-menu-purple", action: togglePetTalkActivity, open: openActivity === "pettalk" },
-    { key: "likedmusic", icon: "❤️", title: lang === "en" ? "Liked Pet Music" : "내가 좋아요 누른 Pet음악", desc: lang === "en" ? "Tap to see all music you liked." : "눌러서 좋아요한 음악을 확인해요.", cls: "my-menu-mint", action: toggleLikedMusic, open: openActivity === "music" },
-  ];
-
-  return (
-    <div style={{ maxWidth: 760, margin: "0 auto", padding: "0 20px 70px" }}>
-      <div className="my-page-head">
-        <div>
-          <div className="my-page-kicker">MY PETGROW</div>
-          <h1>{lang === "en" ? "Member info" : "회원정보"}</h1>
-          <p style={{ fontSize: 13 }}>{lang === "en" ? "Manage your profile, pets, and activity." : "회원정보부터 우리 아이와 활동까지 한곳에서 관리해요."}</p>
-        </div>
-        <span className="my-page-head-icon" style={{ fontSize: 30 }}>🐶</span>
-      </div>
-
-      <section className="mypage-petpoint-section"><PetPointDashboard /></section>
-
-      <div className="my-menu-grid my-menu-grid-top">
-        {menuItems.slice(0,2).map((item, i) => (
-          <button key={item.key} type="button" className={`my-menu-card ${item.cls}`} onClick={item.action} style={{ animationDelay: `${i * 70}ms` }}>
-            <span className="my-menu-card-icon">{item.icon}</span><span className="my-menu-card-copy"><strong>{item.title}</strong><small>{item.desc}</small></span><span className="my-menu-card-arrow">›</span>
-          </button>
-        ))}
-      </div>
-      <div className="my-activity-stack">
-        <button type="button" className={`my-menu-card my-menu-purple my-menu-card-wide${openActivity==="pettalk"?" is-open":""}`} onClick={togglePetTalkActivity}><span className="my-menu-card-icon">💬</span><span className="my-menu-card-copy"><strong>{lang==="en"?"Pet Talk activity":"Pet톡 내 활동"}</strong><small>{lang==="en"?"Tap to view your posts, comments and likes.":"눌러서 내가 작성한 글·댓글·좋아요를 확인해요."}</small></span><span className="my-menu-card-arrow">{openActivity==="pettalk"?"⌃":"›"}</span></button>
-        {openActivity === "pettalk" && <div id="my-pettalk-activity" className="bg-card my-activity-card my-accordion-panel"><div style={{fontSize:15,fontWeight:800,marginBottom:6}}>{t.myPageActivityTitle}</div><MyActivityPage lang={lang} onOpenPost={onOpenPost} embedded /></div>}
-        <button type="button" className={`my-menu-card my-menu-mint my-menu-card-wide${openActivity==="music"?" is-open":""}`} onClick={toggleLikedMusic}><span className="my-menu-card-icon">❤️</span><span className="my-menu-card-copy"><strong>{lang==="en"?"Liked Pet Music":"내가 좋아요 누른 Pet음악"}</strong><small>{lang==="en"?"Tap to see all music you liked.":"눌러서 좋아요한 음악을 확인해요."}</small></span><span className="my-menu-card-arrow">{openActivity==="music"?"⌃":"›"}</span></button>
-        {openActivity === "music" && <div id="my-liked-music" className="bg-card my-activity-card my-accordion-panel"><div style={{fontSize:15,fontWeight:800,marginBottom:8}}>❤️ {lang==="en"?"Liked Pet Music":"내가 좋아요 누른 Pet음악"}</div>{likedMusicLoading&&!likedMusicLoaded?<div className="bg-sub">좋아요한 음악을 불러오는 중...</div>:likedMusic.length?<div style={{display:"grid",gap:8}}>{likedMusic.slice(0,20).map(x=><div key={x.id} className="my-liked-music-row">{x.cover_url?<img src={x.cover_url} alt="" loading="lazy"/>:<span>🎵</span>}<div><b>{x.title}</b><small>{x.species==="dog"?"강아지":x.species==="cat"?"고양이":"공용"} · ♥ {Number(x.like_count)||0}</small></div></div>)}</div>:<div className="bg-sub">아직 좋아요한 Pet음악이 없어요.</div>}</div>}
-        <PetDailyHistory account={account} lang={lang} />
-      </div>
-
-      {adminEntry && (!adminEntry.adminExists || adminEntry.isAdmin || adminEntry.recoveryAvailable) && (
-        <button type="button" className="my-admin-below-activity" onClick={onOpenAdmin}>
-          <span>🛡️</span><div><b>{adminEntry.isAdmin ? "관리자센터" : (adminEntry.adminExists ? "관리자 등록/복구" : "최초 관리자 등록")}</b><small>{adminEntry.isAdmin ? "통계·신고·보고서·운영 기능을 관리해요." : "관리자 권한을 안전하게 연결해요."}</small></div><em>›</em>
-        </button>
-      )}
+function MyPage({account,allPets,lang,onOpenAccount,onGoPets,onOpenPost,onOpenAdmin,onLogout,onDeleteAccount,onGoSupport}){
+  const [adminEntry,setAdminEntry]=useState(null),[likedMusic,setLikedMusic]=useState([]),[likedMusicLoaded,setLikedMusicLoaded]=useState(false),[likedMusicLoading,setLikedMusicLoading]=useState(false),[openActivity,setOpenActivity]=useState(null);
+  const loadLikedMusic=async(force=false)=>{if(!account){setLikedMusic([]);setLikedMusicLoaded(true);return}if(likedMusicLoading||(likedMusicLoaded&&!force))return;setLikedMusicLoading(true);try{const r=await musicLiked();setLikedMusic(r.items||[]);setLikedMusicLoaded(true)}catch{}finally{setLikedMusicLoading(false)}};
+  useEffect(()=>{setLikedMusic([]);setLikedMusicLoaded(false);setOpenActivity(null)},[account?.id]);
+  useEffect(()=>{let alive=true;if(!account){setAdminEntry(null);return()=>{alive=false}}adminStatus().then(st=>{if(alive)setAdminEntry(st)}).catch(()=>{if(alive)setAdminEntry(null)});return()=>{alive=false}},[account?.id]);
+  const togglePetTalk=()=>setOpenActivity(v=>v==="pettalk"?null:"pettalk");
+  const toggleMusic=()=>{const x=openActivity!=="music";setOpenActivity(x?"music":null);if(x)loadLikedMusic(true)};
+  return <div style={{maxWidth:760,margin:"0 auto",padding:"0 20px 70px"}}>
+    <div className="my-page-head"><div><div className="my-page-kicker">MY PETGROW</div><h1>{lang==="ja"?"マイページ":lang==="zh"?"我的页面":lang==="en"?"My Page":"마이페이지"}</h1><p style={{fontSize:13}}>{lang==="en"?"Your PetGrow account and activity hub.":"계정·우리 아이·포인트·활동내역을 한곳에서 관리해요."}</p></div><span className="my-page-head-icon" style={{fontSize:16,fontWeight:950}}>MY</span></div>
+    <section className="mypage-petpoint-section"><PetPointDashboard /></section>
+    <div className="my-menu-grid my-menu-grid-top"><button type="button" className="my-menu-card my-menu-pink" onClick={onOpenAccount}><span className="my-menu-card-icon">✏️</span><span className="my-menu-card-copy"><strong>정보 수정</strong><small>닉네임과 계정 정보를 관리해요.</small></span><span className="my-menu-card-arrow">›</span></button><button type="button" className="my-menu-card my-menu-blue" onClick={onGoPets}><span className="my-menu-card-icon">🐾</span><span className="my-menu-card-copy"><strong>반려동물 관리</strong><small>등록한 아이 {allPets.length}마리를 관리해요.</small></span><span className="my-menu-card-arrow">›</span></button></div>
+    <div className="my-activity-stack"><button type="button" className={`my-menu-card my-menu-purple my-menu-card-wide${openActivity==="pettalk"?" is-open":""}`} onClick={togglePetTalk}><span className="my-menu-card-icon">💬</span><span className="my-menu-card-copy"><strong>Pet톡 내 활동</strong><small>내 글·댓글·좋아요를 확인해요.</small></span><span className="my-menu-card-arrow">{openActivity==="pettalk"?"⌃":"›"}</span></button>
+      {openActivity==="pettalk"&&<div className="bg-card my-activity-card my-accordion-panel"><MyActivityPage lang={lang} onOpenPost={onOpenPost} embedded /></div>}
+      <button type="button" className={`my-menu-card my-menu-mint my-menu-card-wide${openActivity==="music"?" is-open":""}`} onClick={toggleMusic}><span className="my-menu-card-icon">❤️</span><span className="my-menu-card-copy"><strong>좋아요한 Pet음악</strong><small>내가 좋아요한 음악을 확인해요.</small></span><span className="my-menu-card-arrow">{openActivity==="music"?"⌃":"›"}</span></button>
+      {openActivity==="music"&&<div className="bg-card my-activity-card my-accordion-panel">{likedMusicLoading&&!likedMusicLoaded?<div className="bg-sub">불러오는 중…</div>:likedMusic.length?<div style={{display:"grid",gap:8}}>{likedMusic.slice(0,20).map(x=><div key={x.id} className="my-liked-music-row">{x.cover_url?<img src={x.cover_url} alt="" loading="lazy"/>:<span>🎵</span>}<div><b>{x.title}</b><small>♥ {Number(x.like_count)||0}</small></div></div>)}</div>:<div className="bg-sub">아직 좋아요한 음악이 없어요.</div>}</div>}
+      <PetDailyHistory account={account} lang={lang} />
     </div>
-  );
+    <AccountActivityHub lang={lang}/>
+    {adminEntry&&(!adminEntry.adminExists||adminEntry.isAdmin||adminEntry.recoveryAvailable)&&<button type="button" className="my-admin-below-activity" onClick={onOpenAdmin}><span>🛡️</span><div><b>{adminEntry.isAdmin?"관리자센터":(adminEntry.adminExists?"관리자 등록/복구":"최초 관리자 등록")}</b><small>운영 데이터는 PIN 인증 후 확인할 수 있어요.</small></div><em>›</em></button>}
+    <section className="my-account-manage"><h2>계정 관리</h2><div className="my-account-actions"><button type="button" className="logout" onClick={onLogout}>로그아웃</button><button type="button" className="delete" onClick={onDeleteAccount}>회원탈퇴</button></div>{onGoSupport&&<button type="button" className="bg-btn bg-btn-ghost" style={{width:"100%",marginTop:8}} onClick={onGoSupport}>내 문의 · 고객지원 확인</button>}</section>
+  </div>
 }
 
 class PetTalkErrorBoundary extends React.Component {
@@ -11353,7 +11282,7 @@ function AppInner({ lang, setLang }) {
     requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: "auto" }));
   };
 
-  const goView = (v) => { const next=(v==="talk"||v==="pettalk"||v==="pet-talk")?"community":v; setView(next); scrollToTop(); };
+  const goView = (v) => { const next=(v==="talk"||v==="pettalk"||v==="pet-talk")?"community":v; setView(next); if(account?.id)logPetActivity({section:next,action:"view",title:({home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",news:"Pet뉴스",guide:"정보가이드",my:"마이페이지",support:"고객지원"}[next]||next)}); scrollToTop(); };
 
   // 도움말은 자동으로 열지 않아요. 사용자가 각 화면의 ? 버튼을 눌렀을 때만 표시합니다.
   useEffect(() => {
@@ -11699,9 +11628,10 @@ function AppInner({ lang, setLang }) {
       ) : effectiveView === "my" ? (
         <MyPage account={account} allPets={allPets} lang={lang}
           onOpenAccount={() => setAccountModalOpen(true)} onGoPets={() => goView("pets")}
-          onOpenPost={() => goView("community")} onOpenAdmin={() => goView("admin")} />
+          onOpenPost={() => goView("community")} onOpenAdmin={() => goView("admin")}
+          onLogout={handleLogout} onDeleteAccount={() => setDeleteAccountConfirmOpen(true)} onGoSupport={() => goView("support")} />
       ) : effectiveView === "admin" ? (
-        <><AdminReportsPage onBack={() => goView("my")} /><PetPointAdminOverview /></>
+        <AdminReportsPage onBack={() => goView("my")} />
       ) : effectiveView === "support" ? (
         <SupportPage account={account} onBack={() => goView("my")} />
       ) : effectiveView === "ad-inquiry" ? (
@@ -11855,7 +11785,8 @@ function AppInner({ lang, setLang }) {
 }
 
 export default function App() {
-  const [lang, setLang] = useState("ko");
+  const [lang, setLang] = useState(()=>{try{const v=localStorage.getItem("petgrow:lang");return ["ko","en","ja","zh"].includes(v)?v:"ko"}catch{return "ko"}});
+  useEffect(()=>{try{localStorage.setItem("petgrow:lang",lang)}catch{}},[lang]);
   const path = typeof window !== "undefined" ? window.location.pathname : "/";
   const isPrivacyPage = path === "/privacy" || path === "/privacy/";
   const isTermsPage = path === "/terms" || path === "/terms/";
@@ -11869,3 +11800,5 @@ export default function App() {
     </LangContext.Provider>
   );
 }
+
+/* PETGROW_FINAL_UX_APPLIED_20260818 */
