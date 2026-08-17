@@ -13,19 +13,37 @@ function meta(html,key){
   const esc=key.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
   return decode(html.match(new RegExp(`<meta[^>]+(?:property|name)=["']${esc}["'][^>]+content=["']([^"']+)["']`,`i`))?.[1]||html.match(new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+(?:property|name)=["']${esc}["']`,`i`))?.[1]||"").trim();
 }
+function articleParagraphs(html=""){
+  const withoutNoise=String(html).replace(/<script[\s\S]*?<\/script>/gi," ").replace(/<style[\s\S]*?<\/style>/gi," ").replace(/<noscript[\s\S]*?<\/noscript>/gi," ").replace(/<(nav|footer|header|aside)[\s\S]*?<\/\1>/gi," ");
+  const paragraphs=[];
+  for(const m of withoutNoise.matchAll(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/gi)){
+    const t=clean(m[1]);
+    if(t.length<35||t.length>700)continue;
+    if(/무단전재|재배포|저작권|기자\s*=|Copyright|구독|로그인|제보|광고/.test(t))continue;
+    if(!paragraphs.includes(t))paragraphs.push(t);
+    if(paragraphs.join(" ").length>1800)break;
+  }
+  return paragraphs.join(" ");
+}
 function concise(text="",fallback=""){
   const t=clean(text||fallback);
   if(!t)return "기사의 세부 내용을 원문에서 확인해 주세요.";
-  const sentences=t.split(/(?<=[.!?。！？]|다\.|요\.)\s+/).filter(Boolean);
-  const picked=(sentences.length?sentences.slice(0,2).join(" "):t).slice(0,360).trim();
-  return picked.length<t.length?`${picked.replace(/[,.·;:\s]+$/,'')}…`:picked;
+  const sentences=t.split(/(?<=[.!?。！？]|다\.|요\.)\s+/).map(clean).filter(x=>x.length>15);
+  const unique=[];
+  for(const sentence of sentences){
+    if(unique.some(x=>x===sentence))continue;
+    unique.push(sentence);
+    if(unique.length>=7||unique.join(" ").length>=1100)break;
+  }
+  const picked=(unique.length?unique:[t]).map(x=>x.slice(0,190).replace(/[,.·;:\s]+$/,""));
+  return picked.map(x=>`• ${x}`).join("\n").slice(0,1300);
 }
 async function translate(text,lang){
   const target={ko:"ko",en:"en",ja:"ja",zh:"zh-CN"}[lang];
-  if(!target||!text)return text;
+  if(!target||target==="ko"||!text)return text;
   try{
-    const ac=new AbortController(),timer=setTimeout(()=>ac.abort(),2800);
-    const url=`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(target)}&dt=t&q=${encodeURIComponent(text.slice(0,1200))}`;
+    const ac=new AbortController(),timer=setTimeout(()=>ac.abort(),3200);
+    const url=`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(target)}&dt=t&q=${encodeURIComponent(text.slice(0,1800))}`;
     const r=await fetch(url,{signal:ac.signal,headers:{"User-Agent":"PetGrow/1.0"}});clearTimeout(timer);
     if(!r.ok)return text;
     const j=await r.json();
@@ -33,29 +51,41 @@ async function translate(text,lang){
     return out||text;
   }catch{return text;}
 }
+async function fetchArticle(start){
+  let current=safeRemoteUrl(start);if(!current)return null;
+  for(let hop=0;hop<4;hop++){
+    const ac=new AbortController(),timer=setTimeout(()=>ac.abort(),4200);
+    try{
+      const r=await fetch(current,{signal:ac.signal,redirect:"manual",headers:{"User-Agent":"Mozilla/5.0 (compatible; PetGrowNews/1.0)",Accept:"text/html,application/xhtml+xml"}});
+      if(r.status>=300&&r.status<400){const loc=r.headers.get("location");if(!loc)return null;const next=safeRemoteUrl(new URL(loc,current).toString());if(!next)return null;current=next;continue;}
+      const type=r.headers.get("content-type")||"";
+      if(!r.ok||!type.includes("text/html"))return null;
+      const html=(await r.text()).slice(0,750000);
+      return {html,url:current.toString()};
+    }catch{return null}finally{clearTimeout(timer)}
+  }
+  return null;
+}
 export default async function handler(req,res){
   if(req.method!=="GET")return res.status(405).json({error:"Method not allowed"});
   const rawUrl=String(req.query.url||"");
   const title=clean(req.query.title||"");
   const fallback=clean(req.query.description||"");
   const lang=["ko","en","ja","zh"].includes(String(req.query.lang))?String(req.query.lang):"ko";
-  const u=safeRemoteUrl(rawUrl);
-  let sourceText=fallback,canonical=u?.toString()||rawUrl;
-  if(u){
-    const ac=new AbortController(),timer=setTimeout(()=>ac.abort(),3500);
-    try{
-      const r=await fetch(u,{signal:ac.signal,redirect:"follow",headers:{"User-Agent":"Mozilla/5.0 (compatible; PetGrowNews/1.0)",Accept:"text/html,application/xhtml+xml"}});
-      const type=r.headers.get("content-type")||"";
-      if(r.ok&&type.includes("text/html")){
-        const html=(await r.text()).slice(0,550000);
-        const description=meta(html,"og:description")||meta(html,"description")||meta(html,"twitter:description");
-        if(description)sourceText=description;
-        canonical=safeRemoteUrl(r.url)?.toString()||canonical;
-      }
-    }catch{}finally{clearTimeout(timer)}
+  let sourceText=fallback,canonical=rawUrl,image="";
+  const article=await fetchArticle(rawUrl);
+  if(article){
+    const {html,url}=article;
+    const description=meta(html,"og:description")||meta(html,"description")||meta(html,"twitter:description");
+    const body=articleParagraphs(html);
+    sourceText=[description,body].filter(Boolean).join(" ")||fallback;
+    image=meta(html,"og:image")||meta(html,"twitter:image")||"";
+    image=/^https?:\/\//i.test(image)?image:"";
+    const canonicalHref=html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i)?.[1]||url;
+    canonical=safeRemoteUrl(canonicalHref)?.toString()||url;
   }
   const summary=concise(sourceText,fallback||title);
   const [localizedTitle,localizedSummary]=await Promise.all([translate(title,lang),translate(summary,lang)]);
   res.setHeader("Cache-Control","public, s-maxage=1800, stale-while-revalidate=3600");
-  return res.status(200).json({title:localizedTitle||title,summary:localizedSummary||summary,originalTitle:title,canonical,lang,translated:lang!=="ko"});
+  return res.status(200).json({title:localizedTitle||title,summary:localizedSummary||summary,originalTitle:title,canonical,image,lang,translated:lang!=="ko"});
 }

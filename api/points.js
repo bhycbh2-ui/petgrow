@@ -7,7 +7,11 @@ export default async function handler(req,res){
   if(!uid)return res.status(401).json({error:"로그인이 필요해요."});
   try{
     const action=String(req.query.action||"summary");
-    if(req.method==="GET"&&action==="summary")return res.status(200).json(await getPointSummary(uid,{dailyLogin:true}));
+    if(req.method==="GET"&&action==="summary"){
+      const data=await getPointSummary(uid,{dailyLogin:true});
+      data.earnGuide=(data.earnGuide||[]).map(x=>x.label==="Pet톡 댓글 작성"?{...x,limit:"하루 5회"}:x);
+      return res.status(200).json(data);
+    }
     if(req.method==="GET"&&action==="admin"){
       const role=await getAdminRole(uid);
       if(!role)return res.status(403).json({error:"관리자 권한이 필요해요."});
