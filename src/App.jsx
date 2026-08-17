@@ -4602,7 +4602,7 @@ const GlobalStyle = () => (
   .cm-search-btn,.cm-write-btn{display:flex!important;align-items:center;justify-content:center;gap:5px;white-space:nowrap}
   .my-activity-stack{display:grid;gap:10px;margin-top:12px}.my-menu-card-wide{width:100%;display:flex}.my-accordion-panel{margin:0 0 4px!important;animation:petgrow-soft-in .16s ease-out both}
   .my-liked-music-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #edf2ee}.my-liked-music-row img,.my-liked-music-row>span{width:44px;height:44px;border-radius:11px;object-fit:cover;display:grid;place-items:center;background:#eef6f0}.my-liked-music-row b{display:block;font-size:13px}.my-liked-music-row small{display:block;color:var(--sub);font-size:10px;margin-top:3px}
-   .tip-question-block{padding:2px 0 3px}.tip-question-meta{display:flex;align-items:center;gap:7px}.tip-q-badge,.tip-a-badge{width:22px;height:22px;border-radius:7px;display:inline-grid;place-items:center;font-size:11px;font-weight:950;flex:0 0 auto}.tip-q-badge{background:#4F8A5B;color:#fff;box-shadow:0 3px 8px rgba(79,138,91,.16)}.tip-question-title{font-weight:850;font-size:15.5px;line-height:1.45;margin-top:8px;color:#26352A}.tip-question-summary{font-size:12.5px;margin-top:5px;line-height:1.55;color:#738077}.tip-answer-panel{margin-top:13px;padding:15px 16px;border:1px solid #EADFD6;border-left:4px solid #D8B49B;border-radius:13px;background:#FFF8F3;color:var(--text);font-size:13px;line-height:1.78;box-shadow:0 5px 16px rgba(82,62,46,.055);display:flex;align-items:flex-start;gap:10px}.tip-a-badge{background:rgba(255,255,255,.9);color:#4F7257;border:1px solid rgba(79,114,87,.16);margin-top:1px}.tip-answer-copy{min-width:0;white-space:pre-line}
+   .tip-question-block{padding:2px 0 3px}.tip-question-meta{display:flex;align-items:center;gap:7px}.tip-q-badge,.tip-a-badge{width:22px;height:22px;border-radius:7px;display:inline-grid;place-items:center;font-size:11px;font-weight:950;flex:0 0 auto}.tip-q-badge{background:#4F8A5B;color:#fff;box-shadow:0 3px 8px rgba(79,138,91,.16)}.tip-question-title{font-weight:850;font-size:15.5px;line-height:1.45;margin-top:8px;color:#26352A}.tip-question-summary{font-size:12.5px;margin-top:5px;line-height:1.55;color:#738077}.tip-answer-panel{margin-top:13px;padding:16px 17px;border:1px solid #E6EBE7;border-left:3px solid #AFC9B5;border-radius:13px;background:#fff;color:var(--text);font-size:13px;line-height:1.8;box-shadow:0 4px 14px rgba(55,75,61,.045);display:flex;align-items:flex-start;gap:10px}.tip-a-badge{background:rgba(255,255,255,.9);color:#4F7257;border:1px solid rgba(79,114,87,.16);margin-top:1px}.tip-answer-copy{min-width:0;white-space:pre-line}
   .admin-entry-root .admin-reports-page:has(.admin-gate){min-height:calc(100dvh - 250px)!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:24px 16px!important}.admin-entry-root .admin-gate{margin:auto!important;width:min(520px,calc(100% - 12px))!important}
   body:has(.admin-gate) footer{margin:18px auto 14px!important;text-align:center!important;max-width:680px!important}
   @media(max-width:768px){.cm-search-actions{grid-template-columns:minmax(0,1fr) auto}.cm-write-btn{grid-column:1/-1;width:100%}.nearby-responsive-categories .responsive-category-primary{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.nearby-responsive-categories .responsive-category-primary .bg-chip{min-width:0;padding:9px 5px!important;font-size:11px!important;justify-content:center}.nearby-responsive-categories .responsive-category-more-panel{grid-template-columns:repeat(3,minmax(0,1fr))!important}.my-menu-grid-top{margin-bottom:10px}.admin-entry-root .admin-reports-page:has(.admin-gate){min-height:calc(100dvh - 290px)!important;padding-top:18px!important;padding-bottom:18px!important}}
@@ -6775,10 +6775,10 @@ function TipCard({ tip, lang, bookmarked, onToggleBookmark }) {
   const t = useT();
   const [open, setOpen] = useState(false);
   const categoryLabel = t.tipCategoryLabels[tip.category];
-  const categoryColors = { dog: "#EEF8E9", cat: "#FFF1F5", health: "#EAF4FF", life: "#F5F8F4", food: "#FFF0E5", training: "#F1F5F1", safety: "#E9F8F5", grooming: "#FCEEF9" };
-  const categoryText = { dog: "#4F8A5B", cat: "#D66B8D", health: "#4C86B8", life: "#A37B18", food: "#C8733C", training: "#7965B3", safety: "#388C7D", grooming: "#B45D9A" };
-  const answerColors = { dog: "#F7FBF5", cat: "#FFF7FA", health: "#F6FAFF", life: "#FBFAF3", food: "#FFF8F3", training: "#F8F7FC", safety: "#F4FBF9", grooming: "#FFF7FC" };
-  const answerBorders = { dog: "#D5E8D0", cat: "#F1D9E2", health: "#D7E8F6", life: "#E9E3C7", food: "#F2DCCB", training: "#E0DAF1", safety: "#D1EAE4", grooming: "#EED8E8" };
+  const categoryColors = { dog: "#F7FBF7", cat: "#FFF9FB", health: "#F7FAFD", life: "#FAFBF9", food: "#FFF9F5", training: "#FAF9FC", safety: "#F7FBFA", grooming: "#FFF9FD" };
+  const categoryText = { dog: "#4F8A5B", cat: "#C96E8A", health: "#4C7FA7", life: "#8B792F", food: "#B87343", training: "#7466A0", safety: "#3C8175", grooming: "#A96191" };
+  const answerColors = { dog: "#FFFFFF", cat: "#FFFFFF", health: "#FFFFFF", life: "#FFFFFF", food: "#FFFFFF", training: "#FFFFFF", safety: "#FFFFFF", grooming: "#FFFFFF" };
+  const answerBorders = { dog: "#E4EAE5", cat: "#E8E8E8", health: "#E4E9EC", life: "#E9E8E2", food: "#ECE7E2", training: "#E8E6ED", safety: "#E3EAE7", grooming: "#ECE6EA" };
   const answerAccents = { dog: "#9FC59A", cat: "#DFA2B6", health: "#94B9D6", life: "#C7AE64", food: "#DEA77F", training: "#AFA2D5", safety: "#84BDB1", grooming: "#D39BC5" };
   return (
     <div className="bg-surface-card" style={{ padding: "16px 18px", background: categoryColors[tip.category] || "var(--surface)" }}>
@@ -9243,6 +9243,8 @@ function NearbyPetPage(){
           overlays.current.forEach(o=>{try{o?.setMap?.(null)}catch{}});overlays.current=[];
           const centerPos=new K.LatLng(center.lat,center.lng);
           const map=new K.Map(mapRef.current,{center:centerPos,level:4});mapObj.current=map;mapObj.current.__engine="kakao";
+          window.setTimeout(()=>{try{map.relayout();map.setCenter(centerPos)}catch{}},60);
+          window.setTimeout(()=>{try{map.relayout()}catch{}},260);
           const makeOverlay=(lat,lng,html,z=3,click)=>{const el=document.createElement("div");el.innerHTML=html;const node=el.firstElementChild;if(click)node.addEventListener("click",click);const ov=new K.CustomOverlay({position:new K.LatLng(lat,lng),content:node,yAnchor:1,zIndex:z});ov.setMap(map);overlays.current.push(ov);return ov;};
           if(showSearchPin)makeOverlay(center.lat,center.lng,'<div class="nearby-search-pin"><span>⌖</span><b>검색 주소</b></div>',8);
           if(userPos&&Number.isFinite(Number(userPos.lat))&&Number.isFinite(Number(userPos.lng)))makeOverlay(userPos.lat,userPos.lng,'<div class="nearby-me-pin"><span></span><b>내 위치</b></div>',9);
@@ -9292,7 +9294,17 @@ function NearbyPetPage(){
     });
     if(places.length){const close=places.filter(p=>Number(p.distance)<=1000);if(close.length){const b2=L.latLngBounds([[center.lat,center.lng]]);close.slice(0,12).forEach(p=>b2.extend([p.lat,p.lng]));map.fitBounds(b2.pad(.16),{maxZoom:16,padding:[28,28]});}else{map.setView([center.lat,center.lng],14);}}
     window.setTimeout(()=>map.invalidateSize(),60);
+    window.setTimeout(()=>map.invalidateSize(),260);
   };
+
+  useEffect(()=>{
+    let disposed=false;
+    const timer=window.setTimeout(()=>{
+      if(disposed||!mapRef.current||mapObj.current)return;
+      loadMap({lat:37.5665,lng:126.9780},[],null,false).catch(e=>console.warn("Initial nearby map load failed",e));
+    },100);
+    return()=>{disposed=true;window.clearTimeout(timer);};
+  },[]);
 
   const mergeNearbyRows=(groups)=>{
     const seen=new Map();
@@ -9420,7 +9432,7 @@ function NearbyPetPage(){
     <ResponsiveCategoryMenu className="nearby-responsive-categories" primaryCount={3} items={cats.map(([id,label])=>({id,label}))} activeId={cat} onSelect={setCat} lang={"ko"} />
     <section className="nearby-map-card bg-card">
       <div className="nearby-map-head"><div><b>🗺️ {searchMode==="current"?"현재 위치 기준 지도":"검색 주소 기준 지도"}</b><small className="nearby-map-description">{searchMode==="current"?"현재 위치를 중심으로 가까운 장소를 표시해요. 번호 마커를 누르면 업체 정보를 바로 확인할 수 있어요.":pos?"입력한 주소 기준으로 검색하고 지도에는 내 위치와 업체 거리를 함께 표시해요.":"입력한 주소 기준으로 검색해요. 위치 허용 시 내 위치도 표시해요."}</small></div><div className="nearby-location-controls">{pos&&<span className="nearby-live-pill">● 내 위치</span>}<button type="button" className="nearby-location-btn" onClick={locate}>{pos?"위치 새로고침":"내 위치 표시"}</button></div></div>
-      <div ref={mapRef} className="nearby-map"><div className="nearby-map-fallback"><MapPinIcon/><b>주소 또는 현재 위치로 검색해 주세요</b><span>검색 기준 주변 업체를 지도에서 확인할 수 있어요.</span></div></div>
+      <div ref={mapRef} className="nearby-map"><div className="nearby-map-fallback"><MapPinIcon/><b>지도를 불러오는 중이에요</b><span>주소를 검색하면 검색 지점과 주변 업체가 지도에 표시돼요.</span></div></div>
     </section>
     {msg&&<div className="nearby-message">{msg}</div>}
     <div className="nearby-results-head"><div><h2>{searchMode==="current"?"현재 위치 주변":"검색 주소 주변"}</h2><span>{items.length}곳</span></div><small className="nearby-results-detail">{searchMode==="current"?`내 위치에서 가까운 순 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`}`:pos?`내 위치에서 가까운 순 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`}`:`검색 주소 기준 가까운 순 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`}`}</small></div>
