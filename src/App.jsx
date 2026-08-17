@@ -2786,6 +2786,19 @@ const GlobalStyle = () => (
     .ham-divider{height:1px; background:var(--border); margin:10px 4px;}
     
 .quick-order-list{display:flex;flex-direction:column;gap:8px}.quick-order-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;border:1px solid var(--border);border-radius:14px;background:#fff;transition:.16s ease;touch-action:none}.quick-order-row>span{display:flex;align-items:center;gap:9px;min-width:0}.quick-order-row>span i{font-style:normal;font-size:19px}.quick-order-row>span b{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.quick-order-row.dragging{opacity:.62;transform:scale(.985);box-shadow:0 8px 20px rgba(40,70,48,.10)}.quick-drag-handle{width:36px;height:36px;flex:0 0 36px;border:0;border-radius:11px;background:#f1f6f1;color:#718077;font-size:22px;line-height:1;font-weight:700;display:grid;place-items:center;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none}.quick-drag-handle:active{cursor:grabbing;background:#e8f1e9;color:var(--primary)}@media(max-width:600px){.quick-order-row{padding:10px 11px}.quick-drag-handle{width:40px;height:40px;flex-basis:40px}}
+
+/* PETGROW_FINAL_LAYOUT_20260817 */
+.petgrow-content-stage>.petgrow-unified-hero{width:calc(100% - 40px)!important;max-width:900px!important;margin:0 auto 18px!important;box-sizing:border-box!important;padding:24px 26px!important;min-height:132px!important;display:flex!important;align-items:center!important}
+.petgrow-page-top>.petgrow-unified-hero{box-sizing:border-box!important;padding:24px 26px!important;min-height:132px!important;display:flex!important;align-items:center!important}
+.petgrow-unified-hero .nearby-eyebrow{display:block!important;font-size:11px!important;line-height:1.2!important;font-weight:900!important;letter-spacing:.13em!important;margin:0 0 8px!important}
+.petgrow-unified-hero h1{font-family:inherit!important;font-size:28px!important;line-height:1.18!important;font-weight:900!important;letter-spacing:-.035em!important;margin:0 0 8px!important}
+.petgrow-unified-hero p{font-size:14px!important;line-height:1.65!important;margin:0!important;max-width:720px!important;word-break:keep-all!important}
+.petgrow-content-stage>.petgrow-unified-hero+.petmusic-page>.petmusic-hero,.petgrow-content-stage>.petgrow-unified-hero+.nearby-page>.nearby-hero{display:none!important}
+.petgrow-footer{width:calc(100% - 40px);max-width:900px;margin:34px auto 0;padding:22px 0 38px;border-top:1px solid var(--border);box-sizing:border-box;text-align:center}
+.petgrow-footer-email,.petgrow-footer-copy{font-size:11px;color:var(--sub);line-height:1.6}.petgrow-footer-copy{margin-top:2px}.petgrow-footer-links{display:flex;justify-content:center;align-items:center;gap:8px 18px;flex-wrap:wrap;margin-top:12px}.petgrow-footer-links button,.petgrow-footer-links a{font:600 11px/1.4 inherit;color:var(--primary);background:none;border:0;padding:3px 0;text-decoration:none;cursor:pointer}
+.petnews-list{display:grid;gap:12px}.petnews-card{display:grid;grid-template-columns:180px minmax(0,1fr);gap:16px;padding:0!important;overflow:hidden;text-align:left;border:1px solid var(--border)!important;cursor:pointer}.petnews-card-media{min-height:145px;background:#eef4ee;overflow:hidden}.petnews-card-media img{width:100%;height:100%;min-height:145px;object-fit:cover;display:block}.petnews-card-body{padding:16px 18px 16px 0;min-width:0}.petnews-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--sub);margin-bottom:7px}.petnews-meta b{color:var(--primary)}.petnews-title{font-size:17px;line-height:1.42;font-weight:900;letter-spacing:-.025em;word-break:keep-all}.petnews-summary{font-size:13px;line-height:1.68;color:var(--sub);margin:7px 0 0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all}.petnews-detail{max-width:820px;margin:0 auto}.petnews-detail-back{margin:0 0 12px}.petnews-detail-hero{overflow:hidden;padding:0!important}.petnews-detail-image{width:100%;max-height:420px;object-fit:cover;display:block;background:#eef4ee}.petnews-detail-copy{padding:22px}.petnews-detail-copy h2{font-size:26px;line-height:1.35;letter-spacing:-.035em;margin:8px 0 14px;word-break:keep-all}.petnews-detail-summary{font-size:15px;line-height:1.85;white-space:pre-line;word-break:keep-all}.petnews-source-note{margin-top:18px;padding:14px 16px;border-radius:14px;background:var(--surface);font-size:12px;line-height:1.7;color:var(--sub)}
+@media(max-width:700px){.petgrow-content-stage>.petgrow-unified-hero{width:calc(100% - 28px)!important;padding:20px 18px!important;min-height:118px!important}.petgrow-page-top>.petgrow-unified-hero{padding:20px 18px!important;min-height:118px!important}.petgrow-unified-hero h1{font-size:23px!important}.petgrow-unified-hero p{font-size:13px!important}.petgrow-footer{width:calc(100% - 28px);padding:18px 0 92px}.petnews-card{grid-template-columns:112px minmax(0,1fr);gap:12px}.petnews-card-media,.petnews-card-media img{min-height:128px}.petnews-card-body{padding:12px 12px 12px 0}.petnews-title{font-size:15px}.petnews-summary{font-size:12px;-webkit-line-clamp:3}.petnews-detail-copy{padding:18px}.petnews-detail-copy h2{font-size:21px}.petnews-detail-summary{font-size:14px}}
+
 .app-bottom-nav{position:fixed; left:0; right:0; bottom:0; z-index:150; background:#fff;
       border-top:1px solid var(--border); display:flex; padding-bottom:env(safe-area-inset-bottom,0);
       box-shadow:0 -4px 14px rgba(0,0,0,.04);}
@@ -8989,7 +9002,7 @@ function AboutPage({ onStart, onNavigate }) {
             <LandingFeatureCard Illust={IllustPetBti} title={t.landingCardPetBtiTitle} desc={t.landingCardPetBtiDesc} />
             <LandingFeatureCard Illust={MusicIcon} title={lang === "en" ? "🎵 Pet Music" : "🎵 Pet음악"} desc={lang === "en" ? "Music for dogs and cats with loop playback, likes, comments and a live Top 5." : "강아지·고양이 음악을 반복재생하고 좋아요·댓글로 인기 TOP5를 함께 만들어요."} />
             <LandingFeatureCard Illust={IllustTips} title={t.landingCardTipsTitle} desc={t.landingCardTipsDesc} />
-            <LandingFeatureCard Illust={InfoIcon} title={lang === "en" ? "📰 Pet News" : "📰 Pet뉴스"} desc={lang === "en" ? "Recent pet-related news with direct links to original publishers." : "반려동물 관련 최신 뉴스만 모아보고 원문까지 바로 확인해요."} />
+            <LandingFeatureCard Illust={InfoIcon} title={lang === "en" ? "📰 Pet News" : "📰 Pet뉴스"} desc={lang === "en" ? "Recent pet-related news with direct links to original publishers." : "반려동물 관련 최신 뉴스를 사진·요약과 함께 PetGrow 안에서 먼저 읽고, 필요할 때 원문을 확인해요."} />
             <LandingFeatureCard Illust={MapPinIcon} title={t.landingCardNearbyTitle} desc={t.landingCardNearbyDesc} />
             <LandingFeatureCard Illust={IllustCommunity} title={t.landingCardCommunityTitle} desc={t.landingCardCommunityDesc} />
           </div>
@@ -9516,6 +9529,9 @@ function UnifiedMenuHero({ view, lang='ko' }) {
     guide:{eyebrow:'PETGROW GUIDE',ko:'정보가이드',en:'Guide',koDesc:'PetGrow의 주요 기능과 이용 방법을 한곳에서 쉽고 빠르게 확인해요.',enDesc:'See how PetGrow features work and how to use them.'},
     my:{eyebrow:'PETGROW MY',ko:'마이페이지',en:'My Page',koDesc:'회원정보와 내가 남긴 활동, 좋아요한 콘텐츠를 한곳에서 관리해요.',enDesc:'Manage your account, activity and saved favorites.'},
     more:{eyebrow:'PETGROW MENU',ko:'더보기',en:'More',koDesc:'PetGrow의 다양한 기능과 고객지원 메뉴를 한곳에서 확인해요.',enDesc:'Find additional PetGrow features and support options.'},
+    nearby:{eyebrow:'PETGROW NEARBY',ko:'내 주변 Pet',en:'Nearby Pet',koDesc:'주소나 현재 위치를 기준으로 가까운 반려동물 시설을 찾아보세요.',enDesc:'Find nearby pet hospitals, shops, grooming and care services.'},
+    music:{eyebrow:'PETGROW SOUND',ko:'Pet음악',en:'Pet Music',koDesc:'강아지와 고양이를 위한 음악을 듣고 좋아요·댓글로 반응을 나눠보세요.',enDesc:'Listen to music for dogs and cats and save your favorites.'},
+    news:{eyebrow:'PETGROW NEWS',ko:'Pet뉴스',en:'Pet News',koDesc:'반려견·반려묘·건강·정책 등 최신 반려동물 뉴스를 보기 좋게 모아봐요.',enDesc:'Browse recent pet news with clear summaries and publisher links.'},
     support:{eyebrow:'PETGROW SUPPORT',ko:'고객지원',en:'Support',koDesc:'서비스 이용 중 궁금한 점이나 도움이 필요한 내용을 남겨주세요.',enDesc:'Ask questions or get help using PetGrow.'},
     'ad-inquiry':{eyebrow:'PETGROW PARTNERS',ko:'광고 문의',en:'Advertising',koDesc:'PetGrow와 함께할 광고·제휴 문의를 편하게 남겨주세요.',enDesc:'Contact PetGrow about advertising and partnership opportunities.'}
   };
@@ -9581,7 +9597,7 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
         </> : <><div className="dash-empty-icon">＋</div><div><h2>{lang === "en" ? "Add your pet" : "우리 아이를 등록해보세요"}</h2><p>{lang === "en" ? "Start growth records and personalized features." : "성장 기록과 맞춤 기능을 바로 시작할 수 있어요."}</p></div><div className="dash-pet-arrow">›</div></>}
       </section>
 
-      <TodayPetHomeCard account={account} onOpenSaju={()=>onGoView("saju")} lang={lang} />
+      <TodayPetHomeCard account={account} onOpenSaju={()=>onGoView("saju")} onOpenTarot={()=>onGoView("tarot")} lang={lang} />
 
       <section className="dash-section"><div className="dash-section-head"><h2>{lang === "en" ? "Quick access" : "자주 사용하는 메뉴"}</h2><button type="button" className="bg-chip" onClick={()=>setQuickEditing(v=>!v)}>{quickEditing?(lang==='en'?'Done':'완료'):(lang==='en'?'Edit':'편집')}</button></div>{quickEditing&&<div className="bg-card" style={{padding:14,marginBottom:12}}><p className="bg-sub" style={{fontSize:12,margin:'0 0 10px'}}>{lang==='en'?'Choose up to six shortcuts, then reorder them below. Signed-in choices sync to your account.':'원하는 메뉴를 최대 6개까지 선택한 뒤 아래에서 순서를 바꿀 수 있어요. 로그인하면 계정에 저장돼 다른 기기에서도 그대로 보여요.'}</p><div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>{allQuick.map(([key,icon,label])=><button type="button" key={key} className={`bg-chip ${quickKeys.includes(key)?'active':''}`} onClick={()=>toggleQuick(key)}>{icon} {label}</button>)}</div><div className="quick-order-list">{quick.map(([key,icon,label])=><div className={`quick-order-row ${quickDragKey===key?'dragging':''}`} data-quick-key={key} key={key} draggable onDragStart={()=>setQuickDragKey(key)} onDragOver={e=>{e.preventDefault();if(quickDragKey&&quickDragKey!==key){reorderQuick(quickDragKey,key);setQuickDragKey(key)}}} onDragEnd={endQuickPointerDrag}><span><i>{icon}</i><b>{label}</b></span><button type="button" className="quick-drag-handle" aria-label={`${label} 순서 이동`} title={lang==='en'?'Drag to reorder':'끌어서 순서 변경'} onPointerDown={e=>beginQuickPointerDrag(e,key)} onPointerMove={moveQuickPointer} onPointerUp={endQuickPointerDrag} onPointerCancel={endQuickPointerDrag}>≡</button></div>)}</div></div>}<div className="dash-quick-grid">{quick.map(([key,icon,label])=><button type="button" key={key} onClick={()=>key==="pets"?onGoPets():onGoView(key)}><i>{icon}</i><span>{label}</span></button>)}</div></section>
 
@@ -10594,53 +10610,25 @@ function SupportPage({account,onBack}){
 
 /* PETNEWS_UI_FIXED_20260817 */
 function PetNewsPage({ lang = "ko" }) {
-  const [data,setData]=useState({items:[],updatedAt:null});
-  const [loading,setLoading]=useState(true);
-  const [error,setError]=useState("");
-  const [category,setCategory]=useState("전체");
-  const [showAllCategories,setShowAllCategories]=useState(false);
-  const [searchInput,setSearchInput]=useState("");
-  const [newsSearch,setNewsSearch]=useState("");
-  const [newsPage,setNewsPage]=useState(1);
-  const NEWS_PAGE_SIZE=10;
-  const load=async()=>{setLoading(true);setError("");try{const r=await fetch("/api/news");const j=await r.json();if(!r.ok)throw new Error("뉴스를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.");setData(j);}catch(e){setError("뉴스를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.");}finally{setLoading(false);}};
-  useEffect(()=>{load();},[]);
-  const cats=["전체","반려견","반려묘","건강","정책·제도","입양·보호","산업·서비스","반려동물"];
-  const visibleCats=showAllCategories?cats:cats.slice(0,4);
-  const normalize=v=>String(v||"").toLowerCase().replace(/\s+/g," ").trim();
-  const baseItems=category==="전체"?(data.items||[]):(data.items||[]).filter(x=>x.category===category);
-  const q=normalize(newsSearch);
-  const items=!q?baseItems:baseItems.filter(x=>normalize([x.title,x.description,x.source,x.category].join(" ")).includes(q));
-  const totalPages=Math.max(1,Math.ceil(items.length/NEWS_PAGE_SIZE));
-  const safePage=Math.min(newsPage,totalPages);
-  const pagedItems=items.slice((safePage-1)*NEWS_PAGE_SIZE,safePage*NEWS_PAGE_SIZE);
-  useEffect(()=>{setNewsPage(1);},[category,newsSearch]);
-  const runSearch=()=>{setNewsSearch(searchInput.trim());setNewsPage(1);};
-  const clearSearch=()=>{setSearchInput("");setNewsSearch("");setNewsPage(1);};
-  const timeLabel=(iso)=>{if(!iso)return "";const d=new Date(iso),diff=Date.now()-d.getTime();if(diff<3600000)return Math.max(1,Math.floor(diff/60000))+"분 전";if(diff<86400000)return Math.floor(diff/3600000)+"시간 전";return d.toLocaleDateString("ko-KR");};
-  const goPage=p=>{setNewsPage(p);window.setTimeout(()=>document.querySelector('.petnews-tools')?.scrollIntoView({behavior:'smooth',block:'start'}),20);};
-  return <div className="legal-page-shell" style={{maxWidth:980,margin:"0 auto",padding:"0 16px 48px"}}>
-    <section className="nearby-hero bg-card" style={{marginBottom:16}}><div><span className="nearby-eyebrow">PETGROW NEWS</span><h1>{lang==="en"?"Pet News":"Pet뉴스"}</h1><p>{lang==="en"?"Recent pet-related news with direct links to original publishers.":"강아지·고양이·건강·정책·입양 등 반려동물 관련 최신 뉴스만 모아봐요."}</p></div></section>
-    <section className="bg-card petnews-tools" style={{padding:14,marginBottom:14}}>
-      <div style={{display:"grid",gridTemplateColumns:"minmax(0,1fr) auto",gap:8,alignItems:"stretch"}}>
-        <input className="bg-input" value={searchInput} onChange={e=>setSearchInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")runSearch();}} placeholder={lang==="en"?"Search headlines, summaries or publishers":"뉴스 제목·소제목·언론사 검색"}/>
-        <button type="button" className="bg-btn" onClick={runSearch}>🔎 {lang==="en"?"Search":"검색"}</button>
-      </div>
-      {(newsSearch||searchInput)&&<div style={{display:"flex",justifyContent:"flex-end",marginTop:8}}><button type="button" className="bg-chip" onClick={clearSearch}>{lang==="en"?"Reset":"검색 초기화"}</button></div>}
-    </section>
-    <div style={{display:"flex",gap:8,flexWrap:"wrap",alignItems:"center",padding:"2px 0 14px"}}>
-      {visibleCats.map(c=><button key={c} type="button" className={"bg-chip "+(category===c?"active":"")} onClick={()=>{setCategory(c);setNewsPage(1);}} style={{whiteSpace:"nowrap"}}>{c}</button>)}
-      {!showAllCategories&&<button type="button" className="bg-chip" onClick={()=>setShowAllCategories(true)}>더보기 +{cats.length-visibleCats.length}</button>}
-      {showAllCategories&&<button type="button" className="bg-chip" onClick={()=>setShowAllCategories(false)}>접기 ▲</button>}
-    </div>
-    {(newsSearch||category!=="전체")&&<div className="bg-sub" style={{fontSize:12,margin:"0 0 12px"}}>검색 결과 {items.length}건{category!=="전체"?" · "+category:""}{newsSearch?" · ‘"+newsSearch+"’":""}</div>}
-    {loading?<div className="bg-card" style={{padding:28,textAlign:"center"}}>최신 펫뉴스를 불러오는 중이에요…</div>:error?<div className="bg-card" style={{padding:28,textAlign:"center"}}><b>{error}</b><div style={{marginTop:12}}><button className="bg-btn" onClick={load}>다시 시도</button></div></div>:items.length===0?<div className="bg-card" style={{padding:28,textAlign:"center"}}>조건에 맞는 최신 뉴스가 아직 없어요.</div>:<div style={{display:"grid",gap:12}}>{pagedItems.map(item=><article key={item.id} className="bg-card" style={{padding:"18px 20px"}}><div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap",marginBottom:8}}><span className="bg-chip active">{item.category}</span><small style={{color:"var(--sub)"}}>{item.source+" · "+timeLabel(item.publishedAt)}</small></div><h2 style={{fontSize:18,lineHeight:1.45,margin:"0 0 8px"}}>{item.title}</h2><p className="bg-sub" style={{fontSize:14,lineHeight:1.7,margin:"0 0 12px"}}>{item.description}</p><a href={item.link} target="_blank" rel="noopener noreferrer" className="bg-btn bg-btn-ghost" style={{display:"inline-flex",textDecoration:"none"}}>원문 보기 ↗</a></article>)}</div>}
-    {!loading&&!error&&items.length>NEWS_PAGE_SIZE&&<div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:8,flexWrap:"wrap",margin:"18px 0 8px"}}>
-      <button type="button" className="bg-chip" disabled={safePage<=1} onClick={()=>goPage(Math.max(1,safePage-1))}>‹ 이전</button>
-      {Array.from({length:totalPages},(_,i)=>i+1).map(p=><button key={p} type="button" className={"bg-chip "+(p===safePage?"active":"")} onClick={()=>goPage(p)}>{p}</button>)}
-      <button type="button" className="bg-chip" disabled={safePage>=totalPages} onClick={()=>goPage(Math.min(totalPages,safePage+1))}>다음 ›</button>
-    </div>}
-    <p className="bg-sub" style={{fontSize:12,lineHeight:1.65,marginTop:14}}>Pet뉴스는 외부 기사로 연결되며 기사 내용과 저작권은 각 언론사에 있습니다.</p>
+  const [data,setData]=useState({items:[]}),[loading,setLoading]=useState(true),[error,setError]=useState("");
+  const [category,setCategory]=useState("전체"),[showAllCategories,setShowAllCategories]=useState(false),[searchInput,setSearchInput]=useState(""),[newsSearch,setNewsSearch]=useState(""),[newsPage,setNewsPage]=useState(1),[selectedNews,setSelectedNews]=useState(null);
+  const NEWS_PAGE_SIZE=10,cats=["전체","반려견","반려묘","건강","정책·제도","입양·보호","산업·서비스","반려동물"],visibleCats=showAllCategories?cats:cats.slice(0,4);
+  const clean=v=>String(v||"").replace(/&nbsp;|&#160;|&#xA0;/gi," ").replace(/\s+/g," ").trim();
+  const fallback=n=>n?.category==="반려견"?"/pettalk-demo-dog.webp":n?.category==="반려묘"?"/pettalk-demo-cat.webp":"/intro-video-poster.webp";
+  const load=async()=>{setLoading(true);setError("");try{const r=await fetch('/api/news');const j=await r.json();if(!r.ok)throw new Error();setData({...j,items:(j.items||[]).map(x=>({...x,title:clean(x.title),description:clean(x.description)}))});}catch{setError("뉴스를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.");}finally{setLoading(false)}};
+  useEffect(()=>{load()},[]);
+  const q=clean(newsSearch).toLowerCase();
+  const items=(data.items||[]).filter(x=>(category==="전체"||x.category===category)&&(!q||[x.title,x.description,x.source,x.category].some(v=>clean(v).toLowerCase().includes(q))));
+  const totalPages=Math.max(1,Math.ceil(items.length/NEWS_PAGE_SIZE)),safePage=Math.min(newsPage,totalPages),paged=items.slice((safePage-1)*NEWS_PAGE_SIZE,safePage*NEWS_PAGE_SIZE);
+  const runSearch=()=>{setNewsSearch(searchInput);setNewsPage(1)},clearSearch=()=>{setSearchInput("");setNewsSearch("");setNewsPage(1)};
+  const timeLabel=iso=>{if(!iso)return "";const d=new Date(iso),diff=Date.now()-d.getTime();if(diff<3600000)return Math.max(1,Math.floor(diff/60000))+"분 전";if(diff<86400000)return Math.floor(diff/3600000)+"시간 전";return d.toLocaleDateString("ko-KR")};
+  if(selectedNews){const n=selectedNews;return <div className="legal-page-shell petnews-detail"><button type="button" className="bg-btn bg-btn-ghost petnews-detail-back" onClick={()=>setSelectedNews(null)}>← 뉴스 목록</button><article className="bg-card petnews-detail-hero"><img className="petnews-detail-image" src={n.image||fallback(n)} alt="" loading="eager" onError={e=>{e.currentTarget.src=fallback(n)}}/><div className="petnews-detail-copy"><div className="petnews-meta"><b>{n.category||"Pet뉴스"}</b><span>{n.source||"언론사"}</span><span>·</span><span>{timeLabel(n.publishedAt)}</span></div><h2>{n.title}</h2><div className="petnews-detail-summary">{n.description||"기사의 핵심 내용은 원문에서 확인할 수 있어요."}</div><div className="petnews-source-note">PetGrow에서는 기사 제목과 제공된 요약을 보기 좋게 정리해 보여드려요. 기사 전문과 이미지의 권리는 각 언론사에 있으며, 자세한 내용은 원문에서 확인할 수 있어요.</div><a className="bg-btn" href={n.link} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",marginTop:16,textDecoration:"none"}}>원문 전체보기 ↗</a></div></article></div>}
+  return <div className="legal-page-shell" style={{maxWidth:900,margin:"0 auto",padding:"0 20px 48px"}}>
+    <section className="bg-card petnews-tools" style={{padding:14,marginBottom:14}}><div style={{display:"grid",gridTemplateColumns:"minmax(0,1fr) auto",gap:8}}><input className="bg-input" value={searchInput} onChange={e=>setSearchInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")runSearch()}} placeholder="뉴스 제목·내용·언론사 검색"/><button className="bg-btn" onClick={runSearch}>검색</button></div>{newsSearch&&<button className="bg-chip" style={{marginTop:8}} onClick={clearSearch}>검색 초기화</button>}</section>
+    <div style={{display:"flex",gap:7,flexWrap:"wrap",marginBottom:14}}>{visibleCats.map(c=><button key={c} className={"bg-chip "+(category===c?"active":"")} onClick={()=>{setCategory(c);setNewsPage(1)}}>{c}</button>)}<button className="bg-chip" onClick={()=>setShowAllCategories(v=>!v)}>{showAllCategories?"접기":`더보기 +${cats.length-4}`}</button></div>
+    {loading?<div className="bg-card" style={{textAlign:"center",padding:30}}>뉴스를 불러오는 중...</div>:error?<div className="bg-card" style={{textAlign:"center",padding:30}}>{error}<br/><button className="bg-btn" style={{marginTop:12}} onClick={load}>다시 시도</button></div>:paged.length?<div className="petnews-list">{paged.map(n=><button type="button" className="bg-card petnews-card" key={n.id} onClick={()=>{setSelectedNews(n);window.scrollTo({top:0,behavior:"smooth"})}}><div className="petnews-card-media"><img src={n.image||fallback(n)} alt="" loading="lazy" onError={e=>{e.currentTarget.src=fallback(n)}}/></div><div className="petnews-card-body"><div className="petnews-meta"><b>{n.category||"Pet뉴스"}</b><span>{n.source||"언론사"}</span><span>·</span><span>{timeLabel(n.publishedAt)}</span></div><div className="petnews-title">{n.title}</div><p className="petnews-summary">{n.description||"기사 내용을 눌러 자세히 확인해보세요."}</p></div></button>)}</div>:<div className="bg-card" style={{textAlign:"center",padding:30}}>조건에 맞는 뉴스가 없어요.</div>}
+    {!loading&&!error&&items.length>NEWS_PAGE_SIZE&&<div style={{display:"flex",justifyContent:"center",gap:8,flexWrap:"wrap",marginTop:18}}><button className="bg-chip" disabled={safePage<=1} onClick={()=>setNewsPage(p=>Math.max(1,p-1))}>‹ 이전</button>{Array.from({length:totalPages},(_,i)=>i+1).map(p=><button key={p} className={"bg-chip "+(p===safePage?"active":"")} onClick={()=>setNewsPage(p)}>{p}</button>)}<button className="bg-chip" disabled={safePage>=totalPages} onClick={()=>setNewsPage(p=>Math.min(totalPages,p+1))}>다음 ›</button></div>}
+    <p className="bg-sub" style={{fontSize:12,lineHeight:1.7,marginTop:16}}>Pet뉴스는 공개 뉴스 검색 결과를 바탕으로 제목·요약을 제공하며 기사 전문과 저작권은 각 언론사에 있습니다.</p>
   </div>;
 }
 
@@ -10759,12 +10747,16 @@ function AdminReportsPage({onBack}){
      <div className="admin-stat-grid">{[["미처리 신고",c.openReports||0],["답변대기 문의",c.waitingInquiries||0],["이용제한 중",c.restricted||0],["오늘 방문",c.todaySessions||0],["현재 접속 추정",c.onlineSessions5m||0],["7일 활성회원",c.active7d||0],["7일 신규회원",c.new7d||0],["오늘 Pet톡 글",c.postsToday||0]].map(([a,b])=><div className="admin-stat-card" key={a}><strong>{b}</strong><small>{a}</small></div>)}</div>
      <div className="bg-card admin-menu-analytics">
        <div className="admin-menu-analytics-head"><div><h3>메뉴 이용 통계</h3><small>페이지 진입 기준 · 오늘 / 7일 / 30일 이용량을 확인해요.</small></div><span className="bg-chip active admin-menu-period-chip">30일</span></div>
-       {(()=>{const labels={home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"회원정보",support:"고객지원",admin:"관리자"};const rows=(stats?.menuUsage||[]).filter(x=>labels[x.dimension]);const max=Math.max(1,...rows.map(x=>Number(x.d30)||0));return rows.length?<><div className="admin-menu-top">🏆 가장 자주 이용 <span>{labels[rows[0]?.dimension]||rows[0]?.dimension}</span></div>{rows.map((x,i)=><div className="admin-menu-row" key={x.dimension}><div className="admin-menu-name">{i<3?["🥇 ","🥈 ","🥉 "][i]:""}{labels[x.dimension]||x.dimension}</div><div className="admin-menu-bar"><i style={{width:`${Math.max(3,Math.round((Number(x.d30)||0)/max*100))}%`}}/></div><div className="admin-menu-value"><b>{Number(x.d30)||0}회</b><br/><small>7일 {Number(x.d7)||0} · 오늘 {Number(x.today)||0}</small></div></div>)}</>:<div className="bg-sub" style={{padding:"10px 0"}}>아직 메뉴 이용 데이터가 충분하지 않아요. 배포 후 방문부터 자동 집계됩니다.</div>})()}
+       {(()=>{const labels={home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"회원정보",support:"고객지원",admin:"관리자"};const rows=(stats?.menuUsage||[]).filter(x=>labels[x.dimension]);const max=Math.max(1,...rows.map(x=>Number(x.d30)||0));return rows.length?<><div className="admin-menu-top">🏆 가장 자주 이용 <span>{labels[rows[0]?.dimension]||rows[0]?.dimension}</span></div>{rows.map((x,i)=><div className="admin-menu-row" key={x.dimension}><div className="admin-menu-name">{i<3?["🥇 ","🥈 ","🥉 "][i]:""}{labels[x.dimension]||x.dimension}</div><div className="admin-menu-bar"><i style={{width:`${Math.max(3,Math.round((Number(x.d30)||0)/max*100))}%`}}/></div><div className="admin-menu-value"><b>{Number(x.d30)||0}회</b><br/><small>7일 {Number(x.d7)||0} · 오늘 {Number(x.today)||0}</small></div></div>)}</>:<div className="bg-sub" style={{padding:"10px 0"}}>아직 메뉴 이용 데이터가 충분하지 않아요. 배포 후 방문부터 자동 집계됩니다.</div>})()}
+     </div>
+     <div className="bg-card admin-menu-analytics">
+       <div className="admin-menu-analytics-head"><div><h3>Pet사주 · Pet타로 이용 현황</h3><small>주제별 결과 생성 및 저장 이용량 · 오늘 / 7일 / 30일</small></div></div>
+       {(()=>{const labels={saju_daily:"오늘의 펫운세",tarot_daily:"오늘의 타로",tarot_bond:"보호자 궁합 타로",tarot_heart:"우리 아이 마음 타로",tarot_activity:"산책·활동 타로",tarot_advice:"오늘의 조언 타로",saju_tarot_save:"타로 저장"};const rows=stats?.featureUsage||[];return rows.length?rows.map(x=><div className="admin-menu-row" key={x.feature}><div className="admin-menu-name">{labels[x.feature]||x.feature}</div><div className="admin-menu-value"><b>{Number(x.d30)||0}회</b><br/><small>7일 {Number(x.d7)||0} · 오늘 {Number(x.today)||0}</small></div></div>):<div className="bg-sub" style={{padding:"10px 0"}}>아직 Pet타로·운세 이용 데이터가 없어요.</div>})()}
      </div>
    </>}
    {tab==="reporting"&&<div className="admin-reporting-page">
      <div className="bg-card admin-reporting-head"><div><h2>📊 운영 보고서</h2><p className="bg-sub">일일은 어제, 주간은 오늘을 제외한 최근 7일, 월간은 지난달 전체를 집계해요.</p>{reportData&&<div className="admin-report-period">집계기간 <b>{reportRangeLabel(reportData)}</b></div>}</div><div className="admin-reporting-tabs">{[["daily","일일보고"],["weekly","주간보고"],["monthly","월간보고"]].map(([k,l])=><button type="button" disabled={reportLoading} className={reportPeriod===k?"active":""} key={k} onClick={()=>loadReport(k)}>{l}</button>)}</div></div>
-     {!reportData&&!reportLoading?<div className="bg-card admin-report-empty"><b>보고서 종류를 선택해 주세요.</b><p className="bg-sub">일일보고는 어제, 주간보고는 최근 7일(오늘 제외), 월간보고는 지난달 기준이에요.</p><button className="bg-btn" onClick={()=>loadReport("daily")}>일일보고 불러오기</button></div>:reportLoading?<div className="bg-card admin-report-empty">보고서를 계산하는 중...</div>:<>{(()=>{const r=reportData?.summary||{};return <><div className="admin-report-kpi-grid">{[["방문 세션",r.sessions||0,"👥"],["신규 회원",r.newMembers||0,"✨"],["Pet톡 글",r.posts||0,"💬"],["Pet톡 댓글",r.comments||0,"🗨️"],["음악 좋아요",r.musicLikes||0,"♥"],["음악 댓글",r.musicComments||0,"🎵"],["주변 Pet 후기",r.placeReviews||0,"📍"],["신고 접수",r.reports||0,"🚨"]].map(([l,v,ic])=><div className="bg-card admin-report-kpi" key={l}><span>{ic}</span><strong>{v}</strong><small>{l}</small></div>)}</div><div className="admin-reporting-grid"><div className="bg-card"><h3>🏆 이용 메뉴 TOP</h3>{(reportData.topMenus||[]).length?(reportData.topMenus||[]).slice(0,8).map((x,i)=><div className="admin-report-rank" key={x.dimension}><b>{i+1}. {({home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"회원정보",support:"고객지원",admin:"관리자센터"}[x.dimension]||x.dimension)}</b><span>{Number(x.count)||0}회</span></div>):<p className="bg-sub">집계 데이터가 없어요.</p>}</div><div className="bg-card"><h3>📱 접속 환경</h3>{(reportData.platforms||[]).length?(reportData.platforms||[]).map(x=><div className="admin-report-rank" key={x.platform}><b>{{web:"웹사이트",mobile_web:"모바일 웹",pwa:"PWA",android:"Android 앱",ios:"iOS 앱"}[x.platform]||x.platform}</b><span>{Number(x.count)||0}</span></div>):<p className="bg-sub">집계 데이터가 없어요.</p>}<hr/><p className="bg-sub">내 주변 Pet 후기 평균 <b>★ {r.placeAvgRating||0}</b></p></div></div></>})()}</>}
+     {!reportData&&!reportLoading?<div className="bg-card admin-report-empty"><b>보고서 종류를 선택해 주세요.</b><p className="bg-sub">일일보고는 어제, 주간보고는 최근 7일(오늘 제외), 월간보고는 지난달 기준이에요.</p><button className="bg-btn" onClick={()=>loadReport("daily")}>일일보고 불러오기</button></div>:reportLoading?<div className="bg-card admin-report-empty">보고서를 계산하는 중...</div>:<>{(()=>{const r=reportData?.summary||{};return <><div className="admin-report-kpi-grid">{[["방문 세션",r.sessions||0,"👥"],["신규 회원",r.newMembers||0,"✨"],["Pet톡 글",r.posts||0,"💬"],["Pet톡 댓글",r.comments||0,"🗨️"],["음악 좋아요",r.musicLikes||0,"♥"],["음악 댓글",r.musicComments||0,"🎵"],["주변 Pet 후기",r.placeReviews||0,"📍"],["신고 접수",r.reports||0,"🚨"]].map(([l,v,ic])=><div className="bg-card admin-report-kpi" key={l}><span>{ic}</span><strong>{v}</strong><small>{l}</small></div>)}</div><div className="admin-reporting-grid"><div className="bg-card"><h3>🏆 이용 메뉴 TOP</h3>{(reportData.topMenus||[]).length?(reportData.topMenus||[]).slice(0,8).map((x,i)=><div className="admin-report-rank" key={x.dimension}><b>{i+1}. {({home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"회원정보",support:"고객지원",admin:"관리자센터"}[x.dimension]||x.dimension)}</b><span>{Number(x.count)||0}회</span></div>):<p className="bg-sub">집계 데이터가 없어요.</p>}</div><div className="bg-card"><h3>📱 접속 환경</h3>{(reportData.platforms||[]).length?(reportData.platforms||[]).map(x=><div className="admin-report-rank" key={x.platform}><b>{{web:"웹사이트",mobile_web:"모바일 웹",pwa:"PWA",android:"Android 앱",ios:"iOS 앱"}[x.platform]||x.platform}</b><span>{Number(x.count)||0}</span></div>):<p className="bg-sub">집계 데이터가 없어요.</p>}<hr/><p className="bg-sub">내 주변 Pet 후기 평균 <b>★ {r.placeAvgRating||0}</b></p></div></div></>})()}</>}
    </div>}
    {tab==="service"&&<div className="service-health-wrap">
  <div className={`service-health-hero ${health?.level||"healthy"}`}><div className="service-health-dot">{health?.level==="down"?"🔴":health?.level==="warning"?"🟡":"🟢"}</div><div><small>현재 서비스 상태</small><h2>{health?.level==="down"?"장애":health?.level==="warning"?"주의":"정상"}</h2>{health?.reason && !["정상","주의","장애"].includes(health.reason) ? <p>{health.reason}</p> : <p className="service-health-subtext">{health?.level==="healthy"?"모든 주요 기능이 정상적으로 동작하고 있어요.":health?.level==="warning"?"일부 요청 지연이나 오류가 감지됐어요.":"서비스 장애 징후가 감지됐어요."}</p>}</div><button className="bg-btn bg-btn-ghost" onClick={async()=>{try{setHealth(await adminHealth())}catch(e){window.alert(e.message)}}}>새로고침</button></div>
@@ -11659,13 +11651,13 @@ function AppInner({ lang, setLang }) {
       </div>
 
       <div className="petgrow-content-stage">
-      {["community","tips","saju","tarot","petbti","guide","my","more","support","ad-inquiry"].includes(effectiveView) && <UnifiedMenuHero view={effectiveView} lang={lang} />}
+      {["community","tips","saju","tarot","petbti","guide","my","more","support","ad-inquiry","nearby","music","news"].includes(effectiveView) && <UnifiedMenuHero view={effectiveView} lang={lang} />}
       {effectiveView === "login" ? (
         <LoginScreen onGoTerms={() => goView("terms")} onGoPrivacy={() => goView("privacy")} />
       ) : effectiveView === "privacy" ? (
         <><PrivacyContent /><PetNewsPrivacyAddendum /></>
       ) : effectiveView === "terms" ? (
-        <TermsContent />
+        <><TermsContent /><PetNewsTermsAddendum /></>
       ) : effectiveView === "about" ? (
         <AboutPage onStart={() => goView("pets")} onNavigate={(v) => goView(v)} />
       ) : effectiveView === "home" ? (
@@ -11747,31 +11739,17 @@ function AppInner({ lang, setLang }) {
       </div>
 
       {effectiveView !== "login" && (
-        <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 40px" }}>
-          <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 10 }}>
-            help.petgrow@gmail.com
+        <footer className="petgrow-footer">
+          <div className="petgrow-footer-email">help.petgrow@gmail.com</div>
+          <div className="petgrow-footer-copy">Copyright ⓒ PetGrow. All rights reserved.</div>
+          <div className="petgrow-footer-links">
+            <button type="button" onClick={()=>goView("privacy")}>{t.privacyFooterLink}</button>
+            <button type="button" onClick={()=>goView("terms")}>{t.termsFooterLink}</button>
+            <button type="button" onClick={()=>goView("guide")}>{lang==="en"?"Guide":"정보가이드"}</button>
+            <button type="button" onClick={()=>goView("ad-inquiry")}>{lang==="en"?"Partnerships":"광고·제휴 문의"}</button>
+            <button type="button" onClick={()=>goView("support")}>{lang==="en"?"Support":"고객지원"}</button>
           </div>
-          <div className="bg-sub" style={{ fontSize: 11, textAlign: "center", marginTop: 2 }}>
-            Copyright ⓒ PetGrow. All rights reserved.
-          </div>
-          <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 10 }}>
-            <button type="button" onClick={() => goView("terms")}
-              style={{ fontSize: 11, fontWeight: 600, lineHeight: 1.4, fontFamily: "inherit", color: "var(--primary)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-              {t.termsFooterLink}
-            </button>
-            <button type="button" onClick={() => goView("privacy")}
-              style={{ fontSize: 11, fontWeight: 600, lineHeight: 1.4, fontFamily: "inherit", color: "var(--primary)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-              {t.privacyFooterLink}
-            </button>
-            <a href="mailto:help.petgrow@gmail.com" style={{ fontSize: 11, fontWeight: 600, lineHeight: 1.4, fontFamily: "inherit", color: "var(--primary)", textDecoration: "none" }}>
-              {t.contactBtn}
-            </a>
-            <button type="button" onClick={() => goView("ad-inquiry")}
-              style={{ fontSize: 11, fontWeight: 600, lineHeight: 1.4, fontFamily: "inherit", color: "var(--primary)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-              {lang === "en" ? "Partnerships" : "광고·제휴 문의"}
-            </button>
-          </div>
-        </div>
+        </footer>
       )}
 
       {effectiveView !== "login" && MENU_HELP[effectiveView] && (

@@ -74,6 +74,16 @@ export default async function handler(req,res){
         group by dimension
         order by d30 desc nulls last
       `,
+      featureUsage:()=>sql`
+        select feature,
+          count(*) filter(where created_at>=(now() at time zone 'Asia/Seoul')::date)::int today,
+          count(*) filter(where created_at>=now()-interval '7 days')::int d7,
+          count(*) filter(where created_at>=now()-interval '30 days')::int d30
+        from pg_feature_usage
+        where feature in ('saju_daily','tarot_daily','tarot_bond','tarot_heart','tarot_activity','tarot_advice','saju_tarot_save')
+          and created_at>=now()-interval '30 days'
+        group by feature order by d30 desc
+      `,
       platformUsage:()=>sql`
         select platform,
           count(*) filter(where day=(now() at time zone 'Asia/Seoul')::date)::int today,
@@ -88,7 +98,8 @@ export default async function handler(req,res){
     settled.forEach((x,i)=>{const k=ent[i][0];if(x.status==="fulfilled")q[k]=x.value.rows[0]||{};else warnings.push(`${k} 통계를 불러오지 못했어요.`)});
     const menuRows=settled[ent.findIndex(([k])=>k==="menuUsage")]?.status==="fulfilled" ? settled[ent.findIndex(([k])=>k==="menuUsage")].value.rows : [];
     const platformRows=settled[ent.findIndex(([k])=>k==="platformUsage")]?.status==="fulfilled" ? settled[ent.findIndex(([k])=>k==="platformUsage")].value.rows : [];
-    return res.status(200).json({warnings,cards:{totalMembers:q.members?.total||0,new7d:q.members?.new7||0,active7d:q.active?.d7||0,openReports:(q.reports?.open||0)+(q.nearbyReports?.open||0)+(q.musicReports?.open||0),resolvedReports7d:(q.reports?.done7||0)+(q.nearbyReports?.done7||0)+(q.musicReports?.done7||0),restricted:q.restrictions?.n||0,todaySessions:q.sessions?.today||0,onlineSessions5m:q.sessions?.online||0,postsToday:q.community?.posts_today||0,commentsToday:q.community?.comments_today||0,waitingInquiries:q.inquiries?.waiting||0},menuUsage:menuRows,platformUsage:platformRows});
+    const featureRows=settled[ent.findIndex(([k])=>k==="featureUsage")]?.status==="fulfilled" ? settled[ent.findIndex(([k])=>k==="featureUsage")].value.rows : [];
+    return res.status(200).json({warnings,cards:{totalMembers:q.members?.total||0,new7d:q.members?.new7||0,active7d:q.active?.d7||0,openReports:(q.reports?.open||0)+(q.nearbyReports?.open||0)+(q.musicReports?.open||0),resolvedReports7d:(q.reports?.done7||0)+(q.nearbyReports?.done7||0)+(q.musicReports?.done7||0),restricted:q.restrictions?.n||0,todaySessions:q.sessions?.today||0,onlineSessions5m:q.sessions?.online||0,postsToday:q.community?.posts_today||0,commentsToday:q.community?.comments_today||0,waitingInquiries:q.inquiries?.waiting||0},menuUsage:menuRows,platformUsage:platformRows,featureUsage:featureRows});
   }
   if(a==="report-summary"&&req.method==="GET"){
     const period=["daily","weekly","monthly"].includes(String(req.query.period||""))?String(req.query.period):"daily";
