@@ -1,0 +1,45 @@
+name: Capture Functions Final Batch
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/final-functions-trigger.txt'
+permissions:
+  contents: write
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Capture functions
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('src/App.jsx').read_text(encoding='utf-8')
+          lines=s.splitlines()
+          names=['UnifiedMenuHero','HomePage','NearbyPetPage','TipsPage','InfoGuidePage','CommunityFeed','PetTalkFallback','CommunityPage','PetNewsPage','PetPointDashboard','MyPage']
+          out=[]
+          for name in names:
+            starts=[i for i,l in enumerate(lines) if f'function {name}' in l or f'class {name}' in l]
+            if not starts: continue
+            st=starts[0]
+            # next top-level function/class marker after start
+            en=len(lines)
+            for j in range(st+1,len(lines)):
+              l=lines[j]
+              if (l.startswith('function ') or l.startswith('class ')) and j>st+2:
+                en=j; break
+            out.append(f'===== {name} lines {st+1}-{en} =====')
+            out.extend(f'{k+1}: {lines[k]}' for k in range(st,en))
+          Path('FINAL_FUNCTIONS_CONTEXT.txt').write_text('\n'.join(out),encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          git config user.name petgrow-automation
+          git config user.email actions@users.noreply.github.com
+          git add FINAL_FUNCTIONS_CONTEXT.txt
+          git commit -m 'chore: capture final batch functions' || exit 0
+          git push origin main
