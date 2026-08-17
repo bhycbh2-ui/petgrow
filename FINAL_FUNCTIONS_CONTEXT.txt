@@ -1,0 +1,893 @@
+===== UnifiedMenuHero lines 9570-9590 =====
+9570: function UnifiedMenuHero({ view, lang='ko' }) {
+9571:   const meta={
+9572:     pets:{eyebrow:'MY PET',ko:'우리 아이',en:'My Pet',koDesc:'반려동물의 기본정보부터 성장기록, 사진, 건강정보까지 한곳에서 관리해요.',enDesc:'Keep profiles, growth records, photos and care information together.'},
+9573:     community:{eyebrow:'PETGROW TALK',ko:'Pet톡',en:'Pet Talk',koDesc:'우리 아이의 일상과 궁금한 점, 반려생활 정보를 회원들과 편하게 나눠보세요.',enDesc:'Share everyday moments, questions and useful pet-life tips.'},
+9574:     tips:{eyebrow:'PETGROW INFO',ko:'Pet정보',en:'Pet Info',koDesc:'건강·식단·생활·훈련 등 반려생활에 바로 활용할 수 있는 정보를 모아봤어요.',enDesc:'Browse practical information for health, food, daily care and training.'},
+9575:     saju:{eyebrow:'PETGROW CONTENT',ko:'Pet사주',en:'Pet Saju',koDesc:'우리 아이의 생년월일을 바탕으로 재미로 즐기는 특별한 이야기를 만나보세요.',enDesc:'Enjoy a lighthearted pet fortune story based on your pet profile.'},
+9576:     tarot:{eyebrow:'PETGROW TAROT',ko:'Pet타로',en:'Pet Tarot',koDesc:'22장의 메이저 아르카나에서 오늘·궁합·마음·산책·조언 주제별로 하루 한 장의 메시지를 만나보세요.',enDesc:'Draw one Major Arcana card per topic each day for a lighthearted pet-life message.'},
+9577:     petbti:{eyebrow:'PETGROW CONTENT',ko:'PetBTI',en:'PetBTI',koDesc:'강아지와 고양이의 행동 성향을 질문으로 살펴보고 우리 아이의 개성을 알아봐요.',enDesc:'Explore your pet personality through a simple behavior questionnaire.'},
+9578:     guide:{eyebrow:'PETGROW GUIDE',ko:'정보가이드',en:'Guide',koDesc:'PetGrow의 주요 기능과 이용 방법을 한곳에서 쉽고 빠르게 확인해요.',enDesc:'See how PetGrow features work and how to use them.'},
+9579:     my:{eyebrow:'PETGROW MY',ko:'마이페이지',en:'My Page',koDesc:'회원정보와 내가 남긴 활동, 좋아요한 콘텐츠를 한곳에서 관리해요.',enDesc:'Manage your account, activity and saved favorites.'},
+9580:     more:{eyebrow:'PETGROW MENU',ko:'더보기',en:'More',koDesc:'PetGrow의 다양한 기능과 고객지원 메뉴를 한곳에서 확인해요.',enDesc:'Find additional PetGrow features and support options.'},
+9581:     nearby:{eyebrow:'PETGROW NEARBY',ko:'내 주변 Pet',en:'Nearby Pet',koDesc:'주소나 현재 위치를 기준으로 가까운 반려동물 시설을 찾아보세요.',enDesc:'Find nearby pet hospitals, shops, grooming and care services.'},
+9582:     music:{eyebrow:'PETGROW SOUND',ko:'Pet음악',en:'Pet Music',koDesc:'강아지와 고양이를 위한 음악을 듣고 좋아요·댓글로 반응을 나눠보세요.',enDesc:'Listen to music for dogs and cats and save your favorites.'},
+9583:     news:{eyebrow:'PETGROW NEWS',ko:'Pet뉴스',en:'Pet News',koDesc:'반려견·반려묘·건강·정책 등 최신 반려동물 뉴스를 보기 좋게 모아봐요.',enDesc:'Browse recent pet news with clear summaries and publisher links.'},
+9584:     support:{eyebrow:'PETGROW SUPPORT',ko:'고객지원',en:'Support',koDesc:'서비스 이용 중 궁금한 점이나 도움이 필요한 내용을 남겨주세요.',enDesc:'Ask questions or get help using PetGrow.'},
+9585:     'ad-inquiry':{eyebrow:'PETGROW PARTNERS',ko:'광고 문의',en:'Advertising',koDesc:'PetGrow와 함께할 광고·제휴 문의를 편하게 남겨주세요.',enDesc:'Contact PetGrow about advertising and partnership opportunities.'}
+9586:   };
+9587:   const x=meta[view]; if(!x)return null;
+9588:   return <section className="nearby-hero bg-card petgrow-unified-hero" style={{width:'100%',maxWidth:'none',margin:'0 0 18px'}}><div><span className="nearby-eyebrow">{x.eyebrow}</span><h1>{lang==='en'?x.en:x.ko}</h1><p>{lang==='en'?x.enDesc:x.koDesc}</p>{view==='pets'&&<small className="nearby-search-help">🐾 {lang==='en'?'Register dogs and cats separately and keep their changes organized over time.':'강아지와 고양이 정보를 각각 등록하고 우리 아이의 변화를 차곡차곡 기록해보세요.'}</small>}</div></section>;
+9589: }
+9590: 
+===== HomePage lines 9591-9668 =====
+9591: function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
+9592:   const t = useT();
+9593:   const visiblePets = account ? pets : [];
+9594:   const pet = visiblePets[0] || null;
+9595:   const petName = pet ? normalizePetDisplayText(pet.profile?.name, lang === "en" ? "My Pet" : "우리 아이") : "";
+9596:   const accountName = normalizePetDisplayText(account?.name, "");
+9597:   const weight = pet?.records?.length ? pet.records[pet.records.length - 1]?.weightKg : pet?.profile?.initialWeightKg;
+9598:   const allQuick = [
+9599:     ["pets", "🐾", lang === "en" ? "My Pet" : "우리 아이"],
+9600:     ["music", "🎵", lang === "en" ? "Pet Music" : "Pet음악"],
+9601:     ["news", "📰", lang === "en" ? "Pet News" : "Pet뉴스"],
+9602:     ["nearby", "📍", lang === "en" ? "Nearby Pet" : "내 주변 Pet"],
+9603:     ["community", "💬", lang === "en" ? "Pet Talk" : "Pet톡"],
+9604:     ["petbti", "🧠", "PetBTI"],
+9605:     ["saju", "🔮", lang === "en" ? "Pet Saju" : "Pet사주"],
+9606:     ["tarot", "🃏", lang === "en" ? "Pet Tarot" : "Pet타로"],
+9607:     ["tips", "💡", lang === "en" ? "Pet Info" : "Pet정보"],
+9608:     ["guide", "📚", lang === "en" ? "Guide" : "정보가이드"]
+9609:   ];
+9610:   const defaultQuickKeys=["pets","music","news","nearby","community","petbti"];
+9611:   const quickStorageKey=account?.id?`petgrow_quick_${account.id}`:"petgrow_quick_guest";
+9612:   const [quickKeys,setQuickKeys]=useState(()=>{try{const v=JSON.parse(localStorage.getItem(quickStorageKey)||"null");return Array.isArray(v)&&v.length?v.slice(0,6):defaultQuickKeys;}catch{return defaultQuickKeys;}});
+9613:   const [quickEditing,setQuickEditing]=useState(false);
+9614:   const [homeNews,setHomeNews]=useState([]);
+9615:   useEffect(()=>{
+9616:     let cancelled=false;
+9617:     fetch('/api/news').then(r=>r.ok?r.json():null).then(j=>{if(cancelled)return;const items=Array.isArray(j?.items)?j.items:[];const score=x=>{const h=(x.title+' '+x.description);let n=0;if(/정책|법|제도|정부|지자체|동물보호법/.test(h))n+=4;if(/건강|질병|감염|백신|병원|수의|안전|주의|리콜/.test(h))n+=5;if(/유기|보호|입양|학대/.test(h))n+=3;return n;};setHomeNews([...items].sort((a,b)=>score(b)-score(a)||new Date(b.publishedAt||0)-new Date(a.publishedAt||0)).slice(0,3));}).catch(()=>{});
+9618:     return()=>{cancelled=true};
+9619:   },[]);
+9620:   useEffect(()=>{
+9621:     let cancelled=false;
+9622:     if(!account?.id)return;
+9623:     fetch('/api/core?action=state&key=home_quick_menu').then(r=>r.ok?r.json():null).then(j=>{if(cancelled)return;const v=j?.value;if(Array.isArray(v)&&v.length)setQuickKeys(v.filter(k=>allQuick.some(x=>x[0]===k)).slice(0,6));}).catch(()=>{});
+9624:     return()=>{cancelled=true};
+9625:   },[account?.id]);
+9626:   const saveQuick=(next)=>{const clean=next.filter(k=>allQuick.some(x=>x[0]===k)).slice(0,6);setQuickKeys(clean);try{localStorage.setItem(quickStorageKey,JSON.stringify(clean));}catch{}if(account?.id)fetch('/api/core?action=state',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:'home_quick_menu',value:clean})}).catch(()=>{});};
+9627:   const toggleQuick=(key)=>{if(quickKeys.includes(key))saveQuick(quickKeys.filter(k=>k!==key));else if(quickKeys.length<6)saveQuick([...quickKeys,key]);};
+9628:   const moveQuick=(key,dir)=>{const i=quickKeys.indexOf(key);if(i<0)return;const j=dir==='first'?0:dir==='last'?quickKeys.length-1:i+(dir==='left'?-1:1);if(j<0||j>=quickKeys.length||j===i)return;const next=[...quickKeys];next.splice(i,1);next.splice(j,0,key);saveQuick(next);};
+9629:   const [quickDragKey,setQuickDragKey]=useState(null);
+9630:   const reorderQuick=(fromKey,toKey)=>{if(!fromKey||!toKey||fromKey===toKey)return;const from=quickKeys.indexOf(fromKey),to=quickKeys.indexOf(toKey);if(from<0||to<0)return;const next=[...quickKeys];const [moved]=next.splice(from,1);next.splice(to,0,moved);saveQuick(next);};
+9631:   const beginQuickPointerDrag=(e,key)=>{setQuickDragKey(key);try{e.currentTarget.setPointerCapture?.(e.pointerId)}catch{}};
+9632:   const moveQuickPointer=(e)=>{if(!quickDragKey)return;const el=document.elementFromPoint(e.clientX,e.clientY)?.closest?.('[data-quick-key]');const over=el?.dataset?.quickKey;if(over&&over!==quickDragKey){reorderQuick(quickDragKey,over);setQuickDragKey(over);}};
+9633:   const endQuickPointerDrag=()=>setQuickDragKey(null);
+9634:   const quick=quickKeys.map(k=>allQuick.find(x=>x[0]===k)).filter(Boolean);
+9635:   return (
+9636:     <div className="legal-page-shell petgrow-dashboard-home">
+9637:       <section className="dash-welcome">
+9638:         <div><span className="dash-eyebrow">PetGrow</span><h1>{accountName ? t.homeGreeting(accountName) : (lang === "en" ? "Welcome to PetGrow! 🐾" : "오늘도 우리 아이와 행복한 하루 🐾")}</h1><p>{lang === "en" ? "Everything your pet needs, in one simple dashboard." : "우리 아이의 성장·음악·주변 시설·커뮤니티를 한곳에서 확인해요."}</p></div>
+9639:         <button type="button" className="dash-profile-dot" onClick={() => onGoView(account ? "my" : "pets")} aria-label="마이페이지">{account?.name?.slice(0,1) || "🐾"}</button>
+9640:       </section>
+9641: 
+9642:       <section className={`dash-pet-spotlight ${pet ? "has-pet" : "empty"}`} onClick={onGoPets}>
+9643:         {pet ? <>
+9644:           <div className="dash-pet-photo">{pet.profile.profileImage ? <img src={pet.profile.profileImage} alt={`${petName || "반려동물"} 프로필`} fetchPriority="high" /> : <span>{pet.species === "cat" ? "🐱" : "🐶"}</span>}</div>
+9645:           <div className="dash-pet-copy"><small>{lang === "en" ? "TODAY WITH MY PET" : "오늘의 우리 아이"}</small><h2 className="pet-user-name">{petName}</h2><p>{[pet.profile.breedName, petAgeLabel(pet.profile.birthDate, lang)].filter(Boolean).join(" · ")}</p><div className="dash-pet-metrics"><span><b>{weight ? `${Number(weight).toFixed(1)}kg` : "—"}</b><small>{lang === "en" ? "Weight" : "현재 체중"}</small></span><span><b>{pet.profile.gender === "male" ? "♂" : pet.profile.gender === "female" ? "♀" : "—"}</b><small>{lang === "en" ? "Gender" : "성별"}</small></span><span><b>{pet.species === "cat" ? "CAT" : "DOG"}</b><small>{lang === "en" ? "Type" : "구분"}</small></span></div></div>
+9646:           <div className="dash-pet-arrow">›</div>
+9647:         </> : <><div className="dash-empty-icon">＋</div><div><h2>{lang === "en" ? "Add your pet" : "우리 아이를 등록해보세요"}</h2><p>{lang === "en" ? "Start growth records and personalized features." : "성장 기록과 맞춤 기능을 바로 시작할 수 있어요."}</p></div><div className="dash-pet-arrow">›</div></>}
+9648:       </section>
+9649: 
+9650:       <TodayPetHomeCard account={account} onOpenSaju={()=>onGoView("saju")} onOpenTarot={()=>onGoView("tarot")} lang={lang} />
+9651: 
+9652:       <section className="dash-section"><div className="dash-section-head"><h2>{lang === "en" ? "Quick access" : "자주 사용하는 메뉴"}</h2><button type="button" className="bg-chip" onClick={()=>setQuickEditing(v=>!v)}>{quickEditing?(lang==='en'?'Done':'완료'):(lang==='en'?'Edit':'편집')}</button></div>{quickEditing&&<div className="bg-card" style={{padding:14,marginBottom:12}}><p className="bg-sub" style={{fontSize:12,margin:'0 0 10px'}}>{lang==='en'?'Choose up to six shortcuts, then reorder them below. Signed-in choices sync to your account.':'원하는 메뉴를 최대 6개까지 선택한 뒤 아래에서 순서를 바꿀 수 있어요. 로그인하면 계정에 저장돼 다른 기기에서도 그대로 보여요.'}</p><div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>{allQuick.map(([key,icon,label])=><button type="button" key={key} className={`bg-chip ${quickKeys.includes(key)?'active':''}`} onClick={()=>toggleQuick(key)}>{icon} {label}</button>)}</div><div className="quick-order-list">{quick.map(([key,icon,label])=><div className={`quick-order-row ${quickDragKey===key?'dragging':''}`} data-quick-key={key} key={key} draggable onDragStart={()=>setQuickDragKey(key)} onDragOver={e=>{e.preventDefault();if(quickDragKey&&quickDragKey!==key){reorderQuick(quickDragKey,key);setQuickDragKey(key)}}} onDragEnd={endQuickPointerDrag}><span><i>{icon}</i><b>{label}</b></span><button type="button" className="quick-drag-handle" aria-label={`${label} 순서 이동`} title={lang==='en'?'Drag to reorder':'끌어서 순서 변경'} onPointerDown={e=>beginQuickPointerDrag(e,key)} onPointerMove={moveQuickPointer} onPointerUp={endQuickPointerDrag} onPointerCancel={endQuickPointerDrag}>≡</button></div>)}</div></div>}<div className="dash-quick-grid">{quick.map(([key,icon,label])=><button type="button" key={key} onClick={()=>key==="pets"?onGoPets():onGoView(key)}><i>{icon}</i><span>{label}</span></button>)}</div></section>
+9653: 
+9654:       {homeNews.length>0&&<section className="dash-section"><div className="dash-section-head"><h2>{lang==='en'?'Important Pet News':'주요 Pet뉴스'}</h2><button type="button" className="bg-chip" onClick={()=>onGoView('news')}>{lang==='en'?'View all':'전체보기'}</button></div><div style={{display:'grid',gap:10}}>{homeNews.map(n=><button key={n.id} type="button" className="bg-card" onClick={()=>onGoView('news')} style={{padding:'15px 16px',textAlign:'left',border:'1px solid var(--border)',cursor:'pointer'}}><small style={{fontWeight:800,color:'var(--primary)'}}>{n.category||'Pet뉴스'} · {n.source||''}</small><div style={{fontWeight:800,fontSize:15,lineHeight:1.5,marginTop:5}}>{n.title}</div><small className="bg-sub">{n.publishedAt?new Date(n.publishedAt).toLocaleDateString('ko-KR'):''}</small></button>)}</div></section>}
+9655: 
+9656:       <section className="dash-widget-grid">
+9657:         <button type="button" className="dash-widget dash-widget-music" onClick={()=>onGoView("music")}><div className="dash-widget-icon">🎵</div><div><small>{lang === "en" ? "PET MUSIC" : "PET MUSIC"}</small><h3>{lang === "en" ? "Popular TOP5 & my likes" : "인기 TOP5 · 내가 좋아요한 음악"}</h3><p>{lang === "en" ? "Play, loop and keep your favorites close." : "좋아하는 음악을 바로 듣고 반복재생해요."}</p></div><b>›</b></button>
+9658:         <button type="button" className="dash-widget dash-widget-nearby" onClick={()=>onGoView("nearby")}><div className="dash-widget-icon">📍</div><div><small>{lang === "en" ? "NEARBY PET" : "내 주변 PET"}</small><h3>{lang === "en" ? "Find pet places near me" : "가까운 반려동물 시설 찾기"}</h3><p>{lang === "en" ? "Hospitals, shops, grooming and daycare." : "병원·약국·펫샵·미용·유치원을 거리순으로 확인해요."}</p></div><b>›</b></button>
+9659:         <button type="button" className="dash-widget dash-widget-talk" onClick={()=>onGoView("community")}><div className="dash-widget-icon">💬</div><div><small>PET TALK</small><h3>{lang === "en" ? "Share everyday moments" : "우리 아이 이야기를 나눠요"}</h3><p>{lang === "en" ? "Questions, tips and cute moments." : "질문·정보·일상 이야기를 편하게 공유해요."}</p></div><b>›</b></button>
+9660:         <button type="button" className="dash-widget dash-widget-content" onClick={()=>onGoView("petbti")}><div className="dash-widget-icon">🧠</div><div><small>PET CONTENT</small><h3>{lang === "en" ? "Pet personality test" : "우리 아이 PetBTI"}</h3><p>{lang === "en" ? "A 20-question personality test for dogs and cats." : "강아지·고양이 각 20문항으로 성향을 알아봐요."}</p></div><b>›</b></button>
+9661:         <button type="button" className="dash-widget dash-widget-saju" onClick={()=>onGoView("saju")}><div className="dash-widget-icon">🔮</div><div><small>PET SAJU</small><h3>{lang === "en" ? "Fun pet fortune" : "Pet사주"}</h3><p>{lang === "en" ? "Enjoy a lighthearted fortune story for your pet." : "우리 아이의 특별한 이야기를 재미로 만나보세요."}</p></div><b>›</b></button>
+9662:         <button type="button" className="dash-widget dash-widget-guide" onClick={()=>onGoView("guide")}><div className="dash-widget-icon">📚</div><div><small>GUIDE</small><h3>{lang === "en" ? "PetGrow guide" : "정보가이드"}</h3><p>{lang === "en" ? "See how each PetGrow feature works." : "PetGrow의 주요 기능 사용법을 한곳에서 확인해요."}</p></div><b>›</b></button>
+9663:       </section>
+9664:     </div>
+9665:   );
+9666: }
+9667: 
+9668: // 모바일 앱 하단 6탭 — 핵심 기능 5개 + 더보기로 단순하게 유지해요.
+===== NearbyPetPage lines 9251-9561 =====
+9251: function NearbyPetPage(){
+9252:   const t=useT();
+9253:   const mapRef=useRef(null);
+9254:   const mapObj=useRef(null);
+9255:   const overlays=useRef([]);
+9256:   const [pos,setPos]=useState(null);
+9257:   const [items,setItems]=useState([]);
+9258:   const [page,setPage]=useState(1);
+9259:   const pageSize=10;
+9260:   const [cat,setCat]=useState("all");
+9261:   const [area,setArea]=useState("");
+9262:   const [searchMode,setSearchMode]=useState("address");
+9263:   const [loading,setLoading]=useState(false);
+9264:   const [msg,setMsg]=useState("");
+9265:   const [searchRadius,setSearchRadius]=useState(1000);
+9266:   const searchCenterRef=useRef(null);
+9267:   const [positionAccuracy,setPositionAccuracy]=useState(null);
+9268:   const [within1km,setWithin1km]=useState(0);
+9269:   const [selected,setSelected]=useState(null);
+9270:   const [reviews,setReviews]=useState({items:[],summary:{count:0,avg:0}});
+9271:   const [reviewOpen,setReviewOpen]=useState(false);
+9272:   const [reviewRating,setReviewRating]=useState(5);
+9273:   const [reviewText,setReviewText]=useState("");
+9274:   const [reviewBusy,setReviewBusy]=useState(false);
+9275:   const [editingReviewId,setEditingReviewId]=useState(null);
+9276:   const [editingRating,setEditingRating]=useState(5);
+9277:   const [editingText,setEditingText]=useState("");
+9278:   const locationRequested=useRef(false);
+9279:   const nearbyCache=useRef(new Map());
+9280:   const requestSeq=useRef(0);
+9281:   const [followMyLocation,setFollowMyLocation]=useState(true);
+9282:   const locationWatchId=useRef(null);
+9283: 
+9284:   const loadReviews=async(place)=>{
+9285:     if(!place?.id){setReviews({items:[],summary:{count:0,avg:0}});return;}
+9286:     try{const r=await fetch(`/api/nearby-reviews?action=list&placeId=${encodeURIComponent(place.id)}`);const j=await r.json();if(r.ok)setReviews(j);}catch{}
+9287:   };
+9288: 
+9289:   useEffect(()=>{loadReviews(selected)},[selected?.id]);
+9290: 
+9291:   // 다른 메뉴로 이동할 때 Leaflet 인스턴스를 즉시 제거해 지도가 다른 화면 위에 남는 현상을 방지합니다.
+9292:   useEffect(()=>()=>{
+9293:     overlays.current.forEach(o=>{try{o?.setMap?.(null)}catch{}try{mapObj.current?.removeLayer?.(o)}catch{}});
+9294:     overlays.current=[];
+9295:     if(mapObj.current){try{mapObj.current.off?.();mapObj.current.remove?.();}catch{}mapObj.current=null;}
+9296:     if(mapRef.current) mapRef.current.innerHTML="";
+9297:   },[]);
+9298: 
+9299:   const loadMap=async(center,places,userPos=pos,showSearchPin=true)=>{
+9300:     if(!mapRef.current)return;
+9301:     const mobileNearby=typeof window!=="undefined"&&window.matchMedia&&window.matchMedia("(max-width: 700px)").matches;
+9302:     if(mobileNearby){
+9303:       const within2km=(places||[]).filter((p)=>{
+9304:         const d=Number(p?.distance ?? p?.userDistance);
+9305:         return !Number.isFinite(d)||d<=2000;
+9306:       });
+9307:       places=within2km.slice(0,25);
+9308:     }
+9309:     const kakaoJsKey=String(import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY||"").trim();
+9310:     if(kakaoJsKey){
+9311:       try{
+9312:         if(!window.kakao?.maps){
+9313:           await new Promise((resolve,reject)=>{
+9314:             const old=document.getElementById("petgrow-kakao-map-sdk");
+9315:             const done=()=>window.kakao?.maps?.load?window.kakao.maps.load(resolve):resolve();
+9316:             if(old){if(window.kakao?.maps)return done();old.addEventListener("load",done,{once:true});old.addEventListener("error",reject,{once:true});return;}
+9317:             const sc=document.createElement("script");sc.id="petgrow-kakao-map-sdk";sc.async=true;sc.src=`https://dapi.kakao.com/v2/maps/sdk.js?appkey=${encodeURIComponent(kakaoJsKey)}&autoload=false`;sc.onload=done;sc.onerror=reject;document.head.appendChild(sc);
+9318:           });
+9319:         }else if(window.kakao?.maps?.load){await new Promise(resolve=>window.kakao.maps.load(resolve));}
+9320:         const K=window.kakao?.maps;if(K){
+9321:           mapRef.current.innerHTML="";
+9322:           overlays.current.forEach(o=>{try{o?.setMap?.(null)}catch{}});overlays.current=[];
+9323:           const centerPos=new K.LatLng(center.lat,center.lng);
+9324:           const map=new K.Map(mapRef.current,{center:centerPos,level:5});mapObj.current=map;mapObj.current.__engine="kakao";
+9325:           window.setTimeout(()=>{try{map.relayout();map.setCenter(centerPos);map.setLevel(5)}catch{}},80);
+9326:           const makeOverlay=(lat,lng,html,z=3,click)=>{const el=document.createElement("div");el.innerHTML=html;const node=el.firstElementChild;if(click)node.addEventListener("click",click);const ov=new K.CustomOverlay({position:new K.LatLng(lat,lng),content:node,yAnchor:1,zIndex:z});ov.setMap(map);overlays.current.push(ov);return ov;};
+9327:           if(showSearchPin)makeOverlay(center.lat,center.lng,'<div class="nearby-search-pin"><span>⌖</span><b>검색 주소</b></div>',8);
+9328:           if(userPos&&Number.isFinite(Number(userPos.lat))&&Number.isFinite(Number(userPos.lng)))makeOverlay(userPos.lat,userPos.lng,'<div class="nearby-me-pin"><span></span><b>내 위치</b></div>',9);
+9329:           const bounds=new K.LatLngBounds();bounds.extend(centerPos);
+9330:           places.forEach((p,i)=>{
+9331:             const html=`<button type="button" class="nearby-map-marker nearby-map-marker--${p.typeKey||"other"}"><span>${p.typeIcon||"🐾"}</span><i>${i+1}</i></button>`;
+9332:             makeOverlay(p.lat,p.lng,html,5,()=>{setSelected(p);document.getElementById(`nearby-place-${p.id}`)?.scrollIntoView({behavior:"smooth",block:"center"});});
+9333:             bounds.extend(new K.LatLng(p.lat,p.lng));
+9334:           });
+9335:           if(places.length){map.setCenter(centerPos);map.setLevel(5);}
+9336:           window.setTimeout(()=>{try{map.relayout?.();map.setCenter(centerPos);map.setLevel(5)}catch{}},80);
+9337:           return;
+9338:         }
+9339:       }catch(e){console.warn("Kakao map load failed; using fallback map",e);}
+9340:     }
+9341:     if(!window.L) window.L=LeafletLib;
+9342:     if(!window.L){
+9343:       if(!document.getElementById("petgrow-leaflet-css")){
+9344:         const link=document.createElement("link");link.id="petgrow-leaflet-css";link.rel="stylesheet";link.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(link);
+9345:       }
+9346:       await new Promise((resolve,reject)=>{
+9347:         const old=document.getElementById("petgrow-leaflet-sdk");
+9348:         if(old){if(window.L)return resolve();old.addEventListener("load",resolve,{once:true});old.addEventListener("error",reject,{once:true});return;}
+9349:         const sc=document.createElement("script");sc.id="petgrow-leaflet-sdk";sc.async=true;sc.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";sc.onload=resolve;sc.onerror=reject;document.head.appendChild(sc);
+9350:       });
+9351:     }
+9352:     const L=window.L;if(!L)return;
+9353:     if(mapRef.current.querySelector(".nearby-map-fallback")) mapRef.current.innerHTML="";
+9354:     const c=[center.lat,center.lng];
+9355:     const map=mapObj.current||L.map(mapRef.current,{zoomControl:true,attributionControl:true}).setView(c,14);
+9356:     mapObj.current=map;
+9357:     if(!map.__petgrowTiles){L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(map);map.__petgrowTiles=true;}
+9358:     map.setView(c,14);
+9359:     overlays.current.forEach(o=>{try{map.removeLayer(o)}catch{}});overlays.current=[];
+9360:     if(showSearchPin){const searchIcon=L.divIcon({className:"petgrow-leaflet-search",html:'<div class="nearby-search-pin"><span>⌖</span><b>검색 주소</b></div>',iconSize:[72,52],iconAnchor:[36,36]});
+9361:     const searchMarker=L.marker(c,{icon:searchIcon,zIndexOffset:900}).addTo(map);overlays.current.push(searchMarker);}
+9362:     if(userPos&&Number.isFinite(Number(userPos.lat))&&Number.isFinite(Number(userPos.lng))){
+9363:       const meIcon=L.divIcon({className:"petgrow-leaflet-me",html:'<div class="nearby-me-pin"><span></span><b>내 위치</b></div>',iconSize:[64,52],iconAnchor:[32,36]});
+9364:       const me=L.marker([userPos.lat,userPos.lng],{icon:meIcon,zIndexOffset:1000}).addTo(map);overlays.current.push(me);
+9365:     }
+9366:     const bounds=L.latLngBounds([c]);
+9367:     places.forEach((p,i)=>{
+9368:       const icon=L.divIcon({className:"petgrow-leaflet-place",html:`<button type="button" class="nearby-map-marker nearby-map-marker--${p.typeKey||"other"}"><span>${p.typeIcon||"🐾"}</span><i>${i+1}</i></button>`,iconSize:[32,36],iconAnchor:[16,32]});
+9369:       const m=L.marker([p.lat,p.lng],{icon}).addTo(map);
+9370:       m.on("click",()=>{setSelected(p);document.getElementById(`nearby-place-${p.id}`)?.scrollIntoView({behavior:"smooth",block:"center"});});
+9371:       const popup=`<div style="min-width:200px"><div style="font-size:11px;font-weight:800;color:#4F8A5B;margin-bottom:5px">${String(p.typeIcon||"🐾")} ${String(p.typeLabel||"반려동물 관련")}</div><b style="font-size:14px">${String(p.name||"").replace(/[<>&]/g,"")}</b><div style="margin-top:5px;font-size:12px;font-weight:800;color:#4F8A5B">${p.userDistance!=null?`내 위치에서 ${p.userDistance<1000?`${p.userDistance}m`:`${(p.userDistance/1000).toFixed(1)}km`}`:(p.distance==null?"":`검색 주소에서 ${p.distance<1000?`${p.distance}m`:`${(p.distance/1000).toFixed(1)}km`}`)}</div><div style="margin-top:4px;font-size:11px;line-height:1.45">${String(p.address||"").replace(/[<>&]/g,"")}</div>${p.phone?`<div style="margin-top:4px;font-size:11px">☎ ${String(p.phone).replace(/[<>&]/g,"")}</div>`:""}</div>`;
+9372:       m.bindPopup(popup);overlays.current.push(m);bounds.extend([p.lat,p.lng]);
+9373:     });
+9374:     map.setView(c,14,{animate:false});
+9375:     window.setTimeout(()=>{try{map.invalidateSize({pan:false});map.setView(c,14,{animate:false})}catch{}},80);
+9376:   };
+9377: 
+9378:   useEffect(()=>{
+9379:     let disposed=false;
+9380:     const timer=window.setTimeout(()=>{
+9381:       if(disposed||!mapRef.current||mapObj.current)return;
+9382:       loadMap({lat:37.5665,lng:126.9780},[],null,false).catch(e=>console.warn("Initial nearby map load failed",e));
+9383:     },100);
+9384:     return()=>{disposed=true;window.clearTimeout(timer);};
+9385:   },[]);
+9386: 
+9387:   const mergeNearbyRows=(groups)=>{
+9388:     const seen=new Map();
+9389:     const rank={public:0,kakao:1,osm:2,nominatim:3};
+9390:     const norm=v=>String(v||"").replace(/[^0-9A-Za-z가-힣]/g,"").toLowerCase();
+9391:     for(const row of groups.flat().filter(Boolean)){
+9392:       const key=`${norm(row.name)}|${Number(row.lat||0).toFixed(4)}|${Number(row.lng||0).toFixed(4)}`;
+9393:       const prev=seen.get(key);
+9394:       if(!prev || (rank[row.source]??9)<(rank[prev.source]??9)) seen.set(key,{...prev,...row});
+9395:       else if(prev){ if(!prev.phone&&row.phone)prev.phone=row.phone;if(!prev.address&&row.address)prev.address=row.address;if(!prev.url&&row.url)prev.url=row.url; }
+9396:     }
+9397:     return [...seen.values()].sort((a,b)=>(Number(a.distance)||1e12)-(Number(b.distance)||1e12));
+9398:   };
+9399:   const fetchNearbyCategory=async(nextCat,coords,manualArea,userCoords=pos)=>{
+9400:     const q=new URLSearchParams({category:nextCat});
+9401:     if(coords){q.set("lat",coords.lat);q.set("lng",coords.lng);}
+9402:     if(userCoords){q.set("userLat",userCoords.lat);q.set("userLng",userCoords.lng);}
+9403:     if(manualArea.trim())q.set("area",manualArea.trim());
+9404:     const r=await fetch(`/api/nearby?${q}`);const j=await r.json();
+9405:     if(!r.ok) throw new Error(j.error||"주변 정보를 불러오지 못했어요.");
+9406:     return j;
+9407:   };
+9408:   const search=async(nextCat=cat,coords=pos,manualArea=area,{background=false,mode=null,userCoords=null}={})=>{
+9409:     if(!coords&&!manualArea.trim()) return;
+9410:     const activeMode=mode||(manualArea.trim()?"address":"current");
+9411:     const distanceOrigin=userCoords||(activeMode==="current"?coords:pos);
+9412:     setSearchMode(activeMode);
+9413:     const cacheKey=`${activeMode}|${coords?`${Number(coords.lat).toFixed(4)},${Number(coords.lng).toFixed(4)}`:manualArea.trim()}|${nextCat}`;
+9414:     const cached=nearbyCache.current.get(cacheKey);
+9415:     if(cached){
+9416:       const cachedItemsRaw=distanceOrigin?(cached.items||[]).map(x=>({...x,userDistance:calcClientDistance(distanceOrigin.lat,distanceOrigin.lng,Number(x.lat),Number(x.lng))})).sort((a,b)=>(a.userDistance??1e12)-(b.userDistance??1e12)):(cached.items||[]);
+9417:       const cachedItems=cachedItemsRaw.filter(x=>Number(x.distance)<=1000);
+9418:       setItems(cachedItems);setPage(1);setSelected(cachedItems[0]||null);setSearchRadius(1000);setWithin1km(cachedItems.length);
+9419:       if(cached.searchCenter){searchCenterRef.current=cached.searchCenter;loadMap(cached.searchCenter,cachedItems.slice(0,30),distanceOrigin).catch(()=>{});}
+9420:       if(!background)return;
+9421:     }
+9422:     const seq=++requestSeq.current;
+9423:     if(!background&&!cached)setLoading(true);setMsg("");
+9424:     try{
+9425:       let j;
+9426:       if(nextCat==="all"){
+9427:         // '전체'는 각 카테고리를 실제로 각각 조회해 합칩니다. 개별 탭에서 보이는 장소가 전체에서 빠지지 않게 해요.
+9428:         const keys=["hospital","pharmacy","shop","grooming","hotel"];
+9429:         const settled=await Promise.allSettled(keys.map(k=>fetchNearbyCategory(k,coords,manualArea,distanceOrigin)));
+9430:         const good=settled.map((x,i)=>x.status==="fulfilled"?{key:keys[i],data:x.value}:null).filter(Boolean);
+9431:         for(const x of good){nearbyCache.current.set(`${coords?`${Number(coords.lat).toFixed(4)},${Number(coords.lng).toFixed(4)}`:manualArea.trim()}|${x.key}`,x.data);}
+9432:         const merged=mergeNearbyRows(good.map(x=>x.data.items||[]));
+9433:         const within=merged.filter(x=>Number(x.distance)<=1000).length;
+9434:         j={items:merged.filter(x=>Number(x.distance)<=1000),within1km:within,searchRadius:1000,searchCenter:good[0]?.data?.searchCenter||null};
+9435:       }else j=await fetchNearbyCategory(nextCat,coords,manualArea,distanceOrigin);
+9436:       if(Array.isArray(j.items)){
+9437:         let nextItems=j.items.filter(x=>Number(x.distance)<=1000);
+9438:         if(distanceOrigin)nextItems=nextItems.map(x=>({...x,userDistance:calcClientDistance(distanceOrigin.lat,distanceOrigin.lng,Number(x.lat),Number(x.lng))})).sort((a,b)=>(a.userDistance??1e12)-(b.userDistance??1e12));
+9439:         j={...j,items:nextItems,within1km:nextItems.length,searchRadius:1000};
+9440:       }
+9441:       nearbyCache.current.set(cacheKey,j);
+9442:       if(seq!==requestSeq.current && !background)return;
+9443:       setItems(j.items||[]);setPage(1);setSelected(j.items?.[0]||null);setSearchRadius(1000);setWithin1km(Number(j.within1km)||0);
+9444:       if(j.searchCenter){searchCenterRef.current=j.searchCenter;loadMap(j.searchCenter,(j.items||[]).slice(0,30),distanceOrigin).catch(()=>{});}
+9445:       if(j.warning)setMsg(j.warning); else if(!(j.items||[]).length)setMsg("검색 결과가 없어요. 주소는 인식했지만 주변 업체 정보를 찾지 못했어요. 다른 카테고리를 눌러보거나 주소를 조금 더 구체적으로 입력해 주세요.");
+9446:     }catch(e){if(!cached)setMsg(e.message)}finally{if(seq===requestSeq.current)setLoading(false)}
+9447:   };
+9448:   const locate=()=>{
+9449:     if(!navigator.geolocation){setMsg("이 기기에서는 현재 위치를 사용할 수 없어요. 주소 검색은 그대로 이용할 수 있어요.");return;}
+9450:     setMsg("지도에 내 위치를 표시하고 있어요…");
+9451:     navigator.geolocation.getCurrentPosition(
+9452:       p=>{
+9453:         const c={lat:p.coords.latitude,lng:p.coords.longitude};
+9454:         setPositionAccuracy(Math.round(Number(p.coords.accuracy)||0));
+9455:         setPos(c);setMsg("");
+9456:         if(items.length){
+9457:           const updated=items.map(x=>({...x,userDistance:calcClientDistance(c.lat,c.lng,Number(x.lat),Number(x.lng))})).sort((a,b)=>(a.userDistance??1e12)-(b.userDistance??1e12));
+9458:           setItems(updated);setPage(1);
+9459:           const mc=mapObj.current?.getCenter?.();if(mc)loadMap({lat:mc.lat,lng:mc.lng},updated,c).catch(()=>{});
+9460:         } else { loadMap(c,[],c,false).catch(()=>{}); }
+9461:       },
+9462:       err=>{
+9463:         if(err?.code===1)setMsg("위치 권한이 꺼져 있어요. 주소 검색은 사용할 수 있고, 권한을 허용하면 지도에 내 위치와 업체까지의 거리가 표시돼요.");
+9464:         else setMsg("현재 위치를 확인하지 못했어요. 주소 검색은 그대로 이용할 수 있어요.");
+9465:       },
+9466:       {enableHighAccuracy:true,timeout:5000,maximumAge:60000}
+9467:     );
+9468:   };
+9469:   const searchCurrentLocation=()=>{
+9470:     if(!navigator.geolocation){setMsg("이 기기에서는 현재 위치를 사용할 수 없어요. 주소 검색을 이용해 주세요.");return;}
+9471:     setLoading(true);setMsg("현재 위치 주변을 찾고 있어요…");
+9472:     navigator.geolocation.getCurrentPosition(
+9473:       p=>{
+9474:         const c={lat:p.coords.latitude,lng:p.coords.longitude};
+9475:         setPositionAccuracy(Math.round(Number(p.coords.accuracy)||0));setPos(c);setArea("");
+9476:         search(cat,c,"",{mode:"current",userCoords:c}).finally(()=>setLoading(false));
+9477:       },
+9478:       err=>{setLoading(false);if(err?.code===1)setMsg("현재 위치 검색을 사용하려면 위치 권한을 허용해 주세요. 주소 검색은 그대로 이용할 수 있어요.");else setMsg("현재 위치를 확인하지 못했어요. 잠시 후 다시 시도해 주세요.");},
+9479:       {enableHighAccuracy:true,timeout:7000,maximumAge:30000}
+9480:     );
+9481:   };
+9482:   const calcClientDistance=(a,b,c,d)=>{const rad=Math.PI/180,R=6371000,x=(c-a)*rad,y=(d-b)*rad,aa=Math.sin(x/2)**2+Math.cos(a*rad)*Math.cos(c*rad)*Math.sin(y/2)**2;return Math.round(2*R*Math.asin(Math.sqrt(aa)));};
+9483:   useEffect(()=>{
+9484:     if(!followMyLocation||!navigator.geolocation)return;
+9485:     locationWatchId.current=navigator.geolocation.watchPosition(p=>{
+9486:       const c={lat:p.coords.latitude,lng:p.coords.longitude};
+9487:       setPositionAccuracy(Math.round(Number(p.coords.accuracy)||0));
+9488:       setPos(c);
+9489:       setItems(prev=>{
+9490:         const updated=(prev||[]).map(x=>({...x,userDistance:calcClientDistance(c.lat,c.lng,Number(x.lat),Number(x.lng))})).sort((a,b)=>(a.userDistance??1e12)-(b.userDistance??1e12));
+9491:         loadMap(c,updated,c,false).catch(()=>{});
+9492:         return updated;
+9493:       });
+9494:     },()=>{}, {enableHighAccuracy:true,maximumAge:15000,timeout:10000});
+9495:     return()=>{if(locationWatchId.current!=null){navigator.geolocation.clearWatch(locationWatchId.current);locationWatchId.current=null;}};
+9496:   },[followMyLocation]);
+9497:     useEffect(()=>{ if(!locationRequested.current){locationRequested.current=true;locate();} },[]);
+9498:   useEffect(()=>{
+9499:     if(searchMode==="address"&&area.trim())search(cat,null,area,{background:false,mode:"address"});
+9500:     else if(searchMode==="current"&&pos)search(cat,pos,"",{background:false,mode:"current",userCoords:pos});
+9501:     // eslint-disable-next-line react-hooks/exhaustive-deps
+9502:   },[cat]);
+9503:   const cats=[["all","전체"],["hospital","동물병원"],["pharmacy","동물약국"],["shop","펫샵·용품"],["grooming","펫미용"],["hotel","호텔·유치원"]];
+9504:   const fmt=d=>d==null?"거리 확인 불가":Number(d)<1000?`${Math.max(0,Math.round(Number(d)))}m`:`${(Number(d)/1000).toFixed(1)}km`;
+9505:   const submitReview=async()=>{
+9506:     if(!selected)return;
+9507:     const text=reviewText.trim();if(!text)return window.alert("간단한 이용후기를 입력해 주세요.");
+9508:     setReviewBusy(true);
+9509:     try{const r=await fetch('/api/nearby-reviews?action=write',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({placeId:selected.id,placeName:selected.name,rating:reviewRating,content:text})});const j=await r.json();if(!r.ok)throw new Error(j.error||'후기를 등록하지 못했어요.');setReviewText("");setReviewRating(5);setReviewOpen(false);await loadReviews(selected);}catch(e){window.alert(e.message)}finally{setReviewBusy(false)}
+9510:   };
+9511:   const likeReview=async(rvw)=>{try{const r=await fetch('/api/nearby-reviews?action=like',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reviewId:rvw.id})});const j=await r.json();if(!r.ok)throw new Error(j.error||'좋아요를 처리하지 못했어요.');await loadReviews(selected);}catch(e){window.alert(e.message)}};
+9512:   const startEditReview=(rvw)=>{setEditingReviewId(rvw.id);setEditingRating(Number(rvw.rating)||5);setEditingText(rvw.content||"");};
+9513:   const cancelEditReview=()=>{setEditingReviewId(null);setEditingText("");setEditingRating(5);};
+9514:   const saveEditReview=async()=>{const text=editingText.trim();if(!editingReviewId||!text)return window.alert("후기 내용을 입력해 주세요.");setReviewBusy(true);try{const r=await fetch('/api/nearby-reviews?action=update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reviewId:editingReviewId,rating:editingRating,content:text})});const j=await r.json();if(!r.ok)throw new Error(j.error||'후기를 수정하지 못했어요.');cancelEditReview();await loadReviews(selected);}catch(e){window.alert(e.message)}finally{setReviewBusy(false)}};
+9515:   const deleteReview=async(rvw)=>{if(!window.confirm("이 후기를 삭제할까요? 삭제한 후기는 복구할 수 없어요."))return;setReviewBusy(true);try{const r=await fetch('/api/nearby-reviews?action=delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reviewId:rvw.id})});const j=await r.json();if(!r.ok)throw new Error(j.error||'후기를 삭제하지 못했어요.');if(editingReviewId===rvw.id)cancelEditReview();await loadReviews(selected);}catch(e){window.alert(e.message)}finally{setReviewBusy(false)}};
+9516:   const reportReview=async(rvw)=>{const reason=window.prompt("신고 사유를 간단히 입력해주세요. (욕설·광고·개인정보·허위정보 등)","부적절한 내용");if(reason===null)return;try{const r=await fetch('/api/nearby-reviews?action=report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reviewId:rvw.id,reason:'other',detail:reason})});const j=await r.json();if(!r.ok)throw new Error(j.error||'신고하지 못했어요.');window.alert(j.already?"이미 신고한 후기예요.":"신고가 접수됐어요. 운영진이 확인할게요.");}catch(e){window.alert(e.message)}};
+9517:   const totalPages=Math.max(1,Math.ceil(items.length/pageSize));
+9518:   const safePage=Math.min(page,totalPages);
+9519:   const pageItems=items.slice((safePage-1)*pageSize,safePage*pageSize);
+9520: 
+9521:   return <div className="nearby-page">
+9522:     <section className="nearby-hero bg-card">
+9523:       <div><span className="nearby-eyebrow">PETGROW LOCAL</span><h1>{t.nearbyTitle}</h1><p>{t.nearbySubtitle}</p><small className="nearby-search-help">📍 주소로 검색하거나 현재 위치 주변을 바로 검색할 수 있어요. 위치를 허용하면 현재 위치 주변 검색과 지도 표시, 업체까지의 거리 확인도 할 수 있어요.</small></div>
+9524:     </section>
+9525:     <div className="nearby-search-row"><input className="bg-input" value={area} onChange={e=>setArea(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"){if(area.trim())search(cat,null,area,{mode:"address"});else setMsg("검색할 주소를 입력해 주세요.");}}} placeholder="구·동·도로명·지번 검색 (예: 강남구, 역삼동, 역삼동 695-26)"/><button className="bg-btn nearby-address-search-btn" onClick={()=>area.trim()?search(cat,null,area,{mode:"address"}):setMsg("검색할 주소를 입력해 주세요.")}>{loading?"검색 중…":"주소 검색"}</button><button type="button" className="nearby-current-search-btn" onClick={searchCurrentLocation} disabled={loading}><MapPinIcon/>{loading&&searchMode==="current"?"찾는 중…":"현재 위치로 검색"}</button></div>
+9526:     <div style={{display:'flex',justifyContent:'flex-end',margin:'8px 0 10px'}}><button type="button" className={`bg-chip ${followMyLocation?'active':''}`} onClick={()=>setFollowMyLocation(v=>!v)}>📍 내 위치 따라가기 {followMyLocation?'ON':'OFF'}</button></div>
+9527:     <ResponsiveCategoryMenu className="nearby-responsive-categories" primaryCount={3} items={cats.map(([id,label])=>({id,label}))} activeId={cat} onSelect={setCat} lang={"ko"} />
+9528:     <section className="nearby-map-card bg-card">
+9529:       <div className="nearby-map-head"><div><b>🗺️ {searchMode==="current"?"현재 위치 기준 지도":"검색 주소 기준 지도"}</b><small className="nearby-map-description">{searchMode==="current"?"현재 위치 1km 안의 가까운 장소만 표시해요. 목록에서 업체를 누르면 지도에는 그 업체만 크게 표시돼요.":pos?"입력한 주소 기준으로 검색하고 지도에는 내 위치와 업체 거리를 함께 표시해요.":"입력한 주소 기준으로 검색해요. 위치 허용 시 내 위치도 표시해요."}</small></div><div className="nearby-location-controls">{pos&&<span className="nearby-live-pill">● 내 위치</span>}<button type="button" className="nearby-location-btn" onClick={locate}>{pos?"위치 새로고침":"내 위치 표시"}</button></div></div>
+9530:       <div ref={mapRef} className="nearby-map"><div className="nearby-map-fallback"><MapPinIcon/><b>지도를 불러오는 중이에요</b><span>1km 안의 가까운 업체만 표시해 지도를 가볍게 유지해요.</span></div></div>
+9531:     </section>
+9532:     {msg&&<div className="nearby-message">{msg}</div>}
+9533:     <div className="nearby-results-head"><div><h2>{searchMode==="current"?"현재 위치 주변":"검색 주소 주변"}</h2><span>{items.length}곳</span></div><small className="nearby-results-detail">{searchMode==="current"?`내 위치에서 가까운 순 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`}`:pos?`내 위치에서 가까운 순 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`}`:`검색 주소 기준 가까운 순 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`}`}</small></div>
+9534:     <div className="nearby-list">
+9535:       {loading&&!items.length?<div className="bg-card nearby-empty">주변 Pet 정보를 찾는 중…</div>:
+9536:       pageItems.map((p,i)=><article id={`nearby-place-${p.id}`} key={p.id} className={`bg-card nearby-place ${selected?.id===p.id?"selected":""}`} onClick={()=>{setSelected(p);window.setTimeout(()=>loadMap({lat:Number(p.lat),lng:Number(p.lng)},[p],null,false).catch(()=>{}),0);}}>
+9537:         <div className="nearby-rank">{(safePage-1)*pageSize+i+1}</div>
+9538:         <div className="nearby-place-main">
+9539:           <div className="nearby-type-row"><span className={`nearby-type-badge nearby-type-${p.typeKey||"other"}`}>{p.typeIcon||"🐾"} {p.typeLabel||"반려동물 관련"}</span></div>
+9540:           <div className="nearby-place-title"><h3>{p.name}</h3><strong>{searchMode==="current"?`내 위치에서 ${fmt(p.userDistance ?? p.distance)}`:pos?`내 위치에서 ${fmt(p.userDistance ?? p.distance)}`:`주소에서 ${fmt(p.distance)}`}</strong></div>
+9541:           <div className="nearby-place-meta">{p.address&&<span>📍 {p.address}</span>}{p.phone&&<span>☎ {p.phone}</span>}</div>
+9542:           <small>{p.category}</small>
+9543:         </div>
+9544:         <div className="nearby-place-actions"><div className="nearby-place-action-buttons">{p.phone&&<a href={`tel:${p.phone}`} onClick={e=>e.stopPropagation()}>전화</a>}{p.url&&<a href={p.url} target="_blank" rel="noreferrer" onClick={e=>e.stopPropagation()}>카카오맵</a>}</div><strong className="nearby-desktop-distance">{searchMode==="current"?`내 위치에서 ${fmt(p.userDistance ?? p.distance)}`:pos?`내 위치에서 ${fmt(p.userDistance ?? p.distance)}`:`주소에서 ${fmt(p.distance)}`}</strong></div>
+9545:       </article>)}
+9546:     </div>
+9547:     {items.length>pageSize&&<nav className="nearby-pagination" aria-label="내 주변 Pet 페이지">
+9548:       <button type="button" disabled={safePage<=1} onClick={()=>{setPage(p=>Math.max(1,p-1));window.scrollTo({top:0,behavior:"smooth"})}}>이전</button>
+9549:       {Array.from({length:totalPages},(_,i)=>i+1).slice(Math.max(0,safePage-3),Math.max(0,safePage-3)+5).map(n=><button type="button" key={n} className={n===safePage?"active":""} onClick={()=>setPage(n)}>{n}</button>)}
+9550:       <button type="button" disabled={safePage>=totalPages} onClick={()=>{setPage(p=>Math.min(totalPages,p+1));window.scrollTo({top:0,behavior:"smooth"})}}>다음</button>
+9551:     </nav>}
+9552: 
+9553:     {selected&&<section className="bg-card nearby-review-panel">
+9554:       <div className="nearby-review-head"><div><span className={`nearby-type-badge nearby-type-${selected.typeKey||"other"}`}>{selected.typeIcon||"🐾"} {selected.typeLabel||"반려동물 관련"}</span><h2>{selected.name} 이용후기</h2><p><b>★ {Number(reviews.summary?.avg||0).toFixed(1)}</b> · 후기 {Number(reviews.summary?.count||0)}개</p></div><button className="bg-btn" onClick={()=>setReviewOpen(v=>!v)}>{reviewOpen?"작성 닫기":"후기 남기기"}</button></div>
+9555:       {reviewOpen&&<div className="nearby-review-compose"><div className="nearby-stars" aria-label="별점 선택">{[1,2,3,4,5].map(n=><button key={n} className={n<=reviewRating?"active":""} onClick={()=>setReviewRating(n)}>★</button>)}</div><textarea className="bg-input" maxLength={300} value={reviewText} onChange={e=>setReviewText(e.target.value)} placeholder="시설·서비스 이용 경험을 간단히 남겨주세요. 비속어·개인정보·광고성 내용은 등록할 수 없어요."/><div className="nearby-review-compose-foot"><small>{reviewText.length}/300 · 후기는 로그인 후 작성할 수 있어요.</small><button className="bg-btn" disabled={reviewBusy} onClick={submitReview}>{reviewBusy?"저장 중…":"후기 저장"}</button></div></div>}
+9556:       <div className="nearby-review-list">{reviews.items?.length?reviews.items.map(r=><div className={`nearby-review-item ${r.is_owner?"mine":""}`} key={r.id}><div className="nearby-review-meta"><b>{r.nickname}{r.is_owner&&<em>내 후기</em>}</b><span>{"★".repeat(Number(r.rating)||0)}{"☆".repeat(5-(Number(r.rating)||0))}</span><small>{new Date(r.created_at).toLocaleDateString("ko-KR")}{r.updated_at&&r.updated_at!==r.created_at?" · 수정됨":""}</small></div>{editingReviewId===r.id?<div className="nearby-review-edit"><div className="nearby-stars" aria-label="별점 수정">{[1,2,3,4,5].map(n=><button key={n} className={n<=editingRating?"active":""} onClick={()=>setEditingRating(n)}>★</button>)}</div><textarea className="bg-input" maxLength={300} value={editingText} onChange={e=>setEditingText(e.target.value)}/><div className="nearby-review-edit-actions"><button className="bg-btn bg-btn-ghost" onClick={cancelEditReview}>취소</button><button className="bg-btn" disabled={reviewBusy} onClick={saveEditReview}>{reviewBusy?"저장 중…":"저장"}</button></div></div>:<p>{r.content}</p>}<div className="nearby-review-actions"><button className={r.liked?"liked":""} onClick={()=>likeReview(r)}>{r.liked?"♥":"♡"} {Number(r.like_count)||0}</button>{r.is_owner?<><button onClick={()=>startEditReview(r)}>✏️ 수정</button><button className="danger" onClick={()=>deleteReview(r)}>🗑 삭제</button></>:<button onClick={()=>reportReview(r)}>🚩 신고</button>}</div></div>):<div className="nearby-review-empty">아직 후기가 없어요. 첫 이용후기를 남겨보세요 🐾</div>}</div>
+9557:     </section>}
+9558:     <p className="nearby-disclaimer">업체 정보는 공공데이터포털의 공식 인허가 정보와 카카오 장소정보를 함께 사용해 검색 시점에 불러옵니다. 공식 인허가 정보를 우선 확인하고 전화번호·지도 링크 등은 카카오 정보로 보완할 수 있으며, 실제 영업 여부·주소·연락처는 방문 전 업체에 한 번 더 확인해주세요. 이용후기는 PetGrow 회원이 작성한 의견으로 업체의 공식 정보가 아닙니다.</p>
+9559:   </div>;
+9560: }
+9561: 
+===== TipsPage lines 6871-7002 =====
+6871: function TipsPage({ onClose }) {
+6872:   const lang = useLang();
+6873:   const t = useT();
+6874:   const [query, setQuery] = useState("");
+6875:   const [category, setCategory] = useState("all");
+6876:   const [showBookmarked, setShowBookmarked] = useState(false);
+6877:   const [bookmarks, setBookmarks] = useState([]);
+6878:   const [tipsSource, setTipsSource] = useState(TIPS_DATA);
+6879:   const [page, setPage] = useState(1);
+6880:   const ITEMS_PER_PAGE = 20;
+6881: 
+6882:   useEffect(() => {
+6883:     (async () => {
+6884:       const saved = await safeGet("bboggl:tipBookmarks");
+6885:       if (saved) setBookmarks(saved);
+6886:     })();
+6887:   }, []);
+6888: 
+6889:   useEffect(() => {
+6890:     if (!TIPS_SHEET_CSV_URL) return;
+6891:     (async () => {
+6892:       try {
+6893:         const res = await fetch(TIPS_SHEET_CSV_URL);
+6894:         const text = await res.text();
+6895:         const parsed = parseTipsCsv(text);
+6896:         if (parsed.length > 0) setTipsSource(parsed);
+6897:       } catch {
+6898:         // 시트를 못 불러오면 코드 안 기본 데이터를 그대로 써요
+6899:       }
+6900:     })();
+6901:   }, []);
+6902: 
+6903:   const toggleBookmark = (id) => {
+6904:     setBookmarks((prev) => {
+6905:       const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+6906:       safeSet("bboggl:tipBookmarks", next);
+6907:       return next;
+6908:     });
+6909:   };
+6910: 
+6911:   const q = query.trim().toLowerCase();
+6912:   const filtered = tipsSource.filter((tip) => {
+6913:     if (showBookmarked && !bookmarks.includes(tip.id)) return false;
+6914:     if (category !== "all" && tip.category !== category) return false;
+6915:     if (q && !(tip.title[lang].toLowerCase().includes(q) || tip.summary[lang].toLowerCase().includes(q))) return false;
+6916:     return true;
+6917:   });
+6918:   const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+6919:   const currentPage = Math.min(page, totalPages);
+6920:   const pagedTips = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+6921: 
+6922:   useEffect(() => {
+6923:     setPage(1);
+6924:   }, [query, category, showBookmarked]);
+6925: 
+6926:   // 매일 조금씩 바뀌는 "오늘의 추천" — 날짜 기반으로 자동 로테이션돼요 (별도 관리 필요 없음)
+6927:   const featured = useMemo(() => {
+6928:     const dayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
+6929:     const n = tipsSource.length;
+6930:     if (n === 0) return [];
+6931:     return [0, 1, 2].map((i) => tipsSource[(dayIndex + i) % n]);
+6932:   }, [tipsSource]);
+6933: 
+6934:   const categories = [
+6935:     { id: "all", name: t.tipCategoryLabels.all },
+6936:     { id: "dog", name: t.tipCategoryLabels.dog },
+6937:     { id: "cat", name: t.tipCategoryLabels.cat },
+6938:     { id: "health", name: t.tipCategoryLabels.health },
+6939:     { id: "life", name: t.tipCategoryLabels.life },
+6940:     { id: "food", name: t.tipCategoryLabels.food },
+6941:     { id: "training", name: t.tipCategoryLabels.training },
+6942:     { id: "safety", name: t.tipCategoryLabels.safety },
+6943:     { id: "grooming", name: t.tipCategoryLabels.grooming },
+6944:   ];
+6945: 
+6946:   return (
+6947:     <div className="legal-page-shell">
+6948:       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18 }}>
+6949:         <LightbulbIcon style={{ width: 22, height: 22, color: "var(--primary)" }} />
+6950:         <h1 style={{ fontSize: 18 }}>{t.tipsTitle}</h1>
+6951:       </div>
+6952: 
+6953:       <div className="combobox-wrap" style={{ marginBottom: 14 }}>
+6954:         <SearchIcon style={{ width: 16, height: 16, color: "var(--sub)", position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)" }} />
+6955:         <input className="bg-input" style={{ paddingLeft: 38 }} value={query} onChange={(e) => setQuery(e.target.value)}
+6956:           placeholder={t.tipSearchPlaceholder} />
+6957:       </div>
+6958: 
+6959:       <ResponsiveCategoryMenu
+6960:         items={[...categories.map((c) => ({ id: c.id, label: c.name })), { id: "bookmarked", label: <><HeartIcon style={{ width: 14, height: 14 }} /> {t.tipBookmarkedFilter}</> }]}
+6961:         activeId={showBookmarked ? "bookmarked" : category}
+6962:         lang={lang}
+6963:         onSelect={(id) => {
+6964:           if (id === "bookmarked") { setShowBookmarked(true); setPage(1); }
+6965:           else { setCategory(id); setShowBookmarked(false); setPage(1); }
+6966:         }}
+6967:       />
+6968: 
+6969:       {!showBookmarked && !q && category === "all" && currentPage === 1 && featured.length > 0 && (
+6970:         <div style={{ marginBottom: 24 }}>
+6971:           <h3 style={{ fontSize: 15, marginBottom: 12 }}>{t.tipFeaturedTitle}</h3>
+6972:           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+6973:             {featured.map((tip) => (
+6974:               <TipCard key={tip.id} tip={tip} lang={lang} bookmarked={bookmarks.includes(tip.id)} onToggleBookmark={toggleBookmark} />
+6975:             ))}
+6976:           </div>
+6977:         </div>
+6978:       )}
+6979: 
+6980:       <h3 style={{ fontSize: 15, marginBottom: 12 }}>
+6981:         {showBookmarked ? t.tipBookmarkedFilter : t.tipAllTitle}
+6982:       </h3>
+6983:       {filtered.length > 0 ? (
+6984:         <>
+6985:           <div className="result-columns">
+6986:             {pagedTips.map((tip) => (
+6987:               <TipCard key={tip.id} tip={tip} lang={lang} bookmarked={bookmarks.includes(tip.id)} onToggleBookmark={toggleBookmark} />
+6988:             ))}
+6989:           </div>
+6990:           <ResponsivePagination page={currentPage} totalPages={totalPages} lang={lang} onChange={(n) => { setPage(n); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
+6991:         </>
+6992:       ) : (
+6993:         <div className="bg-sub" style={{ textAlign: "center", padding: "30px 0", fontSize: 13 }}>{t.tipEmptyResult}</div>
+6994:       )}
+6995:     </div>
+6996:   );
+6997: }
+6998: 
+6999: /* ============================================================
+7000:    우리 아이 사주 🐾 — 생년월일 기반 재미 콘텐츠 (참고용, 미신 아님)
+7001:    데이터와 UI를 분리해서 나중에 문구 추가/수정이 쉬워요.
+7002:    ============================================================ */
+===== InfoGuidePage lines 9750-9778 =====
+9750: function InfoGuidePage() {
+9751:   const [guideSearch,setGuideSearch]=useState("");
+9752:   const [activeKey,setActiveKey]=useState("pets");
+9753:   const guides=[
+9754:     {key:"pets",icon:"🐾",title:"우리 아이",sub:"프로필과 기본정보를 한곳에서",tone:"mint",intro:"반려동물 정보를 먼저 등록하면 PetGrow의 다른 기능을 더 편하게 이용할 수 있어요.",steps:["우리 아이 메뉴에서 강아지 또는 고양이를 선택해요.","이름·생년월일·품종·성별·현재 체중과 사진을 입력해요.","등록 후 성장기록과 각 콘텐츠에서 우리 아이를 선택해 이용해요."],faq:"여러 마리를 등록해도 아이 선택 메뉴에서 바로 바꿀 수 있어요.",tip:"처음이라면 가장 먼저 우리 아이 등록부터 시작해 보세요."},
+9755:     {key:"growth",icon:"📈",title:"성장 기록",sub:"사진과 체중 변화를 차곡차곡",tone:"sage",intro:"하루하루 달라지는 모습을 사진과 체중 기록으로 모아볼 수 있어요.",steps:["우리 아이에서 성장 기록을 열어요.","날짜와 체중을 입력하고 필요하면 사진을 추가해요.","누적된 기록과 그래프로 변화 흐름을 확인해요."],faq:"사진은 성장앨범에서 수정하거나 삭제할 수 있어요.",tip:"같은 시간대와 비슷한 조건으로 체중을 기록하면 변화 비교가 쉬워요."},
+9756:     {key:"saju",icon:"🔮",title:"Pet사주",sub:"재미로 보는 우리 아이 이야기",tone:"cream",intro:"등록한 생년월일을 바탕으로 성격·인연·놀이 스타일과 오늘의 운세를 재미로 살펴봐요.",steps:["등록된 우리 아이를 선택해요.","기본 Pet사주·오늘의 펫운세·보호자 궁합 중 원하는 메뉴를 골라요.","필요한 PetPoint를 확인한 뒤 결과를 읽어봐요."],faq:"Pet사주는 재미와 참고용 콘텐츠이며 실제 미래를 판단하는 자료가 아니에요.",tip:"결과는 우리 아이의 실제 행동과 함께 가볍게 참고해 주세요."},
+9757:     {key:"tarot",icon:"🃏",title:"Pet타로",sub:"22장 중 마음이 가는 카드 한 장",tone:"gold",intro:"카드를 천천히 섞고 펼친 뒤 마음이 가는 한 장을 골라 오늘의 메시지를 확인해요.",steps:["오늘·궁합·마음·산책·조언 중 주제를 선택해요.","카드가 섞이고 펼쳐지는 동안 우리 아이를 떠올려요.","22장 중 한 장을 선택하고 상세 해석을 확인해요."],faq:"같은 아이·같은 주제의 오늘 카드는 하루 동안 바뀌지 않아요.",tip:"카드 한 장보다 결과의 ‘오늘의 실천 포인트’를 가볍게 활용해 보세요."},
+9758:     {key:"petbti",icon:"🧠",title:"PetBTI",sub:"20문항으로 알아보는 행동 성향",tone:"blue",intro:"평소 행동을 기준으로 질문에 답하면 우리 아이의 성향을 재미있게 확인할 수 있어요.",steps:["검사할 우리 아이를 선택해요.","20개 질문에 평소 행동을 떠올리며 답해요.","완료 후 성향 결과와 세부 특징을 확인해요."],faq:"전문 행동진단이 아니라 반려생활 이해를 돕는 재미 콘텐츠예요.",tip:"특별한 날보다 평소 모습에 가까운 답을 고르는 게 좋아요."},
+9759:     {key:"music",icon:"🎵",title:"Pet음악",sub:"강아지·고양이 음악을 편하게",tone:"rose",intro:"휴식·수면·놀이 등에 어울리는 음악을 듣고 좋아요와 댓글로 반응을 남길 수 있어요.",steps:["전체·강아지·고양이 탭에서 음악을 찾아요.","원하는 곡을 눌러 재생하고 반복 방식을 선택해요.","좋아하는 음악은 좋아요를 눌러 회원정보에서 다시 확인해요."],faq:"관리자가 등록한 음악과 커버는 관리자센터에서 수정할 수 있어요.",tip:"음악은 반려동물의 반응을 보면서 편안한 볼륨으로 들려주세요."},
+9760:     {key:"nearby",icon:"📍",title:"내 주변 Pet",sub:"1km 안의 가까운 업체를 가볍게",tone:"mint",intro:"주소나 현재 위치를 기준으로 가까운 동물병원·약국·미용·펫샵 등을 찾아볼 수 있어요.",steps:["주소를 검색하거나 현재 위치 검색을 선택해요.","1km 안의 가까운 업체를 목록과 지도에서 확인해요.","목록에서 업체를 누르면 지도에서 해당 위치를 집중해서 볼 수 있어요."],faq:"현재 위치는 주변 검색과 거리 계산에 일시적으로만 사용돼요.",tip:"업체 정보와 영업시간은 방문 전에 전화나 지도 원문에서 한 번 더 확인해 주세요."},
+9761:     {key:"community",icon:"💬",title:"Pet톡",sub:"반려생활 이야기를 나누는 커뮤니티",tone:"sage",intro:"일상·질문·건강·산책 등 다양한 주제로 다른 보호자들과 이야기를 나눌 수 있어요.",steps:["Pet톡에서 원하는 카테고리나 글을 찾아봐요.","글쓰기에서 우리 아이와 제목·내용·사진을 등록해요.","댓글과 좋아요로 소통하고 회원정보에서 내 활동을 확인해요."],faq:"글과 댓글 활동으로 PetPoint를 모을 수 있으며 일일 적립 한도가 있어요.",tip:"개인정보나 타인의 권리를 침해하는 내용은 게시하지 말아 주세요."},
+9762:     {key:"news",icon:"📰",title:"Pet뉴스",sub:"최신 반려동물 소식을 보기 쉽게",tone:"cream",intro:"반려견·반려묘·건강·정책 등 최신 뉴스를 요약과 함께 확인할 수 있어요.",steps:["Pet뉴스 목록에서 관심 있는 기사를 선택해요.","PetGrow 안에서 핵심 요약을 먼저 확인해요.","자세한 내용은 원문 전체보기를 통해 언론사 페이지에서 확인해요."],faq:"뉴스는 기사 전문을 복사하지 않고 검색 결과의 설명을 바탕으로 요약해 보여줘요.",tip:"의료·정책 관련 내용은 기사 작성일과 원문을 함께 확인해 주세요."},
+9763:     {key:"points",icon:"🪙",title:"PetPoint",sub:"활동하고 모아서 재미 콘텐츠 이용",tone:"gold",intro:"현금 결제가 아닌 PetGrow 내부 무료 활동 포인트예요. Pet톡 활동과 하루 첫 접속으로 모을 수 있어요.",steps:["처음 이용하면 기본 1,000P가 지급돼요.","Pet톡 글·댓글·좋아요 받기와 하루 첫 접속으로 포인트를 모아요.","Pet사주·오늘의 운세·보호자 궁합·Pet타로 이용 시 안내된 포인트가 차감돼요."],faq:"현금 구매·환전·출금·양도는 지원하지 않아요.",tip:"회원정보와 홈에서 현재 포인트를 실시간으로 확인할 수 있어요."},
+9764:     {key:"my",icon:"👤",title:"회원정보",sub:"계정·내 활동·저장 기록 관리",tone:"blue",intro:"닉네임과 계정 정보, Pet톡 활동, 좋아요한 음악과 저장 기록을 한곳에서 관리해요.",steps:["회원정보에서 현재 계정과 PetPoint를 확인해요.","Pet톡 내 활동과 좋아요한 콘텐츠를 펼쳐 확인해요.","필요하면 정보 수정·로그아웃·회원탈퇴 메뉴를 이용해요."],faq:"동일한 카카오 계정으로 로그인하면 서버에 저장된 지원 데이터가 동기화돼요.",tip:"회원탈퇴 전 필요한 기록이 남아 있는지 먼저 확인해 주세요."}
+9765:   ];
+9766:   const q=guideSearch.trim().toLowerCase();
+9767:   const filtered=guides.filter(g=>!q||`${g.title} ${g.sub} ${g.intro} ${g.steps.join(" ")} ${g.faq} ${g.tip}`.toLowerCase().includes(q));
+9768:   const active=guides.find(g=>g.key===activeKey)||guides[0];
+9769:   const quick=["pets","growth","saju","tarot","petbti","music","nearby","community","news","my"];
+9770:   return <div className="guide-premium-page">
+9771:     <section className="guide-premium-hero"><div className="guide-hero-copy"><small>PETGROW GUIDE</small><h1>정보가이드</h1><p>처음 사용하는 분도 헤매지 않도록, 필요한 기능을 쉽고 빠르게 안내해드려요.</p><div className="guide-search-box"><span>⌕</span><input value={guideSearch} onChange={e=>setGuideSearch(e.target.value)} placeholder="무엇을 도와드릴까요? 예: 타로, 음악, 포인트" /></div></div><div className="guide-hero-art" aria-hidden="true"><div className="guide-art-sun">✦</div><div className="guide-art-pet dog">🐶</div><div className="guide-art-pet cat">🐱</div><span className="guide-art-leaf l1">🌿</span><span className="guide-art-leaf l2">🍃</span></div></section>
+9772:     {!q&&<section className="guide-start-card"><div className="guide-section-title"><div><small>START HERE</small><h2>처음 시작 3단계</h2></div><span>처음이라면 이 순서대로 해보세요</span></div><div className="guide-start-grid"><article><b>1</b><span>🐾</span><h3>우리 아이 등록</h3><p>기본 정보를 입력하고 프로필을 만들어보세요.</p></article><article><b>2</b><span>▦</span><h3>기능 선택</h3><p>필요한 기능을 골라 PetGrow를 둘러보세요.</p></article><article><b>3</b><span>💬</span><h3>기록 · 커뮤니티</h3><p>기록을 남기고 Pet톡에서 함께 소통해보세요.</p></article></div></section>}
+9773:     {!q&&<section className="guide-quick-section"><div className="guide-section-title"><div><small>POPULAR</small><h2>자주 찾는 기능</h2></div><span>카드를 누르면 바로 설명을 볼 수 있어요</span></div><div className="guide-quick-grid">{quick.map(k=>{const g=guides.find(x=>x.key===k);return <button key={k} type="button" className={`guide-quick-card tone-${g.tone} ${activeKey===k?"active":""}`} onClick={()=>{setActiveKey(k);document.getElementById("guide-detail")?.scrollIntoView({behavior:"smooth",block:"start"})}}><span>{g.icon}</span><b>{g.title}</b><small>{g.sub}</small></button>})}</div></section>}
+9774:     {q&&<section className="guide-search-results"><div className="guide-section-title"><div><small>SEARCH</small><h2>검색 결과 {filtered.length}개</h2></div></div><div className="guide-search-result-grid">{filtered.map(g=><button key={g.key} type="button" onClick={()=>{setActiveKey(g.key);setGuideSearch("");setTimeout(()=>document.getElementById("guide-detail")?.scrollIntoView({behavior:"smooth",block:"start"}),30)}}><span>{g.icon}</span><div><b>{g.title}</b><small>{g.sub}</small></div><em>›</em></button>)}</div>{!filtered.length&&<div className="guide-empty">검색 결과가 없어요. 다른 단어로 검색해보세요.</div>}</section>}
+9775:     <section id="guide-detail" className={`guide-detail-card tone-${active.tone}`}><div className="guide-detail-visual"><div className="guide-detail-orb">{active.icon}</div><span>PetGrow</span><i>✦</i></div><div className="guide-detail-main"><small>FEATURE GUIDE</small><h2>{active.title}</h2><p className="guide-detail-intro">{active.intro}</p><div className="guide-detail-tabs"><span className="active">이용 방법</span><span>초보자 팁</span><span>꼭 알아두기</span></div><div className="guide-step-list">{active.steps.map((step,i)=><article key={i}><b>{i+1}</b><div><h3>{i===0?"시작하기":i===1?"이용하기":"확인하기"}</h3><p>{step}</p></div></article>)}</div><div className="guide-note-grid"><div><b>💡 초보자 TIP</b><p>{active.tip}</p></div><div><b>✓ 꼭 알아두기</b><p>{active.faq}</p></div></div></div></section>
+9776:     <PetPointGuideCard />
+9777:   </div>;
+9778: }
+===== CommunityFeed lines 10250-10346 =====
+10250: function CommunityFeed({ pets, lang, onOpenPost, onWrite, onMyActivity }) {
+10251:   const t = useT();
+10252:   const [category, setCategory] = useState("all");
+10253:   const [sort, setSort] = useState("latest");
+10254:   const [searchInput, setSearchInput] = useState("");
+10255:   const [search, setSearch] = useState("");
+10256:   const [posts, setPosts] = useState([]);
+10257:   const [page, setPage] = useState(1);
+10258:   const [hasMore, setHasMore] = useState(false);
+10259:   const [loading, setLoading] = useState(false);
+10260: 
+10261: 
+10262:   const loadPage = async (nextPage) => {
+10263:     setLoading(true);
+10264:     try {
+10265:       const res = await communityListPosts({ category, sort, search, page: nextPage });
+10266:       setPosts(res.posts || []);
+10267:       setHasMore(!!res.hasMore);
+10268:       setPage(nextPage);
+10269:       if (nextPage > 1 && typeof window !== "undefined") {
+10270:         window.scrollTo({ top: 0, behavior: "smooth" });
+10271:       }
+10272:     } catch {}
+10273:     setLoading(false);
+10274:   };
+10275: 
+10276:   useEffect(() => { loadPage(1); }, [category, sort, search]); // eslint-disable-line react-hooks/exhaustive-deps
+10277: 
+10278:   return (
+10279:     <div className="legal-page-shell">
+10280:       <div className="cm-search-actions">
+10281:         <input type="text" className="cm-search-input" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} onKeyDown={(e)=>{if(e.key==="Enter")setSearch(searchInput.trim());}} placeholder={t.communitySearchPlaceholder} />
+10282:         <button type="button" className="bg-btn bg-btn-ghost cm-search-btn" onClick={()=>setSearch(searchInput.trim())}><SearchIcon style={{width:14,height:14}}/> 검색</button>
+10283:         <button type="button" className="bg-btn cm-write-btn" onClick={onWrite}><PlusIcon style={{ width: 14, height: 14 }} /> {t.communityWriteBtn}</button>
+10284:       </div>
+10285: 
+10286:       <ResponsiveCategoryMenu
+10287:         className="community-responsive-categories"
+10288:         items={[{ id: "all", label: t.communityCategoryAll }, ...COMMUNITY_CATEGORY_KEYS.map((k) => ({ id: k, label: t.communityCategoryLabels[k] }))]}
+10289:         activeId={category}
+10290:         lang={lang}
+10291:         onSelect={setCategory}
+10292:       />
+10293: 
+10294:       <div className="cm-sort-row">
+10295:         <div style={{ display: "flex", gap: 8 }}>
+10296:           <button type="button" className={`bg-chip ${sort === "latest" ? "active" : ""}`} onClick={() => setSort("latest")}>
+10297:             {t.communitySortLatest}
+10298:           </button>
+10299:           <button type="button" className={`bg-chip ${sort === "popular" ? "active" : ""}`} onClick={() => setSort("popular")}>
+10300:             {t.communitySortPopular}
+10301:           </button>
+10302:         </div>
+10303:         <button type="button" className="cm-my-activity-btn" onClick={onMyActivity}>
+10304:           <UserIcon style={{ width: 15, height: 15 }} /> {t.communityMyActivityNav}
+10305:         </button>
+10306:       </div>
+10307: 
+10308:       <div className="cm-sample-showcase">
+10309:         <div className="cm-sample-head"><div><span>PET TALK PREVIEW</span><b>{lang === "en" ? "See sample posts first" : "카테고리별 Pet톡 예시"}</b></div><small>{lang === "en" ? "One sample for every category." : "카테고리마다 예시글 1개씩 바로 확인할 수 있어요."}</small></div>
+10310:         <div className="cm-demo-grid">
+10311:           {[
+10312:             ["daily","mint","🐶","버터네 보호자","말티푸 · 4개월","오늘 첫 산책 다녀왔어요 🐾","처음엔 조금 긴장하더니 마지막에는 꼬리도 살랑살랑 흔들었어요. 천천히 익숙해지는 모습이 너무 기특하네요!",8,2],
+10313:             ["brag","coral","🐱","모모네 가족","코리안숏헤어 · 1살","우리 집 모델 포즈 자랑해요 📸","창가에 앉아 있길래 사진 찍었는데 표정이 너무 근엄해서 자랑하러 왔어요. 오늘도 귀여움 한도 초과예요!",13,3],
+10314:             ["question","blue","🐶","두부네 보호자","비숑 · 7개월","산책 중 갑자기 멈춰요, 괜찮을까요?","요즘 산책하다가 몇 분씩 가만히 서 있을 때가 있어요. 냄새 맡는 건지 쉬는 건지 비슷한 경험 있으셨나요?",5,6],
+10315:             ["health","rose","🐱","구름네 집사","랙돌 · 2살","물을 평소보다 자주 마셔요","며칠 전부터 물 마시는 횟수가 늘어난 것 같아서 기록 중이에요. 계속되면 병원 상담도 받아보려고 해요.",7,4],
+10316:             ["info","teal","🐶","콩이네 보호자","푸들 · 3살","여름 산책 전 바닥 온도 체크 팁","손등을 바닥에 잠깐 대보고 너무 뜨거우면 시간을 늦춰 산책하고 있어요. 물도 꼭 챙겨가요!",18,5],
+10317:             ["walk","olive","🐶","보리네 보호자","말티푸 · 1살","오늘은 천천히 냄새 산책 🌿","평소보다 짧게 걷고 냄새 맡는 시간을 충분히 줬더니 집에 와서 편안하게 쉬네요.",11,2],
+10318:             ["training","violet","🐶","밤이네 보호자","토이푸들 · 10개월","기다려 연습 5초 성공했어요!","간식 앞에서 1초부터 시작해서 오늘 처음 5초까지 성공했어요. 짧게 자주 연습하니 조금씩 늘고 있어요.",16,5],
+10319:             ["shopping","amber","🐱","나비네 집사","코리안숏헤어 · 3살","털 날림 적은 방석 추천 부탁해요","세탁하기 쉽고 털이 너무 달라붙지 않는 방석을 찾고 있어요. 직접 써보신 제품이 있다면 알려주세요!",6,7],
+10320:             ["free","slate","🐱","호두네 가족","브리티시숏헤어 · 2살","오늘도 박스가 제일 좋은 호두 📦","새 장난감보다 택배 박스에 먼저 들어가네요. 다들 우리 아이만의 최애 장소가 있나요?",12,4],
+10321:           ].filter(([key])=>category==="all"||key===category).map(([key,tone,emoji,author,pet,title,body,likes,comments]) => (
+10322:             <div className="cm-demo-card" data-tone={tone} key={key}>
+10323:               <span className="cm-demo-badge">{lang === "en" ? "Sample" : "예시"}</span>
+10324:               <div className="cm-pet-row"><span className="cm-pet-avatar-fallback">{emoji}</span><div><div style={{fontWeight:800,fontSize:13}}>{author}</div><div className="bg-sub" style={{fontSize:11}}>{pet}</div></div></div>
+10325:               <div className="cm-cat-chip">{t.communityCategoryLabels[key]}</div>
+10326:               <div className="cm-title">{title}</div>
+10327:               <div className="cm-content-preview">{body}</div>
+10328:               <div className="cm-meta-row"><span>♡ {likes}</span><span>💬 {comments}</span></div>
+10329:             </div>
+10330:           ))}
+10331:         </div>
+10332:       </div>
+10333: 
+10334:       {posts.length === 0 && !loading ? (
+10335:         <p className="bg-sub" style={{ textAlign: "center", padding: "18px 0 14px" }}>{t.communityEmptyFeed}</p>
+10336:       ) : (
+10337:         <div className="cm-feed-grid">
+10338:           {posts.map((p) => <PostCard key={p.id} post={p} lang={lang} onOpen={() => onOpenPost(p.id)} />)}
+10339:         </div>
+10340:       )}
+10341: 
+10342:       {(page > 1 || hasMore) && <ResponsivePagination page={page} totalPages={Math.max(page, hasMore ? page + 1 : page)} lang={lang} disabled={loading} onChange={loadPage} />}
+10343:     </div>
+10344:   );
+10345: }
+10346: 
+===== PetTalkFallback lines 10927-10934 =====
+10927: function PetTalkFallback(){
+10928:   const [items,setItems]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState("");
+10929:   const load=()=>{setLoading(true);setError("");fetch("/api/community?action=posts&category=all&sort=latest&page=1",{credentials:"include"}).then(async r=>{const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j?.message||j?.error||"Pet톡을 불러오지 못했어요.");return j;}).then(j=>setItems(j.posts||[])).catch(e=>setError(e.message||"Pet톡을 불러오지 못했어요.")).finally(()=>setLoading(false));};
+10930:   useEffect(()=>{load()},[]);
+10931:   return <div className="legal-page-shell pettalk-safe-fallback"><div className="bg-card" style={{padding:20}}><div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:10}}><div><small className="my-page-kicker">PETGROW TALK</small><h2 style={{margin:'5px 0'}}>Pet톡</h2><p className="bg-sub" style={{margin:0}}>반려생활 이야기를 편하게 나눠보세요.</p></div><button className="bg-chip" onClick={load}>새로고침</button></div>{loading?<div className="bg-sub" style={{padding:'28px 0',textAlign:'center'}}>Pet톡을 불러오는 중…</div>:error?<div className="nearby-message" style={{marginTop:16}}>{error}</div>:<div style={{display:'grid',gap:10,marginTop:16}}>{items.length?items.map(p=><div key={p.id} className="bg-card" style={{padding:14,border:'1px solid var(--border)'}}><small style={{fontWeight:800,color:'var(--primary)'}}>{p.authorNickname||'PetGrow 회원'} · {p.pet?.name||'우리 아이'}</small><b style={{display:'block',fontSize:15,marginTop:5}}>{p.title}</b><p className="bg-sub" style={{fontSize:12,lineHeight:1.6,margin:'5px 0 0'}}>{String(p.content||'').slice(0,180)}</p></div>):<div className="bg-sub" style={{padding:'24px 0',textAlign:'center'}}>아직 등록된 Pet톡이 없어요.</div>}</div>}</div></div>;
+10932: }
+10933: 
+10934: // allPets: 강아지+고양이 통합 목록, onGoRegister: 등록된 아이가 없을 때 '우리 아이' 등록으로 보내는 콜백
+===== CommunityPage lines 10935-11008 =====
+10935: function CommunityPage({ allPets, account, onGoRegister }) {
+10936:   const t = useT();
+10937:   const lang = useLang();
+10938:   const [sub, setSub] = useState("feed"); // feed | detail | compose | edit | my
+10939:   const [activePostId, setActivePostId] = useState(null);
+10940:   const [editingPost, setEditingPost] = useState(null);
+10941: 
+10942:   const openPost = (id) => { setActivePostId(id); setSub("detail"); };
+10943:   const backToFeed = () => { setSub("feed"); setActivePostId(null); };
+10944: 
+10945:   if (sub === "compose" || sub === "edit") {
+10946:     if (sub === "compose" && allPets.length === 0) {
+10947:       return (
+10948:         <div style={{ maxWidth: 420, margin: "0 auto", textAlign: "center" }} className="bg-card">
+10949:           <p style={{ fontSize: 15, fontWeight: 700, marginBottom: 8 }}>{t.communityNeedPetTitle}</p>
+10950:           <p className="bg-sub" style={{ fontSize: 13, marginBottom: 18 }}>{t.communityNeedPetBody}</p>
+10951:           <button className="bg-btn" style={{ width: "100%" }} onClick={onGoRegister}>{t.sajuGoRegisterBtn}</button>
+10952:         </div>
+10953:       );
+10954:     }
+10955:     return (
+10956:       <PostComposer pets={allPets} initialPost={sub === "edit" ? editingPost : null}
+10957:         onCancel={() => setSub(sub === "edit" ? "detail" : "feed")}
+10958:         onSaved={() => setSub("detail")} />
+10959:     );
+10960:   }
+10961: 
+10962:   if (sub === "detail" && activePostId) {
+10963:     return (
+10964:       <PostDetail postId={activePostId} pets={allPets} account={account}
+10965:         onBack={backToFeed} onDeleted={backToFeed}
+10966:         onEdit={async () => {
+10967:           const p = await communityGetPost(activePostId);
+10968:           setEditingPost(p);
+10969:           setSub("edit");
+10970:         }} />
+10971:     );
+10972:   }
+10973: 
+10974:   if (sub === "my") {
+10975:     return (
+10976:       <div>
+10977:         <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px" }}>
+10978:           <button type="button" onClick={backToFeed}
+10979:             style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer", padding: 0, marginBottom: 14, fontSize: 13, fontWeight: 700, color: "var(--sub)" }}>
+10980:             ← {t.communityBack}
+10981:           </button>
+10982:         </div>
+10983:         <MyActivityPage lang={lang} onOpenPost={openPost} />
+10984:       </div>
+10985:     );
+10986:   }
+10987: 
+10988:   return (
+10989:     <div>
+10990:       <CommunityFeed pets={allPets} lang={lang} onOpenPost={openPost} onWrite={() => setSub("compose")} onMyActivity={() => setSub("my")} />
+10991:     </div>
+10992:   );
+10993: }
+10994: 
+10995: const MENU_HELP = {
+10996:   home: { icon: "🏠", koTitle: "홈", koBody: "우리 아이와 PetGrow의 주요 기능을 한눈에 보고 원하는 메뉴로 바로 이동할 수 있어요.", enTitle: "Home", enBody: "See your pets and jump into PetGrow features from one place." },
+10997:   about: { icon: "🌱", koTitle: "PetGrow 소개", koBody: "PetGrow가 어떤 서비스인지, 어떤 기능을 제공하는지 한눈에 살펴볼 수 있어요.", enTitle: "About PetGrow", enBody: "See what PetGrow is and what you can do here." },
+10998:   pets: { icon: "🐾", koTitle: "우리 아이", koBody: "반려동물 정보를 등록하고 체중·성장기록·사진을 꾸준히 관리해보세요.", enTitle: "My Pets", enBody: "Register your pets and manage growth, weight, and photos." },
+10999:   community: { icon: "💬", koTitle: "Pet톡", koBody: "다른 보호자들과 일상·질문·건강·산책·훈련 이야기를 나눠요. 닉네임은 회원정보에서 바꿀 수 있어요.", enTitle: "Pet Talk", enBody: "Share daily life, questions, health, walks and training with other pet guardians." },
+11000:   saju: { icon: "🔮", koTitle: "Pet사주", koBody: "기본 Pet사주, 오늘의 펫운세, 보호자 궁합을 재미로 즐겨보세요.", enTitle: "Pet Saju", enBody: "Enjoy Pet Saju, today's fortune, or guardian compatibility for fun." },
+11001:   tarot: { icon: "🃏", koTitle: "Pet타로", koBody: "22장의 메이저 아르카나에서 주제별로 하루 한 장을 뽑고 오늘의 메시지를 저장해보세요.", enTitle: "Pet Tarot", enBody: "Draw one card per topic each day and save the reading to your account." },
+11002:   petbti: { icon: "🧩", koTitle: "PetBTI", koBody: "강아지·고양이별 20개 행동 질문으로 우리 아이의 성향을 더 구체적으로 알아봐요.", enTitle: "PetBTI", enBody: "Answer behavior questions and discover a fun personality type for your pet." },
+11003:   music: { icon: "🎵", koTitle: "Pet음악", koBody: "강아지·고양이를 위한 음악을 듣고 반복재생하며 좋아요와 댓글로 우리 아이의 반응을 나눠보세요.", enTitle: "Pet Music", enBody: "Listen to pet-friendly music, loop favorites, and share reactions with likes and comments." },
+11004:   tips: { icon: "💡", koTitle: "Pet정보", koBody: "건강·식단·생활·훈련 등 반려생활에 바로 써먹기 좋은 정보를 모아봤어요.", enTitle: "Pet Tips", enBody: "Browse practical tips for health, food, daily care and training." },
+11005:   my: { icon: "👤", koTitle: "회원정보", koBody: "닉네임과 계정 정보를 수정하고, 반려동물 관리와 Pet톡 내 활동을 확인할 수 있어요.", enTitle: "Member info", enBody: "Edit your nickname and account, manage pets, and review your Pet Talk activity." },
+11006:   content: { icon: "✨", koTitle: "Pet 콘텐츠", koBody: "Pet사주·PetBTI·Pet정보을 한곳에서 골라 이용할 수 있어요.", enTitle: "Pet Content", enBody: "Choose Pet Saju, PetBTI and Pet Tips in one place." },
+11007: };
+11008: 
+===== PetNewsPage lines 10559-10583 =====
+10559: function PetNewsPage({ lang = "ko" }) {
+10560:   const [items,setItems]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState("");
+10561:   const [category,setCategory]=useState("전체"),[query,setQuery]=useState(""),[page,setPage]=useState(1),[selected,setSelected]=useState(null);
+10562:   const PAGE=8,cats=["전체","반려견","반려묘","건강","정책·제도","입양·보호","산업·서비스","반려동물"];
+10563:   const load=async()=>{setLoading(true);setError("");try{const j=await apiJson('/api/news');setItems(Array.isArray(j.items)?j.items:[]);if(!j.items?.length)setError(j.message||'새 반려동물 뉴스를 찾고 있어요. 잠시 후 다시 확인해 주세요.')}catch(e){setError(e.message||'뉴스를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.')}finally{setLoading(false)}};
+10564:   useEffect(()=>{load()},[]);
+10565:   const clean=v=>String(v||'').replace(/&nbsp;|&#160;|&#xA0;/gi,' ').replace(/\s+/g,' ').trim();
+10566:   const q=query.trim().toLowerCase();
+10567:   const filtered=items.filter(x=>(category==='전체'||x.category===category)&&(!q||`${x.title||''} ${x.description||''} ${x.source||''} ${x.category||''}`.toLowerCase().includes(q)));
+10568:   const fallbackVisual=n=>{const h=`${n.title||''} ${n.description||''} ${n.category||''}`;if(/병원|수의|건강|질병|백신|치료|예방/.test(h))return ['🏥','건강'];if(/입양|유기|보호소|구조|학대/.test(h))return ['💚','입양·보호'];if(/법|정책|정부|지자체|조례|제도/.test(h))return ['📋','정책·제도'];if(/보험|산업|서비스|용품|사료|펫푸드/.test(h))return ['🛍️','산업·서비스'];if(/고양이|반려묘|애묘/.test(h))return ['🐱','반려묘'];if(/강아지|반려견|애견/.test(h))return ['🐶','반려견'];return ['🐾','PetGrow News']};
+10569:   const pages=Math.max(1,Math.ceil(filtered.length/PAGE)),safe=Math.min(page,pages),pageItems=filtered.slice((safe-1)*PAGE,safe*PAGE);
+10570:   useEffect(()=>{setPage(1)},[category,query]);
+10571:   const summary=v=>{const t=clean(v);if(!t)return '기사 설명을 확인하고 있어요. 원문에서 자세한 내용을 확인할 수 있어요.';const parts=t.split(/(?<=[.!?다요])\s+/).filter(Boolean);return parts.slice(0,2).join(' ').slice(0,230)};
+10572:   return <div className="petnews-v10">
+10573:     <section className="petnews-hero"><div><small>PETGROW NEWS</small><h1>Pet뉴스</h1><p>반려동물 소식을 제목만 나열하지 않고 핵심 설명과 함께 보기 쉽게 정리했어요.</p></div><button type="button" className="bg-btn bg-btn-ghost" onClick={load}>새로고침</button></section>
+10574:     <div className="petnews-tools"><div className="petnews-cats">{cats.map(c=><button key={c} type="button" className={category===c?'active':''} onClick={()=>setCategory(c)}>{c}</button>)}</div><div className="petnews-search"><span>⌕</span><input className="bg-input" value={query} onChange={e=>setQuery(e.target.value)} placeholder="제목·내용·언론사 검색"/>{query&&<button type="button" onClick={()=>setQuery('')} aria-label="검색어 지우기">×</button>}</div></div><div className="petnews-result-count">{query||category!=='전체'?`검색 결과 ${filtered.length}건`:`최신 뉴스 ${items.length}건`} · 페이지당 {PAGE}건</div>
+10575:     {loading?<div className="petnews-state">최신 Pet뉴스를 불러오는 중…</div>:error&&!items.length?<div className="petnews-state error"><b>뉴스를 불러오지 못했어요.</b><span>{error}</span><button className="bg-btn" onClick={load}>다시 불러오기</button></div>:<>
+10576:       <div className="petnews-grid">{pageItems.map((n,i)=><article className="petnews-card-v10" key={n.id||n.link||i} onClick={()=>setSelected(n)}>{(()=>{const [ico,label]=fallbackVisual(n);return <div className="petnews-media">{n.image&&<img src={n.image} alt="" loading="lazy" onError={e=>{e.currentTarget.style.display='none';e.currentTarget.nextElementSibling?.classList.add('show')}}/>}<div className={`petnews-image-fallback ${n.image?'':'show'}`}><span>{ico}</span><small>{label}</small></div></div>})()}<div className="petnews-card-body"><div className="petnews-meta"><span>{n.category||'반려동물'}</span><small>{n.source||'언론사'}{n.publishedAt?` · ${new Date(n.publishedAt).toLocaleDateString('ko-KR')}`:''}</small></div><h2>{clean(n.title)}</h2><p>{summary(n.description)}</p><button type="button">요약 자세히 보기 →</button></div></article>)}</div>
+10577:       {!pageItems.length&&<div className="petnews-state">조건에 맞는 뉴스가 없어요. 다른 카테고리나 검색어를 선택해 주세요.</div>}
+10578:       {pages>1&&<ResponsivePagination page={safe} totalPages={pages} lang={lang} onChange={setPage} />}
+10579:     </>}
+10580:     {selected&&<div className="petnews-modal-backdrop" onClick={()=>setSelected(null)}><section className="petnews-modal" onClick={e=>e.stopPropagation()}><button className="petnews-close" onClick={()=>setSelected(null)}>×</button><small>{selected.category||'반려동물'} · {selected.source||'언론사'}</small><h2>{clean(selected.title)}</h2>{selected.image&&<img src={selected.image} alt="" onError={e=>{e.currentTarget.style.display='none'}}/>}<div className="petnews-summary-box"><b>핵심 요약</b><p>{summary(selected.description)}</p></div><p className="petnews-source-note">PetGrow는 기사 설명을 바탕으로 핵심 내용을 정리해 보여줘요. 정확한 세부 내용은 원문을 확인해 주세요.</p><a className="bg-btn" href={selected.link||selected.naverLink} target="_blank" rel="noreferrer">원문 전체보기</a></section></div>}
+10581:   </div>;
+10582: }
+10583: 
+===== PetPointDashboard lines 10809-10830 =====
+10809: function PetPointDashboard({compact=false}){
+10810:   const [d,setD]=useState(null),[toast,setToast]=useState(null),[filter,setFilter]=useState("all"),[refreshing,setRefreshing]=useState(false);
+10811:   const toastTimer=React.useRef(null);
+10812:   const load=async(silent=false)=>{if(!silent)setRefreshing(true);try{const x=await petPointSummary();setD(x);if(x?.pointEvent?.awarded)setToast({amount:x.pointEvent.awarded,label:x.pointEvent.label,balance:x.pointEvent.balance})}catch{}finally{if(!silent)setRefreshing(false)}};
+10813:   useEffect(()=>{load();const h=e=>{const ev=e.detail||{};setToast(ev);setD(v=>v?{...v,balance:ev.balance??v.balance}:v);clearTimeout(toastTimer.current);toastTimer.current=setTimeout(()=>setToast(null),3000);setTimeout(()=>load(true),180)};window.addEventListener("petgrow:points",h);const poll=setInterval(()=>load(true),5000);return()=>{window.removeEventListener("petgrow:points",h);clearInterval(poll);clearTimeout(toastTimer.current)}},[]);
+10814:   if(!d)return <div className="petpoint-card petpoint-loading">🐾 PetPoint 확인 중…</div>;
+10815:   const recent=Array.isArray(d.recent)?d.recent:[];
+10816:   const shown=recent.filter(x=>filter==="all"||(filter==="earn"?Number(x.amount)>0:Number(x.amount)<0));
+10817:   const fmtDate=v=>{try{return new Date(v).toLocaleString("ko-KR",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"})}catch{return ""}};
+10818:   return <section className={`petpoint-card petpoint-dashboard-final ${compact?"compact":""}`}>
+10819:     <div className="petpoint-head"><div><small>PETGROW REWARD · 실시간 반영</small><h2>🐾 PetPoint</h2><p>적립·사용 즉시 잔액에 반영되고 최근 이용내역도 여기서 확인할 수 있어요.</p></div><strong>{Number(d.balance||0).toLocaleString()}<em>P</em></strong></div>
+10820:     {!compact&&<>
+10821:       <div className="petpoint-live-stats"><div><small>현재 보유</small><b>{Number(d.balance||0).toLocaleString()}P</b></div><div className="plus"><small>오늘 적립</small><b>+{Number(d.todayEarned||0).toLocaleString()}P</b></div><div className="minus"><small>오늘 사용</small><b>-{Number(d.todaySpent||0).toLocaleString()}P</b></div><div><small>최근 7일 사용</small><b>-{Number(d.weekSpent||0).toLocaleString()}P</b></div></div>
+10822:       <div className="petpoint-costs"><span>🌤️ 오늘 운세 <b>{d.costs?.saju_daily||20}P</b></span><span>🔮 기본 사주 <b>{d.costs?.saju_basic||50}P</b></span><span>🫶 보호자 궁합 <b>{d.costs?.saju_compat||40}P</b></span></div>
+10823:       <details className="petpoint-guide" open><summary>포인트는 어떻게 모아요?</summary><div>{(d.earnGuide||[]).map((x,i)=><p key={i}><b>+{x.points}P</b><span>{x.label}</span><small>{x.limit}</small></p>)}</div></details>
+10824:       <div className="petpoint-history-head"><div><b>포인트 이용내역</b><small>최근 20건 · 실시간 반영 · 5초 자동 동기화</small></div><button type="button" className="bg-chip" onClick={()=>load()} disabled={refreshing}>{refreshing?"확인 중…":"새로고침"}</button></div>
+10825:       <div className="petpoint-history-tabs"><button className={filter==="all"?"active":""} onClick={()=>setFilter("all")}>전체</button><button className={filter==="earn"?"active":""} onClick={()=>setFilter("earn")}>적립</button><button className={filter==="spend"?"active":""} onClick={()=>setFilter("spend")}>사용</button></div>
+10826:       <div className="petpoint-history-list">{shown.length?shown.map((x,i)=><div className="petpoint-history-row" key={`${x.created_at||i}-${i}`}><span className={Number(x.amount)>=0?"earn":"spend"}>{Number(x.amount)>=0?"적립":"사용"}</span><div><b>{x.label||"PetPoint"}</b><small>{fmtDate(x.created_at)}</small></div><strong className={Number(x.amount)>=0?"plus":"minus"}>{Number(x.amount)>=0?"+":""}{Number(x.amount||0).toLocaleString()}P</strong></div>):<div className="petpoint-history-empty">아직 표시할 이용내역이 없어요.</div>}</div>
+10827:     </>}
+10828:     {toast&&<div className={`petpoint-toast ${Number(toast.amount)>=0?"plus":"minus"}`}><b>{Number(toast.amount)>=0?`+${Number(toast.amount).toLocaleString()}P 적립`:`${Number(toast.amount).toLocaleString()}P 사용`}</b><span>{toast.label||"PetPoint"}{toast.balance!=null?` · 잔액 ${Number(toast.balance).toLocaleString()}P`:""}</span></div>}
+10829:   </section>
+10830: }
+===== MyPage lines 10836-10920 =====
+10836: function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost, onOpenAdmin }) {
+10837:   const t = useT();
+10838:   const [adminEntry, setAdminEntry] = useState(null);
+10839:   const [likedMusic, setLikedMusic] = useState([]);
+10840:   const [likedMusicLoaded, setLikedMusicLoaded] = useState(false);
+10841:   const [likedMusicLoading, setLikedMusicLoading] = useState(false);
+10842:   const [openActivity, setOpenActivity] = useState(null); // "pettalk" | "music" | null
+10843: 
+10844:   const loadLikedMusic = async (force = false) => {
+10845:     if (!account) { setLikedMusic([]); setLikedMusicLoaded(true); return; }
+10846:     if (likedMusicLoading || (likedMusicLoaded && !force)) return;
+10847:     setLikedMusicLoading(true);
+10848:     try {
+10849:       const r = await musicLiked();
+10850:       setLikedMusic(r.items || []);
+10851:       setLikedMusicLoaded(true);
+10852:     } catch (e) {
+10853:       console.warn("Liked music load skipped:", e);
+10854:     } finally {
+10855:       setLikedMusicLoading(false);
+10856:     }
+10857:   };
+10858: 
+10859:   useEffect(() => {
+10860:     setLikedMusic([]);
+10861:     setLikedMusicLoaded(false);
+10862:     setOpenActivity(null);
+10863:   }, [account?.id]);
+10864: 
+10865:   useEffect(() => {
+10866:     let alive = true;
+10867:     if (!account) { setAdminEntry(null); return () => { alive = false; }; }
+10868:     adminStatus().then((st) => { if (alive) setAdminEntry(st); }).catch(() => { if (alive) setAdminEntry(null); });
+10869:     return () => { alive = false; };
+10870:   }, [account?.id]);
+10871: 
+10872:   const togglePetTalkActivity = () => setOpenActivity((v) => v === "pettalk" ? null : "pettalk");
+10873:   const toggleLikedMusic = () => {
+10874:     const willOpen = openActivity !== "music";
+10875:     setOpenActivity(willOpen ? "music" : null);
+10876:     if (willOpen) loadLikedMusic(true);
+10877:   };
+10878: 
+10879:   const menuItems = [
+10880:     { key: "edit", icon: "✏️", title: lang === "en" ? "Edit info" : "정보 수정", desc: lang === "en" ? "Change the nickname shown in Pet Talk and manage your account." : "Pet톡에 보이는 닉네임과 계정 정보를 수정해요.", cls: "my-menu-pink", action: onOpenAccount },
+10881:     { key: "pets", icon: "🐾", title: lang === "en" ? "Manage pets" : "반려동물 관리", desc: lang === "en" ? `Manage ${allPets.length} registered pet(s).` : `등록한 아이 ${allPets.length}마리의 정보와 성장기록을 관리해요.`, cls: "my-menu-blue", action: onGoPets },
+10882:     { key: "activity", icon: "💬", title: lang === "en" ? "Pet Talk activity" : "Pet톡 내 활동", desc: lang === "en" ? "Tap to view your posts, comments and likes." : "눌러서 내가 작성한 글·댓글·좋아요를 확인해요.", cls: "my-menu-purple", action: togglePetTalkActivity, open: openActivity === "pettalk" },
+10883:     { key: "likedmusic", icon: "❤️", title: lang === "en" ? "Liked Pet Music" : "내가 좋아요 누른 Pet음악", desc: lang === "en" ? "Tap to see all music you liked." : "눌러서 좋아요한 음악을 확인해요.", cls: "my-menu-mint", action: toggleLikedMusic, open: openActivity === "music" },
+10884:   ];
+10885: 
+10886:   return (
+10887:     <div style={{ maxWidth: 760, margin: "0 auto", padding: "0 20px 70px" }}>
+10888:       <div className="my-page-head">
+10889:         <div>
+10890:           <div className="my-page-kicker">MY PETGROW</div>
+10891:           <h1>{lang === "en" ? "Member info" : "회원정보"}</h1>
+10892:           <p style={{ fontSize: 13 }}>{lang === "en" ? "Manage your profile, pets, and activity." : "회원정보부터 우리 아이와 활동까지 한곳에서 관리해요."}</p>
+10893:         </div>
+10894:         <span className="my-page-head-icon" style={{ fontSize: 30 }}>🐶</span>
+10895:       </div>
+10896: 
+10897:       <div className="my-menu-grid my-menu-grid-top">
+10898:         {menuItems.slice(0,2).map((item, i) => (
+10899:           <button key={item.key} type="button" className={`my-menu-card ${item.cls}`} onClick={item.action} style={{ animationDelay: `${i * 70}ms` }}>
+10900:             <span className="my-menu-card-icon">{item.icon}</span><span className="my-menu-card-copy"><strong>{item.title}</strong><small>{item.desc}</small></span><span className="my-menu-card-arrow">›</span>
+10901:           </button>
+10902:         ))}
+10903:       </div>
+10904:       <div className="my-activity-stack">
+10905:         <button type="button" className={`my-menu-card my-menu-purple my-menu-card-wide${openActivity==="pettalk"?" is-open":""}`} onClick={togglePetTalkActivity}><span className="my-menu-card-icon">💬</span><span className="my-menu-card-copy"><strong>{lang==="en"?"Pet Talk activity":"Pet톡 내 활동"}</strong><small>{lang==="en"?"Tap to view your posts, comments and likes.":"눌러서 내가 작성한 글·댓글·좋아요를 확인해요."}</small></span><span className="my-menu-card-arrow">{openActivity==="pettalk"?"⌃":"›"}</span></button>
+10906:         {openActivity === "pettalk" && <div id="my-pettalk-activity" className="bg-card my-activity-card my-accordion-panel"><div style={{fontSize:15,fontWeight:800,marginBottom:6}}>{t.myPageActivityTitle}</div><MyActivityPage lang={lang} onOpenPost={onOpenPost} embedded /></div>}
+10907:         <button type="button" className={`my-menu-card my-menu-mint my-menu-card-wide${openActivity==="music"?" is-open":""}`} onClick={toggleLikedMusic}><span className="my-menu-card-icon">❤️</span><span className="my-menu-card-copy"><strong>{lang==="en"?"Liked Pet Music":"내가 좋아요 누른 Pet음악"}</strong><small>{lang==="en"?"Tap to see all music you liked.":"눌러서 좋아요한 음악을 확인해요."}</small></span><span className="my-menu-card-arrow">{openActivity==="music"?"⌃":"›"}</span></button>
+10908:         {openActivity === "music" && <div id="my-liked-music" className="bg-card my-activity-card my-accordion-panel"><div style={{fontSize:15,fontWeight:800,marginBottom:8}}>❤️ {lang==="en"?"Liked Pet Music":"내가 좋아요 누른 Pet음악"}</div>{likedMusicLoading&&!likedMusicLoaded?<div className="bg-sub">좋아요한 음악을 불러오는 중...</div>:likedMusic.length?<div style={{display:"grid",gap:8}}>{likedMusic.slice(0,20).map(x=><div key={x.id} className="my-liked-music-row">{x.cover_url?<img src={x.cover_url} alt="" loading="lazy"/>:<span>🎵</span>}<div><b>{x.title}</b><small>{x.species==="dog"?"강아지":x.species==="cat"?"고양이":"공용"} · ♥ {Number(x.like_count)||0}</small></div></div>)}</div>:<div className="bg-sub">아직 좋아요한 Pet음악이 없어요.</div>}</div>}
+10909:         <PetDailyHistory account={account} lang={lang} />
+10910:       </div>
+10911: 
+10912:       {adminEntry && (!adminEntry.adminExists || adminEntry.isAdmin || adminEntry.recoveryAvailable) && (
+10913:         <button type="button" className="my-admin-below-activity" onClick={onOpenAdmin}>
+10914:           <span>🛡️</span><div><b>{adminEntry.isAdmin ? "관리자센터" : (adminEntry.adminExists ? "관리자 등록/복구" : "최초 관리자 등록")}</b><small>{adminEntry.isAdmin ? "통계·신고·보고서·운영 기능을 관리해요." : "관리자 권한을 안전하게 연결해요."}</small></div><em>›</em>
+10915:         </button>
+10916:       )}
+10917:     </div>
+10918:   );
+10919: }
+10920: 
