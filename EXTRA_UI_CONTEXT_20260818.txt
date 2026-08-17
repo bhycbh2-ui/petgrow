@@ -1,0 +1,416 @@
+--- 10660-10750 ---
+10660:  const reportText=()=>{
+10661:    if(!reportData)return "";const r=reportData.summary||{},pm={daily:"일일",weekly:"주간",monthly:"월간"}[reportData.period]||"운영";
+10662:    const menu=(reportData.topMenus||[]).slice(0,5).map((x,i)=>`${i+1}. ${x.dimension} ${Number(x.count)||0}회`).join("\n")||"데이터 없음";
+10663:    const plat=(reportData.platforms||[]).map(x=>`${x.platform}: ${Number(x.count)||0}`).join(" / ")||"데이터 없음";
+10664:    return `[PetGrow] ${pm} 운영보고\n기간: ${String(reportData.start).slice(0,10)} ~ ${String(reportData.end).slice(0,10)} (종료일 전까지)\n\n방문 세션: ${r.sessions||0}\n신규 회원: ${r.newMembers||0}\nPet톡: 게시글 ${r.posts||0} / 댓글 ${r.comments||0}\nPet음악: 누적 재생 ${r.musicPlays||0} / 기간 좋아요 ${r.musicLikes||0} / 댓글 ${r.musicComments||0}\n내 주변 Pet: 후기 ${r.placeReviews||0} / 평균 ★${r.placeAvgRating||0}\n신고 접수: ${r.reports||0}\n\n[접속 환경]\n${plat}\n\n[이용 메뉴 TOP5]\n${menu}`;
+10665:  };
+10666:  const getAdStatus=(a)=>{
+10667:    const now=Date.now(),start=a?.starts_at?new Date(a.starts_at).getTime():null,end=a?.ends_at?new Date(a.ends_at).getTime():null;
+10668:    if(!a?.active)return {key:"off",label:"OFF"};
+10669:    if(start&&start>now)return {key:"scheduled",label:"대기"};
+10670:    if(end&&end<now)return {key:"ended",label:"종료"};
+10671:    return {key:"live",label:"게시중"};
+10672:  };
+10673:  const adRemaining=(a)=>{
+10674:    if(!a?.ends_at)return "종료일 없음";
+10675:    const ms=new Date(a.ends_at).getTime()-Date.now();
+10676:    if(ms<=0)return "종료됨";
+10677:    const d=Math.ceil(ms/86400000);
+10678:    if(d>=2)return `${d}일 남음`;
+10679:    return `${Math.max(1,Math.ceil(ms/3600000))}시간 남음`;
+10680:  };
+10681:  if(!status)return <><div className="admin-autofill-trap">{adminAutofillTrap}</div><div className="bg-card admin-gate">관리자 정보를 확인하는 중...</div></>;
+10682:  if(!status.adminExists)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>🛡️ 최초 관리자 등록</h2><input className="bg-input" type="password" placeholder="ADMIN_SETUP_CODE" value={setupCode} onChange={e=>setSetupCode(e.target.value)}/><input name="petgrow-pin-code" inputMode="numeric" pattern="[0-9]*" maxLength={6} autoComplete="one-time-code" data-lpignore="true" data-1p-ignore="true" data-form-type="other" spellCheck={false} className="bg-input admin-pin-input admin-pin-no-save" type="text" placeholder="관리자 PIN 6자리" value={setupPin} onChange={e=>setSetupPin(e.target.value.replace(/\D/g,"").slice(0,6))}/><button className="bg-btn" onClick={bootstrap}>현재 계정을 최고관리자로 등록</button></div></div>;
+10683:  if(!status.isAdmin)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>관리자 전용</h2><p>현재 계정에는 관리자 권한이 없어요.</p><button className="bg-btn bg-btn-ghost" onClick={onBack}>돌아가기</button></div></div>;
+10684:  if(status.pinSetupRequired)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>🔐 관리자 PIN 최초 설정</h2><p>본인만 사용할 숫자 6자리 PIN을 설정하세요.</p><input name="petgrow-pin-code" inputMode="numeric" pattern="[0-9]*" maxLength={6} autoComplete="one-time-code" data-lpignore="true" data-1p-ignore="true" data-form-type="other" spellCheck={false} className="bg-input admin-pin-input admin-pin-no-save" type="text" value={setupPin} onChange={e=>setSetupPin(e.target.value.replace(/\D/g,"").slice(0,6))}/><button className="bg-btn" onClick={setNewPin}>PIN 설정</button></div></div>;
+10685:  if(!unlocked)return <div className="admin-reports-page"><div className="bg-card admin-gate"><h2>🔐 {status.roleLabel||"관리자"} PIN</h2><input name="petgrow-pin-code" inputMode="numeric" pattern="[0-9]*" maxLength={6} autoComplete="one-time-code" data-lpignore="true" data-1p-ignore="true" data-form-type="other" spellCheck={false} className="bg-input admin-pin-input admin-pin-no-save" type="text" value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,"").slice(0,6))} placeholder="PIN 6자리"/><button className="bg-btn admin-open-center-btn" disabled={pin.length!==6} onClick={unlock}>관리자센터 열기</button></div></div>;
+10686:  const tabs=role==="superadmin"?[["dashboard","대시보드"],["reporting","보고서"],["service","서비스상태"],["reports","신고관리"],["inquiries","문의관리"],["notices","공지관리"],["music","Pet음악"],["ads","광고운영"],["logs","운영로그"],["admins","관리자관리"]]:
+10687:  role==="operator"?[["dashboard","대시보드"],["reporting","보고서"],["service","서비스상태"],["reports","신고관리"],["inquiries","문의관리"],["notices","공지관리"],["music","Pet음악"],["ads","광고운영"],["logs","운영로그"]]:
+10688:  role==="report"?[["reports","신고관리"]]:[["music","Pet음악"],["ads","광고운영"]];
+10689:  const c=stats?.cards||{};
+10690:  return <div className="admin-reports-page">
+10691:    <div className="admin-hero admin-hero-toolbar admin-mobile-safe-header">
+10692:   <div><small>{status.roleLabel}</small><h1>PetGrow 관리자센터</h1><p className="bg-sub">서비스 운영·신고·문의·광고를 한 곳에서 관리해요.</p></div>
+10693:   <button className="bg-btn bg-btn-ghost admin-exit-btn" onClick={onBack}>← 회원정보</button>
+10694: </div>
+10695:    <div className="admin-tabs">{tabs.map(([k,l])=><button key={k} className={tab===k?"active":""} onClick={()=>setTab(k)}>{l}</button>)}</div>
+10696:    {tab==="dashboard"&&<>
+10697:      <div className="admin-stat-grid">{[["미처리 신고",c.openReports||0],["답변대기 문의",c.waitingInquiries||0],["이용제한 중",c.restricted||0],["오늘 방문",c.todaySessions||0],["현재 접속 추정",c.onlineSessions5m||0],["7일 활성회원",c.active7d||0],["7일 신규회원",c.new7d||0],["오늘 Pet톡 글",c.postsToday||0]].map(([a,b])=><div className="admin-stat-card" key={a}><strong>{b}</strong><small>{a}</small></div>)}</div>
+10698:      <div className="bg-card admin-menu-analytics">
+10699:        <div className="admin-menu-analytics-head"><div><h3>메뉴 이용 통계</h3><small>페이지 진입 기준 · 오늘 / 7일 / 30일 이용량을 확인해요.</small></div><span className="bg-chip active admin-menu-period-chip">30일</span></div>
+10700:        {(()=>{const labels={home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"회원정보",support:"고객지원",admin:"관리자"};const rows=(stats?.menuUsage||[]).filter(x=>labels[x.dimension]);const max=Math.max(1,...rows.map(x=>Number(x.d30)||0));return rows.length?<><div className="admin-menu-top">🏆 가장 자주 이용 <span>{labels[rows[0]?.dimension]||rows[0]?.dimension}</span></div>{rows.map((x,i)=><div className="admin-menu-row" key={x.dimension}><div className="admin-menu-name">{i<3?["🥇 ","🥈 ","🥉 "][i]:""}{labels[x.dimension]||x.dimension}</div><div className="admin-menu-bar"><i style={{width:`${Math.max(3,Math.round((Number(x.d30)||0)/max*100))}%`}}/></div><div className="admin-menu-value"><b>{Number(x.d30)||0}회</b><br/><small>7일 {Number(x.d7)||0} · 오늘 {Number(x.today)||0}</small></div></div>)}</>:<div className="bg-sub" style={{padding:"10px 0"}}>아직 메뉴 이용 데이터가 충분하지 않아요. 배포 후 방문부터 자동 집계됩니다.</div>})()}
+10701:      </div>
+10702:      <div className="bg-card admin-menu-analytics">
+10703:        <div className="admin-menu-analytics-head"><div><h3>Pet사주 · Pet타로 이용 현황</h3><small>주제별 결과 생성 및 저장 이용량 · 오늘 / 7일 / 30일</small></div></div>
+10704:        {(()=>{const labels={saju_daily:"오늘의 펫운세",tarot_daily:"오늘의 Pet타로",tarot_bond:"보호자 궁합 타로",tarot_heart:"우리 아이 마음 타로",tarot_activity:"산책·활동 타로",tarot_advice:"오늘의 조언 타로",saju_tarot_save:"타로 저장"};const rows=stats?.featureUsage||[];return rows.length?rows.map(x=><div className="admin-menu-row" key={x.feature}><div className="admin-menu-name">{labels[x.feature]||x.feature}</div><div className="admin-menu-value"><b>{Number(x.d30)||0}회</b><br/><small>7일 {Number(x.d7)||0} · 오늘 {Number(x.today)||0}</small></div></div>):<div className="bg-sub" style={{padding:"10px 0"}}>아직 Pet타로·운세 이용 데이터가 없어요.</div>})()}
+10705:      </div>
+10706:    </>}
+10707:    {tab==="reporting"&&<div className="admin-reporting-page">
+10708:      <div className="bg-card admin-reporting-head"><div><h2>📊 운영 보고서</h2><p className="bg-sub">일일은 어제, 주간은 오늘을 제외한 최근 7일, 월간은 지난달 전체를 집계해요.</p>{reportData&&<div className="admin-report-period">집계기간 <b>{reportRangeLabel(reportData)}</b></div>}</div><div className="admin-reporting-tabs">{[["daily","일일보고"],["weekly","주간보고"],["monthly","월간보고"]].map(([k,l])=><button type="button" disabled={reportLoading} className={reportPeriod===k?"active":""} key={k} onClick={()=>loadReport(k)}>{l}</button>)}</div></div>
+10709:      {!reportData&&!reportLoading?<div className="bg-card admin-report-empty"><b>보고서 종류를 선택해 주세요.</b><p className="bg-sub">일일보고는 어제, 주간보고는 최근 7일(오늘 제외), 월간보고는 지난달 기준이에요.</p><button className="bg-btn" onClick={()=>loadReport("daily")}>일일보고 불러오기</button></div>:reportLoading?<div className="bg-card admin-report-empty">보고서를 계산하는 중...</div>:<>{(()=>{const r=reportData?.summary||{};return <><div className="admin-report-kpi-grid">{[["방문 세션",r.sessions||0,"👥"],["신규 회원",r.newMembers||0,"✨"],["Pet톡 글",r.posts||0,"💬"],["Pet톡 댓글",r.comments||0,"🗨️"],["음악 좋아요",r.musicLikes||0,"♥"],["음악 댓글",r.musicComments||0,"🎵"],["주변 Pet 후기",r.placeReviews||0,"📍"],["신고 접수",r.reports||0,"🚨"]].map(([l,v,ic])=><div className="bg-card admin-report-kpi" key={l}><span>{ic}</span><strong>{v}</strong><small>{l}</small></div>)}</div><div className="admin-reporting-grid"><div className="bg-card"><h3>🏆 이용 메뉴 TOP</h3>{(reportData.topMenus||[]).length?(reportData.topMenus||[]).slice(0,8).map((x,i)=><div className="admin-report-rank" key={x.dimension}><b>{i+1}. {({home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"회원정보",support:"고객지원",admin:"관리자센터"}[x.dimension]||x.dimension)}</b><span>{Number(x.count)||0}회</span></div>):<p className="bg-sub">집계 데이터가 없어요.</p>}</div><div className="bg-card"><h3>📱 접속 환경</h3>{(reportData.platforms||[]).length?(reportData.platforms||[]).map(x=><div className="admin-report-rank" key={x.platform}><b>{{web:"웹사이트",mobile_web:"모바일 웹",pwa:"PWA",android:"Android 앱",ios:"iOS 앱"}[x.platform]||x.platform}</b><span>{Number(x.count)||0}</span></div>):<p className="bg-sub">집계 데이터가 없어요.</p>}<hr/><p className="bg-sub">내 주변 Pet 후기 평균 <b>★ {r.placeAvgRating||0}</b></p></div></div></>})()}</>}
+10710:    </div>}
+10711:    {tab==="service"&&<div className="service-health-wrap">
+10712:  <div className={`service-health-hero ${health?.level||"healthy"}`}><div className="service-health-dot">{health?.level==="down"?"🔴":health?.level==="warning"?"🟡":"🟢"}</div><div><small>현재 서비스 상태</small><h2>{health?.level==="down"?"장애":health?.level==="warning"?"주의":"정상"}</h2>{health?.reason && !["정상","주의","장애"].includes(health.reason) ? <p>{health.reason}</p> : <p className="service-health-subtext">{health?.level==="healthy"?"모든 주요 기능이 정상적으로 동작하고 있어요.":health?.level==="warning"?"일부 요청 지연이나 오류가 감지됐어요.":"서비스 장애 징후가 감지됐어요."}</p>}</div><button className="bg-btn bg-btn-ghost" onClick={async()=>{try{setHealth(await adminHealth())}catch(e){window.alert(e.message)}}}>새로고침</button></div>
+10713:  <div className="service-health-grid">{[["최근 15분 오류",health?.metrics?.errors15m||0],["1시간 DB 오류",health?.metrics?.dbErrors1h||0],["1시간 느린 요청",health?.metrics?.slow1h||0],["1시간 요청제한",health?.metrics?.rateLimits1h||0],["15분 평균 응답",`${health?.metrics?.avgLatency15m||0}ms`],["1시간 최대 응답",`${health?.metrics?.maxLatency1h||0}ms`],["5분 접속 추정",health?.traffic?.online5m||0],["오늘 방문",health?.traffic?.today||0]].map(([k,v])=><div className="bg-card service-health-card" key={k}><strong>{v}</strong><span>{k}</span></div>)}</div>
+10714:  <div className="bg-card"><h3>트래픽 대비</h3><p className="bg-sub">일시적 429/502/503/504는 GET 요청을 한 번 재시도하고, 8초 이상 응답이 없으면 무한 로딩을 중단해요. 접속 급증 시에는 관리자 화면에서 접속 추정치와 오류·응답 지연을 함께 확인하세요.</p></div>
+10715:  </div>}{tab==="reports"&&<div className="admin-report-list"><div className="bg-card"><h3 style={{marginTop:0}}>💬 Pet톡 신고</h3>{reports.length?reports.map(r=><div className="admin-report-card" key={r.id}><div><b>{r.postTitle}</b><small>{r.authorNickname} · 신고자 {r.reporterNickname}</small></div><p>{r.targetContent}</p><p><b>신고사유:</b> {r.reason} {r.detail}</p><div className="admin-report-actions"><button onClick={()=>restrict(r,"1d")}>1일</button><button onClick={()=>restrict(r,"7d")}>7일</button><button onClick={()=>restrict(r,"30d")}>30일</button><button onClick={()=>restrict(r,"permanent")}>영구 제한</button><button onClick={()=>unblock(r)}>제한 해제</button><button onClick={()=>resolve(r)}>검토 완료</button></div></div>):<p className="bg-sub">Pet톡 신고가 없어요.</p>}</div><div className="bg-card"><h3 style={{marginTop:0}}>📍 내 주변 Pet 후기 신고</h3>{placeReports.length?placeReports.map(r=><div className="admin-report-card" key={r.id}><div><b>{r.place_name} · ★ {r.rating}</b><small>{r.author_nickname} 작성 · 신고자 {r.reporter_nickname}</small></div><p>{r.content}</p><p><b>신고사유:</b> {r.detail||r.reason}</p><div className="admin-report-actions"><button onClick={()=>hidePlaceReview(r)}>후기 숨김</button><button onClick={()=>resolvePlaceReview(r)}>문제없음·완료</button></div></div>):<p className="bg-sub">장소 후기 신고가 없어요.</p>}</div><div className="bg-card"><h3 style={{marginTop:0}}>🎵 Pet음악 댓글 신고</h3>{musicCommentReports.length?musicCommentReports.map(r=><div className="admin-report-card" key={r.id}><div><b>{r.track_title}</b><small>{r.author_nickname} 작성 · 신고자 {r.reporter_nickname}</small></div><p>{r.content}</p><p><b>신고사유:</b> {r.detail||r.reason}</p><div className="admin-report-actions"><button onClick={()=>hideMusicComment(r)}>댓글 숨김</button><button onClick={()=>resolveMusicComment(r)}>문제없음·완료</button></div></div>):<p className="bg-sub">Pet음악 댓글 신고가 없어요.</p>}</div></div>}
+10716:    {tab==="inquiries"&&<div className="admin-report-list">{inq.length?inq.map(x=><div className="bg-card admin-report-card" key={x.id}><b>{x.title}</b><small>{x.nickname} · {x.is_public?"공개":"비공개"} · {x.status}</small><p>{x.body}</p><textarea className="bg-input support-textarea" value={reply[x.id]??x.admin_reply??""} onChange={e=>setReply({...reply,[x.id]:e.target.value})}/><button className="bg-btn" onClick={async()=>{if(!window.confirm("이 답변을 등록할까요?"))return;try{await adminReplyInquiry(x.id,reply[x.id]??x.admin_reply??"");window.alert("답변을 등록했어요.");await loadAll()}catch(e){window.alert(e.message)}}}>답변 등록</button></div>):<div className="bg-card">문의가 없어요.</div>}</div>}
+10717:    {tab==="notices"&&<div className="bg-card admin-notice-form"><h2>공지 작성</h2><input className="bg-input admin-notice-input" placeholder="공지 제목" value={notice.title} onChange={e=>setNotice({...notice,title:e.target.value})}/><textarea className="bg-input support-textarea admin-notice-input admin-notice-textarea" placeholder="공지 내용" value={notice.body} onChange={e=>setNotice({...notice,body:e.target.value})}/><label><input type="checkbox" checked={notice.pinned} onChange={e=>setNotice({...notice,pinned:e.target.checked})}/> 중요공지 상단 고정</label><label><input type="checkbox" checked={notice.popup} onChange={e=>setNotice({...notice,popup:e.target.checked})}/> 팝업 공지</label><button className="bg-btn" onClick={async()=>{if(!window.confirm("이 공지를 게시할까요?"))return;try{await adminCreateNotice(notice);setNotice({title:"",body:"",category:"notice",pinned:false,popup:false});window.alert("공지를 게시했어요.")}catch(e){window.alert(e.message)}}}>공지 게시</button></div>}
+10718:    {tab==="music"&&<AdminMusicPanel/>}
+10719:    {tab==="ads"&&<div className="admin-adops-page">
+10720:   <div className="ad-overview-grid" aria-label="광고 현황 요약">
+10721:     <span className="sr-only">광고 현황 요약</span>
+10722:     {[
+10723:       ["게시중",directAds.filter(a=>getAdStatus(a).key==="live").length,"live"],
+10724:       ["대기",directAds.filter(a=>getAdStatus(a).key==="scheduled").length,"scheduled"],
+10725:       ["OFF",directAds.filter(a=>getAdStatus(a).key==="off").length,"off"],
+10726:       ["종료",directAds.filter(a=>getAdStatus(a).key==="ended").length,"ended"]
+10727:     ].map(([label,value,key])=><div className={`bg-card ad-overview-card ${key}`} key={label}><strong>{value}</strong><span>{label}</span></div>)}
+10728:   </div>
+10729: 
+10730:   <div className="admin-adops-grid">
+10731:     <div className="bg-card">
+10732:       <h2>📣 Google 광고</h2>
+10733:       <p><b>웹:</b> AdSense · <b>앱:</b> AdMob</p>
+10734:       <p className="bg-sub">승인 후 광고 단위 ID를 연결하는 영역이에요. Google 광고는 정식 광고 슬롯에서만 사용하고 프로모션 모달에는 넣지 않아요.</p>
+10735:       <div className="ad-policy-safe">✅ Google 광고 → AdSense/AdMob 정식 광고 슬롯</div>
+10736:     </div>
+10737:     <div className="bg-card">
+10738:       <h2>🤝 직접광고 / 제휴</h2>
+10739:       <p>업체와 직접 계약한 광고는 배너 또는 사이트 내부 프로모션 모달로 운영할 수 있어요.</p>
+10740:       <div className="ad-policy-safe">✅ 배너 · 직접광고 프로모션 모달</div>
+10741:       <div className="ad-policy-warn">⚠️ 프로모션 모달에는 Google 광고 코드를 사용하지 않아요.</div>
+10742:     </div>
+10743:   </div>
+10744: 
+10745:   <div className="bg-card admin-direct-ad-form">
+10746:     <h2>➕ 직접광고 등록</h2>
+10747:     <p className="bg-sub">광고명, 소재 URL, 이동 링크, 기간을 입력해서 배너/프로모션을 등록해요.</p><div className="ad-operation-tip">💡 <b>운영 추천</b> · 홈 배너 동시 활성 최대 3개 · 프로모션 모달 최대 1개 · 우선순위 숫자가 클수록 먼저 노출 · 같은 우선순위면 최신 광고 우선</div>
+10748:     <div className="admin-form-grid">
+10749:       <input className="bg-input" placeholder="광고명 *" value={adForm.name} onChange={e=>setAdForm({...adForm,name:e.target.value})}/>
+10750:       <select className="bg-input" value={adForm.placement} onChange={e=>setAdForm({...adForm,placement:e.target.value})}><option value="banner">배너</option><option value="promo_modal">프로모션 모달</option></select>
+--- 10885-10925 ---
+10885: 
+10886:   return (
+10887:     <div style={{ maxWidth: 760, margin: "0 auto", padding: "0 20px 70px" }}>
+10888:       <div className="my-page-head">
+10889:         <div>
+10890:           <div className="my-page-kicker">MY PETGROW</div>
+10891:           <h1>{lang === "en" ? "Member info" : "회원정보"}</h1>
+10892:           <p style={{ fontSize: 13 }}>{lang === "en" ? "Manage your profile, pets, and activity." : "회원정보부터 우리 아이와 활동까지 한곳에서 관리해요."}</p>
+10893:         </div>
+10894:         <span className="my-page-head-icon" style={{ fontSize: 30 }}>🐶</span>
+10895:       </div>
+10896: 
+10897:       <div className="my-menu-grid my-menu-grid-top">
+10898:         {menuItems.slice(0,2).map((item, i) => (
+10899:           <button key={item.key} type="button" className={`my-menu-card ${item.cls}`} onClick={item.action} style={{ animationDelay: `${i * 70}ms` }}>
+10900:             <span className="my-menu-card-icon">{item.icon}</span><span className="my-menu-card-copy"><strong>{item.title}</strong><small>{item.desc}</small></span><span className="my-menu-card-arrow">›</span>
+10901:           </button>
+10902:         ))}
+10903:       </div>
+10904:       <div className="my-activity-stack">
+10905:         <button type="button" className={`my-menu-card my-menu-purple my-menu-card-wide${openActivity==="pettalk"?" is-open":""}`} onClick={togglePetTalkActivity}><span className="my-menu-card-icon">💬</span><span className="my-menu-card-copy"><strong>{lang==="en"?"Pet Talk activity":"Pet톡 내 활동"}</strong><small>{lang==="en"?"Tap to view your posts, comments and likes.":"눌러서 내가 작성한 글·댓글·좋아요를 확인해요."}</small></span><span className="my-menu-card-arrow">{openActivity==="pettalk"?"⌃":"›"}</span></button>
+10906:         {openActivity === "pettalk" && <div id="my-pettalk-activity" className="bg-card my-activity-card my-accordion-panel"><div style={{fontSize:15,fontWeight:800,marginBottom:6}}>{t.myPageActivityTitle}</div><MyActivityPage lang={lang} onOpenPost={onOpenPost} embedded /></div>}
+10907:         <button type="button" className={`my-menu-card my-menu-mint my-menu-card-wide${openActivity==="music"?" is-open":""}`} onClick={toggleLikedMusic}><span className="my-menu-card-icon">❤️</span><span className="my-menu-card-copy"><strong>{lang==="en"?"Liked Pet Music":"내가 좋아요 누른 Pet음악"}</strong><small>{lang==="en"?"Tap to see all music you liked.":"눌러서 좋아요한 음악을 확인해요."}</small></span><span className="my-menu-card-arrow">{openActivity==="music"?"⌃":"›"}</span></button>
+10908:         {openActivity === "music" && <div id="my-liked-music" className="bg-card my-activity-card my-accordion-panel"><div style={{fontSize:15,fontWeight:800,marginBottom:8}}>❤️ {lang==="en"?"Liked Pet Music":"내가 좋아요 누른 Pet음악"}</div>{likedMusicLoading&&!likedMusicLoaded?<div className="bg-sub">좋아요한 음악을 불러오는 중...</div>:likedMusic.length?<div style={{display:"grid",gap:8}}>{likedMusic.slice(0,20).map(x=><div key={x.id} className="my-liked-music-row">{x.cover_url?<img src={x.cover_url} alt="" loading="lazy"/>:<span>🎵</span>}<div><b>{x.title}</b><small>{x.species==="dog"?"강아지":x.species==="cat"?"고양이":"공용"} · ♥ {Number(x.like_count)||0}</small></div></div>)}</div>:<div className="bg-sub">아직 좋아요한 Pet음악이 없어요.</div>}</div>}
+10909:         <PetDailyHistory account={account} lang={lang} />
+10910:       </div>
+10911: 
+10912:       {adminEntry && (!adminEntry.adminExists || adminEntry.isAdmin || adminEntry.recoveryAvailable) && (
+10913:         <button type="button" className="my-admin-below-activity" onClick={onOpenAdmin}>
+10914:           <span>🛡️</span><div><b>{adminEntry.isAdmin ? "관리자센터" : (adminEntry.adminExists ? "관리자 등록/복구" : "최초 관리자 등록")}</b><small>{adminEntry.isAdmin ? "통계·신고·보고서·운영 기능을 관리해요." : "관리자 권한을 안전하게 연결해요."}</small></div><em>›</em>
+10915:         </button>
+10916:       )}
+10917:     </div>
+10918:   );
+10919: }
+10920: 
+10921: class PetTalkErrorBoundary extends React.Component {
+10922:   constructor(props){super(props);this.state={error:false};}
+10923:   static getDerivedStateFromError(){return {error:true};}
+10924:   componentDidCatch(err){console.error("PetTalk render error",err);}
+10925:   render(){return this.state.error?<PetTalkFallback/>:this.props.children;}
+--- function CommunityFeed 10230-10369 ---
+10230:           <PetPicker pets={pets} activeId={commentPetId} onSelect={setCommentPetId} />
+10231:           <div style={{ display: "flex", gap: 8 }}>
+10232:             <input type="text" className="bg-input" style={{ flex: 1 }} value={commentText}
+10233:               onChange={(e) => setCommentText(e.target.value)} placeholder={t.communityCommentPlaceholder}
+10234:               onKeyDown={(e) => { if (e.key === "Enter") submitComment(); }} />
+10235:             <button type="button" className="bg-btn" style={{ flexShrink: 0 }} onClick={submitComment}>{t.communityCommentSubmit}</button>
+10236:           </div>
+10237:         </div>
+10238:       )}
+10239: 
+10240:       <ConfirmModal open={deleteConfirmOpen} title={t.communityDeleteConfirmTitle} message={t.communityDeleteConfirmBody}
+10241:         confirmLabel={t.communityDeleteBtn} onConfirm={confirmDeletePost} onCancel={() => setDeleteConfirmOpen(false)} />
+10242:       <ConfirmModal open={!!commentDeleteTarget} title={t.communityCommentDeleteConfirmTitle} message=""
+10243:         confirmLabel={t.communityDeleteBtn} onConfirm={confirmDeleteComment} onCancel={() => setCommentDeleteTarget(null)} />
+10244:       <ReportModal open={!!reportTarget} onClose={() => setReportTarget(null)}
+10245:         targetType={reportTarget?.type} targetId={reportTarget?.id} />
+10246:     </div>
+10247:   );
+10248: }
+10249: 
+10250: function CommunityFeed({ pets, lang, onOpenPost, onWrite, onMyActivity }) {
+10251:   const t = useT();
+10252:   const [category, setCategory] = useState("all");
+10253:   const [sort, setSort] = useState("latest");
+10254:   const [searchInput, setSearchInput] = useState("");
+10255:   const [search, setSearch] = useState("");
+10256:   const [posts, setPosts] = useState([]);
+10257:   const [page, setPage] = useState(1);
+10258:   const [hasMore, setHasMore] = useState(false);
+10259:   const [loading, setLoading] = useState(false);
+10260: 
+10261: 
+10262:   const loadPage = async (nextPage) => {
+10263:     setLoading(true);
+10264:     try {
+10265:       const res = await communityListPosts({ category, sort, search, page: nextPage });
+10266:       setPosts(res.posts || []);
+10267:       setHasMore(!!res.hasMore);
+10268:       setPage(nextPage);
+10269:       if (nextPage > 1 && typeof window !== "undefined") {
+10270:         window.scrollTo({ top: 0, behavior: "smooth" });
+10271:       }
+10272:     } catch {}
+10273:     setLoading(false);
+10274:   };
+10275: 
+10276:   useEffect(() => { loadPage(1); }, [category, sort, search]); // eslint-disable-line react-hooks/exhaustive-deps
+10277: 
+10278:   return (
+10279:     <div className="legal-page-shell">
+10280:       <div className="cm-search-actions">
+10281:         <input type="text" className="cm-search-input" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} onKeyDown={(e)=>{if(e.key==="Enter")setSearch(searchInput.trim());}} placeholder={t.communitySearchPlaceholder} />
+10282:         <button type="button" className="bg-btn bg-btn-ghost cm-search-btn" onClick={()=>setSearch(searchInput.trim())}><SearchIcon style={{width:14,height:14}}/> 검색</button>
+10283:         <button type="button" className="bg-btn cm-write-btn" onClick={onWrite}><PlusIcon style={{ width: 14, height: 14 }} /> {t.communityWriteBtn}</button>
+10284:       </div>
+10285: 
+10286:       <ResponsiveCategoryMenu
+10287:         className="community-responsive-categories"
+10288:         items={[{ id: "all", label: t.communityCategoryAll }, ...COMMUNITY_CATEGORY_KEYS.map((k) => ({ id: k, label: t.communityCategoryLabels[k] }))]}
+10289:         activeId={category}
+10290:         lang={lang}
+10291:         onSelect={setCategory}
+10292:       />
+10293: 
+10294:       <div className="cm-sort-row">
+10295:         <div style={{ display: "flex", gap: 8 }}>
+10296:           <button type="button" className={`bg-chip ${sort === "latest" ? "active" : ""}`} onClick={() => setSort("latest")}>
+10297:             {t.communitySortLatest}
+10298:           </button>
+10299:           <button type="button" className={`bg-chip ${sort === "popular" ? "active" : ""}`} onClick={() => setSort("popular")}>
+10300:             {t.communitySortPopular}
+10301:           </button>
+10302:         </div>
+10303:         <button type="button" className="cm-my-activity-btn" onClick={onMyActivity}>
+10304:           <UserIcon style={{ width: 15, height: 15 }} /> {t.communityMyActivityNav}
+10305:         </button>
+10306:       </div>
+10307: 
+10308:       <div className="cm-sample-showcase">
+10309:         <div className="cm-sample-head"><div><span>PET TALK PREVIEW</span><b>{lang === "en" ? "See sample posts first" : "카테고리별 Pet톡 예시"}</b></div><small>{lang === "en" ? "One sample for every category." : "카테고리마다 예시글 1개씩 바로 확인할 수 있어요."}</small></div>
+10310:         <div className="cm-demo-grid">
+10311:           {[
+10312:             ["daily","mint","🐶","버터네 보호자","말티푸 · 4개월","오늘 첫 산책 다녀왔어요 🐾","처음엔 조금 긴장하더니 마지막에는 꼬리도 살랑살랑 흔들었어요. 천천히 익숙해지는 모습이 너무 기특하네요!",8,2],
+10313:             ["brag","coral","🐱","모모네 가족","코리안숏헤어 · 1살","우리 집 모델 포즈 자랑해요 📸","창가에 앉아 있길래 사진 찍었는데 표정이 너무 근엄해서 자랑하러 왔어요. 오늘도 귀여움 한도 초과예요!",13,3],
+10314:             ["question","blue","🐶","두부네 보호자","비숑 · 7개월","산책 중 갑자기 멈춰요, 괜찮을까요?","요즘 산책하다가 몇 분씩 가만히 서 있을 때가 있어요. 냄새 맡는 건지 쉬는 건지 비슷한 경험 있으셨나요?",5,6],
+10315:             ["health","rose","🐱","구름네 집사","랙돌 · 2살","물을 평소보다 자주 마셔요","며칠 전부터 물 마시는 횟수가 늘어난 것 같아서 기록 중이에요. 계속되면 병원 상담도 받아보려고 해요.",7,4],
+10316:             ["info","teal","🐶","콩이네 보호자","푸들 · 3살","여름 산책 전 바닥 온도 체크 팁","손등을 바닥에 잠깐 대보고 너무 뜨거우면 시간을 늦춰 산책하고 있어요. 물도 꼭 챙겨가요!",18,5],
+10317:             ["walk","olive","🐶","보리네 보호자","말티푸 · 1살","오늘은 천천히 냄새 산책 🌿","평소보다 짧게 걷고 냄새 맡는 시간을 충분히 줬더니 집에 와서 편안하게 쉬네요.",11,2],
+10318:             ["training","violet","🐶","밤이네 보호자","토이푸들 · 10개월","기다려 연습 5초 성공했어요!","간식 앞에서 1초부터 시작해서 오늘 처음 5초까지 성공했어요. 짧게 자주 연습하니 조금씩 늘고 있어요.",16,5],
+10319:             ["shopping","amber","🐱","나비네 집사","코리안숏헤어 · 3살","털 날림 적은 방석 추천 부탁해요","세탁하기 쉽고 털이 너무 달라붙지 않는 방석을 찾고 있어요. 직접 써보신 제품이 있다면 알려주세요!",6,7],
+10320:             ["free","slate","🐱","호두네 가족","브리티시숏헤어 · 2살","오늘도 박스가 제일 좋은 호두 📦","새 장난감보다 택배 박스에 먼저 들어가네요. 다들 우리 아이만의 최애 장소가 있나요?",12,4],
+10321:           ].filter(([key])=>category==="all"||key===category).map(([key,tone,emoji,author,pet,title,body,likes,comments]) => (
+10322:             <div className="cm-demo-card" data-tone={tone} key={key}>
+10323:               <span className="cm-demo-badge">{lang === "en" ? "Sample" : "예시"}</span>
+10324:               <div className="cm-pet-row"><span className="cm-pet-avatar-fallback">{emoji}</span><div><div style={{fontWeight:800,fontSize:13}}>{author}</div><div className="bg-sub" style={{fontSize:11}}>{pet}</div></div></div>
+10325:               <div className="cm-cat-chip">{t.communityCategoryLabels[key]}</div>
+10326:               <div className="cm-title">{title}</div>
+10327:               <div className="cm-content-preview">{body}</div>
+10328:               <div className="cm-meta-row"><span>♡ {likes}</span><span>💬 {comments}</span></div>
+10329:             </div>
+10330:           ))}
+10331:         </div>
+10332:       </div>
+10333: 
+10334:       {posts.length === 0 && !loading ? (
+10335:         <p className="bg-sub" style={{ textAlign: "center", padding: "18px 0 14px" }}>{t.communityEmptyFeed}</p>
+10336:       ) : (
+10337:         <div className="cm-feed-grid">
+10338:           {posts.map((p) => <PostCard key={p.id} post={p} lang={lang} onOpen={() => onOpenPost(p.id)} />)}
+10339:         </div>
+10340:       )}
+10341: 
+10342:       {(page > 1 || hasMore) && <ResponsivePagination page={page} totalPages={Math.max(page, hasMore ? page + 1 : page)} lang={lang} disabled={loading} onChange={loadPage} />}
+10343:     </div>
+10344:   );
+10345: }
+10346: 
+10347: function MyActivityPage({ lang, onOpenPost, embedded = false }) {
+10348:   const t = useT();
+10349:   const [tab, setTab] = useState("posts"); // posts | comments | likes
+10350:   const [items, setItems] = useState([]);
+10351:   const [hasMore, setHasMore] = useState(false);
+10352:   const [page, setPage] = useState(1);
+10353:   const [loading, setLoading] = useState(false);
+10354: 
+10355:   const load = async (p, replace) => {
+10356:     setLoading(true);
+10357:     try {
+10358:       const res = await communityMyActivity(tab, p);
+10359:       const list = tab === "comments" ? res.comments : res.posts;
+10360:       setItems((prev) => (replace ? list : [...prev, ...list]));
+10361:       setHasMore(res.hasMore);
+10362:       setPage(p);
+10363:     } catch {}
+10364:     setLoading(false);
+10365:   };
+10366:   useEffect(() => { load(1, true); }, [tab]); // eslint-disable-line react-hooks/exhaustive-deps
+10367: 
+10368:   const emptyText = tab === "posts" ? t.communityMyEmptyPosts : tab === "comments" ? t.communityMyEmptyComments : t.communityMyEmptyLikes;
+10369: 
+--- function TipsPage 6851-6990 ---
+6851:       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
+6852:         <div className="tip-question-block" style={{ flex: 1, cursor: "pointer" }} onClick={() => setOpen((o) => !o)}>
+6853:           <div className="tip-question-meta"><span className="tip-q-badge">Q</span><span className="bg-sub" style={{ fontSize: 11, fontWeight: 800, lineHeight: 1.4, fontFamily: "inherit", color: categoryText[tip.category] || "var(--primary)" }}>{categoryLabel}</span></div>
+6854:           <div className="tip-question-title">{tip.title[lang]}</div>
+6855:           <div className="bg-sub tip-question-summary">{tip.summary[lang]}</div>
+6856:         </div>
+6857:         <button type="button" onClick={() => onToggleBookmark(tip.id)} aria-label={t.tipBookmarkAria}
+6858:           style={{ background: "none", border: "none", cursor: "pointer", padding: 4, flexShrink: 0 }}>
+6859:           {bookmarked
+6860:             ? <HeartIcon style={{ width: 22, height: 22, color: "var(--primary)" }} />
+6861:             : <HeartOutlineIcon style={{ width: 22, height: 22, color: "var(--sub)" }} />}
+6862:         </button>
+6863:       </div>
+6864:       {open && (
+6865:         <div className="tip-answer-panel" style={{ background: answerColors[tip.category] || "#FFF8F3", borderColor: answerBorders[tip.category] || "#EADFD6", borderLeftColor: answerAccents[tip.category] || "#D8B49B" }}><span className="tip-a-badge">A</span><div className="tip-answer-copy">{tip.body[lang]}</div></div>
+6866:       )}
+6867:     </div>
+6868:   );
+6869: }
+6870: 
+6871: function TipsPage({ onClose }) {
+6872:   const lang = useLang();
+6873:   const t = useT();
+6874:   const [query, setQuery] = useState("");
+6875:   const [category, setCategory] = useState("all");
+6876:   const [showBookmarked, setShowBookmarked] = useState(false);
+6877:   const [bookmarks, setBookmarks] = useState([]);
+6878:   const [tipsSource, setTipsSource] = useState(TIPS_DATA);
+6879:   const [page, setPage] = useState(1);
+6880:   const ITEMS_PER_PAGE = 20;
+6881: 
+6882:   useEffect(() => {
+6883:     (async () => {
+6884:       const saved = await safeGet("bboggl:tipBookmarks");
+6885:       if (saved) setBookmarks(saved);
+6886:     })();
+6887:   }, []);
+6888: 
+6889:   useEffect(() => {
+6890:     if (!TIPS_SHEET_CSV_URL) return;
+6891:     (async () => {
+6892:       try {
+6893:         const res = await fetch(TIPS_SHEET_CSV_URL);
+6894:         const text = await res.text();
+6895:         const parsed = parseTipsCsv(text);
+6896:         if (parsed.length > 0) setTipsSource(parsed);
+6897:       } catch {
+6898:         // 시트를 못 불러오면 코드 안 기본 데이터를 그대로 써요
+6899:       }
+6900:     })();
+6901:   }, []);
+6902: 
+6903:   const toggleBookmark = (id) => {
+6904:     setBookmarks((prev) => {
+6905:       const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+6906:       safeSet("bboggl:tipBookmarks", next);
+6907:       return next;
+6908:     });
+6909:   };
+6910: 
+6911:   const q = query.trim().toLowerCase();
+6912:   const filtered = tipsSource.filter((tip) => {
+6913:     if (showBookmarked && !bookmarks.includes(tip.id)) return false;
+6914:     if (category !== "all" && tip.category !== category) return false;
+6915:     if (q && !(tip.title[lang].toLowerCase().includes(q) || tip.summary[lang].toLowerCase().includes(q))) return false;
+6916:     return true;
+6917:   });
+6918:   const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+6919:   const currentPage = Math.min(page, totalPages);
+6920:   const pagedTips = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+6921: 
+6922:   useEffect(() => {
+6923:     setPage(1);
+6924:   }, [query, category, showBookmarked]);
+6925: 
+6926:   // 매일 조금씩 바뀌는 "오늘의 추천" — 날짜 기반으로 자동 로테이션돼요 (별도 관리 필요 없음)
+6927:   const featured = useMemo(() => {
+6928:     const dayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
+6929:     const n = tipsSource.length;
+6930:     if (n === 0) return [];
+6931:     return [0, 1, 2].map((i) => tipsSource[(dayIndex + i) % n]);
+6932:   }, [tipsSource]);
+6933: 
+6934:   const categories = [
+6935:     { id: "all", name: t.tipCategoryLabels.all },
+6936:     { id: "dog", name: t.tipCategoryLabels.dog },
+6937:     { id: "cat", name: t.tipCategoryLabels.cat },
+6938:     { id: "health", name: t.tipCategoryLabels.health },
+6939:     { id: "life", name: t.tipCategoryLabels.life },
+6940:     { id: "food", name: t.tipCategoryLabels.food },
+6941:     { id: "training", name: t.tipCategoryLabels.training },
+6942:     { id: "safety", name: t.tipCategoryLabels.safety },
+6943:     { id: "grooming", name: t.tipCategoryLabels.grooming },
+6944:   ];
+6945: 
+6946:   return (
+6947:     <div className="legal-page-shell">
+6948:       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18 }}>
+6949:         <LightbulbIcon style={{ width: 22, height: 22, color: "var(--primary)" }} />
+6950:         <h1 style={{ fontSize: 18 }}>{t.tipsTitle}</h1>
+6951:       </div>
+6952: 
+6953:       <div className="combobox-wrap" style={{ marginBottom: 14 }}>
+6954:         <SearchIcon style={{ width: 16, height: 16, color: "var(--sub)", position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)" }} />
+6955:         <input className="bg-input" style={{ paddingLeft: 38 }} value={query} onChange={(e) => setQuery(e.target.value)}
+6956:           placeholder={t.tipSearchPlaceholder} />
+6957:       </div>
+6958: 
+6959:       <ResponsiveCategoryMenu
+6960:         items={[...categories.map((c) => ({ id: c.id, label: c.name })), { id: "bookmarked", label: <><HeartIcon style={{ width: 14, height: 14 }} /> {t.tipBookmarkedFilter}</> }]}
+6961:         activeId={showBookmarked ? "bookmarked" : category}
+6962:         lang={lang}
+6963:         onSelect={(id) => {
+6964:           if (id === "bookmarked") { setShowBookmarked(true); setPage(1); }
+6965:           else { setCategory(id); setShowBookmarked(false); setPage(1); }
+6966:         }}
+6967:       />
+6968: 
+6969:       {!showBookmarked && !q && category === "all" && currentPage === 1 && featured.length > 0 && (
+6970:         <div style={{ marginBottom: 24 }}>
+6971:           <h3 style={{ fontSize: 15, marginBottom: 12 }}>{t.tipFeaturedTitle}</h3>
+6972:           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+6973:             {featured.map((tip) => (
+6974:               <TipCard key={tip.id} tip={tip} lang={lang} bookmarked={bookmarks.includes(tip.id)} onToggleBookmark={toggleBookmark} />
+6975:             ))}
+6976:           </div>
+6977:         </div>
+6978:       )}
+6979: 
+6980:       <h3 style={{ fontSize: 15, marginBottom: 12 }}>
+6981:         {showBookmarked ? t.tipBookmarkedFilter : t.tipAllTitle}
+6982:       </h3>
+6983:       {filtered.length > 0 ? (
+6984:         <>
+6985:           <div className="result-columns">
+6986:             {pagedTips.map((tip) => (
+6987:               <TipCard key={tip.id} tip={tip} lang={lang} bookmarked={bookmarks.includes(tip.id)} onToggleBookmark={toggleBookmark} />
+6988:             ))}
+6989:           </div>
+6990:           <ResponsivePagination page={currentPage} totalPages={totalPages} lang={lang} onChange={(n) => { setPage(n); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
