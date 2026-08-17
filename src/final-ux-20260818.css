@@ -1,0 +1,87 @@
+/* PETGROW_FINAL_UX_20260818 */
+:root{--pg-soft-green:#f3f8f3;--pg-line:#e2ebe3;--pg-ink:#26372c;--pg-sub:#69776e}
+
+/* 공통 제목/히어로 규격 */
+.petgrow-unified-hero,.pets-page .petgrow-unified-hero,.my-pets-page .petgrow-unified-hero,.pet-profile-page .petgrow-unified-hero{box-sizing:border-box!important;width:100%!important;min-height:112px!important;padding:24px 26px!important;border-radius:22px!important;display:flex!important;align-items:center!important}
+.petgrow-unified-hero h1,.pets-page .petgrow-unified-hero h1,.my-pets-page .petgrow-unified-hero h1,.pet-profile-page .petgrow-unified-hero h1{font-family:inherit!important;font-size:30px!important;line-height:1.18!important;font-weight:900!important;letter-spacing:-.045em!important;margin:0!important}
+
+/* 홈 인사말을 다른 페이지 제목 체계와 통일 */
+.dash-welcome{border:1px solid var(--pg-line)!important;background:#fff!important;border-radius:22px!important;padding:24px 26px!important;box-shadow:0 10px 28px rgba(38,60,45,.045)!important}
+.dash-welcome .dash-eyebrow{font-family:inherit!important;font-size:11px!important;font-weight:900!important;letter-spacing:.12em!important;color:#52805d!important}
+.dash-welcome h1{font-family:inherit!important;font-size:30px!important;line-height:1.2!important;font-weight:900!important;letter-spacing:-.045em!important;margin:7px 0 8px!important;color:var(--pg-ink)!important}
+.dash-welcome p{font-size:13px!important;line-height:1.6!important;color:var(--pg-sub)!important;margin:0!important}
+.dash-profile-dot{min-width:52px!important;width:52px!important;height:52px!important;border-radius:17px!important;font-family:inherit!important;font-size:15px!important;font-weight:950!important;letter-spacing:.02em!important;color:#39764a!important;background:#edf6ef!important;border:1px solid #d8e8dc!important}
+
+/* 소개페이지: 10개 카드 2열 x 5행 + 색감/폰트 통일 */
+.landing-section,.landing-wrap{font-family:inherit!important}
+.landing-section-title{font-family:inherit!important;font-weight:900!important;letter-spacing:-.04em!important;color:var(--pg-ink)!important}
+.landing-features{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important;align-items:stretch!important}
+.landing-features>*{min-width:0!important;height:100%!important;background:#fff!important;border:1px solid #e2eae3!important;border-radius:22px!important;box-shadow:0 8px 24px rgba(43,65,49,.045)!important}
+.landing-features h3,.landing-features strong,.landing-features b{font-family:inherit!important;font-weight:850!important;color:var(--pg-ink)!important}
+.landing-features p,.landing-features small{font-family:inherit!important;color:var(--pg-sub)!important}
+.landing-section:nth-of-type(even){background:linear-gradient(180deg,#fbfdfb 0,#f7faf7 100%)!important}
+
+/* Pet사주/Pet타로 배경과 여백을 한 톤으로 */
+.feature-module-shell{margin-left:auto!important;margin-right:auto!important}
+.pet-tarot-shell{max-width:900px!important;padding:0!important;background:transparent!important}
+.pet-tarot-shell .pet-tarot-stage{background:linear-gradient(180deg,#f6fbf6 0,#fff 38%,#fbfcfa 100%)!important;border:1px solid #dfe9e1!important;border-radius:22px!important;padding:22px!important;box-shadow:0 10px 28px rgba(41,62,48,.045)!important}
+.pet-tarot-topic{background:#f1f8f2!important;border:1px solid #d9e8dc!important;color:var(--pg-ink)!important;box-shadow:none!important}
+.pet-tarot-topic:hover,.pet-tarot-topic.done{background:#e9f5ec!important;border-color:#bcd8c3!important}
+.pet-tarot-topic-grid{gap:10px!important}
+.pet-tarot-intro{margin:10px 0 14px!important}
+.pet-tarot-stage>h2{margin-top:5px!important;margin-bottom:8px!important}
+
+/* 22장: 겹침 금지, 모바일에서는 가로 스크롤로 한 장씩 고르기 */
+.pet-tarot-deck22{transform:none!important;position:relative!important}
+.pet-tarot-back22{position:relative!important;inset:auto!important;transform:none!important;margin:0!important}
+.pet-tarot-back22.picked{transform:translateY(-10px) scale(1.04)!important;z-index:4!important}
+@media(max-width:760px){
+ .pet-tarot-deck22{display:flex!important;grid-template-columns:none!important;overflow-x:auto!important;overflow-y:visible!important;scroll-snap-type:x mandatory!important;overscroll-behavior-x:contain!important;gap:10px!important;padding:12px 14px 18px!important;margin-left:-10px!important;margin-right:-10px!important;-webkit-overflow-scrolling:touch!important}
+ .pet-tarot-deck22::-webkit-scrollbar{height:5px}.pet-tarot-deck22::-webkit-scrollbar-thumb{background:#c9d9cd;border-radius:99px}
+ .pet-tarot-back22{flex:0 0 78px!important;width:78px!important;min-width:78px!important;min-height:117px!important;aspect-ratio:2/3!important;scroll-snap-align:center!important;animation-delay:0ms!important}
+ .pet-tarot-back22:nth-last-child(2):nth-child(4n+1){grid-column:auto!important}
+ .pet-tarot-stage{overflow:hidden!important}
+ .pet-tarot-guide-step,.pet-tarot-shuffle-scene{min-height:170px!important}
+}
+
+/* 포인트: 숫자 중심 + 도움말은 ? 클릭 시만 */
+.mypage-petpoint-section .petpoint-card{position:relative!important;padding:20px!important;background:linear-gradient(145deg,#fff 0,#f7fbf8 100%)!important;border:1px solid #dce9df!important}
+.petpoint-dashboard-simple .petpoint-head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:14px!important;padding:0!important;border:0!important}
+.petpoint-dashboard-simple .petpoint-balance-wrap{min-width:0}
+.petpoint-dashboard-simple .petpoint-balance-wrap small{display:block;font-size:10px;font-weight:850;color:#68816f;letter-spacing:.08em}
+.petpoint-dashboard-simple .petpoint-balance-wrap h2{margin:4px 0 0!important;font-size:18px!important;font-weight:900!important}
+.petpoint-dashboard-simple .petpoint-big-balance{font-size:40px!important;line-height:1!important;font-weight:950!important;letter-spacing:-.05em!important;color:#2e7646!important;white-space:nowrap}
+.petpoint-dashboard-simple .petpoint-big-balance em{font-size:16px!important;font-style:normal!important;margin-left:3px!important}
+.petpoint-help-btn{position:absolute;right:14px;top:14px;width:32px;height:32px;border-radius:50%;border:1px solid #d7e5da;background:#fff;color:#477253;font-weight:900;cursor:pointer;display:grid;place-items:center}
+.petpoint-dashboard-simple .petpoint-mini-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:16px}
+.petpoint-dashboard-simple .petpoint-mini-stats>div{border:1px solid #e4ebe5;background:#fff;border-radius:14px;padding:11px 12px}
+.petpoint-dashboard-simple .petpoint-mini-stats small{display:block;font-size:10px;color:#7b887f}.petpoint-dashboard-simple .petpoint-mini-stats b{display:block;margin-top:4px;font-size:16px}.petpoint-dashboard-simple .petpoint-mini-stats .plus b{color:#32804c}.petpoint-dashboard-simple .petpoint-mini-stats .minus b{color:#9a674b}
+.petpoint-help-panel{margin-top:12px;padding:13px;border-radius:15px;background:#fff;border:1px solid #e2eae4}.petpoint-help-panel h3{font-size:13px;margin:0 0 8px}.petpoint-help-panel p{display:grid;grid-template-columns:58px 1fr auto;gap:8px;align-items:center;margin:6px 0;font-size:11px}.petpoint-help-panel p b{color:#31804c}.petpoint-help-panel p small{color:#89938d}
+.petpoint-costs-simple{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.petpoint-costs-simple span{font-size:10px;padding:6px 8px;border-radius:999px;background:#eef6f0;color:#53675a}.petpoint-costs-simple b{color:#2f7144}
+
+/* 마이페이지 활동 허브 */
+.my-activity-hub{margin-top:18px!important;padding:18px!important;border:1px solid #e1e9e2!important;border-radius:20px!important;background:#fff!important}
+.my-activity-hub-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.my-activity-hub-head h2{font-size:18px;margin:0}.my-activity-hub-head button{border:1px solid #dce7de;background:#f7faf8;border-radius:10px;padding:7px 10px;font-size:10px;font-weight:800;color:#4b6f55;cursor:pointer}
+.my-activity-timeline{display:grid;gap:8px}.my-activity-row{display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 11px;border:1px solid #edf1ee;border-radius:13px;background:#fbfcfb}.my-activity-row>span{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:#eef6ef;font-size:17px}.my-activity-row div{min-width:0}.my-activity-row b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.my-activity-row small{display:block;margin-top:3px;font-size:10px;color:#7f8b83;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.my-activity-row time{font-size:9px;color:#9aa39d;white-space:nowrap}.my-account-manage{margin-top:16px;padding:16px;border:1px solid #e3e9e4;border-radius:18px;background:#fff}.my-account-manage h2{font-size:16px;margin:0 0 10px}.my-account-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.my-account-actions button{min-height:42px;border-radius:12px;font:inherit;font-size:12px;font-weight:850;cursor:pointer}.my-account-actions .logout{background:#f3f7f4;border:1px solid #dce6de;color:#415d49}.my-account-actions .delete{background:#fff7f6;border:1px solid #efd8d3;color:#9b5147}
+
+/* 정보가이드 검색 제거 */
+.guide-search-only{display:none!important}.guide-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+
+/* Pet뉴스 상세: 모달 대신 목록 바로 아래 inline */
+.petnews-inline-detail{margin:18px 0 8px;padding:22px!important;border:1px solid #dce7de!important;border-radius:22px!important;background:#fff!important;box-shadow:0 12px 32px rgba(38,60,45,.06)!important;scroll-margin-top:20px}
+.petnews-inline-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}.petnews-inline-head small{font-size:10px;color:#7c897f}.petnews-inline-head h2{font-size:22px;line-height:1.4;margin:7px 0 0;letter-spacing:-.035em}.petnews-inline-close{width:34px;height:34px;border-radius:11px;border:1px solid #e2e8e3;background:#f8faf8;color:#5f6d63;font-size:20px;cursor:pointer;flex:0 0 auto}.petnews-inline-body{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:18px;margin-top:16px}.petnews-inline-body>img{width:220px;height:150px;object-fit:cover;border-radius:16px;border:1px solid #e5ebe6}.petnews-summary-box{background:#f3f8f4!important;border:1px solid #dfeae2!important;border-radius:16px!important;padding:15px!important}.petnews-summary-box b{font-size:12px;color:#3b7049}.petnews-summary-box p{font-size:13px;line-height:1.75;margin:7px 0 0;color:#4f5f54}.petnews-source-note{font-size:10px;color:#8a958e;line-height:1.6;margin:10px 0}.petnews-reactions{margin-top:16px;padding-top:14px;border-top:1px solid #edf1ee}.petnews-reaction-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.petnews-like-btn{border:1px solid #dce8df;border-radius:999px;background:#fff;padding:8px 12px;font:inherit;font-size:11px;font-weight:850;color:#54705d;cursor:pointer}.petnews-like-btn.active{background:#eff8f1;color:#2f7a48;border-color:#bcd8c3}.petnews-comment-compose{display:flex;gap:8px;margin-top:12px}.petnews-comment-compose input{flex:1}.petnews-comment-list{display:grid;gap:7px;margin-top:11px}.petnews-comment{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:10px 12px;border-radius:13px;background:#fafcfa;border:1px solid #edf1ee}.petnews-comment b{font-size:10px}.petnews-comment p{font-size:11px;line-height:1.55;margin:3px 0;color:#59665d}.petnews-comment small{font-size:9px;color:#929b95}.petnews-comment button{border:0;background:none;color:#a45d53;font-size:9px;cursor:pointer}
+
+/* 관리자: 대시보드 통계 컴포넌트 하나만 자연스럽게 */
+.admin-reports-page .petpoint-admin{margin:0 0 14px!important}
+
+/* 모바일/앱 footer 링크 한 줄 */
+@media(max-width:760px){
+ .petgrow-footer-links{display:flex!important;flex-wrap:nowrap!important;justify-content:center!important;align-items:center!important;gap:7px!important;width:100%!important;overflow:hidden!important}
+ .petgrow-footer-links button{flex:0 1 auto!important;min-width:0!important;white-space:nowrap!important;word-break:keep-all!important;font-size:9.5px!important;padding:3px 0!important;letter-spacing:-.045em!important}
+ .dash-welcome{padding:20px!important}.dash-welcome h1{font-size:25px!important}.dash-profile-dot{width:46px!important;height:46px!important;min-width:46px!important}
+ .landing-features{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}.landing-features>*{border-radius:17px!important;padding-left:12px!important;padding-right:12px!important}.landing-features h3,.landing-features strong{font-size:13px!important}.landing-features p,.landing-features small{font-size:10px!important;line-height:1.5!important}
+ .petnews-inline-detail{padding:16px!important}.petnews-inline-head h2{font-size:18px}.petnews-inline-body{grid-template-columns:1fr}.petnews-inline-body>img{width:100%;height:180px;grid-row:1}.petnews-comment-compose{flex-direction:column}.petnews-comment-compose .bg-btn{width:100%}
+ .petpoint-dashboard-simple .petpoint-big-balance{font-size:34px!important}.my-account-actions{grid-template-columns:1fr 1fr}
+ .petgrow-unified-hero,.pets-page .petgrow-unified-hero,.my-pets-page .petgrow-unified-hero,.pet-profile-page .petgrow-unified-hero{min-height:100px!important;padding:20px!important}
+}
+@media(max-width:390px){.petgrow-footer-links{gap:5px!important}.petgrow-footer-links button{font-size:8.7px!important}.landing-features{gap:7px!important}.my-activity-row{grid-template-columns:34px minmax(0,1fr)}.my-activity-row time{grid-column:2}.my-account-actions{grid-template-columns:1fr}}
