@@ -1,0 +1,41 @@
+name: Run PetPoint Easy Rank 20260817
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.petpoint-easy-rank-trigger-20260817'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Apply PetPoint UI patch
+        run: python .github/scripts/petpoint_easy_rank_20260817.py
+      - name: Validate PetPoint rules
+        run: |
+          grep -q 'const START_POINTS = 1000' server_lib/points.js
+          grep -q 'amount: 50, cap: 5' server_lib/points.js
+          grep -q 'topPercent' server_lib/points.js
+          grep -q 'MY PETPOINT RANK' src/App.jsx
+      - name: Build
+        run: |
+          npm install
+          npm run build
+      - name: Commit changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/App.jsx
+          if git diff --cached --quiet; then
+            echo 'No UI changes to commit'
+          else
+            git commit -m 'feat: make PetPoint easier to earn and show top percentile'
+            git push origin main
+          fi
