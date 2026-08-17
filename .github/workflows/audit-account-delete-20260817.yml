@@ -1,0 +1,28 @@
+name: Audit Account Delete 20260817
+on:
+  push:
+    branches:
+      - work/account-delete-complete-20260817
+    paths:
+      - '.account-delete-audit-trigger-20260817'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/account-delete-complete-20260817
+      - name: Audit user tables and deletion code
+        run: |
+          echo '=== deleteUser definitions/usages ==='
+          grep -Rni --exclude='*.bak' --exclude='*.pre_navfix' --exclude='*.before_*' 'deleteUser' server_lib api src || true
+          echo '=== pg_ table create statements ==='
+          grep -Rni --exclude='*.bak' --exclude='*.pre_navfix' --exclude='*.before_*' 'create table if not exists pg_' server_lib api | head -250 || true
+          echo '=== user foreign keys / user_id columns ==='
+          grep -Rni --exclude='*.bak' --exclude='*.pre_navfix' --exclude='*.before_*' -E 'user_id|reporter_user_id|created_by|reviewed_by|admin_user_id|target_user_id' server_lib api | head -500 || true
+          echo '=== blob delete / put / upload ==='
+          grep -Rni --exclude='*.bak' --exclude='*.pre_navfix' --exclude='*.before_*' -E '@vercel/blob|\bdel\(|deleteBlob|storage_url|profile_image|pet_photo|cover_url|audio_url' server_lib api | head -500 || true
+          echo '=== delete account page/routes ==='
+          grep -Rni --exclude='*.bak' --exclude='*.pre_navfix' --exclude='*.before_*' -E 'delete-account|회원탈퇴|account.*delete' src api public vercel.json || true
