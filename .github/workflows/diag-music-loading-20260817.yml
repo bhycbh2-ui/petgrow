@@ -1,0 +1,15 @@
+name: Diagnose Music Loading 20260817
+on:
+  push:
+    paths:
+      - '.music-loading-diag-trigger-20260817'
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Show music loading contexts
+        run: |
+          grep -n -C 10 '업로드 중\|업로드중\|loading.*music\|music.*loading\|setLoading\|Pet음악' src/App.jsx | head -n 420 || true
+          echo '--- api/music ---'
+          grep -n -C 8 'ensureStarterTracks\|blob\|list\|GET\|tracks' api/music.js | head -n 320 || true
