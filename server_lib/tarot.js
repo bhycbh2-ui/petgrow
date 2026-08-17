@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import { sql } from "@vercel/postgres";
 import { getSessionUserId } from "./session.js";
+import { spendPoints, POINT_COSTS } from "./points.js";
 
 const CARDS=[
 [0,"fool","바보","The Fool","🐾","새로운 시작","호기심과 가벼운 마음으로 새로운 경험을 즐기기 좋은 흐름이에요.","처음 보는 장난감이나 새로운 산책길을 천천히 경험해봐요.","새로운 냄새"],
@@ -46,6 +47,20 @@ const topicReading=(topic,card)=>{
   return {label,guide:TAROT_TOPICS[topic]?.guide||"",topicMeaning:prefix+" ‘"+card.keyword+"’의 의미가 잘 어울려요. "+card.meaning,topicTip:card.tip};
 };
 
+const deepReading=(topic,card,petName)=>{
+  const n=petName||"우리 아이", k=card.keyword;
+  const theme={daily:"오늘 하루의 전반적인 흐름",bond:"보호자와 우리 아이 사이의 교감",heart:"우리 아이가 오늘 느끼는 마음의 방향",activity:"산책·놀이·활동에서 드러나는 에너지",advice:"오늘 보호자가 기억하면 좋은 태도"}[topic]||"오늘의 흐름";
+  return {
+    overview:`${card.name} 카드는 전통적으로 ‘${k}’의 상징을 품고 있어요. ${n}의 ${theme}을 바라볼 때 크게 밀어붙이기보다 현재 보이는 신호를 세심하게 읽는 것이 핵심이에요. ${card.meaning}`,
+    emotion:`${n}의 마음은 행동보다 작은 신호에서 먼저 드러날 수 있어요. 표정, 귀와 꼬리의 움직임, 쉬는 자리, 보호자에게 다가오는 방식처럼 평소와 다른 작은 변화를 천천히 살펴보세요.`,
+    bond:`보호자와의 관계에서는 정답을 정해두기보다 ${n}이 편안해하는 속도에 맞춰 반응해 주는 것이 좋아요. 짧은 눈맞춤, 부드러운 목소리, 익숙한 루틴이 오늘의 교감을 더 안정적으로 만들어줄 수 있어요.`,
+    activity:`활동은 컨디션을 확인하면서 강도를 조절해 주세요. 카드의 ‘${k}’ 흐름은 무조건 많이 움직이라는 뜻보다 ${n}에게 맞는 방식으로 경험의 질을 높이라는 메시지에 가까워요.`,
+    caution:`오늘은 타로 결과만으로 건강이나 행동 문제를 단정하지 않는 것이 중요해요. 평소와 다른 통증·식욕저하·무기력·호흡 이상처럼 실제 증상이 보이면 카드 해석보다 관찰과 수의학적 확인을 우선해 주세요.`,
+    action:`오늘의 실천 포인트는 “${card.tip}”예요. 거창하게 바꾸기보다 한 가지를 편안하게 실천해 보는 정도가 잘 어울려요.`,
+    closing:`${card.name}이 전하는 오늘의 한마디: ${n}의 속도를 존중하면서 ‘${k}’의 좋은 면을 생활 속 작은 선택으로 이어가 보세요.`
+  };
+};
+
 const clean=(v,max=120)=>String(v||"").trim().slice(0,max);
 const todayKst=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Seoul",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 async function ensure(){await sql`create table if not exists pg_pet_daily_content(id text primary key,user_id text not null,pet_id text not null,pet_name text not null,content_type text not null,content_date text not null,result_json jsonb not null,saved boolean not null default false,created_at timestamptz not null default now(),updated_at timestamptz not null default now())`;await sql`create index if not exists pg_pet_daily_content_user_date_idx on pg_pet_daily_content(user_id,content_date,content_type)`;}
@@ -63,13 +78,15 @@ export async function handleTarot(req,res){
     if(!petId||!petName)return res.status(400).json({error:"반려동물 정보가 부족해요."});
     const {rows:existing}=await sql`select id,result_json,saved from pg_pet_daily_content where user_id=${uid} and pet_id=${petId} and content_type='tarot' and content_date=${today} and result_json->>'topicKey'=${topic} order by created_at desc limit 1`;
     if(existing[0])return res.status(200).json({ok:true,alreadyDrawn:true,id:existing[0].id,date:today,result:existing[0].result_json,saved:!!existing[0].saved});
-    const card=deckFor(uid,petId,topic,today)[cardIndex],reading=topicReading(topic,card);
-    const result={cardId:card.id,key:card.key,name:card.name,en:card.en,symbol:card.symbol,keyword:card.keyword,meaning:card.meaning,tip:card.tip,luck:card.luck,topicKey:topic,topicLabel:reading.label,topicGuide:reading.guide,topicMeaning:reading.topicMeaning,topicTip:reading.topicTip};
+    const spendRef=`tarot-spend:${uid}:${petId}:${topic}:${today}`;
+    const pointEvent=await spendPoints(uid,"tarot",POINT_COSTS.tarot,spendRef);
+    const card=deckFor(uid,petId,topic,today)[cardIndex],reading=topicReading(topic,card),detail=deepReading(topic,card,petName);
+    const result={cardId:card.id,key:card.key,name:card.name,en:card.en,symbol:card.symbol,keyword:card.keyword,meaning:card.meaning,tip:card.tip,luck:card.luck,topicKey:topic,topicLabel:reading.label,topicGuide:reading.guide,topicMeaning:reading.topicMeaning,topicTip:reading.topicTip,...detail,pointCost:POINT_COSTS.tarot};
     const id=["tarot",uid,petId,topic,today].join(":");
     await sql`insert into pg_pet_daily_content(id,user_id,pet_id,pet_name,content_type,content_date,result_json,saved) values(${id},${uid},${petId},${petName},'tarot',${today},${JSON.stringify(result)}::jsonb,false) on conflict(id) do nothing`;
     const {rows:row}=await sql`select id,result_json,saved from pg_pet_daily_content where id=${id} and user_id=${uid}`;
     await stat(uid,"tarot_"+topic);
-    return res.status(201).json({ok:true,id:row[0]?.id||id,date:today,result:row[0]?.result_json||result,saved:!!row[0]?.saved});
+    return res.status(201).json({ok:true,id:row[0]?.id||id,date:today,result:row[0]?.result_json||result,saved:!!row[0]?.saved,pointEvent});
   }
   if(req.method==="POST"&&action==="save"){const id=clean(req.body?.id,100);const {rowCount}=await sql`update pg_pet_daily_content set saved=true,updated_at=now() where id=${id} and user_id=${uid} and content_type='tarot'`;if(!rowCount)return res.status(404).json({error:"저장할 타로 결과를 찾지 못했어요."});await stat(uid,"saju_tarot_save");return res.status(200).json({ok:true});}
   return res.status(405).json({error:"지원하지 않는 요청이에요."});

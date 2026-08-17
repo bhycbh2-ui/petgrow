@@ -1493,6 +1493,8 @@ async function apiJson(url, options) {
   const res = await fetch(url, { credentials: "include", ...options });
   let data = null;
   try { data = await res.json(); } catch {}
+  if (data?.pointEvent?.awarded) window.dispatchEvent(new CustomEvent("petgrow:points", { detail:{ amount:data.pointEvent.awarded,balance:data.pointEvent.balance,label:data.pointEvent.label||"PetPoint 적립" } }));
+  if (data?.pointEvent?.spent) window.dispatchEvent(new CustomEvent("petgrow:points", { detail:{ amount:-data.pointEvent.spent,balance:data.pointEvent.balance,label:data.pointEvent.label||"PetPoint 사용" } }));
   if (!res.ok) {
     const err = new Error((data && data.error) || `request failed (${res.status})`);
     err.status = res.status;
@@ -2179,7 +2181,7 @@ function TermsPage() {
     <div className="bboggl-root" style={{ minHeight: "100vh" }}>
       <GlobalStyle />
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 0 0" }}>
-        <><TermsContent /><PetNewsTermsAddendum /></>
+        <><TermsContent /><PetNewsTermsAddendum /><PetPointPolicyAddendum type="terms" /></>
       </div>
     </div>
   );
@@ -4614,6 +4616,9 @@ const GlobalStyle = () => (
   /* PETGROW_STABILITY_V2_20260817 */
   .nearby-map-card{display:block!important;visibility:visible!important;overflow:hidden!important}.nearby-map{display:block!important;visibility:visible!important;width:100%!important;min-height:380px!important}.nearby-map .leaflet-container{width:100%!important;height:100%!important;min-height:380px!important}
   .pettalk-safe-fallback{max-width:900px!important;margin:0 auto!important}
+
+  /* PETPOINT_V2_20260817 */
+  .petpoint-card,.petpoint-policy,.petpoint-about,.petpoint-guide-hero,.petpoint-admin{max-width:900px;margin:0 auto 18px!important;border:1px solid #e3dbc8!important;background:linear-gradient(135deg,#fffdf7,#f7fbf7)!important;position:relative;overflow:hidden}.petpoint-card{padding:20px 22px!important}.petpoint-head{display:flex;align-items:center;justify-content:space-between;gap:18px}.petpoint-head small,.petpoint-about small,.petpoint-guide-hero small{font-size:10px;font-weight:900;letter-spacing:.12em;color:#8b7447}.petpoint-head h2{margin:4px 0;font-size:21px}.petpoint-head p{margin:0;color:var(--sub);font-size:12px}.petpoint-head>strong{font-size:30px;color:#4f7b59;white-space:nowrap}.petpoint-head>strong em{font-size:14px;font-style:normal;margin-left:2px}.petpoint-costs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:15px}.petpoint-costs span{padding:10px;border-radius:13px;background:#fff;border:1px solid #ebe7dc;font-size:11px;display:flex;justify-content:space-between;gap:5px}.petpoint-guide{margin-top:12px;border-top:1px dashed #ddd5c2;padding-top:10px}.petpoint-guide summary{cursor:pointer;font-weight:800;font-size:12px}.petpoint-guide p{display:grid;grid-template-columns:56px 1fr auto;gap:8px;margin:9px 0;font-size:11px}.petpoint-guide p b{color:#4f8a5b}.petpoint-guide p small{color:var(--sub)}.petpoint-toast{position:absolute;right:16px;top:12px;padding:9px 12px;border-radius:999px;background:#214c35;color:#fff;font-size:11px;font-weight:900;box-shadow:0 8px 22px rgba(0,0,0,.14);animation:pointToast .25s ease-out}.petpoint-toast.minus{background:#755d2d}.petpoint-about,.petpoint-guide-hero{display:flex;align-items:center;gap:18px;padding:22px!important}.petpoint-about>span{font-size:42px}.petpoint-about h2,.petpoint-guide-hero h2{margin:4px 0 7px}.petpoint-about p,.petpoint-guide-hero p,.petpoint-policy p{font-size:12px;line-height:1.75;color:var(--sub)}.petpoint-mini-grid{margin-left:auto;display:grid;grid-template-columns:1fr 1fr;gap:7px;min-width:260px}.petpoint-mini-grid span{background:#fff;border:1px solid #ece5d4;border-radius:12px;padding:9px;font-size:10px}.petpoint-mini-grid b{display:block;color:#4f8a5b;font-size:13px}.petpoint-admin{padding:20px!important}.petpoint-admin>div{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.petpoint-admin span{background:#fff;border:1px solid #e7e5de;border-radius:14px;padding:14px}.petpoint-admin small{display:block;color:var(--sub);font-size:10px}.petpoint-admin b{display:block;margin-top:4px;font-size:18px}.petpoint-policy{padding:22px!important}@keyframes pointToast{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}@media(max-width:700px){.petpoint-card{margin:0 14px 14px!important;padding:16px!important}.petpoint-costs{grid-template-columns:1fr 1fr}.petpoint-about,.petpoint-guide-hero{margin:0 14px 14px!important;display:block}.petpoint-mini-grid{margin-top:14px;min-width:0}.petpoint-admin>div{grid-template-columns:1fr 1fr}.petpoint-admin{margin:0 14px 16px!important}.petpoint-head>strong{font-size:24px}}
   /* PETGROW_UI_FIX_V8_20260817 */
   .petgrow-intro-ten-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important;max-width:1040px!important;margin-left:auto!important;margin-right:auto!important}
   .petgrow-intro-ten-grid>*{min-height:190px!important;padding:24px!important}
@@ -7476,7 +7481,8 @@ function SajuPage({ pet, onGoRegister }) {
   const t = useT();
   const lang = useLang();
   const [input, setInput] = useState(null);
-  const [mode, setMode] = useState("menu");
+  const [mode, setModeRaw] = useState("menu");
+  const setMode=(next)=>{if(next==="daily"||next==="fortune"){petPointSpend("saju_daily").then(()=>setModeRaw(next)).catch(e=>window.alert(e.message));return;}setModeRaw(next);};
   const [guardianName, setGuardianName] = useState("");
   const [guardianBirthDate, setGuardianBirthDate] = useState("");
   const [compatResult, setCompatResult] = useState(null);
@@ -7508,9 +7514,10 @@ function SajuPage({ pet, onGoRegister }) {
   if (mode === "tarot") return <PetTarotPanel pet={pet} lang={lang} onBack={() => setMode("menu")} />;
 
   if (mode === "compat") {
-    const calculateCompat = () => {
+    const calculateCompat = async () => {
       const name = guardianName.trim();
       if (!name || !guardianBirthDate) return;
+      try{await petPointSpend("saju_compat")}catch(e){window.alert(e.message);return;}
       const seed = [petName, pet.profile.birthDate || "", pet.profile.species || "", name, guardianBirthDate]
         .map((v) => String(v).trim().toLowerCase()).join("|");
       const score = 70 + (hashString(seed + "|compat-score") % 30);
@@ -10743,6 +10750,14 @@ function AdminReportsPage({onBack}){
  </div>
 }
 
+async function petPointSummary(){return apiJson("/api/points?action=summary");}
+async function petPointSpend(feature){const r=await apiJson("/api/points?action=spend",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({feature})});if(r?.spent)window.dispatchEvent(new CustomEvent("petgrow:points",{detail:{amount:-r.spent,balance:r.balance,label:r.label||"PetPoint 사용"}}));return r;}
+function PetPointDashboard({compact=false}){const [d,setD]=useState(null),[toast,setToast]=useState(null);const load=()=>petPointSummary().then(x=>{setD(x);if(x?.pointEvent?.awarded)setToast({amount:x.pointEvent.awarded,label:x.pointEvent.label})}).catch(()=>{});useEffect(()=>{load();const h=e=>{setToast(e.detail);setD(v=>v?{...v,balance:e.detail.balance}:v);setTimeout(()=>setToast(null),2600)};window.addEventListener("petgrow:points",h);return()=>window.removeEventListener("petgrow:points",h)},[]);if(!d)return <div className="petpoint-card petpoint-loading">🐾 PetPoint 확인 중…</div>;return <section className={`petpoint-card ${compact?"compact":""}`}><div className="petpoint-head"><div><small>PETGROW REWARD</small><h2>🐾 PetPoint</h2><p>Pet톡 활동으로 모으고 Pet사주·운세·타로에 사용해요.</p></div><strong>{Number(d.balance||0).toLocaleString()}<em>P</em></strong></div>{!compact&&<><div className="petpoint-costs"><span>🃏 타로 <b>{d.costs?.tarot||30}P</b></span><span>🌤️ 오늘 운세 <b>{d.costs?.saju_daily||20}P</b></span><span>🔮 기본 사주 <b>{d.costs?.saju_basic||50}P</b></span><span>🫶 보호자 궁합 <b>{d.costs?.saju_compat||40}P</b></span></div><details className="petpoint-guide"><summary>포인트는 어떻게 모아요?</summary><div>{(d.earnGuide||[]).map((x,i)=><p key={i}><b>+{x.points}P</b><span>{x.label}</span><small>{x.limit}</small></p>)}</div></details></>}{toast&&<div className={`petpoint-toast ${Number(toast.amount)>=0?"plus":"minus"}`}>{Number(toast.amount)>=0?`+${toast.amount}P 적립`:`${toast.amount}P 사용`} · {toast.label}</div>}</section>}
+function PetPointPolicyAddendum({type}){return <section className="bg-card petpoint-policy"><h2>🐾 PetPoint 운영 안내</h2><p>PetPoint는 PetGrow 서비스 안에서만 사용하는 무료 활동 포인트이며 현금으로 구매·환전·출금하거나 다른 사람에게 양도할 수 없어요. 첫 이용 시 기본 포인트가 지급되고 Pet톡 글·댓글·좋아요 받기·하루 첫 접속 등 정상적인 활동에 따라 포인트가 적립될 수 있어요.</p><p>Pet사주·오늘의 펫운세·보호자 궁합·Pet타로 등 일부 재미 콘텐츠 이용 시 안내된 포인트가 차감됩니다. 반복 도배·비정상 활동·운영정책 위반 등 부정한 방식으로 적립한 포인트는 지급 취소 또는 회수될 수 있고, 글이나 댓글을 삭제하면 해당 활동으로 적립된 포인트가 회수될 수 있어요.</p>{type==="privacy"&&<p className="bg-sub">포인트 운영을 위해 회원 내부 식별자, 적립·사용 사유, 증감 포인트, 처리 시각과 활동 참조값을 계정에 연결해 저장하며 회원탈퇴 시 관계 법령상 보관 의무가 있는 경우를 제외하고 삭제합니다.</p>}</section>}
+function PetPointAboutCard(){return <section className="bg-card petpoint-about"><span>🐾</span><div><small>COMMUNITY REWARD</small><h2>활동이 혜택이 되는 PetPoint</h2><p>Pet톡에서 이야기를 나누고 댓글을 남기며 포인트를 모아 Pet사주·운세·타로 같은 재미 콘텐츠를 즐길 수 있어요. 유료 충전 없이 PetGrow 안의 건강한 참여를 보상하는 방식이에요.</p></div></section>}
+function PetPointGuideCard(){return <section className="bg-card petpoint-guide-hero"><div><small>PETPOINT GUIDE</small><h2>🐾 활동하고, 모으고, 즐겨요</h2><p>처음 300P로 시작하고 Pet톡 활동과 하루 첫 접속으로 포인트를 모을 수 있어요. 포인트는 PetGrow 재미 콘텐츠에서만 사용돼요.</p></div><div className="petpoint-mini-grid"><span><b>+30P</b> 글 작성</span><span><b>+10P</b> 댓글</span><span><b>+3P</b> 좋아요 받기</span><span><b>+10P</b> 하루 첫 접속</span></div></section>}
+function PetPointAdminOverview(){const [d,setD]=useState(null);useEffect(()=>{apiJson("/api/points?action=admin").then(setD).catch(()=>{})},[]);if(!d)return null;return <section className="bg-card petpoint-admin"><h2>🐾 PetPoint 운영 현황</h2><div><span><small>포인트 회원</small><b>{Number(d.users||0).toLocaleString()}</b></span><span><small>현재 잔액 합계</small><b>{Number(d.balance||0).toLocaleString()}P</b></span><span><small>누적 적립</small><b>+{Number(d.earned||0).toLocaleString()}P</b></span><span><small>누적 사용·회수</small><b>-{Number(d.spent||0).toLocaleString()}P</b></span></div></section>}
+
 function MyPage({ account, allPets, lang, onOpenAccount, onGoPets, onOpenPost, onOpenAdmin }) {
   const t = useT();
   const [adminEntry, setAdminEntry] = useState(null);
@@ -11554,22 +11569,23 @@ function AppInner({ lang, setLang }) {
       </div>
 
       <div className="petgrow-content-stage">
+      {account&&(effectiveView==="home"||effectiveView==="my")&&<PetPointDashboard compact={effectiveView==="home"}/>}
       {["community","tips","saju","tarot","petbti","guide","my","more","support","ad-inquiry","nearby","music","news"].includes(effectiveView) && <UnifiedMenuHero view={effectiveView} lang={lang} />}
       {effectiveView === "login" ? (
         <LoginScreen onGoTerms={() => goView("terms")} onGoPrivacy={() => goView("privacy")} />
       ) : effectiveView === "privacy" ? (
-        <><PrivacyContent /><PetNewsPrivacyAddendum /></>
+        <><PrivacyContent /><PetNewsPrivacyAddendum /><PetPointPolicyAddendum type="privacy" /></>
       ) : effectiveView === "terms" ? (
-        <><TermsContent /><PetNewsTermsAddendum /></>
+        <><TermsContent /><PetNewsTermsAddendum /><PetPointPolicyAddendum type="terms" /></>
       ) : effectiveView === "about" ? (
-        <AboutPage onStart={() => goView("pets")} onNavigate={(v) => goView(v)} />
+        <><AboutPage onStart={() => goView("pets")} onNavigate={(v) => goView(v)} /><PetPointAboutCard /></>
       ) : effectiveView === "home" ? (
         <HomePage account={account} pets={allPets} lang={lang}
           onGoPets={() => goView("pets")} onGoView={(v) => goView(v)} />
       ) : effectiveView === "more" ? (
         <MoreMenuPage lang={lang} onNavigate={(v)=>goView(v)} />
       ) : effectiveView === "guide" ? (
-        <InfoGuidePage />
+        <><PetPointGuideCard /><InfoGuidePage /></>
       ) : effectiveView === "nearby" ? (
         <NearbyPetPage />
       ) : effectiveView === "music" ? (
@@ -11585,7 +11601,7 @@ function AppInner({ lang, setLang }) {
           onOpenAccount={() => setAccountModalOpen(true)} onGoPets={() => goView("pets")}
           onOpenPost={() => goView("community")} onOpenAdmin={() => goView("admin")} />
       ) : effectiveView === "admin" ? (
-        <AdminReportsPage onBack={() => goView("my")} />
+        <><AdminReportsPage onBack={() => goView("my")} /><PetPointAdminOverview /></>
       ) : effectiveView === "support" ? (
         <SupportPage account={account} onBack={() => goView("my")} />
       ) : effectiveView === "ad-inquiry" ? (

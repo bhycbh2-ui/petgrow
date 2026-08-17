@@ -1,4 +1,6 @@
 import { put } from "@vercel/blob";
+import { sql } from "@vercel/postgres";
+import { awardPoints, revokePoints } from "../server_lib/points.js";
 import { getSessionUserId } from "../server_lib/session.js";
 import {
   listPosts,
@@ -112,7 +114,8 @@ export default async function handler(req, res) {
           imageUrls,
           isPublic,
         });
-        return res.status(201).json(post);
+        const pointEvent = await awardPoints(uid, "community_post", `post:${post.id}`).catch(()=>null);
+        return res.status(201).json({ ...post, pointEvent });
       }
     }
 
@@ -158,6 +161,7 @@ export default async function handler(req, res) {
         const uid = requireUser(req, res);
         if (!uid) return;
         const ok = await deletePost({ id, userId: uid });
+        if(ok) await revokePoints(uid,`post:${id}`,"Pet톡 글 삭제로 포인트 회수").catch(()=>{});
         if (!ok) return res.status(403).json({ error: "not allowed" });
         return res.status(200).json({ ok: true });
       }
@@ -169,7 +173,13 @@ export default async function handler(req, res) {
       if (!uid) return;
       const id = req.query.id;
       if (!id) return res.status(400).json({ error: "id is required" });
-      return res.status(200).json(await toggleLike({ postId: id, userId: uid }));
+      const likeResult = await toggleLike({ postId:id, userId:uid });
+      if (likeResult?.liked) {
+        const { rows:ownerRows } = await sql`select user_id from pg_posts where id=${id} limit 1`;
+        const ownerId=ownerRows[0]?.user_id;
+        if(ownerId && ownerId!==uid) await awardPoints(ownerId,"received_like",`like-received:${id}:${uid}`).catch(()=>null);
+      }
+      return res.status(200).json(likeResult);
     }
 
     if (action === "comments") {
@@ -192,7 +202,8 @@ export default async function handler(req, res) {
         if (!content || !content.trim()) return res.status(400).json({ error: "content is required" });
         if (!pet || !pet.id || !pet.name) return res.status(400).json({ error: "pet is required" });
         const comment = await addComment({ postId, userId: uid, pet, content: content.trim() });
-        return res.status(201).json(comment);
+        const pointEvent = await awardPoints(uid, "community_comment", `comment:${comment.id}`).catch(()=>null);
+        return res.status(201).json({ ...comment, pointEvent });
       }
     }
 
@@ -203,6 +214,7 @@ export default async function handler(req, res) {
       const id = req.query.id;
       if (!id) return res.status(400).json({ error: "id is required" });
       const ok = await deleteComment({ id, userId: uid });
+      if(ok) await revokePoints(uid,`comment:${id}`,"Pet톡 댓글 삭제로 포인트 회수").catch(()=>{});
       if (!ok) return res.status(403).json({ error: "not allowed" });
       return res.status(200).json({ ok: true });
     }
