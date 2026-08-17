@@ -1,0 +1,35 @@
+name: Audit PetGrow Full Fix 20260817
+on:
+  push:
+    branches: [work/full-fix-redesign-20260817]
+    paths: ['.github/workflows/audit-full-fix-20260817.yml', '.audit-full-fix-trigger']
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Inspect App targets
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('src/App.jsx')
+          s=p.read_text(encoding='utf-8')
+          keys=['GATED_VIEWS','pettalk','petnews','renderPetTalk','renderPetNews','타로 기록','좋아요','Pet사주','Pet타로','setLevel','setZoom','setCenter','fitBounds','setBounds','relayout','nearby','mapRef','kakao.maps.Map']
+          print('APP_CHARS',len(s))
+          for key in keys:
+              print('\n### KEY',key,'COUNT',s.count(key))
+              start=0
+              shown=0
+              while shown<8:
+                  i=s.find(key,start)
+                  if i<0: break
+                  a=max(0,i-700); b=min(len(s),i+1100)
+                  print(f'--- {key} @{i} ---')
+                  print(s[a:b].replace('\r',''))
+                  start=i+len(key); shown+=1
+          PY
+      - name: Build baseline
+        run: npm install && npm run build
