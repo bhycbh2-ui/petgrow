@@ -110,12 +110,13 @@ async function ensureNewsArchive(){
 
 async function saveNewsArchive(items){
   for(const item of items){
+    const existing=await sql`SELECT 1 FROM pet_news_archive
+      WHERE link=${item.link} OR LOWER(title)=LOWER(${item.title})
+      LIMIT 1`;
+    if(existing.rowCount>0) continue;
     await sql`INSERT INTO pet_news_archive (id,title,description,category,source,link,naver_link,published_at,image,last_seen_at)
       VALUES (${item.id},${item.title},${item.description||''},${item.category||'반려동물'},${item.source||'언론사'},${item.link},${item.naverLink||item.link},${item.publishedAt?new Date(item.publishedAt):null},${item.image||''},NOW())
-      ON CONFLICT (id) DO UPDATE SET
-        description=EXCLUDED.description,category=EXCLUDED.category,source=EXCLUDED.source,
-        naver_link=EXCLUDED.naver_link,published_at=COALESCE(EXCLUDED.published_at,pet_news_archive.published_at),
-        image=CASE WHEN EXCLUDED.image<>'' THEN EXCLUDED.image ELSE pet_news_archive.image END,last_seen_at=NOW()`;
+      ON CONFLICT (id) DO NOTHING`;
   }
 }
 
