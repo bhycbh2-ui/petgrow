@@ -17,9 +17,7 @@ export default function petgrowStabilityCleanup(){
           'const [lang, setLang] = useState(()=>{try{const v=localStorage.getItem("petgrow:lang");return ["ko","en"].includes(v)?v:"ko"}catch{return "ko"}});'
         );
 
-        // Storage policy: logged-in pet data is written to both cloud and an account-scoped
-        // local safety copy. If cloud is temporarily unavailable, the same account still sees
-        // the registered pet instead of a false empty state. Account id prevents cross-account bleed.
+        // Storage policy: cloud + account-scoped local safety copy.
         out=out.replace(
           /async function safeGet\(key, account\) \{[\s\S]*?\n\}\nasync function safeSet\(key, value, account\) \{[\s\S]*?\n\}/,
 `function accountLocalStateKey(key, account) {
@@ -28,18 +26,38 @@ export default function petgrowStabilityCleanup(){
 async function safeGet(key, account) {
   if (!account) return localGet(key);
   const shadowKey = accountLocalStateKey(key, account);
+  const shadowValue = await localGet(shadowKey);
   const cloudValue = await cloudGet(key);
-  if (cloudValue !== null && cloudValue !== undefined) {
-    await localSet(shadowKey, cloudValue);
-    return cloudValue;
+
+  if (cloudValue === null || cloudValue === undefined) return shadowValue;
+
+  // A failed/slow cloud save must never turn a just-registered local pet into a false empty state.
+  if ((key === "bboggl:dogs" || key === "bboggl:cats") &&
+      Array.isArray(shadowValue) && shadowValue.length > 0 &&
+      Array.isArray(cloudValue) && cloudValue.length < shadowValue.length) {
+    cloudSet(key, shadowValue).catch(() => {});
+    return shadowValue;
   }
-  return localGet(shadowKey);
+
+  if (key === "bboggl:activeIds" && shadowValue && typeof shadowValue === "object" &&
+      (!cloudValue || typeof cloudValue !== "object" || (!cloudValue.dog && !cloudValue.cat))) {
+    cloudSet(key, shadowValue).catch(() => {});
+    return shadowValue;
+  }
+
+  await localSet(shadowKey, cloudValue);
+  return cloudValue;
 }
 async function safeSet(key, value, account) {
   if (!account) return localSet(key, value);
   const shadowKey = accountLocalStateKey(key, account);
   const localOk = await localSet(shadowKey, value);
-  const cloudOk = await cloudSet(key, value);
+  let cloudOk = await cloudSet(key, value);
+  if (!cloudOk && localOk) {
+    // Best-effort retry; UI remains usable from the account-scoped safety copy meanwhile.
+    window.setTimeout(() => { cloudSet(key, value).catch(() => {}); }, 900);
+    window.setTimeout(() => { cloudSet(key, value).catch(() => {}); }, 2800);
+  }
   return Boolean(localOk || cloudOk);
 }`
         );
@@ -50,7 +68,7 @@ async function safeSet(key, value, account) {
           'setAuthChecked(true);\n      // 저장된 반려동물 상태까지 확인한 뒤 화면을 열어 false-empty 화면을 방지해요.'
         );
 
-        // Guest/local registrations must remain usable; older code loaded them and then cleared them again.
+        // Guest/local registrations must remain usable.
         out=out.replace(
           /if \(!me\) \{\s*dogs = \[\];\s*cats = \[\];\s*\}\s*\n\s*setPets\(\{ dog: dogs, cat: cats \}\);/,
           'dogs = Array.isArray(dogs) ? dogs : [];\n      cats = Array.isArray(cats) ? cats : [];\n\n      setPets({ dog: dogs, cat: cats });'
@@ -62,7 +80,6 @@ async function safeSet(key, value, account) {
           'setActiveId({\n        dog: (actives && actives.dog) || (dogs[0] && dogs[0].id) || null,\n        cat: (actives && actives.cat) || (cats[0] && cats[0].id) || null,\n      });\n      setLoaded(true);'
         );
 
-        // Make persistence functions report success and keep active-id storage symmetrical.
         out=out.replace(
           /const persistPets = async \(next\) => \{\s*setPets\(next\);\s*const ok1 = await safeSet\("bboggl:dogs", next\.dog, account\);\s*const ok2 = await safeSet\("bboggl:cats", next\.cat, account\);\s*flashSaveToast\(ok1 && ok2\);\s*\};\s*const persistActive = \(next\) => \{\s*setActiveId\(next\);\s*safeSet\("bboggl:activeIds", next, account\);\s*\};/,
 `const persistPets = async (next) => {
@@ -106,7 +123,6 @@ async function safeSet(key, value, account) {
           </nav>`;
         out=out.replace(/<nav className="petgrow-sidebar-nav petgrow-sidebar-nav-grouped">[\s\S]*?<\/nav>/,sidebar);
 
-        // Mobile hamburger: render the same route map directly; no DOM reordering script needed.
         const groups=`[
     {label:lang==="en"?"PET LIFE":"반려생활",items:[{key:"about",label:t.aboutNav,Icon:InfoIcon},{key:"pets",label:t.myPetsNav,Icon:PawIcon},{key:"nearby",label:t.nearbyNav,Icon:MapPinIcon}]},
     {label:lang==="en"?"COMMUNITY · CONTENT":"커뮤니티 · 콘텐츠",items:[{key:"community",label:t.communityNav,Icon:TalkIcon},{key:"music",label:lang==="en"?"Pet Music":"Pet음악",Icon:MusicIcon},{key:"petbti",label:t.petBtiNav,Icon:PetBtiIcon},{key:"saju",label:t.sajuNav,Icon:SajuIcon},{key:"tarot",label:lang==="en"?"Pet Tarot":"Pet타로",Icon:SajuIcon}]},
