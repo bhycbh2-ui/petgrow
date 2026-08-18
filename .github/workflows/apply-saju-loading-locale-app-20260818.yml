@@ -1,7 +1,7 @@
 name: Apply Saju Loading Locale App 20260818
 on:
   push:
-    branches: [agent/saju-loading-locale-app-20260818]
+    branches: [main]
     paths:
       - '.github/saju-loading-locale-app-trigger-20260818.txt'
 permissions:
@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: agent/saju-loading-locale-app-20260818
+          ref: main
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
@@ -24,7 +24,7 @@ jobs:
         run: npm ci
       - name: Production build
         run: npm run build
-      - name: Commit verified changes to agent branch
+      - name: Commit verified changes to main
         shell: bash
         run: |
           git config user.name petgrow-automation
@@ -32,4 +32,4 @@ jobs:
           git add src/App.jsx src/PetDailyWidgets.jsx src/main.jsx src/feature-unify-locale-20260818.css
           git diff --cached --quiet && exit 0
           git commit -m 'fix: sync Pet Saju loading locale and feature UI'
-          git push origin agent/saju-loading-locale-app-20260818
+          git push origin main
