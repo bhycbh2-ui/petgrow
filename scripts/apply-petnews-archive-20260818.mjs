@@ -4,25 +4,61 @@ const newsPath='api/news.js';
 const appPath='src/App.jsx';
 let news=fs.readFileSync(newsPath,'utf8');
 let app=fs.readFileSync(appPath,'utf8');
-const MARK='PETNEWS_ARCHIVE_20260818';
 
-if(!news.includes(MARK)){
-  news=`import { sql } from "@vercel/postgres";\n/* ${MARK} */\n`+news;
+let changed=false;
 
-  const beforePrepare='async function prepare(raw){let normalized=dedupe(raw.filter(isPetRelevant).map(normalizeItem)).sort((a,b)=>new Date(b.publishedAt||0)-new Date(a.publishedAt||0));if(!normalized.length)normalized=dedupe(raw.map(normalizeItem)).sort((a,b)=>new Date(b.publishedAt||0)-new Date(a.publishedAt||0));const now=Date.now(),sevenDays=7*24*60*60*1000,recent=normalized.filter(item=>item.publishedAt&&now-new Date(item.publishedAt).getTime()<=sevenDays);const picked=(recent.length>=12?recent:normalized).slice(0,40);const enriched=await enrichArticleImages(picked);const byId=new Map(enriched.map(x=>[x.id,x]));return picked.map(x=>byId.get(x.id)||x);}\n';
-  if(!news.includes(beforePrepare)) throw new Error('prepare anchor not found');
-  const archiveCode=`${beforePrepare}\nasync function ensureNewsArchive(){\n  await sql\`CREATE TABLE IF NOT EXISTS pet_news_archive (\n    id TEXT PRIMARY KEY,\n    title TEXT NOT NULL,\n    description TEXT,\n    category TEXT,\n    source TEXT,\n    link TEXT NOT NULL,\n    naver_link TEXT,\n    published_at TIMESTAMPTZ,\n    image TEXT,\n    first_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),\n    last_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW()\n  )\`;\n  await sql\`CREATE INDEX IF NOT EXISTS idx_pet_news_archive_published_at ON pet_news_archive (published_at DESC NULLS LAST)\`;\n}\n\nasync function saveNewsArchive(items){\n  for(const item of items){\n    await sql\`INSERT INTO pet_news_archive (id,title,description,category,source,link,naver_link,published_at,image,last_seen_at)\n      VALUES (\${item.id},\${item.title},\${item.description||''},\${item.category||'반려동물'},\${item.source||'언론사'},\${item.link},\${item.naverLink||item.link},\${item.publishedAt?new Date(item.publishedAt):null},\${item.image||''},NOW())\n      ON CONFLICT (id) DO UPDATE SET\n        description=EXCLUDED.description,category=EXCLUDED.category,source=EXCLUDED.source,\n        naver_link=EXCLUDED.naver_link,published_at=COALESCE(EXCLUDED.published_at,pet_news_archive.published_at),\n        image=CASE WHEN EXCLUDED.image<>'' THEN EXCLUDED.image ELSE pet_news_archive.image END,last_seen_at=NOW()\`;\n  }\n}\n\nasync function loadNewsArchive(limit=1000){\n  const result=await sql\`SELECT id,title,description,category,source,link,naver_link,published_at,image\n    FROM pet_news_archive ORDER BY published_at DESC NULLS LAST, first_seen_at DESC LIMIT \${limit}\`;\n  return result.rows.map(r=>({id:r.id,title:r.title,description:r.description||'',category:r.category||'반려동물',source:r.source||'언론사',link:r.link,naverLink:r.naver_link||r.link,publishedAt:r.published_at?new Date(r.published_at).toISOString():null,image:r.image||'',imageIsFallback:false}));\n}\n`;
-  news=news.replace(beforePrepare,archiveCode);
-
-  const oldHandler='  try{let raw=[];if(clientId&&clientSecret){try{raw=await fetchNaver(clientId,clientSecret);provider="naver-api-hub";}catch(e){console.warn("Pet news primary provider failed; using fallback",e?.message||e);}}if(!raw.length){raw=await fetchGoogleFallback();provider="google-news-rss";}const items=await prepare(raw);res.setHeader("Cache-Control","public, s-maxage=1800, stale-while-revalidate=1800");return res.status(200).json({configured:true,provider,updatedAt:new Date().toISOString(),refreshSeconds:1800,total:items.length,items,message:items.length?"":"새 반려동물 뉴스를 찾고 있어요. 잠시 후 다시 확인해 주세요."});}\n';
-  if(!news.includes(oldHandler)) throw new Error('handler anchor not found');
-  const newHandler='  try{await ensureNewsArchive();let raw=[];if(clientId&&clientSecret){try{raw=await fetchNaver(clientId,clientSecret);provider="naver-api-hub";}catch(e){console.warn("Pet news primary provider failed; using fallback",e?.message||e);}}if(!raw.length){raw=await fetchGoogleFallback();provider="google-news-rss";}const freshItems=await prepare(raw);if(freshItems.length)await saveNewsArchive(freshItems);const items=await loadNewsArchive(1000);res.setHeader("Cache-Control","public, s-maxage=1800, stale-while-revalidate=1800");return res.status(200).json({configured:true,provider,archive:true,updatedAt:new Date().toISOString(),refreshSeconds:1800,total:items.length,items,message:items.length?"":"새 반려동물 뉴스를 찾고 있어요. 잠시 후 다시 확인해 주세요."});}\n';
-  news=news.replace(oldHandler,newHandler);
+// PetNews must render 20 items per page.
+if(app.includes('/* PETNEWS_FINAL_INLINE_20260818 */')){
+  const before='detailRef=React.useRef(null),PAGE=8,cats=';
+  const after='detailRef=React.useRef(null),PAGE=20,cats=';
+  if(app.includes(before)){
+    app=app.replace(before,after);
+    changed=true;
+  }
 }
 
-if(app.includes('const NEWS_PAGE_SIZE=10;')) app=app.replace('const NEWS_PAGE_SIZE=10;','const NEWS_PAGE_SIZE=20;');
-if(app.includes('PetNews: search, expandable categories and 10-item pagination applied.')) app=app.replace('PetNews: search, expandable categories and 10-item pagination applied.','PetNews: search, expandable categories and 20-item pagination applied.');
+// Preserve archived rows: only insert genuinely new articles.
+// A fresh item is considered a duplicate when either its link or title already exists.
+// Existing rows are never updated by a refresh.
+const saveStart='async function saveNewsArchive(items){';
+const loadStart='async function loadNewsArchive(limit=1000){';
+const start=news.indexOf(saveStart);
+const end=news.indexOf(loadStart);
+if(start<0||end<0||end<=start) throw new Error('PetNews archive anchors not found');
 
-fs.writeFileSync(newsPath,news);
-fs.writeFileSync(appPath,app);
-console.log('PetNews persistent archive + 20-item pagination applied');
+const newSave=`async function saveNewsArchive(items){
+  for(const item of items){
+    const existing=await sql\`SELECT 1 FROM pet_news_archive
+      WHERE link=\${item.link} OR LOWER(title)=LOWER(\${item.title})
+      LIMIT 1\`;
+    if(existing.rowCount>0) continue;
+    await sql\`INSERT INTO pet_news_archive (id,title,description,category,source,link,naver_link,published_at,image,last_seen_at)
+      VALUES (\${item.id},\${item.title},\${item.description||''},\${item.category||'반려동물'},\${item.source||'언론사'},\${item.link},\${item.naverLink||item.link},\${item.publishedAt?new Date(item.publishedAt):null},\${item.image||''},NOW())
+      ON CONFLICT (id) DO NOTHING\`;
+  }
+}
+
+`;
+const oldSave=news.slice(start,end);
+if(oldSave!==newSave){
+  news=news.slice(0,start)+newSave+news.slice(end);
+  changed=true;
+}
+
+if(!app.includes('detailRef=React.useRef(null),PAGE=20,cats=')){
+  throw new Error('PetNews PAGE=20 verification failed');
+}
+if(!news.includes('WHERE link=${item.link} OR LOWER(title)=LOWER(${item.title})')){
+  throw new Error('PetNews link/title dedupe verification failed');
+}
+if(!news.includes('ON CONFLICT (id) DO NOTHING')){
+  throw new Error('PetNews non-overwrite verification failed');
+}
+
+if(changed){
+  fs.writeFileSync(newsPath,news);
+  fs.writeFileSync(appPath,app);
+  console.log('PetNews: 20-item pagination + append-only link/title dedupe applied.');
+}else{
+  console.log('PetNews already satisfies archive and pagination rules.');
+}
