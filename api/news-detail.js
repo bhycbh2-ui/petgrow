@@ -21,29 +21,31 @@ function articleParagraphs(html=""){
     if(t.length<35||t.length>700)continue;
     if(/무단전재|재배포|저작권|기자\s*=|Copyright|구독|로그인|제보|광고/.test(t))continue;
     if(!paragraphs.includes(t))paragraphs.push(t);
-    if(paragraphs.join(" ").length>1800)break;
+    if(paragraphs.join(" ").length>2600)break;
   }
   return paragraphs.join(" ");
 }
 function concise(text="",fallback=""){
   const t=clean(text||fallback);
-  if(!t)return "기사의 세부 내용을 원문에서 확인해 주세요.";
-  const sentences=t.split(/(?<=[.!?。！？]|다\.|요\.)\s+/).map(clean).filter(x=>x.length>15);
+  if(!t)return "• 기사의 세부 내용은 원문에서 확인해 주세요.";
+  const sentences=t.split(/(?<=[.!?。！？]|다\.|요\.)\s+/).map(clean).filter(x=>x.length>18);
   const unique=[];
   for(const sentence of sentences){
-    if(unique.some(x=>x===sentence))continue;
-    unique.push(sentence);
-    if(unique.length>=7||unique.join(" ").length>=1100)break;
+    const normalized=sentence.replace(/\s+/g," ").trim();
+    if(unique.some(x=>x===normalized))continue;
+    unique.push(normalized);
+    if(unique.length>=10||unique.join(" ").length>=1750)break;
   }
-  const picked=(unique.length?unique:[t]).map(x=>x.slice(0,190).replace(/[,.·;:\s]+$/,""));
-  return picked.map(x=>`• ${x}`).join("\n").slice(0,1300);
+  const source=unique.length?unique:[t];
+  const picked=source.slice(0,10).map(x=>x.slice(0,210).replace(/[,.·;:\s]+$/,""));
+  return picked.map(x=>`• ${x}`).join("\n").slice(0,1900);
 }
 async function translate(text,lang){
   const target={ko:"ko",en:"en",ja:"ja",zh:"zh-CN"}[lang];
   if(!target||target==="ko"||!text)return text;
   try{
-    const ac=new AbortController(),timer=setTimeout(()=>ac.abort(),3200);
-    const url=`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(target)}&dt=t&q=${encodeURIComponent(text.slice(0,1800))}`;
+    const ac=new AbortController(),timer=setTimeout(()=>ac.abort(),3600);
+    const url=`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(target)}&dt=t&q=${encodeURIComponent(text.slice(0,2200))}`;
     const r=await fetch(url,{signal:ac.signal,headers:{"User-Agent":"PetGrow/1.0"}});clearTimeout(timer);
     if(!r.ok)return text;
     const j=await r.json();
@@ -60,7 +62,7 @@ async function fetchArticle(start){
       if(r.status>=300&&r.status<400){const loc=r.headers.get("location");if(!loc)return null;const next=safeRemoteUrl(new URL(loc,current).toString());if(!next)return null;current=next;continue;}
       const type=r.headers.get("content-type")||"";
       if(!r.ok||!type.includes("text/html"))return null;
-      const html=(await r.text()).slice(0,750000);
+      const html=(await r.text()).slice(0,900000);
       return {html,url:current.toString()};
     }catch{return null}finally{clearTimeout(timer)}
   }
@@ -71,21 +73,22 @@ export default async function handler(req,res){
   const rawUrl=String(req.query.url||"");
   const title=clean(req.query.title||"");
   const fallback=clean(req.query.description||"");
+  const requestedImage=String(req.query.image||"").trim();
   const lang=["ko","en","ja","zh"].includes(String(req.query.lang))?String(req.query.lang):"ko";
-  let sourceText=fallback,canonical=rawUrl,image="";
+  let sourceText=fallback,canonical=rawUrl,image=/^https?:\/\//i.test(requestedImage)?requestedImage:"";
   const article=await fetchArticle(rawUrl);
   if(article){
     const {html,url}=article;
     const description=meta(html,"og:description")||meta(html,"description")||meta(html,"twitter:description");
     const body=articleParagraphs(html);
     sourceText=[description,body].filter(Boolean).join(" ")||fallback;
-    image=meta(html,"og:image")||meta(html,"twitter:image")||"";
-    image=/^https?:\/\//i.test(image)?image:"";
+    const articleImage=meta(html,"og:image")||meta(html,"twitter:image")||meta(html,"twitter:image:src")||"";
+    if(/^https?:\/\//i.test(articleImage))image=articleImage;
     const canonicalHref=html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i)?.[1]||url;
     canonical=safeRemoteUrl(canonicalHref)?.toString()||url;
   }
   const summary=concise(sourceText,fallback||title);
   const [localizedTitle,localizedSummary]=await Promise.all([translate(title,lang),translate(summary,lang)]);
   res.setHeader("Cache-Control","public, s-maxage=1800, stale-while-revalidate=3600");
-  return res.status(200).json({title:localizedTitle||title,summary:localizedSummary||summary,originalTitle:title,canonical,image,lang,translated:lang!=="ko"});
+  return res.status(200).json({title:localizedTitle||title,summary:localizedSummary||summary,originalTitle:title,canonical,image,lang,translated:lang!=="ko",summaryLines:(localizedSummary||summary).split("\n").filter(Boolean).length});
 }
