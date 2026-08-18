@@ -9,11 +9,9 @@ import "./runtime-ui-20260818.css";
 import "./critical-ui-hotfix-20260818.css";
 import "./requested-polish-20260818.css";
 import "./aab-ready-fixes-20260818.css";
-import "./pet-state-recovery-20260818.css";
 import "./tarot-saju-rebuild-20260818.css";
 import "./requested-polish-20260818.js";
 import "./aab-ready-fixes-20260818.js";
-import "./pet-state-recovery-20260818.js";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -23,7 +21,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js?v=44", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=45", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });
