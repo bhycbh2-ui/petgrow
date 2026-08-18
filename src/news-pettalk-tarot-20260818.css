@@ -1,0 +1,26 @@
+/* PETGROW_NEWS_PETTALK_TAROT_20260818 */
+
+/* PetNews is a simple original-article directory. */
+.petnews-direct-card{color:inherit!important;text-decoration:none!important;cursor:pointer!important;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease!important}
+.petnews-direct-card:hover,.petnews-direct-card:focus-visible{transform:translateY(-2px)!important;border-color:#b9d3c0!important;box-shadow:0 12px 30px rgba(38,60,45,.09)!important;outline:none!important}
+.petnews-direct-card .petnews-card-body{display:flex!important;flex-direction:column!important;justify-content:center!important;min-height:150px!important}
+.petnews-direct-card .petnews-card-body h2{margin-bottom:13px!important;-webkit-line-clamp:3!important}
+.petnews-open-link{display:inline-flex!important;align-items:center!important;width:max-content!important;font-size:11px!important;font-weight:850!important;color:#39764a!important;padding:6px 9px!important;border-radius:999px!important;background:#eef6f0!important}
+.home-news-direct-link{display:block!important;color:inherit!important;text-decoration:none!important;cursor:pointer!important;position:relative!important;padding-right:118px!important;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease!important}
+.home-news-direct-link:hover,.home-news-direct-link:focus-visible{transform:translateY(-1px)!important;border-color:#b9d3c0!important;box-shadow:0 10px 26px rgba(38,60,45,.08)!important;outline:none!important}
+.home-news-open{position:absolute!important;right:16px!important;top:50%!important;transform:translateY(-50%)!important;font-size:10px!important;font-weight:850!important;color:#39764a!important;white-space:nowrap!important}
+
+/* PetTarot result: card first, centered; interpretation flows below. */
+.pet-tarot-shell .pet-tarot-result-topic{max-width:760px!important;margin:0 auto 16px!important;text-align:center!important;justify-content:center!important}
+.pet-tarot-shell .pet-tarot-result-wrap{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;gap:22px!important;width:100%!important;max-width:780px!important;margin:0 auto!important}
+.pet-tarot-shell .pet-tarot-result-wrap>.pet-tarot-face{order:1!important;width:min(290px,72vw)!important;max-width:290px!important;min-width:0!important;margin:0 auto!important;flex:0 0 auto!important}
+.pet-tarot-shell .pet-tarot-result-wrap>.pet-tarot-reading{order:2!important;width:100%!important;max-width:760px!important;margin:0!important;box-sizing:border-box!important}
+.pet-tarot-shell .pet-tarot-reading-detail{width:100%!important}
+
+@media(max-width:760px){
+ .home-news-direct-link{padding-right:16px!important;padding-bottom:38px!important}
+ .home-news-open{left:16px!important;right:auto!important;top:auto!important;bottom:13px!important;transform:none!important}
+ .pet-tarot-shell .pet-tarot-result-wrap{gap:18px!important}
+ .pet-tarot-shell .pet-tarot-result-wrap>.pet-tarot-face{width:min(250px,72vw)!important;max-width:250px!important}
+ .petnews-direct-card .petnews-card-body{min-height:0!important}
+}
