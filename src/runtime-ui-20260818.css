@@ -1,10 +1,7 @@
 /* PetGrow shared UI — cleaned 2026-08-18
-   Owns only language visibility, about/service icon sizing, and shared Saju/BTI shell rhythm.
-   My Pet and Tarot have dedicated stylesheets.
+   Owns only about/service icon sizing and shared Saju/BTI shell rhythm.
+   Language visibility, My Pet and Tarot are owned elsewhere.
 */
-
-/* Language support is intentionally limited to Korean and English. */
-.lang-toggle button:nth-child(n+3){display:none!important}
 
 /* About/service feature icons need stronger visual weight. */
 .about-feature-grid>*>svg,.about-features-grid>*>svg,.intro-feature-grid>*>svg,.intro-features-grid>*>svg,.feature-grid>*>svg,.service-grid>*>svg,
