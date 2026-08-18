@@ -61,6 +61,14 @@
     });
   }
 
+  function centerPetTarotIntro(){
+    document.querySelectorAll(".feature-module-shell p, .pet-tarot-page p, .tarot-page p, p.bg-sub").forEach(p=>{
+      if(/주제마다 하루에 한 번씩|오늘 뽑은 카드는 같은 날 다시 바뀌지 않|once per day|same day/i.test(text(p))) {
+        p.classList.add("pg-pettarot-daily-desc");
+      }
+    });
+  }
+
   function phoneHref(raw){
     const cleaned=String(raw||"").replace(/^\s*☎\s*/,"").trim();
     const phone=cleaned.replace(/[^0-9+]/g,"");
@@ -90,10 +98,14 @@
   }
 
   function decorateTouchTargets(){
-    document.querySelectorAll(".nearby-place-actions a[href^='tel:']").forEach(a=>{a.classList.add("pg-call-button");a.textContent=/전화/.test(a.textContent)?a.textContent:"☎ 전화";});
+    document.querySelectorAll(".nearby-place-actions a[href^='tel:']").forEach(a=>{
+      a.classList.add("pg-call-button");
+      a.textContent=/전화/.test(a.textContent)?a.textContent:"☎ 전화";
+    });
+    document.querySelectorAll(".nearby-place-action-buttons a[target='_blank']").forEach(a=>a.classList.add("pg-map-button"));
   }
 
-  function run(){colorInfo();colorNews();centerPetBtiIntro();enhancePhones();decorateTouchTargets();}
+  function run(){colorInfo();colorNews();centerPetBtiIntro();centerPetTarotIntro();enhancePhones();decorateTouchTargets();}
   function schedule(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;run();});}
   function boot(){run();new MutationObserver(schedule).observe(document.getElementById("root")||document.body,{subtree:true,childList:true});}
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
