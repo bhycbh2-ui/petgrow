@@ -7,6 +7,16 @@ export default function petgrowStabilityCleanup(){
       let out=code;
 
       if(norm.endsWith("/src/App.jsx")){
+        // Language policy: KO / EN only in every surface (web, mobile web, native app).
+        out=out.replace(
+          /function LangToggle\(\{lang,onChange\}\)\{return <div className="lang-toggle"[\s\S]*?<\/div>\}/,
+          'function LangToggle({lang,onChange}){return <div className="lang-toggle" aria-label="Language"><button type="button" className={lang==="ko"?"active":""} onClick={()=>onChange("ko")}>KO</button><button type="button" className={lang==="en"?"active":""} onClick={()=>onChange("en")}>EN</button></div>}'
+        );
+        out=out.replace(
+          'const [lang, setLang] = useState(()=>{try{const v=localStorage.getItem("petgrow:lang");return ["ko","en","ja","zh"].includes(v)?v:"ko"}catch{return "ko"}});',
+          'const [lang, setLang] = useState(()=>{try{const v=localStorage.getItem("petgrow:lang");return ["ko","en"].includes(v)?v:"ko"}catch{return "ko"}});'
+        );
+
         // Desktop sidebar: one canonical order and one canonical route per visible label.
         const sidebar=`<nav className="petgrow-sidebar-nav petgrow-sidebar-nav-grouped">
             <button className={view === "home" ? "active" : ""} onClick={() => goView("home")}><HomeIcon /><span>{t.hamNavHome}</span></button>
