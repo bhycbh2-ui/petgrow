@@ -77,7 +77,6 @@
   ]);
 
   function patchNearbyNavEnglish() {
-    // Desktop sidebar: PET LIFE -> My Pets / Nearby Pet / Pet Music.
     qa('.petgrow-sidebar-nav .sidebar-section-label').forEach((label) => {
       if (txt(label) !== 'PET LIFE') return;
       const buttons = [];
@@ -86,20 +85,16 @@
         if (node.matches?.('button')) buttons.push(node);
         node = node.nextElementSibling;
       }
-      const nearby = buttons[1];
-      const span = nearby?.querySelector('span');
-      if (span && !txt(span)) span.textContent = 'Nearby Pet';
-    });
-
-    // Hamburger PET LIFE group.
-    qa('.ham-nav-group').forEach((group) => {
-      if (txt(q('.ham-section-label', group)) !== 'PET LIFE') return;
-      const buttons = qa('.ham-nav-item', group);
       const span = buttons[1]?.querySelector('span');
       if (span && !txt(span)) span.textContent = 'Nearby Pet';
     });
 
-    // Legacy/desktop horizontal navigation order: Home, About, My Pets, Nearby Pet.
+    qa('.ham-nav-group').forEach((group) => {
+      if (txt(q('.ham-section-label', group)) !== 'PET LIFE') return;
+      const span = qa('.ham-nav-item', group)[1]?.querySelector('span');
+      if (span && !txt(span)) span.textContent = 'Nearby Pet';
+    });
+
     const desktopLinks = qa('.desktop-nav-links .desktop-nav-link');
     const nearbyDesktop = desktopLinks[3];
     if (nearbyDesktop && !/Nearby Pet/i.test(txt(nearbyDesktop))) {
@@ -109,25 +104,17 @@
         mark.className = 'pg-nearby-nav-label';
         nearbyDesktop.appendChild(mark);
       }
-      mark.textContent = 'Nearby Pet';
+      if (txt(mark) !== 'Nearby Pet') mark.textContent = 'Nearby Pet';
     }
   }
 
   function patchNearbyHeroEnglish(page) {
-    const heroes = qa('.nearby-hero');
-    heroes.forEach((hero) => {
-      // While Nearby Pet is the active page, both the unified hero and hidden local hero belong to Nearby Pet.
-      const eyebrow = q('.nearby-eyebrow', hero);
-      const h1 = q('h1', hero);
-      const p = q('p', hero);
-      if (eyebrow) eyebrow.textContent = 'PETGROW NEARBY';
-      if (h1) h1.textContent = 'Nearby Pet';
-      if (p) p.textContent = 'Find pet hospitals, pharmacies, shops, grooming salons, day care and hotels near an address or your current location.';
+    qa('.nearby-hero').forEach((hero) => {
+      setText(q('.nearby-eyebrow', hero), 'PETGROW NEARBY');
+      setText(q('h1', hero), 'Nearby Pet');
+      setText(q('p', hero), 'Find pet hospitals, pharmacies, shops, grooming salons, day care and hotels near an address or your current location.');
     });
-
-    const localHero = q('.nearby-hero', page);
-    const help = q('.nearby-search-help', localHero || page);
-    if (help) help.textContent = '📍 Search by address or use your current location. Allow location access to see your position and distance to each place on the map.';
+    setText(q('.nearby-search-help', q('.nearby-hero', page) || page), '📍 Search by address or use your current location. Allow location access to see your position and distance to each place on the map.');
   }
 
   function translateDistanceText(value) {
@@ -141,11 +128,10 @@
     const page = q('.nearby-page');
     if (!page) return;
 
-    patchNearbyNavEnglish();
     patchNearbyHeroEnglish(page);
 
     const input = q('.nearby-search-row input', page);
-    if (input) input.placeholder = 'Search district, neighborhood, road or street address';
+    if (input && input.placeholder !== 'Search district, neighborhood, road or street address') input.placeholder = 'Search district, neighborhood, road or street address';
 
     const addressBtn = q('.nearby-address-search-btn', page);
     if (addressBtn) setText(addressBtn, /검색 중|Searching/.test(txt(addressBtn)) ? 'Searching…' : 'Search');
@@ -178,12 +164,12 @@
 
     const mapButtons = qa('.nearby-map-icon-btn', page);
     if (mapButtons[0]) {
-      mapButtons[0].setAttribute('aria-label', 'Refresh current location');
-      mapButtons[0].setAttribute('title', 'Refresh current location');
+      if (mapButtons[0].getAttribute('aria-label') !== 'Refresh current location') mapButtons[0].setAttribute('aria-label', 'Refresh current location');
+      if (mapButtons[0].getAttribute('title') !== 'Refresh current location') mapButtons[0].setAttribute('title', 'Refresh current location');
     }
     if (mapButtons[1]) {
-      mapButtons[1].setAttribute('aria-label', 'Follow live location');
-      mapButtons[1].setAttribute('title', 'Follow live location');
+      if (mapButtons[1].getAttribute('aria-label') !== 'Follow live location') mapButtons[1].setAttribute('aria-label', 'Follow live location');
+      if (mapButtons[1].getAttribute('title') !== 'Follow live location') mapButtons[1].setAttribute('title', 'Follow live location');
     }
 
     const resultTitle = q('.nearby-results-head h2', page);
@@ -226,7 +212,7 @@
 
     const pagination = q('.nearby-pagination', page);
     if (pagination) {
-      pagination.setAttribute('aria-label', 'Nearby Pet pages');
+      if (pagination.getAttribute('aria-label') !== 'Nearby Pet pages') pagination.setAttribute('aria-label', 'Nearby Pet pages');
       qa('button', pagination).forEach((el) => replaceExact(el, COMMON_UI_EN));
     }
 
@@ -235,17 +221,25 @@
       const headTitle = q('.nearby-review-head h2', review);
       if (headTitle && /\s이용후기$/.test(txt(headTitle))) headTitle.textContent = txt(headTitle).replace(/\s이용후기$/, ' reviews');
       const headSummary = q('.nearby-review-head p', review);
-      if (headSummary) headSummary.innerHTML = headSummary.innerHTML.replace(/후기\s*(\d+)개/g, '$1 reviews');
+      if (headSummary) {
+        const before = headSummary.innerHTML;
+        const after = before.replace(/후기\s*(\d+)개/g, '$1 reviews');
+        if (before !== after) headSummary.innerHTML = after;
+      }
       replaceExact(q('.nearby-review-head>button', review), COMMON_UI_EN);
 
-      qa('.nearby-stars', review).forEach((el) => el.setAttribute('aria-label', el.closest('.nearby-review-edit') ? 'Edit rating' : 'Select rating'));
+      qa('.nearby-stars', review).forEach((el) => {
+        const label = el.closest('.nearby-review-edit') ? 'Edit rating' : 'Select rating';
+        if (el.getAttribute('aria-label') !== label) el.setAttribute('aria-label', label);
+      });
       const compose = q('.nearby-review-compose', review);
       const textarea = q('textarea', compose);
-      if (textarea) textarea.placeholder = 'Share a short experience about the facility or service. Profanity, personal information and ads are not allowed.';
+      const placeholder = 'Share a short experience about the facility or service. Profanity, personal information and ads are not allowed.';
+      if (textarea && textarea.placeholder !== placeholder) textarea.placeholder = placeholder;
       const composeNote = q('.nearby-review-compose-foot small', review);
       if (composeNote) {
         const count = (txt(composeNote).match(/^\d+\/300/) || ['0/300'])[0];
-        composeNote.textContent = `${count} · Sign in to write a review.`;
+        setText(composeNote, `${count} · Sign in to write a review.`);
       }
       replaceExact(q('.nearby-review-compose-foot button', review), COMMON_UI_EN);
       qa('.nearby-review-edit-actions button,.nearby-review-actions button,.nearby-review-meta em', review).forEach((el) => replaceExact(el, COMMON_UI_EN));
@@ -253,18 +247,19 @@
         const v = txt(el).replace(' · 수정됨',' · edited');
         if (v !== txt(el)) el.textContent = v;
       });
-      const empty = q('.nearby-review-empty', review);
-      if (empty) setText(empty, 'No reviews yet. Be the first to share your experience 🐾');
+      setText(q('.nearby-review-empty', review), 'No reviews yet. Be the first to share your experience 🐾');
     }
 
-    const disclaimer = q('.nearby-disclaimer', page);
-    if (disclaimer) disclaimer.textContent = 'Place information is retrieved at search time from official public licensing data and Kakao place information. Please confirm current opening status, address and contact details with the business before visiting. Reviews are opinions written by PetGrow members and are not official business information.';
+    setText(q('.nearby-disclaimer', page), 'Place information is retrieved at search time from official public licensing data and Kakao place information. Please confirm current opening status, address and contact details with the business before visiting. Reviews are opinions written by PetGrow members and are not official business information.');
   }
 
   function run() {
     const lang = activeLang();
-    document.documentElement.dataset.pgLang = lang;
-    if (lang === 'en') patchNearbyEnglish();
+    if (document.documentElement.dataset.pgLang !== lang) document.documentElement.dataset.pgLang = lang;
+    if (lang === 'en') {
+      patchNearbyNavEnglish();
+      patchNearbyEnglish();
+    }
   }
 
   let raf = 0;
