@@ -1,35 +1,46 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./petgrow-premium-20260817.css";
-import "./final-ux-20260818.css";
-import "./ui-fixes-20260818.css";
-import "./news-pettalk-tarot-20260818.css";
-import "./runtime-ui-20260818.css";
-import "./critical-ui-hotfix-20260818.css";
-import "./requested-polish-20260818.css";
-import "./aab-ready-fixes-20260818.css";
-import "./tarot-saju-rebuild-20260818.css";
-import "./admin-news-music-20260818.css";
-import "./requested-final-fixes-20260818.css";
+
+// Temporary core-CSS isolation mode.
+// Recent hotfix styles remain in the repository but are not imported here
+// until the blank-screen conflict is identified.
+const CSS_ISOLATION_MODE = true;
 
 const rootElement = document.getElementById("root");
 const root = ReactDOM.createRoot(rootElement);
+
+const forceRootVisible = () => {
+  try {
+    document.documentElement.style.visibility = "visible";
+    document.documentElement.style.opacity = "1";
+    document.body.style.visibility = "visible";
+    document.body.style.opacity = "1";
+    document.body.style.display = "block";
+    rootElement.style.visibility = "visible";
+    rootElement.style.opacity = "1";
+    rootElement.style.display = "block";
+    rootElement.style.minHeight = "100vh";
+  } catch {}
+};
 
 const hideInitialSplash = () => {
   try {
     if (typeof window.__hidePetGrowSplash === "function") {
       window.__hidePetGrowSplash();
-      return;
     }
     document.getElementById("petgrow-initial-splash")?.remove();
   } catch {
     try { document.getElementById("petgrow-initial-splash")?.remove(); } catch {}
   }
+  forceRootVisible();
 };
 
-const splashWatchdog = window.setTimeout(hideInitialSplash, 2600);
+forceRootVisible();
+const splashWatchdog = window.setTimeout(hideInitialSplash, 1800);
 
 function BootErrorScreen({ error }) {
+  forceRootVisible();
   return (
     <main style={{minHeight:"100vh",display:"grid",placeItems:"center",padding:"24px",background:"#F8FAF7",fontFamily:"-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif",textAlign:"center",position:"relative",zIndex:2147483647,visibility:"visible",opacity:1}}>
       <div style={{maxWidth:"620px"}}>
@@ -65,15 +76,12 @@ class AppErrorBoundary extends React.Component {
   }
 }
 
-// IMPORTANT: legacy runtime DOM patches are intentionally paused here.
-// They previously ran together immediately after mount and could mutate the
-// same React DOM tree. Keep the files in the repository, but do not execute
-// them until the core app is confirmed stable.
+// Legacy runtime DOM patches remain paused during core-app isolation.
 const RUNTIME_PATCHES_PAUSED = true;
 
 const loadOptionalRuntimePatches = async () => {
   if (RUNTIME_PATCHES_PAUSED) {
-    console.info("[PetGrow] optional runtime patches paused for core-app isolation");
+    console.info("[PetGrow] optional runtime patches paused");
     return;
   }
 
@@ -95,6 +103,7 @@ const loadOptionalRuntimePatches = async () => {
 
 import("./App.jsx")
   .then(({ default: App }) => {
+    forceRootVisible();
     root.render(
       <AppErrorBoundary>
         <App />
@@ -119,7 +128,7 @@ import("./App.jsx")
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js?v=49", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=50", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });
