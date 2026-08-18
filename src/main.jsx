@@ -16,6 +16,7 @@ import "./lang-ko-en-only-20260818.js";
 import "./requested-polish-20260818.js";
 import "./aab-ready-fixes-20260818.js";
 import "./final-pet-state-tarot-fix-20260818.js";
+import "./final-mobile-menu-link-fix-20260818.js";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -26,7 +27,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 // PWA: 서비스워커 등록 (오프라인 캐싱 + 홈화면 추가 지원)
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js?v=38", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=39", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });
