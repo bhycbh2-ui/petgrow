@@ -1,0 +1,125 @@
+/* PetGrow requested polish — 2026-08-18
+   1) Pet Tarot: merge pet selector + tarot content into one visual card like Pet Saju
+   2) Legal pages: remove detached addendum-card feel, prevent title/intro overlap, mobile safe
+   3) Admin labels: clearer operational wording
+*/
+
+/* ===== Pet Tarot: one unified panel ===== */
+.petgrow-web-layout .feature-page-tarot{
+  width:100%!important;
+  max-width:1180px!important;
+  margin:0 auto!important;
+  padding:28px!important;
+  border:1px solid #dfe8e1!important;
+  border-radius:24px!important;
+  background:#fff!important;
+  box-shadow:0 12px 34px rgba(38,65,46,.055)!important;
+  box-sizing:border-box!important;
+}
+.petgrow-web-layout .feature-page-tarot>.feature-pet-picker{
+  width:100%!important;
+  margin:0 0 18px!important;
+  padding:0 0 18px!important;
+  border-bottom:1px solid #edf1ed!important;
+  justify-content:center!important;
+  align-items:flex-start!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+}
+.petgrow-web-layout .feature-page-tarot>.feature-pet-picker button{
+  width:auto!important;
+  min-width:78px!important;
+  max-width:120px!important;
+  padding:6px 10px!important;
+  border:0!important;
+  border-radius:16px!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.petgrow-web-layout .feature-page-tarot .feature-module-shell{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+}
+.petgrow-web-layout .feature-page-tarot .pet-tarot-stage{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.petgrow-web-layout .feature-page-tarot .pet-daily-eyebrow{margin-top:0!important}
+
+/* ===== Terms / Privacy ===== */
+.legal-page-shell.pg-legal-polished{
+  width:100%!important;
+  max-width:1180px!important;
+  margin:0 auto!important;
+  padding:24px 20px 64px!important;
+  box-sizing:border-box!important;
+  overflow:visible!important;
+}
+.legal-page-shell.pg-legal-polished .legal-page-title{
+  position:static!important;
+  transform:none!important;
+  display:block!important;
+  margin:0 0 14px!important;
+  padding:0!important;
+  line-height:1.18!important;
+  min-height:0!important;
+  overflow:visible!important;
+}
+.legal-page-shell.pg-legal-polished .legal-page-intro{
+  position:static!important;
+  transform:none!important;
+  width:100%!important;
+  margin:0 0 24px!important;
+  padding:18px 20px!important;
+  box-sizing:border-box!important;
+  overflow:visible!important;
+  white-space:normal!important;
+  word-break:keep-all!important;
+}
+.legal-page-shell.pg-legal-polished .legal-section-list{width:100%!important;min-width:0!important}
+.legal-page-shell.pg-legal-polished .legal-section-card{
+  position:relative!important;
+  width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+  overflow:visible!important;
+}
+.legal-page-shell.pg-legal-polished .legal-section-content{min-width:0!important}
+.legal-page-shell.pg-legal-polished .legal-section-title,
+.legal-page-shell.pg-legal-polished .legal-section-body{
+  max-width:100%!important;
+  overflow-wrap:anywhere!important;
+  word-break:keep-all!important;
+}
+.pg-legal-integrated-note{background:#fbfcfb!important}
+.pg-hidden-legal-addendum{display:none!important}
+
+/* ===== Admin wording ===== */
+.petpoint-admin.pg-admin-point-polished>div{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+.petpoint-admin .pg-total-member-stat{background:#f7faf7!important}
+
+@media(max-width:900px){
+  .petgrow-web-layout .feature-page-tarot{padding:22px 18px!important;border-radius:20px!important}
+  .petpoint-admin.pg-admin-point-polished>div{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:600px){
+  .legal-page-shell.pg-legal-polished{padding:18px 14px 48px!important}
+  .legal-page-shell.pg-legal-polished .legal-page-title{font-size:26px!important;margin-bottom:12px!important}
+  .legal-page-shell.pg-legal-polished .legal-page-intro{padding:15px 16px!important;margin-bottom:18px!important;line-height:1.7!important}
+  .legal-page-shell.pg-legal-polished .legal-section-card{display:grid!important;grid-template-columns:30px minmax(0,1fr)!important;gap:10px!important;padding:16px 14px!important}
+  .legal-page-shell.pg-legal-polished .legal-section-number{width:30px!important;height:30px!important;min-width:30px!important}
+  .legal-page-shell.pg-legal-polished .legal-section-title{margin:3px 0 7px!important;font-size:14px!important;line-height:1.45!important}
+  .legal-page-shell.pg-legal-polished .legal-section-body{font-size:12.5px!important;line-height:1.75!important;word-break:normal!important}
+  .petgrow-web-layout .feature-page-tarot{padding:18px 14px!important;margin-left:0!important;margin-right:0!important}
+  .petgrow-web-layout .feature-page-tarot>.feature-pet-picker{margin-bottom:14px!important;padding-bottom:14px!important}
+  .petpoint-admin.pg-admin-point-polished>div{grid-template-columns:1fr!important}
+}
