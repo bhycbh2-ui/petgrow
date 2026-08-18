@@ -48,6 +48,12 @@ export default function petgrowStabilityCleanup(){
         out=out.replace(stage,stage+head);
       }
 
+      if(norm.endsWith("/src/final-ux-20260818.css")){
+        const start=out.indexOf('/* Pet사주/Pet타로 배경과 여백을 한 톤으로 */');
+        const end=out.indexOf('/* 포인트: 숫자 중심 + 도움말은 ? 클릭 시만 */',start);
+        if(start>=0&&end>start) out=out.slice(0,start)+out.slice(end);
+      }
+
       return out===code?null:{code:out,map:null};
     }
   };
