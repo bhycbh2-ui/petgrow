@@ -17,6 +17,7 @@ import "./aab-ready-fixes-20260818.js";
 import "./admin-news-music-runtime-20260818.js";
 import "./final-audit-20260818.js";
 import "./requested-final-fixes-20260818.js";
+import "./home-fast-content-20260819.js";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
