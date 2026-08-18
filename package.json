@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "python3 scripts/apply-runtime-hotfix-20260818-v2.py || python scripts/apply-runtime-hotfix-20260818-v2.py",
     "build": "vite build",
     "preview": "vite preview",
     "cap:sync": "vite build && npx cap sync",
