@@ -4,9 +4,10 @@
 .pg-wait-card b{font-size:18px;letter-spacing:-.025em}.pg-wait-card small{font-size:12px;line-height:1.65;color:#7b877f;word-break:keep-all}
 .pg-wait-spinner{width:34px;height:34px;border:3px solid #dfe9e1;border-top-color:#4f8a5b;border-radius:50%;animation:pgRuntimeSpin .8s linear infinite;margin-bottom:4px}@keyframes pgRuntimeSpin{to{transform:rotate(360deg)}}
 
-/* Native Tarot loading text becomes the same wait popup. */
-.feature-page-tarot .pet-tarot-loading{position:fixed!important;inset:0!important;z-index:9998!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:24px!important;background:rgba(247,250,247,.78)!important;backdrop-filter:blur(7px)!important;color:#25322a!important;font-size:14px!important;font-weight:800!important;gap:10px!important}
-.feature-page-tarot .pet-tarot-loading:before{content:"";width:30px;height:30px;border:3px solid #dfe9e1;border-top-color:#4f8a5b;border-radius:50%;animation:pgRuntimeSpin .8s linear infinite}
+/* Native Tarot loading: use an opaque clean background so underlying cards/images never ghost through. */
+.feature-page-tarot .pet-tarot-loading{position:fixed!important;inset:0!important;z-index:9998!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:24px!important;background:#f8fbf8!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;color:#25322a!important;font-size:14px!important;font-weight:800!important;gap:10px!important;overflow:hidden!important}
+.feature-page-tarot .pet-tarot-loading:before{content:"";width:30px;height:30px;border:3px solid #dfe9e1;border-top-color:#4f8a5b;border-radius:50%;animation:pgRuntimeSpin .8s linear infinite;flex:0 0 auto}
+.feature-page-tarot .pet-tarot-loading img{visibility:hidden!important}
 
 /* Language support is intentionally limited to Korean and English. */
 .lang-toggle button:nth-child(n+3){display:none!important}
@@ -18,6 +19,9 @@
   .petgrow-web-layout .petgrow-page-top.pets-page-top>.petgrow-unified-hero+div{width:min(100%,1180px)!important;max-width:1180px!important;margin:0 auto!important;box-sizing:border-box!important}
   .petgrow-web-layout .petgrow-page-top.pets-page-top>.petgrow-unified-hero+div button svg{width:20px!important;height:20px!important;min-width:20px!important;min-height:20px!important}
 }
+
+/* Keep the My Pet title inside the shared hero rhythm even if older page styles leak in. */
+.petgrow-page-top.pets-page-top>.petgrow-unified-hero h1{display:block!important;position:static!important;transform:none!important;margin:0!important;padding:0!important;line-height:1.18!important;max-width:100%!important}
 
 /* About/service feature icons need stronger visual weight. */
 .about-feature-grid>*>svg,.about-features-grid>*>svg,.intro-feature-grid>*>svg,.intro-features-grid>*>svg,.feature-grid>*>svg,.service-grid>*>svg,
