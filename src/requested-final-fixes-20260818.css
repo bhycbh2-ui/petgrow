@@ -20,22 +20,44 @@
   text-align:center!important;
 }
 
-/* 2) 이용약관/개인정보처리방침 하단 Pet뉴스·PetPoint 부가 안내를 기존 조항 카드와 같은 톤으로 통일. */
+/* 2) 이용약관/개인정보처리방침: 기본 조항과 하단 Pet뉴스·PetPoint 안내의 카드/폰트/굵기를 완전히 동일하게 통일. */
 .legal-addenda-inline>.bg-card,
 .legal-addenda-inline>.petpoint-policy{
   background:#fff!important;
   border-color:#e1e9e3!important;
   box-shadow:0 7px 22px rgba(34,48,39,.035)!important;
 }
+
+/* 제목은 모든 조항에서 같은 서체·크기·굵기 사용 */
+.legal-section-title,
 .legal-addenda-inline h2,
 .legal-addenda-inline h3{
-  color:#223027!important;
+  font-family:inherit!important;
+  font-size:16px!important;
   font-weight:900!important;
-  letter-spacing:-.02em!important;
+  line-height:1.45!important;
+  letter-spacing:-.025em!important;
+  color:#223027!important;
+  margin:0 0 8px!important;
 }
+
+/* 본문도 모든 조항에서 같은 크기·굵기·행간 사용 */
+.legal-section-body,
+.legal-addenda-inline p{
+  font-family:inherit!important;
+  font-size:15px!important;
+  font-weight:500!important;
+  line-height:1.85!important;
+  letter-spacing:-.012em!important;
+  color:#4f5f54!important;
+  white-space:pre-line!important;
+}
+.legal-addenda-inline p{margin:0!important}
 
 @media(max-width:760px){
   .petnews-image-fallback>span:first-child{font-size:36px!important}
+  .legal-section-title,.legal-addenda-inline h2,.legal-addenda-inline h3{font-size:15px!important}
+  .legal-section-body,.legal-addenda-inline p{font-size:13.5px!important;line-height:1.8!important}
 }
 @media(max-width:430px){
   .petnews-image-fallback>span:first-child{font-size:34px!important}
