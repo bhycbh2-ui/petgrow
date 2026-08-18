@@ -1,0 +1,57 @@
+/* PetGrow home shortcut + PetBTI visual polish — 2026-08-19 */
+
+/* Home: keep the six favorite shortcuts as the primary navigation. */
+.petgrow-dashboard-home .pg-home-duplicate-widget-grid{display:none!important}
+.petgrow-dashboard-home .pg-home-quick-head-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.petgrow-dashboard-home .pg-home-quick-expand{background:#f4f7f4!important;border-color:#dce6de!important;color:#45624d!important}
+.petgrow-dashboard-home .pg-home-quick-expand[aria-expanded="true"]{background:#e9f3eb!important;border-color:#cbded0!important;color:#2f6f42!important}
+.petgrow-dashboard-home .pg-home-quick-draggable{cursor:grab!important;user-select:none;position:relative}
+.petgrow-dashboard-home .pg-home-quick-draggable:active{cursor:grabbing!important}
+.petgrow-dashboard-home .pg-home-quick-draggable.pg-dragging{opacity:.48!important;transform:scale(.97)!important}
+.petgrow-dashboard-home .pg-home-quick-draggable.pg-drag-over{border-color:#75a780!important;box-shadow:0 0 0 3px rgba(77,138,91,.12),0 10px 24px rgba(50,92,60,.08)!important;transform:translateY(-2px)!important}
+.petgrow-dashboard-home .pg-home-quick-draggable:after{content:"⋮⋮";position:absolute;right:7px;top:5px;font-size:9px;letter-spacing:-3px;color:#aebbb1;opacity:0;transition:.15s}
+.petgrow-dashboard-home .pg-home-quick-draggable:hover:after{opacity:.85}
+
+.petgrow-dashboard-home .pg-home-extra-menu-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px;padding-top:10px;border-top:1px dashed #dce5dd;animation:pgMenuOpen .18s ease-out}
+.petgrow-dashboard-home .pg-home-extra-menu-grid[hidden]{display:none!important}
+.petgrow-dashboard-home .pg-home-extra-menu-card{min-height:72px;border:1px solid #e1e9e2;background:#fafcfb;border-radius:16px;padding:9px 7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#3d4a40;font-family:inherit;font-weight:800;cursor:pointer;transition:.16s ease}
+.petgrow-dashboard-home .pg-home-extra-menu-card:hover{background:#fff;border-color:#c7dacb;transform:translateY(-1px);box-shadow:0 7px 18px rgba(39,67,46,.05)}
+.petgrow-dashboard-home .pg-home-extra-menu-card i{font-style:normal;font-size:19px;width:34px;height:34px;border-radius:12px;background:#eef5ef;display:grid;place-items:center}
+.petgrow-dashboard-home .pg-home-extra-menu-card span{font-size:10px;line-height:1.3;text-align:center}
+@keyframes pgMenuOpen{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+
+/* Home music: the full white row is the play/pause control. */
+.petgrow-dashboard-home .home-music-row{transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease,background .15s ease}
+.petgrow-dashboard-home .home-music-row:hover:not(:disabled){border-color:#cbdccf!important;box-shadow:0 7px 20px rgba(39,70,47,.055)!important;transform:translateY(-1px)}
+.petgrow-dashboard-home .home-music-row.is-playing{border-color:#9bc4a5!important;background:linear-gradient(90deg,#f6fbf6,#fff)!important;box-shadow:0 0 0 2px rgba(64,127,80,.07)!important}
+
+/* PetBTI quiz: clearer hierarchy and modern, varied answer tones. */
+.pg-petbti-quiz-card{position:relative!important;overflow:hidden!important;padding:26px!important;border:1px solid #dfe8e1!important;border-radius:26px!important;background:linear-gradient(145deg,#fff 0%,#fbfdfb 58%,#f3f8f4 100%)!important;box-shadow:0 14px 38px rgba(38,62,45,.065)!important}
+.pg-petbti-quiz-card:before{content:"PETBTI";display:inline-flex;align-items:center;height:26px;padding:0 10px;margin:0 0 13px;border-radius:999px;background:#eef6ef;color:#4d7d59;font-size:9px;font-weight:950;letter-spacing:.13em}
+.pg-petbti-quiz-card:after{content:"";position:absolute;width:145px;height:145px;border-radius:50%;right:-78px;top:-72px;background:radial-gradient(circle,#e9f3eb 0 54%,rgba(233,243,235,0) 56%);pointer-events:none}
+.pg-petbti-quiz-card .pg-petbti-counter{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-width:52px!important;height:28px!important;padding:0 10px!important;margin:0 0 8px!important;border-radius:999px!important;background:#f6f1e8!important;color:#8a7143!important;font-size:11px!important;font-weight:850!important}
+.pg-petbti-quiz-card .pg-petbti-question-title{margin:5px 0 20px!important;font-size:20px!important;line-height:1.5!important;letter-spacing:-.025em!important;color:#26352b!important;max-width:760px}
+.pg-petbti-quiz-card .pg-petbti-option{position:relative!important;display:flex!important;align-items:center!important;gap:12px!important;width:100%!important;min-height:54px!important;padding:13px 16px!important;border-radius:16px!important;border:1px solid transparent!important;color:#35423a!important;font-size:13px!important;font-weight:760!important;line-height:1.45!important;box-shadow:none!important;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease,background .14s ease!important}
+.pg-petbti-quiz-card .pg-petbti-option:before{content:"";width:18px;height:18px;flex:0 0 18px;border-radius:50%;border:2px solid currentColor;opacity:.42;box-sizing:border-box;background:rgba(255,255,255,.72)}
+.pg-petbti-quiz-card .pg-petbti-option-1{background:#f1f8f2!important;border-color:#d8e9dc!important;color:#456e50!important}
+.pg-petbti-quiz-card .pg-petbti-option-2{background:#f2f6fb!important;border-color:#dce6f0!important;color:#506b82!important}
+.pg-petbti-quiz-card .pg-petbti-option-3{background:#fff6ee!important;border-color:#f0e0d0!important;color:#8a684d!important}
+.pg-petbti-quiz-card .pg-petbti-option-4{background:#f8f3fb!important;border-color:#e7dced!important;color:#755e82!important}
+.pg-petbti-quiz-card .pg-petbti-option:hover{transform:translateY(-1px)!important;border-color:currentColor!important;box-shadow:0 7px 18px rgba(39,58,45,.055)!important;filter:saturate(1.03)}
+.pg-petbti-quiz-card .pg-petbti-option.pg-selected,.pg-petbti-quiz-card .pg-petbti-option:active{transform:scale(.992)!important;box-shadow:inset 0 0 0 1px currentColor!important}
+.pg-petbti-quiz-card .pg-petbti-option.pg-selected:before,.pg-petbti-quiz-card .pg-petbti-option:active:before{background:currentColor;box-shadow:inset 0 0 0 4px #fff;opacity:.85}
+
+@media(max-width:899px){
+  .petgrow-dashboard-home .pg-home-extra-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .petgrow-dashboard-home .pg-home-extra-menu-card{min-height:66px;border-radius:15px}
+  .petgrow-dashboard-home .pg-home-quick-head-actions{gap:5px}
+  .pg-petbti-quiz-card{padding:20px 16px!important;border-radius:21px!important}
+  .pg-petbti-quiz-card .pg-petbti-question-title{font-size:17px!important;margin-bottom:16px!important}
+  .pg-petbti-quiz-card .pg-petbti-option{min-height:52px!important;padding:12px 13px!important;font-size:12px!important;border-radius:15px!important}
+}
+
+@media(max-width:430px){
+  .petgrow-dashboard-home .dash-section-head{align-items:center!important;gap:8px!important}
+  .petgrow-dashboard-home .pg-home-quick-head-actions .bg-chip{padding-left:9px!important;padding-right:9px!important;font-size:10px!important}
+  .pg-petbti-quiz-card{padding:18px 13px!important}
+}
