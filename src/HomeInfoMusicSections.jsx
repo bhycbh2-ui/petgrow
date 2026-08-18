@@ -34,6 +34,7 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
   const [music, setMusic] = useState([]);
   const [playingId, setPlayingId] = useState("");
   const audioRef = useRef(null);
+  const loadedTrackIdRef = useRef("");
 
   useEffect(() => {
     let cancelled = false;
@@ -84,6 +85,7 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
     return () => {
       try { audioRef.current?.pause?.(); } catch {}
       audioRef.current = null;
+      loadedTrackIdRef.current = "";
     };
   }, []);
 
@@ -95,38 +97,61 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
     setExpandedTipKey((current) => (current === key ? "" : key));
   };
 
+  const recordPlay = (id) => {
+    if (!id) return;
+    fetch("/api/music?action=play", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    }).catch(() => {});
+  };
+
   const toggleTrack = (track) => {
     const id = safeText(track?.id, lang, "");
     const url = safeText(track?.audioUrl, lang, "");
-
-    if (!url) {
-      go("music");
-      return;
-    }
+    if (!id || !url) return;
 
     const current = audioRef.current;
-    if (current && playingId === id && !current.paused) {
-      current.pause();
-      setPlayingId("");
+    const sameTrack = current && loadedTrackIdRef.current === id;
+
+    if (sameTrack) {
+      if (!current.paused && !current.ended) {
+        current.pause();
+        setPlayingId("");
+        return;
+      }
+
+      const restarting = current.ended;
+      if (restarting) {
+        try { current.currentTime = 0; } catch {}
+      }
+
+      current.play()
+        .then(() => {
+          setPlayingId(id);
+          if (restarting) recordPlay(id);
+        })
+        .catch(() => setPlayingId(""));
       return;
     }
 
     try { current?.pause?.(); } catch {}
 
     const audio = new Audio(url);
+    audio.preload = "metadata";
     audioRef.current = audio;
+    loadedTrackIdRef.current = id;
+    audio.onplay = () => setPlayingId(id);
+    audio.onpause = () => {
+      if (!audio.ended) setPlayingId("");
+    };
     audio.onended = () => setPlayingId("");
-    audio.onerror = () => setPlayingId("");
-    setPlayingId(id);
+    audio.onerror = () => {
+      if (loadedTrackIdRef.current === id) setPlayingId("");
+    };
 
     audio.play()
-      .then(() => {
-        fetch("/api/music?action=play", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id }),
-        }).catch(() => {});
-      })
+      .then(() => recordPlay(id))
       .catch(() => setPlayingId(""));
   };
 
@@ -152,54 +177,27 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
               const expanded = expandedTipKey === key;
 
               return (
-                <div
-                  key={key}
-                  className="bg-card"
-                  style={{ border: "1px solid var(--border)", overflow: "hidden" }}
-                >
+                <div key={key} className="bg-card" style={{ border: "1px solid var(--border)", overflow: "hidden" }}>
                   <button
                     type="button"
                     onClick={() => toggleTip(key)}
                     aria-expanded={expanded}
-                    style={{
-                      width: "100%",
-                      padding: 16,
-                      border: 0,
-                      background: "transparent",
-                      textAlign: "left",
-                      fontFamily: "inherit",
-                      cursor: "pointer",
-                    }}
+                    style={{ width: "100%", padding: 16, border: 0, background: "transparent", textAlign: "left", fontFamily: "inherit", cursor: "pointer" }}
                   >
                     <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
                       <div style={{ minWidth: 0 }}>
                         <small style={{ fontWeight: 800, color: "var(--primary)" }}>{category}</small>
                         <div style={{ fontWeight: 800, fontSize: 15, lineHeight: 1.5, marginTop: 6 }}>{title}</div>
                       </div>
-                      <span aria-hidden="true" style={{ flex: "0 0 auto", fontSize: 18, fontWeight: 900, lineHeight: 1.2 }}>
-                        {expanded ? "⌃" : "⌄"}
-                      </span>
+                      <span aria-hidden="true" style={{ flex: "0 0 auto", fontSize: 18, fontWeight: 900, lineHeight: 1.2 }}>{expanded ? "⌃" : "⌄"}</span>
                     </div>
                     <small className="bg-sub" style={{ display: "block", marginTop: 7 }}>
-                      {expanded
-                        ? (lang === "en" ? "Tap to close" : "눌러서 접기")
-                        : (lang === "en" ? "Tap to read here" : "홈에서 바로 펼쳐보기")}
+                      {expanded ? (lang === "en" ? "Tap to close" : "눌러서 접기") : (lang === "en" ? "Tap to read here" : "홈에서 바로 펼쳐보기")}
                     </small>
                   </button>
 
                   {expanded && (
-                    <div
-                      style={{
-                        margin: "0 12px 12px",
-                        padding: "13px 14px",
-                        borderRadius: 12,
-                        background: "rgba(255,255,255,.72)",
-                        border: "1px solid var(--border)",
-                        fontSize: 14,
-                        lineHeight: 1.7,
-                        whiteSpace: "pre-wrap",
-                      }}
-                    >
+                    <div style={{ margin: "0 12px 12px", padding: "13px 14px", borderRadius: 12, background: "rgba(255,255,255,.72)", border: "1px solid var(--border)", fontSize: 14, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>
                       {answer}
                     </div>
                   )}
@@ -224,32 +222,27 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
           <div style={{ display: "grid", gap: 9 }}>
             {music.map((track, i) => {
               const active = playingId === track.id;
+              const playable = Boolean(track.audioUrl);
               return (
-                <div
+                <button
+                  type="button"
                   key={track.id || `music-${i}`}
-                  className="bg-card"
-                  style={{ padding: "11px 13px", border: "1px solid var(--border)", display: "grid", gridTemplateColumns: "38px minmax(0,1fr) auto", alignItems: "center", gap: 10 }}
+                  className={`bg-card home-music-row${active ? " is-playing" : ""}`}
+                  onClick={() => toggleTrack(track)}
+                  disabled={!playable}
+                  aria-label={active ? `${track.title} 일시정지` : `${track.title} 재생`}
+                  title={active ? (lang === "en" ? "Pause" : "일시정지") : (lang === "en" ? "Play" : "재생")}
+                  style={{ width: "100%", padding: "11px 13px", border: "1px solid var(--border)", display: "grid", gridTemplateColumns: "38px minmax(0,1fr) 42px", alignItems: "center", gap: 10, textAlign: "left", fontFamily: "inherit", cursor: playable ? "pointer" : "default", opacity: playable ? 1 : .62 }}
                 >
                   <b style={{ fontSize: 17, textAlign: "center", color: "var(--primary)" }}>{i + 1}</b>
-                  <button
-                    type="button"
-                    onClick={() => go("music")}
-                    style={{ border: 0, background: "transparent", padding: 0, textAlign: "left", fontFamily: "inherit", cursor: "pointer", minWidth: 0 }}
-                  >
+                  <span style={{ minWidth: 0 }}>
                     <span style={{ display: "block", fontWeight: 800, fontSize: 14, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{track.title}</span>
                     <small className="bg-sub">▶ {track.playCount.toLocaleString()} · ♥ {track.likeCount.toLocaleString()}</small>
-                  </button>
-                  <button
-                    type="button"
-                    className="bg-chip"
-                    onClick={() => toggleTrack(track)}
-                    aria-label={active ? `${track.title} 일시정지` : `${track.title} 재생`}
-                    title={active ? (lang === "en" ? "Pause" : "일시정지") : (lang === "en" ? "Play" : "재생")}
-                    style={{ minWidth: 48, fontWeight: 900 }}
-                  >
+                  </span>
+                  <span aria-hidden="true" style={{ width: 36, height: 36, borderRadius: 12, display: "grid", placeItems: "center", background: active ? "var(--primary)" : "var(--surface)", color: active ? "#fff" : "var(--primary)", fontWeight: 900 }}>
                     {active ? "❚❚" : "▶"}
-                  </button>
-                </div>
+                  </span>
+                </button>
               );
             })}
           </div>
