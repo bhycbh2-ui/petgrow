@@ -42,7 +42,7 @@ export default function petgrowUiFixes() {
         out = replaceOptionalAll(
           out,
           '{selected.image&&<img src={selected.image} alt=""/>}',
-          '{(detail?.image||selected.image)&&<img src={detail?.image||selected.image} alt=""/>}'
+          '{(detail?.image||selected.image)&&<img src={detail?.image||selected.image} alt="" loading="lazy" referrerPolicy="no-referrer"/>}'
         );
 
         out = replaceOptionalAll(
@@ -60,7 +60,7 @@ export default function petgrowUiFixes() {
         out = replaceRequired(
           out,
           '  return <div className="feature-module-shell pet-tarot-shell"><style>{`',
-          '  return <div className="feature-module-shell pet-tarot-shell"><div className="pg-tarot-pet-identity"><span className="pg-tarot-pet-avatar">{pet?.profile?.profileImage ? <img src={pet.profile.profileImage} alt="" /> : <em>{pet?.species==="cat"?"🐱":"🐶"}</em>}</span><b className="pet-user-name">{petName}</b></div><style>{`',
+          '  return <div className="feature-module-shell pet-tarot-shell"><div className="pg-tarot-pet-identity"><span className="pg-tarot-pet-avatar">{(pet?.profile?.profileImage||pet?.profile?.photo||pet?.profileImage||pet?.photo) ? <img src={pet?.profile?.profileImage||pet?.profile?.photo||pet?.profileImage||pet?.photo} alt={petName} /> : <em>{String(pet?.profile?.species||pet?.species||pet?.profile?.type||pet?.type||"dog").toLowerCase().includes("cat")||String(pet?.profile?.species||pet?.species||"").includes("고양")?"🐱":"🐶"}</em>}</span><b className="pet-user-name">{petName}</b></div><style>{`',
           "PetTarot identity"
         );
 
@@ -74,7 +74,7 @@ export default function petgrowUiFixes() {
         out = replaceRequired(
           out,
           'setPhase("reveal");window.setTimeout(()=>setPhase("result"),900)},500);',
-          'setPhase("reveal");window.setTimeout(()=>setPhase("result"),620)},160);',
+          'setPhase("reveal");window.setTimeout(()=>setPhase("result"),420)},160);',
           "PetTarot reveal timing"
         );
 
