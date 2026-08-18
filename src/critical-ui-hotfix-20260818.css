@@ -1,0 +1,91 @@
+/* PetGrow critical UI hotfix — 2026-08-18
+   1) My Pet hero title alignment
+   2) Pet Tarot loading ghost/broken-looking overlay
+*/
+
+/* My Pet: force the same title rhythm as the common hero and prevent legacy offsets. */
+html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top > section.nearby-hero.bg-card.petgrow-unified-hero > div{
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:visible!important;
+}
+html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top > section.nearby-hero.bg-card.petgrow-unified-hero > div > h1{
+  display:block!important;
+  position:static!important;
+  inset:auto!important;
+  transform:none!important;
+  translate:none!important;
+  margin:0 0 8px!important;
+  padding:0!important;
+  max-width:100%!important;
+  line-height:1.18!important;
+  text-align:left!important;
+  text-indent:0!important;
+  text-shadow:none!important;
+  -webkit-text-stroke:0 transparent!important;
+  filter:none!important;
+  overflow:visible!important;
+}
+
+/* Tarot: loading belongs to the Tarot card, not to the whole viewport.
+   Opaque background removes the blurred/ghosted content that looked like broken images. */
+html body #root .bboggl-root .feature-page-tarot .pet-tarot-stage{
+  position:relative!important;
+  isolation:isolate!important;
+}
+html body #root .bboggl-root .feature-page-tarot .pet-tarot-stage > .pet-tarot-loading{
+  position:absolute!important;
+  inset:0!important;
+  z-index:999!important;
+  width:auto!important;
+  height:auto!important;
+  min-height:220px!important;
+  margin:0!important;
+  padding:24px!important;
+  box-sizing:border-box!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:10px!important;
+  border:0!important;
+  border-radius:24px!important;
+  background:#f8fbf8!important;
+  background-image:none!important;
+  opacity:1!important;
+  color:#25322a!important;
+  font-size:14px!important;
+  font-weight:850!important;
+  text-align:center!important;
+  box-shadow:none!important;
+  filter:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  overflow:hidden!important;
+}
+html body #root .bboggl-root .feature-page-tarot .pet-tarot-stage > .pet-tarot-loading::before{
+  content:""!important;
+  display:block!important;
+  width:30px!important;
+  height:30px!important;
+  flex:0 0 30px!important;
+  border:3px solid #dfe9e1!important;
+  border-top-color:#4f8a5b!important;
+  border-radius:50%!important;
+  background:none!important;
+  box-shadow:none!important;
+  animation:pgRuntimeSpin .8s linear infinite!important;
+}
+html body #root .bboggl-root .feature-page-tarot .pet-tarot-stage > .pet-tarot-loading img{
+  display:none!important;
+  visibility:hidden!important;
+}
+
+@media(max-width:899px){
+  html body #root .bboggl-root .feature-page-tarot .pet-tarot-stage > .pet-tarot-loading{
+    border-radius:20px!important;
+    min-height:180px!important;
+    padding:20px 16px!important;
+  }
+}
