@@ -1,0 +1,59 @@
+name: Fix PetNews pagination 20
+on:
+  push:
+    branches:
+      - automation/petnews-page20-20260819
+    paths:
+      - '.github/workflows/fix-petnews-page20-20260819.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/fix-petnews-page20-20260819.yml'
+permissions:
+  contents: write
+jobs:
+  fix-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: automation/petnews-page20-20260819
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Apply minimal PetNews page-size fix
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('src/App.jsx')
+          s=p.read_text()
+          anchor=s.find('function PetNews')
+          if anchor < 0:
+              raise SystemExit('PetNews function not found')
+          end=s.find('function ', anchor+20)
+          if end < 0:
+              end=len(s)
+          block=s[anchor:end]
+          old='const PAGE=8;'
+          if block.count(old) != 1:
+              raise SystemExit(f'Expected exactly one {old} in PetNews block, found {block.count(old)}')
+          block=block.replace(old,'const PAGE=20;',1)
+          p.write_text(s[:anchor]+block+s[end:])
+          PY
+      - name: Install dependencies
+        run: npm ci
+      - name: Production build
+        run: npm run build
+      - name: Commit verified fix
+        run: |
+          if git diff --quiet -- src/App.jsx; then
+            echo 'No source change produced'
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/App.jsx
+          git commit -m 'fix: show 20 PetNews items per page'
+          git push origin HEAD:automation/petnews-page20-20260819

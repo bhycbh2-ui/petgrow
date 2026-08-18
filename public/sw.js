@@ -1,7 +1,8 @@
-// PetGrow service worker v22
-// 배포 안정성을 위해 페이지/JS/CSS 요청은 서비스워커가 가로채지 않습니다.
-// PWA 설치 지원만 유지하고, 이전 버전에서 남은 캐시는 활성화 시 제거합니다.
-const CACHE_NAME = "petgrow-v22";
+// PetGrow service worker v23
+// App shell stays network-first. Only the lightweight home feed uses
+// stale-while-revalidate so returning visitors see news/music immediately.
+const CACHE_NAME = "petgrow-v23";
+const HOME_FEED = "/api/home-feed";
 
 self.addEventListener("install", () => {
   self.skipWaiting();
@@ -9,10 +10,37 @@ self.addEventListener("install", () => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.map((key) => caches.delete(key))))
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))))
       .then(() => self.clients.claim())
   );
 });
 
-// fetch 이벤트를 등록하지 않습니다.
-// 모든 웹 요청은 브라우저가 Vercel의 최신 배포에서 직접 가져옵니다.
+self.addEventListener("fetch", (event) => {
+  const req = event.request;
+  if (req.method !== "GET") return;
+  const url = new URL(req.url);
+  if (url.origin !== self.location.origin || url.pathname !== HOME_FEED) return;
+
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    const cached = await cache.match(req);
+    const network = fetch(req)
+      .then((res) => {
+        if (res && res.ok) cache.put(req, res.clone()).catch(() => {});
+        return res;
+      })
+      .catch(() => null);
+
+    if (cached) {
+      event.waitUntil(network);
+      return cached;
+    }
+
+    const fresh = await network;
+    return fresh || new Response(JSON.stringify({ news: [], top5: [] }), {
+      status: 200,
+      headers: { "Content-Type": "application/json", "Cache-Control": "no-store" }
+    });
+  })());
+});

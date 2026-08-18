@@ -17,6 +17,7 @@ import "./aab-ready-fixes-20260818.js";
 import "./admin-news-music-runtime-20260818.js";
 import "./final-audit-20260818.js";
 import "./requested-final-fixes-20260818.js";
+import "./home-fast-content-v2-20260819.js";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -26,7 +27,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js?v=46", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=48", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });
