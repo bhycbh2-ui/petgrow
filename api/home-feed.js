@@ -9,7 +9,7 @@ export default async function handler(req,res){
     ]);
     const news=newsResult.rows.map(r=>({id:r.id,title:r.title,description:r.description||"",category:r.category||"반려동물",source:r.source||"언론사",link:r.link,naverLink:r.naver_link||r.link,publishedAt:r.published_at?new Date(r.published_at).toISOString():null,image:r.image||""}));
     const top5=musicResult.rows.map(r=>({id:r.id,title:r.title,description:r.description||"",species:r.species,vocalType:r.vocal_type,mood:r.mood,coverUrl:r.cover_url||"",audioUrl:r.audio_url||"",likeCount:Number(r.like_count||0),commentCount:Number(r.comment_count||0),playCount:Number(r.play_count||0)}));
-    res.setHeader("Cache-Control","public, s-maxage=60, stale-while-revalidate=300");
+    res.setHeader("Cache-Control","public, max-age=300, s-maxage=600, stale-while-revalidate=86400");
     return res.status(200).json({news,top5});
   }catch(error){
     console.error("home-feed failed",error?.message||error);
