@@ -1,0 +1,18 @@
+/* PetGrow report / PetNews / admin music polish — 2026-08-18 */
+.petnews-cats button{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;font-weight:850!important}
+.petnews-cats .pg-news-cat-icon{display:inline-grid!important;place-items:center!important;min-width:20px!important;font-size:17px!important;line-height:1!important}
+.petnews-cats .pg-news-cat-label{line-height:1.1!important}
+.petnews-media,.petnews-image-fallback{align-items:center!important;justify-content:center!important}
+.petnews-media img{object-fit:cover!important;object-position:center center!important}
+.petnews-image-fallback span{font-size:40px!important;line-height:1!important;transform:none!important;margin:0!important}
+.petnews-image-fallback small{text-align:center!important;margin-top:8px!important;font-weight:850!important}
+.petnews-card-body h2,.petnews-inline-head h2{font-weight:900!important}
+.pg-music-upload-health{grid-column:1/-1;display:flex;align-items:center;gap:8px;min-height:42px;padding:10px 12px;border:1px solid #dfe7e1;border-radius:14px;background:#f8faf8;color:#5d6b61;font-size:11px;font-weight:750;line-height:1.5}
+.pg-music-upload-dot{width:9px;height:9px;border-radius:50%;flex:0 0 9px;background:#a7b0aa;box-shadow:0 0 0 4px rgba(120,130,124,.08)}
+.pg-music-upload-health.ok{background:#f1f8f3;border-color:#cfe3d4;color:#356146}.pg-music-upload-health.ok .pg-music-upload-dot{background:#45a366;box-shadow:0 0 0 4px rgba(69,163,102,.12)}
+.pg-music-upload-health.warn{background:#fff9ed;border-color:#ecdcb8;color:#775f2f}.pg-music-upload-health.warn .pg-music-upload-dot{background:#d39a32;box-shadow:0 0 0 4px rgba(211,154,50,.12)}
+.pg-music-upload-health.error{background:#fff4f2;border-color:#ebd0cb;color:#8a4d44}.pg-music-upload-health.error .pg-music-upload-dot{background:#d45f52;box-shadow:0 0 0 4px rgba(212,95,82,.12)}
+.pg-music-direct-note{display:block!important;margin-top:5px!important;line-height:1.5!important}
+.pg-music-new-badge{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;background:#edf7ef;color:#3e754d;font-size:10px;font-weight:850;white-space:nowrap}
+@media(max-width:760px){.petnews-cats .pg-news-cat-icon{font-size:16px!important;min-width:18px!important}.petnews-image-fallback span{font-size:36px!important}.petnews-media img{object-position:center center!important}.petnews-card-body h2{font-weight:900!important}.pg-music-upload-health{font-size:10.5px;padding:9px 10px}}
+@media(max-width:430px){.petnews-cats button{gap:4px!important}.petnews-cats .pg-news-cat-icon{font-size:15px!important;min-width:16px!important}.petnews-image-fallback span{font-size:34px!important}}
