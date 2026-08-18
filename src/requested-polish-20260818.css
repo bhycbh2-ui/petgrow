@@ -52,11 +52,76 @@
 .pg-hidden-legal-addendum{display:none!important}
 
 /* ===== Admin wording/layout ===== */
-.petpoint-admin.pg-admin-point-polished>div{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+.petpoint-admin.pg-admin-point-polished{
+  padding:24px 26px 26px!important;
+  overflow:visible!important;
+}
+.petpoint-admin.pg-admin-point-polished>h2{
+  position:static!important;
+  display:block!important;
+  width:auto!important;
+  max-width:100%!important;
+  margin:0 0 18px!important;
+  padding:0!important;
+  transform:none!important;
+  font-size:24px!important;
+  line-height:1.25!important;
+  letter-spacing:-.035em!important;
+  font-weight:850!important;
+  white-space:normal!important;
+}
+.petpoint-admin.pg-admin-point-polished>div{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:12px!important;
+  align-items:stretch!important;
+  margin:0!important;
+  padding:0!important;
+}
+.petpoint-admin.pg-admin-point-polished>div>span{
+  min-width:0!important;
+  min-height:100px!important;
+  box-sizing:border-box!important;
+  padding:16px 16px!important;
+  border-radius:18px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  gap:8px!important;
+  overflow:hidden!important;
+}
+.petpoint-admin.pg-admin-point-polished>div>span small{
+  display:block!important;
+  max-width:100%!important;
+  margin:0!important;
+  font-size:11.5px!important;
+  line-height:1.35!important;
+  font-weight:750!important;
+  white-space:normal!important;
+  word-break:keep-all!important;
+  color:#68746c!important;
+}
+.petpoint-admin.pg-admin-point-polished>div>span b{
+  display:block!important;
+  max-width:100%!important;
+  margin:0!important;
+  font-size:23px!important;
+  line-height:1.05!important;
+  letter-spacing:-.025em!important;
+  font-weight:900!important;
+  white-space:nowrap!important;
+  color:#26352c!important;
+  font-variant-numeric:tabular-nums!important;
+}
 .petpoint-admin .pg-total-member-stat{background:#f7faf7!important}
 
 @media(max-width:900px){
-  .petpoint-admin.pg-admin-point-polished>div{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .petpoint-admin.pg-admin-point-polished{padding:20px!important}
+  .petpoint-admin.pg-admin-point-polished>h2{font-size:22px!important;margin-bottom:15px!important}
+  .petpoint-admin.pg-admin-point-polished>div{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+  .petpoint-admin.pg-admin-point-polished>div>span{min-height:92px!important;padding:14px!important}
+  .petpoint-admin.pg-admin-point-polished>div>span b{font-size:21px!important}
 }
 @media(max-width:600px){
   .legal-page-shell.pg-legal-polished{padding:18px 14px 48px!important}
@@ -66,5 +131,12 @@
   .legal-page-shell.pg-legal-polished .legal-section-number{width:30px!important;height:30px!important;min-width:30px!important}
   .legal-page-shell.pg-legal-polished .legal-section-title{margin:3px 0 7px!important;font-size:14px!important;line-height:1.45!important}
   .legal-page-shell.pg-legal-polished .legal-section-body{font-size:12.5px!important;line-height:1.75!important;word-break:normal!important}
-  .petpoint-admin.pg-admin-point-polished>div{grid-template-columns:1fr!important}
+
+  .petpoint-admin.pg-admin-point-polished{padding:16px!important;border-radius:20px!important}
+  .petpoint-admin.pg-admin-point-polished>h2{font-size:20px!important;line-height:1.25!important;margin-bottom:14px!important}
+  .petpoint-admin.pg-admin-point-polished>div{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .petpoint-admin.pg-admin-point-polished>div>span{min-height:86px!important;padding:12px!important;border-radius:15px!important;gap:6px!important}
+  .petpoint-admin.pg-admin-point-polished>div>span small{font-size:10.5px!important;line-height:1.3!important}
+  .petpoint-admin.pg-admin-point-polished>div>span b{font-size:19px!important}
+  .petpoint-admin.pg-admin-point-polished>div>span:last-child:nth-child(odd){grid-column:1/-1!important}
 }
