@@ -1,17 +1,15 @@
-/* PETGROW_UI_FIXES_20260818_WORK */
+/* PETGROW_UI_FIXES_20260818 — cleaned
+   This layer keeps only unique News/MyPage/Home/PetPoint modal/Tarot deck rules.
+   My Pet, legal, Tarot identity and admin grid are owned elsewhere.
+*/
 
-/* 2. 우리 아이: 공통 제목 영역과 탭이 다른 페이지처럼 전체 폭 사용 */
-.petgrow-page-top.pets-page-top{width:100%!important;max-width:none!important;box-sizing:border-box!important}
-.petgrow-page-top.pets-page-top>.petgrow-unified-hero{width:100%!important;max-width:none!important;margin-left:0!important;margin-right:0!important;box-sizing:border-box!important}
-.petgrow-page-top.pets-page-top>.petgrow-unified-hero+div{width:100%!important;max-width:none!important;box-sizing:border-box!important}
-
-/* 4. Pet뉴스: 상세 요약 가독성과 대표 이미지 비중 확대 */
+/* Pet뉴스: 상세 요약 가독성과 대표 이미지 비중 확대 */
 .petnews-summary-box p{white-space:pre-line!important;line-height:1.78!important;min-height:8.9em!important;max-height:none!important;display:block!important;overflow:visible!important}
 .petnews-inline-body{grid-template-columns:minmax(0,1fr) minmax(230px,30%)!important;align-items:start!important}
 .petnews-inline-body>img{width:100%!important;height:auto!important;max-height:300px!important;aspect-ratio:4/3!important;object-fit:cover!important}
 .petnews-card-body p{-webkit-line-clamp:4!important}
 
-/* 6. 마이페이지: 중복 제목 숨김 및 카드 리듬 통일 */
+/* 마이페이지 */
 .my-page-head{display:none!important}
 .petgrow-content-stage .mypage-petpoint-section,
 .petgrow-content-stage .my-menu-grid,
@@ -30,15 +28,7 @@
 .my-activity-row.is-link{cursor:pointer!important;transition:border-color .16s ease,background .16s ease,transform .16s ease!important}
 .my-activity-row.is-link:hover,.my-activity-row.is-link:focus{outline:none!important;border-color:#b9d3c0!important;background:#f3f8f4!important;transform:translateY(-1px)!important}
 
-/* 9~10. 이용약관/개인정보: 제목·소개·부가 안내를 같은 폭과 흐름으로 */
-.legal-page-shell{width:100%!important;max-width:900px!important;margin:0 auto!important;padding-left:20px!important;padding-right:20px!important;box-sizing:border-box!important}
-.legal-page-shell>.petgrow-unified-hero,.legal-page-shell>.legal-hero,.legal-page-shell>.bg-card:first-child{width:100%!important;max-width:none!important;margin-left:0!important;margin-right:0!important;box-sizing:border-box!important}
-.legal-page-shell>.bg-card,.legal-page-shell .legal-intro,.legal-page-shell .legal-content{position:relative!important;z-index:1!important;margin-top:16px!important;max-width:none!important;width:100%!important;box-sizing:border-box!important}
-.petpoint-policy,.petnews-privacy-addendum{width:min(900px,calc(100% - 40px))!important;max-width:900px!important;margin:14px auto 36px!important;box-sizing:border-box!important;border-radius:20px!important}
-.petpoint-policy h2,.petnews-privacy-addendum h2{font-size:18px!important;margin:0 0 10px!important}
-.petpoint-policy p,.petnews-privacy-addendum p{font-size:12px!important;line-height:1.75!important;margin:8px 0!important}
-
-/* 12. 모바일 홈 인사말: 한 줄 유지 + 긴 닉네임 말줄임 */
+/* 모바일 홈 인사말 */
 @media(max-width:760px){
  .dash-welcome{gap:10px!important}
  .dash-welcome>div{min-width:0!important;flex:1!important}
@@ -49,11 +39,9 @@
  .petnews-summary-box p{min-height:0!important}
  .my-menu-grid{grid-template-columns:1fr!important}
  .my-menu-card{min-height:84px!important;padding:15px!important}
- .legal-page-shell{padding-left:12px!important;padding-right:12px!important}
- .petpoint-policy,.petnews-privacy-addendum{width:calc(100% - 24px)!important;margin:12px auto 24px!important}
 }
 
-/* 13. 소개 페이지 PetPoint 상세 팝업 */
+/* 소개 페이지 PetPoint 상세 팝업 */
 .petpoint-about-button{width:100%!important;text-align:left!important;display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;align-items:center!important;gap:16px!important;cursor:pointer!important;color:inherit!important;font:inherit!important}
 .petpoint-about-button>em{font-style:normal!important;font-size:24px!important;color:#6c7d70!important}
 .petpoint-about-backdrop{position:fixed!important;inset:0!important;z-index:10020!important;background:rgba(28,39,31,.46)!important;display:grid!important;place-items:center!important;padding:18px!important;backdrop-filter:blur(5px)!important}
@@ -63,22 +51,16 @@
 .petpoint-about-modal>h3{font-size:14px!important;margin:18px 0 9px!important}
 .petpoint-about-balance{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:12px!important;padding:14px 16px!important;border-radius:16px!important;background:#eef6f0!important;margin:16px 0!important}
 .petpoint-about-balance b{font-size:24px!important;color:#2f7646!important}
-.petpoint-about-list{display:grid!important;gap:7px!important}.petpoint-about-list p{display:grid!important;grid-template-columns:58px minmax(0,1fr) auto!important;gap:8px!important;align-items:center!important;margin:0!important;padding:10px 12px!important;border:1px solid #e6ece7!important;border-radius:13px!important;background:#fff!important;font-size:12px!important}.petpoint-about-list b{color:#31804c!important}.petpoint-about-list small{color:#89938d!important}
-.petpoint-about-costs{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}.petpoint-about-costs span{padding:11px 12px!important;border-radius:13px!important;background:#f7faf7!important;border:1px solid #e4ebe5!important;font-size:12px!important}.petpoint-about-costs b{float:right!important;color:#2f7144!important}
+.petpoint-about-list{display:grid!important;gap:7px!important}
+.petpoint-about-list p{display:grid!important;grid-template-columns:58px minmax(0,1fr) auto!important;gap:8px!important;align-items:center!important;margin:0!important;padding:10px 12px!important;border:1px solid #e6ece7!important;border-radius:13px!important;background:#fff!important;font-size:12px!important}
+.petpoint-about-list b{color:#31804c!important}
+.petpoint-about-list small{color:#89938d!important}
+.petpoint-about-costs{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+.petpoint-about-costs span{padding:11px 12px!important;border-radius:13px!important;background:#f7faf7!important;border:1px solid #e4ebe5!important;font-size:12px!important}
+.petpoint-about-costs b{float:right!important;color:#2f7144!important}
 .petpoint-about-note{font-size:12px!important;line-height:1.7!important;margin:16px 0 0!important;padding:12px 14px!important;border-radius:14px!important;background:#fff8e8!important;color:#6f5a31!important}
 
-/* 14. Pet타로: 선택된 반려동물 사진/종 아이콘 + 이름 */
-.pg-tarot-pet-identity{width:100%;min-height:94px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;margin:0 0 14px;padding:12px 16px;border:1px solid #e1e9e3;border-radius:20px;background:#fff;box-sizing:border-box;box-shadow:0 7px 22px rgba(34,48,39,.035)}
-.pg-tarot-pet-avatar{width:58px;height:58px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;border:2.5px solid #4f8a5b;background:#f5f8f5;box-shadow:0 4px 13px rgba(48,92,61,.10)}
-.pg-tarot-pet-avatar img{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
-.pg-tarot-pet-avatar em{font-style:normal;font-size:26px}
-.pg-tarot-pet-identity b{font-size:14px;font-weight:900;color:#26372c;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-
-/* 15. 관리자 PetPoint 운영 현황: 관리 본문 폭을 꽉 사용 */
-.petpoint-admin{width:100%!important;max-width:none!important;box-sizing:border-box!important;margin-left:0!important;margin-right:0!important}
-.petpoint-admin>div{width:100%!important;grid-template-columns:repeat(4,minmax(0,1fr))!important}
-
-/* 17. Pet타로 카드: PC 겹침 제거, 모바일 중앙 그리드 */
+/* Pet타로 카드 덱: layout only. Identity/main shell are owned by tarot-saju-rebuild. */
 .pet-tarot-shell .pet-tarot-deck22{display:grid!important;grid-template-columns:repeat(11,minmax(42px,1fr))!important;gap:9px!important;overflow:visible!important;padding:28px 4px 38px!important;perspective:1100px!important}
 .pet-tarot-shell .pet-tarot-back22{position:relative!important;inset:auto!important;margin:0!important;width:100%!important;min-width:0!important;aspect-ratio:2/3!important;transform:none!important;transform-origin:50% 100%!important;transition:transform .28s cubic-bezier(.2,.82,.25,1),filter .28s ease,opacity .22s ease!important}
 .pet-tarot-shell .pet-tarot-back22:hover:not(:disabled){transform:translateY(-12px) scale(1.045)!important;z-index:20!important}
@@ -88,8 +70,7 @@
  .pet-tarot-shell .pet-tarot-back22{width:76px!important;min-width:76px!important}
  .pet-tarot-shell .pet-tarot-back22.picked{transform:translateY(-20px) scale(1.06)!important}
  .petpoint-about-costs{grid-template-columns:1fr!important}
- .petpoint-about-list p{grid-template-columns:54px minmax(0,1fr)!important}.petpoint-about-list small{grid-column:2!important}
+ .petpoint-about-list p{grid-template-columns:54px minmax(0,1fr)!important}
+ .petpoint-about-list small{grid-column:2!important}
 }
 @media(max-width:370px){.pet-tarot-shell .pet-tarot-deck22{grid-template-columns:repeat(3,76px)!important}}
-
-@media(max-width:720px){.petpoint-admin>div{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
