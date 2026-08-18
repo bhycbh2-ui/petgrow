@@ -21,10 +21,6 @@ function safeNumber(value) {
   return Number.isFinite(n) ? n : 0;
 }
 
-function normalizedDomText(value) {
-  return String(value || "").replace(/\s+/g, " ").trim().toLowerCase();
-}
-
 export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = [] }) {
   const recommendedTips = useMemo(() => {
     const list = Array.isArray(tips) ? tips.filter(Boolean) : [];
@@ -34,6 +30,7 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
     return [0, 1, 2].map((i) => list[(start + i) % list.length]).filter(Boolean);
   }, [tips]);
 
+  const [expandedTipKey, setExpandedTipKey] = useState("");
   const [music, setMusic] = useState([]);
   const [playingId, setPlayingId] = useState("");
   const audioRef = useRef(null);
@@ -94,59 +91,8 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
     if (typeof onGoView === "function") onGoView(view);
   };
 
-  const openSelectedTip = (tip, title, category) => {
-    try {
-      sessionStorage.setItem("petgrow_pending_tip_target", JSON.stringify({
-        id: safeText(tip?.id, lang, ""),
-        title,
-        category,
-        at: Date.now(),
-      }));
-    } catch {}
-
-    go("tips");
-
-    const wanted = normalizedDomText(title);
-    if (!wanted || typeof document === "undefined") return;
-
-    let tries = 0;
-    const focusTarget = () => {
-      tries += 1;
-      const candidates = Array.from(document.querySelectorAll("button, summary, [role='button'], details"));
-      const target = candidates.find((el) => {
-        if (el.closest("[data-home-extra]")) return false;
-        const text = normalizedDomText(el.textContent);
-        return text && (text.includes(wanted) || wanted.includes(text));
-      });
-
-      if (!target) {
-        if (tries < 16) window.setTimeout(focusTarget, 120);
-        return;
-      }
-
-      const details = target.closest("details");
-      if (details && !details.open) details.open = true;
-
-      try {
-        target.scrollIntoView({ behavior: "smooth", block: "center" });
-      } catch {
-        try { target.scrollIntoView(); } catch {}
-      }
-
-      const clickable = target.matches("button, summary, [role='button']")
-        ? target
-        : target.querySelector("button, summary, [role='button']");
-
-      if (clickable) {
-        const expanded = clickable.getAttribute("aria-expanded");
-        const isSummary = clickable.tagName === "SUMMARY";
-        const ownerDetails = clickable.closest("details");
-        const shouldOpen = expanded === "false" || (isSummary && ownerDetails && !ownerDetails.open);
-        if (shouldOpen) window.setTimeout(() => clickable.click(), 180);
-      }
-    };
-
-    window.setTimeout(focusTarget, 120);
+  const toggleTip = (key) => {
+    setExpandedTipKey((current) => (current === key ? "" : key));
   };
 
   const toggleTrack = (track) => {
@@ -193,23 +139,71 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
         </div>
 
         {recommendedTips.length > 0 ? (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(210px,1fr))", gap: 10 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(210px,1fr))", gap: 10, alignItems: "start" }}>
             {recommendedTips.map((tip, i) => {
               const category = safeText(tip?.category, lang, lang === "en" ? "Pet Info" : "Pet정보");
               const title = safeText(tip?.title ?? tip?.question, lang, lang === "en" ? "Helpful pet information" : "반려생활에 도움되는 정보");
+              const answer = safeText(
+                tip?.answer ?? tip?.content ?? tip?.description ?? tip?.body ?? tip?.detail ?? tip?.text,
+                lang,
+                lang === "en" ? "Open Pet Info to see the full details." : "자세한 내용은 Pet정보 전체보기에서 확인할 수 있어요."
+              );
               const key = safeText(tip?.id, lang, `tip-${i}`);
+              const expanded = expandedTipKey === key;
+
               return (
-                <button
+                <div
                   key={key}
-                  type="button"
                   className="bg-card"
-                  onClick={() => openSelectedTip(tip, title, category)}
-                  style={{ padding: 16, textAlign: "left", border: "1px solid var(--border)", cursor: "pointer", minHeight: 104 }}
+                  style={{ border: "1px solid var(--border)", overflow: "hidden" }}
                 >
-                  <small style={{ fontWeight: 800, color: "var(--primary)" }}>{category}</small>
-                  <div style={{ fontWeight: 800, fontSize: 15, lineHeight: 1.5, marginTop: 6 }}>{title}</div>
-                  <small className="bg-sub" style={{ display: "block", marginTop: 7 }}>{lang === "en" ? "Open this info →" : "이 정보 바로보기 →"}</small>
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => toggleTip(key)}
+                    aria-expanded={expanded}
+                    style={{
+                      width: "100%",
+                      padding: 16,
+                      border: 0,
+                      background: "transparent",
+                      textAlign: "left",
+                      fontFamily: "inherit",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
+                      <div style={{ minWidth: 0 }}>
+                        <small style={{ fontWeight: 800, color: "var(--primary)" }}>{category}</small>
+                        <div style={{ fontWeight: 800, fontSize: 15, lineHeight: 1.5, marginTop: 6 }}>{title}</div>
+                      </div>
+                      <span aria-hidden="true" style={{ flex: "0 0 auto", fontSize: 18, fontWeight: 900, lineHeight: 1.2 }}>
+                        {expanded ? "⌃" : "⌄"}
+                      </span>
+                    </div>
+                    <small className="bg-sub" style={{ display: "block", marginTop: 7 }}>
+                      {expanded
+                        ? (lang === "en" ? "Tap to close" : "눌러서 접기")
+                        : (lang === "en" ? "Tap to read here" : "홈에서 바로 펼쳐보기")}
+                    </small>
+                  </button>
+
+                  {expanded && (
+                    <div
+                      style={{
+                        margin: "0 12px 12px",
+                        padding: "13px 14px",
+                        borderRadius: 12,
+                        background: "rgba(255,255,255,.72)",
+                        border: "1px solid var(--border)",
+                        fontSize: 14,
+                        lineHeight: 1.7,
+                        whiteSpace: "pre-wrap",
+                      }}
+                    >
+                      {answer}
+                    </div>
+                  )}
+                </div>
               );
             })}
           </div>
