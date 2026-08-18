@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - automation/petnews-page20-20260819
+    paths:
+      - '.github/workflows/fix-petnews-page20-20260819.yml'
 permissions:
   contents: write
 jobs:
