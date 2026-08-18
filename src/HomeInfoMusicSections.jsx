@@ -23,29 +23,58 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
   const [music, setMusic] = useState(() => readCachedMusic());
   const [playingId, setPlayingId] = useState("");
   const audioRef = useRef(null);
+  const musicSectionRef = useRef(null);
 
+  // Keep the initial PetGrow home render independent from PetMusic/API work.
+  // The feed is requested only when the music section approaches the viewport.
   useEffect(() => {
     let cancelled = false;
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 3500);
+    let controller = null;
+    let timer = null;
+    let observer = null;
+    let fallbackTimer = null;
+    let started = false;
 
-    fetch("/api/home-feed", { signal: controller.signal })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (cancelled) return;
-        const next = Array.isArray(data?.top5) ? data.top5.slice(0, 5) : [];
-        if (next.length) {
-          setMusic(next);
-          try { localStorage.setItem(MUSIC_CACHE_KEY, JSON.stringify(next)); } catch {}
+    const loadMusic = () => {
+      if (started || cancelled) return;
+      started = true;
+      controller = new AbortController();
+      timer = setTimeout(() => controller?.abort(), 3000);
+      fetch("/api/home-feed", { signal: controller.signal })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data) => {
+          if (cancelled) return;
+          const next = Array.isArray(data?.top5) ? data.top5.slice(0, 5) : [];
+          if (next.length) {
+            setMusic(next);
+            try { localStorage.setItem(MUSIC_CACHE_KEY, JSON.stringify(next)); } catch {}
+          }
+        })
+        .catch(() => {})
+        .finally(() => { if (timer) clearTimeout(timer); });
+    };
+
+    const node = musicSectionRef.current;
+    if (node && "IntersectionObserver" in window) {
+      observer = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          observer?.disconnect();
+          loadMusic();
         }
-      })
-      .catch(() => {})
-      .finally(() => clearTimeout(timer));
+      }, { rootMargin: "300px 0px" });
+      observer.observe(node);
+      // Safety fallback: never make the home boot depend on this request.
+      fallbackTimer = setTimeout(loadMusic, 6000);
+    } else {
+      fallbackTimer = setTimeout(loadMusic, 2500);
+    }
 
     return () => {
       cancelled = true;
-      clearTimeout(timer);
-      controller.abort();
+      observer?.disconnect();
+      if (fallbackTimer) clearTimeout(fallbackTimer);
+      if (timer) clearTimeout(timer);
+      controller?.abort();
       try { audioRef.current?.pause?.(); } catch {}
     };
   }, []);
@@ -54,14 +83,12 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
     const id = track?.id ?? track?.title ?? "";
     const url = track?.audioUrl || track?.audio_url || "";
     if (!url) return;
-
     const current = audioRef.current;
     if (current && playingId === id && !current.paused) {
       current.pause();
       setPlayingId("");
       return;
     }
-
     try { current?.pause?.(); } catch {}
     const audio = new Audio(url);
     audioRef.current = audio;
@@ -92,13 +119,7 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(210px,1fr))", gap: 10 }}>
           {recommendedTips.map((tip, i) => (
-            <button
-              key={tip?.id ?? i}
-              type="button"
-              className="bg-card"
-              onClick={() => go("tips")}
-              style={{ padding: 16, textAlign: "left", border: "1px solid var(--border)", cursor: "pointer", minHeight: 104 }}
-            >
+            <button key={tip?.id ?? i} type="button" className="bg-card" onClick={() => go("tips")} style={{ padding: 16, textAlign: "left", border: "1px solid var(--border)", cursor: "pointer", minHeight: 104 }}>
               <small style={{ fontWeight: 800, color: "var(--primary)" }}>{tip?.category || "Pet정보"}</small>
               <div style={{ fontWeight: 800, fontSize: 15, lineHeight: 1.5, marginTop: 6 }}>{tip?.title || tip?.question || "오늘의 Pet정보"}</div>
               <small className="bg-sub" style={{ display: "block", marginTop: 7 }}>{lang === "en" ? "Open Pet Info →" : "자세히 보기 →"}</small>
@@ -107,7 +128,7 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
         </div>
       </section>
 
-      <section className="dash-section" data-home-extra="music">
+      <section ref={musicSectionRef} className="dash-section" data-home-extra="music">
         <div className="dash-section-head">
           <h2>{lang === "en" ? "Popular Pet Music TOP 5" : "인기 Pet음악 TOP 5"}</h2>
           <button type="button" className="bg-chip" onClick={() => go("music")}>{lang === "en" ? "View all" : "전체보기"}</button>
@@ -132,7 +153,7 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
         ) : (
           <button type="button" className="bg-card" onClick={() => go("music")} style={{ width: "100%", padding: 14, border: "1px solid var(--border)", textAlign: "left", cursor: "pointer" }}>
             <b>{lang === "en" ? "Open Pet Music" : "Pet음악 바로가기"}</b>
-            <small className="bg-sub" style={{ display: "block", marginTop: 4 }}>{lang === "en" ? "The TOP 5 will update automatically." : "TOP 5는 자동으로 빠르게 갱신돼요."}</small>
+            <small className="bg-sub" style={{ display: "block", marginTop: 4 }}>{lang === "en" ? "Music loads after the home screen is ready." : "홈 화면을 먼저 띄운 뒤 음악을 불러와요."}</small>
           </button>
         )}
       </section>
