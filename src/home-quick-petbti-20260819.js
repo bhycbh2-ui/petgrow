@@ -49,7 +49,6 @@
     const clean = [...new Set(order)].filter((x) => MENU_ITEMS.some(([v]) => v === x));
     try { localStorage.setItem(ORDER_KEY, JSON.stringify(clean)); } catch {}
 
-    /* Keep the existing PetGrow quick-menu local preference aligned where possible. */
     try {
       for (let i = 0; i < localStorage.length; i += 1) {
         const key = localStorage.key(i) || "";
@@ -94,19 +93,23 @@
     const visible = new Set([...grid.querySelectorAll(":scope > button")].map((btn) => btn.dataset.pgQuickView).filter(Boolean));
     const lang = currentLang();
     const remaining = MENU_ITEMS.filter(([view]) => !visible.has(view));
+    const signature = `${lang}:${remaining.map(([view]) => view).join("|")}`;
 
-    extra.replaceChildren();
-    remaining.forEach(([view, icon, labels]) => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "pg-home-extra-menu-card";
-      btn.dataset.pgView = view;
-      btn.innerHTML = `<i aria-hidden="true"></i><span></span>`;
-      btn.querySelector("i").textContent = icon;
-      btn.querySelector("span").textContent = labels[lang] || labels.ko;
-      btn.addEventListener("click", () => navigate(view));
-      extra.appendChild(btn);
-    });
+    if (extra.dataset.pgSignature !== signature) {
+      extra.dataset.pgSignature = signature;
+      extra.replaceChildren();
+      remaining.forEach(([view, icon, labels]) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "pg-home-extra-menu-card";
+        btn.dataset.pgView = view;
+        btn.innerHTML = `<i aria-hidden="true"></i><span></span>`;
+        btn.querySelector("i").textContent = icon;
+        btn.querySelector("span").textContent = labels[lang] || labels.ko;
+        btn.addEventListener("click", () => navigate(view));
+        extra.appendChild(btn);
+      });
+    }
 
     extra.hidden = !expanded || remaining.length === 0;
     return remaining.length;
