@@ -1,0 +1,39 @@
+name: Apply Home Info Music Safe
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/triggers/home-info-music-safe.txt'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Apply safe home patch
+        run: node scripts/apply-home-info-music-safe.mjs
+      - name: Production build
+        run: npm run build
+      - name: Commit only after successful build
+        run: |
+          if git diff --quiet -- src/App.jsx; then
+            echo "No App.jsx changes"
+            exit 0
+          fi
+          git config user.name "petgrow-automation"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/App.jsx
+          git commit -m "feat: show PetInfo and PetMusic on home"
+          git push origin main
