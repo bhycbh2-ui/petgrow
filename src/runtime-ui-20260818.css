@@ -11,12 +11,19 @@
 /* Language support is intentionally limited to Korean and English. */
 .lang-toggle button:nth-child(n+3){display:none!important}
 
-/* My Pet title/tabs follow the same full content width as the body instead of a second centered max-width. */
+/* My Pet hero and dog/cat tabs use the same compact common content width. */
 @media(min-width:900px){
   .petgrow-web-layout .petgrow-page-top.pets-page-top{width:100%!important;max-width:none!important;margin:0!important;padding:16px 20px 0!important;box-sizing:border-box!important}
-  .petgrow-web-layout .petgrow-page-top.pets-page-top>.petgrow-unified-hero{width:100%!important;max-width:none!important;margin:0 0 18px!important;box-sizing:border-box!important}
-  .petgrow-web-layout .petgrow-page-top.pets-page-top>.petgrow-unified-hero+div{width:100%!important;max-width:none!important;box-sizing:border-box!important}
+  .petgrow-web-layout .petgrow-page-top.pets-page-top>.petgrow-unified-hero{width:min(100%,1180px)!important;max-width:1180px!important;margin:0 auto 18px!important;box-sizing:border-box!important}
+  .petgrow-web-layout .petgrow-page-top.pets-page-top>.petgrow-unified-hero+div{width:min(100%,1180px)!important;max-width:1180px!important;margin:0 auto!important;box-sizing:border-box!important}
+  .petgrow-web-layout .petgrow-page-top.pets-page-top>.petgrow-unified-hero+div button svg{width:20px!important;height:20px!important;min-width:20px!important;min-height:20px!important}
 }
+
+/* About/service feature icons need stronger visual weight. */
+.about-feature-grid>*>svg,.about-features-grid>*>svg,.intro-feature-grid>*>svg,.intro-features-grid>*>svg,.feature-grid>*>svg,.service-grid>*>svg,
+.about-feature-grid>*>img,.about-features-grid>*>img,.intro-feature-grid>*>img,.intro-features-grid>*>img,.feature-grid>*>img,.service-grid>*>img{width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;object-fit:contain!important}
+.about-feature-grid [class*="icon"],.about-features-grid [class*="icon"],.intro-feature-grid [class*="icon"],.intro-features-grid [class*="icon"],.feature-grid [class*="icon"],.service-grid [class*="icon"]{font-size:24px!important}
+.about-feature-grid [class*="icon"] svg,.about-features-grid [class*="icon"] svg,.intro-feature-grid [class*="icon"] svg,.intro-features-grid [class*="icon"] svg,.feature-grid [class*="icon"] svg,.service-grid [class*="icon"] svg{width:28px!important;height:28px!important}
 
 /* Pet Saju / Pet Tarot / PetBTI use the same outer width, card shape and spacing. */
 .feature-page-saju,.feature-page-tarot,.feature-page-petbti{width:100%!important;max-width:1180px!important;box-sizing:border-box!important}
@@ -32,4 +39,5 @@
 @media(max-width:899px){
   .feature-page-saju,.feature-page-tarot,.feature-page-petbti{padding-left:14px!important;padding-right:14px!important}
   .feature-page-saju .feature-module-shell,.feature-page-petbti .feature-module-shell>.bg-card,.feature-page-tarot .pet-tarot-stage{padding:20px 16px!important;border-radius:20px!important}
+  .petgrow-page-top.pets-page-top>.petgrow-unified-hero+div button svg{width:18px!important;height:18px!important}
 }
