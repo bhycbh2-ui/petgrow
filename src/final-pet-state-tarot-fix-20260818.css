@@ -1,11 +1,4 @@
-/* PetGrow final pet-state + tarot duplicate fix — 2026-08-18 */
-
-/* The runtime helper injects an extra active-pet header into Pet Tarot.
-   Pet Saju already has its own active-pet presentation, so keep the shared picker
-   and the existing Tarot/Saju-style profile block, but hide this duplicate helper. */
-.petgrow-web-layout .feature-page-tarot .pg-tarot-pet-head{
-  display:none!important;
-}
+/* PetGrow saved pet-state recovery UI — 2026-08-18 */
 
 /* While saved pet state is being resolved, do not flash a false “register a pet” card. */
 .feature-page-shell.pg-pet-state-checking .feature-empty-wrap,
