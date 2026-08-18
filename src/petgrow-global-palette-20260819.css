@@ -1,0 +1,154 @@
+/* PetGrow unified palette — 2026-08-19
+   Visual-only layer: keeps existing behavior/layout logic intact. */
+
+:root{
+  --pg-soft-green:#eef6ef;
+  --pg-soft-blue:#f1f6fb;
+  --pg-soft-peach:#fff5ed;
+  --pg-soft-lilac:#f7f2fb;
+  --pg-soft-cream:#fff9ec;
+  --pg-soft-rose:#fff2f4;
+  --pg-soft-mint:#eef8f5;
+  --pg-soft-border:#dfe8e1;
+  --pg-soft-ink:#2c3a31;
+  --pg-soft-sub:#718078;
+  --pg-soft-shadow:0 10px 28px rgba(39,62,45,.055);
+}
+
+/* Global page canvas */
+body{background:linear-gradient(180deg,#fbfcfa 0%,#f7faf7 56%,#fffaf7 100%)!important;color:var(--pg-soft-ink)!important}
+.petgrow-content-stage,.legal-page-shell,.feature-module-shell,.petmusic-page,.petnews-v10,.mypage-shell,.nearby-page{color:var(--pg-soft-ink)!important}
+
+/* Shared hero/card language */
+.petgrow-unified-hero{
+  background:linear-gradient(135deg,#f0f8f1 0%,#f7fbf7 56%,#fff8ed 100%)!important;
+  border-color:#dbe7dd!important;
+  box-shadow:0 12px 30px rgba(42,66,49,.055)!important;
+}
+.bg-card,.bg-surface-card{
+  border-color:var(--pg-soft-border)!important;
+  box-shadow:var(--pg-soft-shadow)!important;
+}
+.bg-card{background:#fff!important}
+.bg-surface-card{background:#f8fbf8!important}
+.bg-sub{color:var(--pg-soft-sub)!important}
+
+/* Common controls */
+.bg-chip{
+  border-color:#d9e5dc!important;
+  background:#fff!important;
+  color:#4d6c56!important;
+}
+.bg-chip:hover{background:#eff6f0!important;border-color:#c6d9ca!important;color:#356a43!important}
+.bg-chip.active{background:#e8f3ea!important;border-color:#bfd6c4!important;color:#306440!important}
+.bg-btn{border-radius:14px!important}
+.bg-btn:not(.bg-btn-ghost){background:#4f805c!important;border-color:#4f805c!important;color:#fff!important}
+.bg-btn.bg-btn-ghost{background:#fff!important;border-color:#dfe7e1!important;color:#425248!important}
+.bg-btn.bg-btn-ghost:hover{background:#f3f8f4!important;border-color:#cadccc!important}
+.bg-input{background:#fff!important;border-color:#dfe7e1!important;color:#2d3a32!important}
+.bg-input:focus{border-color:#91b49a!important;box-shadow:0 0 0 3px rgba(79,128,92,.09)!important}
+
+/* PetBTI — keep the liked pastel style and center the question sentence. */
+.pg-petbti-quiz-card{
+  position:relative!important;
+  overflow:hidden!important;
+  padding:26px!important;
+  border:1px solid #dfe8e1!important;
+  border-radius:26px!important;
+  background:linear-gradient(145deg,#fff 0%,#fbfdfb 58%,#f3f8f4 100%)!important;
+  box-shadow:0 14px 38px rgba(38,62,45,.065)!important;
+}
+.pg-petbti-quiz-card:before{
+  content:"PETBTI";
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:max-content;
+  height:26px;
+  padding:0 10px;
+  margin:0 auto 13px;
+  border-radius:999px;
+  background:#eef6ef;
+  color:#4d7d59;
+  font-size:9px;
+  font-weight:950;
+  letter-spacing:.13em;
+}
+.pg-petbti-quiz-card:after{content:"";position:absolute;width:145px;height:145px;border-radius:50%;right:-78px;top:-72px;background:radial-gradient(circle,#e9f3eb 0 54%,rgba(233,243,235,0) 56%);pointer-events:none}
+.pg-petbti-quiz-card .pg-petbti-counter{display:flex!important;align-items:center!important;justify-content:center!important;width:max-content!important;min-width:52px!important;height:28px!important;padding:0 10px!important;margin:0 auto 9px!important;border-radius:999px!important;background:#f6f1e8!important;color:#8a7143!important;font-size:11px!important;font-weight:850!important}
+.pg-petbti-quiz-card .pg-petbti-question-title{
+  width:100%!important;
+  max-width:760px!important;
+  margin:5px auto 20px!important;
+  font-size:20px!important;
+  line-height:1.5!important;
+  letter-spacing:-.025em!important;
+  color:#26352b!important;
+  text-align:center!important;
+}
+.pg-petbti-quiz-card .pg-petbti-option{position:relative!important;display:flex!important;align-items:center!important;gap:12px!important;width:100%!important;min-height:54px!important;padding:13px 16px!important;border-radius:16px!important;border:1px solid transparent!important;color:#35423a!important;font-size:13px!important;font-weight:760!important;line-height:1.45!important;box-shadow:none!important;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease,background .14s ease!important}
+.pg-petbti-quiz-card .pg-petbti-option:before{content:"";width:18px;height:18px;flex:0 0 18px;border-radius:50%;border:2px solid currentColor;opacity:.42;box-sizing:border-box;background:rgba(255,255,255,.72)}
+.pg-petbti-quiz-card .pg-petbti-option-1{background:var(--pg-soft-green)!important;border-color:#d8e9dc!important;color:#456e50!important}
+.pg-petbti-quiz-card .pg-petbti-option-2{background:var(--pg-soft-blue)!important;border-color:#dce6f0!important;color:#506b82!important}
+.pg-petbti-quiz-card .pg-petbti-option-3{background:var(--pg-soft-peach)!important;border-color:#f0e0d0!important;color:#8a684d!important}
+.pg-petbti-quiz-card .pg-petbti-option-4{background:var(--pg-soft-lilac)!important;border-color:#e7dced!important;color:#755e82!important}
+.pg-petbti-quiz-card .pg-petbti-option:hover{transform:translateY(-1px)!important;border-color:currentColor!important;box-shadow:0 7px 18px rgba(39,58,45,.055)!important}
+
+/* PetInfo */
+.tips-page .bg-card,.petinfo-page .bg-card,[data-page="tips"] .bg-card{background:linear-gradient(145deg,#fff,#f5faf6)!important}
+.tips-page .bg-chip.active,.petinfo-page .bg-chip.active{background:#eaf4ec!important;color:#356a43!important}
+
+/* PetMusic */
+.petmusic-hero{background:linear-gradient(135deg,#f7f2fb,#fff 62%,#eef7f1)!important;border:1px solid #e5ddec!important;border-radius:24px!important;padding:24px!important;box-shadow:var(--pg-soft-shadow)!important}
+.petmusic-card,.petmusic-rank{border-color:#e5dfeb!important}
+.petmusic-card:nth-child(4n+1),.petmusic-rank:nth-child(4n+1){background:#faf7fd!important}
+.petmusic-card:nth-child(4n+2),.petmusic-rank:nth-child(4n+2){background:#f2f8f3!important}
+.petmusic-card:nth-child(4n+3),.petmusic-rank:nth-child(4n+3){background:#fff7ef!important}
+.petmusic-card:nth-child(4n+4),.petmusic-rank:nth-child(4n+4){background:#f2f6fb!important}
+.petmusic-play{background:#eef6ef!important;color:#397048!important;border-color:#d3e3d6!important}
+
+/* PetNews */
+.petnews-card-v10:nth-child(4n+1){background:#f6faf6!important}
+.petnews-card-v10:nth-child(4n+2){background:#f4f7fb!important}
+.petnews-card-v10:nth-child(4n+3){background:#fff8ef!important}
+.petnews-card-v10:nth-child(4n+4){background:#faf5fb!important}
+.petnews-card-v10{border-color:#dfe7e1!important;box-shadow:var(--pg-soft-shadow)!important}
+.petnews-cats button.active{background:#4f805c!important;border-color:#4f805c!important}
+
+/* PetTalk */
+.cm-card,.pettalk-fallback-item{border-color:#e4e7e4!important;box-shadow:var(--pg-soft-shadow)!important}
+.cm-card:nth-child(4n+1){background:#fff!important}
+.cm-card:nth-child(4n+2){background:#fff6f7!important}
+.cm-card:nth-child(4n+3){background:#f4f7fb!important}
+.cm-card:nth-child(4n+4){background:#f4f9f5!important}
+
+/* Saju / Tarot */
+.saju-page .bg-card,.tarot-page .bg-card,.pet-tarot-page .bg-card{background:linear-gradient(145deg,#fff,#faf6fc)!important;border-color:#e5ddec!important}
+.saju-page .bg-btn:not(.bg-btn-ghost),.tarot-page .bg-btn:not(.bg-btn-ghost),.pet-tarot-page .bg-btn:not(.bg-btn-ghost){background:#755f82!important;border-color:#755f82!important}
+
+/* Nearby */
+.modern-nearby-map,.nearby-card,.nearby-result-card{border-color:#dfe7e1!important;box-shadow:var(--pg-soft-shadow)!important}
+.nearby-result-card:nth-child(3n+1){background:#f3f9f4!important}
+.nearby-result-card:nth-child(3n+2){background:#fff7ef!important}
+.nearby-result-card:nth-child(3n+3){background:#f2f6fb!important}
+
+/* My page / account */
+.my-menu-card{border-color:#dfe7e1!important;box-shadow:var(--pg-soft-shadow)!important}
+.my-menu-pink{background:#fff3f5!important}.my-menu-blue{background:#f1f6fb!important}.my-menu-purple{background:#f7f2fb!important}.my-menu-mint{background:#eef8f5!important}
+
+/* Guide / support / legal */
+.guide-quick-card,.guide-start-card,.guide-detail-card,.support-page .bg-card,.legal-page-shell .policy-section{border-color:#dfe7e1!important;box-shadow:var(--pg-soft-shadow)!important}
+.guide-quick-card:nth-child(4n+1){background:#f2f8f3!important}.guide-quick-card:nth-child(4n+2){background:#f2f6fb!important}.guide-quick-card:nth-child(4n+3){background:#fff7ef!important}.guide-quick-card:nth-child(4n+4){background:#f8f3fb!important}
+
+/* Home expanded menu: six across on desktop = 6 + 6 when expanded. */
+.petgrow-dashboard-home .pg-home-extra-menu-grid{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+
+@media(max-width:899px){
+  .pg-petbti-quiz-card{padding:20px 16px!important;border-radius:21px!important}
+  .pg-petbti-quiz-card .pg-petbti-question-title{font-size:17px!important;margin-bottom:16px!important}
+  .pg-petbti-quiz-card .pg-petbti-option{min-height:52px!important;padding:12px 13px!important;font-size:12px!important;border-radius:15px!important}
+  .petgrow-dashboard-home .pg-home-extra-menu-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:520px){
+  .petgrow-dashboard-home .pg-home-extra-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
