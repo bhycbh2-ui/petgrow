@@ -2,11 +2,6 @@ name: Android AAB Build
 
 on:
   workflow_dispatch:
-    inputs:
-      release_status:
-        description: 'Google Play release status (draft or completed; completed is restricted to non-production tracks by uploader)'
-        required: false
-        default: 'draft'
   push:
     branches:
       - main
@@ -14,7 +9,6 @@ on:
       - 'src/**'
       - 'public/**'
       - 'android/**'
-      - 'scripts/upload-google-play.mjs'
       - 'package.json'
       - 'package-lock.json'
       - 'capacitor.config.json'
@@ -26,13 +20,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
-      PLAY_PACKAGE_NAME: kr.co.petgrow.app
       ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/android/app/petgrow-upload.jks
       ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
       ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-      PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
-      PLAY_TRACK: ${{ secrets.PLAY_TRACK }}
 
     steps:
       - name: Checkout repository
@@ -60,7 +51,7 @@ jobs:
       - name: Sync Capacitor Android
         run: npx cap sync android
 
-      - name: Prepare Play signing and version code
+      - name: Prepare signing and version code
         id: signing
         shell: bash
         env:
@@ -75,7 +66,7 @@ jobs:
             echo "signed=true" >> "$GITHUB_OUTPUT"
           else
             echo "signed=false" >> "$GITHUB_OUTPUT"
-            echo "Play signing secrets are not configured yet; building unsigned release artifact only."
+            echo "Signing secrets are not configured; building unsigned release artifact only."
           fi
 
       - name: Make Gradle executable
@@ -104,26 +95,6 @@ jobs:
           path: android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: warn
           retention-days: 14
-
-      - name: Check Google Play automation credentials
-        id: play
-        shell: bash
-        run: |
-          if [ "${{ steps.signing.outputs.signed }}" = "true" ] && [ -n "$PLAY_SERVICE_ACCOUNT_JSON" ] && [ -n "$PLAY_TRACK" ]; then
-            echo "ready=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "ready=false" >> "$GITHUB_OUTPUT"
-            echo "Google Play upload skipped until signing + service-account + track secrets are configured."
-          fi
-
-      - name: Upload signed AAB to Google Play
-        if: steps.play.outputs.ready == 'true'
-        env:
-          AAB_PATH: android/app/build/outputs/bundle/release/app-release.aab
-          PLAY_RELEASE_NAME: PetGrow ${{ steps.signing.outputs.version_code }}
-          PLAY_RELEASE_NOTES: PetGrow 기능 및 사용성 개선
-          PLAY_RELEASE_STATUS: ${{ github.event.inputs.release_status || 'draft' }}
-        run: node scripts/upload-google-play.mjs
 
       - name: Remove temporary keystore
         if: always()
