@@ -85,6 +85,31 @@ export default function petgrowUiFixes() {
           'function PetNewsPrivacyAddendum(){return <section className="bg-card petnews-privacy-addendum" style={{maxWidth:900,margin:"14px auto 36px",padding:22}}>'
         );
 
+        const oldMenuGroups = `  const groups=[
+    {label:lang==="en"?"PET LIFE":"반려생활",items:[{key:"pets",label:t.myPetsNav,Icon:PawIcon},{key:"nearby",label:t.nearbyNav,Icon:MapPinIcon},{key:"music",label:lang==="en"?"Pet Music":"Pet음악",Icon:MusicIcon}]},
+    {label:lang==="en"?"COMMUNITY · CONTENT":"커뮤니티 · 콘텐츠",items:[{key:"community",label:t.communityNav,Icon:TalkIcon},{key:"petbti",label:t.petBtiNav,Icon:PetBtiIcon},{key:"saju",label:t.sajuNav,Icon:SajuIcon},{key:"tarot",label:lang==="en"?"Pet Tarot":"Pet타로",Icon:SajuIcon}]},
+    {label:lang==="en"?"INFO · SUPPORT":"정보 · 지원",items:[{key:"tips",label:t.tipsTitle,Icon:LightbulbIcon},{key:"news",label:lang==="en"?"Pet News":"Pet뉴스",Icon:InfoIcon},{key:"about",label:t.aboutNav,Icon:InfoIcon}]}
+  ];`;
+        const newMenuGroups = `  const groups=[
+    {label:lang==="en"?"PET LIFE":lang==="ja"?"ペットライフ":lang==="zh"?"宠物生活":"반려생활",items:[{key:"about",label:t.aboutNav,Icon:InfoIcon},{key:"pets",label:t.myPetsNav,Icon:PawIcon},{key:"nearby",label:t.nearbyNav,Icon:MapPinIcon}]},
+    {label:lang==="en"?"COMMUNITY · CONTENT":lang==="ja"?"コミュニティ · コンテンツ":lang==="zh"?"社区 · 内容":"커뮤니티 · 콘텐츠",items:[{key:"community",label:t.communityNav,Icon:TalkIcon},{key:"music",label:lang==="en"?"Pet Music":lang==="ja"?"Pet音楽":lang==="zh"?"Pet音乐":"Pet음악",Icon:MusicIcon},{key:"petbti",label:t.petBtiNav,Icon:PetBtiIcon},{key:"saju",label:t.sajuNav,Icon:SajuIcon},{key:"tarot",label:lang==="en"?"Pet Tarot":lang==="ja"?"Petタロット":lang==="zh"?"Pet塔罗":"Pet타로",Icon:SajuIcon}]},
+    {label:lang==="en"?"INFO · SUPPORT":lang==="ja"?"情報 · サポート":lang==="zh"?"信息 · 支持":"정보 · 지원",items:[{key:"tips",label:t.tipsTitle,Icon:LightbulbIcon},{key:"news",label:lang==="en"?"Pet News":lang==="ja"?"Petニュース":lang==="zh"?"Pet新闻":"Pet뉴스",Icon:InfoIcon}]}
+  ];`;
+        out = replaceRequired(out, oldMenuGroups, newMenuGroups, "menu group order and locale");
+
+        out = replaceRequired(
+          out,
+          '  const x=meta[view]; if(!x)return null;\n  return <section className="nearby-hero bg-card petgrow-unified-hero" style={{maxWidth:900,margin:\'0 auto 18px\'}}><div><span className="nearby-eyebrow">{x.eyebrow}</span><h1>{lang===\'en\'?x.en:x.ko}</h1><p>{lang===\'en\'?x.enDesc:x.koDesc}</p>',
+          '  const x=meta[view]; if(!x)return null;\n  const localized={ja:{pets:["うちの子","ペットの基本情報、成長記録、写真、健康情報をまとめて管理できます。"],community:["Petトーク","日常や質問、ペットとの暮らしに役立つ情報を気軽に共有できます。"],tips:["Pet情報","健康・食事・生活・トレーニングに役立つ情報を確認できます。"],saju:["Pet四柱","生年月日をもとに楽しむPetGrowのエンタメコンテンツです。"],petbti:["PetBTI","行動に関する質問から、うちの子の個性を楽しく確認できます。"],guide:["情報ガイド","PetGrowの主な機能と使い方をまとめて確認できます。"],my:["マイページ","会員情報、活動履歴、お気に入りコンテンツを管理できます。"],more:["もっと見る","PetGrowの機能とサポートメニューを確認できます。"],support:["サポート","サービス利用に関する質問やお問い合わせを送れます。"],"ad-inquiry":["広告・提携のお問い合わせ","PetGrowとの広告・提携についてお問い合わせいただけます。"]},zh:{pets:["我的宠物","集中管理宠物基本资料、成长记录、照片和健康信息。"],community:["Pet聊天","轻松分享宠物日常、问题和养宠生活信息。"],tips:["Pet信息","查看健康、饮食、生活和训练等实用养宠信息。"],saju:["Pet四柱","根据宠物生日轻松体验PetGrow趣味内容。"],petbti:["PetBTI","通过行为问题了解宠物的个性与倾向。"],guide:["信息指南","快速查看PetGrow主要功能和使用方法。"],my:["我的页面","管理会员信息、活动记录和喜欢的内容。"],more:["更多","查看PetGrow其他功能和支持菜单。"],support:["客户支持","提交使用服务时的问题或需要帮助的内容。"],"ad-inquiry":["广告合作咨询","联系PetGrow洽谈广告与合作机会。"]}};\n  const pair=localized[lang]?.[view]; const heroTitle=lang===\'en\'?x.en:(pair?.[0]||x.ko); const heroDesc=lang===\'en\'?x.enDesc:(pair?.[1]||x.koDesc);\n  return <section className="nearby-hero bg-card petgrow-unified-hero" style={{maxWidth:900,margin:\'0 auto 18px\'}}><div><span className="nearby-eyebrow">{x.eyebrow}</span><h1>{heroTitle}</h1><p>{heroDesc}</p>',
+          "unified hero ja zh locale"
+        );
+
+        out = replaceOptionalAll(
+          out,
+          '<h1>{lang==="en"?"Pet Music":"Pet음악"}</h1>',
+          '<h1>{lang==="en"?"Pet Music":lang==="ja"?"Pet音楽":lang==="zh"?"Pet音乐":"Pet음악"}</h1>'
+        );
+
         return out === code ? null : { code: out, map: null };
       }
 
@@ -117,6 +142,14 @@ export default function petgrowUiFixes() {
           'PetPoint {result.pointCost||30}P 사용',
           'PetPoint {result.pointCost||5}P 사용'
         );
+
+        out = replaceOptionalAll(out,'{lang==="en"?"PETGROW TAROT · 22 MAJOR ARCANA":"PETGROW 타로 · 메이저 아르카나 22장"}','{lang==="en"?"PETGROW TAROT · 22 MAJOR ARCANA":lang==="ja"?"PETGROW タロット · 大アルカナ22枚":lang==="zh"?"PETGROW 塔罗 · 22张大阿尔卡那":"PETGROW 타로 · 메이저 아르카나 22장"}');
+        out = replaceOptionalAll(out,'{petName}{lang==="en"?"\'s Tarot":"의 Pet타로"}','{petName}{lang==="en"?"\'s Tarot":lang==="ja"?"のPetタロット":lang==="zh"?"的Pet塔罗":"의 Pet타로"}');
+        out = replaceOptionalAll(out,'<b>카드를 뽑아주세요</b><small>오늘 마음이 가는 한 장을 천천히 골라볼게요.</small>','<b>{lang==="ja"?"カードを1枚選んでください":lang==="zh"?"请选择一张牌":"카드를 뽑아주세요"}</b><small>{lang==="ja"?"今日いちばん心ひかれるカードを選んでみましょう。":lang==="zh"?"慢慢选择今天最吸引你的一张牌。":"오늘 마음이 가는 한 장을 천천히 골라볼게요."}</small>');
+        out = replaceOptionalAll(out,'<b>카드에 집중해 주세요</b><small>우리 아이를 떠올리며 잠시 카드에 마음을 모아보세요.</small>','<b>{lang==="ja"?"カードに集中してください":lang==="zh"?"请专注于卡牌":"카드에 집중해 주세요"}</b><small>{lang==="ja"?"うちの子を思い浮かべながら少しだけ集中してみましょう。":lang==="zh"?"想着你的宠物，静静集中片刻。":"우리 아이를 떠올리며 잠시 카드에 마음을 모아보세요."}</small>');
+        out = replaceOptionalAll(out,'<b>카드를 섞고 있어요</b><small>오늘의 메시지를 담은 22장을 준비하는 중이에요.</small>','<b>{lang==="ja"?"カードをシャッフルしています":lang==="zh"?"正在洗牌":"카드를 섞고 있어요"}</b><small>{lang==="ja"?"今日のメッセージを込めた22枚を準備しています。":lang==="zh"?"正在准备承载今日信息的22张牌。":"오늘의 메시지를 담은 22장을 준비하는 중이에요."}</small>');
+        out = replaceOptionalAll(out,'← 다른 주제 선택','{lang==="ja"?"← 別のテーマを選ぶ":lang==="zh"?"← 选择其他主题":"← 다른 주제 선택"}');
+        out = replaceOptionalAll(out,'선택한 카드를 천천히 펼치는 중…','{lang==="ja"?"選んだカードを開いています…":lang==="zh"?"正在翻开你选择的牌…":"선택한 카드를 천천히 펼치는 중…"}');
 
         return out === code ? null : { code: out, map: null };
       }
