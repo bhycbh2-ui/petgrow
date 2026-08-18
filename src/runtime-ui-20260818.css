@@ -1,0 +1,32 @@
+/* PetGrow runtime UI fixes - 2026-08-18 */
+.pg-wait-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(247,250,247,.78);backdrop-filter:blur(7px)}
+.pg-wait-card{width:min(360px,calc(100vw - 40px));padding:28px 24px;border:1px solid #dce8de;border-radius:24px;background:#fff;box-shadow:0 22px 60px rgba(36,61,43,.14);display:flex;flex-direction:column;align-items:center;text-align:center;gap:9px;color:#25322a}
+.pg-wait-card b{font-size:18px;letter-spacing:-.025em}.pg-wait-card small{font-size:12px;line-height:1.65;color:#7b877f;word-break:keep-all}
+.pg-wait-spinner{width:34px;height:34px;border:3px solid #dfe9e1;border-top-color:#4f8a5b;border-radius:50%;animation:pgRuntimeSpin .8s linear infinite;margin-bottom:4px}@keyframes pgRuntimeSpin{to{transform:rotate(360deg)}}
+
+/* Native Tarot loading text becomes the same wait popup. */
+.feature-page-tarot .pet-tarot-loading{position:fixed!important;inset:0!important;z-index:9998!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:24px!important;background:rgba(247,250,247,.78)!important;backdrop-filter:blur(7px)!important;color:#25322a!important;font-size:14px!important;font-weight:800!important;gap:10px!important}
+.feature-page-tarot .pet-tarot-loading:before{content:"";width:30px;height:30px;border:3px solid #dfe9e1;border-top-color:#4f8a5b;border-radius:50%;animation:pgRuntimeSpin .8s linear infinite}
+
+/* Our Pets common title card = same width/position as Nearby Pet and other heroes. */
+@media(min-width:900px){
+  .petgrow-web-layout .petgrow-page-top.pets-page-top{width:calc(100% - 40px)!important;max-width:1180px!important;margin:0 auto!important;padding:16px 20px 0!important;box-sizing:border-box!important}
+  .petgrow-web-layout .petgrow-page-top.pets-page-top>.petgrow-unified-hero{width:100%!important;max-width:none!important;margin:0 0 18px!important;box-sizing:border-box!important}
+  .petgrow-web-layout .petgrow-content-stage>.petgrow-unified-hero{width:calc(100% - 40px)!important;max-width:1180px!important;margin:0 auto 18px!important;box-sizing:border-box!important}
+}
+
+/* Pet Saju / Pet Tarot / PetBTI use the same outer width, card shape and spacing. */
+.feature-page-saju,.feature-page-tarot,.feature-page-petbti{width:100%!important;max-width:1180px!important;box-sizing:border-box!important}
+.feature-page-saju .feature-module-shell,.feature-page-tarot .feature-module-shell,.feature-page-petbti .feature-module-shell{width:100%!important;max-width:900px!important;margin:22px auto 0!important;box-sizing:border-box!important}
+.feature-page-saju .feature-module-shell{padding:28px!important;border:1px solid #dfe8e1!important;border-radius:24px!important;background:#fff!important;box-shadow:0 12px 34px rgba(38,65,46,.055)!important}
+.feature-page-petbti .feature-module-shell>.bg-card,.feature-page-tarot .pet-tarot-stage{width:100%!important;padding:28px!important;border:1px solid #dfe8e1!important;border-radius:24px!important;background:#fff!important;box-shadow:0 12px 34px rgba(38,65,46,.055)!important;box-sizing:border-box!important}
+.feature-page-saju .bg-surface-card,.feature-page-petbti .bg-surface-card,.feature-page-tarot .pet-tarot-topic{border-radius:18px!important}
+.pg-tarot-pet-head{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;margin:0 auto 12px;text-align:center}
+.pg-tarot-avatar{width:68px;height:68px;border-radius:50%;overflow:hidden;display:grid;place-items:center;border:3px solid var(--primary);background:var(--surface);box-sizing:border-box}
+.pg-tarot-avatar img{width:100%;height:100%;object-fit:cover}.pg-tarot-avatar span{font-size:30px}.pg-tarot-pet-head strong{font-size:16px;font-weight:900;color:var(--text)}
+.feature-page-tarot .pet-daily-eyebrow{display:block;text-align:center}.feature-page-tarot .pet-tarot-stage>h2{text-align:center!important;margin:7px 0 14px!important}
+
+@media(max-width:899px){
+  .feature-page-saju,.feature-page-tarot,.feature-page-petbti{padding-left:14px!important;padding-right:14px!important}
+  .feature-page-saju .feature-module-shell,.feature-page-petbti .feature-module-shell>.bg-card,.feature-page-tarot .pet-tarot-stage{padding:20px 16px!important;border-radius:20px!important}
+}
