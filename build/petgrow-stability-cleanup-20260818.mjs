@@ -17,6 +17,76 @@ export default function petgrowStabilityCleanup(){
           'const [lang, setLang] = useState(()=>{try{const v=localStorage.getItem("petgrow:lang");return ["ko","en"].includes(v)?v:"ko"}catch{return "ko"}});'
         );
 
+        // Storage policy: logged-in pet data is written to both cloud and an account-scoped
+        // local safety copy. If cloud is temporarily unavailable, the same account still sees
+        // the registered pet instead of a false empty state. Account id prevents cross-account bleed.
+        out=out.replace(
+          /async function safeGet\(key, account\) \{[\s\S]*?\n\}\nasync function safeSet\(key, value, account\) \{[\s\S]*?\n\}/,
+`function accountLocalStateKey(key, account) {
+  return account?.id ? \`${'${key}'}:account:${'${account.id}'}\` : key;
+}
+async function safeGet(key, account) {
+  if (!account) return localGet(key);
+  const shadowKey = accountLocalStateKey(key, account);
+  const cloudValue = await cloudGet(key);
+  if (cloudValue !== null && cloudValue !== undefined) {
+    await localSet(shadowKey, cloudValue);
+    return cloudValue;
+  }
+  return localGet(shadowKey);
+}
+async function safeSet(key, value, account) {
+  if (!account) return localSet(key, value);
+  const shadowKey = accountLocalStateKey(key, account);
+  const localOk = await localSet(shadowKey, value);
+  const cloudOk = await cloudSet(key, value);
+  return Boolean(localOk || cloudOk);
+}`
+        );
+
+        // Do not expose feature pages before saved pet state has finished loading.
+        out=out.replace(
+          /setAuthChecked\(true\);\s*\/\/ 로그인 확인만 끝나면 홈부터 먼저 보여주고, 반려동물 데이터는 아래에서 비동기로 채워요\.\s*setLoaded\(true\);/,
+          'setAuthChecked(true);\n      // 저장된 반려동물 상태까지 확인한 뒤 화면을 열어 false-empty 화면을 방지해요.'
+        );
+
+        // Guest/local registrations must remain usable; older code loaded them and then cleared them again.
+        out=out.replace(
+          /if \(!me\) \{\s*dogs = \[\];\s*cats = \[\];\s*\}\s*\n\s*setPets\(\{ dog: dogs, cat: cats \}\);/,
+          'dogs = Array.isArray(dogs) ? dogs : [];\n      cats = Array.isArray(cats) ? cats : [];\n\n      setPets({ dog: dogs, cat: cats });'
+        );
+
+        // Mark app data ready only after pets + active ids are installed in React state.
+        out=out.replace(
+          /setActiveId\(\{\s*dog: \(actives && actives\.dog\) \|\| \(dogs\[0\] && dogs\[0\]\.id\) \|\| null,\s*cat: \(actives && actives\.cat\) \|\| \(cats\[0\] && cats\[0\]\.id\) \|\| null,\s*\}\);/,
+          'setActiveId({\n        dog: (actives && actives.dog) || (dogs[0] && dogs[0].id) || null,\n        cat: (actives && actives.cat) || (cats[0] && cats[0].id) || null,\n      });\n      setLoaded(true);'
+        );
+
+        // Make persistence functions report success and keep active-id storage symmetrical.
+        out=out.replace(
+          /const persistPets = async \(next\) => \{\s*setPets\(next\);\s*const ok1 = await safeSet\("bboggl:dogs", next\.dog, account\);\s*const ok2 = await safeSet\("bboggl:cats", next\.cat, account\);\s*flashSaveToast\(ok1 && ok2\);\s*\};\s*const persistActive = \(next\) => \{\s*setActiveId\(next\);\s*safeSet\("bboggl:activeIds", next, account\);\s*\};/,
+`const persistPets = async (next) => {
+    setPets(next);
+    const [ok1, ok2] = await Promise.all([
+      safeSet("bboggl:dogs", next.dog, account),
+      safeSet("bboggl:cats", next.cat, account),
+    ]);
+    const ok = Boolean(ok1 && ok2);
+    flashSaveToast(ok);
+    return ok;
+  };
+  const persistActive = async (next) => {
+    setActiveId(next);
+    return safeSet("bboggl:activeIds", next, account);
+  };`
+        );
+
+        // Newly registered pet becomes the selected feature pet immediately.
+        out=out.replace(
+          'persistActive({ ...activeId, [species]: newPet.id });\n    setMode("view");',
+          'persistActive({ ...activeId, [species]: newPet.id });\n    setFeaturePetId(newPet.id);\n    setMode("view");'
+        );
+
         // Desktop sidebar: one canonical order and one canonical route per visible label.
         const sidebar=`<nav className="petgrow-sidebar-nav petgrow-sidebar-nav-grouped">
             <button className={view === "home" ? "active" : ""} onClick={() => goView("home")}><HomeIcon /><span>{t.hamNavHome}</span></button>
@@ -46,12 +116,9 @@ export default function petgrowStabilityCleanup(){
       }
 
       if(norm.endsWith("/src/PetDailyWidgets.jsx")){
-        // Remove every previously injected Tarot identity header from older transforms.
         out=out.replace(/<div className="pg-tarot-pet-identity">[\s\S]*?<\/div><style>\{`/g,'<style>{`');
         out=out.replace(/<div className="pet-tarot-native-head">[\s\S]*?<\/div>/g,'');
         out=out.replace(/<div className="pet-tarot-clean-head">[\s\S]*?<\/div>/g,'');
-
-        // Insert exactly one selected-pet identity inside the Tarot main card.
         const stage='<div className="bg-card pet-tarot-stage">';
         const head='<div className="pet-tarot-clean-head"><span className="pet-tarot-clean-avatar">{(pet?.profile?.profileImage||pet?.profile?.photo||pet?.profileImage||pet?.photo)?<img src={pet?.profile?.profileImage||pet?.profile?.photo||pet?.profileImage||pet?.photo} alt={petName}/>:<em>{String(pet?.profile?.species||pet?.species||pet?.profile?.type||pet?.type||"dog").toLowerCase().includes("cat")||String(pet?.profile?.species||pet?.species||"").includes("고양")?"🐱":"🐶"}</em>}</span><b className="pet-user-name">{petName}</b></div>';
         if(!out.includes(stage)) throw new Error('[petgrow-stability-cleanup] tarot stage not found');
