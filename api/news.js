@@ -1,3 +1,5 @@
+import { sql } from "@vercel/postgres";
+/* PETNEWS_ARCHIVE_20260818 */
 const API_BASE = "https://naverapihub.apigw.ntruss.com/search/v1/news";
 const GOOGLE_RSS = "https://news.google.com/rss/search";
 
@@ -88,9 +90,43 @@ function parseGoogleRss(xml){
 async function fetchNaver(clientId,clientSecret){const responses=await Promise.all(SEARCH_QUERIES.map(async query=>{const url=`${API_BASE}?query=${encodeURIComponent(query)}&display=20&start=1&sort=date&format=json`;const response=await fetch(url,{headers:{"X-NCP-APIGW-API-KEY-ID":clientId,"X-NCP-APIGW-API-KEY":clientSecret}});if(!response.ok)throw new Error(`NAVER API HUB ${response.status}`);return response.json();}));return responses.flatMap(r=>Array.isArray(r.items)?r.items:[]);}
 async function fetchGoogleFallback(){const queries=["반려동물","반려견 OR 강아지","반려묘 OR 고양이","동물병원 OR 펫보험","유기동물 OR 동물보호"];const settled=await Promise.allSettled(queries.map(async query=>{const url=`${GOOGLE_RSS}?q=${encodeURIComponent(query)}&hl=ko&gl=KR&ceid=KR:ko`;const response=await fetch(url,{headers:{"User-Agent":"PetGrow/1.0"}});if(!response.ok)throw new Error(`Google News RSS ${response.status}`);return parseGoogleRss(await response.text());}));return settled.flatMap(r=>r.status==="fulfilled"?r.value:[]);}
 async function prepare(raw){let normalized=dedupe(raw.filter(isPetRelevant).map(normalizeItem)).sort((a,b)=>new Date(b.publishedAt||0)-new Date(a.publishedAt||0));if(!normalized.length)normalized=dedupe(raw.map(normalizeItem)).sort((a,b)=>new Date(b.publishedAt||0)-new Date(a.publishedAt||0));const now=Date.now(),sevenDays=7*24*60*60*1000,recent=normalized.filter(item=>item.publishedAt&&now-new Date(item.publishedAt).getTime()<=sevenDays);const picked=(recent.length>=12?recent:normalized).slice(0,40);const enriched=await enrichArticleImages(picked);const byId=new Map(enriched.map(x=>[x.id,x]));return picked.map(x=>byId.get(x.id)||x);}
+
+async function ensureNewsArchive(){
+  await sql`CREATE TABLE IF NOT EXISTS pet_news_archive (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    category TEXT,
+    source TEXT,
+    link TEXT NOT NULL,
+    naver_link TEXT,
+    published_at TIMESTAMPTZ,
+    image TEXT,
+    first_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    last_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_pet_news_archive_published_at ON pet_news_archive (published_at DESC NULLS LAST)`;
+}
+
+async function saveNewsArchive(items){
+  for(const item of items){
+    await sql`INSERT INTO pet_news_archive (id,title,description,category,source,link,naver_link,published_at,image,last_seen_at)
+      VALUES (${item.id},${item.title},${item.description||''},${item.category||'반려동물'},${item.source||'언론사'},${item.link},${item.naverLink||item.link},${item.publishedAt?new Date(item.publishedAt):null},${item.image||''},NOW())
+      ON CONFLICT (id) DO UPDATE SET
+        description=EXCLUDED.description,category=EXCLUDED.category,source=EXCLUDED.source,
+        naver_link=EXCLUDED.naver_link,published_at=COALESCE(EXCLUDED.published_at,pet_news_archive.published_at),
+        image=CASE WHEN EXCLUDED.image<>'' THEN EXCLUDED.image ELSE pet_news_archive.image END,last_seen_at=NOW()`;
+  }
+}
+
+async function loadNewsArchive(limit=1000){
+  const result=await sql`SELECT id,title,description,category,source,link,naver_link,published_at,image
+    FROM pet_news_archive ORDER BY published_at DESC NULLS LAST, first_seen_at DESC LIMIT ${limit}`;
+  return result.rows.map(r=>({id:r.id,title:r.title,description:r.description||'',category:r.category||'반려동물',source:r.source||'언론사',link:r.link,naverLink:r.naver_link||r.link,publishedAt:r.published_at?new Date(r.published_at).toISOString():null,image:r.image||'',imageIsFallback:false}));
+}
 export default async function handler(req,res){
   if(req.method!=="GET")return res.status(405).json({error:"Method not allowed"});
   const clientId=process.env.NAVER_API_HUB_CLIENT_ID,clientSecret=process.env.NAVER_API_HUB_CLIENT_SECRET;let provider="google-news-rss";
-  try{let raw=[];if(clientId&&clientSecret){try{raw=await fetchNaver(clientId,clientSecret);provider="naver-api-hub";}catch(e){console.warn("Pet news primary provider failed; using fallback",e?.message||e);}}if(!raw.length){raw=await fetchGoogleFallback();provider="google-news-rss";}const items=await prepare(raw);res.setHeader("Cache-Control","public, s-maxage=1800, stale-while-revalidate=1800");return res.status(200).json({configured:true,provider,updatedAt:new Date().toISOString(),refreshSeconds:1800,total:items.length,items,message:items.length?"":"새 반려동물 뉴스를 찾고 있어요. 잠시 후 다시 확인해 주세요."});}
+  try{await ensureNewsArchive();let raw=[];if(clientId&&clientSecret){try{raw=await fetchNaver(clientId,clientSecret);provider="naver-api-hub";}catch(e){console.warn("Pet news primary provider failed; using fallback",e?.message||e);}}if(!raw.length){raw=await fetchGoogleFallback();provider="google-news-rss";}const freshItems=await prepare(raw);if(freshItems.length)await saveNewsArchive(freshItems);const items=await loadNewsArchive(1000);res.setHeader("Cache-Control","public, s-maxage=1800, stale-while-revalidate=1800");return res.status(200).json({configured:true,provider,archive:true,updatedAt:new Date().toISOString(),refreshSeconds:1800,total:items.length,items,message:items.length?"":"새 반려동물 뉴스를 찾고 있어요. 잠시 후 다시 확인해 주세요."});}
   catch(error){console.error("Pet news fetch failed",error?.message||error);res.setHeader("Cache-Control","no-store");return res.status(200).json({configured:true,provider:"temporarily-unavailable",items:[],error:"뉴스를 불러오지 못했어요. 잠시 후 다시 시도해 주세요."});}
 }
