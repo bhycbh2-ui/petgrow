@@ -4,7 +4,7 @@ import { sql } from "@vercel/postgres";
 const START_POINTS = 1000;
 export const POINT_COSTS = { saju_basic: 10, saju_daily: 5, saju_compat: 10, tarot: 5 };
 const REWARDS = {
-  daily_login: { label: "오늘의 첫 접속", amount: 30, cap: 1 },
+  daily_login: { label: "오늘의 첫 접속", amount: 50, cap: 1 },
   community_post: { label: "Pet톡 글 작성", amount: 50, cap: 5 },
   community_comment: { label: "Pet톡 댓글 작성", amount: 20, cap: 5 },
   received_like: { label: "Pet톡 좋아요 받기", amount: 5, cap: 50 },
@@ -90,6 +90,6 @@ export async function getPointSummary(uid,{dailyLogin=true}={}) {
   const rank=Math.min(total,(Number(rankRows[0]?.higher)||0)+1);
   const topPercent=Math.max(1,Math.ceil((rank/total)*100));
   const st=stats[0]||{};
-  return {balance,startPoints:START_POINTS,costs:POINT_COSTS,recent:l,pointEvent,todayEarned:Number(st.today_earned)||0,todaySpent:Number(st.today_spent)||0,weekSpent:Number(st.week_spent)||0,totalEarned:Number(st.total_earned)||0,totalSpent:Number(st.total_spent)||0,rank,memberCount:total,topPercent,earnGuide:[{label:"Pet톡 글 작성",points:50,limit:"하루 5회"},{label:"Pet톡 댓글 작성",points:20,limit:"하루 15회"},{label:"좋아요 받기",points:5,limit:"하루 50회"},{label:"하루 첫 접속",points:30,limit:"하루 1회"}]};
+  return {balance,startPoints:START_POINTS,costs:POINT_COSTS,recent:l,pointEvent,todayEarned:Number(st.today_earned)||0,todaySpent:Number(st.today_spent)||0,weekSpent:Number(st.week_spent)||0,totalEarned:Number(st.total_earned)||0,totalSpent:Number(st.total_spent)||0,rank,memberCount:total,topPercent,earnGuide:[{label:"Pet톡 글 작성",points:50,limit:"하루 5회"},{label:"Pet톡 댓글 작성",points:20,limit:"하루 15회"},{label:"좋아요 받기",points:5,limit:"하루 50회"},{label:"하루 첫 접속",points:50,limit:"하루 1회"}]};
 }
 export async function getPointAdminStats(){await ensure();const [{rows:a},{rows:l}]=await Promise.all([sql`select count(*)::int users,coalesce(sum(balance),0)::int balance from pg_point_accounts`,sql`select coalesce(sum(case when amount>0 then amount else 0 end),0)::int earned,coalesce(sum(case when amount<0 then -amount else 0 end),0)::int spent,count(*)::int events from pg_point_ledger`]);return {...(a[0]||{}),...(l[0]||{})};}
