@@ -1,6 +1,7 @@
-/* Pet Tarot rebuilt to follow Pet Saju's simple structure: picker -> one main card -> one pet identity. */
-.petgrow-web-layout .feature-page-tarot .pg-tarot-pet-identity{display:none!important}
-.petgrow-web-layout .feature-page-tarot .pg-tarot-pet-head{display:none!important}
+/* Pet Tarot single-source layout: picker -> one main card -> one selected-pet identity. */
+.petgrow-web-layout .feature-page-tarot .pg-tarot-pet-identity,
+.petgrow-web-layout .feature-page-tarot .pg-tarot-pet-head,
+.petgrow-web-layout .feature-page-tarot .pet-tarot-native-head{display:none!important}
 
 .petgrow-web-layout .feature-page-tarot .feature-module-shell.pet-tarot-shell{
   width:100%!important;
@@ -22,7 +23,7 @@
   background:transparent!important;
   box-shadow:none!important;
 }
-.petgrow-web-layout .feature-page-tarot .pet-tarot-native-head{
+.petgrow-web-layout .feature-page-tarot .pet-tarot-clean-head{
   display:flex!important;
   flex-direction:column!important;
   align-items:center!important;
@@ -33,7 +34,7 @@
   border:0!important;
   background:transparent!important;
 }
-.petgrow-web-layout .feature-page-tarot .pet-tarot-native-avatar{
+.petgrow-web-layout .feature-page-tarot .pet-tarot-clean-avatar{
   width:76px!important;
   height:76px!important;
   display:grid!important;
@@ -44,18 +45,18 @@
   background:#f7faf7!important;
   box-sizing:border-box!important;
 }
-.petgrow-web-layout .feature-page-tarot .pet-tarot-native-avatar img{
+.petgrow-web-layout .feature-page-tarot .pet-tarot-clean-avatar img{
   width:100%!important;
   height:100%!important;
   object-fit:cover!important;
   display:block!important;
 }
-.petgrow-web-layout .feature-page-tarot .pet-tarot-native-avatar em{
+.petgrow-web-layout .feature-page-tarot .pet-tarot-clean-avatar em{
   font-style:normal!important;
   font-size:34px!important;
   line-height:1!important;
 }
-.petgrow-web-layout .feature-page-tarot .pet-tarot-native-head>b{
+.petgrow-web-layout .feature-page-tarot .pet-tarot-clean-head>b{
   font-size:15px!important;
   line-height:1.25!important;
   font-weight:900!important;
@@ -78,14 +79,14 @@
 }
 
 @media(max-width:899px){
-  .petgrow-web-layout .feature-page-tarot .feature-module-shell.pet-tarot-shell{
+  .feature-page-tarot .feature-module-shell.pet-tarot-shell{
     margin-top:16px!important;
     padding:20px 16px!important;
     border-radius:20px!important;
   }
-  .petgrow-web-layout .feature-page-tarot .pet-tarot-native-avatar{
+  .feature-page-tarot .pet-tarot-clean-avatar{
     width:68px!important;
     height:68px!important;
   }
-  .petgrow-web-layout .feature-page-tarot .pet-tarot-stage>h2{font-size:23px!important}
+  .feature-page-tarot .pet-tarot-stage>h2{font-size:23px!important}
 }
