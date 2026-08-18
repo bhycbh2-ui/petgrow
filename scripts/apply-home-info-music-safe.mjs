@@ -1,19 +1,49 @@
 import fs from 'node:fs';
 
-const file='src/App.jsx';
-let s=fs.readFileSync(file,'utf8');
-const MARK='HOME_INFO_MUSIC_SAFE_20260819';
-if(s.includes(MARK)){console.log('home info/music patch already applied');process.exit(0);}
+const file = 'src/App.jsx';
+let s = fs.readFileSync(file, 'utf8');
+const MARK = 'HOME_INFO_MUSIC_SAFE_20260819';
 
-const stateAnchor='  const [homeNews,setHomeNews]=useState([]);';
-if(!s.includes(stateAnchor)) throw new Error('homeNews state anchor not found');
-const stateInsert=`${stateAnchor}\n  const [homeMusicTop5,setHomeMusicTop5]=useState([]);\n  const [homePlayingId,setHomePlayingId]=useState(\"\");\n  const homeAudioRef=useRef(null);\n  /* ${MARK} */\n  const homeRecommendedTips=useMemo(()=>{\n    const list=Array.isArray(TIPS_DATA)?TIPS_DATA:[];\n    if(!list.length)return [];\n    const day=Math.floor(Date.now()/86400000);\n    const start=(day*5)%list.length;\n    return [0,1,2].map(i=>list[(start+i)%list.length]).filter(Boolean);\n  },[]);\n  useEffect(()=>{\n    let cancelled=false;\n    fetch('/api/home-feed').then(r=>r.ok?r.json():null).then(j=>{\n      if(cancelled)return;\n      setHomeMusicTop5(Array.isArray(j?.top5)?j.top5.slice(0,5):[]);\n    }).catch(()=>{});\n    return()=>{cancelled=true;try{homeAudioRef.current?.pause?.();}catch{}};\n  },[]);\n  const toggleHomeTrack=(track)=>{\n    const url=track?.audioUrl||track?.audio_url||'';\n    if(!url)return;\n    const current=homeAudioRef.current;\n    if(current&&homePlayingId===track.id&&!current.paused){current.pause();setHomePlayingId('');return;}\n    try{current?.pause?.();}catch{}\n    const audio=new Audio(url);\n    homeAudioRef.current=audio;\n    audio.onended=()=>setHomePlayingId('');\n    audio.onerror=()=>setHomePlayingId('');\n    setHomePlayingId(track.id);\n    audio.play().then(()=>{fetch('/api/music?action=play',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:track.id})}).catch(()=>{});}).catch(()=>setHomePlayingId(''));\n  };`;
-s=s.replace(stateAnchor,stateInsert);
+if (s.includes(MARK)) {
+  console.log('home info/music React patch already applied');
+  process.exit(0);
+}
 
-const newsAnchor='      {homeNews.length>0&&<section className="dash-section"><div className="dash-section-head"><h2>{lang===\'en\'?\'Important Pet News\':\'주요 Pet뉴스\'}</h2>';
-if(!s.includes(newsAnchor)) throw new Error('existing home news anchor not found');
-const blocks=`      <section className=\"dash-section\">\n        <div className=\"dash-section-head\"><h2>{lang==='en'?'Today’s Pet Info':'오늘의 Pet정보'}</h2><button type=\"button\" className=\"bg-chip\" onClick={()=>onGoView('tips')}>{lang==='en'?'View all':'전체보기'}</button></div>\n        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(210px,1fr))',gap:10}}>\n          {homeRecommendedTips.map((tip,i)=><button key={tip.id||i} type=\"button\" className=\"bg-card\" onClick={()=>onGoView('tips')} style={{padding:'16px',textAlign:'left',border:'1px solid var(--border)',cursor:'pointer',minHeight:104}}>\n            <small style={{fontWeight:800,color:'var(--primary)'}}>{tip.category||'Pet정보'}</small>\n            <div style={{fontWeight:800,fontSize:15,lineHeight:1.5,marginTop:6}}>{tip.title||tip.question||'오늘의 Pet정보'}</div>\n            <small className=\"bg-sub\" style={{display:'block',marginTop:7}}>{lang==='en'?'Open Pet Info →':'자세히 보기 →'}</small>\n          </button>)}\n        </div>\n      </section>\n\n      {homeMusicTop5.length>0&&<section className=\"dash-section\">\n        <div className=\"dash-section-head\"><h2>{lang==='en'?'Popular Pet Music TOP 5':'인기 Pet음악 TOP 5'}</h2><button type=\"button\" className=\"bg-chip\" onClick={()=>onGoView('music')}>{lang==='en'?'View all':'전체보기'}</button></div>\n        <div style={{display:'grid',gap:9}}>\n          {homeMusicTop5.map((track,i)=><div key={track.id||i} className=\"bg-card\" style={{padding:'11px 13px',border:'1px solid var(--border)',display:'grid',gridTemplateColumns:'38px 1fr auto',alignItems:'center',gap:10}}>\n            <b style={{fontSize:17,textAlign:'center',color:'var(--primary)'}}>{i+1}</b>\n            <button type=\"button\" onClick={()=>onGoView('music')} style={{border:0,background:'transparent',padding:0,textAlign:'left',fontFamily:'inherit',cursor:'pointer',minWidth:0}}>\n              <div style={{fontWeight:800,fontSize:14,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{track.title||'Pet음악'}</div>\n              <small className=\"bg-sub\">▶ {Number(track.playCount??track.play_count??0).toLocaleString()} · ♥ {Number(track.likeCount??track.like_count??0).toLocaleString()}</small>\n            </button>\n            <button type=\"button\" className=\"bg-chip\" onClick={()=>toggleHomeTrack(track)} aria-label={homePlayingId===track.id?'일시정지':'재생'} style={{minWidth:46}}>{homePlayingId===track.id?'❚❚':'▶'}</button>\n          </div>)}\n        </div>\n      </section>\n\n`;
-s=s.replace(newsAnchor,blocks+newsAnchor);
+const importLine = 'import HomeInfoMusicSections from "./HomeInfoMusicSections.jsx";\n';
+if (!s.includes('HomeInfoMusicSections from "./HomeInfoMusicSections.jsx"')) {
+  s = importLine + s;
+}
 
-fs.writeFileSync(file,s);
-console.log('safe home PetInfo + PetMusic sections applied');
+const classMatch = /className\s*=\s*["'][^"']*\bdash-quick-grid\b[^"']*["']/.exec(s);
+if (!classMatch) throw new Error('dash-quick-grid anchor not found');
+
+const classIndex = classMatch.index;
+const openStart = s.lastIndexOf('<', classIndex);
+if (openStart < 0) throw new Error('quick grid opening tag not found');
+
+const openTagMatch = s.slice(openStart, classIndex + classMatch[0].length + 200).match(/^<([A-Za-z][A-Za-z0-9]*)\b/);
+if (!openTagMatch) throw new Error('quick grid tag name not found');
+const tag = openTagMatch[1];
+const tokenRe = new RegExp(`<${tag}\\b[^>]*>|<\\/${tag}\\s*>`, 'g');
+tokenRe.lastIndex = openStart;
+let depth = 0;
+let closeEnd = -1;
+let token;
+while ((token = tokenRe.exec(s))) {
+  if (token[0].startsWith(`</${tag}`)) {
+    depth -= 1;
+    if (depth === 0) {
+      closeEnd = tokenRe.lastIndex;
+      break;
+    }
+  } else if (!token[0].endsWith('/>')) {
+    depth += 1;
+  }
+}
+if (closeEnd < 0) throw new Error('quick grid closing tag not found');
+
+const insert = `\n      {/* ${MARK} */}\n      <HomeInfoMusicSections lang={lang} onGoView={onGoView} tips={TIPS_DATA} />`;
+s = s.slice(0, closeEnd) + insert + s.slice(closeEnd);
+
+fs.writeFileSync(file, s);
+console.log('safe React PetInfo + PetMusic home sections applied');
