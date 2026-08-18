@@ -9,9 +9,11 @@ import "./runtime-ui-20260818.css";
 import "./pets-header-compact-20260818.css";
 import "./critical-ui-hotfix-20260818.css";
 import "./requested-polish-20260818.css";
+import "./aab-ready-fixes-20260818.css";
 import "./runtime-fixes-safe-20260818.js";
 import "./lang-ko-en-only-20260818.js";
 import "./requested-polish-20260818.js";
+import "./aab-ready-fixes-20260818.js";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -22,7 +24,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 // PWA: 서비스워커 등록 (오프라인 캐싱 + 홈화면 추가 지원)
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js?v=36", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=37", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });
