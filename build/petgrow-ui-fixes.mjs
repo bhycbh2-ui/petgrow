@@ -45,6 +45,12 @@ export default function petgrowUiFixes() {
           '{(detail?.image||selected.image)&&<img src={detail?.image||selected.image} alt=""/>}'
         );
 
+        out = replaceOptionalAll(
+          out,
+          '타로 30P · 오늘 운세 20P · 기본 사주 50P · 궁합 40P',
+          '타로 5P · 오늘 운세 5P · 기본 사주 10P · 궁합 10P'
+        );
+
         return out === code ? null : { code: out, map: null };
       }
 
@@ -70,6 +76,12 @@ export default function petgrowUiFixes() {
           'setPhase("reveal");window.setTimeout(()=>setPhase("result"),900)},500);',
           'setPhase("reveal");window.setTimeout(()=>setPhase("result"),620)},160);',
           "PetTarot reveal timing"
+        );
+
+        out = replaceOptionalAll(
+          out,
+          'PetPoint {result.pointCost||30}P 사용',
+          'PetPoint {result.pointCost||5}P 사용'
         );
 
         return out === code ? null : { code: out, map: null };
