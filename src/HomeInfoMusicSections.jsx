@@ -21,6 +21,8 @@ function safeNumber(value) {
   return Number.isFinite(n) ? n : 0;
 }
 
+const HOME_MUSIC_CACHE = "petgrow_home_music_cache_v1";
+
 export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = [] }) {
   const recommendedTips = useMemo(() => {
     const list = Array.isArray(tips) ? tips.filter(Boolean) : [];
@@ -38,64 +40,52 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
 
   useEffect(() => {
     let cancelled = false;
-    let timerId = null;
-    let controller = null;
+    const controller = new AbortController();
+    const normalize = (raw) => raw.map((track, i) => ({
+      id: safeText(track?.id, lang, String(i)),
+      title: safeText(track?.title, lang, lang === "en" ? "Pet Music" : "Pet음악"),
+      audioUrl: safeText(track?.audioUrl ?? track?.audio_url, lang, ""),
+      playCount: safeNumber(track?.playCount ?? track?.play_count),
+      likeCount: safeNumber(track?.likeCount ?? track?.like_count),
+    }));
 
-    const load = () => {
-      if (cancelled) return;
-      controller = new AbortController();
-      const timeoutId = setTimeout(() => controller?.abort(), 3000);
+    try {
+      const cached = JSON.parse(sessionStorage.getItem(HOME_MUSIC_CACHE) || "null");
+      if (cached?.at && Date.now() - cached.at < 10 * 60 * 1000 && Array.isArray(cached.items)) {
+        setMusic(normalize(cached.items.slice(0, 3)));
+      }
+    } catch {}
 
-      fetch("/api/home-feed", { signal: controller.signal })
-        .then((r) => (r.ok ? r.json() : null))
-        .then((data) => {
-          if (cancelled) return;
-          const raw = Array.isArray(data?.top5) ? data.top5.slice(0, 3) : [];
-          const normalized = raw.map((track, i) => ({
-            id: safeText(track?.id, lang, String(i)),
-            title: safeText(track?.title, lang, lang === "en" ? "Pet Music" : "Pet음악"),
-            audioUrl: safeText(track?.audioUrl ?? track?.audio_url, lang, ""),
-            playCount: safeNumber(track?.playCount ?? track?.play_count),
-            likeCount: safeNumber(track?.likeCount ?? track?.like_count),
-          }));
-          setMusic(normalized);
-        })
-        .catch(() => {})
-        .finally(() => clearTimeout(timeoutId));
-    };
-
-    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
-      timerId = window.requestIdleCallback(load, { timeout: 1800 });
-    } else {
-      timerId = setTimeout(load, 1200);
-    }
+    const timeoutId = setTimeout(() => controller.abort(), 3500);
+    fetch("/api/home-feed", { signal: controller.signal })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (cancelled) return;
+        const raw = Array.isArray(data?.top5) ? data.top5.slice(0, 3) : [];
+        setMusic(normalize(raw));
+        try { sessionStorage.setItem(HOME_MUSIC_CACHE, JSON.stringify({ at: Date.now(), items: raw })); } catch {}
+      })
+      .catch(() => {})
+      .finally(() => clearTimeout(timeoutId));
 
     return () => {
       cancelled = true;
-      if (typeof window !== "undefined" && "cancelIdleCallback" in window && typeof timerId === "number") {
-        try { window.cancelIdleCallback(timerId); } catch {}
-      } else if (timerId) {
-        clearTimeout(timerId);
-      }
-      try { controller?.abort(); } catch {}
+      clearTimeout(timeoutId);
+      try { controller.abort(); } catch {}
     };
   }, [lang]);
 
-  useEffect(() => {
-    return () => {
-      try { audioRef.current?.pause?.(); } catch {}
-      audioRef.current = null;
-      loadedTrackIdRef.current = "";
-    };
+  useEffect(() => () => {
+    try { audioRef.current?.pause?.(); } catch {}
+    audioRef.current = null;
+    loadedTrackIdRef.current = "";
   }, []);
 
   const go = (view) => {
     if (typeof onGoView === "function") onGoView(view);
   };
 
-  const toggleTip = (key) => {
-    setExpandedTipKey((current) => (current === key ? "" : key));
-  };
+  const toggleTip = (key) => setExpandedTipKey((current) => (current === key ? "" : key));
 
   const recordPlay = (id) => {
     if (!id) return;
@@ -110,7 +100,6 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
     const id = safeText(track?.id, lang, "");
     const url = safeText(track?.audioUrl, lang, "");
     if (!id || !url) return;
-
     const current = audioRef.current;
     const sameTrack = current && loadedTrackIdRef.current === id;
 
@@ -120,39 +109,25 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
         setPlayingId("");
         return;
       }
-
       const restarting = current.ended;
-      if (restarting) {
-        try { current.currentTime = 0; } catch {}
-      }
-
-      current.play()
-        .then(() => {
-          setPlayingId(id);
-          if (restarting) recordPlay(id);
-        })
-        .catch(() => setPlayingId(""));
+      if (restarting) { try { current.currentTime = 0; } catch {} }
+      current.play().then(() => {
+        setPlayingId(id);
+        if (restarting) recordPlay(id);
+      }).catch(() => setPlayingId(""));
       return;
     }
 
     try { current?.pause?.(); } catch {}
-
     const audio = new Audio(url);
     audio.preload = "metadata";
     audioRef.current = audio;
     loadedTrackIdRef.current = id;
     audio.onplay = () => setPlayingId(id);
-    audio.onpause = () => {
-      if (!audio.ended) setPlayingId("");
-    };
+    audio.onpause = () => { if (!audio.ended) setPlayingId(""); };
     audio.onended = () => setPlayingId("");
-    audio.onerror = () => {
-      if (loadedTrackIdRef.current === id) setPlayingId("");
-    };
-
-    audio.play()
-      .then(() => recordPlay(id))
-      .catch(() => setPlayingId(""));
+    audio.onerror = () => { if (loadedTrackIdRef.current === id) setPlayingId(""); };
+    audio.play().then(() => recordPlay(id)).catch(() => setPlayingId(""));
   };
 
   return (
@@ -162,28 +137,17 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
           <h2>{lang === "en" ? "Today’s Pet Info" : "오늘의 Pet정보"}</h2>
           <button type="button" className="bg-chip" onClick={() => go("tips")}>{lang === "en" ? "View all" : "전체보기"}</button>
         </div>
-
         {recommendedTips.length > 0 ? (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(210px,1fr))", gap: 10, alignItems: "start" }}>
             {recommendedTips.map((tip, i) => {
               const category = safeText(tip?.category, lang, lang === "en" ? "Pet Info" : "Pet정보");
               const title = safeText(tip?.title ?? tip?.question, lang, lang === "en" ? "Helpful pet information" : "반려생활에 도움되는 정보");
-              const answer = safeText(
-                tip?.answer ?? tip?.content ?? tip?.description ?? tip?.body ?? tip?.detail ?? tip?.text,
-                lang,
-                lang === "en" ? "Open Pet Info to see the full details." : "자세한 내용은 Pet정보 전체보기에서 확인할 수 있어요."
-              );
+              const answer = safeText(tip?.answer ?? tip?.content ?? tip?.description ?? tip?.body ?? tip?.detail ?? tip?.text, lang, lang === "en" ? "Open Pet Info to see the full details." : "자세한 내용은 Pet정보 전체보기에서 확인할 수 있어요.");
               const key = safeText(tip?.id, lang, `tip-${i}`);
               const expanded = expandedTipKey === key;
-
               return (
                 <div key={key} className="bg-card" style={{ border: "1px solid var(--border)", overflow: "hidden" }}>
-                  <button
-                    type="button"
-                    onClick={() => toggleTip(key)}
-                    aria-expanded={expanded}
-                    style={{ width: "100%", padding: 16, border: 0, background: "transparent", textAlign: "left", fontFamily: "inherit", cursor: "pointer" }}
-                  >
+                  <button type="button" onClick={() => toggleTip(key)} aria-expanded={expanded} style={{ width: "100%", padding: 16, border: 0, background: "transparent", textAlign: "left", fontFamily: "inherit", cursor: "pointer" }}>
                     <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
                       <div style={{ minWidth: 0 }}>
                         <small style={{ fontWeight: 800, color: "var(--primary)" }}>{category}</small>
@@ -191,25 +155,14 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
                       </div>
                       <span aria-hidden="true" style={{ flex: "0 0 auto", fontSize: 18, fontWeight: 900, lineHeight: 1.2 }}>{expanded ? "⌃" : "⌄"}</span>
                     </div>
-                    <small className="bg-sub" style={{ display: "block", marginTop: 7 }}>
-                      {expanded ? (lang === "en" ? "Tap to close" : "눌러서 접기") : (lang === "en" ? "Tap to read here" : "홈에서 바로 펼쳐보기")}
-                    </small>
+                    <small className="bg-sub" style={{ display: "block", marginTop: 7 }}>{expanded ? (lang === "en" ? "Tap to close" : "눌러서 접기") : (lang === "en" ? "Tap to read here" : "홈에서 바로 펼쳐보기")}</small>
                   </button>
-
-                  {expanded && (
-                    <div style={{ margin: "0 12px 12px", padding: "13px 14px", borderRadius: 12, background: "rgba(255,255,255,.72)", border: "1px solid var(--border)", fontSize: 14, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>
-                      {answer}
-                    </div>
-                  )}
+                  {expanded && <div style={{ margin: "0 12px 12px", padding: "13px 14px", borderRadius: 12, background: "rgba(255,255,255,.78)", border: "1px solid var(--border)", fontSize: 14, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{answer}</div>}
                 </div>
               );
             })}
           </div>
-        ) : (
-          <button type="button" className="bg-card" onClick={() => go("tips")} style={{ width: "100%", padding: 14, border: "1px solid var(--border)", textAlign: "left", cursor: "pointer" }}>
-            <b>{lang === "en" ? "Open Pet Info" : "Pet정보 바로가기"}</b>
-          </button>
-        )}
+        ) : <button type="button" className="bg-card" onClick={() => go("tips")} style={{ width: "100%", padding: 14, border: "1px solid var(--border)", textAlign: "left", cursor: "pointer" }}><b>{lang === "en" ? "Open Pet Info" : "Pet정보 바로가기"}</b></button>}
       </section>
 
       <section className="dash-section" data-home-extra="music">
@@ -217,41 +170,21 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
           <h2>{lang === "en" ? "Popular Pet Music" : "인기 Pet음악"}</h2>
           <button type="button" className="bg-chip" onClick={() => go("music")}>{lang === "en" ? "View all" : "전체보기"}</button>
         </div>
-
         {music.length > 0 ? (
           <div style={{ display: "grid", gap: 9 }}>
             {music.map((track, i) => {
               const active = playingId === track.id;
               const playable = Boolean(track.audioUrl);
               return (
-                <button
-                  type="button"
-                  key={track.id || `music-${i}`}
-                  className={`bg-card home-music-row${active ? " is-playing" : ""}`}
-                  onClick={() => toggleTrack(track)}
-                  disabled={!playable}
-                  aria-label={active ? `${track.title} 일시정지` : `${track.title} 재생`}
-                  title={active ? (lang === "en" ? "Pause" : "일시정지") : (lang === "en" ? "Play" : "재생")}
-                  style={{ width: "100%", padding: "11px 13px", border: "1px solid var(--border)", display: "grid", gridTemplateColumns: "38px minmax(0,1fr) 42px", alignItems: "center", gap: 10, textAlign: "left", fontFamily: "inherit", cursor: playable ? "pointer" : "default", opacity: playable ? 1 : .62 }}
-                >
+                <button type="button" key={track.id || `music-${i}`} className={`bg-card home-music-row${active ? " is-playing" : ""}`} onClick={() => toggleTrack(track)} disabled={!playable} aria-label={active ? `${track.title} 일시정지` : `${track.title} 재생`} title={active ? (lang === "en" ? "Pause" : "일시정지") : (lang === "en" ? "Play" : "재생")} style={{ width: "100%", padding: "11px 13px", border: "1px solid var(--border)", display: "grid", gridTemplateColumns: "38px minmax(0,1fr) 42px", alignItems: "center", gap: 10, textAlign: "left", fontFamily: "inherit", cursor: playable ? "pointer" : "default", opacity: playable ? 1 : .62 }}>
                   <b style={{ fontSize: 17, textAlign: "center", color: "var(--primary)" }}>{i + 1}</b>
-                  <span style={{ minWidth: 0 }}>
-                    <span style={{ display: "block", fontWeight: 800, fontSize: 14, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{track.title}</span>
-                    <small className="bg-sub">▶ {track.playCount.toLocaleString()} · ♥ {track.likeCount.toLocaleString()}</small>
-                  </span>
-                  <span aria-hidden="true" style={{ width: 36, height: 36, borderRadius: 12, display: "grid", placeItems: "center", background: active ? "var(--primary)" : "var(--surface)", color: active ? "#fff" : "var(--primary)", fontWeight: 900 }}>
-                    {active ? "❚❚" : "▶"}
-                  </span>
+                  <span style={{ minWidth: 0 }}><span style={{ display: "block", fontWeight: 800, fontSize: 14, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{track.title}</span><small className="bg-sub">▶ {track.playCount.toLocaleString()} · ♥ {track.likeCount.toLocaleString()}</small></span>
+                  <span aria-hidden="true" style={{ width: 36, height: 36, borderRadius: 12, display: "grid", placeItems: "center", background: active ? "var(--primary)" : "var(--surface)", color: active ? "#fff" : "var(--primary)", fontWeight: 900 }}>{active ? "❚❚" : "▶"}</span>
                 </button>
               );
             })}
           </div>
-        ) : (
-          <button type="button" className="bg-card" onClick={() => go("music")} style={{ width: "100%", padding: 14, border: "1px solid var(--border)", textAlign: "left", cursor: "pointer" }}>
-            <b>{lang === "en" ? "Open Pet Music" : "Pet음악 바로가기"}</b>
-            <small className="bg-sub" style={{ display: "block", marginTop: 4 }}>{lang === "en" ? "Music loads after the home screen is ready." : "홈을 먼저 띄운 뒤 인기 음악만 가볍게 불러와요."}</small>
-          </button>
-        )}
+        ) : <div className="bg-card home-music-loading" style={{ width: "100%", padding: 14, border: "1px solid var(--border)", textAlign: "left" }}><b>{lang === "en" ? "Loading Pet Music…" : "Pet음악을 불러오는 중…"}</b></div>}
       </section>
     </>
   );

@@ -1,0 +1,73 @@
+/* PetGrow final unified visual + mobile/app polish — 2026-08-19 */
+
+/* PetBTI intro sentence: exact requested centered copy */
+.feature-module-shell .pg-petbti-main-desc{display:block!important;width:100%!important;max-width:680px!important;margin:0 auto 6px!important;text-align:center!important;white-space:pre-line!important;line-height:1.65!important}
+
+/* PetInfo: category colors are fixed, not random. */
+.bg-surface-card.pg-info-dog,[data-home-extra="petinfo"] .bg-card.pg-info-dog{background:#eff8f0!important;border-color:#d8e9dc!important}
+.bg-surface-card.pg-info-cat,[data-home-extra="petinfo"] .bg-card.pg-info-cat{background:#fff2f6!important;border-color:#f0dce4!important}
+.bg-surface-card.pg-info-health,[data-home-extra="petinfo"] .bg-card.pg-info-health{background:#eef6fc!important;border-color:#d8e6f1!important}
+.bg-surface-card.pg-info-life,[data-home-extra="petinfo"] .bg-card.pg-info-life{background:#fff9e9!important;border-color:#eee5c9!important}
+.bg-surface-card.pg-info-food,[data-home-extra="petinfo"] .bg-card.pg-info-food{background:#fff3e9!important;border-color:#f0dfd0!important}
+.bg-surface-card.pg-info-training,[data-home-extra="petinfo"] .bg-card.pg-info-training{background:#f5f1fb!important;border-color:#e4dcf0!important}
+.bg-surface-card.pg-info-safety,[data-home-extra="petinfo"] .bg-card.pg-info-safety{background:#edf9f6!important;border-color:#d5ebe5!important}
+.bg-surface-card.pg-info-grooming,[data-home-extra="petinfo"] .bg-card.pg-info-grooming{background:#fff1fa!important;border-color:#efdced!important}
+
+/* PetNews: category colors are fixed and shared between home + news page. */
+.petnews-card-v10.pg-news-health,.petgrow-dashboard-home .bg-card.pg-news-health{background:#eef6fc!important;border-color:#d8e6f1!important}
+.petnews-card-v10.pg-news-policy,.petgrow-dashboard-home .bg-card.pg-news-policy{background:#f5f1fb!important;border-color:#e4dcf0!important}
+.petnews-card-v10.pg-news-adoption,.petgrow-dashboard-home .bg-card.pg-news-adoption{background:#fff2f6!important;border-color:#f0dce4!important}
+.petnews-card-v10.pg-news-industry,.petgrow-dashboard-home .bg-card.pg-news-industry{background:#fff3e9!important;border-color:#f0dfd0!important}
+.petnews-card-v10.pg-news-dog,.petgrow-dashboard-home .bg-card.pg-news-dog{background:#eff8f0!important;border-color:#d8e9dc!important}
+.petnews-card-v10.pg-news-cat,.petgrow-dashboard-home .bg-card.pg-news-cat{background:#fff1fa!important;border-color:#efdced!important}
+.petnews-card-v10.pg-news-pets,.petgrow-dashboard-home .bg-card.pg-news-pets{background:#fff9e9!important;border-color:#eee5c9!important}
+.petnews-card-v10[class*="pg-news-"],.petgrow-dashboard-home .bg-card[class*="pg-news-"]{box-shadow:0 10px 26px rgba(44,61,49,.055)!important}
+
+/* About: PetPoint appears naturally immediately before reference-growth data. */
+.pg-about-petpoint-source{display:none!important}
+.pg-about-petpoint-section{padding:18px 0 10px!important;background:linear-gradient(180deg,#fbfdfb,#fff)!important}
+.pg-about-petpoint-section .petpoint-about{margin:0 auto!important;border-radius:24px!important;background:linear-gradient(135deg,#fffaf0,#f3f8f3)!important;border:1px solid #e7dfcc!important;box-shadow:0 14px 34px rgba(55,67,47,.07)!important}
+
+/* Home music: clearly feels like a player, never like a link. */
+.home-music-row{transition:transform .14s ease,box-shadow .14s ease,border-color .14s ease!important;touch-action:manipulation!important}
+.home-music-row:hover{transform:translateY(-1px)!important;box-shadow:0 10px 24px rgba(62,61,78,.08)!important}
+.home-music-row.is-playing{background:#f5f1fb!important;border-color:#d9cbea!important;box-shadow:0 0 0 2px rgba(119,91,139,.08),0 10px 26px rgba(71,58,81,.07)!important}
+.home-music-loading{background:linear-gradient(90deg,#faf7fd,#f3f8f4,#faf7fd)!important;background-size:220% 100%!important;animation:pgHomeLoading 1.35s ease infinite!important}
+@keyframes pgHomeLoading{0%{background-position:100% 0}100%{background-position:-100% 0}}
+
+/* Nearby Pet phone interaction — strong mobile/app affordance. */
+.pg-nearby-phone-link{display:inline-flex!important;align-items:center!important;width:max-content!important;max-width:100%!important;padding:6px 10px!important;margin-left:-10px!important;border-radius:10px!important;color:#2f7350!important;background:#eef8f2!important;font-weight:850!important;cursor:pointer!important;text-decoration:none!important;touch-action:manipulation!important}
+.pg-nearby-phone-link:after{content:"  전화하기";font-size:10px!important;margin-left:6px!important;color:#5b8469!important;font-weight:800!important}
+.nearby-place-actions a.pg-call-button{background:#3f7c55!important;color:#fff!important;border:1px solid #3f7c55!important;min-height:38px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;padding:8px 13px!important}
+.pg-map-popup-phone{display:inline-flex!important;align-items:center!important;padding:6px 9px!important;border-radius:9px!important;background:#eef8f2!important;color:#2f7350!important;font-weight:850!important;text-decoration:none!important}
+
+/* Global polish: keep PetBTI's calm pastel visual language across pages. */
+.feature-module-shell>.bg-card,.petnews-inline-detail,.nearby-place,.my-menu-card,.petpoint-card,.petpoint-visible,.petpoint-about,.guide-start-card,.guide-detail-card{border-radius:22px!important}
+.petgrow-unified-hero{overflow:hidden!important}
+.petgrow-unified-hero h1,.petgrow-unified-hero h2{letter-spacing:-.035em!important}
+
+/* Home 6 + expanded 6. */
+.petgrow-dashboard-home .pg-home-extra-menu-grid{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:10px!important}
+.petgrow-dashboard-home .pg-home-extra-menu-card{min-height:92px!important;border-radius:18px!important}
+
+@media(max-width:899px){
+  .petgrow-content-stage{padding-left:max(10px,env(safe-area-inset-left))!important;padding-right:max(10px,env(safe-area-inset-right))!important}
+  .feature-module-shell>.bg-card,.petnews-inline-detail,.nearby-place,.my-menu-card,.petpoint-card,.petpoint-visible,.petpoint-about,.guide-start-card,.guide-detail-card{border-radius:19px!important}
+  .petgrow-dashboard-home .pg-home-extra-menu-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .pg-about-petpoint-section{padding:12px 0 8px!important}
+  .pg-about-petpoint-section .petpoint-about{padding:18px!important}
+  .nearby-place-actions a{min-height:42px!important;padding:9px 13px!important;font-size:12px!important}
+  .pg-nearby-phone-link{min-height:38px!important;padding:8px 10px!important}
+  .petnews-card-v10{overflow:hidden!important}
+}
+
+@media(max-width:520px){
+  .petgrow-dashboard-home .pg-home-extra-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .petgrow-dashboard-home .pg-home-extra-menu-card{min-height:84px!important;padding:12px 8px!important}
+  .home-music-row{grid-template-columns:30px minmax(0,1fr) 38px!important;padding:10px!important;gap:8px!important}
+  .feature-module-shell .pg-petbti-main-desc{font-size:12.5px!important;padding:0 8px!important;word-break:keep-all!important}
+  .nearby-place-actions{width:100%!important}
+  .nearby-place-action-buttons{width:100%!important}
+  .nearby-place-action-buttons a{flex:1 1 auto!important;min-height:44px!important}
+  .pg-nearby-phone-link:after{content:" 전화"}
+}
