@@ -12,11 +12,13 @@ import "./aab-ready-fixes-20260818.css";
 import "./tarot-saju-rebuild-20260818.css";
 import "./admin-news-music-20260818.css";
 import "./requested-final-fixes-20260818.css";
+import "./home-quick-petbti-20260819.css";
 import "./requested-polish-20260818.js";
 import "./aab-ready-fixes-20260818.js";
 import "./admin-news-music-runtime-20260818.js";
 import "./final-audit-20260818.js";
 import "./requested-final-fixes-20260818.js";
+import "./home-quick-petbti-20260819.js";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -26,7 +28,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js?v=46", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=47", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });
