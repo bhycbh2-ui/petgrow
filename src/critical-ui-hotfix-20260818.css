@@ -1,10 +1,16 @@
 /* PetGrow critical UI hotfix — 2026-08-18
-   1) My Pet hero title alignment
+   1) My Pet hero title alignment / stacking
    2) Pet Tarot loading ghost/broken-looking overlay
 */
 
-/* My Pet: force the same title rhythm as the common hero and prevent legacy offsets. */
+/* My Pet: keep the copy block on top and make the title the front-most text layer. */
+html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top > section.nearby-hero.bg-card.petgrow-unified-hero{
+  position:relative!important;
+  isolation:isolate!important;
+}
 html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top > section.nearby-hero.bg-card.petgrow-unified-hero > div{
+  position:relative!important;
+  z-index:5!important;
   width:100%!important;
   min-width:0!important;
   margin:0!important;
@@ -13,9 +19,10 @@ html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top
 }
 html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top > section.nearby-hero.bg-card.petgrow-unified-hero > div > h1{
   display:block!important;
-  position:static!important;
+  position:relative!important;
+  z-index:20!important;
   inset:auto!important;
-  transform:none!important;
+  transform:translateZ(0)!important;
   translate:none!important;
   margin:0 0 8px!important;
   padding:0!important;
@@ -24,9 +31,16 @@ html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top
   text-align:left!important;
   text-indent:0!important;
   text-shadow:none!important;
-  -webkit-text-stroke:0 transparent!important;
+  -webkit-text-stroke:0!important;
   filter:none!important;
+  opacity:1!important;
+  mix-blend-mode:normal!important;
   overflow:visible!important;
+}
+html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top > section.nearby-hero.bg-card.petgrow-unified-hero > div > h1::before,
+html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top > section.nearby-hero.bg-card.petgrow-unified-hero > div > h1::after{
+  content:none!important;
+  display:none!important;
 }
 
 /* Tarot: loading belongs to the Tarot card, not to the whole viewport.
