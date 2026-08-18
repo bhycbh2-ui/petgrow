@@ -8,6 +8,9 @@
 .feature-page-tarot .pet-tarot-loading{position:fixed!important;inset:0!important;z-index:9998!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:24px!important;background:rgba(247,250,247,.78)!important;backdrop-filter:blur(7px)!important;color:#25322a!important;font-size:14px!important;font-weight:800!important;gap:10px!important}
 .feature-page-tarot .pet-tarot-loading:before{content:"";width:30px;height:30px;border:3px solid #dfe9e1;border-top-color:#4f8a5b;border-radius:50%;animation:pgRuntimeSpin .8s linear infinite}
 
+/* Language support is intentionally limited to Korean and English. */
+.lang-toggle button:nth-child(n+3){display:none!important}
+
 /* My Pet title/tabs follow the same full content width as the body instead of a second centered max-width. */
 @media(min-width:900px){
   .petgrow-web-layout .petgrow-page-top.pets-page-top{width:100%!important;max-width:none!important;margin:0!important;padding:16px 20px 0!important;box-sizing:border-box!important}
