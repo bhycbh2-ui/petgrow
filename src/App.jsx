@@ -10638,7 +10638,7 @@ function SupportPage({account,onBack}){
 function PetNewsPage({lang="ko"}){
   const [items,setItems]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState("");
   const [category,setCategory]=useState("전체"),[query,setQuery]=useState(""),[page,setPage]=useState(1),[selected,setSelected]=useState(null),[localized,setLocalized]=useState({}),[detail,setDetail]=useState(null),[reaction,setReaction]=useState({likeCount:0,likedByMe:false,comments:[]}),[commentText,setCommentText]=useState(""),[busy,setBusy]=useState(false);
-  const detailRef=React.useRef(null),PAGE=8,cats=["전체","반려견","반려묘","건강","정책·제도","입양·보호","산업·서비스","반려동물"];
+  const detailRef=React.useRef(null),PAGE=20,cats=["전체","반려견","반려묘","건강","정책·제도","입양·보호","산업·서비스","반려동물"];
   const ui={ko:["새로고침","뉴스 검색","기사 자세히 보기 →","기사 핵심 요약","원문 전체보기","좋아요","댓글을 남겨보세요","등록","조건에 맞는 뉴스가 없어요."],en:["Refresh","Search news","Read summary →","Article summary","Open original","Like","Write a comment","Post","No matching news."],ja:["更新","ニュース検索","要約を見る →","記事の要約","原文を見る","いいね","コメントを書く","投稿","該当するニュースがありません。"],zh:["刷新","搜索新闻","查看摘要 →","文章摘要","查看原文","点赞","发表评论","发布","没有符合条件的新闻。"]}[lang]||[];
   const catLabel=c=>({en:{"전체":"All","반려견":"Dogs","반려묘":"Cats","건강":"Health","정책·제도":"Policy","입양·보호":"Adoption","산업·서비스":"Industry","반려동물":"Pets"},ja:{"전체":"すべて","반려견":"犬","반려묘":"猫","건강":"健康","정책·제도":"制度","입양·보호":"保護・譲渡","산업·서비스":"サービス","반려동물":"ペット"},zh:{"전체":"全部","반려견":"犬","반려묘":"猫","건강":"健康","정책·제도":"政策","입양·보호":"领养保护","산업·서비스":"产业服务","반려동물":"宠物"}}[lang]?.[c]||c);
   const clean=v=>String(v||'').replace(/&nbsp;|&#160;|&#xA0;/gi,' ').replace(/\s+/g,' ').trim();
