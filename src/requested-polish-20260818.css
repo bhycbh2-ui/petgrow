@@ -1,59 +1,7 @@
 /* PetGrow requested polish — 2026-08-18
-   1) Pet Tarot: merge pet selector + tarot content into one visual card like Pet Saju
-   2) Legal pages: remove detached addendum-card feel, prevent title/intro overlap, mobile safe
-   3) Admin labels: clearer operational wording
+   Legal pages + admin wording/layout only.
+   Tarot styling intentionally removed from this general layer so Tarot has one owner.
 */
-
-/* ===== Pet Tarot: one unified panel ===== */
-.petgrow-web-layout .feature-page-tarot{
-  width:100%!important;
-  max-width:1180px!important;
-  margin:0 auto!important;
-  padding:28px!important;
-  border:1px solid #dfe8e1!important;
-  border-radius:24px!important;
-  background:#fff!important;
-  box-shadow:0 12px 34px rgba(38,65,46,.055)!important;
-  box-sizing:border-box!important;
-}
-.petgrow-web-layout .feature-page-tarot>.feature-pet-picker{
-  width:100%!important;
-  margin:0 0 18px!important;
-  padding:0 0 18px!important;
-  border-bottom:1px solid #edf1ed!important;
-  justify-content:center!important;
-  align-items:flex-start!important;
-  background:transparent!important;
-  box-shadow:none!important;
-  border-radius:0!important;
-}
-.petgrow-web-layout .feature-page-tarot>.feature-pet-picker button{
-  width:auto!important;
-  min-width:78px!important;
-  max-width:120px!important;
-  padding:6px 10px!important;
-  border:0!important;
-  border-radius:16px!important;
-  background:transparent!important;
-  box-shadow:none!important;
-}
-.petgrow-web-layout .feature-page-tarot .feature-module-shell{
-  width:100%!important;
-  max-width:none!important;
-  margin:0!important;
-  padding:0!important;
-}
-.petgrow-web-layout .feature-page-tarot .pet-tarot-stage{
-  width:100%!important;
-  max-width:none!important;
-  margin:0!important;
-  padding:0!important;
-  border:0!important;
-  border-radius:0!important;
-  background:transparent!important;
-  box-shadow:none!important;
-}
-.petgrow-web-layout .feature-page-tarot .pet-daily-eyebrow{margin-top:0!important}
 
 /* ===== Terms / Privacy ===== */
 .legal-page-shell.pg-legal-polished{
@@ -103,12 +51,11 @@
 .pg-legal-integrated-note{background:#fbfcfb!important}
 .pg-hidden-legal-addendum{display:none!important}
 
-/* ===== Admin wording ===== */
+/* ===== Admin wording/layout ===== */
 .petpoint-admin.pg-admin-point-polished>div{grid-template-columns:repeat(5,minmax(0,1fr))!important}
 .petpoint-admin .pg-total-member-stat{background:#f7faf7!important}
 
 @media(max-width:900px){
-  .petgrow-web-layout .feature-page-tarot{padding:22px 18px!important;border-radius:20px!important}
   .petpoint-admin.pg-admin-point-polished>div{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 @media(max-width:600px){
@@ -119,7 +66,5 @@
   .legal-page-shell.pg-legal-polished .legal-section-number{width:30px!important;height:30px!important;min-width:30px!important}
   .legal-page-shell.pg-legal-polished .legal-section-title{margin:3px 0 7px!important;font-size:14px!important;line-height:1.45!important}
   .legal-page-shell.pg-legal-polished .legal-section-body{font-size:12.5px!important;line-height:1.75!important;word-break:normal!important}
-  .petgrow-web-layout .feature-page-tarot{padding:18px 14px!important;margin-left:0!important;margin-right:0!important}
-  .petgrow-web-layout .feature-page-tarot>.feature-pet-picker{margin-bottom:14px!important;padding-bottom:14px!important}
   .petpoint-admin.pg-admin-point-polished>div{grid-template-columns:1fr!important}
 }
