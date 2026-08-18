@@ -11,6 +11,8 @@
     ["tarot", "🃏", { ko: "Pet타로", en: "Pet Tarot" }],
     ["tips", "💡", { ko: "Pet정보", en: "Pet Info" }],
     ["guide", "📚", { ko: "정보가이드", en: "Guide" }],
+    ["about", "🌿", { ko: "소개", en: "About" }],
+    ["support", "💬", { ko: "고객지원", en: "Support" }],
   ];
 
   const ORDER_KEY = "petgrow_home_quick_visual_order_v1";
