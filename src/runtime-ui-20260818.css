@@ -1,27 +1,10 @@
-/* PetGrow runtime UI fixes - 2026-08-18 */
-.pg-wait-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(247,250,247,.78);backdrop-filter:blur(7px)}
-.pg-wait-card{width:min(360px,calc(100vw - 40px));padding:28px 24px;border:1px solid #dce8de;border-radius:24px;background:#fff;box-shadow:0 22px 60px rgba(36,61,43,.14);display:flex;flex-direction:column;align-items:center;text-align:center;gap:9px;color:#25322a}
-.pg-wait-card b{font-size:18px;letter-spacing:-.025em}.pg-wait-card small{font-size:12px;line-height:1.65;color:#7b877f;word-break:keep-all}
-.pg-wait-spinner{width:34px;height:34px;border:3px solid #dfe9e1;border-top-color:#4f8a5b;border-radius:50%;animation:pgRuntimeSpin .8s linear infinite;margin-bottom:4px}@keyframes pgRuntimeSpin{to{transform:rotate(360deg)}}
-
-/* Native Tarot loading: use an opaque clean background so underlying cards/images never ghost through. */
-.feature-page-tarot .pet-tarot-loading{position:fixed!important;inset:0!important;z-index:9998!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:24px!important;background:#f8fbf8!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;color:#25322a!important;font-size:14px!important;font-weight:800!important;gap:10px!important;overflow:hidden!important}
-.feature-page-tarot .pet-tarot-loading:before{content:"";width:30px;height:30px;border:3px solid #dfe9e1;border-top-color:#4f8a5b;border-radius:50%;animation:pgRuntimeSpin .8s linear infinite;flex:0 0 auto}
-.feature-page-tarot .pet-tarot-loading img{visibility:hidden!important}
+/* PetGrow shared UI — cleaned 2026-08-18
+   Owns only language visibility, about/service icon sizing, and shared Saju/BTI shell rhythm.
+   My Pet and Tarot have dedicated stylesheets.
+*/
 
 /* Language support is intentionally limited to Korean and English. */
 .lang-toggle button:nth-child(n+3){display:none!important}
-
-/* My Pet hero and dog/cat tabs use the same compact common content width. */
-@media(min-width:900px){
-  .petgrow-web-layout .petgrow-page-top.pets-page-top{width:100%!important;max-width:none!important;margin:0!important;padding:16px 20px 0!important;box-sizing:border-box!important}
-  .petgrow-web-layout .petgrow-page-top.pets-page-top>.petgrow-unified-hero{width:min(100%,1180px)!important;max-width:1180px!important;margin:0 auto 18px!important;box-sizing:border-box!important}
-  .petgrow-web-layout .petgrow-page-top.pets-page-top>.petgrow-unified-hero+div{width:min(100%,1180px)!important;max-width:1180px!important;margin:0 auto!important;box-sizing:border-box!important}
-  .petgrow-web-layout .petgrow-page-top.pets-page-top>.petgrow-unified-hero+div button svg{width:20px!important;height:20px!important;min-width:20px!important;min-height:20px!important}
-}
-
-/* Keep the My Pet title inside the shared hero rhythm even if older page styles leak in. */
-.petgrow-page-top.pets-page-top>.petgrow-unified-hero h1{display:block!important;position:static!important;transform:none!important;margin:0!important;padding:0!important;line-height:1.18!important;max-width:100%!important}
 
 /* About/service feature icons need stronger visual weight. */
 .about-feature-grid>*>svg,.about-features-grid>*>svg,.intro-feature-grid>*>svg,.intro-features-grid>*>svg,.feature-grid>*>svg,.service-grid>*>svg,
@@ -29,19 +12,14 @@
 .about-feature-grid [class*="icon"],.about-features-grid [class*="icon"],.intro-feature-grid [class*="icon"],.intro-features-grid [class*="icon"],.feature-grid [class*="icon"],.service-grid [class*="icon"]{font-size:24px!important}
 .about-feature-grid [class*="icon"] svg,.about-features-grid [class*="icon"] svg,.intro-feature-grid [class*="icon"] svg,.intro-features-grid [class*="icon"] svg,.feature-grid [class*="icon"] svg,.service-grid [class*="icon"] svg{width:28px!important;height:28px!important}
 
-/* Pet Saju / Pet Tarot / PetBTI use the same outer width, card shape and spacing. */
-.feature-page-saju,.feature-page-tarot,.feature-page-petbti{width:100%!important;max-width:1180px!important;box-sizing:border-box!important}
-.feature-page-saju .feature-module-shell,.feature-page-tarot .feature-module-shell,.feature-page-petbti .feature-module-shell{width:100%!important;max-width:900px!important;margin:22px auto 0!important;box-sizing:border-box!important}
+/* Pet Saju / PetBTI shared outer width and card rhythm. */
+.feature-page-saju,.feature-page-petbti{width:100%!important;max-width:1180px!important;box-sizing:border-box!important}
+.feature-page-saju .feature-module-shell,.feature-page-petbti .feature-module-shell{width:100%!important;max-width:900px!important;margin:22px auto 0!important;box-sizing:border-box!important}
 .feature-page-saju .feature-module-shell{padding:28px!important;border:1px solid #dfe8e1!important;border-radius:24px!important;background:#fff!important;box-shadow:0 12px 34px rgba(38,65,46,.055)!important}
-.feature-page-petbti .feature-module-shell>.bg-card,.feature-page-tarot .pet-tarot-stage{width:100%!important;padding:28px!important;border:1px solid #dfe8e1!important;border-radius:24px!important;background:#fff!important;box-shadow:0 12px 34px rgba(38,65,46,.055)!important;box-sizing:border-box!important}
-.feature-page-saju .bg-surface-card,.feature-page-petbti .bg-surface-card,.feature-page-tarot .pet-tarot-topic{border-radius:18px!important}
-
-/* A pet identity is already rendered in the Tarot flow. Do not show the second runtime-injected copy. */
-.feature-page-tarot .pg-tarot-pet-head{display:none!important}
-.feature-page-tarot .pet-daily-eyebrow{display:block;text-align:center}.feature-page-tarot .pet-tarot-stage>h2{text-align:center!important;margin:7px 0 14px!important}
+.feature-page-petbti .feature-module-shell>.bg-card{width:100%!important;padding:28px!important;border:1px solid #dfe8e1!important;border-radius:24px!important;background:#fff!important;box-shadow:0 12px 34px rgba(38,65,46,.055)!important;box-sizing:border-box!important}
+.feature-page-saju .bg-surface-card,.feature-page-petbti .bg-surface-card{border-radius:18px!important}
 
 @media(max-width:899px){
-  .feature-page-saju,.feature-page-tarot,.feature-page-petbti{padding-left:14px!important;padding-right:14px!important}
-  .feature-page-saju .feature-module-shell,.feature-page-petbti .feature-module-shell>.bg-card,.feature-page-tarot .pet-tarot-stage{padding:20px 16px!important;border-radius:20px!important}
-  .petgrow-page-top.pets-page-top>.petgrow-unified-hero+div button svg{width:18px!important;height:18px!important}
+  .feature-page-saju,.feature-page-petbti{padding-left:14px!important;padding-right:14px!important}
+  .feature-page-saju .feature-module-shell,.feature-page-petbti .feature-module-shell>.bg-card{padding:20px 16px!important;border-radius:20px!important}
 }
