@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 function safeText(value, lang = "ko", fallback = "") {
   if (value == null) return fallback;
@@ -21,6 +21,10 @@ function safeNumber(value) {
   return Number.isFinite(n) ? n : 0;
 }
 
+function normalizedDomText(value) {
+  return String(value || "").replace(/\s+/g, " ").trim().toLowerCase();
+}
+
 export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = [] }) {
   const recommendedTips = useMemo(() => {
     const list = Array.isArray(tips) ? tips.filter(Boolean) : [];
@@ -31,6 +35,8 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
   }, [tips]);
 
   const [music, setMusic] = useState([]);
+  const [playingId, setPlayingId] = useState("");
+  const audioRef = useRef(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -50,6 +56,7 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
           const normalized = raw.map((track, i) => ({
             id: safeText(track?.id, lang, String(i)),
             title: safeText(track?.title, lang, lang === "en" ? "Pet Music" : "Pet음악"),
+            audioUrl: safeText(track?.audioUrl ?? track?.audio_url, lang, ""),
             playCount: safeNumber(track?.playCount ?? track?.play_count),
             likeCount: safeNumber(track?.likeCount ?? track?.like_count),
           }));
@@ -76,8 +83,105 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
     };
   }, [lang]);
 
+  useEffect(() => {
+    return () => {
+      try { audioRef.current?.pause?.(); } catch {}
+      audioRef.current = null;
+    };
+  }, []);
+
   const go = (view) => {
     if (typeof onGoView === "function") onGoView(view);
+  };
+
+  const openSelectedTip = (tip, title, category) => {
+    try {
+      sessionStorage.setItem("petgrow_pending_tip_target", JSON.stringify({
+        id: safeText(tip?.id, lang, ""),
+        title,
+        category,
+        at: Date.now(),
+      }));
+    } catch {}
+
+    go("tips");
+
+    const wanted = normalizedDomText(title);
+    if (!wanted || typeof document === "undefined") return;
+
+    let tries = 0;
+    const focusTarget = () => {
+      tries += 1;
+      const candidates = Array.from(document.querySelectorAll("button, summary, [role='button'], details"));
+      const target = candidates.find((el) => {
+        if (el.closest("[data-home-extra]")) return false;
+        const text = normalizedDomText(el.textContent);
+        return text && (text.includes(wanted) || wanted.includes(text));
+      });
+
+      if (!target) {
+        if (tries < 16) window.setTimeout(focusTarget, 120);
+        return;
+      }
+
+      const details = target.closest("details");
+      if (details && !details.open) details.open = true;
+
+      try {
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+      } catch {
+        try { target.scrollIntoView(); } catch {}
+      }
+
+      const clickable = target.matches("button, summary, [role='button']")
+        ? target
+        : target.querySelector("button, summary, [role='button']");
+
+      if (clickable) {
+        const expanded = clickable.getAttribute("aria-expanded");
+        const isSummary = clickable.tagName === "SUMMARY";
+        const ownerDetails = clickable.closest("details");
+        const shouldOpen = expanded === "false" || (isSummary && ownerDetails && !ownerDetails.open);
+        if (shouldOpen) window.setTimeout(() => clickable.click(), 180);
+      }
+    };
+
+    window.setTimeout(focusTarget, 120);
+  };
+
+  const toggleTrack = (track) => {
+    const id = safeText(track?.id, lang, "");
+    const url = safeText(track?.audioUrl, lang, "");
+
+    if (!url) {
+      go("music");
+      return;
+    }
+
+    const current = audioRef.current;
+    if (current && playingId === id && !current.paused) {
+      current.pause();
+      setPlayingId("");
+      return;
+    }
+
+    try { current?.pause?.(); } catch {}
+
+    const audio = new Audio(url);
+    audioRef.current = audio;
+    audio.onended = () => setPlayingId("");
+    audio.onerror = () => setPlayingId("");
+    setPlayingId(id);
+
+    audio.play()
+      .then(() => {
+        fetch("/api/music?action=play", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id }),
+        }).catch(() => {});
+      })
+      .catch(() => setPlayingId(""));
   };
 
   return (
@@ -99,12 +203,12 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
                   key={key}
                   type="button"
                   className="bg-card"
-                  onClick={() => go("tips")}
+                  onClick={() => openSelectedTip(tip, title, category)}
                   style={{ padding: 16, textAlign: "left", border: "1px solid var(--border)", cursor: "pointer", minHeight: 104 }}
                 >
                   <small style={{ fontWeight: 800, color: "var(--primary)" }}>{category}</small>
                   <div style={{ fontWeight: 800, fontSize: 15, lineHeight: 1.5, marginTop: 6 }}>{title}</div>
-                  <small className="bg-sub" style={{ display: "block", marginTop: 7 }}>{lang === "en" ? "Open Pet Info →" : "자세히 보기 →"}</small>
+                  <small className="bg-sub" style={{ display: "block", marginTop: 7 }}>{lang === "en" ? "Open this info →" : "이 정보 바로보기 →"}</small>
                 </button>
               );
             })}
@@ -124,21 +228,36 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
 
         {music.length > 0 ? (
           <div style={{ display: "grid", gap: 9 }}>
-            {music.map((track, i) => (
-              <button
-                key={track.id || `music-${i}`}
-                type="button"
-                className="bg-card"
-                onClick={() => go("music")}
-                style={{ padding: "12px 13px", border: "1px solid var(--border)", display: "grid", gridTemplateColumns: "38px 1fr", alignItems: "center", gap: 10, textAlign: "left", cursor: "pointer" }}
-              >
-                <b style={{ fontSize: 17, textAlign: "center", color: "var(--primary)" }}>{i + 1}</b>
-                <span style={{ minWidth: 0 }}>
-                  <span style={{ display: "block", fontWeight: 800, fontSize: 14, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{track.title}</span>
-                  <small className="bg-sub">▶ {track.playCount.toLocaleString()} · ♥ {track.likeCount.toLocaleString()}</small>
-                </span>
-              </button>
-            ))}
+            {music.map((track, i) => {
+              const active = playingId === track.id;
+              return (
+                <div
+                  key={track.id || `music-${i}`}
+                  className="bg-card"
+                  style={{ padding: "11px 13px", border: "1px solid var(--border)", display: "grid", gridTemplateColumns: "38px minmax(0,1fr) auto", alignItems: "center", gap: 10 }}
+                >
+                  <b style={{ fontSize: 17, textAlign: "center", color: "var(--primary)" }}>{i + 1}</b>
+                  <button
+                    type="button"
+                    onClick={() => go("music")}
+                    style={{ border: 0, background: "transparent", padding: 0, textAlign: "left", fontFamily: "inherit", cursor: "pointer", minWidth: 0 }}
+                  >
+                    <span style={{ display: "block", fontWeight: 800, fontSize: 14, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{track.title}</span>
+                    <small className="bg-sub">▶ {track.playCount.toLocaleString()} · ♥ {track.likeCount.toLocaleString()}</small>
+                  </button>
+                  <button
+                    type="button"
+                    className="bg-chip"
+                    onClick={() => toggleTrack(track)}
+                    aria-label={active ? `${track.title} 일시정지` : `${track.title} 재생`}
+                    title={active ? (lang === "en" ? "Pause" : "일시정지") : (lang === "en" ? "Play" : "재생")}
+                    style={{ minWidth: 48, fontWeight: 900 }}
+                  >
+                    {active ? "❚❚" : "▶"}
+                  </button>
+                </div>
+              );
+            })}
           </div>
         ) : (
           <button type="button" className="bg-card" onClick={() => go("music")} style={{ width: "100%", padding: 14, border: "1px solid var(--border)", textAlign: "left", cursor: "pointer" }}>
