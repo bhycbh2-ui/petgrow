@@ -50,6 +50,40 @@ export default function petgrowUiFixes() {
           '타로 30P · 오늘 운세 20P · 기본 사주 50P · 궁합 40P',
           '타로 5P · 오늘 운세 5P · 기본 사주 10P · 궁합 10P'
         );
+        out = replaceOptionalAll(out,'<span><b>+30P</b> 하루 첫 접속</span>','<span><b>+50P</b> 하루 첫 접속</span>');
+
+        out = replaceRequired(out,'function AccountActivityHub({lang}){','function AccountActivityHub({lang,onOpenPost}){','activity navigation prop');
+        out = replaceRequired(
+          out,
+          'PetGrow 메뉴 이용·글·댓글·좋아요·신고·문의 등을 최근순으로 확인해요.',
+          'Pet톡 글·댓글·좋아요와 Pet사주·Pet타로 이용 기록을 최근순으로 확인해요.',
+          'activity helper copy'
+        );
+        out = replaceRequired(
+          out,
+          '<div className="my-activity-row" key={`${x.type}-${x.createdAt}-${i}`}>',
+          '<div className={"my-activity-row"+(x.target?.view==="community"&&x.target?.postId?" is-link":"")} role={x.target?.view==="community"&&x.target?.postId?"button":undefined} tabIndex={x.target?.view==="community"&&x.target?.postId?0:undefined} onClick={()=>{if(x.target?.view==="community"&&x.target?.postId)onOpenPost?.(x.target.postId)}} onKeyDown={(e)=>{if((e.key==="Enter"||e.key===" ")&&x.target?.view==="community"&&x.target?.postId){e.preventDefault();onOpenPost?.(x.target.postId)}}} key={`${x.type}-${x.createdAt}-${i}`}>',
+          'activity row link'
+        );
+        out = replaceRequired(out,'<AccountActivityHub lang={lang}/>','<AccountActivityHub lang={lang} onOpenPost={onOpenPost}/>','activity hub wiring');
+        out = replaceOptionalAll(
+          out,
+          '아직 기록된 활동이 없어요. 앞으로 이용한 메뉴와 활동이 여기에 쌓여요.',
+          '아직 기록된 활동이 없어요. 글·댓글·좋아요·Pet사주·Pet타로 이용 기록이 여기에 쌓여요.'
+        );
+
+        out = replaceRequired(
+          out,
+          'function PetPointAboutCard(){return <section className="bg-card petpoint-about"><span>🐾</span><div><small>COMMUNITY REWARD</small><h2>활동이 혜택이 되는 PetPoint</h2><p>Pet톡에서 이야기를 나누고 댓글을 남기며 포인트를 모아 Pet사주·운세 같은 재미 콘텐츠를 즐길 수 있어요. 유료 충전 없이 PetGrow 안의 건강한 참여를 보상하는 방식이에요.</p></div></section>}',
+          'function PetPointAboutCard(){const [open,setOpen]=useState(false),[d,setD]=useState(null),[loading,setLoading]=useState(false);const show=()=>{setOpen(true);if(d||loading)return;setLoading(true);apiJson("/api/points?action=summary").then(setD).catch(()=>setD(null)).finally(()=>setLoading(false))};return <><button type="button" className="bg-card petpoint-about petpoint-about-button" onClick={show}><span>🐾</span><div><small>COMMUNITY REWARD</small><h2>활동이 혜택이 되는 PetPoint</h2><p>Pet톡 활동과 하루 첫 접속으로 포인트를 모아 Pet사주·운세·타로를 부담 없이 즐길 수 있어요. 눌러서 적립·차감 기준을 확인해보세요.</p></div><em>›</em></button>{open&&<div className="petpoint-about-backdrop" onClick={()=>setOpen(false)}><section className="bg-card petpoint-about-modal" onClick={e=>e.stopPropagation()}><button type="button" className="petpoint-about-close" onClick={()=>setOpen(false)}>×</button><small>PETPOINT GUIDE</small><h2>PetPoint 이용 안내</h2><p className="bg-sub">PetGrow 안에서 활동을 보상하고 재미 콘텐츠를 더 편하게 이용할 수 있도록 만든 무료 포인트예요. 현금 구매·환전·출금용 포인트가 아니에요.</p><div className="petpoint-about-balance"><span>현재 보유</span><b>{loading?"…":`${Number(d?.balance||0).toLocaleString()}P`}</b></div><h3>어떻게 모아요?</h3><div className="petpoint-about-list">{(d?.earnGuide||[{label:"Pet톡 글 작성",points:50,limit:"하루 5회"},{label:"Pet톡 댓글 작성",points:20,limit:"하루 5회"},{label:"좋아요 받기",points:5,limit:"하루 50회"},{label:"하루 첫 접속",points:50,limit:"하루 1회"}]).map((x,i)=><p key={i}><b>+{x.points}P</b><span>{x.label}</span><small>{x.limit}</small></p>)}</div><h3>어디에 사용해요?</h3><div className="petpoint-about-costs"><span>🌤️ 오늘 운세 <b>{d?.costs?.saju_daily||5}P</b></span><span>🔮 기본 사주 <b>{d?.costs?.saju_basic||10}P</b></span><span>🫶 보호자 궁합 <b>{d?.costs?.saju_compat||10}P</b></span><span>🃏 Pet타로 <b>{d?.costs?.tarot||5}P</b></span></div><p className="petpoint-about-note">첫 이용 시 1,000P가 지급되고, 매일 첫 로그인만으로 50P를 받을 수 있어 주요 재미 콘텐츠를 충분히 이용할 수 있어요.</p></section></div>}</>}',
+          'PetPoint about modal'
+        );
+
+        out = replaceOptionalAll(
+          out,
+          'function PetNewsPrivacyAddendum(){return <section className="bg-card" style={{maxWidth:900,margin:"14px auto 36px",padding:22}}>',
+          'function PetNewsPrivacyAddendum(){return <section className="bg-card petnews-privacy-addendum" style={{maxWidth:900,margin:"14px auto 36px",padding:22}}>'
+        );
 
         return out === code ? null : { code: out, map: null };
       }
