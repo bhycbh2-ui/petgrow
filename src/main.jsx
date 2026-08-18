@@ -15,6 +15,7 @@ import "./requested-final-fixes-20260818.css";
 import "./home-quick-petbti-20260819.css";
 import "./petgrow-global-palette-20260819.css";
 import "./petgrow-final-batch-20260819.css";
+import "./pet-tarot-intro-fix-20260819.css";
 import "./requested-polish-20260818.js";
 import "./aab-ready-fixes-20260818.js";
 import "./admin-news-music-runtime-20260818.js";
