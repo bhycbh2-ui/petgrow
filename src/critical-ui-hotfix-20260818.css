@@ -1,61 +1,67 @@
 /* PetGrow critical UI hotfix — 2026-08-18
-   1) My Pet hero/header uses the same geometry as every common menu hero
-   2) Pet Tarot loading ghost/broken-looking overlay
+   My Pet now follows the same common-menu geometry instead of its own expanded layout.
 */
 
-/* My Pet: do not give this page its own special width.
-   Mirror .petgrow-content-stage > .petgrow-unified-hero exactly. */
-@media(min-width:900px){
-  html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top{
-    width:100%!important;
-    max-width:1180px!important;
-    margin:0 auto!important;
-    padding:28px 24px 0!important;
-    box-sizing:border-box!important;
-  }
-  html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top > section.nearby-hero.bg-card.petgrow-unified-hero,
-  html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top > section.nearby-hero.bg-card.petgrow-unified-hero + div{
-    width:calc(100% - 40px)!important;
-    max-width:900px!important;
-    margin-left:auto!important;
-    margin-right:auto!important;
-    box-sizing:border-box!important;
-  }
-  html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top > section.nearby-hero.bg-card.petgrow-unified-hero{
-    margin-top:0!important;
-    margin-bottom:18px!important;
-    padding:24px 26px!important;
-    min-height:132px!important;
-    display:flex!important;
-    align-items:center!important;
-  }
-}
+/* Prevent the My Pet page from creating horizontal page scroll. */
+html,body,#root{max-width:100%!important;overflow-x:clip!important}
+.bboggl-root,.petgrow-web-layout{min-width:0!important;max-width:100%!important;overflow-x:clip!important}
 
-/* My Pet title: keep the same text flow as the common hero. */
+/* My Pet desktop/tablet: same 900px common hero width used by the other menu pages. */
+html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top{
+  width:calc(100% - 40px)!important;
+  max-width:900px!important;
+  min-width:0!important;
+  margin:16px auto 18px!important;
+  padding:0!important;
+  box-sizing:border-box!important;
+  position:relative!important;
+  left:auto!important;
+  right:auto!important;
+  transform:none!important;
+}
+html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top > section.nearby-hero.bg-card.petgrow-unified-hero,
+html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top > section.nearby-hero.bg-card.petgrow-unified-hero + div{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin-left:0!important;
+  margin-right:0!important;
+  box-sizing:border-box!important;
+  transform:none!important;
+}
 html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top > section.nearby-hero.bg-card.petgrow-unified-hero{
+  min-height:132px!important;
+  margin-top:0!important;
+  margin-bottom:18px!important;
+  padding:24px 26px!important;
+  display:flex!important;
+  align-items:center!important;
   position:relative!important;
   isolation:isolate!important;
 }
+
+/* Keep the My Pet copy identical to the common hero text flow. */
 html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top > section.nearby-hero.bg-card.petgrow-unified-hero > div{
   position:relative!important;
-  z-index:5!important;
+  z-index:2!important;
   width:100%!important;
   min-width:0!important;
   margin:0!important;
   padding:0!important;
-  overflow:visible!important;
 }
 html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top > section.nearby-hero.bg-card.petgrow-unified-hero > div > h1{
   display:block!important;
-  position:relative!important;
-  z-index:20!important;
+  position:static!important;
   inset:auto!important;
   transform:none!important;
   translate:none!important;
   margin:0 0 8px!important;
   padding:0!important;
   max-width:100%!important;
+  font-size:28px!important;
   line-height:1.18!important;
+  font-weight:900!important;
+  letter-spacing:-.035em!important;
   text-align:left!important;
   text-indent:0!important;
   text-shadow:none!important;
@@ -71,8 +77,7 @@ html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top
   display:none!important;
 }
 
-/* Tarot: loading belongs to the Tarot card, not to the whole viewport.
-   Opaque background removes the blurred/ghosted content that looked like broken images. */
+/* Tarot loading: opaque in-card loading layer so no ghost/broken-looking content is visible. */
 html body #root .bboggl-root .feature-page-tarot .pet-tarot-stage{
   position:relative!important;
   isolation:isolate!important;
@@ -119,18 +124,22 @@ html body #root .bboggl-root .feature-page-tarot .pet-tarot-stage > .pet-tarot-l
   box-shadow:none!important;
   animation:pgRuntimeSpin .8s linear infinite!important;
 }
-html body #root .bboggl-root .feature-page-tarot .pet-tarot-stage > .pet-tarot-loading img{
-  display:none!important;
-  visibility:hidden!important;
-}
+html body #root .bboggl-root .feature-page-tarot .pet-tarot-stage > .pet-tarot-loading img{display:none!important;visibility:hidden!important}
 
 @media(max-width:899px){
-  html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top > section.nearby-hero.bg-card.petgrow-unified-hero,
-  html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top > section.nearby-hero.bg-card.petgrow-unified-hero + div{
+  html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top{
     width:calc(100% - 28px)!important;
     max-width:900px!important;
-    margin-left:auto!important;
-    margin-right:auto!important;
+    margin:14px auto 14px!important;
+  }
+  html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top > section.nearby-hero.bg-card.petgrow-unified-hero{
+    min-height:118px!important;
+    padding:20px 18px!important;
+    border-radius:20px!important;
+    margin-bottom:14px!important;
+  }
+  html body #root .bboggl-root .petgrow-web-layout .petgrow-page-top.pets-page-top > section.nearby-hero.bg-card.petgrow-unified-hero > div > h1{
+    font-size:23px!important;
   }
   html body #root .bboggl-root .feature-page-tarot .pet-tarot-stage > .pet-tarot-loading{
     border-radius:20px!important;
