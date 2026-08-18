@@ -8,10 +8,10 @@
 .feature-page-tarot .pet-tarot-loading{position:fixed!important;inset:0!important;z-index:9998!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:24px!important;background:rgba(247,250,247,.78)!important;backdrop-filter:blur(7px)!important;color:#25322a!important;font-size:14px!important;font-weight:800!important;gap:10px!important}
 .feature-page-tarot .pet-tarot-loading:before{content:"";width:30px;height:30px;border:3px solid #dfe9e1;border-top-color:#4f8a5b;border-radius:50%;animation:pgRuntimeSpin .8s linear infinite}
 
-/* Our Pets common title card = same width/position as Nearby Pet and other heroes. */
+/* Our Pets common title card = same 1180px content grid as Nearby Pet and the other common heroes. */
 @media(min-width:900px){
-  .petgrow-web-layout .petgrow-page-top.pets-page-top{width:calc(100% - 40px)!important;max-width:1180px!important;margin:0 auto!important;padding:16px 20px 0!important;box-sizing:border-box!important}
-  .petgrow-web-layout .petgrow-page-top.pets-page-top>.petgrow-unified-hero{width:100%!important;max-width:none!important;margin:0 0 18px!important;box-sizing:border-box!important}
+  .petgrow-web-layout .petgrow-page-top.pets-page-top{width:100%!important;max-width:1220px!important;margin:0 auto!important;padding:16px 20px 0!important;box-sizing:border-box!important}
+  .petgrow-web-layout .petgrow-page-top.pets-page-top>.petgrow-unified-hero{width:100%!important;max-width:1180px!important;margin:0 auto 18px!important;box-sizing:border-box!important}
   .petgrow-web-layout .petgrow-content-stage>.petgrow-unified-hero{width:calc(100% - 40px)!important;max-width:1180px!important;margin:0 auto 18px!important;box-sizing:border-box!important}
 }
 
