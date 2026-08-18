@@ -24,7 +24,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    serviceWorker.register("/sw.js?v=46", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=46", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });
