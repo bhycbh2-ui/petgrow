@@ -16,15 +16,9 @@ import "./home-quick-petbti-20260819.css";
 import "./petgrow-global-palette-20260819.css";
 import "./petgrow-final-batch-20260819.css";
 import "./pet-tarot-intro-fix-20260819.css";
-import "./requested-polish-20260818.js";
-import "./aab-ready-fixes-20260818.js";
-import "./admin-news-music-runtime-20260818.js";
-import "./final-audit-20260818.js";
-import "./requested-final-fixes-20260818.js";
+
+/* Keep the fetch router synchronous so Home/PetNews requests are optimized from the first render. */
 import "./home-news-fast-20260819.js";
-import "./home-quick-petbti-20260819.js";
-import "./about-petpoint-order-20260819.js";
-import "./petgrow-final-batch-20260819.js";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -32,9 +26,33 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   </React.StrictMode>
 );
 
+/*
+ * Historical UI/runtime patches are still preserved, but they no longer block the first paint.
+ * Each module already boots against the current DOM (or observes later DOM changes), so loading
+ * them during idle time keeps behavior while reducing initial parse/execute work.
+ */
+const loadDeferredRuntime = () => {
+  Promise.allSettled([
+    import("./requested-polish-20260818.js"),
+    import("./aab-ready-fixes-20260818.js"),
+    import("./admin-news-music-runtime-20260818.js"),
+    import("./final-audit-20260818.js"),
+    import("./requested-final-fixes-20260818.js"),
+    import("./home-quick-petbti-20260819.js"),
+    import("./about-petpoint-order-20260819.js"),
+    import("./petgrow-final-batch-20260819.js"),
+  ]).catch(() => {});
+};
+
+if ("requestIdleCallback" in window) {
+  window.requestIdleCallback(loadDeferredRuntime, { timeout: 1800 });
+} else {
+  setTimeout(loadDeferredRuntime, 450);
+}
+
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js?v=48", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=49", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });
