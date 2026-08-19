@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import { sql } from "@vercel/postgres";
 import { getSessionUserId } from "../server_lib/session.js";
-import { getAdminRole, verifyToken, logAdmin } from "../server_lib/admin.js";
+import { getAdminRole, roleCan, verifyToken, logAdmin } from "../server_lib/admin.js";
 
 const CATEGORIES = new Set(["dog", "cat", "health", "life", "food", "training", "safety", "grooming"]);
 
@@ -39,6 +39,13 @@ function int(value, fallback = 0) {
   return Number.isFinite(n) ? Math.trunc(n) : fallback;
 }
 
+function parsePublishAt(value) {
+  if (!value) return null;
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) return undefined;
+  return date.toISOString();
+}
+
 async function requireAdmin(req, res) {
   const uid = getSessionUserId(req);
   if (!uid) {
@@ -46,7 +53,7 @@ async function requireAdmin(req, res) {
     return null;
   }
   const role = await getAdminRole(uid);
-  if (!role || !["superadmin", "operator"].includes(role)) {
+  if (!role || !roleCan(role, "petinfo")) {
     res.status(403).json({ error: "Pet정보 관리 권한이 없어요." });
     return null;
   }
@@ -79,10 +86,11 @@ export default async function handler(req, res) {
     const action = String(req.query.action || "list");
 
     if (action === "list" && req.method === "GET") {
+      res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=300");
       const category = clean(req.query.category, 30);
       const search = clean(req.query.q, 100);
       const page = Math.max(1, int(req.query.page, 1));
-      const pageSize = Math.min(100, Math.max(1, int(req.query.pageSize, 100)));
+      const pageSize = Math.min(500, Math.max(1, int(req.query.pageSize, 100)));
       const offset = (page - 1) * pageSize;
       const now = new Date().toISOString();
       const categoryFilter = CATEGORIES.has(category) ? category : null;
@@ -106,6 +114,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ items: rows.map(normalizeRow), page, pageSize, total: count.rows[0]?.n || 0 });
     }
 
+    res.setHeader("Cache-Control", "no-store");
     const admin = await requireAdmin(req, res);
     if (!admin) return;
 
@@ -129,7 +138,8 @@ export default async function handler(req, res) {
       const featured = !!body.featured;
       const active = body.active !== false;
       const sortOrder = int(body.sortOrder, 0);
-      const publishAt = body.publishAt ? new Date(body.publishAt).toISOString() : null;
+      const publishAt = parsePublishAt(body.publishAt);
+      if (publishAt === undefined) return res.status(400).json({ error: "예약 게시 날짜가 올바르지 않아요." });
       await sql`
         insert into pg_pet_info(
           id,category,title_ko,title_en,summary_ko,summary_en,body_ko,body_en,
@@ -153,7 +163,8 @@ export default async function handler(req, res) {
       const id = clean(req.body?.id, 100);
       const active = !!req.body?.active;
       if (!id) return res.status(400).json({ error: "id가 필요해요." });
-      await sql`update pg_pet_info set active=${active},updated_by=${admin.uid},updated_at=now() where id=${id}`;
+      const result = await sql`update pg_pet_info set active=${active},updated_by=${admin.uid},updated_at=now() where id=${id} returning id`;
+      if (!result.rows[0]) return res.status(404).json({ error: "Pet정보를 찾을 수 없어요." });
       await logAdmin(admin.uid, "PETINFO_TOGGLE", null, null, { id, active });
       return res.status(200).json({ ok: true });
     }
@@ -161,7 +172,8 @@ export default async function handler(req, res) {
     if (action === "admin-delete" && req.method === "POST") {
       const id = clean(req.body?.id, 100);
       if (!id) return res.status(400).json({ error: "id가 필요해요." });
-      await sql`delete from pg_pet_info where id=${id}`;
+      const result = await sql`delete from pg_pet_info where id=${id} returning id`;
+      if (!result.rows[0]) return res.status(404).json({ error: "Pet정보를 찾을 수 없어요." });
       await logAdmin(admin.uid, "PETINFO_DELETE", null, null, { id });
       return res.status(200).json({ ok: true });
     }
@@ -170,22 +182,24 @@ export default async function handler(req, res) {
       const items = Array.isArray(req.body?.items) ? req.body.items.slice(0, 1000) : [];
       if (!items.length) return res.status(400).json({ error: "가져올 Pet정보 데이터가 없어요." });
       let imported = 0;
+      let skipped = 0;
       for (const item of items) {
         const category = clean(item.category, 30);
         const titleKo = clean(item.title?.ko ?? item.titleKo, 180);
         const summaryKo = clean(item.summary?.ko ?? item.summaryKo, 600);
         const bodyKo = clean(item.body?.ko ?? item.bodyKo, 7000);
-        if (!CATEGORIES.has(category) || !titleKo || !summaryKo || !bodyKo) continue;
+        if (!CATEGORIES.has(category) || !titleKo || !summaryKo || !bodyKo) { skipped += 1; continue; }
         const id = clean(item.id, 100) || `tip-${crypto.randomUUID()}`;
-        await sql`
+        const result = await sql`
           insert into pg_pet_info(id,category,title_ko,title_en,summary_ko,summary_en,body_ko,body_en,featured,active,sort_order,created_by,updated_by)
           values(${id},${category},${titleKo},${clean(item.title?.en ?? item.titleEn,180)},${summaryKo},${clean(item.summary?.en ?? item.summaryEn,600)},${bodyKo},${clean(item.body?.en ?? item.bodyEn,7000)},${!!item.featured},${item.active!==false},${int(item.sortOrder,0)},${admin.uid},${admin.uid})
           on conflict(id) do nothing
+          returning id
         `;
-        imported += 1;
+        if (result.rows[0]) imported += 1; else skipped += 1;
       }
-      await logAdmin(admin.uid, "PETINFO_IMPORT", null, null, { imported });
-      return res.status(200).json({ ok: true, imported });
+      await logAdmin(admin.uid, "PETINFO_IMPORT", null, null, { imported, skipped });
+      return res.status(200).json({ ok: true, imported, skipped });
     }
 
     return res.status(405).json({ error: "지원하지 않는 요청이에요." });
