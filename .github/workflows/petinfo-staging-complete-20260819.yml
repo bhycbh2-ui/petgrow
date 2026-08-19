@@ -1,0 +1,45 @@
+name: Verify PetInfo 2026-08-19 Completion
+
+on:
+  push:
+    branches:
+      - automation/petinfo-20260819-v2
+    paths:
+      - 'scripts/petinfo-complete-20260819.mjs'
+      - '.github/workflows/petinfo-staging-complete-20260819.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify-and-stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: automation/petinfo-20260819-v2
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Apply missing per-category items
+        run: node scripts/petinfo-complete-20260819.mjs
+      - name: Patch check
+        run: git diff --check
+      - name: Production build
+        run: npm run build
+      - name: Commit verified PetInfo content to staging
+        run: |
+          if git diff --quiet -- src/App.jsx; then
+            echo 'No App.jsx changes to commit.'
+            exit 0
+          fi
+          git config user.name 'PetGrow Automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git add src/App.jsx
+          git commit -m 'content: complete 16 PetInfo items for 2026-08-19'
+          git push origin HEAD:automation/petinfo-20260819-v2
