@@ -21,13 +21,24 @@ function safeNumber(value) {
   return Number.isFinite(n) ? n : 0;
 }
 
+function getKstDayIndex() {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const value = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return Math.floor(Date.UTC(Number(value.year), Number(value.month) - 1, Number(value.day)) / 86400000);
+}
+
 const HOME_MUSIC_CACHE = "petgrow_home_music_cache_v1";
 
 export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = [] }) {
   const recommendedTips = useMemo(() => {
     const list = Array.isArray(tips) ? tips.filter(Boolean) : [];
     if (!list.length) return [];
-    const day = Math.floor(Date.now() / 86400000);
+    const day = getKstDayIndex();
     const start = (day * 3) % list.length;
     return [0, 1, 2].map((i) => list[(start + i) % list.length]).filter(Boolean);
   }, [tips]);
@@ -47,12 +58,13 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
       audioUrl: safeText(track?.audioUrl ?? track?.audio_url, lang, ""),
       playCount: safeNumber(track?.playCount ?? track?.play_count),
       likeCount: safeNumber(track?.likeCount ?? track?.like_count),
+      commentCount: safeNumber(track?.commentCount ?? track?.comment_count),
     }));
 
     try {
       const cached = JSON.parse(sessionStorage.getItem(HOME_MUSIC_CACHE) || "null");
       if (cached?.at && Date.now() - cached.at < 10 * 60 * 1000 && Array.isArray(cached.items)) {
-        setMusic(normalize(cached.items.slice(0, 3)));
+        setMusic(normalize(cached.items.slice(0, 5)));
       }
     } catch {}
 
@@ -61,7 +73,7 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         if (cancelled) return;
-        const raw = Array.isArray(data?.top5) ? data.top5.slice(0, 3) : [];
+        const raw = Array.isArray(data?.top5) ? data.top5.slice(0, 5) : [];
         setMusic(normalize(raw));
         try { sessionStorage.setItem(HOME_MUSIC_CACHE, JSON.stringify({ at: Date.now(), items: raw })); } catch {}
       })
@@ -167,7 +179,7 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
 
       <section className="dash-section" data-home-extra="music">
         <div className="dash-section-head">
-          <h2>{lang === "en" ? "Popular Pet Music" : "인기 Pet음악"}</h2>
+          <h2>{lang === "en" ? "Popular Pet Music TOP 5" : "인기 Pet음악 TOP 5"}</h2>
           <button type="button" className="bg-chip" onClick={() => go("music")}>{lang === "en" ? "View all" : "전체보기"}</button>
         </div>
         {music.length > 0 ? (
@@ -178,7 +190,7 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
               return (
                 <button type="button" key={track.id || `music-${i}`} className={`bg-card home-music-row${active ? " is-playing" : ""}`} onClick={() => toggleTrack(track)} disabled={!playable} aria-label={active ? `${track.title} 일시정지` : `${track.title} 재생`} title={active ? (lang === "en" ? "Pause" : "일시정지") : (lang === "en" ? "Play" : "재생")} style={{ width: "100%", padding: "11px 13px", border: "1px solid var(--border)", display: "grid", gridTemplateColumns: "38px minmax(0,1fr) 42px", alignItems: "center", gap: 10, textAlign: "left", fontFamily: "inherit", cursor: playable ? "pointer" : "default", opacity: playable ? 1 : .62 }}>
                   <b style={{ fontSize: 17, textAlign: "center", color: "var(--primary)" }}>{i + 1}</b>
-                  <span style={{ minWidth: 0 }}><span style={{ display: "block", fontWeight: 800, fontSize: 14, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{track.title}</span><small className="bg-sub">▶ {track.playCount.toLocaleString()} · ♥ {track.likeCount.toLocaleString()}</small></span>
+                  <span style={{ minWidth: 0 }}><span style={{ display: "block", fontWeight: 800, fontSize: 14, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{track.title}</span><small className="bg-sub">▶ {track.playCount.toLocaleString()} · ♥ {track.likeCount.toLocaleString()} · 💬 {track.commentCount.toLocaleString()}</small></span>
                   <span aria-hidden="true" style={{ width: 36, height: 36, borderRadius: 12, display: "grid", placeItems: "center", background: active ? "var(--primary)" : "var(--surface)", color: active ? "#fff" : "var(--primary)", fontWeight: 900 }}>{active ? "❚❚" : "▶"}</span>
                 </button>
               );
