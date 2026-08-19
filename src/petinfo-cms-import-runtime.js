@@ -5,6 +5,18 @@ function adminToken() {
   catch { return ""; }
 }
 
+async function fetchAdminItems() {
+  const response = await fetch("/api/petinfo?action=admin-list", {
+    headers: {
+      Accept: "application/json",
+      "x-petgrow-admin-token": adminToken(),
+    },
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(body.error || "Pet정보 DB 검증에 실패했어요.");
+  return Array.isArray(body.items) ? body.items : [];
+}
+
 async function importExistingTips(button) {
   const source = Array.isArray(window.__PETGROW_TIPS_DATA__) ? window.__PETGROW_TIPS_DATA__ : [];
   if (!source.length) {
@@ -31,9 +43,21 @@ async function importExistingTips(button) {
     });
     const body = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(body.error || "기존 Pet정보 가져오기에 실패했어요.");
+
+    button.textContent = "검증 중...";
+    const dbItems = await fetchAdminItems();
+    const dbIds = new Set(dbItems.map((item) => String(item?.id || "")).filter(Boolean));
+    const sourceIds = payload.map((item) => String(item?.id || "")).filter(Boolean);
+    const missingIds = sourceIds.filter((id) => !dbIds.has(id));
     const imported = Number(body.imported) || 0;
     const skipped = Number(body.skipped) || 0;
-    window.alert(`DB 가져오기 완료\n신규 등록: ${imported}개\n기존/건너뜀: ${skipped}개`);
+
+    if (missingIds.length) {
+      window.alert(`DB 가져오기는 완료됐지만 검증에서 누락 ${missingIds.length}개가 확인됐어요.\n신규 등록: ${imported}개\n기존/건너뜀: ${skipped}개\n누락 ID 예시: ${missingIds.slice(0, 5).join(", ")}`);
+    } else {
+      window.alert(`DB 가져오기·검증 완료\n원본: ${payload.length}개\nDB 확인: ${sourceIds.length}개 모두 일치\n신규 등록: ${imported}개\n기존/건너뜀: ${skipped}개`);
+    }
+
     const refresh = document.querySelector(".petinfo-cms-refresh");
     if (refresh) refresh.click();
   } catch (error) {
