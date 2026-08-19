@@ -22,8 +22,8 @@ export async function getAdminRole(userId){
 }
 export function roleCan(role,cap){
   const map={
-    superadmin:new Set(["dashboard","reports","logs","ads","music","notices","inquiries","admins","service"]),
-    operator:new Set(["dashboard","reports","logs","ads","music","notices","inquiries","service"]),
+    superadmin:new Set(["dashboard","reports","logs","ads","music","petinfo","notices","inquiries","admins","service"]),
+    operator:new Set(["dashboard","reports","logs","ads","music","petinfo","notices","inquiries","service"]),
     report:new Set(["reports"]),
     ads:new Set(["ads","music"])
   };
