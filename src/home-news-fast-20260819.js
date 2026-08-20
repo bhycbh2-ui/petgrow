@@ -1,4 +1,4 @@
-/* Fast PetGrow routing — lightweight Home, archive-first PetNews, music-only home feed — 2026-08-20 */
+/* Fast PetGrow routing — lightweight Home, archive-first PetNews, fast PetMusic list — 2026-08-20 */
 (() => {
   const originalFetch = window.fetch.bind(window);
   const NEWS_REFRESH_KEY = "petgrow_news_bg_refresh_at_v2";
@@ -21,6 +21,16 @@
   const isPlainHomeFeedUrl = (value) => {
     const url = getUrl(value);
     return !!url && url.origin === window.location.origin && url.pathname === "/api/home-feed" && !url.search;
+  };
+
+  const getFastMusicListUrl = (value) => {
+    const url = getUrl(value);
+    if (!url || url.origin !== window.location.origin || url.pathname !== "/api/music") return null;
+    const action = url.searchParams.get("action") || "list";
+    if (action !== "list") return null;
+    url.pathname = "/api/music-list";
+    url.searchParams.delete("action");
+    return `${url.pathname}${url.search}`;
   };
 
   const shouldRefreshNews = () => {
@@ -59,6 +69,10 @@
   window.fetch = function(input, init = {}) {
     const method = String(init?.method || (typeof input !== "string" ? input?.method : "GET") || "GET").toUpperCase();
     if (method !== "GET") return originalFetch(input, init);
+
+    /* PetMusic public list reads skip the full schema bootstrap; likes/comments/admin writes stay on /api/music. */
+    const fastMusicUrl = getFastMusicListUrl(input);
+    if (fastMusicUrl) return originalFetch(fastMusicUrl, init);
 
     /* HomeInfoMusicSections only needs TOP 5 music. Skip the extra news DB query. */
     if (isPlainHomeFeedUrl(input)) {
