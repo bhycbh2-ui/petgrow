@@ -1,10 +1,7 @@
-/* Fast PetGrow routing — lightweight Home, archive-first PetNews, fast PetMusic list — 2026-08-20 */
+/* Fast PetGrow routing — lightweight Home, live PetNews collection, fast PetMusic list — 2026-08-20 */
 (() => {
   const originalFetch = window.fetch.bind(window);
-  const NEWS_REFRESH_KEY = "petgrow_news_bg_refresh_at_v2";
-  const NEWS_REFRESH_INTERVAL = 30 * 60 * 1000;
   let forceNewsRefresh = false;
-  let backgroundRefreshStarted = false;
 
   const getUrl = (value) => {
     try {
@@ -33,32 +30,7 @@
     return `${url.pathname}${url.search}`;
   };
 
-  const shouldRefreshNews = () => {
-    if (backgroundRefreshStarted) return false;
-    try {
-      const last = Number(sessionStorage.getItem(NEWS_REFRESH_KEY) || 0);
-      return !last || Date.now() - last >= NEWS_REFRESH_INTERVAL;
-    } catch { return true; }
-  };
-
-  const startBackgroundNewsRefresh = () => {
-    if (!shouldRefreshNews()) return;
-    backgroundRefreshStarted = true;
-    try { sessionStorage.setItem(NEWS_REFRESH_KEY, String(Date.now())); } catch {}
-
-    const run = () => {
-      originalFetch("/api/news", { method: "GET", cache: "no-store", headers: { "X-PetGrow-Background": "1" } })
-        .catch(() => {
-          backgroundRefreshStarted = false;
-          try { sessionStorage.removeItem(NEWS_REFRESH_KEY); } catch {}
-        });
-    };
-
-    if ("requestIdleCallback" in window) window.requestIdleCallback(run, { timeout: 3500 });
-    else setTimeout(run, 1000);
-  };
-
-  /* Explicit PetNews refresh still performs a fresh collection immediately. */
+  /* Explicit PetNews refresh performs a fresh collection immediately. */
   document.addEventListener("click", (event) => {
     const button = event.target?.closest?.("button");
     if (!button || !button.closest(".petnews-v10")) return;
@@ -86,15 +58,14 @@
       return originalFetch("/api/home-news", init);
     }
 
-    /* Refresh button preserves the full live collection behavior. */
+    /* Refresh button preserves the full live collection behavior and bypasses caches. */
     if (forceNewsRefresh) {
       forceNewsRefresh = false;
       return originalFetch(input, { ...init, cache: "no-store" });
     }
 
-    /* PetNews opens from the saved archive immediately. Fresh collection runs after first paint. */
-    const archivePromise = originalFetch("/api/news-archive", init);
-    archivePromise.then(() => startBackgroundNewsRefresh()).catch(() => {});
-    return archivePromise;
+    /* PetNews itself must call /api/news so collection, append-only archive save,
+       link/title dedupe and newest-first display all happen in the same request. */
+    return originalFetch(input, init);
   };
 })();
