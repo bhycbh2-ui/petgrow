@@ -1,7 +1,7 @@
-// PetGrow service worker v22
-// 배포 안정성을 위해 페이지/JS/CSS 요청은 서비스워커가 가로채지 않습니다.
-// PWA 설치 지원만 유지하고, 이전 버전에서 남은 캐시는 활성화 시 제거합니다.
-const CACHE_NAME = "petgrow-v22";
+// PetGrow service worker v23
+// HTML/API는 항상 최신 네트워크 응답을 사용하고, Vite의 해시된 정적 assets만 안전하게 캐시해요.
+const ASSET_CACHE = "petgrow-assets-v23";
+const ASSET_PATH = "/assets/";
 
 self.addEventListener("install", () => {
   self.skipWaiting();
@@ -9,10 +9,32 @@ self.addEventListener("install", () => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.map((key) => caches.delete(key))))
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((key) => key !== ASSET_CACHE).map((key) => caches.delete(key))))
       .then(() => self.clients.claim())
   );
 });
 
-// fetch 이벤트를 등록하지 않습니다.
-// 모든 웹 요청은 브라우저가 Vercel의 최신 배포에서 직접 가져옵니다.
+self.addEventListener("fetch", (event) => {
+  const request = event.request;
+  if (request.method !== "GET") return;
+
+  let url;
+  try { url = new URL(request.url); } catch { return; }
+  if (url.origin !== self.location.origin || !url.pathname.startsWith(ASSET_PATH)) return;
+
+  event.respondWith(
+    caches.open(ASSET_CACHE).then(async (cache) => {
+      const cached = await cache.match(request);
+      if (cached) return cached;
+      try {
+        const response = await fetch(request);
+        if (response && response.ok) cache.put(request, response.clone()).catch(() => {});
+        return response;
+      } catch (error) {
+        if (cached) return cached;
+        throw error;
+      }
+    })
+  );
+});

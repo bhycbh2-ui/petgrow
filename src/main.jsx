@@ -54,7 +54,7 @@ if ("requestIdleCallback" in window) {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js?v=49", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=50", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });

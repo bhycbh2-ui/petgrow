@@ -45,7 +45,8 @@ const helper = `/* ${MARK} */
 if (typeof window !== "undefined") window.__PETGROW_TIPS_DATA__ = TIPS_DATA;
 
 async function fetchPetInfoCmsItems() {
-  const pageSize = 100;
+  // API가 허용하는 최대 크기로 한 번에 받아 현재 Pet정보 수에서는 추가 왕복을 없애요.
+  const pageSize = 500;
   const firstRes = await fetch(\`/api/petinfo?action=list&page=1&pageSize=\${pageSize}\`, { headers: { Accept: "application/json" } });
   if (!firstRes.ok) throw new Error("Pet정보 CMS 조회 실패");
   const first = await firstRes.json();
