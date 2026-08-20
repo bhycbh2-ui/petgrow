@@ -41,6 +41,8 @@ const loadDeferredRuntime = () => {
     import("./home-quick-petbti-20260819.js"),
     import("./about-petpoint-order-20260819.js"),
     import("./petgrow-final-batch-20260819.js"),
+    import("./petinfo-cms-runtime.js"),
+    import("./petinfo-cms-import-runtime.js"),
   ]).catch(() => {});
 };
 
