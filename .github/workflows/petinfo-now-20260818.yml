@@ -1,4 +1,4 @@
-name: PetInfo One-Time Update 2026-08-18
+name: PetInfo Daily Update
 on:
   push:
     branches: [main]
@@ -21,11 +21,11 @@ jobs:
           node-version: '20'
           cache: npm
       - run: npm ci
-      - name: Add PetInfo content
+      - name: Add and validate PetInfo content
         run: node scripts/petinfo-now-20260818.mjs
-      - name: Build
+      - name: Production build
         run: npm run build
-      - name: Commit generated changes
+      - name: Commit generated changes only after successful build
         run: |
           git config user.name 'petgrow-automation'
           git config user.email 'actions@users.noreply.github.com'
@@ -34,5 +34,5 @@ jobs:
             echo 'No generated changes.'
             exit 0
           fi
-          git commit -m 'content: add 16 PetInfo items for 2026-08-18'
+          git commit -m 'content: add 16 PetInfo items for 2026-08-20'
           git push origin main
