@@ -50,7 +50,7 @@ export default function PetNewsPage({ lang = "ko", onActivity }) {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const [localized, setLocalized] = useState({});
-  const PAGE = 8;
+  const PAGE = 20;
   const cats = ["전체", "반려견", "반려묘", "건강", "정책·제도", "입양·보호", "산업·서비스", "반려동물"];
   const ui = {
     ko: { refresh: "새로고침", search: "뉴스 검색", open: "원문 보기 ↗", empty: "조건에 맞는 뉴스가 없어요." },
