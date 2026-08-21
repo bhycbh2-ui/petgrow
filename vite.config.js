@@ -4,6 +4,7 @@ import petgrowUiFixes from "./build/petgrow-ui-fixes.mjs";
 import petgrowStabilityCleanup from "./build/petgrow-stability-cleanup-20260818.mjs";
 import petgrowNewsPetTalkTarotFixes from "./build/petgrow-news-pettalk-tarot-20260818.mjs";
 import petInfoCmsSource from "./build/petinfo-cms-source-20260820.mjs";
+import petNewsLoadingState from "./build/petnews-loading-state-20260821.mjs";
 
 const ADSENSE_CLIENT = "ca-pub-9699974051273244";
 
@@ -42,7 +43,7 @@ function petgrowAdsenseWeb() {
 }
 
 export default defineConfig({
-  plugins: [petgrowAdsenseWeb(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), react()],
+  plugins: [petgrowAdsenseWeb(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), react()],
   build: {
     // 큰 의존성을 별도 캐시 청크로 분리해 첫 재방문/메뉴 전환 시 다시 받는 양을 줄여요.
     rollupOptions: {
