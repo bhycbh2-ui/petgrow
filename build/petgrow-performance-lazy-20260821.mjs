@@ -135,11 +135,11 @@ function HomeInfoMusicSections(props) {
     { ref: hostRef, "data-home-extras-deferred": "true", style: { minHeight: Component ? undefined : 84 } },
     Component
       ? React.createElement(Component, props)
-      : React.createElement(
-          "div",
-          { className: "bg-card", role: "status", "aria-live": "polite", style: { padding: 14, opacity: 0.78 } },
-          React.createElement("small", { className: "bg-sub" }, props.lang === "en" ? "Preparing recommended content…" : "추천 콘텐츠를 준비하고 있어요…"),
-        ),
+      : React.createElement("div", {
+          "aria-hidden": "true",
+          "data-petgrow-silent-placeholder": "home-extras",
+          style: { minHeight: 84, borderRadius: 18, background: "rgba(245,248,245,.42)" },
+        }),
   );
 }
 
@@ -183,18 +183,13 @@ function __petgrowPetDailyProxy(exportName, compact = false) {
     }, []);
 
     if (Component) return React.createElement(Component, props);
-    return React.createElement(
-      "div",
-      {
-        className: "bg-card",
-        role: "status",
-        "aria-live": "polite",
-        style: compact
-          ? { minHeight: 72, display: "grid", placeItems: "center", padding: 12 }
-          : { minHeight: 132, display: "grid", placeItems: "center", padding: 18 },
-      },
-      React.createElement("small", { className: "bg-sub" }, "콘텐츠를 준비하고 있어요…"),
-    );
+    return React.createElement("div", {
+      "aria-hidden": "true",
+      "data-petgrow-silent-placeholder": exportName,
+      style: compact
+        ? { minHeight: 72, borderRadius: 16, background: "rgba(245,248,245,.4)" }
+        : { minHeight: 132, borderRadius: 18, background: "rgba(245,248,245,.4)" },
+    });
   };
 }
 
