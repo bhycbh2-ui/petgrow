@@ -17,6 +17,7 @@ import "./petgrow-global-palette-20260819.css";
 import "./petgrow-final-batch-20260819.css";
 import "./pet-tarot-intro-fix-20260819.css";
 import "./petlife-mobile-form-fix-20260821.css";
+import "./splash-motion-20260821.css";
 
 /* Home/PetNews fetch routing must be ready before the full app mounts. */
 import "./home-news-fast-20260819.js";
