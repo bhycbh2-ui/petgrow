@@ -2,18 +2,12 @@ import fs from "node:fs";
 import path from "node:path";
 
 const TARGETS = [
-  "AboutPage",
-  "MyPage",
-  "AccountModal",
-  "PrivacyPage",
-  "SupportPage",
-  "AdInquiryPage",
-  "LegalContent",
-  "ResultPage",
-  "BreedInfoModal",
-  "OnboardingPage",
-  "LandingPage",
-  "LoginScreen",
+  "AboutPage", "CommunityMockCard", "IllustCommunity", "IllustGrowth", "IllustMyPets", "IntroVideo", "LandingFeatureCard", "LandingHighlightCard", "SocialLinks",
+  "ResultPage", "AdultWeightHero", "BreedInfoModal", "GrowthChartCard", "GrowthTableCard", "InfoAccordion", "MilestoneBadges", "PeerCompareCard", "PhotoAlbum", "RecordSection", "ShareCardModal", "VaccineChecklist", "buildGrowthTable", "estimateAdultWeight", "formatBirthDate", "getBreedDisplayName", "renderShareCard",
+  "MyPage", "AccountActivityHub", "PetPointDashboard", "musicLiked",
+  "AccountModal", "validateNicknameLocal",
+  "PrivacyPage", "PrivacyContent", "SupportPage", "supportCreateInquiry", "supportInquiries", "supportNotices", "AdInquiryPage", "submitAdInquiry", "LegalContent",
+  "OnboardingPage", "LandingPage", "LoginScreen",
 ];
 
 function functionBodyStart(code, start) {
