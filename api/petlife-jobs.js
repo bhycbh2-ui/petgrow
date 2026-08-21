@@ -6,7 +6,7 @@ import {
   getKstClock,
   isFcmConfigured
 } from "../server_lib/petlifeAutomation.js";
-import { createEncryptedBackup, pruneEncryptedBackups } from "../server_lib/backup.js";
+import { createEncryptedBackup, pruneEncryptedBackups, verifyEncryptedBackup } from "../server_lib/backup.js";
 
 function cronAuthorized(req){
   const secret=String(process.env.CRON_SECRET||"");
@@ -14,6 +14,11 @@ function cronAuthorized(req){
   if(secret)return auth===`Bearer ${secret}`;
   const ua=String(req.headers?.["user-agent"]||"");
   return /^vercel-cron\/1\.0/i.test(ua);
+}
+function publicBackup(value){
+  if(!value||typeof value!=="object")return value;
+  const {url,plainSha256,sha256,...safe}=value;
+  return safe;
 }
 
 export default async function handler(req,res){
@@ -28,14 +33,23 @@ export default async function handler(req,res){
     if(Number(clock?.day||0)<=3)monthly=await generatePreviousMonthReports();
     const push=await deliverQueuedNotifications({limit:200});
     let backup={skipped:true};
+    let backupVerify={skipped:true};
     let backupPrune={skipped:true};
     try{
       backup=await createEncryptedBackup();
-      backupPrune=await pruneEncryptedBackups();
+      if(backup?.created){
+        backupVerify=await verifyEncryptedBackup(backup);
+        if(!backupVerify?.verified)throw new Error(backupVerify?.reason||"BACKUP_VERIFY_FAILED");
+        // 방금 생성한 백업 자체를 복호화·검증한 뒤에만 오래된 백업을 정리합니다.
+        backupPrune=await pruneEncryptedBackups();
+      }
     }catch(error){
-      backup={configured:Boolean(process.env.BACKUP_ENCRYPTION_KEY),error:String(error?.message||error).slice(0,300)};
+      console.error("scheduled backup verify",error);
+      backup={...backup,error:String(error?.message||error).slice(0,300)};
+      backupVerify={...backupVerify,verified:false,error:String(error?.message||error).slice(0,300)};
+      backupPrune={skipped:true,reason:"NEW_BACKUP_NOT_VERIFIED"};
     }
-    return res.status(200).json({ok:true,date:clock?.today,queue,monthly,push,backup,backupPrune,pushConfigured:isFcmConfigured()});
+    return res.status(200).json({ok:true,date:clock?.today,queue,monthly,push,backup:publicBackup(backup),backupVerify:publicBackup(backupVerify),backupPrune,pushConfigured:isFcmConfigured()});
   }catch(error){
     console.error("petlife jobs",error);
     return res.status(500).json({error:error?.message||"PetLife 자동화 작업을 처리하지 못했어요."});
