@@ -49,7 +49,7 @@ export async function createEncryptedBackup(){
   const compressed=zlib.gzipSync(plain,{level:9});
   const encrypted=encrypt(compressed);
   const pathname=`${PREFIX}${createdAt.slice(0,10)}/petgrow-${createdAt.replace(/[:.]/g,"-")}.json.enc`;
-  const blob=await put(pathname,encrypted,{access:"public",addRandomSuffix:true,contentType:"application/octet-stream",cacheControlMaxAge:60});
+  const blob=await put(pathname,encrypted,{access:"public",addRandomSuffix:true,contentType:"application/octet-stream"});
   return {configured:true,created:true,url:blob.url,pathname:blob.pathname,plainBytes:plain.length,encryptedBytes:encrypted.length,createdAt};
 }
 
