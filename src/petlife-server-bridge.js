@@ -118,7 +118,6 @@ function metric(value,fallback="0"){return value==null?fallback:String(value);}
 function cardHtml(report){
   const s=report?.summary||{};
   const delta=s.weightDelta==null?"-":`${Number(s.weightDelta)>0?"+":""}${Number(s.weightDelta).toFixed(2)}kg`;
-  const insight=Array.isArray(s.insights)&&s.insights.length?s.insights[0]:"한 달의 PetLife 기록을 서버에서 자동으로 정리했어요.";
   return `<article class="pl-monthly-server-card"><header><b>${monthLabel(report.month)}</b><small>자동 생성 · 서버 보관</small></header><div class="pl-monthly-server-metrics"><span><strong>${metric(s.recordCount)}</strong>전체 기록</span><span><strong>${metric(s.healthRecords)}</strong>건강 기록</span><span><strong>${metric(s.totalWalkMinutes)}</strong>산책 분</span><span><strong>${delta}</strong>체중 변화</span></div><p></p></article>`;
 }
 
@@ -157,10 +156,10 @@ function scheduleMonthly(force=false){
 }
 
 async function bootNativePushBridge(){
-  const plugins=globalThis.Capacitor?.Plugins;
-  const Push=plugins?.PushNotifications;
-  if(!Push)return false;
   try{
+    const {Capacitor,registerPlugin}=await import("@capacitor/core");
+    if(!Capacitor.isNativePlatform()||Capacitor.getPlatform()!=="android")return false;
+    const Push=registerPlugin("PushNotifications");
     const perm=await Push.checkPermissions();
     let receive=perm?.receive;
     if(receive==="prompt"||receive==="prompt-with-rationale")receive=(await Push.requestPermissions())?.receive;
@@ -169,6 +168,7 @@ async function bootNativePushBridge(){
       try{await api("push-register",{method:"POST",body:{token:token?.value||"",platform:"android",deviceName:navigator.userAgent.slice(0,120)}});}catch(e){console.warn("PetLife push register",e?.message||e);}
     });
     await Push.addListener("registrationError",err=>console.warn("PetLife native push registration",err));
+    await Push.addListener("pushNotificationReceived",()=>refreshInbox(true));
     await Push.addListener("pushNotificationActionPerformed",async event=>{
       const notificationId=event?.notification?.data?.notificationId;
       if(notificationId)await markRead(notificationId);
