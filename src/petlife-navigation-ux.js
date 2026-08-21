@@ -49,9 +49,10 @@ function enhance(shell){
 
   shell.dataset.pgNavUx="1";
   trackPetLifeOpen();
+  close.type="button";
   close.setAttribute("aria-label","PetLife 닫기");
   close.setAttribute("title","닫기");
-  close.innerHTML='<span aria-hidden="true">×</span><b>닫기</b>';
+  close.innerHTML='<span class="pl-head-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M7 7l10 10M17 7 7 17"/></svg></span><b>닫기</b>';
 
   const actions=document.createElement("div");
   actions.className="pl-head-actions";
@@ -60,7 +61,7 @@ function enhance(shell){
   home.type="button";
   home.className="pl-home";
   home.setAttribute("aria-label","PetGrow 홈으로 이동");
-  home.innerHTML='<span aria-hidden="true">←</span><b>홈</b>';
+  home.innerHTML='<span class="pl-head-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M15.5 6.5 9 12l6.5 5.5M9.5 12H19"/></svg></span><b>홈</b>';
   home.addEventListener("click",goHome);
 
   close.parentNode?.insertBefore(actions,close);
