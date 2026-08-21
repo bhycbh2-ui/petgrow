@@ -8,7 +8,7 @@ export default function petgrowSplashReadyGate(){
         injectTo:"head",
         children:`
           (function(){
-            var installed=false,finished=false,requested=false,observer=null,poll=null,requestedAt=0,criticalListener=false;
+            var installed=false,finished=false,requested=false,observer=null,poll=null,requestedAt=0,criticalListener=false,criticalHandler=null;
             var gateStarted=performance.now(),renderedAt=0;
             function waitingNode(){return document.querySelector(".petgrow-boot-skeleton,#petgrow-fast-shell,.petgrow-dashboard-home .pgh-loading");}
             function criticalReady(){return window.__petgrowCriticalAppReady===true;}
@@ -24,7 +24,8 @@ export default function petgrowSplashReadyGate(){
             function cleanup(){
               if(observer){observer.disconnect();observer=null;}
               if(poll){window.clearInterval(poll);poll=null;}
-              if(criticalListener){window.removeEventListener("petgrow:critical-ready",onCriticalReady);criticalListener=false;}
+              if(criticalListener&&criticalHandler){window.removeEventListener("petgrow:critical-ready",criticalHandler);}
+              criticalListener=false;criticalHandler=null;
             }
             function install(){
               if(installed)return;
@@ -40,7 +41,7 @@ export default function petgrowSplashReadyGate(){
                 if(!(force||requested||criticalReady()))return;
                 finished=true;cleanup();finish();
               }
-              function onCriticalReady(){complete(true);}
+              criticalHandler=function(){complete(true);};
               function watchReady(){
                 if(observer||poll)return;
                 observer=new MutationObserver(function(){
@@ -48,14 +49,14 @@ export default function petgrowSplashReadyGate(){
                   complete(false);
                 });
                 observer.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:["class"]});
-                if(!criticalListener){window.addEventListener("petgrow:critical-ready",onCriticalReady);criticalListener=true;}
+                if(!criticalListener&&criticalHandler){window.addEventListener("petgrow:critical-ready",criticalHandler);criticalListener=true;}
                 poll=window.setInterval(function(){
                   if(finished)return;
                   var now=performance.now();
                   if(hasRealScreen()){
                     if(!renderedAt)renderedAt=now;
                     if(criticalReady()||requested){complete(false);return;}
-                    /* If the real app is already visible-ready but one legacy signal was missed,
+                    /* If the real app is already rendered but one legacy ready signal was missed,
                        release shortly instead of leaving the progress UI parked at 99%. */
                     if(now-renderedAt>1200){complete(true);return;}
                   }else if(hasRenderedApp()&&now-gateStarted>6500){
