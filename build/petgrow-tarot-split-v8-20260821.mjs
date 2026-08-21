@@ -1,14 +1,4 @@
-import { transformWithEsbuild } from "vite";
-
-const VIRTUAL_ID = "virtual:petgrow-v8-content";
-const RESOLVED_ID = `\0${VIRTUAL_ID}.jsx`;
-const ENTRY = "PetContentPage";
-const REACT_BINDINGS = new Set([
-  "React", "Fragment", "useState", "useEffect", "useMemo", "useCallback", "useRef",
-  "useLayoutEffect", "useReducer", "useContext", "useId", "useDeferredValue", "useTransition",
-]);
-
-function functionBodyStart(code, start) {
+function bodyStart(code, start) {
   const openParen = code.indexOf("(", start);
   if (openParen < 0) return -1;
   let depth = 0, quote = null, escape = false, lineComment = false, blockComment = false;
@@ -31,14 +21,10 @@ function functionBodyStart(code, start) {
   return -1;
 }
 
-function extractNamedFunction(code, name) {
-  const marker = new RegExp(`(?:async\\s+)?function\\s+${name}\\s*\\(`);
-  const match = marker.exec(code);
-  if (!match) return null;
-  const start = match.index;
-  const brace = functionBodyStart(code, start);
+function extractAt(code, start) {
+  const brace = bodyStart(code, start);
   if (brace < 0) return null;
-  let depth = 0, quote = null, templateExpr = 0, escape = false, lineComment = false, blockComment = false;
+  let depth = 0, quote = null, escape = false, lineComment = false, blockComment = false;
   for (let i = brace; i < code.length; i++) {
     const ch = code[i], next = code[i + 1];
     if (lineComment) { if (ch === "\n") lineComment = false; continue; }
@@ -46,210 +32,37 @@ function extractNamedFunction(code, name) {
     if (quote) {
       if (escape) { escape = false; continue; }
       if (ch === "\\") { escape = true; continue; }
-      if (quote === "`" && ch === "$" && next === "{") { templateExpr++; depth++; i++; continue; }
-      if (quote === "`" && ch === "}" && templateExpr > 0) { templateExpr--; depth--; continue; }
-      if (ch === quote && templateExpr === 0) quote = null;
+      if (ch === quote) quote = null;
       continue;
     }
     if (ch === "/" && next === "/") { lineComment = true; i++; continue; }
     if (ch === "/" && next === "*") { blockComment = true; i++; continue; }
-    if (ch === '"' || ch === "'") { quote = ch; continue; }
-    if (ch === "`") { quote = ch; templateExpr = 0; continue; }
+    if (ch === '"' || ch === "'" || ch === "`") { quote = ch; continue; }
     if (ch === "{") depth++;
     else if (ch === "}") {
       depth--;
-      if (depth === 0) return { start, end: i + 1, source: code.slice(start, i + 1) };
+      if (depth === 0) return i + 1;
     }
   }
   return null;
 }
 
-function maskStringsAndComments(code) {
-  const out = code.split("");
-  let quote = null, escape = false, lineComment = false, blockComment = false;
-  for (let i = 0; i < code.length; i++) {
-    const ch = code[i], next = code[i + 1];
-    if (lineComment) {
-      if (ch === "\n") lineComment = false;
-      else out[i] = " ";
-      continue;
-    }
-    if (blockComment) {
-      out[i] = ch === "\n" ? "\n" : " ";
-      if (ch === "*" && next === "/") { out[i + 1] = " "; blockComment = false; i++; }
-      continue;
-    }
-    if (quote) {
-      out[i] = ch === "\n" ? "\n" : " ";
-      if (escape) { escape = false; continue; }
-      if (ch === "\\") { escape = true; continue; }
-      if (ch === quote) quote = null;
-      continue;
-    }
-    if (ch === "/" && next === "/") { out[i] = out[i + 1] = " "; lineComment = true; i++; continue; }
-    if (ch === "/" && next === "*") { out[i] = out[i + 1] = " "; blockComment = true; i++; continue; }
-    if (ch === '"' || ch === "'" || ch === "`") { out[i] = " "; quote = ch; continue; }
-  }
-  return out.join("");
-}
-
-function topLevelBindings(code) {
-  const clean = maskStringsAndComments(code);
-  const chars = clean.split("");
-  let depth = 0;
-  for (let i = 0; i < chars.length; i++) {
-    const ch = chars[i];
-    if (ch === "{") {
-      if (depth > 0) chars[i] = " ";
-      depth++;
-      continue;
-    }
-    if (ch === "}") {
-      depth = Math.max(0, depth - 1);
-      if (depth > 0) chars[i] = " ";
-      continue;
-    }
-    if (depth > 0 && ch !== "\n") chars[i] = " ";
-  }
-  const top = chars.join("");
-  const bindings = new Set();
-  for (const re of [
-    /\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)/g,
-    /\b(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(/g,
-  ]) {
-    let match;
-    while ((match = re.exec(top))) bindings.add(match[1]);
-  }
-
-  const importRe = /^\s*import\s+(.+?)\s+from\s+["'][^"']+["'];?/gm;
-  let imp;
-  while ((imp = importRe.exec(code))) {
-    const spec = imp[1].trim();
-    const named = spec.match(/\{([\s\S]*?)\}/);
-    if (named) {
-      for (const part of named[1].split(",")) {
-        const token = part.trim();
-        if (!token) continue;
-        const alias = token.split(/\s+as\s+/).pop().trim();
-        if (alias) bindings.add(alias);
-      }
-    }
-    const namespace = spec.match(/\*\s+as\s+([A-Za-z_$][\w$]*)/);
-    if (namespace) bindings.add(namespace[1]);
-    const beforeNamed = spec.replace(/\{[\s\S]*?\}/, "").replace(/,\s*$/, "").trim();
-    if (beforeNamed && !beforeNamed.startsWith("*")) {
-      const first = beforeNamed.split(",")[0].trim();
-      if (/^[A-Za-z_$][\w$]*$/.test(first)) bindings.add(first);
-    }
-  }
-  return bindings;
-}
-
-function localNames(source) {
-  const result = new Set();
-  const headEnd = source.indexOf("{");
-  const head = headEnd >= 0 ? source.slice(0, headEnd) : source;
-  const open = head.indexOf("(");
-  const close = head.lastIndexOf(")");
-  if (open >= 0 && close > open) {
-    for (const token of head.slice(open + 1, close).match(/[A-Za-z_$][\w$]*/g) || []) result.add(token);
-  }
-  for (const re of [
-    /\b(?:const|let|var)\s+([^=;\n]+)=/g,
-    /\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s+(?:of|in)\b/g,
-    /\bfunction\s+([A-Za-z_$][\w$]*)\s*\(/g,
-    /\bcatch\s*\(\s*([A-Za-z_$][\w$]*)/g,
-  ]) {
-    let match;
-    while ((match = re.exec(source))) {
-      for (const token of (match[1] || "").match(/[A-Za-z_$][\w$]*/g) || []) result.add(token);
-    }
-  }
-  return result;
-}
-
-function sourceWords(source) {
-  return new Set(source.match(/[A-Za-z_$][\w$]*/g) || []);
-}
-
-function externalDepsFor(source, bindings) {
-  const locals = localNames(source);
-  const deps = new Set();
-  for (const word of sourceWords(source)) {
-    if (!bindings.has(word)) continue;
-    if (word === ENTRY || locals.has(word) || REACT_BINDINGS.has(word)) continue;
-    deps.add(word);
-  }
-  return [...deps].sort();
-}
-
-function lazyWrapper(deps) {
-  const depObject = deps.length ? `{ ${deps.join(", ")} }` : `{}`;
-  return `
-let __petgrowV8ContentComponent = null;
-let __petgrowV8ContentPromise = null;
-function __petgrowV8LoadContent(){
-  if (__petgrowV8ContentComponent) return Promise.resolve(__petgrowV8ContentComponent);
-  if (!__petgrowV8ContentPromise) {
-    __petgrowV8ContentPromise = import("${VIRTUAL_ID}").then((m) => {
-      __petgrowV8ContentComponent = m.default;
-      return __petgrowV8ContentComponent;
-    }).catch((error) => {
-      __petgrowV8ContentPromise = null;
-      throw error;
-    });
-  }
-  return __petgrowV8ContentPromise;
-}
-function ${ENTRY}(props){
-  const [LazyComponent, setLazyComponent] = useState(() => __petgrowV8ContentComponent);
-  const [loadError, setLoadError] = useState(false);
-  useEffect(() => {
-    if (LazyComponent) return;
-    let alive = true;
-    __petgrowV8LoadContent().then((Component) => {
-      if (alive) { setLazyComponent(() => Component); setLoadError(false); }
-    }).catch(() => { if (alive) setLoadError(true); });
-    return () => { alive = false; };
-  }, [LazyComponent]);
-  if (!LazyComponent) return <div className="bg-card" role="status" aria-live="polite" style={{padding:20,textAlign:"center"}}><b>콘텐츠를 불러오는 중입니다</b><p className="bg-sub" style={{marginTop:8}}>화면을 준비하고 있어요…</p>{loadError && <button type="button" className="bg-btn" style={{display:"block",margin:"10px auto"}} onClick={() => { setLoadError(false); __petgrowV8LoadContent().then((Component) => setLazyComponent(() => Component)).catch(() => setLoadError(true)); }}>다시 시도</button>}</div>;
-  const __deps = ${depObject};
-  return <LazyComponent {...props} __deps={__deps} />;
-}
-`;
-}
-
-function virtualModule(source, deps) {
-  const depDecl = deps.length
-    ? `let ${deps.join(", ")};\nfunction __bindDeps(d){ ({ ${deps.join(", ")} } = d || {}); }`
-    : `function __bindDeps(){}`;
-  return `import React, { Fragment, useCallback, useContext, useDeferredValue, useEffect, useId, useLayoutEffect, useMemo, useReducer, useRef, useState, useTransition } from "react";\n${depDecl}\n${source}\nfunction __PetGrowV8ContentEntry({ __deps, ...props }){ __bindDeps(__deps); return React.createElement(${ENTRY}, props); }\nexport default __PetGrowV8ContentEntry;\n`;
-}
-
 export default function petgrowTarotSplitV8() {
-  let captured = null;
   return {
-    name: "petgrow-content-split-v8",
+    name: "petgrow-app-function-profiler-v8",
     enforce: "pre",
-    resolveId(id) {
-      return id === VIRTUAL_ID ? RESOLVED_ID : null;
-    },
-    async load(id) {
-      if (id !== RESOLVED_ID) return null;
-      if (!captured) this.error("[petgrow-v8] PetContentPage source was not captured");
-      const jsx = virtualModule(captured.source, captured.deps);
-      const result = await transformWithEsbuild(jsx, id.replace(/^\0/, ""), { loader: "jsx", jsx: "automatic", sourcemap: false });
-      return { code: result.code, map: null };
-    },
     transform(code, id) {
       if (!/[\\/]src[\\/]App\.jsx(?:\?|$)/.test(id)) return null;
-      const hit = extractNamedFunction(code, ENTRY);
-      if (!hit) this.error(`[petgrow-v8] ${ENTRY} anchor not found`);
-      const deps = externalDepsFor(hit.source, topLevelBindings(code));
-      captured = { source: hit.source, deps };
-      console.log(`PGV8_SPLIT content deps=${JSON.stringify(deps)} bytes=${hit.source.length}`);
-      const next = code.slice(0, hit.start) + lazyWrapper(deps) + code.slice(hit.end);
-      return { code: next, map: null };
+      const rows = [];
+      const re = /(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(/g;
+      let match;
+      while ((match = re.exec(code))) {
+        const end = extractAt(code, match.index);
+        if (end) rows.push({ name: match[1], bytes: end - match.index });
+      }
+      rows.sort((a,b) => b.bytes - a.bytes);
+      console.log(`PGV8_PROFILE ${JSON.stringify(rows.slice(0,50))}`);
+      return null;
     },
   };
 }
