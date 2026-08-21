@@ -10,11 +10,41 @@ export default async function handler(req,res){
   const role=await getAdminRole(uid);
   if(!role) return res.status(403).json({error:"관리자 권한이 필요해요."});
   try{
-    const [{rows},petLife]=await Promise.all([
+    const [{rows},petLife,{rows:ops},{rows:moderation}]=await Promise.all([
       sql`select count(*)::int total_members from pg_users`,
-      getPetLifeServerStats()
+      getPetLifeServerStats(),
+      sql`
+        select
+          (select count(distinct user_id)::int from pg_pet_life_entries where created_at>=now()-interval '30 days') active_petlife_users_30d,
+          count(*) filter(where push_attempted_at>=now()-interval '30 days')::int push_attempts_30d,
+          count(*) filter(where pushed_at>=now()-interval '30 days')::int push_success_30d,
+          count(*) filter(where push_attempted_at>=now()-interval '30 days' and pushed_at is null and push_error is not null)::int push_failed_30d
+        from pg_petlife_notifications
+      `,
+      sql`
+        select
+          (select count(*)::int from pg_reports where status='open') community_open,
+          (select count(*)::int from pg_music_comment_reports where status='open') music_open
+      `
     ]);
-    return res.status(200).json({totalMembers:Number(rows[0]?.total_members)||0,petLife});
+    const attempts=Number(ops[0]?.push_attempts_30d)||0;
+    const success=Number(ops[0]?.push_success_30d)||0;
+    return res.status(200).json({
+      totalMembers:Number(rows[0]?.total_members)||0,
+      petLife:{
+        ...petLife,
+        activeUsers30d:Number(ops[0]?.active_petlife_users_30d)||0,
+        pushAttempts30d:attempts,
+        pushSuccess30d:success,
+        pushFailed30d:Number(ops[0]?.push_failed_30d)||0,
+        pushSuccessRate30d:attempts?Number(((success/attempts)*100).toFixed(1)):null
+      },
+      moderation:{
+        communityOpen:Number(moderation[0]?.community_open)||0,
+        musicOpen:Number(moderation[0]?.music_open)||0,
+        totalOpen:(Number(moderation[0]?.community_open)||0)+(Number(moderation[0]?.music_open)||0)
+      }
+    });
   }catch(e){
     return res.status(500).json({error:e?.message||"운영 통계를 불러오지 못했어요."});
   }

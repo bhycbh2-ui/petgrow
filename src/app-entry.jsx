@@ -66,6 +66,9 @@ const primaryDeferredLoaders = [
  * the first screen, so keep them outside the initial interaction window.
  */
 const deepDeferredLoaders = [
+  () => import("./legacy-server-sync.js"),
+  () => import("./account-data-export.js"),
+  () => import("./admin-server-health.js"),
   () => import("./final-audit-20260818.js"),
   () => import("./legacy-growth-modal-ux.js"),
   () => import("./admin-news-music-runtime-20260818.js"),
@@ -103,7 +106,7 @@ window.setTimeout(() => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js?v=68", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=69", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });

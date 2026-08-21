@@ -9,6 +9,7 @@ on:
       - 'src/**'
       - 'public/**'
       - 'android/**'
+      - 'scripts/check-android-push-config.mjs'
       - 'package.json'
       - 'package-lock.json'
       - 'capacitor.config.json'
@@ -24,6 +25,7 @@ jobs:
       ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
       ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
 
     steps:
       - name: Checkout repository
@@ -45,11 +47,36 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install Android push plugin for native sync
+        run: npm install --no-save --package-lock=false @capacitor/push-notifications@6.0.2
+
+      - name: Prepare Firebase Android configuration
+        id: firebase
+        shell: bash
+        run: |
+          if [ -n "$GOOGLE_SERVICES_JSON_BASE64" ]; then
+            printf '%s' "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > android/app/google-services.json
+            node -e "const f=require('./android/app/google-services.json'); if(!f.project_info?.project_id) process.exit(1); console.log('Firebase project:',f.project_info.project_id)"
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "GOOGLE_SERVICES_JSON_BASE64 is not configured; AAB will build but remote FCM delivery cannot be validated on-device."
+          fi
+
       - name: Build web app
         run: npm run build
 
       - name: Sync Capacitor Android
         run: npx cap sync android
+
+      - name: Verify Android push release wiring
+        shell: bash
+        run: |
+          node scripts/check-android-push-config.mjs
+          grep -R "capacitor-push-notifications" android/capacitor.settings.gradle android/app/capacitor.build.gradle
+          if [ "${{ steps.firebase.outputs.configured }}" = "true" ]; then
+            test -s android/app/google-services.json
+          fi
 
       - name: Prepare signing and version code
         id: signing
@@ -96,6 +123,8 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
-      - name: Remove temporary keystore
+      - name: Remove temporary secrets
         if: always()
-        run: rm -f "$ANDROID_KEYSTORE_PATH"
+        run: |
+          rm -f "$ANDROID_KEYSTORE_PATH"
+          rm -f android/app/google-services.json

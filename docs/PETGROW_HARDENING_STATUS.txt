@@ -1,0 +1,3 @@
+Candidate branch: qa/petgrow-final-hardening-20260822
+Base: main@b0b30ada
+Status: ready for Preview/CI validation before merge.

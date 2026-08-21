@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  schedule-alpha-release:
+  schedule-alpha-build:
     runs-on: ubuntu-latest
     steps:
       - name: Decide whether today is a release day
@@ -21,9 +21,8 @@ jobs:
           KST_DOW=$(TZ=Asia/Seoul date +%u)
           SHOULD_RUN=false
 
-          if [[ "$KST_DATE" >= "2026-08-18" && "$KST_DATE" <= "2026-08-23" ]]; then
-            SHOULD_RUN=true
-          elif [[ "$KST_DATE" > "2026-08-23" && ( "$KST_DOW" == "1" || "$KST_DOW" == "4" ) ]]; then
+          # 초기 안정화 기간 이후에는 월/목에만 자동 AAB 빌드를 생성합니다.
+          if [[ "$KST_DOW" == "1" || "$KST_DOW" == "4" ]]; then
             SHOULD_RUN=true
           fi
 
@@ -33,14 +32,14 @@ jobs:
 
           echo "date=$KST_DATE" >> "$GITHUB_OUTPUT"
           echo "should_run=$SHOULD_RUN" >> "$GITHUB_OUTPUT"
-          echo "PetGrow Android release gate: date=$KST_DATE dow=$KST_DOW run=$SHOULD_RUN"
+          echo "PetGrow Android build gate: date=$KST_DATE dow=$KST_DOW run=$SHOULD_RUN"
 
-      - name: Dispatch Android AAB completed Alpha release
+      - name: Dispatch Android AAB build
         if: steps.gate.outputs.should_run == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run android-aab.yml --ref main -f release_status=completed
+        run: gh workflow run android-aab.yml --ref main
 
-      - name: Skip non-release day
+      - name: Skip non-build day
         if: steps.gate.outputs.should_run != 'true'
-        run: echo "Not a scheduled PetGrow Android release day."
+        run: echo "Not a scheduled PetGrow Android build day."
