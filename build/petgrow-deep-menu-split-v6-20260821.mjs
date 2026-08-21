@@ -59,7 +59,7 @@ function functionBodyStart(code, start) {
 }
 
 function extractNamedFunction(code, name) {
-  const marker = new RegExp(`function\\s+${name}\\s*\\(`);
+  const marker = new RegExp(`(?:async\\s+)?function\\s+${name}\\s*\\(`);
   const match = marker.exec(code);
   if (!match) return null;
   const start = match.index;
