@@ -6,6 +6,7 @@ import {
   getKstClock,
   isFcmConfigured
 } from "../server_lib/petlifeAutomation.js";
+import { createEncryptedBackup, pruneEncryptedBackups } from "../server_lib/backup.js";
 
 function cronAuthorized(req){
   const secret=String(process.env.CRON_SECRET||"");
@@ -26,7 +27,15 @@ export default async function handler(req,res){
     // 1일 크론이 잠시 실패해도 2~3일에 자동 복구되도록 3일까지 idempotent upsert 합니다.
     if(Number(clock?.day||0)<=3)monthly=await generatePreviousMonthReports();
     const push=await deliverQueuedNotifications({limit:200});
-    return res.status(200).json({ok:true,date:clock?.today,queue,monthly,push,pushConfigured:isFcmConfigured()});
+    let backup={skipped:true};
+    let backupPrune={skipped:true};
+    try{
+      backup=await createEncryptedBackup();
+      backupPrune=await pruneEncryptedBackups();
+    }catch(error){
+      backup={configured:Boolean(process.env.BACKUP_ENCRYPTION_KEY),error:String(error?.message||error).slice(0,300)};
+    }
+    return res.status(200).json({ok:true,date:clock?.today,queue,monthly,push,backup,backupPrune,pushConfigured:isFcmConfigured()});
   }catch(error){
     console.error("petlife jobs",error);
     return res.status(500).json({error:error?.message||"PetLife 자동화 작업을 처리하지 못했어요."});
