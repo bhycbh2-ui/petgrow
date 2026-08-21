@@ -1,0 +1,86 @@
+/* PetLife mobile record form v2: stable sheet height + no save/content overlap */
+#petlife-react-root .pl-record-modal-v2{
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+}
+#petlife-react-root .pl-record-modal-v2>header{
+  flex:0 0 auto!important;
+}
+#petlife-react-root .pl-record-modal-v2>.pl-form{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+#petlife-react-root .pl-record-modal-v2 .pl-more-toggle{
+  flex:0 0 auto!important;
+  margin-top:2px!important;
+  margin-bottom:14px!important;
+  scroll-margin-bottom:96px!important;
+}
+#petlife-react-root .pl-record-modal-v2 .pl-extra{
+  margin-bottom:14px!important;
+  scroll-margin-bottom:96px!important;
+}
+#petlife-react-root .pl-record-modal-v2 .pl-save{
+  flex:0 0 auto!important;
+  position:sticky!important;
+  bottom:0!important;
+  z-index:8!important;
+  width:100%!important;
+  margin:16px 0 2px!important;
+  outline:0!important;
+  border:0!important;
+  box-shadow:0 -10px 0 #f5f8f4,0 9px 24px rgba(37,80,58,.18)!important;
+}
+
+@media(max-width:760px){
+  #petlife-react-root .pl-record-modal-v2{
+    width:100%!important;
+    max-width:100%!important;
+    height:min(760px,calc(var(--pl-vv-height,100dvh) - 6px))!important;
+    min-height:min(620px,calc(var(--pl-vv-height,100dvh) - 6px))!important;
+    max-height:calc(var(--pl-vv-height,100dvh) - 6px)!important;
+    border-radius:26px 26px 0 0!important;
+  }
+  #petlife-react-root .pl-record-modal-v2>.pl-form{
+    padding-bottom:max(22px,calc(env(safe-area-inset-bottom) + 12px))!important;
+    scroll-padding-bottom:104px!important;
+  }
+  #petlife-react-root .pl-record-modal-v2 .pl-more-toggle{
+    min-height:50px!important;
+    margin-bottom:14px!important;
+  }
+  #petlife-react-root .pl-record-modal-v2 .pl-save{
+    min-height:54px!important;
+    height:54px!important;
+    border-radius:16px!important;
+    margin-top:16px!important;
+  }
+}
+
+/* While iOS keyboard is visible, keep Save in normal flow so it never covers Memo/Photo/Title. */
+html.pl-keyboard-open #petlife-react-root .pl-record-modal-v2{
+  height:calc(var(--pl-vv-height,100dvh) - 2px)!important;
+  min-height:0!important;
+  max-height:calc(var(--pl-vv-height,100dvh) - 2px)!important;
+}
+html.pl-keyboard-open #petlife-react-root .pl-record-modal-v2>.pl-form{
+  padding-bottom:20px!important;
+  scroll-padding-bottom:24px!important;
+}
+html.pl-keyboard-open #petlife-react-root .pl-record-modal-v2 .pl-more-toggle,
+html.pl-keyboard-open #petlife-react-root .pl-record-modal-v2 .pl-extra{
+  margin-bottom:12px!important;
+  scroll-margin-bottom:24px!important;
+}
+html.pl-keyboard-open #petlife-react-root .pl-record-modal-v2 .pl-save{
+  position:static!important;
+  bottom:auto!important;
+  z-index:1!important;
+  margin:16px 0 4px!important;
+  outline:0!important;
+  box-shadow:0 8px 22px rgba(37,80,58,.16)!important;
+}
