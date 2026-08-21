@@ -1,0 +1,57 @@
+/* PetLife mobile form consistency — 2026-08-21
+ * Keep every record type on the same horizontal grid and prevent iOS native
+ * date/number controls from widening their grid item. Give the bottom action
+ * enough breathing room above the home indicator / keyboard edge.
+ */
+@media (max-width: 760px) {
+  .pl-modal .pl-form {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px 14px max(24px, calc(env(safe-area-inset-bottom) + 16px));
+    gap: 10px;
+  }
+
+  .pl-modal .pl-form > *,
+  .pl-modal .pl-selectedtype,
+  .pl-modal .pl-formsection,
+  .pl-modal .pl-more-toggle,
+  .pl-modal .pl-save,
+  .pl-modal .pl-formrow,
+  .pl-modal .pl-form label,
+  .pl-modal .pl-formrow > label {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .pl-modal .pl-form input,
+  .pl-modal .pl-form select,
+  .pl-modal .pl-form textarea,
+  .pl-modal .pl-form input[type="date"],
+  .pl-modal .pl-form input[type="number"] {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .pl-modal .pl-selectedtype,
+  .pl-modal .pl-formsection {
+    padding-left: 13px;
+    padding-right: 13px;
+  }
+
+  .pl-modal .pl-more-toggle,
+  .pl-modal .pl-save {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .pl-modal .pl-save {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    min-height: 54px;
+  }
+}
