@@ -8,6 +8,7 @@ const PREFIX="backups/petgrow-central/";
 const MIN_KEY_LENGTH=32;
 const MAX_VERIFY_BYTES=25*1024*1024;
 const MAX_PLAIN_BYTES=80*1024*1024;
+const MAX_BACKUP_SCAN=1000;
 
 function configState(){
   const rawKey=String(process.env.BACKUP_ENCRYPTION_KEY||"");
@@ -26,6 +27,17 @@ async function safe(load){
     if(error?.code==="42P01"||error?.code==="42703")return [];
     throw error;
   }
+}
+async function listBackupBlobs(max=MAX_BACKUP_SCAN){
+  let cursor;const blobs=[];let truncated=false;
+  do{
+    const page=await list({prefix:PREFIX,limit:100,cursor});
+    blobs.push(...(page.blobs||[]));
+    if(blobs.length>=max){truncated=Boolean(page.hasMore);break;}
+    cursor=page.hasMore?page.cursor:undefined;
+  }while(cursor);
+  blobs.sort((a,b)=>new Date(b.uploadedAt||0)-new Date(a.uploadedAt||0));
+  return {blobs:blobs.slice(0,max),truncated};
 }
 function key(){return crypto.createHash("sha256").update(String(process.env.BACKUP_ENCRYPTION_KEY||"")).digest();}
 function encrypt(buffer,meta={}){
@@ -95,8 +107,7 @@ export async function createEncryptedBackup(){
 export async function verifyLatestEncryptedBackup(){
   const config=configState();
   if(!config.configured)return {...config,verified:false,skipped:true};
-  const page=await list({prefix:PREFIX,limit:20});
-  const blobs=(page.blobs||[]).sort((a,b)=>new Date(b.uploadedAt||0)-new Date(a.uploadedAt||0));
+  const {blobs,truncated}=await listBackupBlobs();
   const latest=blobs[0];
   if(!latest)return {...config,verified:false,reason:"NO_BACKUP",checkedAt:new Date().toISOString()};
   if(Number(latest.size||0)>MAX_VERIFY_BYTES)return {...config,verified:false,reason:"BACKUP_TOO_LARGE_TO_VERIFY",pathname:latest.pathname,size:latest.size,checkedAt:new Date().toISOString()};
@@ -111,7 +122,7 @@ export async function verifyLatestEncryptedBackup(){
   const expectedSha256=envelope.plainSha256?String(envelope.plainSha256):null;
   const shaMatches=expectedSha256?actualSha256===expectedSha256:null;
   if(shaMatches===false)throw new Error("BACKUP_SHA_MISMATCH");
-  return {...config,verified:true,checkedAt:new Date().toISOString(),pathname:latest.pathname,uploadedAt:latest.uploadedAt,size:latest.size,integrity:"AES-256-GCM",sha256:actualSha256,shaMatches,...summary};
+  return {...config,verified:true,checkedAt:new Date().toISOString(),pathname:latest.pathname,uploadedAt:latest.uploadedAt,size:latest.size,integrity:"AES-256-GCM",sha256:actualSha256,shaMatches,scanTruncated:truncated,...summary};
 }
 
 export async function pruneEncryptedBackups(){
@@ -131,10 +142,9 @@ export async function pruneEncryptedBackups(){
 
 export async function getBackupStatus(){
   const config=configState();
-  if(!config.configured)return {...config,retentionDays:RETENTION_DAYS,lastBackup:null,lastBackupAgeHours:null,overdue:false};
-  const page=await list({prefix:PREFIX,limit:5});
-  const blobs=(page.blobs||[]).sort((a,b)=>new Date(b.uploadedAt||0)-new Date(a.uploadedAt||0));
+  if(!config.configured)return {...config,retentionDays:RETENTION_DAYS,lastBackup:null,lastBackupAgeHours:null,overdue:false,backupCount:0,scanTruncated:false};
+  const {blobs,truncated}=await listBackupBlobs();
   const last=blobs[0]?{pathname:blobs[0].pathname,uploadedAt:blobs[0].uploadedAt,size:blobs[0].size}:null;
   const ageHours=last?.uploadedAt?Number(((Date.now()-new Date(last.uploadedAt).getTime())/3600000).toFixed(1)):null;
-  return {...config,retentionDays:RETENTION_DAYS,countSample:blobs.length,lastBackup:last,lastBackupAgeHours:ageHours,overdue:ageHours==null||ageHours>36};
+  return {...config,retentionDays:RETENTION_DAYS,backupCount:blobs.length,scanTruncated:truncated,lastBackup:last,lastBackupAgeHours:ageHours,overdue:ageHours==null||ageHours>36};
 }
