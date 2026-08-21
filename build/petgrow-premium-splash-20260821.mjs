@@ -9,63 +9,74 @@ export default function petgrowPremiumSplash() {
           children: `
             #petgrow-initial-splash{
               background:
-                radial-gradient(circle at 18% 15%,rgba(117,157,130,.18),transparent 31%),
-                radial-gradient(circle at 86% 84%,rgba(197,218,201,.34),transparent 34%),
-                linear-gradient(145deg,#f5f8f4 0%,#fbfcfa 48%,#eef4ef 100%)!important;
-              padding:max(22px,env(safe-area-inset-top)) 20px max(22px,env(safe-area-inset-bottom))!important;
+                radial-gradient(circle at 14% 16%,rgba(255,255,255,.95) 0 8%,transparent 32%),
+                radial-gradient(circle at 86% 18%,rgba(139,177,153,.22),transparent 30%),
+                radial-gradient(circle at 72% 84%,rgba(96,145,116,.18),transparent 34%),
+                linear-gradient(150deg,#f8fbf7 0%,#eef5ef 48%,#dfece3 100%)!important;
+              padding:max(24px,env(safe-area-inset-top)) 22px max(24px,env(safe-area-inset-bottom))!important;
               transition:opacity 220ms ease,visibility 220ms ease!important;
+              isolation:isolate;
             }
             #petgrow-initial-splash:before{
-              content:""!important;position:absolute!important;inset:-28%!important;width:auto!important;height:auto!important;
-              border-radius:50%!important;background:conic-gradient(from 210deg,transparent,rgba(45,91,69,.055),transparent 38%,rgba(45,91,69,.035),transparent 72%)!important;
-              animation:pg-premium-orbit 18s linear infinite!important;transform:none!important;left:auto!important;bottom:auto!important;
+              content:""!important;position:absolute!important;inset:-22%!important;width:auto!important;height:auto!important;
+              border-radius:42%!important;
+              background:conic-gradient(from 210deg,transparent,rgba(35,82,59,.055),transparent 34%,rgba(77,126,96,.045),transparent 72%)!important;
+              animation:pg-modern-orbit 22s linear infinite!important;transform:none!important;left:auto!important;bottom:auto!important;z-index:0!important;
             }
             #petgrow-initial-splash:after{
-              content:""!important;position:absolute!important;left:50%!important;bottom:-18vh!important;width:min(760px,115vw)!important;height:42vh!important;
-              border-radius:50% 50% 0 0!important;transform:translateX(-50%)!important;
-              background:linear-gradient(180deg,rgba(214,229,217,.3),rgba(238,245,239,.72))!important;
-              filter:blur(1px);pointer-events:none;
+              content:""!important;position:absolute!important;right:-15vw!important;top:-10vh!important;left:auto!important;bottom:auto!important;
+              width:min(520px,72vw)!important;height:min(520px,72vw)!important;border-radius:38%!important;
+              background:linear-gradient(145deg,rgba(255,255,255,.6),rgba(255,255,255,.05))!important;
+              border:1px solid rgba(255,255,255,.62)!important;transform:rotate(18deg)!important;pointer-events:none;z-index:0!important;
             }
-            .petgrow-runners,.petgrow-splash__dots{display:none!important}
+            .petgrow-runners,.petgrow-splash__dots,.petgrow-splash__logo-wrap{display:none!important}
+            .pg-modern-scene{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;color:#446b56}
+            .pg-modern-scene svg{position:absolute;right:-38px;bottom:max(1vh,4px);width:min(650px,112vw);height:auto;opacity:.17;filter:drop-shadow(0 18px 34px rgba(29,68,48,.08));transform:translateZ(0)}
+            .pg-modern-orb{position:absolute;border-radius:999px;border:1px solid rgba(63,111,82,.1);background:rgba(255,255,255,.34);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+            .pg-modern-orb.one{width:74px;height:74px;left:8%;top:18%;animation:pg-modern-float 5.8s ease-in-out infinite}
+            .pg-modern-orb.two{width:28px;height:28px;right:13%;top:35%;animation:pg-modern-float 4.8s ease-in-out .7s infinite}
+            .pg-modern-orb.three{width:44px;height:44px;left:18%;bottom:15%;animation:pg-modern-float 6.6s ease-in-out 1.2s infinite}
             .petgrow-splash__content{
-              width:min(86vw,382px)!important;box-sizing:border-box!important;transform:translateY(-1.5vh)!important;
-              padding:34px 28px 26px!important;border-radius:30px!important;
-              border:1px solid rgba(255,255,255,.9)!important;
-              background:linear-gradient(155deg,rgba(255,255,255,.88),rgba(248,251,248,.68))!important;
-              box-shadow:0 28px 80px rgba(35,64,49,.13),inset 0 1px 0 rgba(255,255,255,.92)!important;
-              backdrop-filter:blur(22px) saturate(1.1);-webkit-backdrop-filter:blur(22px) saturate(1.1);
+              position:relative!important;z-index:3!important;width:min(88vw,430px)!important;box-sizing:border-box!important;transform:translateY(-2vh)!important;
+              padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+              align-items:flex-start!important;text-align:left!important;
             }
-            .pg-premium-kicker{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;font-size:10px;font-weight:850;letter-spacing:.24em;color:#6f897b;margin:0 0 17px;text-transform:uppercase}
-            .petgrow-splash__logo-wrap{
-              position:relative;width:126px!important;aspect-ratio:1/1!important;border-radius:38px!important;
-              background:linear-gradient(145deg,rgba(255,255,255,.96),rgba(238,245,239,.82))!important;
-              border:1px solid rgba(72,111,88,.12);box-shadow:0 18px 45px rgba(40,76,57,.12),inset 0 1px 0 #fff;
-              animation:pg-premium-logo-in .72s cubic-bezier(.2,.78,.2,1) both!important;
-            }
-            .petgrow-splash__logo-wrap:before{content:"";position:absolute;inset:-11px;border-radius:45px;border:1px solid rgba(69,109,85,.08);animation:pg-premium-pulse 2.3s ease-in-out infinite}
-            .petgrow-splash__logo{width:88%!important;height:88%!important;filter:drop-shadow(0 7px 16px rgba(37,68,52,.08))!important}
-            .petgrow-splash__tagline{margin:22px 0 0!important;color:#263c31!important;font-size:17px!important;font-weight:780!important;line-height:1.45!important;letter-spacing:-.045em!important}
-            .pg-premium-subtag{margin:7px 0 0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;color:#86978e;font-size:10px;font-weight:750;letter-spacing:.16em;text-transform:uppercase}
-            .petgrow-splash__progress{width:100%!important;height:7px!important;margin-top:30px!important;background:rgba(44,73,57,.08)!important;border:1px solid rgba(44,73,57,.045);box-shadow:inset 0 1px 3px rgba(28,54,40,.05)!important}
-            .petgrow-splash__progress-bar{width:1%!important;animation:none!important;background:linear-gradient(90deg,#173d2e 0%,#3f7459 55%,#79a487 100%)!important;box-shadow:0 0 14px rgba(72,125,92,.28);transition:width 90ms linear!important}
-            .pg-premium-meta{width:100%;display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-top:13px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}
-            .pg-premium-meta>div{min-width:0;text-align:left}.pg-premium-meta small{display:block;color:#829088;font-size:10px;font-weight:650;line-height:1.4;margin-bottom:2px}.pg-premium-meta b{display:block;color:#42554b;font-size:12px;font-weight:760;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-            .pg-premium-percent{flex:0 0 auto;color:#214a36;font-size:26px;font-weight:860;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.055em}
+            .pg-modern-brand{width:100%;display:flex;flex-direction:column;align-items:flex-start;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;animation:pg-modern-brand-in .62s cubic-bezier(.2,.78,.2,1) both}
+            .pg-modern-mark{width:74px;height:74px;display:grid;place-items:center;border-radius:24px;background:linear-gradient(145deg,#173f2f,#2f6a4d 58%,#6b9a7d);box-shadow:0 18px 38px rgba(28,73,50,.19),inset 0 1px 0 rgba(255,255,255,.22);margin-bottom:24px;position:relative;overflow:hidden}
+            .pg-modern-mark:before{content:"";position:absolute;width:60px;height:60px;left:-26px;top:-26px;border-radius:50%;background:rgba(255,255,255,.14)}
+            .pg-modern-mark svg{width:43px;height:43px;position:relative;z-index:1;filter:drop-shadow(0 4px 8px rgba(12,39,26,.12))}
+            .pg-modern-kicker{display:flex;align-items:center;gap:8px;margin:0 0 9px;color:#587565;font-size:10px;font-weight:850;letter-spacing:.19em;text-transform:uppercase}
+            .pg-modern-kicker:before{content:"";width:19px;height:2px;border-radius:999px;background:#5f8c72}
+            .pg-modern-wordmark{margin:0;color:#173528;font-size:clamp(38px,10vw,48px);font-weight:900;letter-spacing:-.065em;line-height:.98}
+            .pg-modern-wordmark span{color:#4e8567}
+            .petgrow-splash__tagline{margin:17px 0 0!important;color:#30493b!important;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif!important;font-size:18px!important;font-weight:780!important;line-height:1.42!important;letter-spacing:-.045em!important;text-align:left!important}
+            .pg-modern-desc{margin:8px 0 0;color:#718379;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;font-size:12px;font-weight:620;line-height:1.55;letter-spacing:-.025em}
+            .pg-modern-pillrow{display:flex;flex-wrap:wrap;gap:7px;margin-top:20px}
+            .pg-modern-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.58);border:1px solid rgba(58,103,77,.1);color:#547060;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;font-size:9px;font-weight:800;letter-spacing:.06em;box-shadow:0 8px 24px rgba(43,82,60,.045)}
+            .pg-modern-pill i{width:5px;height:5px;border-radius:50%;background:#6a9a7c;box-shadow:0 0 0 3px rgba(106,154,124,.11)}
+            .pg-premium-subtag,.pg-premium-foot{display:none!important}
+            .petgrow-splash__progress{width:100%!important;height:6px!important;margin-top:34px!important;background:rgba(26,61,42,.09)!important;border:0!important;box-shadow:inset 0 1px 2px rgba(20,54,36,.05)!important;border-radius:999px!important;overflow:hidden!important}
+            .petgrow-splash__progress-bar{width:1%!important;animation:none!important;background:linear-gradient(90deg,#1b4935 0%,#4c8466 58%,#91b69e 100%)!important;box-shadow:0 0 14px rgba(75,132,102,.3);transition:width 90ms linear!important}
+            .pg-premium-meta{width:100%;display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-top:12px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}
+            .pg-premium-meta>div{min-width:0;text-align:left}.pg-premium-meta small{display:block;color:#7e9187;font-size:9px;font-weight:780;line-height:1.4;margin-bottom:3px;letter-spacing:.11em}.pg-premium-meta b{display:block;color:#40594b;font-size:12px;font-weight:720;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+            .pg-premium-percent{flex:0 0 auto;color:#1f5139;font-size:28px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.06em}
             .petgrow-splash__status{display:none!important}
-            .pg-premium-foot{margin:25px 0 0;color:#9aa69f;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;font-size:9px;font-weight:700;letter-spacing:.11em;text-transform:uppercase}
-            @keyframes pg-premium-logo-in{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
-            @keyframes pg-premium-pulse{0%,100%{opacity:.45;transform:scale(.98)}50%{opacity:1;transform:scale(1.025)}}
-            @keyframes pg-premium-orbit{to{transform:rotate(360deg)}}
+            @keyframes pg-modern-brand-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+            @keyframes pg-modern-orbit{to{transform:rotate(360deg)}}
+            @keyframes pg-modern-float{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-10px,0)}}
             @media(max-width:430px){
-              .petgrow-splash__content{width:min(88vw,354px)!important;padding:31px 23px 23px!important;border-radius:27px!important}
-              .petgrow-splash__logo-wrap{width:116px!important;border-radius:34px!important}.petgrow-splash__logo-wrap:before{border-radius:41px}
-              .petgrow-splash__tagline{font-size:16px!important}.petgrow-splash__progress{margin-top:27px!important}.pg-premium-percent{font-size:24px}
+              .petgrow-splash__content{width:min(88vw,370px)!important;transform:translateY(-1vh)!important}
+              .pg-modern-mark{width:68px;height:68px;border-radius:22px;margin-bottom:22px}.pg-modern-mark svg{width:40px;height:40px}
+              .pg-modern-wordmark{font-size:42px}.petgrow-splash__tagline{font-size:17px!important}.pg-modern-desc{font-size:11px}.petgrow-splash__progress{margin-top:30px!important}.pg-premium-percent{font-size:26px}
+              .pg-modern-scene svg{width:128vw;right:-31vw;bottom:1vh;opacity:.14}
+              .pg-modern-orb.one{left:4%;top:13%}.pg-modern-orb.two{right:6%;top:31%}
             }
+            @media(max-width:350px){.pg-modern-pillrow{display:none}.petgrow-splash__progress{margin-top:25px!important}.pg-modern-mark{margin-bottom:18px}.petgrow-splash__tagline{margin-top:13px!important}}
             @media(orientation:landscape) and (max-height:600px){
-              .petgrow-splash__content{width:min(520px,76vw)!important;padding:18px 25px!important;display:grid!important;grid-template-columns:auto 1fr!important;grid-template-rows:auto auto auto auto!important;column-gap:24px!important;text-align:left!important}
-              .pg-premium-kicker{grid-column:1/-1;margin-bottom:8px}.petgrow-splash__logo-wrap{grid-row:2/5;width:92px!important}.petgrow-splash__tagline{grid-column:2;margin:2px 0 0!important;text-align:left!important}.pg-premium-subtag{grid-column:2}.petgrow-splash__progress{grid-column:2;margin-top:14px!important}.pg-premium-meta{grid-column:2}.pg-premium-foot{display:none}
+              .petgrow-splash__content{width:min(650px,86vw)!important;transform:none!important;display:grid!important;grid-template-columns:90px 1fr!important;grid-template-rows:auto auto auto auto!important;column-gap:22px!important;align-items:center!important}
+              .pg-modern-brand{display:contents}.pg-modern-mark{grid-column:1;grid-row:1/4;width:72px;height:72px;margin:0}.pg-modern-kicker{grid-column:2;margin-bottom:5px}.pg-modern-wordmark{grid-column:2;font-size:38px}.petgrow-splash__tagline{grid-column:2;margin-top:8px!important;font-size:15px!important}.pg-modern-desc,.pg-modern-pillrow{display:none}.petgrow-splash__progress{grid-column:1/-1;margin-top:17px!important}.pg-premium-meta{grid-column:1/-1}.pg-modern-scene svg{width:520px;right:-80px;opacity:.1}
             }
-            @media(prefers-reduced-motion:reduce){#petgrow-initial-splash:before,.petgrow-splash__logo-wrap:before{animation:none!important}}
+            @media(prefers-reduced-motion:reduce){#petgrow-initial-splash:before,.pg-modern-orb{animation:none!important}}
           `,
           injectTo: "head",
         },
@@ -86,7 +97,7 @@ export default function petgrowPremiumSplash() {
                 if(bar){bar.style.setProperty('width',progress+'%','important');bar.setAttribute('aria-valuenow',String(progress));}
                 if(pct)pct.textContent=progress+'%';
                 if(message){
-                  message.textContent=progress<28?'PetGrow를 준비하고 있어요':progress<62?'우리 아이 정보를 연결하고 있어요':progress<90?'화면을 빠르게 정리하고 있어요':progress<100?'거의 다 준비됐어요':'준비가 완료됐어요';
+                  message.textContent=progress<28?'PetGrow를 준비하고 있어요':progress<62?'우리 아이 정보를 연결하고 있어요':progress<90?'평생기록을 안전하게 준비하고 있어요':progress<100?'거의 다 준비됐어요':'준비가 완료됐어요';
                 }
               }
               function mount(){
@@ -97,15 +108,25 @@ export default function petgrowPremiumSplash() {
                 var logo=splash.querySelector('.petgrow-splash__logo-wrap');
                 var tagline=splash.querySelector('.petgrow-splash__tagline');
                 var progressEl=splash.querySelector('.petgrow-splash__progress');
-                if(!content||!logo||!progressEl)return;
+                if(!content||!progressEl)return;
                 mounted=true;
-                var kicker=document.createElement('p');kicker.className='pg-premium-kicker';kicker.textContent='PETGROW · PET LIFE';content.insertBefore(kicker,logo);
-                if(tagline)tagline.textContent='우리 아이의 오늘부터 평생까지';
-                var sub=document.createElement('p');sub.className='pg-premium-subtag';sub.textContent='CARE · GROWTH · MEMORY';progressEl.parentNode.insertBefore(sub,progressEl);
+                var scene=document.createElement('div');
+                scene.className='pg-modern-scene';
+                scene.innerHTML='<span class="pg-modern-orb one"></span><span class="pg-modern-orb two"></span><span class="pg-modern-orb three"></span><svg viewBox="0 0 620 370" fill="none" aria-hidden="true"><g stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M100 261c20-67 70-107 132-107 56 0 104 31 129 81 16 32 16 67 4 102"/><path d="M151 168c-25-5-47-25-54-52 28-7 58 1 76 22"/><path d="M202 157c-4-31 9-61 36-80 22 25 28 57 16 87"/><circle cx="202" cy="202" r="5" fill="currentColor" stroke="none"/><path d="M168 225c16 14 38 14 54 1M109 270c-12 35-5 68 18 94M323 278c18 24 26 50 24 78"/><path d="M389 309c5-64 45-112 104-125 40-9 81 4 109 34"/><path d="M446 194l7-61 44 47M512 179l42-47 12 61"/><circle cx="488" cy="220" r="4.8" fill="currentColor" stroke="none"/><circle cx="530" cy="220" r="4.8" fill="currentColor" stroke="none"/><path d="M505 235l6 6 7-6M472 246l-48 2M474 257l-45 15M546 246l47 2M544 257l45 15M438 317c-7 20-8 38-2 52M567 312c12 18 17 37 15 57"/></g></svg>';
+                splash.insertBefore(scene,splash.firstChild);
+                var brand=document.createElement('div');
+                brand.className='pg-modern-brand';
+                brand.innerHTML='<div class="pg-modern-mark"><svg viewBox="0 0 64 64" aria-hidden="true"><g fill="#fff"><ellipse cx="18" cy="20" rx="6.5" ry="8" transform="rotate(-28 18 20)"/><ellipse cx="32" cy="14.5" rx="6.3" ry="8"/><ellipse cx="46" cy="20" rx="6.5" ry="8" transform="rotate(28 46 20)"/><path d="M18 41c0-10 6.2-17 14-17s14 7 14 17c0 8.5-6.5 13.5-14 13.5S18 49.5 18 41Z"/></g><path d="M32 31.5c-5.7-6.5-13.5 1.7 0 12 13.5-10.3 5.7-18.5 0-12Z" fill="#b8d7c2"/></svg></div><p class="pg-modern-kicker">PET LIFETIME PLATFORM</p><h1 class="pg-modern-wordmark">Pet<span>Grow</span></h1>';
+                content.insertBefore(brand,content.firstChild);
+                if(tagline)tagline.textContent='반려동물의 오늘을 기록하고, 평생을 함께';
+                var desc=document.createElement('p');desc.className='pg-modern-desc';desc.textContent='성장 · 건강 · 일상 · 추억을 하나의 라이프 기록으로';
+                if(tagline)tagline.insertAdjacentElement('afterend',desc);
+                var pills=document.createElement('div');pills.className='pg-modern-pillrow';pills.innerHTML='<span class="pg-modern-pill"><i></i>PET LIFE</span><span class="pg-modern-pill"><i></i>CARE</span><span class="pg-modern-pill"><i></i>MEMORY</span>';
+                desc.insertAdjacentElement('afterend',pills);
                 progressEl.setAttribute('role','progressbar');progressEl.setAttribute('aria-valuemin','1');progressEl.setAttribute('aria-valuemax','100');
                 var meta=document.createElement('div');meta.className='pg-premium-meta';meta.innerHTML='<div><small>LOADING PETGROW</small><b class="pg-premium-message">PetGrow를 준비하고 있어요</b></div><strong class="pg-premium-percent">1%</strong>';
                 progressEl.insertAdjacentElement('afterend',meta);
-                var foot=document.createElement('p');foot.className='pg-premium-foot';foot.textContent='A BETTER LIFE WITH YOUR PET';content.appendChild(foot);
+                if(logo)logo.setAttribute('aria-hidden','true');
                 setProgress(1);
                 timer=window.setInterval(function(){
                   if(finished||progress>=94)return;
@@ -124,7 +145,7 @@ export default function petgrowPremiumSplash() {
                     var splash=document.getElementById('petgrow-initial-splash');if(!splash)return;
                     splash.classList.add('petgrow-splash--hide');
                     window.setTimeout(function(){if(splash&&splash.parentNode)splash.parentNode.removeChild(splash);},240);
-                  },75);
+                  },95);
                 }
                 requestAnimationFrame(frame);
               }
