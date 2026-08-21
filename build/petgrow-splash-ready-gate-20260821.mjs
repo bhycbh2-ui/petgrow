@@ -7,7 +7,7 @@ export default function petgrowSplashReadyGate(){
         attrs:{id:"petgrow-splash-ready-gate"},
         children:`
           (function(){
-            var installed=false,finished=false,observer=null,poll=null,requestedAt=0;
+            var installed=false,finished=false,observer=null,poll=null,requestedAt=0,maxProgress=1;
             function waitingNode(){return document.querySelector(".petgrow-boot-skeleton,#petgrow-fast-shell");}
             function setMessage(text){var msg=document.querySelector(".pg-premium-message");if(msg)msg.textContent=text;}
             function hasRealScreen(){
@@ -26,6 +26,16 @@ export default function petgrowSplashReadyGate(){
                 window.setTimeout(install,12);
                 return;
               }
+              var rawProgress=window.__petgrowSetSplashProgress;
+              function advance(value){
+                var next=Math.max(1,Math.min(100,Math.round(Number(value)||1)));
+                if(next<maxProgress)return false;
+                maxProgress=next;
+                rawProgress(next);
+                return true;
+              }
+              window.__petgrowSetSplashProgress=advance;
+
               var finish=window.__hidePetGrowSplash;
               if(finish&&finish.__petgrowReadyGate){installed=true;return;}
 
@@ -34,7 +44,7 @@ export default function petgrowSplashReadyGate(){
                 if(!hasRealScreen())return;
                 finished=true;
                 cleanup();
-                window.__petgrowSetSplashProgress(100);
+                advance(100);
                 setMessage("준비가 완료됐어요");
                 finish();
               }
@@ -47,11 +57,8 @@ export default function petgrowSplashReadyGate(){
                   if(finished)return;
                   if(hasRealScreen()){complete();return;}
                   var elapsed=performance.now()-requestedAt;
-                  if(elapsed>1500&&typeof window.__petgrowSetSplashProgress==="function")window.__petgrowSetSplashProgress(97);
-                  if(elapsed>3200&&typeof window.__petgrowSetSplashProgress==="function"){
-                    window.__petgrowSetSplashProgress(99);
-                    setMessage("화면을 연결하고 있어요");
-                  }
+                  if(elapsed>1500)advance(97);
+                  if(elapsed>3200)advance(99);
                 },100);
               }
 
@@ -59,8 +66,7 @@ export default function petgrowSplashReadyGate(){
                 if(finished)return;
                 requestedAt=requestedAt||performance.now();
                 if(hasRealScreen()){complete();return;}
-                window.__petgrowSetSplashProgress(94);
-                setMessage("로그인 정보를 확인하고 있어요");
+                advance(94);
                 watchReady();
               }
               gatedFinish.__petgrowReadyGate=true;
