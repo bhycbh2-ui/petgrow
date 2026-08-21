@@ -1,0 +1,87 @@
+.pg-growth-record-overlay{
+  padding:16px!important;
+  align-items:center!important;
+  overflow:hidden!important;
+}
+
+.pg-growth-record-modal{
+  width:min(820px,calc(100vw - 32px))!important;
+  max-width:min(820px,calc(100vw - 32px))!important;
+  max-height:calc(100dvh - 32px)!important;
+  box-sizing:border-box!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  scrollbar-gutter:stable;
+  padding-bottom:82px!important;
+}
+
+.pg-growth-close-top{
+  position:fixed;
+  z-index:2147483300;
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(31,58,45,.14);
+  border-radius:50%;
+  background:rgba(255,255,255,.96);
+  color:#22352b;
+  box-shadow:0 8px 24px rgba(18,42,30,.16);
+  font:400 30px/1 system-ui,-apple-system,"Segoe UI",sans-serif;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+
+.pg-growth-close-top:hover{background:#f4f8f5;transform:translateY(-1px)}
+.pg-growth-close-top:focus-visible,.pg-growth-close-bottom:focus-visible{outline:3px solid rgba(69,117,87,.28);outline-offset:2px}
+
+.pg-growth-close-bottom{
+  position:fixed;
+  z-index:2147483290;
+  left:50%;
+  bottom:max(14px,env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  width:min(340px,calc(100vw - 48px));
+  min-height:48px;
+  border:1px solid rgba(49,92,72,.18);
+  border-radius:14px;
+  background:#315c48;
+  color:#fff;
+  box-shadow:0 12px 34px rgba(25,62,45,.24);
+  font:800 14px/1 system-ui,-apple-system,"Segoe UI",sans-serif;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+
+.pg-growth-close-bottom:hover{background:#294f3e}
+
+@media (max-width:760px){
+  .pg-growth-record-overlay{
+    padding:max(8px,env(safe-area-inset-top)) 6px max(6px,env(safe-area-inset-bottom))!important;
+    align-items:flex-end!important;
+  }
+  .pg-growth-record-modal{
+    width:100%!important;
+    max-width:100%!important;
+    max-height:calc(100dvh - max(8px,env(safe-area-inset-top)))!important;
+    border-radius:22px 22px 0 0!important;
+    padding-bottom:86px!important;
+  }
+  .pg-growth-close-top{
+    width:42px;
+    height:42px;
+    font-size:28px;
+  }
+  .pg-growth-close-bottom{
+    width:calc(100vw - 28px);
+    bottom:max(10px,env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-height:620px) and (min-width:761px){
+  .pg-growth-record-overlay{padding:8px!important}
+  .pg-growth-record-modal{max-height:calc(100dvh - 16px)!important}
+  .pg-growth-close-bottom{min-height:44px;bottom:8px}
+}
