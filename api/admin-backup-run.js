@@ -1,6 +1,6 @@
 import { getSessionUserId } from "../server_lib/session.js";
 import { getAdminRole, roleCan, logAdmin } from "../server_lib/admin.js";
-import { createEncryptedBackup, pruneEncryptedBackups, getBackupStatus, verifyLatestEncryptedBackup } from "../server_lib/backup.js";
+import { createEncryptedBackup, pruneEncryptedBackups, getBackupStatus, verifyEncryptedBackup, verifyLatestEncryptedBackup } from "../server_lib/backup.js";
 
 let running=null;
 
@@ -21,7 +21,7 @@ async function runOnce(){
   }
   const backup=await createEncryptedBackup();
   if(!backup.created)return {ok:false,skipped:true,reason:backup.reason||"BACKUP_NOT_CONFIGURED",backup,verification:null,prune:null};
-  const verification=await verifyLatestEncryptedBackup();
+  const verification=await verifyEncryptedBackup(backup);
   if(!verification.verified)throw new Error(verification.reason||"BACKUP_VERIFY_FAILED");
   const prune=await pruneEncryptedBackups();
   return {ok:true,backup,verification,prune,status:await getBackupStatus()};
