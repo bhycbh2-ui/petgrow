@@ -67,6 +67,17 @@ export default defineConfig({
   // 7차 소개·성장결과·My/계정·지원/정책, 8차 등록·시작·로그인·더보기 등 보조 화면을 실제 사용 시점에 로드합니다.
   plugins: [petgrowPetLifeLegalAudit20260821(), petgrowFullQa20260821(), petgrowPremiumSplashV2(), petgrowPremiumSplashV3(), petgrowSplashReadyGate(), petgrowAdsenseWeb(), petgrowPerformanceLazy(), petgrowRechartsTreeShake20260822(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), petgrowMenuSplitV3(), petgrowMenuSplitV4(), petgrowPetTalkSplitV5(), petgrowDeepMenuSplitV6(), petgrowDeepScreenSplitV7(), petgrowRouteSplitV8(), react()],
   build: {
+    modulePreload: {
+      resolveDependencies(filename, deps, context) {
+        // Growth charts are deep-screen only. Do not make every home visit download
+        // the 365kB chart vendor just because Rollup sees it in the entry graph.
+        // JS-hosted dynamic imports keep their own dependency preload behavior.
+        if (context?.hostType === "html") {
+          return deps.filter((dep) => !/(?:^|\/)charts-vendor-[^/]+\.js$/.test(dep));
+        }
+        return deps;
+      },
+    },
     rollupOptions: {
       output: {
         manualChunks(id) {
