@@ -67,6 +67,7 @@ const primaryDeferredLoaders = [
  */
 const deepDeferredLoaders = [
   () => import("./legacy-server-sync.js"),
+  () => import("./account-data-export.js"),
   () => import("./final-audit-20260818.js"),
   () => import("./legacy-growth-modal-ux.js"),
   () => import("./admin-news-music-runtime-20260818.js"),
