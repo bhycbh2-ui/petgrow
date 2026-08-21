@@ -12,6 +12,11 @@ function sameOrigin(req){
     return new URL(origin).host.toLowerCase()===host;
   }catch{return false;}
 }
+function publicBackupResult(value){
+  if(!value||typeof value!=="object")return value;
+  const {url,plainSha256,...safe}=value;
+  return safe;
+}
 
 async function runOnce(){
   const before=await getBackupStatus();
@@ -38,8 +43,9 @@ export default async function handler(req,res){
     if(!running)running=runOnce().finally(()=>{running=null;});
     const result=await running;
     await logAdmin(uid,"backup_run",null,null,{role,ok:result?.ok!==false,skipped:Boolean(result?.skipped),reason:result?.reason||null,verified:Boolean(result?.verification?.verified),pathname:result?.verification?.pathname||result?.backup?.pathname||null}).catch(error=>console.warn("backup audit",error?.message||error));
-    if(result?.ok===false&&result?.skipped)return res.status(409).json(result);
-    return res.status(200).json(result);
+    const responseResult={...result,backup:publicBackupResult(result?.backup)};
+    if(result?.ok===false&&result?.skipped)return res.status(409).json(responseResult);
+    return res.status(200).json(responseResult);
   }catch(error){
     await logAdmin(uid,"backup_run_failed",null,null,{role,error:String(error?.message||error).slice(0,200)}).catch(()=>{});
     console.error("manual encrypted backup",error);
