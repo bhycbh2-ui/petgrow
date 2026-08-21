@@ -47,5 +47,7 @@ if("requestIdleCallback" in window)requestIdleCallback(startDeferred,{timeout:85
 else setTimeout(startDeferred,260);
 
 if("serviceWorker" in navigator){
-  addEventListener("load",()=>navigator.serviceWorker.register("/sw.js?v=71",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{}));
+  // register() 자체가 필요 시 새 service worker를 확인합니다.
+  // 매 접속마다 registration.update()를 한 번 더 호출하면 sw.js 요청이 중복될 수 있어 제거합니다.
+  addEventListener("load",()=>navigator.serviceWorker.register("/sw.js?v=72",{updateViaCache:"none"}).catch(()=>{}),{once:true});
 }

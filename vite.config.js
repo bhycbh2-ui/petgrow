@@ -38,8 +38,9 @@ function petgrowAdsenseWeb() {
             (function () {
               if (!/^https?:$/.test(window.location.protocol)) return;
               var loaded = false;
+              var scheduled = false;
               function loadAdsense() {
-                if (loaded || document.querySelector('script[data-petgrow-adsense]')) return;
+                if (loaded || document.visibilityState === 'hidden' || document.querySelector('script[data-petgrow-adsense]')) return;
                 loaded = true;
                 var script = document.createElement('script');
                 script.async = true;
@@ -48,11 +49,25 @@ function petgrowAdsenseWeb() {
                 script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}';
                 document.head.appendChild(script);
               }
+              function runWhenIdle() {
+                if (document.visibilityState === 'hidden') {
+                  document.addEventListener('visibilitychange', function onVisible() {
+                    if (document.visibilityState !== 'visible') return;
+                    document.removeEventListener('visibilitychange', onVisible);
+                    runWhenIdle();
+                  });
+                  return;
+                }
+                if ('requestIdleCallback' in window) window.requestIdleCallback(loadAdsense, { timeout: 1600 });
+                else loadAdsense();
+              }
               var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
               var slow = !!(connection && (connection.saveData || /(^|-)2g$/.test(connection.effectiveType || '')));
-              var delay = slow ? 4200 : 1800;
-              if ('requestIdleCallback' in window) window.requestIdleCallback(loadAdsense, { timeout: delay });
-              else window.setTimeout(loadAdsense, delay);
+              var delay = slow ? 6500 : 2600;
+              if (!scheduled) {
+                scheduled = true;
+                window.setTimeout(runWhenIdle, delay);
+              }
             })();
           `,
           injectTo: "head",
