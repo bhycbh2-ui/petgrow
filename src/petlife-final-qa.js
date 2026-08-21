@@ -1,4 +1,5 @@
 import "./petlife-final-qa.css";
+import "./petlife-stable-sheet-20260821.css";
 
 let bypassDeleteGuard = false;
 let activeConfirm = null;
