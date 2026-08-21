@@ -17,6 +17,7 @@ import "./petgrow-global-palette-20260819.css";
 import "./petgrow-final-batch-20260819.css";
 import "./pet-tarot-intro-fix-20260819.css";
 import "./splash-motion-20260821.css";
+import "./loading-speed-20260822.css";
 
 /* Home/PetNews fetch routing must be ready before the full app mounts. */
 import "./home-news-fast-20260819.js";
@@ -35,20 +36,44 @@ requestAnimationFrame(() => {
   document.getElementById("petgrow-fast-start-style")?.remove();
 });
 
+const markCriticalReady = () => {
+  if (window.__petgrowCriticalAppReady) return;
+  window.__petgrowCriticalAppReady = true;
+  window.dispatchEvent(new CustomEvent("petgrow:critical-ready"));
+};
+
+/*
+ * Splash completion must only wait for the actual app shell to render.
+ * PetLife/server hydration continues after the first screen so it never holds 99%.
+ */
+(() => {
+  const started = performance.now();
+  const probe = () => {
+    const rendered = !!(root?.firstElementChild || String(root?.textContent || "").trim());
+    const blocking = document.querySelector(".petgrow-boot-skeleton,#petgrow-fast-shell");
+    if ((rendered && !blocking) || (rendered && performance.now() - started > 700)) {
+      markCriticalReady();
+      return;
+    }
+    if (performance.now() - started > 1200) {
+      markCriticalReady();
+      return;
+    }
+    requestAnimationFrame(probe);
+  };
+  requestAnimationFrame(probe);
+})();
+
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-/* Critical home hydration runs behind the splash in its own small chunk. */
-requestAnimationFrame(() => window.setTimeout(() => {
-  import("./critical-home-boot.js")
-    .then((module) => module.bootCriticalHome?.())
-    .catch((error) => {
-      console.warn("PetGrow critical home chunk failed", error);
-      window.__petgrowCriticalAppReady = true;
-      window.dispatchEvent(new CustomEvent("petgrow:critical-ready"));
-    });
-}, 0));
-
 const primaryDeferredLoaders = [
+  () => Promise.all([
+    import("./PetLifeApp.jsx"),
+    import("./petlife-home-bridge.js"),
+  ]).then(([petLifeModule, bridge]) => {
+    petLifeModule.bootPetLife?.();
+    bridge.bootPetLifeHomeBridge?.();
+  }),
   () => import("./requested-polish-20260818.js"),
   () => import("./aab-ready-fixes-20260818.js"),
   () => import("./requested-final-fixes-20260818.js"),
@@ -96,18 +121,19 @@ const scheduleIdle = (callback, timeout, fallbackDelay) => {
   return window.setTimeout(callback, fallbackDelay);
 };
 
-scheduleIdle(() => loadInSlices(primaryDeferredLoaders, 34), 1450, 520);
+/* Let the first screen paint before PetLife/API warm-up starts. */
+scheduleIdle(() => loadInSlices(primaryDeferredLoaders, 30), 900, 320);
 
 const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
 const slowConnection = connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType || "");
-const deepDelay = slowConnection ? 14000 : 9000;
+const deepDelay = slowConnection ? 15000 : 10000;
 window.setTimeout(() => {
-  scheduleIdle(() => loadInSlices(deepDeferredLoaders, 64), 2600, 750);
+  scheduleIdle(() => loadInSlices(deepDeferredLoaders, 64), 2800, 850);
 }, deepDelay);
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js?v=70", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=71", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });
