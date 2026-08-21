@@ -14,6 +14,11 @@ function sameOrigin(req){
     return new URL(origin).host.toLowerCase()===host;
   }catch{return false;}
 }
+function publicVerification(value){
+  if(!value||typeof value!=="object")return value;
+  const {sha256,...safe}=value;
+  return safe;
+}
 
 export default async function handler(req,res){
   if(req.method!=="POST")return res.status(405).json({error:"지원하지 않는 요청이에요."});
@@ -27,7 +32,8 @@ export default async function handler(req,res){
     if(lastResult&&now-lastCheckedAt<60000)return res.status(200).json({...lastResult,cached:true});
     if(!running)running=verifyLatestEncryptedBackup().finally(()=>{running=null;});
     const verification=await running;
-    lastResult={ok:Boolean(verification?.verified),verification};
+    const publicResult=publicVerification(verification);
+    lastResult={ok:Boolean(verification?.verified),verification:publicResult};
     lastCheckedAt=Date.now();
     await logAdmin(uid,"backup_verify",null,null,{role,verified:Boolean(verification?.verified),reason:verification?.reason||null,pathname:verification?.pathname||null}).catch(error=>console.warn("backup verify audit",error?.message||error));
     if(!verification?.verified)return res.status(409).json(lastResult);
