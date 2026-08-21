@@ -7,6 +7,7 @@ import petInfoCmsSource from "./build/petinfo-cms-source-20260820.mjs";
 import petNewsLoadingState from "./build/petnews-loading-state-20260821.mjs";
 import petgrowPerformanceLazy from "./build/petgrow-performance-lazy-20260821.mjs";
 import petgrowMenuSplitV3 from "./build/petgrow-menu-split-v3-20260821.mjs";
+import petgrowV4SourceInspect from "./build/petgrow-v4-source-inspect.mjs";
 
 const ADSENSE_CLIENT = "ca-pub-9699974051273244";
 
@@ -58,7 +59,7 @@ function petgrowAdsenseWeb() {
 
 export default defineConfig({
   // Pet뉴스의 최종 원문-이동 보정을 먼저 적용한 뒤, 3차 플러그인이 그 최종 UI를 별도 메뉴 청크로 분리합니다.
-  plugins: [petgrowAdsenseWeb(), petgrowPerformanceLazy(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), petgrowMenuSplitV3(), react()],
+  plugins: [petgrowAdsenseWeb(), petgrowPerformanceLazy(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), petgrowMenuSplitV3(), petgrowV4SourceInspect(), react()],
   build: {
     // 자주 바뀌는 앱 코드와 무거운 외부 라이브러리를 분리해 재방문 캐시 효율을 높여요.
     // Recharts/Leaflet 및 PetNews/PetMusic은 실제 사용 시점에만 동적 import 됩니다.
