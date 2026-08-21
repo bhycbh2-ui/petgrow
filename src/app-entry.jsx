@@ -45,9 +45,14 @@ const primaryDeferredLoaders = [
   () => import("./home-quick-petbti-20260819.js"),
   () => import("./petgrow-final-batch-20260819.js"),
   () => import("./petlife-final-qa.js"),
-  () => import("./PetLifeApp.jsx").then((m) => {
+  () => import("./PetLifeApp.jsx").then(async (m) => {
     m.bootPetLife?.();
-    return import("./petlife-home-bridge.js").then((bridge) => bridge.bootPetLifeHomeBridge?.());
+    const [bridge, navigation] = await Promise.all([
+      import("./petlife-home-bridge.js"),
+      import("./petlife-navigation-ux.js"),
+    ]);
+    bridge.bootPetLifeHomeBridge?.();
+    navigation.bootPetLifeNavigationUX?.();
   }),
 ];
 
@@ -95,7 +100,7 @@ window.setTimeout(() => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js?v=61", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=62", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });
