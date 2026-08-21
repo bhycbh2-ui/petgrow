@@ -101,17 +101,22 @@ export async function createEncryptedBackup(){
   const encrypted=encrypt(compressed,{plainSha256});
   const pathname=`${PREFIX}${createdAt.slice(0,10)}/petgrow-${createdAt.replace(/[:.]/g,"-")}.json.enc`;
   const blob=await put(pathname,encrypted,{access:"public",addRandomSuffix:true,contentType:"application/octet-stream"});
-  return {...config,created:true,url:blob.url,pathname:blob.pathname,plainBytes:plain.length,encryptedBytes:encrypted.length,plainSha256,createdAt};
+  return {...config,created:true,url:blob.url,pathname:blob.pathname,size:encrypted.length,plainBytes:plain.length,encryptedBytes:encrypted.length,plainSha256,createdAt};
 }
 
-export async function verifyLatestEncryptedBackup(){
+export async function verifyEncryptedBackup(target=null){
   const config=configState();
   if(!config.configured)return {...config,verified:false,skipped:true};
-  const {blobs,truncated}=await listBackupBlobs();
-  const latest=blobs[0];
-  if(!latest)return {...config,verified:false,reason:"NO_BACKUP",checkedAt:new Date().toISOString()};
-  if(Number(latest.size||0)>MAX_VERIFY_BYTES)return {...config,verified:false,reason:"BACKUP_TOO_LARGE_TO_VERIFY",pathname:latest.pathname,size:latest.size,checkedAt:new Date().toISOString()};
-  const response=await fetch(latest.url,{cache:"no-store",headers:{Accept:"application/octet-stream"}});
+  let blob=target&&target.url?{url:target.url,pathname:target.pathname||null,uploadedAt:target.uploadedAt||target.createdAt||null,size:target.size||target.encryptedBytes||null}:null;
+  let scanTruncated=false;
+  if(!blob){
+    const listed=await listBackupBlobs();
+    blob=listed.blobs[0]||null;
+    scanTruncated=listed.truncated;
+  }
+  if(!blob)return {...config,verified:false,reason:"NO_BACKUP",checkedAt:new Date().toISOString()};
+  if(Number(blob.size||0)>MAX_VERIFY_BYTES)return {...config,verified:false,reason:"BACKUP_TOO_LARGE_TO_VERIFY",pathname:blob.pathname,size:blob.size,checkedAt:new Date().toISOString()};
+  const response=await fetch(blob.url,{cache:"no-store",headers:{Accept:"application/octet-stream"}});
   if(!response.ok)throw new Error(`BACKUP_FETCH_${response.status}`);
   const bytes=Buffer.from(await response.arrayBuffer());
   if(bytes.length>MAX_VERIFY_BYTES)throw new Error("BACKUP_TOO_LARGE_TO_VERIFY");
@@ -122,8 +127,10 @@ export async function verifyLatestEncryptedBackup(){
   const expectedSha256=envelope.plainSha256?String(envelope.plainSha256):null;
   const shaMatches=expectedSha256?actualSha256===expectedSha256:null;
   if(shaMatches===false)throw new Error("BACKUP_SHA_MISMATCH");
-  return {...config,verified:true,checkedAt:new Date().toISOString(),pathname:latest.pathname,uploadedAt:latest.uploadedAt,size:latest.size,integrity:"AES-256-GCM",sha256:actualSha256,shaMatches,scanTruncated:truncated,...summary};
+  return {...config,verified:true,checkedAt:new Date().toISOString(),pathname:blob.pathname,uploadedAt:blob.uploadedAt,size:blob.size||bytes.length,integrity:"AES-256-GCM",sha256:actualSha256,shaMatches,scanTruncated,...summary};
 }
+
+export async function verifyLatestEncryptedBackup(){return verifyEncryptedBackup(null);}
 
 export async function pruneEncryptedBackups(){
   const config=configState();
@@ -144,7 +151,7 @@ export async function getBackupStatus(){
   const config=configState();
   if(!config.configured)return {...config,retentionDays:RETENTION_DAYS,lastBackup:null,lastBackupAgeHours:null,overdue:false,backupCount:0,scanTruncated:false};
   const {blobs,truncated}=await listBackupBlobs();
-  const last=blobs[0]?{pathname:blobs[0].pathname,uploadedAt:blobs[0].uploadedAt,size:blobs[0].size}:null;
+  const last=blobs[0]?{pathname:blobs[0].pathname,uploadedAt:blobs[0].uploadedAt,size:blobs[0].size,url:blobs[0].url}:null;
   const ageHours=last?.uploadedAt?Number(((Date.now()-new Date(last.uploadedAt).getTime())/3600000).toFixed(1)):null;
   return {...config,retentionDays:RETENTION_DAYS,backupCount:blobs.length,scanTruncated:truncated,lastBackup:last,lastBackupAgeHours:ageHours,overdue:ageHours==null||ageHours>36};
 }
