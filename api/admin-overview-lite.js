@@ -15,7 +15,7 @@ export default async function handler(req,res){
       getPetLifeServerStats(),
       sql`
         select
-          count(distinct user_id) filter(where created_at>=now()-interval '30 days')::int active_petlife_users_30d,
+          (select count(distinct user_id)::int from pg_pet_life_entries where created_at>=now()-interval '30 days') active_petlife_users_30d,
           count(*) filter(where push_attempted_at>=now()-interval '30 days')::int push_attempts_30d,
           count(*) filter(where pushed_at>=now()-interval '30 days')::int push_success_30d,
           count(*) filter(where push_attempted_at>=now()-interval '30 days' and pushed_at is null and push_error is not null)::int push_failed_30d
