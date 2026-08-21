@@ -9,7 +9,7 @@ import petgrowPerformanceLazy from "./build/petgrow-performance-lazy-20260821.mj
 import petgrowMenuSplitV3 from "./build/petgrow-menu-split-v3-20260821.mjs";
 import petgrowMenuSplitV4 from "./build/petgrow-menu-split-v4-20260821.mjs";
 import petgrowPetTalkSplitV5 from "./build/petgrow-pettalk-split-v5-20260821.mjs";
-import petgrowV6DepInspect from "./build/petgrow-v6-dep-inspect.mjs";
+import petgrowDeepMenuSplitV6 from "./build/petgrow-deep-menu-split-v6-20260821.mjs";
 
 const ADSENSE_CLIENT = "ca-pub-9699974051273244";
 
@@ -18,8 +18,14 @@ function petgrowAdsenseWeb() {
     name: "petgrow-adsense-web",
     transformIndexHtml() {
       return [
-        { tag: "meta", attrs: { name: "google-adsense-account", content: ADSENSE_CLIENT }, injectTo: "head" },
-        { tag: "script", children: `
+        {
+          tag: "meta",
+          attrs: { name: "google-adsense-account", content: ADSENSE_CLIENT },
+          injectTo: "head",
+        },
+        {
+          tag: "script",
+          children: `
             (function () {
               if (!/^https?:$/.test(window.location.protocol)) return;
               var loaded = false;
@@ -39,23 +45,31 @@ function petgrowAdsenseWeb() {
               if ('requestIdleCallback' in window) window.requestIdleCallback(loadAdsense, { timeout: delay });
               else window.setTimeout(loadAdsense, delay);
             })();
-          `, injectTo: "head" },
+          `,
+          injectTo: "head",
+        },
       ];
     },
   };
 }
 
 export default defineConfig({
-  plugins: [petgrowAdsenseWeb(), petgrowV6DepInspect(), petgrowPerformanceLazy(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), petgrowMenuSplitV3(), petgrowMenuSplitV4(), petgrowPetTalkSplitV5(), react()],
+  // 3차 Pet뉴스/Pet음악, 4차 내 주변 Pet·Pet톡 피드·관리자센터,
+  // 5차 Pet톡 하위화면, 6차 Pet사주·PetBTI·Pet정보·정보가이드를 실제 사용 시점에 로드합니다.
+  plugins: [petgrowAdsenseWeb(), petgrowPerformanceLazy(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), petgrowMenuSplitV3(), petgrowMenuSplitV4(), petgrowPetTalkSplitV5(), petgrowDeepMenuSplitV6(), react()],
   build: {
-    rollupOptions: { output: { manualChunks(id) {
-      if (id.includes("node_modules/react") || id.includes("node_modules/react-dom")) return "react-vendor";
-      if (id.includes("node_modules/recharts") || id.includes("node_modules/d3-") || id.includes("node_modules/victory-vendor")) return "charts-vendor";
-      if (id.includes("node_modules/leaflet")) return "maps-vendor";
-      if (id.includes("node_modules/axios")) return "http-vendor";
-      if (id.includes("node_modules/@capacitor")) return "capacitor-vendor";
-      if (id.includes("node_modules/@vercel")) return "vercel-vendor";
-    } } },
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules/react") || id.includes("node_modules/react-dom")) return "react-vendor";
+          if (id.includes("node_modules/recharts") || id.includes("node_modules/d3-") || id.includes("node_modules/victory-vendor")) return "charts-vendor";
+          if (id.includes("node_modules/leaflet")) return "maps-vendor";
+          if (id.includes("node_modules/axios")) return "http-vendor";
+          if (id.includes("node_modules/@capacitor")) return "capacitor-vendor";
+          if (id.includes("node_modules/@vercel")) return "vercel-vendor";
+        }
+      }
+    },
     chunkSizeWarningLimit: 650
   }
 });
