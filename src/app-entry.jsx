@@ -93,7 +93,7 @@ window.setTimeout(() => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js?v=56", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=57", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });
