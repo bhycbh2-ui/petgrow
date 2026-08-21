@@ -4,9 +4,10 @@ import { upload } from "@vercel/blob/client";
 (() => {
   const text = el => (el?.textContent || "").trim();
   const token = () => sessionStorage.getItem("petgrow_admin_token") || "";
-  const MENU = {home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",news:"Pet뉴스",guide:"정보가이드",my:"회원정보",support:"고객지원",admin:"관리자센터",points:"PetPoint"};
+  const MENU = {home:"홈",about:"소개",pets:"펫라이프",nearby:"펫플레이스",community:"커뮤니티",saju:"펫운세",tarot:"펫타로",petbti:"펫성향",music:"펫음악",tips:"펫가이드",news:"펫뉴스",guide:"정보가이드",my:"내 정보",support:"고객지원",admin:"관리자센터",points:"PetPoint"};
   const ICON = {"전체":"📰","All":"📰","すべて":"📰","全部":"📰","반려견":"🐶","Dogs":"🐶","犬":"🐶","반려묘":"🐱","Cats":"🐱","猫":"🐱","건강":"🩺","Health":"🩺","健康":"🩺","정책·제도":"🏛️","Policy":"🏛️","制度":"🏛️","政策":"🏛️","입양·보호":"🏠","Adoption":"🏠","保護・譲渡":"🏠","领养保护":"🏠","산업·서비스":"🛍️","Industry":"🛍️","サービス":"🛍️","产业服务":"🛍️","반려동물":"🐾","Pets":"🐾","ペット":"🐾","宠物":"🐾"};
   const MAX_AUDIO = 12 * 1024 * 1024, MAX_COVER = 4 * 1024 * 1024;
+  const RELEVANT = ".admin-reporting-page,.petnews-cats,.petnews-image-fallback,.admin-music-form";
   let busy = false;
 
   function patchReportText(v){
@@ -48,10 +49,24 @@ import { upload } from "@vercel/blob/client";
   function data(form){const selects=[...form.querySelectorAll("select.bg-input")];const audio=form.querySelector('input[type="file"][accept*="audio"]')?.files?.[0]||null;const cover=form.querySelector('input[type="file"][accept*="image"]')?.files?.[0]||null;return{title:form.querySelector('input.bg-input:not([type="file"])')?.value?.trim()||"",description:form.querySelector("textarea")?.value?.trim()||"",species:selects[0]?.value||"all",vocalType:selects[1]?.value||"instrumental",mood:selects[2]?.value||"relax",active:form.querySelector('input[type="checkbox"]')?.checked!==false,audio,cover}}
   function validate(d){if(!d.title)throw new Error("노래 제목을 입력해 주세요.");if(!d.audio)throw new Error("음원 파일을 선택해 주세요.");if(d.audio.size>MAX_AUDIO)throw new Error("음원 파일은 12MB 이하로 올려주세요.");if(d.cover&&d.cover.size>MAX_COVER)throw new Error("커버 이미지는 4MB 이하로 올려주세요.");if(d.audio.type&&!/^audio\//i.test(d.audio.type))throw new Error("MP3/WAV/M4A 형식의 음원을 선택해 주세요.");if(d.cover?.type&&!/^image\/(jpeg|png|webp)$/i.test(d.cover.type))throw new Error("커버는 JPG/PNG/WebP 이미지를 선택해 주세요.")}
   function addRow(d,coverUrl){const list=document.querySelector(".admin-music-list");if(!list)return;list.querySelectorAll(":scope > p").forEach(p=>p.remove());const r=document.createElement("div");r.className="admin-music-row pg-runtime-music-row";r.innerHTML=`${coverUrl&&!coverUrl.includes("blank-white")?`<img class="admin-music-thumb" src="${coverUrl}" alt=""/>`:'<div class="admin-music-thumb">🎵</div>'}<div><b></b><small></small></div><div class="admin-music-actions"><span class="pg-music-new-badge">등록 완료</span></div>`;r.querySelector("b").textContent=d.title;const sp=d.species==="dog"?"강아지":d.species==="cat"?"고양이":"공용",vc=d.vocalType==="vocal"?"보컬":"인스트루멘탈",mo=({relax:"휴식",sleep:"수면",play:"놀이",nature:"자연"})[d.mood]||"휴식";r.querySelector("small").textContent=`${sp} · ${vc} · ${mo} · 방금 등록 · ▶ 0 · ♥ 0 · 💬 0`;list.prepend(r)}
-  async function createMusic(form,button){if(busy)return;const d=data(form);validate(d);busy=true;button.disabled=true;const original=text(button)||"음악 등록",box=form.querySelector(".pg-music-upload-health");try{button.textContent="저장소 확인 중…";const s=await status();if(!s.blobConfigured)throw new Error("Vercel Blob 저장소가 연결되지 않았어요. Vercel → Storage에서 Public Blob을 PetGrow 프로젝트에 연결해 주세요.");button.textContent="음원 업로드 중…";const a=await uploadFile(d.audio,"audio");let coverUrl="/petmusic/covers/blank-white.svg";if(d.cover){button.textContent="커버 업로드 중…";coverUrl=(await uploadFile(d.cover,"cover")).url}button.textContent="등록 정보 저장 중…";await save({title:d.title,description:d.description,species:d.species,vocalType:d.vocalType,mood:d.mood,active:d.active,audioUrl:a.url,coverUrl});health(box,"ok","등록 완료 · Pet음악 메뉴에 바로 반영됐어요.");addRow(d,coverUrl);window.alert("Pet음악을 등록했어요.")}catch(e){const m=human(e);health(box,"error",m);window.alert(m)}finally{busy=false;button.disabled=false;button.textContent=original}}
+  async function createMusic(form,button){if(busy)return;const d=data(form);validate(d);busy=true;button.disabled=true;const original=text(button)||"음악 등록",box=form.querySelector(".pg-music-upload-health");try{button.textContent="저장소 확인 중…";const s=await status();if(!s.blobConfigured)throw new Error("Vercel Blob 저장소가 연결되지 않았어요. Vercel → Storage에서 Public Blob을 PetGrow 프로젝트에 연결해 주세요.");button.textContent="음원 업로드 중…";const a=await uploadFile(d.audio,"audio");let coverUrl="/petmusic/covers/blank-white.svg";if(d.cover){button.textContent="커버 업로드 중…";coverUrl=(await uploadFile(d.cover,"cover")).url}button.textContent="등록 정보 저장 중…";await save({title:d.title,description:d.description,species:d.species,vocalType:d.vocalType,mood:d.mood,active:d.active,audioUrl:a.url,coverUrl});health(box,"ok","등록 완료 · 펫음악 메뉴에 바로 반영됐어요.");addRow(d,coverUrl);window.alert("펫음악을 등록했어요.")}catch(e){const m=human(e);health(box,"error",m);window.alert(m)}finally{busy=false;button.disabled=false;button.textContent=original}}
   function bindCreate(){if(document.documentElement.dataset.pgMusicCreateCapture==="1")return;document.documentElement.dataset.pgMusicCreateCapture="1";document.addEventListener("click",e=>{const b=e.target?.closest?.(".admin-music-form button");if(!b||!/^음악\s*등록$/.test(text(b)))return;const f=b.closest(".admin-music-form");if(!f)return;e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();createMusic(f,b).catch(err=>window.alert(human(err)))},true)}
-  function run(){patchClipboard();polishReports();polishNews();enhanceMusic();bindCreate()}
-  let raf=0;const schedule=()=>{if(raf)return;raf=requestAnimationFrame(()=>{raf=0;run()})};const observer=new MutationObserver(schedule);
-  function boot(){run();observer.observe(document.documentElement,{subtree:true,childList:true,characterData:true})}
+  function run(){
+    if(document.querySelector(".admin-reporting-page"))polishReports();
+    if(document.querySelector(".petnews-cats,.petnews-image-fallback"))polishNews();
+    if(document.querySelector(".admin-music-form"))enhanceMusic();
+  }
+  function relevantNode(node){
+    const el=node?.nodeType===1?node:node?.parentElement;
+    if(!el)return false;
+    return Boolean(el.matches?.(RELEVANT)||el.closest?.(RELEVANT)||el.querySelector?.(RELEVANT));
+  }
+  let raf=0;const schedule=()=>{if(raf)return;raf=requestAnimationFrame(()=>{raf=0;run()})};
+  const observer=new MutationObserver(mutations=>{if(mutations.some(m=>relevantNode(m.target)||[...m.addedNodes].some(relevantNode)))schedule()});
+  function boot(){
+    patchClipboard();bindCreate();run();
+    const root=document.getElementById("root")||document.body;
+    if(root)observer.observe(root,{subtree:true,childList:true,characterData:true});
+  }
   document.readyState==="loading"?document.addEventListener("DOMContentLoaded",boot,{once:true}):boot();
 })();
