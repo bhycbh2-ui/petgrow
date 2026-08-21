@@ -1,6 +1,8 @@
 let started=false;
 let lastInbox=[];
 let inboxTimer=null;
+let lastRefreshAt=0;
+let refreshPromise=null;
 
 async function api(mode,{method="GET",body,params}={}){
   const q=new URLSearchParams({mode,...(params||{})});
@@ -50,16 +52,25 @@ async function showClientNotification(item){
   }catch{}
 }
 
-async function refreshInbox(){
-  try{
-    const j=await api("inbox",{params:{limit:"30"}});
-    lastInbox=j.notifications||[];
-    const unread=lastInbox.filter(x=>!x.readAt);
-    setScheduleBadge(unread.length);
-    for(const item of unread.slice(0,3))await showClientNotification(item);
-  }catch(e){
-    if(e?.status!==401)console.warn("PetLife reminder sync",e?.message||e);
-  }
+async function refreshInbox(force=false){
+  const now=Date.now();
+  if(refreshPromise)return refreshPromise;
+  if(!force&&now-lastRefreshAt<10000){setScheduleBadge(lastInbox.filter(x=>!x.readAt).length);return lastInbox;}
+  lastRefreshAt=now;
+  refreshPromise=(async()=>{
+    try{
+      const j=await api("inbox",{params:{limit:"30"}});
+      lastInbox=j.notifications||[];
+      const unread=lastInbox.filter(x=>!x.readAt);
+      setScheduleBadge(unread.length);
+      for(const item of unread.slice(0,3))await showClientNotification(item);
+      return lastInbox;
+    }catch(e){
+      if(e?.status!==401)console.warn("PetLife reminder sync",e?.message||e);
+      return lastInbox;
+    }finally{refreshPromise=null;}
+  })();
+  return refreshPromise;
 }
 
 async function bootNativePushBridge(){
@@ -86,12 +97,15 @@ async function bootNativePushBridge(){
 }
 
 function observePetLife(){
+  let wasOpen=false;
   const observer=new MutationObserver(()=>{
-    if(document.querySelector("#petlife-react-root .pl-shell")){
+    const open=Boolean(document.querySelector("#petlife-react-root .pl-shell"));
+    if(open){
       installBadgeStyle();
       setScheduleBadge(lastInbox.filter(x=>!x.readAt).length);
-      refreshInbox();
+      if(!wasOpen)refreshInbox(true);
     }
+    wasOpen=open;
   });
   observer.observe(document.documentElement,{childList:true,subtree:true});
 }
@@ -100,8 +114,8 @@ export function bootPetLifeServerBridge(){
   if(started)return;started=true;
   installBadgeStyle();
   observePetLife();
-  window.setTimeout(()=>{refreshInbox();bootNativePushBridge();},2400);
-  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")refreshInbox();});
+  window.setTimeout(()=>{refreshInbox(true);bootNativePushBridge();},2400);
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")refreshInbox(true);});
   inboxTimer=window.setInterval(()=>{if(document.visibilityState==="visible")refreshInbox();},15*60*1000);
 }
 
