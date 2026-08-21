@@ -40,7 +40,7 @@ function extract(code, start) {
     if (c === '"' || c === "'") { q = c; continue; }
     if (c === "`") { q = c; templateExpr = 0; continue; }
     if (c === "{") d++;
-    else if (c === "}") { d--; if (d === 0) return code.slice(start, i + 1); }
+    else if (c === "}") { d--; if (d === 0) return { source: code.slice(start, i + 1), end: i + 1 }; }
   }
   return null;
 }
@@ -57,18 +57,23 @@ export default function petgrowV6DepInspect() {
       const functionRe = /function\s+([A-Za-z_$][\w$]*)\s*\(/g;
       let match;
       while ((match = functionRe.exec(code))) {
-        const source = extract(code, match.index);
-        if (source) funcs.push({ name: match[1], source, bytes: source.length });
+        const hit = extract(code, match.index);
+        if (hit) funcs.push({ name: match[1], source: hit.source, start: match.index, end: hit.end, bytes: hit.source.length });
+      }
+
+      let topLevelText = code;
+      for (const item of [...funcs].sort((a, b) => b.start - a.start)) {
+        topLevelText = topLevelText.slice(0, item.start) + " ".repeat(item.end - item.start) + topLevelText.slice(item.end);
       }
 
       const declared = new Set(funcs.map((item) => item.name));
       let decl;
       const constRe = /\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=/g;
-      while ((decl = constRe.exec(code))) declared.add(decl[1]);
+      while ((decl = constRe.exec(topLevelText))) declared.add(decl[1]);
       const defaultImportRe = /import\s+([A-Za-z_$][\w$]*)\s+from/g;
-      while ((decl = defaultImportRe.exec(code))) declared.add(decl[1]);
+      while ((decl = defaultImportRe.exec(topLevelText))) declared.add(decl[1]);
       const namedImportRe = /import\s*\{([^}]+)\}\s*from/g;
-      while ((decl = namedImportRe.exec(code))) {
+      while ((decl = namedImportRe.exec(topLevelText))) {
         for (const part of decl[1].split(",")) {
           const name = part.trim().split(/\s+as\s+/).pop();
           if (name) declared.add(name);
@@ -77,10 +82,8 @@ export default function petgrowV6DepInspect() {
 
       const top = funcs.filter((item) => item.bytes >= 1800).sort((a, b) => b.bytes - a.bytes).map((item) => [item.name, item.bytes]);
       console.log("PGV6_TOP " + JSON.stringify(top));
-
       for (const item of funcs.filter((x) => /(About|Saju|Bti|BTI|InfoGuide|Tips|TipCard)/i.test(x.name))) {
-        const used = words(item.source);
-        const deps = [...used].filter((name) => declared.has(name) && name !== item.name).sort();
+        const deps = [...words(item.source)].filter((name) => declared.has(name) && name !== item.name).sort();
         console.log("PGV6_DEP " + JSON.stringify({ name: item.name, bytes: item.bytes, deps }));
       }
     },
