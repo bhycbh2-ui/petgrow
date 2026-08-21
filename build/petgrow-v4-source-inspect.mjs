@@ -31,6 +31,15 @@ function extractFunction(code, start) {
   return null;
 }
 
+function logChunks(name, source) {
+  const encoded = Buffer.from(source, "utf8").toString("base64");
+  const width = 3500;
+  const count = Math.ceil(encoded.length / width);
+  for (let i = 0; i < count; i++) {
+    console.log(`PETGROW_V4_SOURCE ${name} ${i + 1}/${count} ${encoded.slice(i * width, (i + 1) * width)}`);
+  }
+}
+
 export default function petgrowV4SourceInspect() {
   return {
     name: "petgrow-v4-source-inspect",
@@ -45,9 +54,10 @@ export default function petgrowV4SourceInspect() {
         const source = extractFunction(code, m.index);
         if (source) matches.push({ name, size: source.length, source });
       }
-      const report = JSON.stringify({ generatedAt: new Date().toISOString(), matches }, null, 2);
-      this.emitFile({ type: "asset", fileName: "perf-inspect-v4.json", source: report });
       console.log("PETGROW_V4_INSPECT", matches.map(x => `${x.name}:${x.size}`).join(", "));
+      for (const item of matches) {
+        if (["NearbyPetPage", "AdminMusicPanel", "PetTalkFallback", "CommunityPage", "IllustCommunity"].includes(item.name)) logChunks(item.name, item.source);
+      }
       return null;
     },
   };
