@@ -9,4 +9,5 @@ export {
   ResponsiveContainer,
   ReferenceDot,
   ReferenceLine,
+  Label,
 } from "recharts";
