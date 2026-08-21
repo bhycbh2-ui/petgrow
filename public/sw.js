@@ -1,7 +1,8 @@
-// PetGrow service worker v26
+// PetGrow service worker v27
 // HTML/API는 항상 최신 네트워크 응답을 사용하고, 해시 정적 자산과 버전된 브랜드 자산만 캐시합니다.
-const ASSET_CACHE = "petgrow-assets-v26";
+const ASSET_CACHE = "petgrow-assets-v27";
 const ASSET_PATH = "/assets/";
+const MAX_CACHE_ENTRIES = 120;
 const BRAND_PATHS = new Set([
   "/petgrow-brand-source.png",
   "/petgrow-splash-logo.png",
@@ -21,6 +22,14 @@ self.addEventListener("activate", (event) => {
       .then(() => self.clients.claim())
   );
 });
+
+async function putAndTrim(cache, request, response) {
+  await cache.put(request, response);
+  const keys = await cache.keys();
+  if (keys.length > MAX_CACHE_ENTRIES) {
+    await Promise.all(keys.slice(0, keys.length - MAX_CACHE_ENTRIES).map((key) => cache.delete(key)));
+  }
+}
 
 self.addEventListener("fetch", (event) => {
   const request = event.request;
@@ -44,8 +53,8 @@ self.addEventListener("fetch", (event) => {
       const response = await fetch(request);
       if (response && response.ok && response.status === 200 && response.type !== "opaque") {
         // Keep the response fast, but explicitly extend the service-worker lifetime so
-        // the asynchronous cache write is not abandoned when the fetch handler returns.
-        event.waitUntil(cache.put(request, response.clone()).catch(() => {}));
+        // the asynchronous cache write and bounded-cache cleanup both finish reliably.
+        event.waitUntil(putAndTrim(cache, request, response.clone()).catch(() => {}));
       }
       return response;
     })
