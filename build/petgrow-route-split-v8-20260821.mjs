@@ -1,8 +1,18 @@
 import { transformWithEsbuild } from "vite";
 
-const VIRTUAL_ID = "virtual:petgrow-v8-tarot";
-const RESOLVED_ID = `\0${VIRTUAL_ID}.jsx`;
-const ENTRY = "PetTarotPanel";
+const ENTRIES = {
+  onboarding: { name: "OnboardingPage", title: "우리 아이 등록 화면을 불러오는 중입니다" },
+  landing: { name: "LandingPage", title: "시작 화면을 불러오는 중입니다" },
+  login: { name: "LoginScreen", title: "로그인 화면을 불러오는 중입니다" },
+  more: { name: "MoreMenuPage", title: "더보기 화면을 불러오는 중입니다" },
+  content: { name: "PetContentPage", title: "콘텐츠 화면을 불러오는 중입니다" },
+  aboutPoint: { name: "PetPointAboutCard", title: "PetPoint 안내를 불러오는 중입니다" },
+};
+for (const [key, entry] of Object.entries(ENTRIES)) {
+  entry.virtualId = `virtual:petgrow-v8-${key}`;
+  entry.resolvedId = `\0${entry.virtualId}.jsx`;
+}
+
 const REACT_BINDINGS = new Set([
   "React", "Fragment", "useState", "useEffect", "useMemo", "useCallback", "useRef",
   "useLayoutEffect", "useReducer", "useContext", "useId", "useDeferredValue", "useTransition",
@@ -38,7 +48,7 @@ function extractNamedFunction(code, name) {
   const start = match.index;
   const brace = functionBodyStart(code, start);
   if (brace < 0) return null;
-  let depth = 0, quote = null, templateExpr = 0, escape = false, lineComment = false, blockComment = false;
+  let depth = 0, quote = null, escape = false, lineComment = false, blockComment = false;
   for (let i = brace; i < code.length; i++) {
     const ch = code[i], next = code[i + 1];
     if (lineComment) { if (ch === "\n") lineComment = false; continue; }
@@ -46,15 +56,12 @@ function extractNamedFunction(code, name) {
     if (quote) {
       if (escape) { escape = false; continue; }
       if (ch === "\\") { escape = true; continue; }
-      if (quote === "`" && ch === "$" && next === "{") { templateExpr++; depth++; i++; continue; }
-      if (quote === "`" && ch === "}" && templateExpr > 0) { templateExpr--; depth--; continue; }
-      if (ch === quote && templateExpr === 0) quote = null;
+      if (ch === quote) quote = null;
       continue;
     }
     if (ch === "/" && next === "/") { lineComment = true; i++; continue; }
     if (ch === "/" && next === "*") { blockComment = true; i++; continue; }
-    if (ch === '"' || ch === "'") { quote = ch; continue; }
-    if (ch === "`") { quote = ch; templateExpr = 0; continue; }
+    if (ch === '"' || ch === "'" || ch === "`") { quote = ch; continue; }
     if (ch === "{") depth++;
     else if (ch === "}") {
       depth--;
@@ -99,16 +106,8 @@ function topLevelBindings(code) {
   let depth = 0;
   for (let i = 0; i < chars.length; i++) {
     const ch = chars[i];
-    if (ch === "{") {
-      if (depth > 0) chars[i] = " ";
-      depth++;
-      continue;
-    }
-    if (ch === "}") {
-      depth = Math.max(0, depth - 1);
-      if (depth > 0) chars[i] = " ";
-      continue;
-    }
+    if (ch === "{") { if (depth > 0) chars[i] = " "; depth++; continue; }
+    if (ch === "}") { depth = Math.max(0, depth - 1); if (depth > 0) chars[i] = " "; continue; }
     if (depth > 0 && ch !== "\n") chars[i] = " ";
   }
   const top = chars.join("");
@@ -120,7 +119,6 @@ function topLevelBindings(code) {
     let match;
     while ((match = re.exec(top))) bindings.add(match[1]);
   }
-
   const importRe = /^\s*import\s+(.+?)\s+from\s+["'][^"']+["'];?/gm;
   let imp;
   while ((imp = importRe.exec(code))) {
@@ -149,8 +147,7 @@ function localNames(source) {
   const result = new Set();
   const headEnd = source.indexOf("{");
   const head = headEnd >= 0 ? source.slice(0, headEnd) : source;
-  const open = head.indexOf("(");
-  const close = head.lastIndexOf(")");
+  const open = head.indexOf("("), close = head.lastIndexOf(")");
   if (open >= 0 && close > open) {
     for (const token of head.slice(open + 1, close).match(/[A-Za-z_$][\w$]*/g) || []) result.add(token);
   }
@@ -168,87 +165,83 @@ function localNames(source) {
   return result;
 }
 
-function sourceWords(source) {
-  return new Set(source.match(/[A-Za-z_$][\w$]*/g) || []);
-}
-
-function externalDepsFor(source, bindings) {
+function externalDepsFor(source, bindings, entryName) {
   const locals = localNames(source);
   const deps = new Set();
-  for (const word of sourceWords(source)) {
+  for (const word of source.match(/[A-Za-z_$][\w$]*/g) || []) {
     if (!bindings.has(word)) continue;
-    if (word === ENTRY || locals.has(word) || REACT_BINDINGS.has(word)) continue;
+    if (word === entryName || locals.has(word) || REACT_BINDINGS.has(word)) continue;
     deps.add(word);
   }
   return [...deps].sort();
 }
 
-function lazyWrapper(deps) {
+function wrapper(key, entry, deps) {
+  const cap = key[0].toUpperCase() + key.slice(1);
   const depObject = deps.length ? `{ ${deps.join(", ")} }` : `{}`;
   return `
-let __petgrowV8TarotComponent = null;
-let __petgrowV8TarotPromise = null;
-function __petgrowV8LoadTarot(){
-  if (__petgrowV8TarotComponent) return Promise.resolve(__petgrowV8TarotComponent);
-  if (!__petgrowV8TarotPromise) {
-    __petgrowV8TarotPromise = import("${VIRTUAL_ID}").then((m) => {
-      __petgrowV8TarotComponent = m.default;
-      return __petgrowV8TarotComponent;
-    }).catch((error) => {
-      __petgrowV8TarotPromise = null;
-      throw error;
-    });
-  }
-  return __petgrowV8TarotPromise;
+let __petgrowV8${cap}Component = null;
+let __petgrowV8${cap}Promise = null;
+function __petgrowV8Load${cap}(){
+  if (__petgrowV8${cap}Component) return Promise.resolve(__petgrowV8${cap}Component);
+  if (!__petgrowV8${cap}Promise) __petgrowV8${cap}Promise = import("${entry.virtualId}").then((m) => (__petgrowV8${cap}Component = m.default)).catch((error) => { __petgrowV8${cap}Promise = null; throw error; });
+  return __petgrowV8${cap}Promise;
 }
-function ${ENTRY}(props){
-  const [LazyComponent, setLazyComponent] = useState(() => __petgrowV8TarotComponent);
+function ${entry.name}(props){
+  const [LazyComponent, setLazyComponent] = useState(() => __petgrowV8${cap}Component);
   const [loadError, setLoadError] = useState(false);
   useEffect(() => {
     if (LazyComponent) return;
     let alive = true;
-    __petgrowV8LoadTarot().then((Component) => {
-      if (alive) { setLazyComponent(() => Component); setLoadError(false); }
-    }).catch(() => { if (alive) setLoadError(true); });
+    __petgrowV8Load${cap}().then((Component) => { if (alive) { setLazyComponent(() => Component); setLoadError(false); } }).catch(() => { if (alive) setLoadError(true); });
     return () => { alive = false; };
   }, [LazyComponent]);
-  if (!LazyComponent) return <div className="bg-card" role="status" aria-live="polite" style={{padding:20,textAlign:"center"}}><b>Pet타로를 불러오는 중입니다</b><p className="bg-sub" style={{marginTop:8}}>화면을 준비하고 있어요…</p>{loadError && <button type="button" className="bg-btn" style={{display:"block",margin:"10px auto"}} onClick={() => { setLoadError(false); __petgrowV8LoadTarot().then((Component) => setLazyComponent(() => Component)).catch(() => setLoadError(true)); }}>다시 시도</button>}</div>;
+  if (!LazyComponent) return <div className="bg-card" role="status" aria-live="polite" style={{padding:20,textAlign:"center"}}><b>${entry.title}</b><p className="bg-sub" style={{marginTop:8}}>화면을 준비하고 있어요…</p>{loadError && <button type="button" className="bg-btn" style={{display:"block",margin:"10px auto"}} onClick={() => { setLoadError(false); __petgrowV8Load${cap}().then((Component) => setLazyComponent(() => Component)).catch(() => setLoadError(true)); }}>다시 시도</button>}</div>;
   const __deps = ${depObject};
   return <LazyComponent {...props} __deps={__deps} />;
 }
 `;
 }
 
-function virtualModule(source, deps) {
-  const depDecl = deps.length
-    ? `let ${deps.join(", ")};\nfunction __bindDeps(d){ ({ ${deps.join(", ")} } = d || {}); }`
-    : `function __bindDeps(){}`;
-  return `import React, { Fragment, useCallback, useContext, useDeferredValue, useEffect, useId, useLayoutEffect, useMemo, useReducer, useRef, useState, useTransition } from "react";\n${depDecl}\n${source}\nfunction __PetGrowV8TarotEntry({ __deps, ...props }){ __bindDeps(__deps); return React.createElement(${ENTRY}, props); }\nexport default __PetGrowV8TarotEntry;\n`;
+function virtualModule(entry, source, deps) {
+  const depDecl = deps.length ? `let ${deps.join(", ")};\nfunction __bindDeps(d){ ({ ${deps.join(", ")} } = d || {}); }` : `function __bindDeps(){}`;
+  return `import React, { Fragment, useCallback, useContext, useDeferredValue, useEffect, useId, useLayoutEffect, useMemo, useReducer, useRef, useState, useTransition } from "react";\n${depDecl}\n${source}\nfunction __PetGrowV8Entry({ __deps, ...props }){ __bindDeps(__deps); return React.createElement(${entry.name}, props); }\nexport default __PetGrowV8Entry;\n`;
 }
 
-export default function petgrowTarotSplitV8() {
-  let captured = null;
+export default function petgrowRouteSplitV8() {
+  const captured = {};
+  const byVirtual = Object.fromEntries(Object.entries(ENTRIES).map(([key, entry]) => [entry.virtualId, key]));
+  const byResolved = Object.fromEntries(Object.entries(ENTRIES).map(([key, entry]) => [entry.resolvedId, key]));
   return {
-    name: "petgrow-tarot-split-v8",
+    name: "petgrow-secondary-route-split-v8",
     enforce: "pre",
     resolveId(id) {
-      return id === VIRTUAL_ID ? RESOLVED_ID : null;
+      const key = byVirtual[id];
+      return key ? ENTRIES[key].resolvedId : null;
     },
     async load(id) {
-      if (id !== RESOLVED_ID) return null;
-      if (!captured) this.error("[petgrow-v8] PetTarotPanel source was not captured");
-      const jsx = virtualModule(captured.source, captured.deps);
+      const key = byResolved[id];
+      if (!key) return null;
+      const data = captured[key];
+      if (!data) this.error(`[petgrow-v8] source for ${key} was not captured`);
+      const jsx = virtualModule(ENTRIES[key], data.source, data.deps);
       const result = await transformWithEsbuild(jsx, id.replace(/^\0/, ""), { loader: "jsx", jsx: "automatic", sourcemap: false });
       return { code: result.code, map: null };
     },
     transform(code, id) {
       if (!/[\\/]src[\\/]App\.jsx(?:\?|$)/.test(id)) return null;
-      const hit = extractNamedFunction(code, ENTRY);
-      if (!hit) this.error(`[petgrow-v8] ${ENTRY} anchor not found`);
-      const deps = externalDepsFor(hit.source, topLevelBindings(code));
-      captured = { source: hit.source, deps };
-      console.log(`PGV8_SPLIT tarot deps=${JSON.stringify(deps)} bytes=${hit.source.length}`);
-      const next = code.slice(0, hit.start) + lazyWrapper(deps) + code.slice(hit.end);
+      const bindings = topLevelBindings(code);
+      const replacements = [];
+      for (const [key, entry] of Object.entries(ENTRIES)) {
+        const hit = extractNamedFunction(code, entry.name);
+        if (!hit) this.error(`[petgrow-v8] ${entry.name} anchor not found`);
+        const deps = externalDepsFor(hit.source, bindings, entry.name);
+        captured[key] = { source: hit.source, deps };
+        replacements.push({ start: hit.start, end: hit.end, source: wrapper(key, entry, deps) });
+        console.log(`PGV8_SPLIT ${key} deps=${JSON.stringify(deps)} bytes=${hit.source.length}`);
+      }
+      let next = code;
+      for (const hit of replacements.sort((a,b) => b.start - a.start)) next = next.slice(0, hit.start) + hit.source + next.slice(hit.end);
       return { code: next, map: null };
     },
   };
