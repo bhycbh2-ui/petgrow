@@ -35,48 +35,65 @@ requestAnimationFrame(() => {
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /*
- * Avoid parsing every historical runtime patch in one burst.
- * Loading these small chunks one-by-one leaves breathing room for scrolling/taps on slower phones.
+ * Phase 1: home/account usability patches. These still load after the first paint,
+ * but are kept ahead of deep admin/CMS helpers so slower phones remain responsive.
  */
-const deferredLoaders = [
+const primaryDeferredLoaders = [
   () => import("./requested-polish-20260818.js"),
   () => import("./aab-ready-fixes-20260818.js"),
   () => import("./requested-final-fixes-20260818.js"),
   () => import("./home-quick-petbti-20260819.js"),
-  () => import("./final-audit-20260818.js"),
   () => import("./petgrow-final-batch-20260819.js"),
-  () => import("./legacy-growth-modal-ux.js"),
   () => import("./petlife-final-qa.js"),
   () => import("./PetLifeApp.jsx").then((m) => {
     m.bootPetLife?.();
     return import("./petlife-home-bridge.js").then((bridge) => bridge.bootPetLifeHomeBridge?.());
   }),
+];
+
+/*
+ * Phase 2: deep-page/admin helpers. They are intentionally held back until the
+ * user has had time to see and interact with the first screen.
+ */
+const deepDeferredLoaders = [
+  () => import("./final-audit-20260818.js"),
+  () => import("./legacy-growth-modal-ux.js"),
   () => import("./admin-news-music-runtime-20260818.js"),
   () => import("./about-petpoint-order-20260819.js"),
   () => import("./petinfo-cms-runtime.js"),
   () => import("./petinfo-cms-import-runtime.js"),
 ];
 
-const loadDeferredRuntime = async () => {
-  for (const load of deferredLoaders) {
+const loadInSlices = async (loaders, gap = 34) => {
+  for (const load of loaders) {
     try {
       await load();
     } catch (_) {
       // A non-critical patch must never block the core app.
     }
-    await sleep(28);
+    await sleep(gap);
   }
 };
 
-if ("requestIdleCallback" in window) {
-  window.requestIdleCallback(() => loadDeferredRuntime(), { timeout: 1100 });
-} else {
-  setTimeout(loadDeferredRuntime, 320);
-}
+const scheduleIdle = (callback, timeout, fallbackDelay) => {
+  if ("requestIdleCallback" in window) {
+    return window.requestIdleCallback(callback, { timeout });
+  }
+  return window.setTimeout(callback, fallbackDelay);
+};
+
+scheduleIdle(() => loadInSlices(primaryDeferredLoaders, 34), 1250, 380);
+
+const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+const slowConnection = connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType || "");
+const deepDelay = slowConnection ? 4200 : 2200;
+window.setTimeout(() => {
+  scheduleIdle(() => loadInSlices(deepDeferredLoaders, 48), 1800, 420);
+}, deepDelay);
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js?v=55", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=56", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });
