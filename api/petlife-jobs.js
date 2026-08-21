@@ -6,7 +6,7 @@ import {
   getKstClock,
   isFcmConfigured
 } from "../server_lib/petlifeAutomation.js";
-import { createEncryptedBackup, pruneEncryptedBackups, verifyLatestEncryptedBackup } from "../server_lib/backup.js";
+import { createEncryptedBackup, pruneEncryptedBackups, verifyEncryptedBackup } from "../server_lib/backup.js";
 
 function cronAuthorized(req){
   const secret=String(process.env.CRON_SECRET||"");
@@ -33,9 +33,9 @@ export default async function handler(req,res){
     try{
       backup=await createEncryptedBackup();
       if(backup?.created){
-        backupVerify=await verifyLatestEncryptedBackup();
+        backupVerify=await verifyEncryptedBackup(backup);
         if(!backupVerify?.verified)throw new Error(backupVerify?.reason||"BACKUP_VERIFY_FAILED");
-        // 새 백업을 실제로 복호화·검증한 뒤에만 오래된 백업을 정리합니다.
+        // 방금 생성한 백업 자체를 복호화·검증한 뒤에만 오래된 백업을 정리합니다.
         backupPrune=await pruneEncryptedBackups();
       }
     }catch(error){
