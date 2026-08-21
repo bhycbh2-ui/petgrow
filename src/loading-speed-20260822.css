@@ -1,0 +1,37 @@
+/* PetGrow loading-speed pass: after the splash, show the real app immediately.
+   PetLife may still hydrate in the background, but it must not look like a second loading screen. */
+.petgrow-dashboard-home .pgh-loading{
+  position:relative!important;
+  min-height:132px!important;
+  overflow:hidden!important;
+  border:1px solid rgba(45,84,61,.06)!important;
+  border-radius:20px!important;
+  background:linear-gradient(145deg,rgba(249,251,248,.96),rgba(241,246,241,.82))!important;
+  box-shadow:none!important;
+  color:transparent!important;
+}
+.petgrow-dashboard-home .pgh-loading>*{display:none!important}
+.petgrow-dashboard-home .pgh-loading:before,
+.petgrow-dashboard-home .pgh-loading:after{
+  content:"";
+  position:absolute;
+  left:18px;
+  border-radius:999px;
+  background:rgba(55,101,75,.075);
+}
+.petgrow-dashboard-home .pgh-loading:before{top:28px;width:42%;height:15px}
+.petgrow-dashboard-home .pgh-loading:after{top:56px;width:68%;height:10px}
+
+/* Expensive visual filters are unnecessary while the app is parsing on phones. */
+@media(max-width:600px){
+  #petgrow-initial-splash .pg2-orb{
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+  }
+  #petgrow-initial-splash.pg3-premium:before,
+  #petgrow-initial-splash .pg2-orb,
+  #petgrow-initial-splash .pg3-petstage svg{
+    animation:none!important;
+  }
+  #petgrow-initial-splash .pg3-petstage svg{filter:none!important}
+}
