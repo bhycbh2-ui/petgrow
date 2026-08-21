@@ -40,11 +40,8 @@ export default function petgrowPetLifeLegalAudit20260821(){
         "이번 개정에는 PetLife에서 처리하는 평생기록·사진·건강일정과 회원탈퇴 시 관련 파일 삭제 기준을 추가하고, 광고·제휴 문의 시 처리되는 정보와 Google AdMob/Google Mobile Ads SDK를 통한 광고 관련 자동 처리 항목 및 이용자 선택권에 관한 내용을 보다 구체적으로 반영했습니다.",
         "privacy-ko-change-note"
       );
-      replaceOne(
-        "최종 업데이트: 2026년 8월 17일\\\n시행일: 2026년 8월 17일",
-        "최종 업데이트: 2026년 8월 21일\\\n시행일: 2026년 8월 21일",
-        "privacy-ko-date"
-      );
+      replaceOne("최종 업데이트: 2026년 8월 17일","최종 업데이트: 2026년 8월 21일","privacy-ko-updated");
+      replaceOne("시행일: 2026년 8월 17일","시행일: 2026년 8월 21일","privacy-ko-effective");
 
       replaceOne(
         "storing and syncing pet information across devices; saving and re-viewing results such as PetBTI",
@@ -61,11 +58,8 @@ export default function petgrowPetLifeLegalAudit20260821(){
         "Vercel Blob (storage for Pet Talk post photos and PetLife photos)",
         "privacy-en-blob"
       );
-      replaceOne(
-        "Last updated: August 16, 2026\\\nEffective date: August 16, 2026",
-        "Last updated: August 21, 2026\\\nEffective date: August 21, 2026",
-        "privacy-en-date"
-      );
+      replaceOne("Last updated: August 16, 2026","Last updated: August 21, 2026","privacy-en-updated");
+      replaceOne("Effective date: August 16, 2026","Effective date: August 21, 2026","privacy-en-effective");
 
       replaceOne(
         "반려동물 등록·성장정보·Pet사주·PetBTI·Pet정보 및 기타 관련 기능",
@@ -82,11 +76,8 @@ export default function petgrowPetLifeLegalAudit20260821(){
         "PetGrow에서 제공하는 건강, 식단, 영양 및 관리 정보와 PetLife에 저장·표시되는 기록·리포트는 일반적인 기록·참고정보이며 수의사의 진료, 진단, 처방 또는 공식 진료기록을 대신하지 않습니다. PetLife의 리포트는 이용자가 입력한 기록을 바탕으로 한 관리 보조 정보입니다. 반려동물에게 이상 증상이나 응급상황이 있는 경우 수의사 또는 동물병원의 진료를 받아야 합니다.",
         "terms-ko-health"
       );
-      replaceOne(
-        "본 약관은 2026년 8월 17일부터 시행합니다.\\\n최종 업데이트: 2026년 8월 17일",
-        "본 약관은 2026년 8월 21일부터 시행합니다.\\\n최종 업데이트: 2026년 8월 21일",
-        "terms-ko-date"
-      );
+      replaceOne("본 약관은 2026년 8월 17일부터 시행합니다.","본 약관은 2026년 8월 21일부터 시행합니다.","terms-ko-effective");
+      replaceOne("최종 업데이트: 2026년 8월 17일","최종 업데이트: 2026년 8월 21일","terms-ko-updated");
 
       replaceOne(
         "pet registration, growth info, Saju, PetBTI, Pet Info, and other related features",
@@ -103,11 +94,8 @@ export default function petgrowPetLifeLegalAudit20260821(){
         "Health, diet, nutrition, and care information provided by PetGrow, as well as records and reports shown in PetLife, is general record-keeping and reference information and does not replace examination, diagnosis, treatment, or official veterinary medical records. PetLife reports are management aids based on information entered by the user. If your pet shows abnormal symptoms or an emergency, please see a veterinarian or animal hospital.",
         "terms-en-health"
       );
-      replaceOne(
-        "These Terms take effect on August 16, 2026.\\\nLast updated: August 16, 2026.",
-        "These Terms take effect on August 21, 2026.\\\nLast updated: August 21, 2026.",
-        "terms-en-date"
-      );
+      replaceOne("These Terms take effect on August 16, 2026.","These Terms take effect on August 21, 2026.","terms-en-effective");
+      replaceOne("Last updated: August 16, 2026.","Last updated: August 21, 2026.","terms-en-updated");
 
       replaceOne(
         "반려동물 이름·종류·품종·생년월일·성별·현재 체중·프로필 사진, PetBTI 결과",
