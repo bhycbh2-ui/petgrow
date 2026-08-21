@@ -11,11 +11,21 @@ function safeKey(value){
   const k=String(value||"").trim().slice(0,100);
   return k&&SAFE_KEY.test(k)&&!BLOCKED_KEY.test(k)?k:"";
 }
-function cleanValue(value){
+function cleanValue(value,depth=0){
+  if(depth>6)return null;
   if(value==null||typeof value==="boolean"||typeof value==="number")return value;
   if(typeof value==="string")return value.length<=50000?value:value.slice(0,50000);
-  if(Array.isArray(value))return value.slice(0,500);
-  if(typeof value==="object")return value;
+  if(Array.isArray(value))return value.slice(0,500).map(v=>cleanValue(v,depth+1));
+  if(typeof value==="object"){
+    const out={};let count=0;
+    for(const [key,item] of Object.entries(value)){
+      if(count>=250)break;
+      const safe=String(key||"").slice(0,120);
+      if(!safe||BLOCKED_KEY.test(safe))continue;
+      out[safe]=cleanValue(item,depth+1);count++;
+    }
+    return out;
+  }
   return String(value).slice(0,50000);
 }
 
@@ -40,8 +50,9 @@ export default async function handler(req,res){
         const key=safeKey(rawKey);if(!key)continue;
         const value=cleanValue(rawValue);
         const serialized=JSON.stringify(value);
-        total+=Buffer.byteLength(serialized||"","utf8");
-        if(total>MAX_TOTAL)break;
+        const size=Buffer.byteLength(serialized||"","utf8");
+        if(total+size>MAX_TOTAL)break;
+        total+=size;
         entries.push([key,value]);
       }
       for(const [key,value] of entries){
