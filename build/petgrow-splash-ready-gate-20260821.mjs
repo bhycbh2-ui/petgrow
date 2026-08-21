@@ -8,9 +8,9 @@ export default function petgrowSplashReadyGate(){
         injectTo:"head",
         children:`
           (function(){
-            var installed=false,finished=false,requested=false,observer=null,poll=null,requestedAt=0,criticalListener=false,criticalHandler=null;
+            var installed=false,finished=false,requested=false,observer=null,poll=null,criticalListener=false,criticalHandler=null;
             var gateStarted=performance.now(),renderedAt=0;
-            function waitingNode(){return document.querySelector(".petgrow-boot-skeleton,#petgrow-fast-shell,.petgrow-dashboard-home .pgh-loading");}
+            function waitingNode(){return document.querySelector(".petgrow-boot-skeleton,#petgrow-fast-shell");}
             function criticalReady(){return window.__petgrowCriticalAppReady===true;}
             function hasRenderedApp(){
               var root=document.getElementById("root");
@@ -18,8 +18,7 @@ export default function petgrowSplashReadyGate(){
             }
             function hasRealScreen(){
               if(!hasRenderedApp())return false;
-              if(waitingNode())return false;
-              return true;
+              return !waitingNode();
             }
             function cleanup(){
               if(observer){observer.disconnect();observer=null;}
@@ -30,16 +29,21 @@ export default function petgrowSplashReadyGate(){
             function install(){
               if(installed)return;
               if(typeof window.__hidePetGrowSplash!=="function"){
-                window.setTimeout(install,12);return;
+                window.setTimeout(install,8);return;
               }
               var finish=window.__hidePetGrowSplash;
               if(finish&&finish.__petgrowReadyGate){installed=true;return;}
 
+              function finishFast(){
+                var state=window.__petgrowSplashV2State;
+                if(state){state.current=100;state.externalTarget=100;}
+                try{window.__petgrowSetSplashProgress&&window.__petgrowSetSplashProgress(100);}catch(e){}
+                finish();
+              }
               function complete(force){
-                if(finished)return;
-                if(!hasRealScreen())return;
+                if(finished||!hasRealScreen())return;
                 if(!(force||requested||criticalReady()))return;
-                finished=true;cleanup();finish();
+                finished=true;cleanup();finishFast();
               }
               criticalHandler=function(){complete(true);};
               function watchReady(){
@@ -56,28 +60,25 @@ export default function petgrowSplashReadyGate(){
                   if(hasRealScreen()){
                     if(!renderedAt)renderedAt=now;
                     if(criticalReady()||requested){complete(false);return;}
-                    /* If the real app is already rendered but one legacy ready signal was missed,
-                       release shortly instead of leaving the progress UI parked at 99%. */
-                    if(now-renderedAt>1200){complete(true);return;}
-                  }else if(hasRenderedApp()&&now-gateStarted>6500){
-                    /* Last-resort guard for stale hidden loading markers in older WebViews. */
-                    finished=true;cleanup();finish();return;
+                    if(now-renderedAt>500){complete(true);return;}
                   }
-                  if(now-gateStarted>8500&&hasRenderedApp()){
-                    finished=true;cleanup();finish();
+                  if(hasRenderedApp()&&now-gateStarted>1800){
+                    finished=true;cleanup();finishFast();return;
                   }
-                },90);
+                  if(now-gateStarted>2800&&hasRenderedApp()){
+                    finished=true;cleanup();finishFast();
+                  }
+                },50);
               }
               function gatedFinish(){
                 if(finished)return;
-                requested=true;requestedAt=requestedAt||performance.now();
+                requested=true;
                 if(hasRealScreen()){complete(false);return;}
                 watchReady();
               }
               gatedFinish.__petgrowReadyGate=true;
               window.__hidePetGrowSplash=gatedFinish;
               installed=true;
-              /* Start watching immediately so a missed hide/critical event cannot strand the splash at 99%. */
               watchReady();
             }
             install();
