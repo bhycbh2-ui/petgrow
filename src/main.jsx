@@ -28,7 +28,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
 /*
  * Historical UI/runtime patches are still preserved, but they no longer block the first paint.
- * PetLife is also split into its own chunk so the core home screen stays fast.
+ * PetLife and its home/My Pet bridge are split into their own chunks so the core home screen stays fast.
  */
 const loadDeferredRuntime = () => {
   Promise.allSettled([
@@ -42,7 +42,10 @@ const loadDeferredRuntime = () => {
     import("./petgrow-final-batch-20260819.js"),
     import("./petinfo-cms-runtime.js"),
     import("./petinfo-cms-import-runtime.js"),
-    import("./PetLifeApp.jsx").then((m) => m.bootPetLife?.()),
+    import("./PetLifeApp.jsx").then((m) => {
+      m.bootPetLife?.();
+      return import("./petlife-home-bridge.js").then((bridge) => bridge.bootPetLifeHomeBridge?.());
+    }),
   ]).catch(() => {});
 };
 
@@ -54,7 +57,7 @@ if ("requestIdleCallback" in window) {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js?v=51", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=52", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });
