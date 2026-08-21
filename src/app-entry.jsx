@@ -52,8 +52,8 @@ const primaryDeferredLoaders = [
 ];
 
 /*
- * Phase 2: deep-page/admin helpers. They are intentionally held back until the
- * user has had time to see and interact with the first screen.
+ * Phase 2: deep-page/admin helpers. None of these are required to paint or use
+ * the first screen, so keep them outside the initial interaction window.
  */
 const deepDeferredLoaders = [
   () => import("./final-audit-20260818.js"),
@@ -86,14 +86,16 @@ scheduleIdle(() => loadInSlices(primaryDeferredLoaders, 34), 1250, 380);
 
 const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
 const slowConnection = connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType || "");
-const deepDelay = slowConnection ? 4200 : 2200;
+// Previously these helpers started after 2.2s/4.2s, competing with the user's
+// first taps and PetLife hydration. Move them well past the first interaction.
+const deepDelay = slowConnection ? 12000 : 8000;
 window.setTimeout(() => {
-  scheduleIdle(() => loadInSlices(deepDeferredLoaders, 48), 1800, 420);
+  scheduleIdle(() => loadInSlices(deepDeferredLoaders, 64), 2400, 650);
 }, deepDelay);
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js?v=58", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=59", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });

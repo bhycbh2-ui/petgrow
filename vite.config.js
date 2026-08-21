@@ -8,6 +8,7 @@ import petNewsLoadingState from "./build/petnews-loading-state-20260821.mjs";
 import petgrowPerformanceLazy from "./build/petgrow-performance-lazy-20260821.mjs";
 import petgrowMenuSplitV3 from "./build/petgrow-menu-split-v3-20260821.mjs";
 import petgrowMenuSplitV4 from "./build/petgrow-menu-split-v4-20260821.mjs";
+import petgrowPetTalkSplitV5 from "./build/petgrow-pettalk-split-v5-20260821.mjs";
 
 const ADSENSE_CLIENT = "ca-pub-9699974051273244";
 
@@ -58,8 +59,9 @@ function petgrowAdsenseWeb() {
 }
 
 export default defineConfig({
-  // 3차에서 Pet뉴스/Pet음악을, 4차에서 내 주변 Pet·Pet톡 피드·관리자센터를 실제 사용 시점 청크로 분리합니다.
-  plugins: [petgrowAdsenseWeb(), petgrowPerformanceLazy(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), petgrowMenuSplitV3(), petgrowMenuSplitV4(), react()],
+  // 3차 Pet뉴스/Pet음악, 4차 내 주변 Pet·Pet톡 피드·관리자센터,
+  // 5차 Pet톡 글쓰기·상세·내활동을 실제 사용 시점 청크로 분리합니다.
+  plugins: [petgrowAdsenseWeb(), petgrowPerformanceLazy(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), petgrowMenuSplitV3(), petgrowMenuSplitV4(), petgrowPetTalkSplitV5(), react()],
   build: {
     // 자주 바뀌는 앱 코드와 무거운 외부 라이브러리를 분리해 재방문 캐시 효율을 높여요.
     // Recharts/Leaflet 및 비핵심 메뉴 화면은 실제 사용 시점에만 동적 import 됩니다.
