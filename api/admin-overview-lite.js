@@ -4,6 +4,7 @@ import { getAdminRole, roleCan } from "../server_lib/admin.js";
 import { getPetLifeServerStats } from "../server_lib/petlifeAutomation.js";
 
 export default async function handler(req,res){
+  res.setHeader("Cache-Control","private, no-store, max-age=0");
   if(req.method!=="GET") return res.status(405).json({error:"지원하지 않는 요청이에요."});
   const uid=getSessionUserId(req);
   if(!uid) return res.status(401).json({error:"로그인이 필요해요."});
@@ -30,6 +31,7 @@ export default async function handler(req,res){
     const attempts=Number(ops[0]?.push_attempts_30d)||0;
     const success=Number(ops[0]?.push_success_30d)||0;
     return res.status(200).json({
+      generatedAt:new Date().toISOString(),
       totalMembers:Number(rows[0]?.total_members)||0,
       petLife:{
         ...petLife,
