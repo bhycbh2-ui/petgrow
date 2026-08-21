@@ -10,10 +10,6 @@ export default function petgrowFullQa20260821(){
         if(!code.includes(from)) throw new Error(`[petgrow-full-qa] source changed: ${label}`);
         code=code.replace(from,to);
       };
-      const all=(from,to,label)=>{
-        if(!code.includes(from)) throw new Error(`[petgrow-full-qa] source changed: ${label}`);
-        code=code.split(from).join(to);
-      };
 
       one(
         'title: "10. 쿠키·광고 식별자 및 이용자 선택권"',
@@ -34,15 +30,10 @@ export default function petgrowFullQa20260821(){
         "privacy-en-analytics-nearby"
       );
 
-      all(
-        'music:"Pet음악",tips:"Pet정보"',
-        'music:"Pet음악",news:"Pet뉴스",tips:"Pet정보",guide:"정보가이드"',
-        "admin-label-news-guide"
-      );
-      all(
-        'my:"회원정보",support:"고객지원",admin:"관리자"',
-        'my:"회원정보",more:"더보기",support:"고객지원","ad-inquiry":"제휴문의",admin:"관리자"',
-        "admin-label-more-support"
+      one(
+        'const labels={home:"홈",about:"소개",pets:"우리 아이",petlife:"PetLife",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"회원정보",support:"고객지원",admin:"관리자"};',
+        'const labels={home:"홈",about:"소개",pets:"우리 아이",petlife:"PetLife",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",news:"Pet뉴스",tips:"Pet정보",guide:"정보가이드",content:"콘텐츠",my:"회원정보",more:"더보기",support:"고객지원","ad-inquiry":"제휴문의",login:"로그인",terms:"이용약관",privacy:"개인정보",admin:"관리자"};',
+        "admin-menu-labels"
       );
 
       return {code,map:null};
