@@ -151,7 +151,7 @@ export async function getBackupStatus(){
   const config=configState();
   if(!config.configured)return {...config,retentionDays:RETENTION_DAYS,lastBackup:null,lastBackupAgeHours:null,overdue:false,backupCount:0,scanTruncated:false};
   const {blobs,truncated}=await listBackupBlobs();
-  const last=blobs[0]?{pathname:blobs[0].pathname,uploadedAt:blobs[0].uploadedAt,size:blobs[0].size,url:blobs[0].url}:null;
+  const last=blobs[0]?{pathname:blobs[0].pathname,uploadedAt:blobs[0].uploadedAt,size:blobs[0].size}:null;
   const ageHours=last?.uploadedAt?Number(((Date.now()-new Date(last.uploadedAt).getTime())/3600000).toFixed(1)):null;
   return {...config,retentionDays:RETENTION_DAYS,backupCount:blobs.length,scanTruncated:truncated,lastBackup:last,lastBackupAgeHours:ageHours,overdue:ageHours==null||ageHours>36};
 }
