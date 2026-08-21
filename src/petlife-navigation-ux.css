@@ -3,18 +3,24 @@
 #petlife-react-root .pl-head-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex:0 0 auto}
 #petlife-react-root .pl-home,
 #petlife-react-root .pl-head-actions .pl-close{
-  width:auto;min-width:68px;height:44px;padding:0 13px;border:1px solid rgba(255,255,255,.22);border-radius:999px;
-  background:rgba(255,255,255,.13);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  box-sizing:border-box;box-shadow:0 5px 15px rgba(0,0,0,.08);font-family:var(--pl-font);cursor:pointer;white-space:nowrap
+  width:auto;height:44px;padding:0 12px;border:1px solid #cbd9cf;border-radius:999px;
+  background:rgba(250,252,250,.97);color:#315f49;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  box-sizing:border-box;box-shadow:0 6px 18px rgba(31,53,41,.10);font-family:var(--pl-font);cursor:pointer;white-space:nowrap;
+  -webkit-tap-highlight-color:transparent
 }
-#petlife-react-root .pl-home:hover,
-#petlife-react-root .pl-head-actions .pl-close:hover{background:rgba(255,255,255,.22)}
-#petlife-react-root .pl-home span,
-#petlife-react-root .pl-head-actions .pl-close span{font-size:19px;line-height:1;font-weight:700}
+#petlife-react-root .pl-home{min-width:78px;background:#eef6f0;border-color:#b9d0c0;color:#234f39}
+#petlife-react-root .pl-head-actions .pl-close{min-width:66px;background:#fff9f6;border-color:#e4d6cf;color:#775147}
+#petlife-react-root .pl-home:hover{background:#e4f1e7;border-color:#9fbea9}
+#petlife-react-root .pl-head-actions .pl-close:hover{background:#fff2ec;border-color:#d8c4ba}
+#petlife-react-root .pl-home span{
+  width:25px;height:25px;border-radius:50%;display:grid;place-items:center;flex:0 0 25px;
+  background:#315f49;color:#fff;font-size:17px;line-height:1;font-weight:900;box-shadow:0 2px 6px rgba(31,53,41,.14)
+}
+#petlife-react-root .pl-head-actions .pl-close span{font-size:20px;line-height:1;font-weight:850}
 #petlife-react-root .pl-home b,
-#petlife-react-root .pl-head-actions .pl-close b{font-size:12px;line-height:1;font-weight:800;letter-spacing:-.02em}
+#petlife-react-root .pl-head-actions .pl-close b{font-size:12px;line-height:1;font-weight:850;letter-spacing:-.02em}
 #petlife-react-root .pl-home:focus-visible,
-#petlife-react-root .pl-head-actions .pl-close:focus-visible{outline:3px solid rgba(255,255,255,.55);outline-offset:2px}
+#petlife-react-root .pl-head-actions .pl-close:focus-visible{outline:3px solid rgba(49,95,73,.28);outline-offset:2px}
 
 @media (max-width:720px){
   #petlife-react-root .pl-backdrop{padding:0;align-items:stretch}
@@ -28,9 +34,9 @@
   #petlife-react-root .pl-brandmark{width:38px;height:38px;border-radius:12px;font-size:19px;flex:0 0 38px}
   #petlife-react-root .pl-head h2{font-size:22px}
   #petlife-react-root .pl-head p{display:none}
-  #petlife-react-root .pl-head-actions{gap:6px}
-  #petlife-react-root .pl-home,
-  #petlife-react-root .pl-head-actions .pl-close{min-width:62px;height:42px;padding:0 10px}
+  #petlife-react-root .pl-head-actions{gap:7px}
+  #petlife-react-root .pl-home{min-width:76px;height:44px;padding:0 10px}
+  #petlife-react-root .pl-head-actions .pl-close{min-width:62px;height:44px;padding:0 10px}
   #petlife-react-root .pl-home b,
   #petlife-react-root .pl-head-actions .pl-close b{font-size:12px}
 }
@@ -38,6 +44,6 @@
 @media (max-width:360px){
   #petlife-react-root .pl-head{padding-left:9px;padding-right:9px}
   #petlife-react-root .pl-brandmark{display:none}
-  #petlife-react-root .pl-home,
+  #petlife-react-root .pl-home{min-width:72px;padding:0 8px}
   #petlife-react-root .pl-head-actions .pl-close{min-width:58px;padding:0 8px}
 }
