@@ -1,4 +1,4 @@
-const NEWS_START = "/* PETNEWS_FINAL_INLINE_20260818 */\nfunction PetNewsPage";
+const NEWS_START = "/* PETNEWS_DIRECT_LINK_20260818 */\nfunction PetNewsPage";
 const NEWS_END = "function PetNewsPrivacyAddendum";
 const MUSIC_START = "function PetMusicPage({ account, lang }) {";
 const MUSIC_END = "function AdminMusicPanel(){";
@@ -11,7 +11,7 @@ function replaceRange(code, startMarker, endMarker, replacement, label) {
   return code.slice(0, start) + replacement + "\n\n" + code.slice(end);
 }
 
-const newsWrapper = `/* PETNEWS_FINAL_INLINE_20260818 — lazy menu wrapper */
+const newsWrapper = `/* PETNEWS_DIRECT_LINK_20260818 — lazy menu wrapper */
 let __petgrowNewsPageComponent = null;
 let __petgrowNewsPagePromise = null;
 function __petgrowLoadNewsPage(){
@@ -75,6 +75,7 @@ function PetMusicPage(props){
     return () => { active = false; };
   }, [retryKey]);
   if (!Component) return <div className="bg-card" role="status" aria-live="polite" aria-busy={!failed} style={{minHeight:180,display:"grid",placeItems:"center",textAlign:"center",padding:24}}><div><b>{failed?"Pet음악을 불러오지 못했어요.":"Pet음악을 준비하고 있어요…"}</b>{failed&&<div style={{marginTop:12}}><button type="button" className="bg-btn" onClick={()=>setRetryKey((v)=>v+1)}>다시 시도</button></div>}</div></div>;
+  return <Component {...props} />;
 }`;
 
 export default function petgrowMenuSplitV3(){
