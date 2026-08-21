@@ -37,61 +37,17 @@ requestAnimationFrame(() => {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-/*
- * The splash now owns the only visible loading phase.
- * PetLife's home bridge is brought up behind the splash first so the user does not
- * see a second "records are loading" card after the progress reaches 100%.
- */
-const waitForCriticalHome = async (timeout = 3000) => {
-  const started = performance.now();
-  let homeSeenAt = 0;
-  while (performance.now() - started < timeout) {
-    const home = document.querySelector(".petgrow-dashboard-home");
-    if (!home) {
-      if (performance.now() - started > 500) return "not-home";
-      await sleep(40);
-      continue;
-    }
-    homeSeenAt ||= performance.now();
-    const petLifeSection = home.querySelector("#pg-petlife-home-dashboard");
-    const petLifeLoading = petLifeSection?.querySelector(".pgh-loading");
-    if (petLifeSection && !petLifeLoading) return "ready";
-    /* Logged-out users intentionally do not receive a PetLife dashboard. */
-    if (!petLifeSection && performance.now() - homeSeenAt > 900) return "not-applicable";
-    await sleep(45);
-  }
-  return "timeout";
-};
-
-let criticalBootPromise = null;
-const bootCriticalUi = () => {
-  if (criticalBootPromise) return criticalBootPromise;
-  criticalBootPromise = (async () => {
-    try {
-      const [petLifeModule, bridge] = await Promise.all([
-        import("./PetLifeApp.jsx"),
-        import("./petlife-home-bridge.js"),
-      ]);
-      petLifeModule.bootPetLife?.();
-      bridge.bootPetLifeHomeBridge?.();
-      await waitForCriticalHome();
-    } catch (error) {
-      console.warn("PetGrow critical home preload failed", error);
-    } finally {
+/* Critical home hydration runs behind the splash in its own small chunk. */
+requestAnimationFrame(() => window.setTimeout(() => {
+  import("./critical-home-boot.js")
+    .then((module) => module.bootCriticalHome?.())
+    .catch((error) => {
+      console.warn("PetGrow critical home chunk failed", error);
       window.__petgrowCriticalAppReady = true;
       window.dispatchEvent(new CustomEvent("petgrow:critical-ready"));
-    }
-  })();
-  return criticalBootPromise;
-};
+    });
+}, 0));
 
-/* Start immediately after the first React paint while the splash is still covering it. */
-requestAnimationFrame(() => window.setTimeout(bootCriticalUi, 0));
-
-/*
- * Phase 1: usability and interaction helpers. Critical PetLife home hydration was
- * already started above, so these can stay off the first rendering path.
- */
 const primaryDeferredLoaders = [
   () => import("./requested-polish-20260818.js"),
   () => import("./aab-ready-fixes-20260818.js"),
@@ -110,10 +66,6 @@ const primaryDeferredLoaders = [
   () => import("./android-admob.js"),
 ];
 
-/*
- * Phase 2: deep-page/admin helpers. None of these are required to paint or use
- * the first screen, so keep them outside the initial interaction window.
- */
 const deepDeferredLoaders = [
   () => import("./legacy-server-sync.js"),
   () => import("./account-data-export.js"),
