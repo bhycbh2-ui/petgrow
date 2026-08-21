@@ -17,7 +17,7 @@ async function allBlobs(max=5000){
   if(!process.env.BLOB_READ_WRITE_TOKEN)return {configured:false,blobs:[],truncated:false};
   let cursor;const blobs=[];
   do{
-    const page=await list({limit:1000,cursor});
+    const page=await list({limit:100,cursor});
     blobs.push(...(page.blobs||[]));
     if(blobs.length>=max)return {configured:true,blobs:blobs.slice(0,max),truncated:Boolean(page.hasMore)};
     cursor=page.hasMore?page.cursor:undefined;
