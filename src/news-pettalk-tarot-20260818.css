@@ -10,6 +10,14 @@
 .home-news-direct-link:hover,.home-news-direct-link:focus-visible{transform:translateY(-1px)!important;border-color:#b9d3c0!important;box-shadow:0 10px 26px rgba(38,60,45,.08)!important;outline:none!important}
 .home-news-open{position:absolute!important;right:16px!important;top:50%!important;transform:translateY(-50%)!important;font-size:10px!important;font-weight:850!important;color:#39764a!important;white-space:nowrap!important}
 
+/* PetNews loading must never look like an empty result. */
+.petnews-result-count.loading{color:#587166!important;font-weight:750!important}
+.petnews-loading-state{min-height:122px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:7px!important;text-align:center!important;color:#355447!important}
+.petnews-loading-state b{font-size:15px!important;letter-spacing:-.02em!important}
+.petnews-loading-state small{font-size:12px!important;line-height:1.55!important;color:#77867e!important;font-weight:600!important}
+.petnews-loading-spinner{width:26px!important;height:26px!important;border-radius:50%!important;border:3px solid #e1ebe4!important;border-top-color:#3f7659!important;animation:petnews-loading-spin .8s linear infinite!important}
+@keyframes petnews-loading-spin{to{transform:rotate(360deg)}}
+
 /* PetTarot result: card first, centered; interpretation flows below. */
 .pet-tarot-shell .pet-tarot-result-topic{max-width:760px!important;margin:0 auto 16px!important;text-align:center!important;justify-content:center!important}
 .pet-tarot-shell .pet-tarot-result-wrap{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;gap:22px!important;width:100%!important;max-width:780px!important;margin:0 auto!important}
@@ -23,4 +31,9 @@
  .pet-tarot-shell .pet-tarot-result-wrap{gap:18px!important}
  .pet-tarot-shell .pet-tarot-result-wrap>.pet-tarot-face{width:min(250px,72vw)!important;max-width:250px!important}
  .petnews-direct-card .petnews-card-body{min-height:0!important}
+ .petnews-loading-state{min-height:110px!important;padding:18px 12px!important}
+ .petnews-loading-state b{font-size:14px!important}
+ .petnews-loading-state small{font-size:11px!important}
 }
+
+@media(prefers-reduced-motion:reduce){.petnews-loading-spinner{animation-duration:1.8s!important}}
