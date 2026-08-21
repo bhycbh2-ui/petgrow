@@ -8,8 +8,9 @@ export default function petgrowSplashReadyGate(){
         injectTo:"head",
         children:`
           (function(){
-            var installed=false,finished=false,requested=false,observer=null,poll=null,requestedAt=0;
-            function waitingNode(){return document.querySelector(".petgrow-boot-skeleton,#petgrow-fast-shell");}
+            var installed=false,finished=false,requested=false,observer=null,poll=null,requestedAt=0,criticalListener=false;
+            function waitingNode(){return document.querySelector(".petgrow-boot-skeleton,#petgrow-fast-shell,.petgrow-dashboard-home .pgh-loading");}
+            function criticalReady(){return window.__petgrowCriticalAppReady===true;}
             function hasRealScreen(){
               var root=document.getElementById("root");
               if(!root)return false;
@@ -19,6 +20,7 @@ export default function petgrowSplashReadyGate(){
             function cleanup(){
               if(observer){observer.disconnect();observer=null;}
               if(poll){window.clearInterval(poll);poll=null;}
+              if(criticalListener){window.removeEventListener("petgrow:critical-ready",complete);criticalListener=false;}
             }
             function install(){
               if(installed)return;
@@ -29,16 +31,17 @@ export default function petgrowSplashReadyGate(){
               if(finish&&finish.__petgrowReadyGate){installed=true;return;}
 
               function complete(){
-                if(finished||!requested||!hasRealScreen())return;
+                if(finished||!requested||!criticalReady()||!hasRealScreen())return;
                 finished=true;cleanup();finish();
               }
               function watchReady(){
                 if(observer||poll)return;
                 observer=new MutationObserver(complete);
                 observer.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:["class"]});
+                if(!criticalListener){window.addEventListener("petgrow:critical-ready",complete);criticalListener=true;}
                 poll=window.setInterval(function(){
                   if(finished)return;
-                  if(hasRealScreen()){complete();return;}
+                  if(criticalReady()&&hasRealScreen()){complete();return;}
                   /* Safety fallback: never leave a healthy rendered app behind the splash forever. */
                   if(requestedAt&&performance.now()-requestedAt>9000){
                     var root=document.getElementById("root");
@@ -46,12 +49,12 @@ export default function petgrowSplashReadyGate(){
                       finished=true;cleanup();finish();
                     }
                   }
-                },120);
+                },90);
               }
               function gatedFinish(){
                 if(finished)return;
                 requested=true;requestedAt=requestedAt||performance.now();
-                if(hasRealScreen()){complete();return;}
+                if(criticalReady()&&hasRealScreen()){complete();return;}
                 watchReady();
               }
               gatedFinish.__petgrowReadyGate=true;
