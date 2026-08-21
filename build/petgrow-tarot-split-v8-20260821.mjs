@@ -1,8 +1,8 @@
 import { transformWithEsbuild } from "vite";
 
-const VIRTUAL_ID = "virtual:petgrow-v8-tarot";
+const VIRTUAL_ID = "virtual:petgrow-v8-content";
 const RESOLVED_ID = `\0${VIRTUAL_ID}.jsx`;
-const ENTRY = "PetTarotPanel";
+const ENTRY = "PetContentPage";
 const REACT_BINDINGS = new Set([
   "React", "Fragment", "useState", "useEffect", "useMemo", "useCallback", "useRef",
   "useLayoutEffect", "useReducer", "useContext", "useId", "useDeferredValue", "useTransition",
@@ -186,33 +186,33 @@ function externalDepsFor(source, bindings) {
 function lazyWrapper(deps) {
   const depObject = deps.length ? `{ ${deps.join(", ")} }` : `{}`;
   return `
-let __petgrowV8TarotComponent = null;
-let __petgrowV8TarotPromise = null;
-function __petgrowV8LoadTarot(){
-  if (__petgrowV8TarotComponent) return Promise.resolve(__petgrowV8TarotComponent);
-  if (!__petgrowV8TarotPromise) {
-    __petgrowV8TarotPromise = import("${VIRTUAL_ID}").then((m) => {
-      __petgrowV8TarotComponent = m.default;
-      return __petgrowV8TarotComponent;
+let __petgrowV8ContentComponent = null;
+let __petgrowV8ContentPromise = null;
+function __petgrowV8LoadContent(){
+  if (__petgrowV8ContentComponent) return Promise.resolve(__petgrowV8ContentComponent);
+  if (!__petgrowV8ContentPromise) {
+    __petgrowV8ContentPromise = import("${VIRTUAL_ID}").then((m) => {
+      __petgrowV8ContentComponent = m.default;
+      return __petgrowV8ContentComponent;
     }).catch((error) => {
-      __petgrowV8TarotPromise = null;
+      __petgrowV8ContentPromise = null;
       throw error;
     });
   }
-  return __petgrowV8TarotPromise;
+  return __petgrowV8ContentPromise;
 }
 function ${ENTRY}(props){
-  const [LazyComponent, setLazyComponent] = useState(() => __petgrowV8TarotComponent);
+  const [LazyComponent, setLazyComponent] = useState(() => __petgrowV8ContentComponent);
   const [loadError, setLoadError] = useState(false);
   useEffect(() => {
     if (LazyComponent) return;
     let alive = true;
-    __petgrowV8LoadTarot().then((Component) => {
+    __petgrowV8LoadContent().then((Component) => {
       if (alive) { setLazyComponent(() => Component); setLoadError(false); }
     }).catch(() => { if (alive) setLoadError(true); });
     return () => { alive = false; };
   }, [LazyComponent]);
-  if (!LazyComponent) return <div className="bg-card" role="status" aria-live="polite" style={{padding:20,textAlign:"center"}}><b>Pet타로를 불러오는 중입니다</b><p className="bg-sub" style={{marginTop:8}}>화면을 준비하고 있어요…</p>{loadError && <button type="button" className="bg-btn" style={{display:"block",margin:"10px auto"}} onClick={() => { setLoadError(false); __petgrowV8LoadTarot().then((Component) => setLazyComponent(() => Component)).catch(() => setLoadError(true)); }}>다시 시도</button>}</div>;
+  if (!LazyComponent) return <div className="bg-card" role="status" aria-live="polite" style={{padding:20,textAlign:"center"}}><b>콘텐츠를 불러오는 중입니다</b><p className="bg-sub" style={{marginTop:8}}>화면을 준비하고 있어요…</p>{loadError && <button type="button" className="bg-btn" style={{display:"block",margin:"10px auto"}} onClick={() => { setLoadError(false); __petgrowV8LoadContent().then((Component) => setLazyComponent(() => Component)).catch(() => setLoadError(true)); }}>다시 시도</button>}</div>;
   const __deps = ${depObject};
   return <LazyComponent {...props} __deps={__deps} />;
 }
@@ -223,20 +223,20 @@ function virtualModule(source, deps) {
   const depDecl = deps.length
     ? `let ${deps.join(", ")};\nfunction __bindDeps(d){ ({ ${deps.join(", ")} } = d || {}); }`
     : `function __bindDeps(){}`;
-  return `import React, { Fragment, useCallback, useContext, useDeferredValue, useEffect, useId, useLayoutEffect, useMemo, useReducer, useRef, useState, useTransition } from "react";\n${depDecl}\n${source}\nfunction __PetGrowV8TarotEntry({ __deps, ...props }){ __bindDeps(__deps); return React.createElement(${ENTRY}, props); }\nexport default __PetGrowV8TarotEntry;\n`;
+  return `import React, { Fragment, useCallback, useContext, useDeferredValue, useEffect, useId, useLayoutEffect, useMemo, useReducer, useRef, useState, useTransition } from "react";\n${depDecl}\n${source}\nfunction __PetGrowV8ContentEntry({ __deps, ...props }){ __bindDeps(__deps); return React.createElement(${ENTRY}, props); }\nexport default __PetGrowV8ContentEntry;\n`;
 }
 
 export default function petgrowTarotSplitV8() {
   let captured = null;
   return {
-    name: "petgrow-tarot-split-v8",
+    name: "petgrow-content-split-v8",
     enforce: "pre",
     resolveId(id) {
       return id === VIRTUAL_ID ? RESOLVED_ID : null;
     },
     async load(id) {
       if (id !== RESOLVED_ID) return null;
-      if (!captured) this.error("[petgrow-v8] PetTarotPanel source was not captured");
+      if (!captured) this.error("[petgrow-v8] PetContentPage source was not captured");
       const jsx = virtualModule(captured.source, captured.deps);
       const result = await transformWithEsbuild(jsx, id.replace(/^\0/, ""), { loader: "jsx", jsx: "automatic", sourcemap: false });
       return { code: result.code, map: null };
@@ -247,7 +247,7 @@ export default function petgrowTarotSplitV8() {
       if (!hit) this.error(`[petgrow-v8] ${ENTRY} anchor not found`);
       const deps = externalDepsFor(hit.source, topLevelBindings(code));
       captured = { source: hit.source, deps };
-      console.log(`PGV8_SPLIT tarot deps=${JSON.stringify(deps)} bytes=${hit.source.length}`);
+      console.log(`PGV8_SPLIT content deps=${JSON.stringify(deps)} bytes=${hit.source.length}`);
       const next = code.slice(0, hit.start) + lazyWrapper(deps) + code.slice(hit.end);
       return { code: next, map: null };
     },
