@@ -6,6 +6,7 @@ import petgrowNewsPetTalkTarotFixes from "./build/petgrow-news-pettalk-tarot-202
 import petInfoCmsSource from "./build/petinfo-cms-source-20260820.mjs";
 import petNewsLoadingState from "./build/petnews-loading-state-20260821.mjs";
 import petgrowPerformanceLazy from "./build/petgrow-performance-lazy-20260821.mjs";
+import petgrowRechartsTreeShake20260822 from "./build/petgrow-recharts-tree-shake-20260822.mjs";
 import petgrowMenuSplitV3 from "./build/petgrow-menu-split-v3-20260821.mjs";
 import petgrowMenuSplitV4 from "./build/petgrow-menu-split-v4-20260821.mjs";
 import petgrowPetTalkSplitV5 from "./build/petgrow-pettalk-split-v5-20260821.mjs";
@@ -63,7 +64,7 @@ export default defineConfig({
   // 3차 Pet뉴스/Pet음악, 4차 내 주변 Pet·Pet톡 피드·관리자센터,
   // 5차 Pet톡 하위화면, 6차 Pet사주·PetBTI·Pet정보·정보가이드,
   // 7차 소개·성장결과·My/계정·지원/정책, 8차 등록·시작·로그인·더보기 등 보조 화면을 실제 사용 시점에 로드합니다.
-  plugins: [petgrowPetLifeLegalAudit20260821(), petgrowFullQa20260821(), petgrowPremiumSplashV2(), petgrowSplashReadyGate(), petgrowAdsenseWeb(), petgrowPerformanceLazy(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), petgrowMenuSplitV3(), petgrowMenuSplitV4(), petgrowPetTalkSplitV5(), petgrowDeepMenuSplitV6(), petgrowDeepScreenSplitV7(), petgrowRouteSplitV8(), react()],
+  plugins: [petgrowPetLifeLegalAudit20260821(), petgrowFullQa20260821(), petgrowPremiumSplashV2(), petgrowSplashReadyGate(), petgrowAdsenseWeb(), petgrowPerformanceLazy(), petgrowRechartsTreeShake20260822(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), petgrowMenuSplitV3(), petgrowMenuSplitV4(), petgrowPetTalkSplitV5(), petgrowDeepMenuSplitV6(), petgrowDeepScreenSplitV7(), petgrowRouteSplitV8(), react()],
   build: {
     rollupOptions: {
       output: {
