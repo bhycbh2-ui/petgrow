@@ -46,6 +46,7 @@ const primaryDeferredLoaders = [
   () => import("./home-quick-petbti-20260819.js"),
   () => import("./petgrow-final-batch-20260819.js"),
   () => import("./petlife-final-qa.js"),
+  () => import("./petlife-mobile-form-v2.js"),
   () => import("./PetLifeApp.jsx").then(async (m) => {
     m.bootPetLife?.();
     const [bridge, navigation] = await Promise.all([
@@ -99,7 +100,7 @@ window.setTimeout(() => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js?v=67", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=68", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });
