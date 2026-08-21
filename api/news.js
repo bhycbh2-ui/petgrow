@@ -129,5 +129,16 @@ export default async function handler(req,res){
   if(req.method!=="GET")return res.status(405).json({error:"Method not allowed"});
   const clientId=process.env.NAVER_API_HUB_CLIENT_ID,clientSecret=process.env.NAVER_API_HUB_CLIENT_SECRET;let provider="google-news-rss";
   try{await ensureNewsArchive();let raw=[];if(clientId&&clientSecret){try{raw=await fetchNaver(clientId,clientSecret);provider="naver-api-hub";}catch(e){console.warn("Pet news primary provider failed; using fallback",e?.message||e);}}if(!raw.length){raw=await fetchGoogleFallback();provider="google-news-rss";}const freshItems=await prepare(raw);if(freshItems.length)await saveNewsArchive(freshItems);const items=await loadNewsArchive(1000);res.setHeader("Cache-Control","public, s-maxage=1800, stale-while-revalidate=1800");return res.status(200).json({configured:true,provider,archive:true,updatedAt:new Date().toISOString(),refreshSeconds:1800,total:items.length,items,message:items.length?"":"새 반려동물 뉴스를 찾고 있어요. 잠시 후 다시 확인해 주세요."});}
-  catch(error){console.error("Pet news fetch failed",error?.message||error);res.setHeader("Cache-Control","no-store");return res.status(200).json({configured:true,provider:"temporarily-unavailable",items:[],error:"뉴스를 불러오지 못했어요. 잠시 후 다시 시도해 주세요."});}
+  catch(error){
+    console.error("Pet news fetch failed",error?.message||error);
+    try{
+      const items=await loadNewsArchive(1000);
+      res.setHeader("Cache-Control","public, max-age=30, s-maxage=300, stale-while-revalidate=1800");
+      return res.status(200).json({configured:true,provider:"archive-fallback",archive:true,stale:true,updatedAt:new Date().toISOString(),refreshSeconds:1800,total:items.length,items,error:"최신 뉴스 수집에 실패해 저장된 뉴스를 표시하고 있어요."});
+    }catch(archiveError){
+      console.error("Pet news archive fallback failed",archiveError?.message||archiveError);
+      res.setHeader("Cache-Control","no-store");
+      return res.status(200).json({configured:true,provider:"temporarily-unavailable",archive:true,items:[],error:"뉴스를 불러오지 못했어요. 잠시 후 다시 시도해 주세요."});
+    }
+  }
 }
