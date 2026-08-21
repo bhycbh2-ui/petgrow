@@ -43,6 +43,7 @@ const loadDeferredRuntime = () => {
     import("./petinfo-cms-runtime.js"),
     import("./petinfo-cms-import-runtime.js"),
     import("./legacy-growth-modal-ux.js"),
+    import("./petlife-final-qa.js"),
     import("./PetLifeApp.jsx").then((m) => {
       m.bootPetLife?.();
       return import("./petlife-home-bridge.js").then((bridge) => bridge.bootPetLifeHomeBridge?.());
@@ -58,7 +59,7 @@ if ("requestIdleCallback" in window) {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js?v=53", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=54", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });
