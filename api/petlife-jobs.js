@@ -6,7 +6,7 @@ import {
   getKstClock,
   isFcmConfigured
 } from "../server_lib/petlifeAutomation.js";
-import { createEncryptedBackup, pruneEncryptedBackups } from "../server_lib/backup.js";
+import { createEncryptedBackup, pruneEncryptedBackups, verifyLatestEncryptedBackup } from "../server_lib/backup.js";
 
 function cronAuthorized(req){
   const secret=String(process.env.CRON_SECRET||"");
@@ -28,14 +28,23 @@ export default async function handler(req,res){
     if(Number(clock?.day||0)<=3)monthly=await generatePreviousMonthReports();
     const push=await deliverQueuedNotifications({limit:200});
     let backup={skipped:true};
+    let backupVerify={skipped:true};
     let backupPrune={skipped:true};
     try{
       backup=await createEncryptedBackup();
-      backupPrune=await pruneEncryptedBackups();
+      if(backup?.created){
+        backupVerify=await verifyLatestEncryptedBackup();
+        if(!backupVerify?.verified)throw new Error(backupVerify?.reason||"BACKUP_VERIFY_FAILED");
+        // 새 백업을 실제로 복호화·검증한 뒤에만 오래된 백업을 정리합니다.
+        backupPrune=await pruneEncryptedBackups();
+      }
     }catch(error){
-      backup={configured:Boolean(process.env.BACKUP_ENCRYPTION_KEY),error:String(error?.message||error).slice(0,300)};
+      console.error("scheduled backup verify",error);
+      backup={...backup,error:String(error?.message||error).slice(0,300)};
+      backupVerify={...backupVerify,verified:false,error:String(error?.message||error).slice(0,300)};
+      backupPrune={skipped:true,reason:"NEW_BACKUP_NOT_VERIFIED"};
     }
-    return res.status(200).json({ok:true,date:clock?.today,queue,monthly,push,backup,backupPrune,pushConfigured:isFcmConfigured()});
+    return res.status(200).json({ok:true,date:clock?.today,queue,monthly,push,backup,backupVerify,backupPrune,pushConfigured:isFcmConfigured()});
   }catch(error){
     console.error("petlife jobs",error);
     return res.status(500).json({error:error?.message||"PetLife 자동화 작업을 처리하지 못했어요."});
