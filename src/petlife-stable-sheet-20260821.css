@@ -1,0 +1,51 @@
+/* PetLife mobile sheet stability — keep one predictable sheet size across all record types. */
+@media (max-width: 760px) {
+  #petlife-react-root .pl-modal {
+    height: min(76dvh, 680px) !important;
+    max-height: var(--pl-vv-height, 100dvh) !important;
+  }
+
+  #petlife-react-root .pl-modal > header {
+    flex: 0 0 auto !important;
+  }
+
+  #petlife-react-root .pl-modal > .pl-form {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-gutter: stable both-edges;
+  }
+
+  /* Expanding optional memo/photo/title content must scroll inside the same sheet. */
+  #petlife-react-root .pl-modal .pl-extra {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  #petlife-react-root .pl-modal .pl-more-toggle,
+  #petlife-react-root .pl-modal .pl-selectedtype,
+  #petlife-react-root .pl-modal .pl-formsection {
+    flex: 0 0 auto !important;
+  }
+
+  /* Keep the primary action in the same visual position while the form scrolls. */
+  #petlife-react-root .pl-modal > .pl-form > .pl-primary.wide:last-child {
+    position: sticky !important;
+    bottom: max(0px, env(safe-area-inset-bottom)) !important;
+    flex: 0 0 auto !important;
+  }
+}
+
+/* The keyboard changes the available viewport, not the form's content-driven size. */
+@media (max-width: 760px) {
+  html.pl-keyboard-open #petlife-react-root .pl-modal {
+    height: var(--pl-vv-height, 100dvh) !important;
+    max-height: var(--pl-vv-height, 100dvh) !important;
+  }
+}
