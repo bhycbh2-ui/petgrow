@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 108dp adaptive-icon viewport보다 크게 배치해 기존 PNG 내부의 흰 여백을 잘라내고 로고를 꽉 차게 보이도록 합니다. -->
+    <item
+        android:width="148dp"
+        android:height="148dp"
+        android:gravity="center">
+        <bitmap
+            android:src="@drawable/petgrow_brand_icon"
+            android:gravity="fill"
+            android:filter="true" />
+    </item>
+</layer-list>

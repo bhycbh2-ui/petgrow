@@ -1,0 +1,60 @@
+/* PetLife / 소개 사이드바 회귀 보정 — 2026-08-22 */
+@media (min-width: 900px) {
+  .petgrow-sidebar-nav {
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-gutter: stable;
+    padding-right: 2px;
+    padding-bottom: 6px;
+  }
+
+  .petgrow-sidebar-nav > button,
+  .petgrow-sidebar-nav > .sidebar-section-label {
+    flex-shrink: 0;
+  }
+}
+
+/* 낮은 노트북 화면에서도 마지막 '소개' 메뉴가 하단 영역에 가려지지 않게 압축합니다. */
+@media (min-width: 900px) and (max-height: 820px) {
+  .petgrow-sidebar {
+    top: 8px !important;
+    bottom: 8px !important;
+    padding-top: 11px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .petgrow-sidebar-brand {
+    padding-bottom: 9px !important;
+    margin-bottom: 5px !important;
+  }
+
+  .petgrow-sidebar-brand img {
+    width: 42px !important;
+    height: 42px !important;
+  }
+
+  .petgrow-sidebar-nav {
+    gap: 3px !important;
+  }
+
+  .petgrow-sidebar-nav > button {
+    height: 40px !important;
+    min-height: 40px !important;
+  }
+
+  .petgrow-sidebar-nav > .sidebar-section-label {
+    margin-top: 4px !important;
+    margin-bottom: 1px !important;
+  }
+
+  .petgrow-sidebar-bottom {
+    padding-top: 7px !important;
+  }
+
+  .petgrow-sidebar-message {
+    display: none !important;
+  }
+}

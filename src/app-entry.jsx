@@ -19,6 +19,7 @@ import "./pet-tarot-intro-fix-20260819.css";
 import "./splash-motion-20260821.css";
 import "./loading-speed-20260822.css";
 import "./home-news-fast-20260819.js";
+import "./petlife-menu-regression-fix-20260822.js";
 
 window.__petgrowCriticalAppReady=false;
 const root=document.getElementById("root");
