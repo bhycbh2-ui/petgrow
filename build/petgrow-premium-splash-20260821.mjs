@@ -90,7 +90,7 @@ export default function petgrowPremiumSplash() {
                 }
               }
               function mount(){
-                if(mounted)return;mounted=true;
+                if(mounted)return;
                 var splash=document.getElementById('petgrow-initial-splash');
                 if(!splash)return;
                 var content=splash.querySelector('.petgrow-splash__content');
@@ -98,6 +98,7 @@ export default function petgrowPremiumSplash() {
                 var tagline=splash.querySelector('.petgrow-splash__tagline');
                 var progressEl=splash.querySelector('.petgrow-splash__progress');
                 if(!content||!logo||!progressEl)return;
+                mounted=true;
                 var kicker=document.createElement('p');kicker.className='pg-premium-kicker';kicker.textContent='PETGROW · PET LIFE';content.insertBefore(kicker,logo);
                 if(tagline)tagline.textContent='우리 아이의 오늘부터 평생까지';
                 var sub=document.createElement('p');sub.className='pg-premium-subtag';sub.textContent='CARE · GROWTH · MEMORY';progressEl.parentNode.insertBefore(sub,progressEl);
@@ -127,11 +128,10 @@ export default function petgrowPremiumSplash() {
                 }
                 requestAnimationFrame(frame);
               }
-              var previousHide=window.__hidePetGrowSplash;
               window.__hidePetGrowSplash=finish;
               window.__petgrowSetSplashProgress=setProgress;
               if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
-              window.setTimeout(function(){if(!mounted)mount();},0);
+              window.setTimeout(mount,0);
             })();
           `,
           injectTo: "head",
