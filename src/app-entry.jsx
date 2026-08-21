@@ -21,6 +21,8 @@ import "./splash-motion-20260821.css";
 /* Home/PetNews fetch routing must be ready before the full app mounts. */
 import "./home-news-fast-20260819.js";
 
+window.__petgrowCriticalAppReady = false;
+
 const root = document.getElementById("root");
 ReactDOM.createRoot(root).render(
   <React.StrictMode>
@@ -35,10 +37,17 @@ requestAnimationFrame(() => {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-/*
- * Phase 1: home/account usability patches. These still load after the first paint,
- * but are kept ahead of deep admin/CMS helpers so slower phones remain responsive.
- */
+/* Critical home hydration runs behind the splash in its own small chunk. */
+requestAnimationFrame(() => window.setTimeout(() => {
+  import("./critical-home-boot.js")
+    .then((module) => module.bootCriticalHome?.())
+    .catch((error) => {
+      console.warn("PetGrow critical home chunk failed", error);
+      window.__petgrowCriticalAppReady = true;
+      window.dispatchEvent(new CustomEvent("petgrow:critical-ready"));
+    });
+}, 0));
+
 const primaryDeferredLoaders = [
   () => import("./requested-polish-20260818.js"),
   () => import("./aab-ready-fixes-20260818.js"),
@@ -47,24 +56,16 @@ const primaryDeferredLoaders = [
   () => import("./petgrow-final-batch-20260819.js"),
   () => import("./petlife-final-qa.js"),
   () => import("./petlife-mobile-form-v2.js"),
-  () => import("./PetLifeApp.jsx").then(async (m) => {
-    m.bootPetLife?.();
-    const [bridge, navigation, serverBridge] = await Promise.all([
-      import("./petlife-home-bridge.js"),
-      import("./petlife-navigation-ux.js"),
-      import("./petlife-server-bridge.js"),
-    ]);
-    bridge.bootPetLifeHomeBridge?.();
+  () => Promise.all([
+    import("./petlife-navigation-ux.js"),
+    import("./petlife-server-bridge.js"),
+  ]).then(([navigation, serverBridge]) => {
     navigation.bootPetLifeNavigationUX?.();
     serverBridge.bootPetLifeServerBridge?.();
   }),
   () => import("./android-admob.js"),
 ];
 
-/*
- * Phase 2: deep-page/admin helpers. None of these are required to paint or use
- * the first screen, so keep them outside the initial interaction window.
- */
 const deepDeferredLoaders = [
   () => import("./legacy-server-sync.js"),
   () => import("./account-data-export.js"),
@@ -95,18 +96,18 @@ const scheduleIdle = (callback, timeout, fallbackDelay) => {
   return window.setTimeout(callback, fallbackDelay);
 };
 
-scheduleIdle(() => loadInSlices(primaryDeferredLoaders, 34), 1250, 380);
+scheduleIdle(() => loadInSlices(primaryDeferredLoaders, 34), 1450, 520);
 
 const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
 const slowConnection = connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType || "");
-const deepDelay = slowConnection ? 12000 : 8000;
+const deepDelay = slowConnection ? 14000 : 9000;
 window.setTimeout(() => {
-  scheduleIdle(() => loadInSlices(deepDeferredLoaders, 64), 2400, 650);
+  scheduleIdle(() => loadInSlices(deepDeferredLoaders, 64), 2600, 750);
 }, deepDelay);
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js?v=69", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=70", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });
