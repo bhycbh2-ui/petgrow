@@ -16,7 +16,6 @@ import "./home-quick-petbti-20260819.css";
 import "./petgrow-global-palette-20260819.css";
 import "./petgrow-final-batch-20260819.css";
 import "./pet-tarot-intro-fix-20260819.css";
-import "./petlife-mobile-form-fix-20260821.css";
 
 /* Home/PetNews fetch routing must be ready before the full app mounts. */
 import "./home-news-fast-20260819.js";
@@ -92,8 +91,6 @@ scheduleIdle(() => loadInSlices(primaryDeferredLoaders, 34), 1250, 380);
 
 const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
 const slowConnection = connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType || "");
-// Previously these helpers started after 2.2s/4.2s, competing with the user's
-// first taps and PetLife hydration. Move them well past the first interaction.
 const deepDelay = slowConnection ? 12000 : 8000;
 window.setTimeout(() => {
   scheduleIdle(() => loadInSlices(deepDeferredLoaders, 64), 2400, 650);
@@ -101,7 +98,7 @@ window.setTimeout(() => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js?v=65", { updateViaCache: "none" })
+    navigator.serviceWorker.register("/sw.js?v=66", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });
