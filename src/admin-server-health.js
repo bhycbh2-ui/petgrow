@@ -60,7 +60,7 @@ async function refresh(force=false){
     const lastBackup=backup.lastBackup?.uploadedAt?new Date(backup.lastBackup.uploadedAt).toLocaleString("ko-KR"):"-";
     const age=backup.lastBackupAgeHours==null?"":` · ${backup.lastBackupAgeHours}시간 전`;
     box.innerHTML=`<div class="pg-ash-head"><b>서버 운영 상태</b><small>PetLife · 푸시 · 백업 · 모더레이션</small></div><div class="pg-ash-grid">${metric("30일 PetLife 사용자",p.activeUsers30d)}${metric("30일 기록",p.records30d)}${metric("푸시 성공률",p.pushSuccessRate30d==null?"-":`${p.pushSuccessRate30d}%`)}${metric("미처리 신고",m.totalOpen)}${metric("활성 푸시 기기",p.activePushDevices)}${metric("7일 내 일정",p.upcoming7d)}${metric("월간 리포트",p.monthlyReports)}${metric("Blob 고아 후보",storage.orphanCandidateCount??"-")}</div><div class="pg-ash-foot"><span class="${p.pushConfigured?"ok":"warn"}">FCM ${p.pushConfigured?"연결됨":"설정 필요"}</span><span class="${backupClass(backup)}">암호화 백업 ${backupLabel(backup)}</span><span>최근 백업 ${lastBackup}${age}</span><span class="${(storage.missingReferenceCount||0)===0?"ok":"warn"}">누락 Blob 참조 ${storage.missingReferenceCount??"-"}</span><button id="pg-run-backup" class="pg-ash-action" type="button" ${backup.configured?"":"disabled"}>지금 백업</button><span class="pg-ash-msg" aria-live="polite"></span></div>`;
-    box.querySelector("#pg-run-backup")?.addEventListener("click",runBackup,{once:true});
+    box.querySelector("#pg-run-backup")?.addEventListener("click",runBackup);
   }catch(e){box.innerHTML='<div class="pg-ash-head"><b>서버 운영 상태</b><small class="warn">상태 조회 실패</small></div>';console.warn("PetGrow admin server health",e?.message||e);}finally{loading=false;}
 }
 export function bootAdminServerHealth(){
