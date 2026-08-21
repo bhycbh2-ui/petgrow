@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import petgrowBrandRefresh20260822 from "./build/petgrow-brand-refresh-20260822.mjs";
 import petgrowUiFixes from "./build/petgrow-ui-fixes.mjs";
 import petgrowStabilityCleanup from "./build/petgrow-stability-cleanup-20260818.mjs";
 import petgrowNewsPetTalkTarotFixes from "./build/petgrow-news-pettalk-tarot-20260818.mjs";
@@ -62,16 +63,16 @@ function petgrowAdsenseWeb() {
 }
 
 export default defineConfig({
+  // 브랜딩 교체는 가장 먼저 실행해 기존 대용량 인라인 로고를 정적 자산으로 치환합니다.
   // 3차 Pet뉴스/Pet음악, 4차 내 주변 Pet·Pet톡 피드·관리자센터,
   // 5차 Pet톡 하위화면, 6차 Pet사주·PetBTI·Pet정보·정보가이드,
   // 7차 소개·성장결과·My/계정·지원/정책, 8차 등록·시작·로그인·더보기 등 보조 화면을 실제 사용 시점에 로드합니다.
-  plugins: [petgrowPetLifeLegalAudit20260821(), petgrowFullQa20260821(), petgrowPremiumSplashV2(), petgrowPremiumSplashV3(), petgrowSplashReadyGate(), petgrowAdsenseWeb(), petgrowPerformanceLazy(), petgrowRechartsTreeShake20260822(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), petgrowMenuSplitV3(), petgrowMenuSplitV4(), petgrowPetTalkSplitV5(), petgrowDeepMenuSplitV6(), petgrowDeepScreenSplitV7(), petgrowRouteSplitV8(), react()],
+  plugins: [petgrowBrandRefresh20260822(), petgrowPetLifeLegalAudit20260821(), petgrowFullQa20260821(), petgrowPremiumSplashV2(), petgrowPremiumSplashV3(), petgrowSplashReadyGate(), petgrowAdsenseWeb(), petgrowPerformanceLazy(), petgrowRechartsTreeShake20260822(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), petgrowMenuSplitV3(), petgrowMenuSplitV4(), petgrowPetTalkSplitV5(), petgrowDeepMenuSplitV6(), petgrowDeepScreenSplitV7(), petgrowRouteSplitV8(), react()],
   build: {
     modulePreload: {
       resolveDependencies(filename, deps, context) {
         // Growth charts are deep-screen only. Do not make every home visit download
-        // the 365kB chart vendor just because Rollup sees it in the entry graph.
-        // JS-hosted dynamic imports keep their own dependency preload behavior.
+        // the chart vendor just because Rollup sees it in the entry graph.
         if (context?.hostType === "html") {
           return deps.filter((dep) => !/(?:^|\/)charts-vendor-[^/]+\.js$/.test(dep));
         }
