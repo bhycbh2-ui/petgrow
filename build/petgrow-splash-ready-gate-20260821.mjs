@@ -9,18 +9,22 @@ export default function petgrowSplashReadyGate(){
         children:`
           (function(){
             var installed=false,finished=false,requested=false,observer=null,poll=null,requestedAt=0,criticalListener=false;
+            var gateStarted=performance.now(),renderedAt=0;
             function waitingNode(){return document.querySelector(".petgrow-boot-skeleton,#petgrow-fast-shell,.petgrow-dashboard-home .pgh-loading");}
             function criticalReady(){return window.__petgrowCriticalAppReady===true;}
-            function hasRealScreen(){
+            function hasRenderedApp(){
               var root=document.getElementById("root");
-              if(!root)return false;
+              return !!(root&&(root.firstElementChild||String(root.textContent||"").trim().length>0));
+            }
+            function hasRealScreen(){
+              if(!hasRenderedApp())return false;
               if(waitingNode())return false;
-              return !!root.firstElementChild || String(root.textContent||"").trim().length>0;
+              return true;
             }
             function cleanup(){
               if(observer){observer.disconnect();observer=null;}
               if(poll){window.clearInterval(poll);poll=null;}
-              if(criticalListener){window.removeEventListener("petgrow:critical-ready",complete);criticalListener=false;}
+              if(criticalListener){window.removeEventListener("petgrow:critical-ready",onCriticalReady);criticalListener=false;}
             }
             function install(){
               if(installed)return;
@@ -30,36 +34,50 @@ export default function petgrowSplashReadyGate(){
               var finish=window.__hidePetGrowSplash;
               if(finish&&finish.__petgrowReadyGate){installed=true;return;}
 
-              function complete(){
-                if(finished||!requested||!criticalReady()||!hasRealScreen())return;
+              function complete(force){
+                if(finished)return;
+                if(!hasRealScreen())return;
+                if(!(force||requested||criticalReady()))return;
                 finished=true;cleanup();finish();
               }
+              function onCriticalReady(){complete(true);}
               function watchReady(){
                 if(observer||poll)return;
-                observer=new MutationObserver(complete);
+                observer=new MutationObserver(function(){
+                  if(hasRealScreen()&&!renderedAt)renderedAt=performance.now();
+                  complete(false);
+                });
                 observer.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:["class"]});
-                if(!criticalListener){window.addEventListener("petgrow:critical-ready",complete);criticalListener=true;}
+                if(!criticalListener){window.addEventListener("petgrow:critical-ready",onCriticalReady);criticalListener=true;}
                 poll=window.setInterval(function(){
                   if(finished)return;
-                  if(criticalReady()&&hasRealScreen()){complete();return;}
-                  /* Safety fallback: never leave a healthy rendered app behind the splash forever. */
-                  if(requestedAt&&performance.now()-requestedAt>9000){
-                    var root=document.getElementById("root");
-                    if(root&&(root.firstElementChild||String(root.textContent||"").trim())){
-                      finished=true;cleanup();finish();
-                    }
+                  var now=performance.now();
+                  if(hasRealScreen()){
+                    if(!renderedAt)renderedAt=now;
+                    if(criticalReady()||requested){complete(false);return;}
+                    /* If the real app is already visible-ready but one legacy signal was missed,
+                       release shortly instead of leaving the progress UI parked at 99%. */
+                    if(now-renderedAt>1200){complete(true);return;}
+                  }else if(hasRenderedApp()&&now-gateStarted>6500){
+                    /* Last-resort guard for stale hidden loading markers in older WebViews. */
+                    finished=true;cleanup();finish();return;
+                  }
+                  if(now-gateStarted>8500&&hasRenderedApp()){
+                    finished=true;cleanup();finish();
                   }
                 },90);
               }
               function gatedFinish(){
                 if(finished)return;
                 requested=true;requestedAt=requestedAt||performance.now();
-                if(criticalReady()&&hasRealScreen()){complete();return;}
+                if(hasRealScreen()){complete(false);return;}
                 watchReady();
               }
               gatedFinish.__petgrowReadyGate=true;
               window.__hidePetGrowSplash=gatedFinish;
               installed=true;
+              /* Start watching immediately so a missed hide/critical event cannot strand the splash at 99%. */
+              watchReady();
             }
             install();
             if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",install,{once:true});
