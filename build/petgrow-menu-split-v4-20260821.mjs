@@ -1,3 +1,5 @@
+import { transformWithEsbuild } from "vite";
+
 const VIRTUALS = {
   nearby: "virtual:petgrow-v4-nearby",
   community: "virtual:petgrow-v4-community-feed",
@@ -23,10 +25,7 @@ function functionBodyStart(code, start) {
     if (ch === "/" && next === "*") { blockComment = true; i++; continue; }
     if (ch === '"' || ch === "'" || ch === "`") { quote = ch; continue; }
     if (ch === "(") depth++;
-    else if (ch === ")") {
-      depth--;
-      if (depth === 0) return code.indexOf("{", i + 1);
-    }
+    else if (ch === ")") { depth--; if (depth === 0) return code.indexOf("{", i + 1); }
   }
   return -1;
 }
@@ -56,10 +55,7 @@ function extractNamedFunction(code, name) {
     if (ch === '"' || ch === "'") { quote = ch; continue; }
     if (ch === "`") { quote = ch; templateExpr = 0; continue; }
     if (ch === "{") depth++;
-    else if (ch === "}") {
-      depth--;
-      if (depth === 0) return { start, end: i + 1, source: code.slice(start, i + 1) };
-    }
+    else if (ch === "}") { depth--; if (depth === 0) return { start, end: i + 1, source: code.slice(start, i + 1) }; }
   }
   return null;
 }
@@ -80,6 +76,7 @@ function virtualModule(source, name, deps) {
 
 function lazyRuntime(key, virtualId, renderProps, depExpr, title) {
   const cap = key[0].toUpperCase() + key.slice(1);
+  const componentName = key === "nearby" ? "NearbyPetPage" : key === "community" ? "CommunityFeed" : key === "adminMusic" ? "AdminMusicPanel" : "AdminReportsPage";
   return `
 let __petgrow${cap}Component = null;
 let __petgrow${cap}Promise = null;
@@ -96,7 +93,7 @@ function __petgrowLoad${cap}(){
   }
   return __petgrow${cap}Promise;
 }
-function ${key === "nearby" ? "NearbyPetPage" : key === "community" ? "CommunityFeed" : key === "adminMusic" ? "AdminMusicPanel" : "AdminReportsPage"}(${renderProps.signature}){
+function ${componentName}(${renderProps.signature}){
   const [LazyComponent, setLazyComponent] = useState(() => __petgrow${cap}Component);
   const [loadError, setLoadError] = useState(false);
   useEffect(() => {
@@ -136,23 +133,21 @@ export default function petgrowMenuSplitV4() {
       const key = byVirtual[id];
       return key ? resolved[key] : null;
     },
-    load(id) {
+    async load(id) {
       const key = byResolved[id];
       if (!key) return null;
       if (!sources[key]) this.error(`[petgrow-menu-split-v4] source for ${key} was not captured`);
-      if (key === "nearby") return virtualModule(sources[key], "NearbyPetPage", nearbyDeps);
-      if (key === "community") return virtualModule(sources[key], "CommunityFeed", communityDeps);
-      if (key === "adminMusic") return virtualModule(sources[key], "AdminMusicPanel", adminMusicDeps);
-      return virtualModule(sources[key], "AdminReportsPage", adminDeps);
+      let jsx;
+      if (key === "nearby") jsx = virtualModule(sources[key], "NearbyPetPage", nearbyDeps);
+      else if (key === "community") jsx = virtualModule(sources[key], "CommunityFeed", communityDeps);
+      else if (key === "adminMusic") jsx = virtualModule(sources[key], "AdminMusicPanel", adminMusicDeps);
+      else jsx = virtualModule(sources[key], "AdminReportsPage", adminDeps);
+      const result = await transformWithEsbuild(jsx, id.replace(/^\0/, ""), { loader: "jsx", jsx: "automatic", sourcemap: false });
+      return { code: result.code, map: null };
     },
     transform(code, id) {
       if (!/[\\/]src[\\/]App\.jsx(?:\?|$)/.test(id)) return null;
-      const targets = [
-        ["nearby", "NearbyPetPage"],
-        ["community", "CommunityFeed"],
-        ["adminMusic", "AdminMusicPanel"],
-        ["admin", "AdminReportsPage"],
-      ];
+      const targets = [["nearby", "NearbyPetPage"], ["community", "CommunityFeed"], ["adminMusic", "AdminMusicPanel"], ["admin", "AdminReportsPage"]];
       const found = targets.map(([key, name]) => {
         const hit = extractNamedFunction(code, name);
         if (!hit) this.error(`[petgrow-menu-split-v4] ${name} anchor not found`);
