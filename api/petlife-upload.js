@@ -23,7 +23,7 @@ export default async function handler(req,res){
         if(!petId)throw Object.assign(new Error("반려동물 정보가 없어요."),{status:400});
         const {rows}=await sql`select id from pg_pets where id=${petId} and user_id=${uid}`;
         if(!rows[0])throw Object.assign(new Error("본인의 반려동물 사진만 올릴 수 있어요."),{status:403});
-        const prefix=`petlife/${uid}/${petId}/`;
+        const prefix=`petlife/${petId}/`;
         if(!String(pathname||"").startsWith(prefix))throw Object.assign(new Error("허용되지 않은 업로드 경로예요."),{status:400});
         return {allowedContentTypes:IMAGE_TYPES,maximumSizeInBytes:MAX_IMAGE_BYTES,addRandomSuffix:true,tokenPayload:JSON.stringify({uid,petId})};
       },
