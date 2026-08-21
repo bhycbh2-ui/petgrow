@@ -101,12 +101,29 @@ function annotateDialogs() {
   });
 }
 
+function syncVisualViewport() {
+  const vv = window.visualViewport;
+  const height = Math.max(320, Math.round(vv?.height || window.innerHeight || document.documentElement.clientHeight));
+  const top = Math.max(0, Math.round(vv?.offsetTop || 0));
+  const layoutHeight = Math.max(window.innerHeight || 0, document.documentElement.clientHeight || 0);
+  const keyboardOpen = layoutHeight - height > 120;
+  document.documentElement.style.setProperty("--pl-vv-height", `${height}px`);
+  document.documentElement.style.setProperty("--pl-vv-top", `${top}px`);
+  document.documentElement.classList.toggle("pl-keyboard-open", keyboardOpen);
+}
+
+window.visualViewport?.addEventListener("resize", syncVisualViewport, { passive: true });
+window.visualViewport?.addEventListener("scroll", syncVisualViewport, { passive: true });
+window.addEventListener("resize", syncVisualViewport, { passive: true });
+syncVisualViewport();
+
 let raf = 0;
 const observer = new MutationObserver(() => {
   if (raf) return;
   raf = requestAnimationFrame(() => {
     raf = 0;
     annotateDialogs();
+    syncVisualViewport();
   });
 });
 observer.observe(document.documentElement, { childList: true, subtree: true });
