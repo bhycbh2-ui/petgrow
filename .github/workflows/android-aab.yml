@@ -9,6 +9,7 @@ on:
       - 'src/**'
       - 'public/**'
       - 'android/**'
+      - 'scripts/check-android-push-config.mjs'
       - 'package.json'
       - 'package-lock.json'
       - 'capacitor.config.json'
@@ -68,9 +69,10 @@ jobs:
       - name: Sync Capacitor Android
         run: npx cap sync android
 
-      - name: Verify native push plugin wiring
+      - name: Verify Android push release wiring
         shell: bash
         run: |
+          node scripts/check-android-push-config.mjs
           grep -R "capacitor-push-notifications" android/capacitor.settings.gradle android/app/capacitor.build.gradle
           if [ "${{ steps.firebase.outputs.configured }}" = "true" ]; then
             test -s android/app/google-services.json
