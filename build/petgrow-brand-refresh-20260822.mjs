@@ -1,4 +1,7 @@
 const BRAND_ASSET = "/petgrow-brand-source.png?v=20260822";
+const SITE_URL = "https://www.petgrow.co.kr/";
+const SEO_TITLE = "PetGrow | 반려동물 평생 기록·건강·커뮤니티";
+const SEO_DESCRIPTION = "반려동물의 성장·건강·일상·추억을 기록하고, PetLife·커뮤니티·펫가이드·펫플레이스를 한곳에서 이용하는 PetGrow.";
 
 const PETGROW_MENU_LABELS_SOURCE = `const PETGROW_MENU_LABELS = {
   ko: {
@@ -79,7 +82,9 @@ export default function petgrowBrandRefresh20260822() {
         let next = html
           .replace(/src="\/petgrow-splash-logo\.png"/g, `src="${BRAND_ASSET}"`)
           .replace(/href="\/icon-192\.png"/g, 'href="/icon-192.png?v=20260822"')
-          .replace(/<meta name="theme-color" content="[^"]*"\s*\/>/i, '<meta name="theme-color" content="#245e49" />');
+          .replace(/<meta name="theme-color" content="[^"]*"\s*\/>/i, '<meta name="theme-color" content="#245e49" />')
+          .replace(/<meta name="description" content="[^"]*"\s*\/>/i, `<meta name="description" content="${SEO_DESCRIPTION}" />`)
+          .replace(/<title>[^<]*<\/title>/i, `<title>${SEO_TITLE}</title>`);
 
         return {
           html: next,
@@ -88,6 +93,71 @@ export default function petgrowBrandRefresh20260822() {
               tag: "link",
               attrs: { rel: "preload", as: "image", href: BRAND_ASSET, fetchpriority: "high" },
               injectTo: "head-prepend",
+            },
+            {
+              tag: "link",
+              attrs: { rel: "canonical", href: SITE_URL },
+              injectTo: "head",
+            },
+            {
+              tag: "meta",
+              attrs: { name: "application-name", content: "PetGrow" },
+              injectTo: "head",
+            },
+            {
+              tag: "meta",
+              attrs: { property: "og:type", content: "website" },
+              injectTo: "head",
+            },
+            {
+              tag: "meta",
+              attrs: { property: "og:locale", content: "ko_KR" },
+              injectTo: "head",
+            },
+            {
+              tag: "meta",
+              attrs: { property: "og:site_name", content: "PetGrow" },
+              injectTo: "head",
+            },
+            {
+              tag: "meta",
+              attrs: { property: "og:title", content: SEO_TITLE },
+              injectTo: "head",
+            },
+            {
+              tag: "meta",
+              attrs: { property: "og:description", content: SEO_DESCRIPTION },
+              injectTo: "head",
+            },
+            {
+              tag: "meta",
+              attrs: { property: "og:url", content: SITE_URL },
+              injectTo: "head",
+            },
+            {
+              tag: "meta",
+              attrs: { property: "og:image", content: `${SITE_URL}icon-512.png?v=20260822` },
+              injectTo: "head",
+            },
+            {
+              tag: "meta",
+              attrs: { name: "twitter:card", content: "summary" },
+              injectTo: "head",
+            },
+            {
+              tag: "meta",
+              attrs: { name: "twitter:title", content: SEO_TITLE },
+              injectTo: "head",
+            },
+            {
+              tag: "meta",
+              attrs: { name: "twitter:description", content: SEO_DESCRIPTION },
+              injectTo: "head",
+            },
+            {
+              tag: "meta",
+              attrs: { name: "twitter:image", content: `${SITE_URL}icon-512.png?v=20260822` },
+              injectTo: "head",
             },
             {
               tag: "style",
