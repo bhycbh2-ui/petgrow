@@ -5,6 +5,7 @@ import petgrowStabilityCleanup from "./build/petgrow-stability-cleanup-20260818.
 import petgrowNewsPetTalkTarotFixes from "./build/petgrow-news-pettalk-tarot-20260818.mjs";
 import petInfoCmsSource from "./build/petinfo-cms-source-20260820.mjs";
 import petNewsLoadingState from "./build/petnews-loading-state-20260821.mjs";
+import petgrowPerformanceLazy from "./build/petgrow-performance-lazy-20260821.mjs";
 
 const ADSENSE_CLIENT = "ca-pub-9699974051273244";
 
@@ -43,14 +44,17 @@ function petgrowAdsenseWeb() {
 }
 
 export default defineConfig({
-  plugins: [petgrowAdsenseWeb(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), react()],
+  plugins: [petgrowAdsenseWeb(), petgrowPerformanceLazy(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), react()],
   build: {
-    // 큰 의존성을 별도 캐시 청크로 분리해 첫 재방문/메뉴 전환 시 다시 받는 양을 줄여요.
+    // 자주 바뀌는 앱 코드와 무거운 외부 라이브러리를 분리해 재방문 캐시 효율을 높여요.
+    // Recharts/Leaflet은 App 소스 변환 플러그인에서 실제 사용 시점에만 동적 import 됩니다.
     rollupOptions: {
       output: {
         manualChunks(id) {
           if (id.includes("node_modules/react") || id.includes("node_modules/react-dom")) return "react-vendor";
-          if (id.includes("node_modules/recharts")) return "charts-vendor";
+          if (id.includes("node_modules/recharts") || id.includes("node_modules/d3-") || id.includes("node_modules/victory-vendor")) return "charts-vendor";
+          if (id.includes("node_modules/leaflet")) return "maps-vendor";
+          if (id.includes("node_modules/axios")) return "http-vendor";
           if (id.includes("node_modules/@capacitor")) return "capacitor-vendor";
           if (id.includes("node_modules/@vercel")) return "vercel-vendor";
         }
