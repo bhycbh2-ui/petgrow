@@ -15,6 +15,11 @@ function cronAuthorized(req){
   const ua=String(req.headers?.["user-agent"]||"");
   return /^vercel-cron\/1\.0/i.test(ua);
 }
+function publicBackup(value){
+  if(!value||typeof value!=="object")return value;
+  const {url,plainSha256,sha256,...safe}=value;
+  return safe;
+}
 
 export default async function handler(req,res){
   if(req.method!=="GET"&&req.method!=="POST")return res.status(405).json({error:"지원하지 않는 요청이에요."});
@@ -44,7 +49,7 @@ export default async function handler(req,res){
       backupVerify={...backupVerify,verified:false,error:String(error?.message||error).slice(0,300)};
       backupPrune={skipped:true,reason:"NEW_BACKUP_NOT_VERIFIED"};
     }
-    return res.status(200).json({ok:true,date:clock?.today,queue,monthly,push,backup,backupVerify,backupPrune,pushConfigured:isFcmConfigured()});
+    return res.status(200).json({ok:true,date:clock?.today,queue,monthly,push,backup:publicBackup(backup),backupVerify:publicBackup(backupVerify),backupPrune,pushConfigured:isFcmConfigured()});
   }catch(error){
     console.error("petlife jobs",error);
     return res.status(500).json({error:error?.message||"PetLife 자동화 작업을 처리하지 못했어요."});
