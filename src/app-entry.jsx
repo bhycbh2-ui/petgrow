@@ -49,13 +49,16 @@ const primaryDeferredLoaders = [
   () => import("./petlife-mobile-form-v2.js"),
   () => import("./PetLifeApp.jsx").then(async (m) => {
     m.bootPetLife?.();
-    const [bridge, navigation] = await Promise.all([
+    const [bridge, navigation, serverBridge] = await Promise.all([
       import("./petlife-home-bridge.js"),
       import("./petlife-navigation-ux.js"),
+      import("./petlife-server-bridge.js"),
     ]);
     bridge.bootPetLifeHomeBridge?.();
     navigation.bootPetLifeNavigationUX?.();
+    serverBridge.bootPetLifeServerBridge?.();
   }),
+  () => import("./android-admob.js"),
 ];
 
 /*
