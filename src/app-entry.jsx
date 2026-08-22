@@ -22,6 +22,7 @@ import "./adsense-review-20260822.css";
 import "./home-news-fast-20260819.js";
 import "./petlife-menu-regression-fix-20260822.js";
 import "./adsense-review-20260822.js";
+import "./admob-readiness-20260822.js";
 
 window.__petgrowCriticalAppReady=false;
 const root=document.getElementById("root");
