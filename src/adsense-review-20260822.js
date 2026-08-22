@@ -11,12 +11,6 @@ const GUIDE_LINKS = [
   ["병원에 가야 할 위험 신호", "/guides/vet-warning-signs.html", "지켜봐도 되는 변화와 빠른 진료가 필요한 신호"],
 ];
 
-const RESTRICTED_HEADINGS = [
-  "로그인", "회원가입", "관리자센터", "관리자 센터", "PetBTI", "PETBTI",
-  "Pet사주", "펫사주", "우리 아이", "우리아이", "Pet톡", "PET톡",
-  "페이지를 찾을 수", "404", "검색 결과", "준비 중", "준비중"
-];
-
 const AD_SELECTORS = [
   "ins.adsbygoogle",
   ".google-auto-placed",
@@ -26,32 +20,39 @@ const AD_SELECTORS = [
   "[data-ad-client]"
 ].join(",");
 
-function visible(el) {
-  if (!el) return false;
-  const s = getComputedStyle(el);
-  return s.display !== "none" && s.visibility !== "hidden" && Number(s.opacity || 1) !== 0;
+function activeViewLabel() {
+  const active = document.querySelector(
+    ".desktop-nav-link.active,.petgrow-sidebar-nav button.active,.app-bottom-nav button.active,[aria-current='page']"
+  );
+  return (active?.textContent || "").replace(/\s+/g, " ").trim();
 }
 
-function currentHeadingText() {
-  return [...document.querySelectorAll("main h1,main h2,main h3,section h1,section h2,[role='dialog'] h1,[role='dialog'] h2")]
-    .filter(visible)
-    .slice(0, 8)
-    .map((el) => (el.textContent || "").trim())
-    .join(" | ");
-}
-
-function isRestrictedScreen() {
-  if (document.getElementById("petgrow-initial-splash")) return true;
+function isContentSafeView() {
+  if (document.getElementById("petgrow-initial-splash")) return false;
   const path = `${location.pathname}${location.hash}`.toLowerCase();
-  if (/login|signup|admin|404|error|loading/.test(path)) return true;
-  const headings = currentHeadingText();
-  if (RESTRICTED_HEADINGS.some((word) => headings.includes(word))) return true;
-  const rootText = (document.getElementById("root")?.innerText || "").slice(0, 2500);
-  return /로그인이 필요|게시물이 없습니다|검색 결과가 없습니다|불러오는 중|잠시만 기다려|콘텐츠가 없습니다/.test(rootText);
+  if (location.pathname !== "/") return false;
+  if (/login|signup|admin|404|error|loading|privacy|terms/.test(path)) return false;
+
+  const label = activeViewLabel();
+  if (label) {
+    return /홈|home|pet정보|정보|pet뉴스|news|소개|about/i.test(label);
+  }
+
+  const rootText = (document.getElementById("root")?.innerText || "").slice(0, 2200);
+  if (/로그인이 필요|회원가입|관리자센터|게시물이 없습니다|검색 결과가 없습니다|불러오는 중|잠시만 기다려|콘텐츠가 없습니다/.test(rootText)) return false;
+  return true;
 }
 
-function removeAdsFromRestrictedScreen() {
-  const restricted = isRestrictedScreen();
+function isHomeView() {
+  if (location.pathname !== "/" || document.getElementById("petgrow-initial-splash")) return false;
+  const label = activeViewLabel();
+  if (label) return /홈|home/i.test(label);
+  const rootText = (document.getElementById("root")?.innerText || "").slice(0, 1400);
+  return !/로그인이 필요|관리자센터|검색 결과가 없습니다|게시물이 없습니다/.test(rootText);
+}
+
+function guardAdPlacement() {
+  const restricted = !isContentSafeView();
   document.documentElement.classList.toggle("petgrow-ads-restricted", restricted);
   if (!restricted) return;
   document.querySelectorAll(AD_SELECTORS).forEach((node) => {
@@ -60,12 +61,6 @@ function removeAdsFromRestrictedScreen() {
     node.setAttribute?.("aria-hidden", "true");
     node.style?.setProperty("display", "none", "important");
   });
-}
-
-function shouldShowEditorialHub() {
-  if (location.pathname !== "/" || isRestrictedScreen()) return false;
-  const headings = currentHeadingText();
-  return !/PetBTI|Pet사주|펫사주|Pet톡|관리자|로그인|우리 아이|우리아이/.test(headings);
 }
 
 function createEditorialHub() {
@@ -87,10 +82,7 @@ function createEditorialHub() {
       </div>
       <div class="petgrow-editorial-footer">
         <a href="/pet-guide.html">PetGrow 반려생활 가이드 전체보기</a>
-        <span>•</span>
-        <a href="/#about">서비스 소개</a>
-        <span>•</span>
-        <a href="/#partnerships">문의·제휴</a>
+        <span>•</span><span>건강 · 위생 · 산책 · 식사 · 행동관리</span>
       </div>
     </div>`;
   document.body.appendChild(section);
@@ -99,14 +91,15 @@ function createEditorialHub() {
 
 function syncEditorialHub() {
   const section = createEditorialHub();
-  section.hidden = !shouldShowEditorialHub();
+  const nextHidden = !isHomeView();
+  if (section.hidden !== nextHidden) section.hidden = nextHidden;
 }
 
 let timer = 0;
 function scheduleSync() {
   clearTimeout(timer);
   timer = window.setTimeout(() => {
-    removeAdsFromRestrictedScreen();
+    guardAdPlacement();
     syncEditorialHub();
   }, 120);
 }
@@ -115,9 +108,9 @@ const observer = new MutationObserver(scheduleSync);
 
 export function bootAdSenseReviewBoost() {
   const start = () => {
-    removeAdsFromRestrictedScreen();
+    guardAdPlacement();
     syncEditorialHub();
-    observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "hidden", "style"] });
+    observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "hidden"] });
     addEventListener("popstate", scheduleSync);
     addEventListener("hashchange", scheduleSync);
     document.addEventListener("click", scheduleSync, true);
