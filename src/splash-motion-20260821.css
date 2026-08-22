@@ -1,80 +1,173 @@
-/* PetGrow splash motion polish */
+/* PetGrow splash redesign — minimal, premium, low-cost motion */
 #petgrow-initial-splash{
-  background-size:140% 140%,100% 100%;
-  animation:petgrow-splash-bg-drift 7s ease-in-out infinite alternate;
+  background:
+    radial-gradient(circle at 50% 38%,rgba(222,239,226,.92) 0%,rgba(244,249,245,.7) 32%,rgba(248,250,247,0) 58%),
+    linear-gradient(180deg,#fbfdfb 0%,#f6f9f6 58%,#f2f6f2 100%)!important;
+  background-size:100% 100%!important;
+  animation:none!important;
 }
 
-#petgrow-initial-splash::before{
-  animation:petgrow-splash-hill-left 6.8s ease-in-out infinite alternate;
-  will-change:transform;
-}
-
+/* Replace the old hill motion with two static soft brand glows. */
+#petgrow-initial-splash::before,
 #petgrow-initial-splash::after{
-  animation:petgrow-splash-hill-right 7.6s ease-in-out .35s infinite alternate;
-  will-change:transform;
+  width:42vw!important;
+  height:42vw!important;
+  min-width:210px;
+  min-height:210px;
+  max-width:520px;
+  max-height:520px;
+  border-radius:50%!important;
+  filter:blur(28px);
+  opacity:.28;
+  bottom:auto!important;
+  animation:none!important;
+  transform:none!important;
+  will-change:auto!important;
 }
+#petgrow-initial-splash::before{
+  left:-12vw!important;
+  top:12vh;
+  background:rgba(179,211,187,.58)!important;
+}
+#petgrow-initial-splash::after{
+  right:-14vw!important;
+  top:54vh;
+  background:rgba(218,231,210,.68)!important;
+}
+
+.petgrow-splash__content{
+  width:min(82vw,340px)!important;
+  transform:translateY(-1.5vh)!important;
+}
+
+/* The existing runners are visually busy and continuously animate on the CPU/GPU.
+   The redesign intentionally removes them for a cleaner app-first launch. */
+.petgrow-runners{display:none!important}
 
 .petgrow-splash__logo-wrap{
-  animation:
-    petgrow-logo-in 520ms cubic-bezier(.2,.75,.2,1) both,
-    petgrow-splash-logo-float 3.8s ease-in-out .52s infinite alternate;
-  will-change:transform;
+  position:relative;
+  width:clamp(126px,31vw,164px)!important;
+  border-radius:38px;
+  isolation:isolate;
+  animation:petgrow-splash-premium-in 620ms cubic-bezier(.16,.8,.22,1) both!important;
+  will-change:transform,opacity;
+}
+.petgrow-splash__logo-wrap::before{
+  content:"";
+  position:absolute;
+  inset:-18%;
+  z-index:-2;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(94,145,103,.18) 0%,rgba(94,145,103,.08) 42%,transparent 72%);
+  animation:petgrow-splash-halo 1.55s ease-out .08s both;
+}
+.petgrow-splash__logo-wrap::after{
+  content:"";
+  position:absolute;
+  inset:3%;
+  z-index:-1;
+  border-radius:32px;
+  background:rgba(255,255,255,.68);
+  border:1px solid rgba(255,255,255,.92);
+  box-shadow:0 18px 48px rgba(47,85,59,.11),inset 0 1px 0 rgba(255,255,255,.88);
+  backdrop-filter:blur(9px);
+  -webkit-backdrop-filter:blur(9px);
 }
 
 .petgrow-splash__logo{
-  animation:petgrow-splash-logo-breathe 4.2s ease-in-out .7s infinite alternate;
+  position:relative;
+  z-index:1;
+  width:82%!important;
+  height:82%!important;
+  filter:drop-shadow(0 9px 18px rgba(42,76,50,.10))!important;
+  animation:petgrow-splash-logo-settle 720ms cubic-bezier(.16,.8,.22,1) 70ms both!important;
 }
 
+.petgrow-splash__tagline{
+  margin-top:18px!important;
+  color:#536158!important;
+  font-size:12.5px!important;
+  font-weight:650!important;
+  letter-spacing:-.035em!important;
+  animation:petgrow-splash-copy-in 480ms ease-out .18s both;
+}
+
+.petgrow-splash__progress{
+  width:min(48vw,168px)!important;
+  height:3px!important;
+  margin-top:30px!important;
+  background:rgba(67,99,76,.10)!important;
+  box-shadow:none!important;
+}
 .petgrow-splash__progress-bar{
   position:relative;
   overflow:hidden;
+  background:linear-gradient(90deg,#b7d1bc 0%,#6a9e73 55%,#3f7450 100%)!important;
+  box-shadow:0 0 12px rgba(79,138,91,.16);
 }
-
 .petgrow-splash__progress-bar::after{
   content:"";
   position:absolute;
   inset:0;
-  width:42%;
-  transform:translateX(-150%);
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.72),transparent);
-  animation:petgrow-progress-shimmer 1.45s ease-in-out .45s infinite;
+  width:34%;
+  transform:translateX(-160%);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.82),transparent);
+  animation:petgrow-progress-sheen 1.05s ease-out .22s 1 both;
 }
 
-@keyframes petgrow-splash-bg-drift{
-  0%{background-position:50% 34%,50% 50%}
-  100%{background-position:54% 29%,50% 50%}
+.petgrow-splash__status{
+  margin-top:11px!important;
+  color:#718078!important;
+  font-size:11.5px!important;
+  font-weight:600!important;
+  animation:petgrow-splash-copy-in 420ms ease-out .24s both;
+}
+.petgrow-splash__dots{
+  gap:6px!important;
+  margin-top:13px!important;
+}
+.petgrow-splash__dot{
+  width:5px!important;
+  height:5px!important;
+  background:#d2ddd4!important;
+  animation:petgrow-dot 1.15s ease-in-out infinite!important;
 }
 
-@keyframes petgrow-splash-hill-left{
-  from{transform:translate3d(-1.5vw,2px,0) rotate(4deg) scale(1)}
-  to{transform:translate3d(2vw,-7px,0) rotate(2deg) scale(1.045)}
+@keyframes petgrow-splash-premium-in{
+  0%{opacity:0;transform:translate3d(0,12px,0) scale(.92)}
+  62%{opacity:1;transform:translate3d(0,-2px,0) scale(1.015)}
+  100%{opacity:1;transform:translate3d(0,0,0) scale(1)}
 }
-
-@keyframes petgrow-splash-hill-right{
-  from{transform:translate3d(1vw,3px,0) rotate(-5deg) scale(1)}
-  to{transform:translate3d(-2.5vw,-9px,0) rotate(-2deg) scale(1.055)}
+@keyframes petgrow-splash-logo-settle{
+  from{opacity:.2;transform:scale(.9)}
+  to{opacity:1;transform:scale(1)}
 }
-
-@keyframes petgrow-splash-logo-float{
-  from{transform:translate3d(0,0,0)}
-  to{transform:translate3d(0,-5px,0)}
+@keyframes petgrow-splash-halo{
+  0%{opacity:0;transform:scale(.62)}
+  65%{opacity:1;transform:scale(1.06)}
+  100%{opacity:.84;transform:scale(1)}
 }
-
-@keyframes petgrow-splash-logo-breathe{
-  from{filter:drop-shadow(0 5px 12px rgba(34,48,39,.06));transform:scale(1)}
-  to{filter:drop-shadow(0 10px 18px rgba(49,95,73,.10));transform:scale(1.018)}
+@keyframes petgrow-splash-copy-in{
+  from{opacity:0;transform:translateY(5px)}
+  to{opacity:1;transform:translateY(0)}
 }
-
-@keyframes petgrow-progress-shimmer{
-  0%{transform:translateX(-150%);opacity:0}
-  22%{opacity:.75}
-  62%{opacity:.45}
-  100%{transform:translateX(330%);opacity:0}
+@keyframes petgrow-progress-sheen{
+  0%{transform:translateX(-160%);opacity:0}
+  25%{opacity:.78}
+  100%{transform:translateX(360%);opacity:0}
 }
 
 @media(max-width:760px){
-  #petgrow-initial-splash{background-size:160% 160%,100% 100%}
-  .petgrow-splash__logo-wrap{animation-duration:520ms,3.4s}
+  .petgrow-splash__content{width:min(86vw,320px)!important}
+  .petgrow-splash__logo-wrap{width:clamp(120px,34vw,152px)!important}
+  .petgrow-splash__tagline{margin-top:16px!important}
+  .petgrow-splash__progress{margin-top:27px!important}
+}
+
+@media(orientation:landscape) and (max-height:600px){
+  .petgrow-splash__logo-wrap{width:102px!important}
+  .petgrow-splash__tagline{margin-top:8px!important}
+  .petgrow-splash__progress{margin-top:14px!important}
 }
 
 @media(prefers-reduced-motion:reduce){
@@ -82,8 +175,12 @@
   #petgrow-initial-splash::before,
   #petgrow-initial-splash::after,
   .petgrow-splash__logo-wrap,
+  .petgrow-splash__logo-wrap::before,
   .petgrow-splash__logo,
-  .petgrow-splash__progress-bar::after{
+  .petgrow-splash__tagline,
+  .petgrow-splash__status,
+  .petgrow-splash__progress-bar::after,
+  .petgrow-splash__dot{
     animation:none!important;
   }
 }
