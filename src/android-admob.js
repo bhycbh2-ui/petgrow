@@ -17,8 +17,24 @@ function installInsetStyle(){
   if(document.getElementById("petgrow-admob-inset-style"))return;
   const style=document.createElement("style");
   style.id="petgrow-admob-inset-style";
-  style.textContent=`html.petgrow-admob-banner body{padding-bottom:max(62px,env(safe-area-inset-bottom))!important}html.petgrow-admob-banner #root{min-height:calc(100dvh - max(62px,env(safe-area-inset-bottom)))}`;
+  style.textContent=`
+    #petgrow-admob-safe-zone{display:none;position:fixed;left:0;right:0;bottom:0;height:112px;background:#f8faf7;border-top:1px solid rgba(60,88,70,.12);box-shadow:0 -8px 22px rgba(35,59,43,.045);pointer-events:none;z-index:2147482000}
+    html.petgrow-admob-banner #petgrow-admob-safe-zone{display:block}
+    html.petgrow-admob-banner body{padding-bottom:calc(196px + env(safe-area-inset-bottom))!important}
+    html.petgrow-admob-banner #root{min-height:calc(100dvh - 196px - env(safe-area-inset-bottom))}
+    html.petgrow-admob-banner .app-bottom-nav{bottom:calc(124px + env(safe-area-inset-bottom))!important}
+    html.petgrow-admob-banner .mobile-bottom-nav,html.petgrow-admob-banner .petgrow-bottom-nav{bottom:calc(124px + env(safe-area-inset-bottom))!important}
+  `;
   document.head.append(style);
+}
+
+function ensureSafetyZone(){
+  installInsetStyle();
+  if(document.getElementById("petgrow-admob-safe-zone"))return;
+  const zone=document.createElement("div");
+  zone.id="petgrow-admob-safe-zone";
+  zone.setAttribute("aria-hidden","true");
+  document.body.append(zone);
 }
 
 function isVisible(el){
@@ -126,6 +142,7 @@ async function showBanner(){
     const {AdMob,BannerAdPosition,BannerAdSize}=api;
     const adId=String(import.meta.env.VITE_ADMOB_BANNER_ID||DEFAULT_BANNER_ID).trim();
     if(!adId)return;
+    ensureSafetyZone();
     await AdMob.showBanner({
       adId,
       adSize:BannerAdSize.ADAPTIVE_BANNER,
@@ -134,14 +151,13 @@ async function showBanner(){
       isTesting:false
     });
     bannerVisible=true;
-    installInsetStyle();
     document.documentElement.classList.add("petgrow-admob-banner");
   }catch(e){console.warn("PetGrow AdMob banner",e?.message||e);}
 }
 
 async function hideBanner(){
   clearTimeout(showTimer);showTimer=0;
-  if(!bannerVisible)return;
+  if(!bannerVisible){document.documentElement.classList.remove("petgrow-admob-banner");return;}
   try{await api?.AdMob?.hideBanner?.();}catch{}
   bannerVisible=false;
   document.documentElement.classList.remove("petgrow-admob-banner");
