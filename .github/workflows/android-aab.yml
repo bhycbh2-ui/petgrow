@@ -1,4 +1,4 @@
-name: Android AAB Build
+name: PetGrow Android Production Release
 
 on:
   workflow_dispatch:
@@ -16,20 +16,49 @@ on:
       - 'vite.config.*'
       - '.github/workflows/android-aab.yml'
 
+permissions:
+  contents: read
+
+concurrency:
+  group: petgrow-google-play-production
+  cancel-in-progress: false
+
 jobs:
-  build-android:
+  build-and-publish-android:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 40
     env:
+      PACKAGE_NAME: kr.co.petgrow.app
       ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/android/app/petgrow-upload.jks
       ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
       ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
       GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+      GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 20
+
+      - name: Verify production release secrets
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD GOOGLE_PLAY_SERVICE_ACCOUNT_JSON; do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::$name is not configured in GitHub Actions secrets."
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "::error::Production publishing is blocked until all required secrets are configured."
+            exit 1
+          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -54,13 +83,14 @@ jobs:
         id: firebase
         shell: bash
         run: |
+          set -euo pipefail
           if [ -n "$GOOGLE_SERVICES_JSON_BASE64" ]; then
             printf '%s' "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > android/app/google-services.json
             node -e "const f=require('./android/app/google-services.json'); if(!f.project_info?.project_id) process.exit(1); console.log('Firebase project:',f.project_info.project_id)"
             echo "configured=true" >> "$GITHUB_OUTPUT"
           else
             echo "configured=false" >> "$GITHUB_OUTPUT"
-            echo "GOOGLE_SERVICES_JSON_BASE64 is not configured; AAB will build but remote FCM delivery cannot be validated on-device."
+            echo "GOOGLE_SERVICES_JSON_BASE64 is not configured; the release can publish, but remote FCM delivery cannot be validated on-device."
           fi
 
       - name: Build web app
@@ -72,36 +102,70 @@ jobs:
       - name: Verify Android push release wiring
         shell: bash
         run: |
+          set -euo pipefail
           node scripts/check-android-push-config.mjs
           grep -R "capacitor-push-notifications" android/capacitor.settings.gradle android/app/capacitor.build.gradle
           if [ "${{ steps.firebase.outputs.configured }}" = "true" ]; then
             test -s android/app/google-services.json
           fi
 
-      - name: Prepare signing and version code
-        id: signing
+      - name: Prepare signing, version code, and release notes
+        id: release
         shell: bash
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         run: |
+          set -euo pipefail
+
           VERSION_CODE=$((600000 + GITHUB_RUN_NUMBER))
           sed -i -E "s/versionCode [0-9]+/versionCode ${VERSION_CODE}/" android/app/build.gradle
-          echo "version_code=${VERSION_CODE}" >> "$GITHUB_OUTPUT"
+          VERSION_NAME=$(sed -n -E 's/^[[:space:]]*versionName[[:space:]]+"([^"]+)".*/\1/p' android/app/build.gradle | head -n1)
 
-          if [ -n "$ANDROID_KEYSTORE_BASE64" ] && [ -n "$ANDROID_KEYSTORE_PASSWORD" ] && [ -n "$ANDROID_KEY_ALIAS" ] && [ -n "$ANDROID_KEY_PASSWORD" ]; then
-            echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_PATH"
-            echo "signed=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "signed=false" >> "$GITHUB_OUTPUT"
-            echo "Signing secrets are not configured; building unsigned release artifact only."
-          fi
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_PATH"
+          test -s "$ANDROID_KEYSTORE_PATH"
+
+          mkdir -p distribution/whatsnew
+          python - <<'PY'
+          import datetime
+          import subprocess
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+
+          date = datetime.datetime.now(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d")
+          raw = subprocess.check_output(
+              ["git", "log", "-5", "--pretty=format:%s"],
+              text=True,
+          ).splitlines()
+          items = []
+          for subject in raw:
+              subject = subject.strip()
+              if subject:
+                  items.append(f"- {subject}")
+          body = f"PetGrow 업데이트 ({date})"
+          if items:
+              body += "\n" + "\n".join(items)
+          body = body[:500]
+          Path("distribution/whatsnew/whatsnew-ko-KR").write_text(body, encoding="utf-8")
+          print(body)
+          PY
+
+          echo "version_code=${VERSION_CODE}" >> "$GITHUB_OUTPUT"
+          echo "version_name=${VERSION_NAME}" >> "$GITHUB_OUTPUT"
+          echo "aab_path=android/app/build/outputs/bundle/release/app-release.aab" >> "$GITHUB_OUTPUT"
 
       - name: Make Gradle executable
         run: chmod +x android/gradlew
 
-      - name: Build release AAB
+      - name: Build signed release AAB
         working-directory: android
         run: ./gradlew bundleRelease --stacktrace
+
+      - name: Verify signed AAB artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s "${{ steps.release.outputs.aab_path }}"
+          ls -lh "${{ steps.release.outputs.aab_path }}"
 
       - name: Build debug APK
         working-directory: android
@@ -110,21 +174,125 @@ jobs:
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: PetGrow-release-aab
-          path: android/app/build/outputs/bundle/release/*.aab
+          name: PetGrow-production-aab-${{ steps.release.outputs.version_code }}
+          path: ${{ steps.release.outputs.aab_path }}
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 30
 
       - name: Upload debug APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: PetGrow-debug-apk
+          name: PetGrow-debug-apk-${{ steps.release.outputs.version_code }}
           path: android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: warn
           retention-days: 14
+
+      - name: Authenticate to Google Play Developer API
+        id: play-auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/androidpublisher
+
+      - name: Publish AAB to Google Play production
+        id: play-publish
+        shell: bash
+        env:
+          ACCESS_TOKEN: ${{ steps.play-auth.outputs.access_token }}
+          AAB_PATH: ${{ steps.release.outputs.aab_path }}
+          VERSION_CODE: ${{ steps.release.outputs.version_code }}
+          VERSION_NAME: ${{ steps.release.outputs.version_name }}
+        run: |
+          set -euo pipefail
+
+          api="https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${PACKAGE_NAME}"
+          upload_api="https://androidpublisher.googleapis.com/upload/androidpublisher/v3/applications/${PACKAGE_NAME}"
+          auth_header="Authorization: Bearer ${ACCESS_TOKEN}"
+
+          echo "Creating Google Play edit..."
+          edit_json=$(curl -fsS -X POST \
+            -H "$auth_header" \
+            -H 'Content-Type: application/json' \
+            -d '{}' \
+            "${api}/edits")
+          edit_id=$(printf '%s' "$edit_json" | jq -r '.id // empty')
+          if [ -z "$edit_id" ]; then
+            echo "::error::Google Play did not return an edit id."
+            printf '%s\n' "$edit_json"
+            exit 1
+          fi
+          echo "edit_id=$edit_id" >> "$GITHUB_OUTPUT"
+
+          echo "Uploading signed AAB..."
+          bundle_json=$(curl -fsS -X POST \
+            -H "$auth_header" \
+            -H 'Content-Type: application/octet-stream' \
+            --data-binary "@${AAB_PATH}" \
+            "${upload_api}/edits/${edit_id}/bundles?uploadType=media")
+          uploaded_version_code=$(printf '%s' "$bundle_json" | jq -r '.versionCode // empty')
+          if [ -z "$uploaded_version_code" ]; then
+            echo "::error::Google Play did not return an uploaded versionCode."
+            printf '%s\n' "$bundle_json"
+            exit 1
+          fi
+          if [ "$uploaded_version_code" != "$VERSION_CODE" ]; then
+            echo "::error::Built versionCode ${VERSION_CODE} does not match uploaded versionCode ${uploaded_version_code}."
+            exit 1
+          fi
+
+          notes=$(cat distribution/whatsnew/whatsnew-ko-KR)
+          release_name="PetGrow ${VERSION_NAME} (${VERSION_CODE})"
+          jq -n \
+            --arg name "$release_name" \
+            --arg vc "$VERSION_CODE" \
+            --arg notes "$notes" \
+            '{track:"production",releases:[{name:$name,versionCodes:[$vc],status:"completed",releaseNotes:[{language:"ko-KR",text:$notes}]}]}' \
+            > /tmp/petgrow-production-track.json
+
+          echo "Assigning version ${VERSION_CODE} to production..."
+          curl -fsS -X PUT \
+            -H "$auth_header" \
+            -H 'Content-Type: application/json' \
+            --data-binary @/tmp/petgrow-production-track.json \
+            "${api}/edits/${edit_id}/tracks/production" \
+            > /tmp/petgrow-track-response.json
+
+          echo "Committing production release..."
+          commit_json=$(curl -fsS -X POST \
+            -H "$auth_header" \
+            -H 'Content-Length: 0' \
+            "${api}/edits/${edit_id}:commit")
+          committed_id=$(printf '%s' "$commit_json" | jq -r '.id // empty')
+          if [ -z "$committed_id" ]; then
+            echo "::error::Google Play edit commit did not complete."
+            printf '%s\n' "$commit_json"
+            exit 1
+          fi
+
+          echo "published_version_code=${VERSION_CODE}" >> "$GITHUB_OUTPUT"
+          echo "Google Play production release committed: ${release_name}"
+
+      - name: Production release summary
+        if: success()
+        shell: bash
+        run: |
+          {
+            echo '## PetGrow Google Play production release'
+            echo ''
+            echo "- Package: \`${PACKAGE_NAME}\`"
+            echo "- Version name: \`${{ steps.release.outputs.version_name }}\`"
+            echo "- Version code: \`${{ steps.release.outputs.version_code }}\`"
+            echo '- Track: `production`'
+            echo '- Status: `completed`'
+            echo '- AAB: signed and uploaded automatically'
+            echo '- Release notes: generated automatically from recent commits'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Remove temporary secrets
         if: always()
         run: |
           rm -f "$ANDROID_KEYSTORE_PATH"
           rm -f android/app/google-services.json
+          rm -f /tmp/petgrow-production-track.json
+          rm -f /tmp/petgrow-track-response.json
