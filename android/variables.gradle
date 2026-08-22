@@ -13,4 +13,8 @@ ext {
     androidxJunitVersion = '1.1.5'
     androidxEspressoCoreVersion = '3.5.1'
     cordovaAndroidVersion = '10.1.1'
+
+    // Capacitor AdMob v6 계열과 호환되는 Google Mobile Ads v23 최신 마이너 버전.
+    playServicesAdsVersion = '23.6.0'
+    androidxCoreKTXVersion = '1.13.1'
 }
