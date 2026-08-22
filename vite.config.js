@@ -37,6 +37,9 @@ function petgrowAdsenseWeb() {
           children: `
             (function () {
               if (!/^https?:$/.test(window.location.protocol)) return;
+              // PetGrow Android는 동일한 원격 웹 UI를 사용하지만 광고는 네이티브 AdMob으로만 제공합니다.
+              // app_version이 있는 WebView에서는 AdSense 스크립트 자체를 로드하지 않아 두 광고 체계를 섞지 않습니다.
+              if (/(?:^|[?&])app_version=/i.test(window.location.search)) return;
               var loaded = false;
               var scheduled = false;
               function loadAdsense() {
