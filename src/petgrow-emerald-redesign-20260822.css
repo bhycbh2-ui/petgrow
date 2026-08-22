@@ -1,0 +1,221 @@
+/* PetGrow Emerald Redesign · 2026-08-22
+   Shared visual system for web, PWA and Capacitor Android app.
+   Keeps existing feature logic intact while aligning the entire product with the new dog+cat brand mark. */
+
+:root{
+  --pg26-emerald-950:#043b29;
+  --pg26-emerald-900:#055033;
+  --pg26-emerald-800:#086a3c;
+  --pg26-emerald-700:#0b7e46;
+  --pg26-emerald-600:#159454;
+  --pg26-leaf:#63a665;
+  --pg26-sage:#aecba8;
+  --pg26-sage-soft:#dcead7;
+  --pg26-cream:#f8f4e8;
+  --pg26-cream-2:#fffdf7;
+  --pg26-mist:#f0f5ec;
+  --pg26-ink:#173529;
+  --pg26-sub:#66786d;
+  --pg26-line:rgba(68,104,78,.14);
+  --pg26-card:rgba(255,255,255,.82);
+  --pg26-card-solid:#fffef9;
+  --pg26-glass:rgba(255,255,255,.68);
+  --pg26-shadow:0 18px 55px rgba(31,70,50,.10);
+  --pg26-shadow-sm:0 9px 26px rgba(31,70,50,.07);
+  --pg26-radius-xl:32px;
+  --pg26-radius-lg:24px;
+  --pg26-radius-md:17px;
+  --pg-primary:var(--pg26-emerald-800);
+  --pg-primary-2:var(--pg26-emerald-600);
+  --pg-primary-soft:#e7f2e5;
+  --pg-bg:var(--pg26-cream);
+  --pg-bg-soft:#fbf8ee;
+  --pg-surface:var(--pg26-card-solid);
+  --pg-surface-soft:#f4f8f1;
+  --pg-text:var(--pg26-ink);
+  --pg-text-2:var(--pg26-sub);
+  --pg-text-3:#829087;
+  --pg-line:var(--pg26-line);
+  --pg-line-strong:rgba(56,98,72,.22);
+  --pg-shadow:var(--pg26-shadow);
+  --pg-shadow-sm:var(--pg26-shadow-sm);
+}
+
+html,body,#root{min-height:100%;background:var(--pg26-cream)!important;color:var(--pg26-ink)!important}
+body{
+  background:
+    radial-gradient(circle at 8% 2%,rgba(181,214,169,.32),transparent 24%),
+    radial-gradient(circle at 95% 12%,rgba(216,231,201,.38),transparent 28%),
+    linear-gradient(180deg,#fffdf6 0%,#f9f5e9 42%,#f0f5e8 100%)!important;
+  background-attachment:fixed!important;
+}
+body:before,body:after{content:"";position:fixed;z-index:-1;pointer-events:none;border-radius:50%;filter:blur(1px)}
+body:before{width:44vw;height:44vw;left:-18vw;bottom:-20vw;background:radial-gradient(circle,rgba(31,124,67,.11),transparent 68%)}
+body:after{width:38vw;height:38vw;right:-18vw;top:26vh;background:radial-gradient(circle,rgba(129,169,106,.10),transparent 70%)}
+
+/* Brand */
+img[src*="petgrow-brand-source"],.petgrow-splash__logo{border-radius:24%!important;filter:drop-shadow(0 8px 18px rgba(10,93,54,.14))}
+
+/* Header / nav */
+header,.header,.topbar,.app-header,.site-header{
+  background:rgba(255,253,247,.88)!important;
+  border-bottom:1px solid rgba(54,97,72,.10)!important;
+  box-shadow:0 6px 24px rgba(45,72,56,.035)!important;
+  backdrop-filter:blur(18px) saturate(120%);
+  -webkit-backdrop-filter:blur(18px) saturate(120%);
+}
+nav a,.nav-item,.menu-item,.top-menu button,.mobile-menu button{color:#365546!important;font-weight:720!important;transition:background .18s ease,color .18s ease,transform .18s ease!important}
+nav a:hover,.nav-item:hover,.menu-item:hover,.top-menu button:hover,.mobile-menu button:hover{background:#edf5e9!important;color:var(--pg26-emerald-800)!important;transform:translateY(-1px)}
+nav a.active,.nav-item.active,.menu-item.active,.top-menu button.active,.mobile-menu button.active{background:linear-gradient(135deg,#e5f2e3,#f3f7ec)!important;color:var(--pg26-emerald-900)!important}
+
+/* Shared surfaces */
+.card,.bg-card,.panel,.box,.section-card,.feature-card,.info-card,.mypage-card,.activity-card,.profile-card,.pet-card,.admin-card,.stat-card,
+.cm-card,.pettalk-fallback-item,.petmusic-card,.petmusic-rank,.petnews-card-v10,.nearby-card,.nearby-result-card,.my-menu-card,
+.guide-quick-card,.guide-start-card,.guide-detail-card,.legal-page-shell .policy-section{
+  border:1px solid var(--pg26-line)!important;
+  background:linear-gradient(155deg,rgba(255,255,255,.92),rgba(255,253,247,.78))!important;
+  border-radius:var(--pg26-radius-lg)!important;
+  box-shadow:var(--pg26-shadow-sm)!important;
+}
+.card:hover,.feature-card:hover,.info-card:hover,.pet-card:hover,.cm-card:hover,.petmusic-card:hover,.petnews-card-v10:hover,.nearby-result-card:hover{
+  border-color:rgba(20,124,67,.24)!important;
+  box-shadow:0 16px 42px rgba(24,87,51,.105)!important;
+}
+
+/* Buttons / chips / inputs */
+.bg-btn:not(.bg-btn-ghost),.btn-primary,.primary-btn,.cta-btn,button.primary{
+  background:linear-gradient(135deg,var(--pg26-emerald-700),var(--pg26-emerald-900))!important;
+  border-color:transparent!important;
+  color:#fff!important;
+  box-shadow:0 8px 22px rgba(7,91,52,.20)!important;
+}
+.bg-btn.bg-btn-ghost,.bg-btn-ghost,.btn-ghost,.secondary-btn{
+  background:rgba(255,255,255,.72)!important;
+  border:1px solid rgba(38,101,65,.18)!important;
+  color:#315743!important;
+}
+.bg-chip{background:rgba(255,255,255,.64)!important;border-color:rgba(54,104,75,.16)!important;color:#466655!important}
+.bg-chip.active{background:#e4f1e2!important;border-color:#b8d2b5!important;color:#126a3b!important}
+input,textarea,select,.bg-input{
+  background:rgba(255,255,255,.82)!important;
+  border-color:rgba(64,104,78,.18)!important;
+  color:var(--pg26-ink)!important;
+}
+input:focus,textarea:focus,select:focus,.bg-input:focus{border-color:#6fa879!important;box-shadow:0 0 0 4px rgba(24,133,72,.09)!important}
+
+/* Dashboard home */
+.petgrow-dashboard-home{position:relative;max-width:1180px!important;padding-bottom:56px!important}
+.petgrow-dashboard-home:before{content:"";position:absolute;left:-5%;right:-5%;top:-18px;height:390px;z-index:-1;border-radius:0 0 46% 46%;background:radial-gradient(circle at 75% 18%,rgba(143,188,122,.20),transparent 36%),linear-gradient(160deg,rgba(255,253,247,.98),rgba(239,246,232,.92));pointer-events:none}
+.petgrow-dashboard-home .dash-welcome{
+  margin:12px 0 20px!important;
+  padding:25px 28px!important;
+  border:1px solid rgba(71,109,83,.12)!important;
+  border-radius:30px!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.84),rgba(248,248,237,.76))!important;
+  box-shadow:0 14px 40px rgba(38,67,51,.065)!important;
+}
+.petgrow-dashboard-home .dash-eyebrow{color:#6f8876!important}
+.petgrow-dashboard-home .dash-welcome h1{font-size:clamp(28px,4vw,39px)!important;color:#153a29!important;font-weight:860!important}
+.petgrow-dashboard-home .dash-welcome p{color:#6d7d73!important}
+.petgrow-dashboard-home .dash-profile-dot{background:linear-gradient(145deg,#edf6e9,#fffdf7)!important;color:#136f3e!important;border-color:#cce0c9!important}
+
+.petgrow-dashboard-home .dash-pet-spotlight{
+  position:relative;overflow:hidden;min-height:220px!important;padding:28px!important;
+  border-radius:32px!important;border:1px solid rgba(255,255,255,.36)!important;
+  background:
+    radial-gradient(circle at 82% 12%,rgba(90,178,98,.34),transparent 32%),
+    linear-gradient(135deg,#13864a 0%,#08693c 55%,#064c31 100%)!important;
+  box-shadow:0 22px 58px rgba(5,83,47,.24)!important;
+  color:white!important;
+}
+.petgrow-dashboard-home .dash-pet-spotlight:after{content:"";position:absolute;right:-70px;bottom:-90px;width:280px;height:280px;border-radius:48%;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.15),rgba(255,255,255,0) 66%);transform:rotate(16deg)}
+.petgrow-dashboard-home .dash-pet-photo{width:164px!important;height:164px!important;border-radius:50%!important;border:4px solid rgba(255,255,255,.82)!important;box-shadow:0 16px 42px rgba(0,48,28,.30)!important}
+.petgrow-dashboard-home .dash-pet-copy{position:relative;z-index:1}
+.petgrow-dashboard-home .dash-pet-copy small,.petgrow-dashboard-home .dash-pet-copy p{color:rgba(255,255,255,.78)!important}
+.petgrow-dashboard-home .dash-pet-copy h2{color:#fff!important;font-size:30px!important}
+.petgrow-dashboard-home .dash-pet-metrics span{background:rgba(255,255,255,.14)!important;border:1px solid rgba(255,255,255,.15)!important;color:#fff!important;backdrop-filter:blur(7px)}
+.petgrow-dashboard-home .dash-pet-metrics small{color:rgba(255,255,255,.72)!important}
+
+.petgrow-dashboard-home .dash-section{margin-top:30px!important}
+.petgrow-dashboard-home .dash-section-head h2{color:#17392a!important}
+.petgrow-dashboard-home .dash-quick-grid{gap:12px!important}
+.petgrow-dashboard-home .dash-quick-grid button,
+.petgrow-dashboard-home .pg-home-extra-menu-grid>*{
+  min-height:106px!important;padding:15px 12px!important;border:1px solid rgba(54,102,74,.13)!important;border-radius:22px!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.90),rgba(248,246,236,.82))!important;
+  box-shadow:0 10px 26px rgba(43,71,55,.065)!important;color:#214631!important;
+}
+.petgrow-dashboard-home .dash-quick-grid button:hover,.petgrow-dashboard-home .pg-home-extra-menu-grid>*:hover{background:linear-gradient(145deg,#fff,#edf5e8)!important;border-color:#b8d3b8!important;transform:translateY(-2px)!important}
+
+/* Home info / feature modules */
+.petgrow-unified-hero,.hero,.home-hero,.about-hero,.intro-hero,.petnews-hero{
+  border:1px solid rgba(56,97,72,.13)!important;
+  border-radius:34px!important;
+  background:
+    radial-gradient(circle at 88% 15%,rgba(143,187,122,.22),transparent 30%),
+    linear-gradient(145deg,#fffdf7 0%,#f4f7eb 62%,#e8f1e3 100%)!important;
+  box-shadow:var(--pg26-shadow)!important;
+}
+.feature-module-shell,.petgrow-content-stage,.legal-page-shell,.mypage-shell,.nearby-page,.petmusic-page,.petnews-v10{background:transparent!important}
+
+/* Feature-specific palette unification */
+.petmusic-hero,.saju-page .bg-card,.tarot-page .bg-card,.pet-tarot-page .bg-card{
+  background:linear-gradient(145deg,#fffdf8,#eef5e8)!important;border-color:#d6e4d1!important
+}
+.petmusic-play,.petnews-cats button.active,.saju-page .bg-btn:not(.bg-btn-ghost),.tarot-page .bg-btn:not(.bg-btn-ghost),.pet-tarot-page .bg-btn:not(.bg-btn-ghost){background:var(--pg26-emerald-800)!important;border-color:var(--pg26-emerald-800)!important;color:#fff!important}
+.petmusic-card:nth-child(n),.petmusic-rank:nth-child(n),.petnews-card-v10:nth-child(n),.cm-card:nth-child(n),.nearby-result-card:nth-child(n){background:linear-gradient(155deg,#fffefb,#f5f8ef)!important}
+
+/* Tabs */
+.mypage-tabs,.activity-tabs,.profile-tabs,.member-tabs{background:rgba(227,238,222,.72)!important;border:1px solid rgba(72,111,82,.10)!important}
+.mypage-tabs button.active,.activity-tabs button.active,.profile-tabs button.active,.member-tabs button.active,.mypage-tab.active,.activity-tab.active,.profile-tab.active,.member-tab.active{background:linear-gradient(135deg,#158149,#075b36)!important;color:#fff!important}
+
+/* Modals */
+.modal,.dialog,.popup,.sheet,.modal-card,.popup-card{background:linear-gradient(165deg,#fffef9,#f6f7ef)!important;border-color:rgba(57,98,73,.15)!important;box-shadow:0 26px 80px rgba(22,56,39,.22)!important}
+.modal-backdrop,.popup-backdrop{background:rgba(12,37,26,.20)!important;backdrop-filter:blur(8px)!important;-webkit-backdrop-filter:blur(8px)!important}
+
+/* Maps */
+.map-wrap,.map-container,.nearby-map,.leaflet-container,[id*="map"]{border:1px solid rgba(56,97,72,.13)!important;box-shadow:var(--pg26-shadow-sm)!important}
+.leaflet-container{background:#e9f0e4!important}
+
+/* Editorial / legal readability */
+.legal-page-shell,.support-page,.guide-page{color:#213d2f!important}
+.legal-page-shell p,.support-page p,.guide-page p{color:#66776d!important}
+
+/* Performance: defer paint for below-the-fold heavy sections while preserving layout size. */
+.petgrow-dashboard-home .dash-section:nth-of-type(n+3),
+.petnews-grid,.petmusic-grid,.community-list,.pettalk-list,.nearby-results,.guide-detail-list{
+  content-visibility:auto;
+  contain-intrinsic-size:1px 720px;
+}
+
+/* Mobile app treatment */
+@media(max-width:760px){
+  body{background:linear-gradient(180deg,#fffdf7 0%,#f7f4e9 48%,#eef4e9 100%)!important}
+  header,.header,.topbar,.app-header,.site-header{background:rgba(255,253,247,.94)!important}
+  .petgrow-dashboard-home{padding-left:12px!important;padding-right:12px!important;padding-bottom:max(72px,calc(52px + env(safe-area-inset-bottom)))!important}
+  .petgrow-dashboard-home:before{left:-12px;right:-12px;height:320px;border-radius:0 0 38% 38%}
+  .petgrow-dashboard-home .dash-welcome{padding:18px 18px!important;border-radius:24px!important;margin-top:6px!important}
+  .petgrow-dashboard-home .dash-welcome h1{font-size:27px!important}
+  .petgrow-dashboard-home .dash-pet-spotlight{padding:18px!important;min-height:0!important;border-radius:26px!important}
+  .petgrow-dashboard-home .dash-pet-photo{width:112px!important;height:112px!important}
+  .petgrow-dashboard-home .dash-pet-copy h2{font-size:24px!important}
+  .petgrow-dashboard-home .dash-pet-metrics span{min-width:0!important;padding:9px 10px!important}
+  .petgrow-dashboard-home .dash-quick-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important}
+  .petgrow-dashboard-home .dash-quick-grid button{min-height:84px!important;padding:10px 5px!important;border-radius:18px!important;font-size:11px!important}
+  .petgrow-dashboard-home .pg-home-extra-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+  .petgrow-dashboard-home .pg-home-extra-menu-grid>*{min-height:94px!important;border-radius:20px!important}
+  .card,.bg-card,.panel,.section-card,.feature-card,.info-card,.mypage-card,.activity-card,.profile-card,.pet-card,.cm-card,.petmusic-card,.petnews-card-v10,.nearby-result-card{border-radius:20px!important}
+  .hero,.home-hero,.about-hero,.intro-hero,.petnews-hero,.petgrow-unified-hero{border-radius:24px!important}
+  /* Reduce expensive blur on lower-end mobile GPUs. */
+  .card,.bg-card,.panel,.petmusic-card,.petnews-card-v10,.nearby-result-card{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+}
+
+@media(max-width:390px){
+  .petgrow-dashboard-home .dash-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .petgrow-dashboard-home .dash-pet-photo{width:96px!important;height:96px!important}
+  .petgrow-dashboard-home .dash-pet-copy h2{font-size:22px!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
+}
