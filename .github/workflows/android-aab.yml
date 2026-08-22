@@ -76,8 +76,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Android push plugin for native sync
-        run: npm install --no-save --package-lock=false @capacitor/push-notifications@6.0.2
+      - name: Install Android and Google Play release dependencies
+        run: npm install --no-save --package-lock=false @capacitor/push-notifications@6.0.2 googleapis@144.0.0
 
       - name: Prepare Firebase Android configuration
         id: firebase
@@ -187,91 +187,103 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
-      - name: Authenticate to Google Play Developer API
-        id: play-auth
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
-          token_format: access_token
-          access_token_scopes: https://www.googleapis.com/auth/androidpublisher
-
       - name: Publish AAB to Google Play production
         id: play-publish
         shell: bash
         env:
-          ACCESS_TOKEN: ${{ steps.play-auth.outputs.access_token }}
           AAB_PATH: ${{ steps.release.outputs.aab_path }}
           VERSION_CODE: ${{ steps.release.outputs.version_code }}
           VERSION_NAME: ${{ steps.release.outputs.version_name }}
         run: |
           set -euo pipefail
+          node <<'NODE'
+          const fs = require('fs');
+          const { google } = require('googleapis');
 
-          api="https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${PACKAGE_NAME}"
-          upload_api="https://androidpublisher.googleapis.com/upload/androidpublisher/v3/applications/${PACKAGE_NAME}"
-          auth_header="Authorization: Bearer ${ACCESS_TOKEN}"
+          async function main() {
+            const packageName = process.env.PACKAGE_NAME;
+            const aabPath = process.env.AAB_PATH;
+            const expectedVersionCode = String(process.env.VERSION_CODE);
+            const versionName = process.env.VERSION_NAME || 'release';
+            const credentials = JSON.parse(process.env.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON);
+            const notes = fs.readFileSync('distribution/whatsnew/whatsnew-ko-KR', 'utf8').slice(0, 500);
 
-          echo "Creating Google Play edit..."
-          edit_json=$(curl -fsS -X POST \
-            -H "$auth_header" \
-            -H 'Content-Type: application/json' \
-            -d '{}' \
-            "${api}/edits")
-          edit_id=$(printf '%s' "$edit_json" | jq -r '.id // empty')
-          if [ -z "$edit_id" ]; then
-            echo "::error::Google Play did not return an edit id."
-            printf '%s\n' "$edit_json"
-            exit 1
-          fi
-          echo "edit_id=$edit_id" >> "$GITHUB_OUTPUT"
+            if (!fs.existsSync(aabPath) || fs.statSync(aabPath).size === 0) {
+              throw new Error(`AAB not found: ${aabPath}`);
+            }
 
-          echo "Uploading signed AAB..."
-          bundle_json=$(curl -fsS -X POST \
-            -H "$auth_header" \
-            -H 'Content-Type: application/octet-stream' \
-            --data-binary "@${AAB_PATH}" \
-            "${upload_api}/edits/${edit_id}/bundles?uploadType=media")
-          uploaded_version_code=$(printf '%s' "$bundle_json" | jq -r '.versionCode // empty')
-          if [ -z "$uploaded_version_code" ]; then
-            echo "::error::Google Play did not return an uploaded versionCode."
-            printf '%s\n' "$bundle_json"
-            exit 1
-          fi
-          if [ "$uploaded_version_code" != "$VERSION_CODE" ]; then
-            echo "::error::Built versionCode ${VERSION_CODE} does not match uploaded versionCode ${uploaded_version_code}."
-            exit 1
-          fi
+            const auth = new google.auth.GoogleAuth({
+              credentials,
+              scopes: ['https://www.googleapis.com/auth/androidpublisher'],
+            });
+            const androidpublisher = google.androidpublisher({ version: 'v3', auth });
 
-          notes=$(cat distribution/whatsnew/whatsnew-ko-KR)
-          release_name="PetGrow ${VERSION_NAME} (${VERSION_CODE})"
-          jq -n \
-            --arg name "$release_name" \
-            --arg vc "$VERSION_CODE" \
-            --arg notes "$notes" \
-            '{track:"production",releases:[{name:$name,versionCodes:[$vc],status:"completed",releaseNotes:[{language:"ko-KR",text:$notes}]}]}' \
-            > /tmp/petgrow-production-track.json
+            let editId;
+            try {
+              const edit = await androidpublisher.edits.insert({ packageName });
+              editId = edit.data.id;
+              if (!editId) throw new Error('Google Play did not return an edit id.');
+              console.log(`Created Google Play edit ${editId}`);
 
-          echo "Assigning version ${VERSION_CODE} to production..."
-          curl -fsS -X PUT \
-            -H "$auth_header" \
-            -H 'Content-Type: application/json' \
-            --data-binary @/tmp/petgrow-production-track.json \
-            "${api}/edits/${edit_id}/tracks/production" \
-            > /tmp/petgrow-track-response.json
+              const bundle = await androidpublisher.edits.bundles.upload({
+                packageName,
+                editId,
+                media: {
+                  mimeType: 'application/octet-stream',
+                  body: fs.createReadStream(aabPath),
+                },
+              });
+              const uploadedVersionCode = String(bundle.data.versionCode ?? '');
+              if (!uploadedVersionCode) {
+                throw new Error('Google Play did not return an uploaded versionCode.');
+              }
+              if (uploadedVersionCode !== expectedVersionCode) {
+                throw new Error(
+                  `Built versionCode ${expectedVersionCode} does not match uploaded versionCode ${uploadedVersionCode}.`,
+                );
+              }
 
-          echo "Committing production release..."
-          commit_json=$(curl -fsS -X POST \
-            -H "$auth_header" \
-            -H 'Content-Length: 0' \
-            "${api}/edits/${edit_id}:commit")
-          committed_id=$(printf '%s' "$commit_json" | jq -r '.id // empty')
-          if [ -z "$committed_id" ]; then
-            echo "::error::Google Play edit commit did not complete."
-            printf '%s\n' "$commit_json"
-            exit 1
-          fi
+              const releaseName = `PetGrow ${versionName} (${expectedVersionCode})`;
+              await androidpublisher.edits.tracks.update({
+                packageName,
+                editId,
+                track: 'production',
+                requestBody: {
+                  track: 'production',
+                  releases: [
+                    {
+                      name: releaseName,
+                      versionCodes: [expectedVersionCode],
+                      status: 'completed',
+                      releaseNotes: [{ language: 'ko-KR', text: notes }],
+                    },
+                  ],
+                },
+              });
 
-          echo "published_version_code=${VERSION_CODE}" >> "$GITHUB_OUTPUT"
-          echo "Google Play production release committed: ${release_name}"
+              const committed = await androidpublisher.edits.commit({ packageName, editId });
+              if (!committed.data.id) {
+                throw new Error('Google Play edit commit did not complete.');
+              }
+              console.log(`Google Play production release committed: ${releaseName}`);
+            } catch (error) {
+              if (editId) {
+                try {
+                  await androidpublisher.edits.delete({ packageName, editId });
+                } catch (cleanupError) {
+                  console.warn(`Could not delete failed edit ${editId}: ${cleanupError.message}`);
+                }
+              }
+              const details = error?.response?.data
+                ? JSON.stringify(error.response.data)
+                : error?.stack || String(error);
+              console.error(details);
+              process.exitCode = 1;
+            }
+          }
+
+          main();
+          NODE
 
       - name: Production release summary
         if: success()
@@ -294,5 +306,3 @@ jobs:
         run: |
           rm -f "$ANDROID_KEYSTORE_PATH"
           rm -f android/app/google-services.json
-          rm -f /tmp/petgrow-production-track.json
-          rm -f /tmp/petgrow-track-response.json
