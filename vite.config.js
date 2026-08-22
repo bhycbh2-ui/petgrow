@@ -47,7 +47,7 @@ function petgrowAdsenseEditorialPages() {
   if(/(?:^|[?&])app_version=/i.test(location.search))return;
   if(document.querySelector('script[data-petgrow-adsense]'))return;
   var main=document.querySelector('main');
-  var text=String(main&&main.innerText||'').replace(/\\s+/g,' ').trim();
+  var text=String(main&&main.innerText||'').trim();
   if(text.length<700)return;
   var s=document.createElement('script');
   s.async=true;s.crossOrigin='anonymous';s.dataset.petgrowAdsense='true';
