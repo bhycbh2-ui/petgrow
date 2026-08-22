@@ -9,20 +9,14 @@ import "./runtime-ui-20260818.css";
 import "./critical-ui-hotfix-20260818.css";
 import "./requested-polish-20260818.css";
 import "./aab-ready-fixes-20260818.css";
-import "./tarot-saju-rebuild-20260818.css";
-import "./admin-news-music-20260818.css";
 import "./requested-final-fixes-20260818.css";
 import "./home-quick-petbti-20260819.css";
 import "./petgrow-global-palette-20260819.css";
 import "./petgrow-final-batch-20260819.css";
-import "./pet-tarot-intro-fix-20260819.css";
 import "./splash-motion-20260821.css";
 import "./loading-speed-20260822.css";
-import "./adsense-review-20260822.css";
 import "./home-news-fast-20260819.js";
 import "./petlife-menu-regression-fix-20260822.js";
-import "./adsense-review-20260822.js";
-import "./admob-readiness-20260822.js";
 
 window.__petgrowCriticalAppReady=false;
 const root=document.getElementById("root");
@@ -53,5 +47,5 @@ else setTimeout(startDeferred,260);
 if("serviceWorker" in navigator){
   // register() 자체가 필요 시 새 service worker를 확인합니다.
   // 매 접속마다 registration.update()를 한 번 더 호출하면 sw.js 요청이 중복될 수 있어 제거합니다.
-  addEventListener("load",()=>navigator.serviceWorker.register("/sw.js?v=72",{updateViaCache:"none"}).catch(()=>{}),{once:true});
+  addEventListener("load",()=>navigator.serviceWorker.register("/sw.js?v=73",{updateViaCache:"none"}).catch(()=>{}),{once:true});
 }
