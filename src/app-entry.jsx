@@ -45,5 +45,5 @@ if("requestIdleCallback" in window)requestIdleCallback(startDeferred,{timeout:85
 else setTimeout(startDeferred,260);
 
 if("serviceWorker" in navigator){
-  addEventListener("load",()=>navigator.serviceWorker.register("/sw.js?v=79",{updateViaCache:"none"}).catch(()=>{}),{once:true});
+  addEventListener("load",()=>navigator.serviceWorker.register("/sw.js?v=80",{updateViaCache:"none"}).catch(()=>{}),{once:true});
 }
