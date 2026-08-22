@@ -111,6 +111,40 @@ jobs:
           fi
           echo "Android release preflight complete."
 
+      - name: Normalize Android PNG resources
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet pillow
+          python - <<'PY'
+          from pathlib import Path
+          import os
+          from PIL import Image, ImageFile
+
+          ImageFile.LOAD_TRUNCATED_IMAGES = True
+          targets = [
+              Path('android/app/src/main/res/drawable-nodpi/petgrow_brand_icon.png'),
+              Path('android/app/src/main/res/drawable/splash.png'),
+          ]
+
+          for path in targets:
+              if not path.exists():
+                  raise SystemExit(f'Missing Android PNG resource: {path}')
+              original_size = path.stat().st_size
+              with Image.open(path) as image:
+                  image.load()
+                  if image.mode not in ('RGB', 'RGBA'):
+                      image = image.convert('RGBA')
+                  else:
+                      image = image.copy()
+                  tmp = path.with_suffix('.normalized.png')
+                  image.save(tmp, format='PNG', optimize=False, compress_level=6)
+              os.replace(tmp, path)
+              with Image.open(path) as check:
+                  check.verify()
+              print(f'Normalized {path} ({original_size} -> {path.stat().st_size} bytes)')
+          PY
+
       - name: Install Google Play API client
         run: npm install --no-save --package-lock=false googleapis@144.0.0
 
