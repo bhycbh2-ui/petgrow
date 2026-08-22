@@ -2,6 +2,29 @@ const BRAND_ASSET = "/petgrow-brand-source.png?v=20260822";
 const SITE_URL = "https://www.petgrow.co.kr/";
 const SEO_TITLE = "PetGrow | 반려동물 평생 기록·건강·커뮤니티";
 const SEO_DESCRIPTION = "반려동물의 성장·건강·일상·추억을 기록하고, PetLife·커뮤니티·펫가이드·펫플레이스를 한곳에서 이용하는 PetGrow.";
+const SEO_STRUCTURED_DATA = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${SITE_URL}#organization`,
+      name: "PetGrow",
+      alternateName: "펫그로우",
+      url: SITE_URL,
+      logo: `${SITE_URL}icon-512.png?v=20260822`,
+      description: SEO_DESCRIPTION,
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}#website`,
+      url: SITE_URL,
+      name: "PetGrow",
+      description: SEO_DESCRIPTION,
+      publisher: { "@id": `${SITE_URL}#organization` },
+      inLanguage: "ko-KR",
+    },
+  ],
+});
 
 const PETGROW_MENU_LABELS_SOURCE = `const PETGROW_MENU_LABELS = {
   ko: {
@@ -101,6 +124,11 @@ export default function petgrowBrandRefresh20260822() {
             },
             {
               tag: "meta",
+              attrs: { name: "robots", content: "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" },
+              injectTo: "head",
+            },
+            {
+              tag: "meta",
               attrs: { name: "application-name", content: "PetGrow" },
               injectTo: "head",
             },
@@ -141,7 +169,7 @@ export default function petgrowBrandRefresh20260822() {
             },
             {
               tag: "meta",
-              attrs: { name: "twitter:card", content: "summary" },
+              attrs: { name: "twitter:card", content: "summary_large_image" },
               injectTo: "head",
             },
             {
@@ -157,6 +185,12 @@ export default function petgrowBrandRefresh20260822() {
             {
               tag: "meta",
               attrs: { name: "twitter:image", content: `${SITE_URL}icon-512.png?v=20260822` },
+              injectTo: "head",
+            },
+            {
+              tag: "script",
+              attrs: { type: "application/ld+json", id: "petgrow-structured-data" },
+              children: SEO_STRUCTURED_DATA,
               injectTo: "head",
             },
             {
