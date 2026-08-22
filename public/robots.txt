@@ -1,5 +1,14 @@
 User-agent: *
 Allow: /
 
+User-agent: Google-adstxt
+Disallow:
+
+User-agent: Mediapartners-Google
+Disallow:
+
+User-agent: Googlebot
+Disallow:
+
 Host: https://www.petgrow.co.kr
 Sitemap: https://www.petgrow.co.kr/sitemap.xml
