@@ -9,6 +9,8 @@ const GUIDE_LINKS = [
   ["강아지 배변훈련 기초", "/guides/potty-training.html", "실수를 줄이는 환경·보상 중심 훈련"],
   ["초보 보호자 준비물 체크", "/guides/new-owner-checklist.html", "입양 전후 꼭 필요한 물품과 준비 순서"],
   ["병원에 가야 할 위험 신호", "/guides/vet-warning-signs.html", "지켜봐도 되는 변화와 빠른 진료가 필요한 신호"],
+  ["먹으면 위험한 음식과 대응", "/guides/toxic-foods.html", "위험 식품과 섭취 시 확인할 정보"],
+  ["열사병 예방과 더운 날 산책", "/guides/heatstroke.html", "여름철 환경 관리와 위험 신호"],
 ];
 
 const AD_SELECTORS = [
@@ -81,8 +83,11 @@ function createEditorialHub() {
         ${GUIDE_LINKS.map(([title, href, desc]) => `<a class="petgrow-editorial-card" href="${href}"><strong>${title}</strong><span>${desc}</span><em>가이드 보기 →</em></a>`).join("")}
       </div>
       <div class="petgrow-editorial-footer">
-        <a href="/pet-guide.html">PetGrow 반려생활 가이드 전체보기</a>
-        <span>•</span><span>건강 · 위생 · 산책 · 식사 · 행동관리</span>
+        <a href="/pet-guide.html">가이드 전체보기</a><span>•</span>
+        <a href="/editorial-policy.html">콘텐츠 편집 원칙</a><span>•</span>
+        <a href="/privacy-policy.html">개인정보처리방침</a><span>•</span>
+        <a href="/app.html">앱 안내</a><span>•</span>
+        <a href="/contact.html">고객지원</a>
       </div>
     </div>`;
   document.body.appendChild(section);
