@@ -16,6 +16,7 @@ import petgrowPetTalkSplitV5 from "./build/petgrow-pettalk-split-v5-20260821.mjs
 import petgrowDeepMenuSplitV6 from "./build/petgrow-deep-menu-split-v6-20260821.mjs";
 import petgrowDeepScreenSplitV7 from "./build/petgrow-deep-screen-split-v7-20260821.mjs";
 import petgrowRouteSplitV8 from "./build/petgrow-route-split-v8-20260821.mjs";
+import petgrowSplashV4 from "./build/petgrow-splash-v4-20260822.mjs";
 import petgrowSplashReadyGate from "./build/petgrow-splash-ready-gate-20260821.mjs";
 import petgrowPetLifeLegalAudit20260821 from "./build/petgrow-petlife-legal-audit-20260821.mjs";
 import petgrowFullQa20260821 from "./build/petgrow-full-qa-20260821.mjs";
@@ -78,18 +79,12 @@ function petgrowAdsenseEditorialPages() {
 }
 
 export default defineConfig({
-  // 브랜딩 교체는 가장 먼저 실행해 기존 대용량 인라인 로고를 정적 자산으로 치환합니다.
-  // 초기 스플래시는 소스의 가벼운 로고 중심 화면을 그대로 사용하고,
-  // 과도한 동적 SVG/장식 주입은 제거해 첫 파싱·메인스레드 비용을 낮춥니다.
-  // 3차 Pet뉴스/Pet음악, 4차 내 주변 Pet·Pet톡 피드·관리자센터,
-  // 5차 Pet톡 하위화면, 6차 Pet사주·PetBTI·Pet정보·정보가이드,
-  // 7차 소개·성장결과·My/계정·지원/정책, 8차 등록·시작·로그인·더보기 등 보조 화면을 실제 사용 시점에 로드합니다.
-  plugins: [petgrowBrandRefresh20260822(), petgrowPetLifeLegalAudit20260821(), petgrowFullQa20260821(), petgrowSplashReadyGate(), petgrowAdsenseWeb(), petgrowAdsenseEditorialPages(), petgrowPerformanceLazy(), petgrowRechartsTreeShake20260822(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), petgrowMenuSplitV3(), petgrowMenuSplitV4(), petgrowPetTalkSplitV5(), petgrowDeepMenuSplitV6(), petgrowDeepScreenSplitV7(), petgrowRouteSplitV8(), react()],
+  // 브랜딩 교체를 가장 먼저 실행하고, 새 Emerald splash v4를 HTML 단계에서 주입합니다.
+  // 기능별 화면은 기존 route/menu split을 유지해 초기 다운로드 비용을 억제합니다.
+  plugins: [petgrowBrandRefresh20260822(), petgrowPetLifeLegalAudit20260821(), petgrowFullQa20260821(), petgrowSplashV4(), petgrowSplashReadyGate(), petgrowAdsenseWeb(), petgrowAdsenseEditorialPages(), petgrowPerformanceLazy(), petgrowRechartsTreeShake20260822(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), petgrowMenuSplitV3(), petgrowMenuSplitV4(), petgrowPetTalkSplitV5(), petgrowDeepMenuSplitV6(), petgrowDeepScreenSplitV7(), petgrowRouteSplitV8(), react()],
   build: {
     modulePreload: {
       resolveDependencies(filename, deps, context) {
-        // Growth charts are deep-screen only. Do not make every home visit download
-        // the chart vendor just because Rollup sees it in the entry graph.
         if (context?.hostType === "html") {
           return deps.filter((dep) => !/(?:^|\/)charts-vendor-[^/]+\.js$/.test(dep));
         }
