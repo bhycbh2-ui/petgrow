@@ -8,9 +8,10 @@ let consentReady=false;
 let showTimer=0;
 
 const DEFAULT_BANNER_ID="ca-app-pub-9699974051273244/9809518314";
-const MIN_CONTENT_CHARS=550;
+const MIN_CONTENT_CHARS=700;
 const RESTRICTED_ROUTE_RE=/(?:^|[\/#?&=_-])(loading|login|signin|signup|auth|admin|error|404|empty|consent|terms|privacy|delete-account|account|profile)(?:$|[\/#?&=_-])/i;
 const RESTRICTED_HEADING_RE=/(로그인|회원가입|관리자\s*센터|회원\s*정보|개인정보\s*처리방침|이용약관|회원탈퇴|계정\s*삭제|오류|에러|페이지를\s*찾을\s*수|검색\s*결과\s*없|불러오는\s*중|준비\s*중|동의)/i;
+const CONTENT_VIEW_RE=/(pet\s*정보|pet정보|펫\s*정보|pet\s*뉴스|pet뉴스|펫\s*뉴스)/i;
 
 function installInsetStyle(){
   if(document.getElementById("petgrow-admob-inset-style"))return;
@@ -89,6 +90,13 @@ function currentHeadingText(){
     .filter(isVisible).slice(0,6).map(el=>(el.textContent||"").trim()).join(" ");
 }
 
+function activeViewLabel(){
+  const active=document.querySelector(
+    ".desktop-nav-link.active,.petgrow-sidebar-nav button.active,.app-bottom-nav button.active,[aria-current='page']"
+  );
+  return String(active?.textContent||"").replace(/\s+/g," ").trim();
+}
+
 function publisherTextLength(){
   const root=document.querySelector("main")||document.getElementById("root");
   if(!root||!isVisible(root))return 0;
@@ -102,6 +110,11 @@ function isAdEligibleScreen(){
   if(hasBlockingOverlay())return false;
   if(RESTRICTED_ROUTE_RE.test(`${location.pathname} ${location.search} ${location.hash}`))return false;
   if(RESTRICTED_HEADING_RE.test(currentHeadingText()))return false;
+
+  // 심사 안정성을 위해 앱 광고는 'Pet정보/Pet뉴스'처럼 편집 콘텐츠가 중심인 화면에서만 허용합니다.
+  // 홈·우리 아이·커뮤니티·지도·음악·검사·사주·계정·입력/관리 화면에는 광고를 표시하지 않습니다.
+  const label=activeViewLabel();
+  if(!label||!CONTENT_VIEW_RE.test(label))return false;
   if(publisherTextLength()<MIN_CONTENT_CHARS)return false;
   return true;
 }
