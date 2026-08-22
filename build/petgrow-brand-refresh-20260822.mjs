@@ -1,4 +1,4 @@
-const BRAND_ASSET = "/petgrow-brand-source.png?v=20260822";
+const BRAND_ASSET = "/petgrow-brand-source.svg?v=20260822b";
 const SITE_URL = "https://www.petgrow.co.kr/";
 const SEO_TITLE = "PetGrow | 반려동물 평생 기록·건강·커뮤니티";
 const SEO_DESCRIPTION = "반려동물의 성장·건강·일상·추억을 기록하고, PetLife·커뮤니티·펫가이드·펫플레이스를 한곳에서 이용하는 PetGrow.";
@@ -11,7 +11,7 @@ const SEO_STRUCTURED_DATA = JSON.stringify({
       name: "PetGrow",
       alternateName: "펫그로우",
       url: SITE_URL,
-      logo: `${SITE_URL}icon-512.png?v=20260822`,
+      logo: `${SITE_URL}petgrow-brand-source.svg?v=20260822b`,
       description: SEO_DESCRIPTION,
     },
     {
@@ -104,8 +104,8 @@ export default function petgrowBrandRefresh20260822() {
       handler(html) {
         let next = html
           .replace(/src="\/petgrow-splash-logo\.png"/g, `src="${BRAND_ASSET}"`)
-          .replace(/href="\/icon-192\.png"/g, 'href="/icon-192.png?v=20260822"')
-          .replace(/<meta name="theme-color" content="[^"]*"\s*\/>/i, '<meta name="theme-color" content="#245e49" />')
+          .replace(/href="\/icon-192\.png"/g, 'href="/petgrow-brand-source.svg?v=20260822b"')
+          .replace(/<meta name="theme-color" content="[^"]*"\s*\/>/i, '<meta name="theme-color" content="#086a3c" />')
           .replace(/<meta name="description" content="[^"]*"\s*\/>/i, `<meta name="description" content="${SEO_DESCRIPTION}" />`)
           .replace(/<title>[^<]*<\/title>/i, `<title>${SEO_TITLE}</title>`);
 
