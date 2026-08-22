@@ -7,11 +7,17 @@
   "scope": "/",
   "lang": "ko",
   "display": "standalone",
-  "background_color": "#f8faf7",
-  "theme_color": "#245e49",
+  "background_color": "#fffdf6",
+  "theme_color": "#086a3c",
   "orientation": "portrait-primary",
   "categories": ["lifestyle", "health", "social"],
   "icons": [
+    {
+      "src": "/petgrow-brand-source.svg?v=20260822b",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
     {
       "src": "/icon-192.png?v=20260822-logo2",
       "sizes": "192x192",
