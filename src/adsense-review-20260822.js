@@ -22,6 +22,11 @@ const AD_SELECTORS = [
   "[data-ad-client]"
 ].join(",");
 
+function isNativeShell() {
+  return /(?:^|[?&])app_version=/i.test(location.search) ||
+    Boolean(window.Capacitor?.isNativePlatform?.());
+}
+
 function activeViewLabel() {
   const active = document.querySelector(
     ".desktop-nav-link.active,.petgrow-sidebar-nav button.active,.app-bottom-nav button.active,[aria-current='page']"
@@ -30,6 +35,8 @@ function activeViewLabel() {
 }
 
 function isContentSafeView() {
+  // Android 앱에서는 웹 AdSense를 전부 막고 네이티브 AdMob만 사용합니다.
+  if (isNativeShell()) return false;
   if (document.getElementById("petgrow-initial-splash")) return false;
   const path = `${location.pathname}${location.hash}`.toLowerCase();
   if (location.pathname !== "/") return false;
@@ -42,10 +49,11 @@ function isContentSafeView() {
 
   const rootText = (document.getElementById("root")?.innerText || "").slice(0, 2200);
   if (/로그인이 필요|회원가입|관리자센터|게시물이 없습니다|검색 결과가 없습니다|불러오는 중|잠시만 기다려|콘텐츠가 없습니다/.test(rootText)) return false;
-  return true;
+  return rootText.replace(/\s+/g, " ").trim().length >= 320;
 }
 
 function isHomeView() {
+  if (isNativeShell()) return false;
   if (location.pathname !== "/" || document.getElementById("petgrow-initial-splash")) return false;
   const label = activeViewLabel();
   if (label) return /홈|home/i.test(label);
@@ -66,6 +74,7 @@ function guardAdPlacement() {
 }
 
 function createEditorialHub() {
+  if (isNativeShell()) return null;
   let section = document.getElementById("petgrow-editorial-hub");
   if (section) return section;
   section = document.createElement("section");
@@ -95,7 +104,12 @@ function createEditorialHub() {
 }
 
 function syncEditorialHub() {
+  if (isNativeShell()) {
+    document.getElementById("petgrow-editorial-hub")?.remove();
+    return;
+  }
   const section = createEditorialHub();
+  if (!section) return;
   const nextHidden = !isHomeView();
   if (section.hidden !== nextHidden) section.hidden = nextHidden;
 }
