@@ -10,7 +10,7 @@ const primary=[
   ()=>import("./petlife-final-qa.js"),
   ()=>import("./petlife-mobile-form-v2.js"),
   ()=>Promise.all([import("./petlife-navigation-ux.js"),import("./petlife-server-bridge.js")]).then(([navigation,serverBridge])=>{navigation.bootPetLifeNavigationUX?.();serverBridge.bootPetLifeServerBridge?.();}),
-  ()=>import("./android-admob.js"),
+  ()=>Promise.all([import("./android-admob.js"),import("./admob-privacy-entry.js")]),
 ];
 
 const deep=[
