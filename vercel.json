@@ -59,6 +59,7 @@
       },
       "continue": true
     },
+    { "src": "/delete-account/?", "dest": "/delete-account.html" },
     { "src": "/api/me", "dest": "/api/core?route=me" },
     { "src": "/api/state", "dest": "/api/core?route=state" },
     { "src": "/api/health-event", "dest": "/api/core?route=health-event" },
