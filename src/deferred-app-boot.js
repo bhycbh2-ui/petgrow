@@ -1,14 +1,11 @@
 const sleep=(ms)=>new Promise(resolve=>setTimeout(resolve,ms));
 
 const primary=[
-  // Keep feature-only CSS/JS out of the first paint, but load it during the first idle window
-  // so Pet사주/Pet타로/광고 설정 screens are styled before normal navigation reaches them.
+  // Only load feature CSS that may be reached from normal navigation soon after launch.
   ()=>Promise.all([
     import("./tarot-saju-rebuild-20260818.css"),
     import("./pet-tarot-intro-fix-20260819.css"),
-    import("./adsense-review-20260822.css"),
   ]),
-  ()=>Promise.all([import("./adsense-review-20260822.js"),import("./admob-readiness-20260822.js")]),
   ()=>Promise.all([import("./PetLifeApp.jsx"),import("./petlife-home-bridge.js")]).then(([petLife,bridge])=>{petLife.bootPetLife?.();bridge.bootPetLifeHomeBridge?.();}),
   ()=>import("./requested-polish-20260818.js"),
   ()=>import("./aab-ready-fixes-20260818.js"),
@@ -18,10 +15,13 @@ const primary=[
   ()=>import("./petlife-final-qa.js"),
   ()=>import("./petlife-mobile-form-v2.js"),
   ()=>Promise.all([import("./petlife-navigation-ux.js"),import("./petlife-server-bridge.js")]).then(([navigation,serverBridge])=>{navigation.bootPetLifeNavigationUX?.();serverBridge.bootPetLifeServerBridge?.();}),
-  ()=>Promise.all([import("./android-admob.js"),import("./admob-privacy-entry.js")]),
 ];
 
 const deep=[
+  // Ads/privacy/admin are intentionally outside the first idle slice.
+  ()=>import("./adsense-review-20260822.css"),
+  ()=>Promise.all([import("./adsense-review-20260822.js"),import("./admob-readiness-20260822.js")]),
+  ()=>Promise.all([import("./android-admob.js"),import("./admob-privacy-entry.js")]),
   ()=>import("./admin-news-music-20260818.css"),
   ()=>import("./legacy-server-sync.js"),
   ()=>import("./account-data-export.js"),
@@ -35,7 +35,11 @@ const deep=[
 ];
 
 async function loadInSlices(loaders,gap){
-  for(const load of loaders){try{await load();}catch{}await sleep(gap);}
+  for(const load of loaders){
+    while(document.visibilityState==="hidden")await sleep(700);
+    try{await load();}catch{}
+    await sleep(gap);
+  }
 }
 function idle(callback,timeout,fallback){
   if("requestIdleCallback" in window)return requestIdleCallback(callback,{timeout});
@@ -45,8 +49,26 @@ function idle(callback,timeout,fallback){
 let started=false;
 export function bootDeferredApp(){
   if(started)return;started=true;
-  idle(()=>loadInSlices(primary,30),900,250);
+
+  // Let the home/splash transition finish before warming normal feature modules.
+  idle(()=>loadInSlices(primary,44),1200,420);
+
   const connection=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
   const slow=connection?.saveData||/(^|-)2g$/.test(connection?.effectiveType||"");
-  setTimeout(()=>idle(()=>loadInSlices(deep,64),2800,850),slow?15000:10000);
+  let deepStarted=false;
+  const startDeep=()=>{
+    if(deepStarted)return;deepStarted=true;
+    idle(()=>loadInSlices(deep,86),3600,1200);
+  };
+
+  // Fast connections warm deep modules later; data-saver/2G waits much longer.
+  const timer=setTimeout(startDeep,slow?18000:9000);
+
+  // An actual user interaction is a better signal than loading everything at startup.
+  const onIntent=()=>{
+    clearTimeout(timer);
+    setTimeout(startDeep,slow?4500:1800);
+  };
+  addEventListener("pointerdown",onIntent,{once:true,passive:true});
+  addEventListener("keydown",onIntent,{once:true,passive:true});
 }
