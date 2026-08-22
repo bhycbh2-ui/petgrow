@@ -1,6 +1,14 @@
 const sleep=(ms)=>new Promise(resolve=>setTimeout(resolve,ms));
 
 const primary=[
+  // Keep feature-only CSS/JS out of the first paint, but load it during the first idle window
+  // so Pet사주/Pet타로/광고 설정 screens are styled before normal navigation reaches them.
+  ()=>Promise.all([
+    import("./tarot-saju-rebuild-20260818.css"),
+    import("./pet-tarot-intro-fix-20260819.css"),
+    import("./adsense-review-20260822.css"),
+  ]),
+  ()=>Promise.all([import("./adsense-review-20260822.js"),import("./admob-readiness-20260822.js")]),
   ()=>Promise.all([import("./PetLifeApp.jsx"),import("./petlife-home-bridge.js")]).then(([petLife,bridge])=>{petLife.bootPetLife?.();bridge.bootPetLifeHomeBridge?.();}),
   ()=>import("./requested-polish-20260818.js"),
   ()=>import("./aab-ready-fixes-20260818.js"),
@@ -14,6 +22,7 @@ const primary=[
 ];
 
 const deep=[
+  ()=>import("./admin-news-music-20260818.css"),
   ()=>import("./legacy-server-sync.js"),
   ()=>import("./account-data-export.js"),
   ()=>import("./admin-server-health.js"),
