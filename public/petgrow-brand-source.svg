@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">PetGrow</title>
+  <desc id="desc">에메랄드 그린 배경 위 발바닥 안에서 강아지와 고양이가 하나로 이어지는 PetGrow 로고</desc>
+  <defs>
+    <linearGradient id="bg" x1="72" y1="54" x2="448" y2="472" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#19a35a"/>
+      <stop offset="0.42" stop-color="#087a45"/>
+      <stop offset="1" stop-color="#034c31"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="84" y1="70" x2="406" y2="250" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#58d27e" stop-opacity=".62"/>
+      <stop offset="1" stop-color="#0d6a3d" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#013922" flood-opacity=".28"/>
+    </filter>
+  </defs>
+
+  <rect x="24" y="24" width="464" height="464" rx="112" fill="url(#bg)"/>
+  <path d="M40 173C125 91 260 65 465 103V185C356 248 174 247 40 197Z" fill="url(#shine)" opacity=".72"/>
+  <path d="M42 356C167 276 305 290 474 226V386C394 459 254 490 111 454C78 446 56 425 42 403Z" fill="#073e2b" opacity=".22"/>
+
+  <g fill="#fff" filter="url(#soft)">
+    <ellipse cx="145" cy="183" rx="39" ry="55" transform="rotate(-16 145 183)"/>
+    <ellipse cx="222" cy="139" rx="36" ry="55" transform="rotate(-4 222 139)"/>
+    <ellipse cx="300" cy="139" rx="36" ry="55" transform="rotate(4 300 139)"/>
+    <ellipse cx="374" cy="183" rx="39" ry="55" transform="rotate(16 374 183)"/>
+  </g>
+
+  <!-- Unified lower paw: dog and cat flow into one continuous mark. -->
+  <path fill="#fff" d="M115 385C118 307 156 244 215 220C248 206 286 209 314 228C333 241 343 260 365 271C393 285 407 311 398 339C386 379 340 409 285 418C227 428 168 420 132 401C121 395 115 391 115 385Z"/>
+
+  <!-- Dog profile, facing right. -->
+  <path fill="#087a45" d="M183 322C180 286 195 252 225 237C248 225 281 226 301 241C315 251 320 266 330 278C340 290 356 291 369 296C379 300 384 306 382 314C379 325 367 333 350 336L321 340C309 342 304 350 298 360C285 383 260 397 230 398C210 399 197 394 188 383C179 372 175 354 183 322Z"/>
+  <path fill="#fff" d="M203 255C184 268 179 292 184 318C191 311 201 301 211 291C220 282 223 271 222 252C216 252 209 253 203 255Z"/>
+  <ellipse cx="310" cy="277" rx="5" ry="5" fill="#fff"/>
+  <path d="M329 304C339 307 347 307 355 305" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- Cat silhouette grows out of the dog's lower curve. -->
+  <path fill="#fff" d="M227 399C246 371 259 345 276 333C293 321 316 316 334 323C348 328 357 338 359 350C360 363 350 375 335 383C315 395 289 402 260 404C247 405 237 403 227 399Z"/>
+  <path fill="#087a45" d="M260 367C260 346 272 330 290 324L300 306L312 323L331 313L334 334C345 340 351 349 349 359C347 370 337 379 323 384C306 390 285 390 270 384C263 381 260 375 260 367Z"/>
+  <path d="M292 354C300 350 307 350 314 354" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+  <path d="M320 369C326 370 331 369 336 366" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Flowing tail/ribbon linking both animals. -->
+  <path d="M182 383C194 420 231 440 276 430C317 421 347 395 365 370" fill="none" stroke="#fff" stroke-width="24" stroke-linecap="round"/>
+  <path d="M183 382C197 416 230 428 269 418" fill="none" stroke="#087a45" stroke-width="7" stroke-linecap="round" opacity=".9"/>
+</svg>
