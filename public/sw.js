@@ -1,7 +1,8 @@
-// PetGrow service worker v29
+// PetGrow service worker v30
 // HTML/API는 항상 최신 네트워크 응답을 사용하고, 해시 정적 자산과 버전된 브랜드 자산만 캐시합니다.
-const ASSET_CACHE = "petgrow-assets-v29";
+const ASSET_CACHE = "petgrow-assets-v30";
 const ASSET_PATH = "/assets/";
+const HASHED_ASSET_RE = /\/assets\/[^/?]+-[A-Za-z0-9_-]{8,}\.[A-Za-z0-9]+$/;
 const MAX_CACHE_ENTRIES = 120;
 const BRAND_PATHS = new Set([
   "/petgrow-brand-source.png",
@@ -56,7 +57,9 @@ self.addEventListener("fetch", (event) => {
   try { url = new URL(request.url); } catch { return; }
   if (url.origin !== self.location.origin) return;
 
-  const isHashedAsset = url.pathname.startsWith(ASSET_PATH);
+  // Vite의 해시가 실제 파일명에 붙은 자산만 장기 cache-first로 취급합니다.
+  // /assets/ 아래의 고정 파일명이 실수로 추가돼도 오래된 파일이 영구 재사용되지 않게 합니다.
+  const isHashedAsset = url.pathname.startsWith(ASSET_PATH) && HASHED_ASSET_RE.test(url.pathname);
   const isBrandAsset = BRAND_PATHS.has(url.pathname);
   if (!isHashedAsset && !isBrandAsset) return;
 
