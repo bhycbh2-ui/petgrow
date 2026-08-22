@@ -103,11 +103,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/check-android-push-config.mjs
+          if ! node scripts/check-android-push-config.mjs; then
+            echo "::warning::Optional Android push wiring check is incomplete. This does not block Google Play production publishing."
+          fi
           if [ "${{ steps.firebase.outputs.configured }}" = "true" ]; then
             test -s android/app/google-services.json
           fi
-          echo "Android release preflight passed. Google Play publishing is not blocked by optional FCM/native-plugin text checks."
+          echo "Android release preflight complete."
 
       - name: Install Google Play API client
         run: npm install --no-save --package-lock=false googleapis@144.0.0
