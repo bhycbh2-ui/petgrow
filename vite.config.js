@@ -23,8 +23,6 @@ import petgrowFullQa20260821 from "./build/petgrow-full-qa-20260821.mjs";
 
 const ADSENSE_CLIENT = "ca-pub-9699974051273244";
 
-// SPA 홈/로그인/관리자/입력/빈 화면에서는 웹 광고 스크립트를 아예 로드하지 않습니다.
-// 사이트 소유 확인용 meta만 유지하고, 실제 AdSense 스크립트는 아래의 정적 편집 콘텐츠에만 주입합니다.
 function petgrowAdsenseWeb() {
   return {
     name: "petgrow-adsense-web",
@@ -79,10 +77,15 @@ function petgrowAdsenseEditorialPages() {
 }
 
 export default defineConfig({
-  // 브랜딩 교체를 가장 먼저 실행하고, 새 Emerald splash v4를 HTML 단계에서 주입합니다.
-  // 기능별 화면은 기존 route/menu split을 유지해 초기 다운로드 비용을 억제합니다.
   plugins: [petgrowBrandRefresh20260822(), petgrowPetLifeLegalAudit20260821(), petgrowFullQa20260821(), petgrowSplashV4(), petgrowSplashReadyGate(), petgrowAdsenseWeb(), petgrowAdsenseEditorialPages(), petgrowPerformanceLazy(), petgrowRechartsTreeShake20260822(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), petgrowMenuSplitV3(), petgrowMenuSplitV4(), petgrowPetTalkSplitV5(), petgrowDeepMenuSplitV6(), petgrowDeepScreenSplitV7(), petgrowRouteSplitV8(), react()],
+  esbuild: {
+    legalComments: "none",
+  },
   build: {
+    cssCodeSplit: true,
+    sourcemap: false,
+    minify: "esbuild",
+    reportCompressedSize: false,
     modulePreload: {
       resolveDependencies(filename, deps, context) {
         if (context?.hostType === "html") {
