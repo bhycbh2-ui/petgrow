@@ -34,5 +34,5 @@ jobs:
             echo 'No generated changes.'
             exit 0
           fi
-          git commit -m 'content: add 16 PetInfo items for 2026-08-23'
+          git commit -m 'content: add 16 PetInfo items for 2026-08-24'
           git push origin main
