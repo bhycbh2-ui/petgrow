@@ -4,6 +4,10 @@
     {
       "path": "/api/petlife-jobs",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/news",
+      "schedule": "0 * * * *"
     }
   ],
   "routes": [
