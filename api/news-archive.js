@@ -5,8 +5,7 @@ export default async function handler(req,res){
   try{
     const result=await sql`SELECT id,title,description,category,source,link,naver_link,published_at,image
       FROM pet_news_archive
-      ORDER BY published_at DESC NULLS LAST, first_seen_at DESC
-      LIMIT 1000`;
+      ORDER BY published_at DESC NULLS LAST, first_seen_at DESC`;
     const items=result.rows.map(r=>({
       id:r.id,
       title:r.title,
