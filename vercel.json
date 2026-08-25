@@ -6,7 +6,7 @@
       "schedule": "0 0 * * *"
     },
     {
-      "path": "/api/news",
+      "path": "/api/news-cron",
       "schedule": "0 * * * *"
     }
   ],
