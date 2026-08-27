@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
-import "./splash-fast-20260828.js";
 import "./petgrow-premium-20260817.css";
 import "./final-ux-20260818.css";
 import "./ui-fixes-20260818.css";
