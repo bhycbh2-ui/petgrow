@@ -7,6 +7,7 @@ on:
     paths:
       - 'package.json'
       - 'scripts/check-android-push-config.mjs'
+      - 'android/**'
       - '.github/workflows/android-aab.yml'
       - '.github/workflows/phase2-verify.yml'
   workflow_dispatch:
