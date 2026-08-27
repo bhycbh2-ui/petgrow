@@ -35,14 +35,18 @@ const cmsEffect = `  useEffect(() => {
         const parsed = parseTipsCsv(text);
         if (!cancelled && parsed.length > 0) setTipsSource(parsed);
       } catch {
-        // 시트도 못 불러오면 초기값 TIPS_DATA를 그대로 유지해요.
+        // 시트도 못 불러오면 현재 초기 데이터를 그대로 유지해요.
       }
     })();
     return () => { cancelled = true; };
   }, []);`;
 
 const helper = `/* ${MARK} */
-if (typeof window !== "undefined") window.__PETGROW_TIPS_DATA__ = TIPS_DATA;
+// TIPS_DATA was removed/renamed by later PetInfo transforms in some builds.
+// Never let an optional debug export crash the whole application at module load.
+if (typeof window !== "undefined" && typeof TIPS_DATA !== "undefined") {
+  window.__PETGROW_TIPS_DATA__ = TIPS_DATA;
+}
 
 async function fetchPetInfoCmsItems() {
   // API가 허용하는 최대 크기로 한 번에 받아 현재 Pet정보 수에서는 추가 왕복을 없애요.
