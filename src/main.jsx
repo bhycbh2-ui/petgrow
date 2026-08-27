@@ -2,7 +2,7 @@
 window.__petgrowSplashSoundPlayed = true;
 
 const BOOT_RECOVERY_PARAM = "pg_boot_recover";
-const BOOT_RECOVERY_KEY = "petgrow_boot_recovery_v3";
+const BOOT_RECOVERY_KEY = "petgrow_boot_recovery_v4";
 const bootStartedAt = performance.now();
 const root = document.getElementById("root");
 let bootFinished = false;
@@ -61,7 +61,7 @@ async function clearStaleWebState() {
 }
 
 function showRecoveryScreen(error) {
-  console.error("[PetGrow] boot failed after cache recovery", error);
+  console.error("[PetGrow] boot failed after recovery", error);
   hardHideSplash();
   if (!root) return;
   root.innerHTML = `
@@ -69,10 +69,17 @@ function showRecoveryScreen(error) {
       <section style="width:min(92vw,420px);padding:30px 24px;border-radius:24px;background:#fff;box-shadow:0 14px 40px rgba(25,57,46,.10);text-align:center">
         <img src="/petgrow-brand-source.svg?v=20260822b" alt="PetGrow" width="78" height="78" style="border-radius:20px" />
         <h1 style="margin:18px 0 8px;font-size:24px">PetGrow를 다시 불러올게요</h1>
-        <p style="margin:0 0 20px;color:#6e7f76;font-size:14px;line-height:1.6">브라우저에 남아 있는 이전 파일 때문에 화면을 열지 못했습니다.</p>
+        <p style="margin:0 0 10px;color:#6e7f76;font-size:14px;line-height:1.6">PetGrow를 불러오는 중 오류가 발생했습니다.</p>
+        <p id="petgrow-boot-error" style="margin:0 0 20px;color:#8a9690;font-size:11px;line-height:1.5;word-break:break-word"></p>
         <button id="petgrow-boot-retry" type="button" style="width:100%;border:0;border-radius:14px;padding:14px 16px;background:#176b47;color:#fff;font-size:15px;font-weight:700;cursor:pointer">다시 불러오기</button>
       </section>
     </main>`;
+  const errorEl = document.getElementById("petgrow-boot-error");
+  if (errorEl) {
+    const name = String(error?.name || "Error");
+    const message = String(error?.message || "알 수 없는 오류");
+    errorEl.textContent = `오류 정보: ${name}: ${message}`.slice(0, 220);
+  }
   document.getElementById("petgrow-boot-retry")?.addEventListener("click", async () => {
     try { sessionStorage.removeItem(BOOT_RECOVERY_KEY); } catch {}
     await clearStaleWebState();
