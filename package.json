@@ -17,6 +17,7 @@
     "@capacitor/core": "^6.1.2",
     "@capacitor/push-notifications": "6.0.2",
     "@capacitor/splash-screen": "^6.0.2",
+    "@vercel/blob": "2.8.0",
     "@vercel/postgres": "^0.10.0",
     "leaflet": "^1.9.4",
     "proj4": "^2.15.0",
