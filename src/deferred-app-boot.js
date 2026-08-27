@@ -21,7 +21,7 @@ const deep=[
   // Ads/privacy/admin are intentionally outside the first idle slice.
   ()=>import("./adsense-review-20260822.css"),
   ()=>Promise.all([import("./adsense-review-20260822.js"),import("./admob-readiness-20260822.js")]),
-  ()=>Promise.all([import("./android-admob.js"),import("./admob-privacy-entry.js")]),
+  ()=>Promise.all([import("./android-admob.js"),import("./admob-privacy-entry.js"),import("./android-admob-engagement-20260828.js")]),
   ()=>import("./admin-news-music-20260818.css"),
   ()=>import("./legacy-server-sync.js"),
   ()=>import("./account-data-export.js"),
