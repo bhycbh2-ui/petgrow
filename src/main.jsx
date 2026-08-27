@@ -3,6 +3,8 @@ window.__petgrowSplashSoundPlayed = true;
 
 const BOOT_RECOVERY_PARAM = "pg_boot_recover";
 const BOOT_RECOVERY_KEY = "petgrow_boot_recovery_v4";
+const EXTERNAL_RETURN_KEY = "petgrow_external_return_v1";
+const EXTERNAL_RETURN_MAX_AGE_MS = 3 * 60 * 1000;
 const bootStartedAt = performance.now();
 const root = document.getElementById("root");
 let bootFinished = false;
@@ -12,25 +14,76 @@ function hasRenderedApp() {
   return Boolean(root && (root.firstElementChild || String(root.textContent || "").trim()));
 }
 
+function hasAuthReturnParams() {
+  const value = `${location.search || ""}&${location.hash || ""}`;
+  return /(?:^|[?&#])(code|state|access_token|refresh_token|error|error_description)=/i.test(value);
+}
+
+function markExternalReturnHint() {
+  try { sessionStorage.setItem(EXTERNAL_RETURN_KEY, String(Date.now())); } catch {}
+}
+
+function hasRecentExternalReturnHint() {
+  try {
+    const stamp = Number(sessionStorage.getItem(EXTERNAL_RETURN_KEY) || 0);
+    if (!Number.isFinite(stamp) || stamp <= 0) return false;
+    const age = Date.now() - stamp;
+    return age >= 0 && age < EXTERNAL_RETURN_MAX_AGE_MS;
+  } catch {
+    return false;
+  }
+}
+
+function clearExternalReturnHint() {
+  try { sessionStorage.removeItem(EXTERNAL_RETURN_KEY); } catch {}
+}
+
 function hardHideSplash() {
   const splash = document.getElementById("petgrow-initial-splash");
   if (!splash) return;
   const bar = splash.querySelector(".petgrow-splash__progress-bar");
   if (bar) {
     bar.style.animation = "none";
-    bar.style.transition = "width 80ms ease-out";
+    bar.style.transition = "width 60ms ease-out";
     bar.style.width = "100%";
   }
-  splash.style.transition = "opacity 110ms ease, visibility 110ms ease";
+  splash.style.transition = "opacity 90ms ease, visibility 90ms ease";
   splash.style.opacity = "0";
   splash.style.visibility = "hidden";
   splash.style.pointerEvents = "none";
-  window.setTimeout(() => splash.remove(), 130);
+  window.setTimeout(() => splash.remove(), 110);
+}
+
+window.__petgrowForceHideSplash = hardHideSplash;
+
+function releaseSplashAfterExternalReturn() {
+  const returning = hasRecentExternalReturnHint() || hasAuthReturnParams();
+  if (!returning && !hasRenderedApp()) return;
+  hardHideSplash();
+  if (hasRenderedApp()) clearExternalReturnHint();
+}
+
+// Kakao/other external authentication can background the browser or Android WebView.
+// Remember that transition and never show the launch splash again when the user returns.
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") {
+    markExternalReturnHint();
+    return;
+  }
+  window.setTimeout(releaseSplashAfterExternalReturn, 0);
+});
+window.addEventListener("pageshow", () => window.setTimeout(releaseSplashAfterExternalReturn, 0));
+window.addEventListener("focus", () => window.setTimeout(releaseSplashAfterExternalReturn, 0));
+
+// A full OAuth callback reload keeps sessionStorage in the same tab/WebView. In that case
+// remove the repeated launch splash quickly instead of making the user watch it twice.
+if (hasRecentExternalReturnHint() || hasAuthReturnParams()) {
+  window.setTimeout(hardHideSplash, 360);
 }
 
 function hideWhenReady() {
   if (!hasRenderedApp()) return false;
-  const minimumVisibleMs = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ? 360 : 440;
+  const minimumVisibleMs = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ? 220 : 360;
   const elapsed = performance.now() - bootStartedAt;
   if (elapsed < minimumVisibleMs) {
     window.setTimeout(hardHideSplash, minimumVisibleMs - elapsed);
@@ -124,6 +177,7 @@ async function boot() {
       history.replaceState(null, "", clean.pathname + clean.search + clean.hash);
     }
     hideWhenReady();
+    releaseSplashAfterExternalReturn();
   } catch (error) {
     console.error("[PetGrow] app entry import failed", error);
     await recoverBoot(error);
@@ -138,7 +192,7 @@ window.setTimeout(() => {
     hardHideSplash();
     renderObserver.disconnect();
   }
-}, 900);
+}, 700);
 
 // If the entry module hangs rather than rejects, trigger the same one-time recovery.
 window.setTimeout(() => {
