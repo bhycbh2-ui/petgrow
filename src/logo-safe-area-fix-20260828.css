@@ -1,0 +1,26 @@
+/* PetGrow logo safe-area fix — web, PWA and Capacitor WebView */
+.petgrow-splash__logo-wrap{
+  overflow:visible!important;
+  padding:8px!important;
+  box-sizing:border-box!important;
+}
+.petgrow-splash__logo,
+img[alt="PetGrow"],
+img[aria-label="PetGrow"]{
+  object-fit:contain!important;
+  object-position:center center!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  box-sizing:border-box!important;
+  transform:none!important;
+  clip-path:none!important;
+}
+/* Keep a small visual safe area so rounded app/web containers never cut the mark. */
+img[alt="PetGrow"],img[aria-label="PetGrow"]{
+  padding:3px!important;
+}
+a:has(> img[alt="PetGrow"]),
+div:has(> img[alt="PetGrow"]),
+span:has(> img[alt="PetGrow"]){
+  overflow:visible!important;
+}
