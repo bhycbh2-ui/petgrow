@@ -65,7 +65,7 @@ while ((m = functionRe.exec(code))) {
   const name = m[1], start = m.index + m[0].indexOf("function"), brace = bodyStart(start);
   if (brace < 0) continue;
   const end = functionEnd(brace);
-  if (end > 0) functions.push({ name, bytes: end - start, start, line: lineAt(start) });
+  if (end > 0) functions.push({ name, bytes: end - start, start, end, line: lineAt(start) });
 }
 functions.sort((a, b) => b.bytes - a.bytes);
 
@@ -73,7 +73,7 @@ const declarations = [];
 const declRe = /^(?:export\s+)?(?:const|let|var)\s+([A-Za-z_$][\w$]*)/gm;
 while ((m = declRe.exec(code))) {
   const name = m[1], start = m.index, end = statementEnd(start);
-  if (end > 0) declarations.push({ name, bytes: end - start, start, line: lineAt(start) });
+  if (end > 0) declarations.push({ name, bytes: end - start, start, end, line: lineAt(start) });
 }
 declarations.sort((a, b) => b.bytes - a.bytes);
 
@@ -81,3 +81,17 @@ console.log(`APP_FUNCTION_REPORT total=${functions.length} appBytes=${code.lengt
 for (const row of functions.slice(0, 60)) console.log(`APP_FUNCTION ${row.name} bytes=${row.bytes} line=${row.line} start=${row.start}`);
 console.log(`APP_DECL_REPORT total=${declarations.length}`);
 for (const row of declarations.slice(0, 60)) console.log(`APP_DECL ${row.name} bytes=${row.bytes} line=${row.line} start=${row.start}`);
+
+const traceNames = ["TIPS_DATA", "PETGROW_LOGO_DATA_URI", "STRINGS", "GlobalStyle", "PRIVACY_SECTIONS_KO", "PRIVACY_SECTIONS_EN", "TERMS_SECTIONS_KO", "TERMS_SECTIONS_EN"];
+for (const name of traceNames) {
+  const re = new RegExp(`\\b${name}\\b`, "g");
+  const hits = [];
+  let hit;
+  while ((hit = re.exec(code))) {
+    const pos = hit.index;
+    const owner = functions.filter((f) => f.start <= pos && pos < f.end).sort((a,b) => a.bytes - b.bytes)[0];
+    const decl = declarations.find((d) => d.name === name && d.start <= pos && pos < d.end);
+    hits.push(`line=${lineAt(pos)} owner=${decl ? "DECL" : owner?.name || "TOP"}`);
+  }
+  console.log(`APP_REF ${name} count=${hits.length} ${hits.join(" | ")}`);
+}
