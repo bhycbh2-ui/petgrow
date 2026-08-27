@@ -1,122 +1,122 @@
 APP_FUNCTION_REPORT total=259 appBytes=1075472
-APP_FUNCTION AppInner bytes=51186 start=1023400
-APP_FUNCTION AdminReportsPage bytes=31174 start=973538
-APP_FUNCTION NearbyPetPage bytes=28212 start=846924
-APP_FUNCTION AboutPage bytes=13961 start=831109
-APP_FUNCTION HomePage bytes=12639 start=878582
-APP_FUNCTION PetMusicPage bytes=12313 start=940918
-APP_FUNCTION OnboardingPage bytes=8911 start=469241
-APP_FUNCTION SajuPage bytes=8863 start=745004
-APP_FUNCTION PetNewsPage bytes=8805 start=963974
-APP_FUNCTION LandingPage bytes=8255 start=821104
-APP_FUNCTION PostDetail bytes=7560 start=918630
-APP_FUNCTION AdminMusicPanel bytes=7043 start=953233
-APP_FUNCTION PostComposer bytes=6732 start=906846
-APP_FUNCTION InfoGuidePage bytes=6632 start=897021
-APP_FUNCTION CommunityFeed bytes=6013 start=926192
-APP_FUNCTION ResultPage bytes=5947 start=802313
-APP_FUNCTION LoginScreen bytes=5810 start=239276
-APP_FUNCTION AccountModal bytes=5407 start=249234
-APP_FUNCTION PetBtiResultView bytes=5094 start=789959
-APP_FUNCTION TipsPage bytes=4911 start=715854
-APP_FUNCTION MyPage bytes=4730 start=1011306
-APP_FUNCTION PhotoTile bytes=4045 start=493861
-APP_FUNCTION PrivacyPage bytes=4009 start=234611
-APP_FUNCTION SajuInputForm bytes=3841 start=732586
-APP_FUNCTION SupportPage bytes=3657 start=960278
-APP_FUNCTION PetBtiPage bytes=3451 start=795234
-APP_FUNCTION SajuResultView bytes=3321 start=741681
-APP_FUNCTION GrowthChartCard bytes=3225 start=479437
-APP_FUNCTION UnifiedMenuHero bytes=3141 start=875439
-APP_FUNCTION AdInquiryPage bytes=3139 start=937776
-APP_FUNCTION ShareCardModal bytes=2914 start=517485
-APP_FUNCTION MyActivityPage bytes=2857 start=932207
-APP_FUNCTION TipCard bytes=2666 start=713186
-APP_FUNCTION renderSajuShareCard bytes=2631 start=736435
-APP_FUNCTION PhotoAlbum bytes=2597 start=500341
-APP_FUNCTION renderShareCard bytes=2593 start=514640
-APP_FUNCTION renderPetBtiShareCard bytes=2591 start=785403
-APP_FUNCTION PetPointDashboard bytes=2490 start=1005293
-APP_FUNCTION InfoAccordion bytes=2443 start=504692
-APP_FUNCTION BreedCombobox bytes=2365 start=465338
-APP_FUNCTION HamburgerMenu bytes=2301 start=245653
-APP_FUNCTION CommunityPage bytes=2298 start=1017737
-APP_FUNCTION ReportModal bytes=2265 start=914731
-APP_FUNCTION RecordList bytes=2184 start=485829
-APP_FUNCTION generatePetBtiResult bytes=2101 start=780994
-APP_FUNCTION PetContentPage bytes=2043 start=893588
-APP_FUNCTION SajuShareModal bytes=2017 start=739662
-APP_FUNCTION RecordForm bytes=1987 start=483840
-APP_FUNCTION BreedInfoModal bytes=1974 start=510430
-APP_FUNCTION PetBtiShareModal bytes=1961 start=787996
-APP_FUNCTION AddPhotoCard bytes=1935 start=491924
-APP_FUNCTION SlideshowModal bytes=1845 start=498065
-APP_FUNCTION LegalContent bytes=1836 start=232165
-APP_FUNCTION generateSajuResult bytes=1763 start=730821
-APP_FUNCTION PetBtiQuestionFlow bytes=1725 start=783670
-APP_FUNCTION VaccineChecklist bytes=1693 start=512571
-APP_FUNCTION GuideModal bytes=1655 start=191495
-APP_FUNCTION NotificationBell bytes=1642 start=256427
-APP_FUNCTION CommentItem bytes=1630 start=916998
-APP_FUNCTION AccountActivityHub bytes=1616 start=1009688
+APP_FUNCTION AppInner bytes=51186 line=11662 start=1023400
+APP_FUNCTION AdminReportsPage bytes=31174 line=11280 start=973538
+APP_FUNCTION NearbyPetPage bytes=28212 line=9940 start=846924
+APP_FUNCTION AboutPage bytes=13961 line=9668 start=831109
+APP_FUNCTION HomePage bytes=12639 line=10279 start=878582
+APP_FUNCTION PetMusicPage bytes=12313 line=11162 start=940918
+APP_FUNCTION OnboardingPage bytes=8911 line=4867 start=469241
+APP_FUNCTION SajuPage bytes=8863 line=8207 start=745004
+APP_FUNCTION PetNewsPage bytes=8805 line=11253 start=963974
+APP_FUNCTION LandingPage bytes=8255 line=9454 start=821104
+APP_FUNCTION PostDetail bytes=7560 line=10782 start=918630
+APP_FUNCTION AdminMusicPanel bytes=7043 line=11204 start=953233
+APP_FUNCTION PostComposer bytes=6732 line=10549 start=906846
+APP_FUNCTION InfoGuidePage bytes=6632 line=10444 start=897021
+APP_FUNCTION CommunityFeed bytes=6013 line=10942 start=926192
+APP_FUNCTION ResultPage bytes=5947 line=9101 start=802313
+APP_FUNCTION LoginScreen bytes=5810 line=2237 start=239276
+APP_FUNCTION AccountModal bytes=5407 line=2381 start=249234
+APP_FUNCTION PetBtiResultView bytes=5094 line=8865 start=789959
+APP_FUNCTION TipsPage bytes=4911 line=7564 start=715854
+APP_FUNCTION MyPage bytes=4730 line=11526 start=1011306
+APP_FUNCTION PhotoTile bytes=4045 line=5424 start=493861
+APP_FUNCTION PrivacyPage bytes=4009 line=2175 start=234611
+APP_FUNCTION SajuInputForm bytes=3841 line=7912 start=732586
+APP_FUNCTION SupportPage bytes=3657 line=11218 start=960278
+APP_FUNCTION PetBtiPage bytes=3451 line=8957 start=795234
+APP_FUNCTION SajuResultView bytes=3321 line=8145 start=741681
+APP_FUNCTION GrowthChartCard bytes=3225 line=5097 start=479437
+APP_FUNCTION UnifiedMenuHero bytes=3141 line=10258 start=875439
+APP_FUNCTION AdInquiryPage bytes=3139 line=11143 start=937776
+APP_FUNCTION ShareCardModal bytes=2914 line=5982 start=517485
+APP_FUNCTION MyActivityPage bytes=2857 line=11041 start=932207
+APP_FUNCTION TipCard bytes=2666 line=7533 start=713186
+APP_FUNCTION renderSajuShareCard bytes=2631 line=7990 start=736435
+APP_FUNCTION PhotoAlbum bytes=2597 line=5583 start=500341
+APP_FUNCTION renderShareCard bytes=2593 line=5887 start=514640
+APP_FUNCTION renderPetBtiShareCard bytes=2591 line=8734 start=785403
+APP_FUNCTION PetPointDashboard bytes=2490 line=11504 start=1005293
+APP_FUNCTION InfoAccordion bytes=2443 line=5683 start=504692
+APP_FUNCTION BreedCombobox bytes=2365 line=4765 start=465338
+APP_FUNCTION HamburgerMenu bytes=2301 line=2339 start=245653
+APP_FUNCTION CommunityPage bytes=2298 line=11563 start=1017737
+APP_FUNCTION ReportModal bytes=2265 line=10701 start=914731
+APP_FUNCTION RecordList bytes=2184 line=5233 start=485829
+APP_FUNCTION generatePetBtiResult bytes=2101 line=8649 start=780994
+APP_FUNCTION PetContentPage bytes=2043 line=10401 start=893588
+APP_FUNCTION SajuShareModal bytes=2017 line=8094 start=739662
+APP_FUNCTION RecordForm bytes=1987 line=5179 start=483840
+APP_FUNCTION BreedInfoModal bytes=1974 line=5803 start=510430
+APP_FUNCTION PetBtiShareModal bytes=1961 line=8816 start=787996
+APP_FUNCTION AddPhotoCard bytes=1935 line=5388 start=491924
+APP_FUNCTION SlideshowModal bytes=1845 line=5527 start=498065
+APP_FUNCTION LegalContent bytes=1836 line=2121 start=232165
+APP_FUNCTION generateSajuResult bytes=1763 line=7878 start=730821
+APP_FUNCTION PetBtiQuestionFlow bytes=1725 line=8692 start=783670
+APP_FUNCTION VaccineChecklist bytes=1693 line=5841 start=512571
+APP_FUNCTION GuideModal bytes=1655 line=1977 start=191495
+APP_FUNCTION NotificationBell bytes=1642 line=2552 start=256427
+APP_FUNCTION CommentItem bytes=1630 line=10750 start=916998
+APP_FUNCTION AccountActivityHub bytes=1616 line=11517 start=1009688
 APP_DECL_REPORT total=86
-APP_DECL GlobalStyle bytes=206299 start=258236
-APP_DECL TIPS_DATA bytes=184265 start=525573
-APP_DECL PETGROW_LOGO_DATA_URI bytes=78003 start=109468
-APP_DECL STRINGS bytes=64929 start=10734
-APP_DECL TERMS_SECTIONS_EN bytes=12970 start=219193
-APP_DECL PETBTI_QUESTIONS_CAT bytes=9098 start=763179
-APP_DECL PETBTI_QUESTIONS_DOG bytes=9080 start=754097
-APP_DECL PRIVACY_SECTIONS_EN bytes=8903 start=201897
-APP_DECL PRIVACY_SECTIONS_KO bytes=8573 start=193323
-APP_DECL TERMS_SECTIONS_KO bytes=8390 start=210802
-APP_DECL SAJU_DATA bytes=7379 start=721565
-APP_DECL DOG_BREED_GROUPS bytes=5148 start=2320
-APP_DECL CAT_BREED_GROUPS bytes=2271 start=7470
-APP_DECL MENU_HELP bytes=2243 start=1020037
-APP_DECL PETBTI_STAT_FLAVOR bytes=2027 start=778334
-APP_DECL PETBTI_AXIS_TRAITS bytes=1753 start=775270
-APP_DECL PETBTI_SUMMARY bytes=1549 start=773662
-APP_DECL PETBTI_TYPES bytes=1265 start=772395
-APP_DECL MILESTONE_BADGES bytes=1073 start=507302
-APP_DECL SAJU_TODAY bytes=1044 start=729775
-APP_DECL ThreadsIcon bytes=907 start=106488
-APP_DECL ALL_CURVES bytes=877 start=1266
-APP_DECL SettingsIcon bytes=834 start=103570
-APP_DECL PetGrowMark bytes=671 start=108729
-APP_DECL BREED_SIZE_INFO bytes=613 start=509816
-APP_DECL SajuIcon bytes=567 start=523044
-APP_DECL SOCIAL_LINKS bytes=550 start=830102
-APP_DECL HelpIcon bytes=525 start=101755
-APP_DECL PetBtiIcon bytes=483 start=523612
-APP_DECL SAJU_ONE_WORD bytes=477 start=729296
-APP_DECL BlogIcon bytes=441 start=107725
-APP_DECL ShareIcon bytes=376 start=105296
-APP_DECL TrophyIcon bytes=363 start=104932
-APP_DECL InstagramIcon bytes=350 start=106137
-APP_DECL SAJU_TAG_POOL bytes=348 start=728946
-APP_DECL PawIcon bytes=339 start=98450
-APP_DECL TiktokIcon bytes=328 start=107396
-APP_DECL HeartOutlineIcon bytes=323 start=522269
-APP_DECL BowlIcon bytes=296 start=100646
-APP_DECL HamburgerIcon bytes=288 start=102890
-APP_DECL KakaoIcon bytes=288 start=104405
-APP_DECL SoundOnIcon bytes=288 start=108167
-APP_DECL DOG_SIZE_OPTIONS bytes=280 start=9743
-APP_DECL CAT_SIZE_OPTIONS bytes=269 start=10024
-APP_DECL CameraIcon bytes=267 start=99990
-APP_DECL MapPinIcon bytes=250 start=99017
-APP_DECL CloseIcon bytes=245 start=103179
-APP_DECL BellIcon bytes=244 start=101370
-APP_DECL CheckSquareIcon bytes=243 start=105673
-APP_DECL EditIcon bytes=242 start=100943
-APP_DECL LeafIcon bytes=237 start=104694
-APP_DECL HeartIcon bytes=235 start=522033
-APP_DECL LightbulbIcon bytes=235 start=522808
-APP_DECL MailIcon bytes=234 start=102464
-APP_DECL SoundOffIcon bytes=230 start=108456
-APP_DECL CatIcon bytes=226 start=98790
-APP_DECL ShieldIcon bytes=220 start=100425
-APP_DECL YoutubeIcon bytes=219 start=105917
-APP_DECL CalendarIcon bytes=214 start=99597
-APP_DECL SearchIcon bytes=214 start=522593
+APP_DECL GlobalStyle bytes=206299 line=2593 start=258236
+APP_DECL TIPS_DATA bytes=184265 line=6157 start=525573
+APP_DECL PETGROW_LOGO_DATA_URI bytes=78003 line=1878 start=109468
+APP_DECL STRINGS bytes=64929 line=170 start=10734
+APP_DECL TERMS_SECTIONS_EN bytes=12970 line=2089 start=219193
+APP_DECL PETBTI_QUESTIONS_CAT bytes=9098 line=8397 start=763179
+APP_DECL PETBTI_QUESTIONS_DOG bytes=9080 line=8301 start=754097
+APP_DECL PRIVACY_SECTIONS_EN bytes=8903 line=2035 start=201897
+APP_DECL PRIVACY_SECTIONS_KO bytes=8573 line=2010 start=193323
+APP_DECL TERMS_SECTIONS_KO bytes=8390 line=2058 start=210802
+APP_DECL SAJU_DATA bytes=7379 line=7712 start=721565
+APP_DECL DOG_BREED_GROUPS bytes=5148 line=34 start=2320
+APP_DECL CAT_BREED_GROUPS bytes=2271 line=109 start=7470
+APP_DECL MENU_HELP bytes=2243 line=11623 start=1020037
+APP_DECL PETBTI_STAT_FLAVOR bytes=2027 line=8594 start=778334
+APP_DECL PETBTI_AXIS_TRAITS bytes=1753 line=8540 start=775270
+APP_DECL PETBTI_SUMMARY bytes=1549 line=8516 start=773662
+APP_DECL PETBTI_TYPES bytes=1265 line=8497 start=772395
+APP_DECL MILESTONE_BADGES bytes=1073 line=5746 start=507302
+APP_DECL SAJU_TODAY bytes=1044 line=7861 start=729775
+APP_DECL ThreadsIcon bytes=907 line=1834 start=106488
+APP_DECL ALL_CURVES bytes=877 line=23 start=1266
+APP_DECL SettingsIcon bytes=834 line=1790 start=103570
+APP_DECL PetGrowMark bytes=671 line=1864 start=108729
+APP_DECL BREED_SIZE_INFO bytes=613 line=5796 start=509816
+APP_DECL SajuIcon bytes=567 line=6101 start=523044
+APP_DECL SOCIAL_LINKS bytes=550 line=9644 start=830102
+APP_DECL HelpIcon bytes=525 line=1754 start=101755
+APP_DECL PetBtiIcon bytes=483 line=6110 start=523612
+APP_DECL SAJU_ONE_WORD bytes=477 line=7842 start=729296
+APP_DECL BlogIcon bytes=441 line=1846 start=107725
+APP_DECL ShareIcon bytes=376 line=1811 start=105296
+APP_DECL TrophyIcon bytes=363 line=1806 start=104932
+APP_DECL InstagramIcon bytes=350 line=1827 start=106137
+APP_DECL SAJU_TAG_POOL bytes=348 line=7837 start=728946
+APP_DECL PawIcon bytes=339 line=1678 start=98450
+APP_DECL TiktokIcon bytes=328 line=1841 start=107396
+APP_DECL HeartOutlineIcon bytes=323 line=6085 start=522269
+APP_DECL BowlIcon bytes=296 line=1729 start=100646
+APP_DECL HamburgerIcon bytes=288 line=1775 start=102890
+APP_DECL KakaoIcon bytes=288 line=1796 start=104405
+APP_DECL SoundOnIcon bytes=288 line=1853 start=108167
+APP_DECL DOG_SIZE_OPTIONS bytes=280 line=146 start=9743
+APP_DECL CAT_SIZE_OPTIONS bytes=269 line=151 start=10024
+APP_DECL CameraIcon bytes=267 line=1714 start=99990
+APP_DECL MapPinIcon bytes=250 line=1689 start=99017
+APP_DECL CloseIcon bytes=245 line=1780 start=103179
+APP_DECL BellIcon bytes=244 line=1744 start=101370
+APP_DECL CheckSquareIcon bytes=243 line=1816 start=105673
+APP_DECL EditIcon bytes=242 line=1734 start=100943
+APP_DECL LeafIcon bytes=237 line=1801 start=104694
+APP_DECL HeartIcon bytes=235 line=6080 start=522033
+APP_DECL LightbulbIcon bytes=235 line=6096 start=522808
+APP_DECL MailIcon bytes=234 line=1765 start=102464
+APP_DECL SoundOffIcon bytes=230 line=1858 start=108456
+APP_DECL CatIcon bytes=226 line=1684 start=98790
+APP_DECL ShieldIcon bytes=220 line=1724 start=100425
+APP_DECL YoutubeIcon bytes=219 line=1821 start=105917
+APP_DECL CalendarIcon bytes=214 line=1704 start=99597
+APP_DECL SearchIcon bytes=214 line=6091 start=522593
