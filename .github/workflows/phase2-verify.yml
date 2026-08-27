@@ -1,13 +1,17 @@
-name: PetGrow Phase 4 Verification
+name: PetGrow Phase 5 Verification
 
 on:
   push:
     branches:
-      - opt/phase4-capacitor7-20260828
+      - opt/phase5-load-split-20260828
     paths:
+      - 'src/**'
+      - 'build/**'
+      - 'vite.config.*'
       - 'package.json'
       - 'package-lock.json'
       - 'scripts/check-android-push-config.mjs'
+      - 'scripts/report-app-functions.mjs'
       - 'android/**'
       - '.github/workflows/android-aab.yml'
       - '.github/workflows/phase2-verify.yml'
@@ -31,8 +35,8 @@ jobs:
           distribution: temurin
           java-version: '21'
           cache: gradle
-      - name: Refresh lockfile for Capacitor 7 dependencies
-        run: npm install --package-lock-only --ignore-scripts
+      - name: Report App.jsx function sizes
+        run: node scripts/report-app-functions.mjs
       - name: Verify clean install
         run: npm ci
       - name: Run tests
@@ -51,14 +55,3 @@ jobs:
       - name: Security audit report
         continue-on-error: true
         run: npm audit --audit-level=high
-      - name: Commit refreshed lockfile
-        run: |
-          if git diff --quiet -- package-lock.json; then
-            echo 'package-lock.json already current'
-            exit 0
-          fi
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add package-lock.json
-          git commit -m 'build: lock phase 4 Capacitor 7 dependencies'
-          git push
