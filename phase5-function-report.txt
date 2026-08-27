@@ -120,11 +120,15 @@ APP_DECL ShieldIcon bytes=220 line=1724 start=100425
 APP_DECL YoutubeIcon bytes=219 line=1821 start=105917
 APP_DECL CalendarIcon bytes=214 line=1704 start=99597
 APP_DECL SearchIcon bytes=214 line=6091 start=522593
-APP_REF TIPS_DATA count=4 line=6124 owner=TOP | line=6157 owner=DECL | line=7571 owner=TipsPage | line=10342 owner=HomePage
-APP_REF PETGROW_LOGO_DATA_URI count=5 line=1878 owner=DECL | line=1880 owner=TOP | line=5903 owner=renderShareCard | line=8005 owner=renderSajuShareCard | line=8748 owner=renderPetBtiShareCard
-APP_REF STRINGS count=7 line=170 owner=DECL | line=1262 owner=TOP | line=1262 owner=TOP | line=1263 owner=TOP | line=1263 owner=TOP | line=1267 owner=useT | line=1267 owner=useT
-APP_REF GlobalStyle count=5 line=2212 owner=PrivacyPage | line=2222 owner=TermsPage | line=2593 owner=DECL | line=12148 owner=AppInner | line=12184 owner=AppInner
-APP_REF PRIVACY_SECTIONS_KO count=2 line=2010 owner=DECL | line=2163 owner=PrivacyContent
-APP_REF PRIVACY_SECTIONS_EN count=2 line=2035 owner=DECL | line=2163 owner=PrivacyContent
-APP_REF TERMS_SECTIONS_KO count=2 line=2058 owner=DECL | line=2170 owner=TermsContent
-APP_REF TERMS_SECTIONS_EN count=2 line=2089 owner=DECL | line=2170 owner=TermsContent
+APP_CONTEXT TIPS_DATA line=6124 ====================== 꿀팁 콘텐츠 소스 — 구글 시트로 직접 관리할 수 있게 하는 장치 ----------------------------------------------------------- 아래 TIPS_SHEET_CSV_URL을 채워두면, 코드를 안 건드리고도 구글 시트만 고쳐서 꿀팁 내용을 바로 바꿀 수 있어요. 비워두면(기본값) 아래 TIPS_DATA(코드 안 더미 데이터)를 그대로 써요. 설정 방법: 1) 구글 시트를 새로 만들고 첫 줄(헤더)에 아래 열 이름을 정확히 입력하세요: id, category, title_ko, title_en, summary_ko, summary_en, body_ko, body_en - category는 dog / cat / health / life 중 하나 2) 파일 → 공유 → 웹에 게시(Publish to web) → 형식을 "쉼표로 구분된 값(.csv)"으로 선택 → 게시 3) 발급된 링크를 복사해서 아래 TIPS
+APP_CONTEXT TIPS_DATA line=6157 featured: false, title: { ko: obj.title_ko, en: obj.title_en }, summary: { ko: obj.summary_ko, en: obj.summary_en }, body: { ko: obj.body_ko, en: obj.body_en }, }; }); } const TIPS_DATA = [ { id: "t1", category: "dog", featured: true, title: { ko: "강아지 산책, 얼마나 해야 할까?", en: "How much should I walk my dog?" }, summary: { ko: "견종과 체구에 따라 다르지만, 소형견은 하루 20~30분, 활동량 많은 중대형견은 하루 1시간 이상이 참고 기준이에요.", en: "It varies by breed and size, but small dogs generally do well with 20-30 minutes a day
+APP_CONTEXT TIPS_DATA line=7571 ate(""); const [category, setCategory] = useState("all"); const [showBookmarked, setShowBookmarked] = useState(false); const [bookmarks, setBookmarks] = useState([]); const [tipsSource, setTipsSource] = useState(TIPS_DATA); const [page, setPage] = useState(1); const ITEMS_PER_PAGE = 20; useEffect(() => { (async () => { const saved = await safeGet("bboggl:tipBookmarks"); if (saved) setBookmarks(saved); })(); }, []); useEffect(() => { if (!TIPS_SHEET_CSV_URL) return; (async () => { t
+APP_CONTEXT TIPS_DATA line=10342 {key} onClick={()=>key==="pets"?onGoPets():onGoView(key)}><i>{icon}</i><span>{label}</span></button>)}</div> {/* HOME_INFO_MUSIC_SAFE_20260819 */} <HomeInfoMusicSections lang={lang} onGoView={onGoView} tips={TIPS_DATA} /></section> {homeNews.length>0&&<section className="dash-section"><div className="dash-section-head"><h2>{lang==='en'?'Important Pet News':'주요 Pet뉴스'}</h2><button type="button" className="bg-chip" onClick={()=>onGoView('news')}>{lang==='en'?'View all':'전체보기'}</button></div><div style={{display:'grid'
+APP_REF TIPS_DATA count=4 line=6124 owner=TOP | line=6157 owner=DECL:TIPS_DATA | line=7571 owner=FN:TipsPage | line=10342 owner=FN:HomePage
+APP_REF PETGROW_LOGO_DATA_URI count=5 line=1878 owner=DECL:PETGROW_LOGO_DATA_URI | line=1880 owner=DECL:PetGrowLogo | line=5903 owner=FN:renderShareCard | line=8005 owner=FN:renderSajuShareCard | line=8748 owner=FN:renderPetBtiShareCard
+APP_REF STRINGS count=7 line=170 owner=DECL:STRINGS | line=1262 owner=TOP | line=1262 owner=TOP | line=1263 owner=TOP | line=1263 owner=TOP | line=1267 owner=FN:useT | line=1267 owner=FN:useT
+APP_REF GlobalStyle count=5 line=2212 owner=FN:PrivacyPage | line=2222 owner=FN:TermsPage | line=2593 owner=DECL:GlobalStyle | line=12148 owner=FN:AppInner | line=12184 owner=FN:AppInner
+APP_REF PRIVACY_SECTIONS_KO count=2 line=2010 owner=DECL:PRIVACY_SECTIONS_KO | line=2163 owner=FN:PrivacyContent
+APP_REF PRIVACY_SECTIONS_EN count=2 line=2035 owner=DECL:PRIVACY_SECTIONS_EN | line=2163 owner=FN:PrivacyContent
+APP_REF TERMS_SECTIONS_KO count=2 line=2058 owner=DECL:TERMS_SECTIONS_KO | line=2170 owner=FN:TermsContent
+APP_REF TERMS_SECTIONS_EN count=2 line=2089 owner=DECL:TERMS_SECTIONS_EN | line=2170 owner=FN:TermsContent
