@@ -15,6 +15,7 @@ import "./petgrow-global-palette-20260819.css";
 import "./petgrow-final-batch-20260819.css";
 import "./splash-motion-20260821.css";
 import "./loading-speed-20260822.css";
+import "./logo-safe-area-fix-20260828.css";
 import "./home-news-fast-20260819.js";
 import "./petlife-menu-regression-fix-20260822.js";
 
