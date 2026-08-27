@@ -1,11 +1,12 @@
-name: PetGrow Phase 2 Verification
+name: PetGrow Phase 3 Verification
 
 on:
   push:
     branches:
-      - opt/phase2-20260828
+      - opt/phase3-20260828
     paths:
       - 'package.json'
+      - 'package-lock.json'
       - 'scripts/check-android-push-config.mjs'
       - 'android/**'
       - '.github/workflows/android-aab.yml'
@@ -20,8 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: '24'
           cache: npm
@@ -59,5 +60,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add package-lock.json
-          git commit -m 'build: lock phase 2 Android release dependencies'
+          git commit -m 'build: lock phase 3 Android toolchain dependencies'
           git push
