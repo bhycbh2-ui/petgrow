@@ -1,12 +1,15 @@
 import { transformWithEsbuild } from "vite";
 
+const SHARED_TIPS_VIRTUAL_ID = "virtual:petgrow-v6-shared-tips-data";
+const SHARED_TIPS_RESOLVED_ID = `\0${SHARED_TIPS_VIRTUAL_ID}.js`;
+
 const CLUSTERS = {
   tips: {
     virtualId: "virtual:petgrow-v6-tips",
     entry: "TipsPage",
     functions: ["parseTipsCsv", "TipCard", "TipsPage"],
-    constants: ["TIPS_DATA", "TIPS_SHEET_CSV_URL"],
-    deps: ["HeartIcon", "HeartOutlineIcon", "ResponsiveCategoryMenu", "ResponsivePagination", "SearchIcon", "TIPS_DATA", "TIPS_SHEET_CSV_URL", "safeGet", "safeSet", "useLang", "useT"],
+    constants: ["TIPS_SHEET_CSV_URL"],
+    deps: ["HeartIcon", "HeartOutlineIcon", "ResponsiveCategoryMenu", "ResponsivePagination", "SearchIcon", "TIPS_SHEET_CSV_URL", "safeGet", "safeSet", "useLang", "useT"],
     title: "Pet정보를 불러오는 중입니다",
   },
   saju: {
@@ -167,13 +170,15 @@ function ${cluster.entry}(props){
 `;
 }
 
-function virtualModule(cluster, functionSources, movedConstSources, externalDeps) {
+function virtualModule(key, cluster, functionSources, movedConstSources, externalDeps) {
   const depDecl = externalDeps.length ? `let ${externalDeps.join(", ")};\nfunction __bindDeps(d){ ({ ${externalDeps.join(", ")} } = d || {}); }` : `function __bindDeps(){}`;
-  return `import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";\n${depDecl}\n${movedConstSources.join("\n")}\n${functionSources.join("\n")}\nfunction __PetGrowV6Entry({ __deps, ...props }){ __bindDeps(__deps); return React.createElement(${cluster.entry}, props); }\nexport default __PetGrowV6Entry;\n`;
+  const sharedTipsImport = key === "tips" ? `import { TIPS_DATA } from "${SHARED_TIPS_VIRTUAL_ID}";\n` : "";
+  return `import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";\n${sharedTipsImport}${depDecl}\n${movedConstSources.join("\n")}\n${functionSources.join("\n")}\nfunction __PetGrowV6Entry({ __deps, ...props }){ __bindDeps(__deps); return React.createElement(${cluster.entry}, props); }\nexport default __PetGrowV6Entry;\n`;
 }
 
 export default function petgrowDeepMenuSplitV6() {
   const captured = {};
+  let capturedTipsData = "";
   const resolved = Object.fromEntries(Object.entries(CLUSTERS).map(([key, cluster]) => [key, `\0${cluster.virtualId}.jsx`]));
   const byVirtual = Object.fromEntries(Object.entries(CLUSTERS).map(([key, cluster]) => [cluster.virtualId, key]));
   const byResolved = Object.fromEntries(Object.entries(resolved).map(([key, id]) => [id, key]));
@@ -182,29 +187,59 @@ export default function petgrowDeepMenuSplitV6() {
     name: "petgrow-deep-menu-split-v6",
     enforce: "pre",
     resolveId(id) {
+      if (id === SHARED_TIPS_VIRTUAL_ID) return SHARED_TIPS_RESOLVED_ID;
       const key = byVirtual[id];
       return key ? resolved[key] : null;
     },
     async load(id) {
+      if (id === SHARED_TIPS_RESOLVED_ID) {
+        if (!capturedTipsData) this.error("[petgrow-v6] shared TIPS_DATA was not captured");
+        return { code: capturedTipsData.replace(/^const\s+TIPS_DATA\b/, "export const TIPS_DATA"), map: null };
+      }
       const key = byResolved[id];
       if (!key) return null;
       const data = captured[key];
       if (!data) this.error(`[petgrow-v6] source for ${key} was not captured`);
-      const jsx = virtualModule(CLUSTERS[key], data.functions, data.constants, data.externalDeps);
+      const jsx = virtualModule(key, CLUSTERS[key], data.functions, data.constants, data.externalDeps);
       const result = await transformWithEsbuild(jsx, id.replace(/^\0/, ""), { loader: "jsx", jsx: "automatic", sourcemap: false });
       return { code: result.code, map: null };
     },
     transform(code, id) {
-      if (!/[\\/]src[\\/]App\.jsx(?:\?|$)/.test(id)) return null;
+      const cleanId = String(id || "").replace(/\\/g, "/");
+      if (cleanId.endsWith("/src/HomeInfoMusicSections.jsx")) {
+        const importAnchor = 'import React, { useEffect, useMemo, useRef, useState } from "react";';
+        const signatureAnchor = 'export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = [] }) {';
+        if (!code.includes(importAnchor)) this.error("[petgrow-v6] HomeInfo React import anchor not found");
+        if (!code.includes(signatureAnchor)) this.error("[petgrow-v6] HomeInfo signature anchor not found");
+        const next = code
+          .replace(importAnchor, `${importAnchor}\nimport { TIPS_DATA } from "${SHARED_TIPS_VIRTUAL_ID}";`)
+          .replace(signatureAnchor, 'export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = TIPS_DATA }) {');
+        return { code: next, map: null };
+      }
+
+      if (!cleanId.endsWith("/src/App.jsx")) return null;
+      let workingCode = code;
+      const tipsDataHit = extractNamedConst(workingCode, "TIPS_DATA");
+      if (!tipsDataHit) this.error("[petgrow-v6] TIPS_DATA anchor not found");
+      capturedTipsData = tipsDataHit.source;
+
+      const homeTipsProp = /\s+tips=\{TIPS_DATA\}/g;
+      const homeTipsMatches = workingCode.match(homeTipsProp) || [];
+      if (homeTipsMatches.length !== 1) this.error(`[petgrow-v6] expected one HomeInfo tips prop, found ${homeTipsMatches.length}`);
+      workingCode = workingCode.replace(homeTipsProp, "");
+
       const replacements = [];
+      const tipsDataAfterPropRemoval = extractNamedConst(workingCode, "TIPS_DATA");
+      if (!tipsDataAfterPropRemoval) this.error("[petgrow-v6] TIPS_DATA anchor lost after home prop cleanup");
+      replacements.push({ start: tipsDataAfterPropRemoval.start, end: tipsDataAfterPropRemoval.end, source: "" });
 
       for (const [key, cluster] of Object.entries(CLUSTERS)) {
         const hits = cluster.functions.map((name) => {
-          const hit = extractNamedFunction(code, name);
+          const hit = extractNamedFunction(workingCode, name);
           if (!hit) this.error(`[petgrow-v6] ${name} anchor not found`);
           return { name, ...hit };
         });
-        const maskedFunctions = maskRanges(code, hits);
+        const maskedFunctions = maskRanges(workingCode, hits);
         for (const hit of hits) {
           if (hit.name === cluster.entry) continue;
           if (countName(maskedFunctions, hit.name) > 0) this.error(`[petgrow-v6] ${hit.name} is referenced outside ${key}; refusing unsafe split`);
@@ -213,7 +248,7 @@ export default function petgrowDeepMenuSplitV6() {
         const movedConstants = [];
         const externalDeps = [...cluster.deps];
         for (const constName of cluster.constants) {
-          const constHit = extractNamedConst(code, constName);
+          const constHit = extractNamedConst(workingCode, constName);
           if (!constHit) continue;
           const masked = maskRanges(maskedFunctions, [constHit]);
           if (countName(masked, constName) === 0) {
@@ -235,8 +270,9 @@ export default function petgrowDeepMenuSplitV6() {
         for (const hit of movedConstants) replacements.push({ start: hit.start, end: hit.end, source: "" });
       }
 
-      let next = code;
+      let next = workingCode;
       for (const hit of replacements.sort((a, b) => b.start - a.start)) next = next.slice(0, hit.start) + hit.source + next.slice(hit.end);
+      console.log(`PG_PHASE5_TIPS moved=${capturedTipsData.length} bytes shared-lazy`);
       return { code: next, map: null };
     },
   };
