@@ -52,21 +52,58 @@ function functionEnd(brace) {
   return -1;
 }
 
-const rows = [];
-const re = /(?:^|\n)\s*(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(/g;
+function statementEnd(start) {
+  let paren = 0, brace = 0, bracket = 0, quote = null, escape = false, line = false, block = false;
+  for (let i = start; i < code.length; i++) {
+    const ch = code[i], next = code[i + 1];
+    if (line) { if (ch === "\n") line = false; continue; }
+    if (block) { if (ch === "*" && next === "/") { block = false; i++; } continue; }
+    if (quote) {
+      if (escape) { escape = false; continue; }
+      if (ch === "\\") { escape = true; continue; }
+      if (ch === quote) quote = null;
+      continue;
+    }
+    if (ch === "/" && next === "/") { line = true; i++; continue; }
+    if (ch === "/" && next === "*") { block = true; i++; continue; }
+    if (ch === '"' || ch === "'" || ch === "`") { quote = ch; continue; }
+    if (ch === "(") paren++;
+    else if (ch === ")") paren = Math.max(0, paren - 1);
+    else if (ch === "{") brace++;
+    else if (ch === "}") brace = Math.max(0, brace - 1);
+    else if (ch === "[") bracket++;
+    else if (ch === "]") bracket = Math.max(0, bracket - 1);
+    else if (ch === ";" && paren === 0 && brace === 0 && bracket === 0) return i + 1;
+  }
+  return -1;
+}
+
+const functions = [];
+const functionRe = /(?:^|\n)\s*(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(/g;
 let m;
-while ((m = re.exec(code))) {
+while ((m = functionRe.exec(code))) {
   const name = m[1];
   const start = m.index + m[0].indexOf("function");
   const brace = bodyStart(start);
   if (brace < 0) continue;
   const end = functionEnd(brace);
   if (end < 0) continue;
-  rows.push({ name, bytes: end - start, start });
+  functions.push({ name, bytes: end - start, start });
 }
+functions.sort((a, b) => b.bytes - a.bytes);
 
-rows.sort((a, b) => b.bytes - a.bytes);
-console.log(`APP_FUNCTION_REPORT total=${rows.length} appBytes=${code.length}`);
-for (const row of rows.slice(0, 60)) {
-  console.log(`APP_FUNCTION ${row.name} bytes=${row.bytes} start=${row.start}`);
+const declarations = [];
+const declRe = /^(?:export\s+)?(?:const|let|var)\s+([A-Za-z_$][\w$]*)/gm;
+while ((m = declRe.exec(code))) {
+  const name = m[1];
+  const start = m.index;
+  const end = statementEnd(start);
+  if (end < 0) continue;
+  declarations.push({ name, bytes: end - start, start });
 }
+declarations.sort((a, b) => b.bytes - a.bytes);
+
+console.log(`APP_FUNCTION_REPORT total=${functions.length} appBytes=${code.length}`);
+for (const row of functions.slice(0, 60)) console.log(`APP_FUNCTION ${row.name} bytes=${row.bytes} start=${row.start}`);
+console.log(`APP_DECL_REPORT total=${declarations.length}`);
+for (const row of declarations.slice(0, 60)) console.log(`APP_DECL ${row.name} bytes=${row.bytes} start=${row.start}`);
