@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
+import "./splash-fast-20260828.js";
 import "./petgrow-premium-20260817.css";
 import "./final-ux-20260818.css";
 import "./ui-fixes-20260818.css";
@@ -46,5 +47,5 @@ if("requestIdleCallback" in window)requestIdleCallback(startDeferred,{timeout:85
 else setTimeout(startDeferred,260);
 
 if("serviceWorker" in navigator){
-  addEventListener("load",()=>navigator.serviceWorker.register("/sw.js?v=81",{updateViaCache:"none"}).catch(()=>{}),{once:true});
+  addEventListener("load",()=>navigator.serviceWorker.register("/sw.js?v=82",{updateViaCache:"none"}).catch(()=>{}),{once:true});
 }
