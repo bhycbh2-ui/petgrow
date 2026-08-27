@@ -3,8 +3,8 @@ on:
   push:
     branches: [main]
     paths:
-      - 'scripts/petinfo-daily-20260827.mjs'
-      - 'scripts/trigger-petinfo-daily-20260827.txt'
+      - 'scripts/petinfo-daily-20260827-v2.mjs'
+      - 'scripts/trigger-petinfo-daily-20260827-v2.txt'
 permissions:
   contents: write
 jobs:
@@ -22,7 +22,7 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Add and validate PetInfo content
-        run: node scripts/petinfo-daily-20260827.mjs
+        run: node scripts/petinfo-daily-20260827-v2.mjs
       - name: Production build
         run: npm run build
       - name: Commit generated changes only after successful build
