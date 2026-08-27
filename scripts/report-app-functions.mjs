@@ -2,6 +2,7 @@ import fs from "node:fs";
 
 const code = fs.readFileSync("src/App.jsx", "utf8");
 const lineAt = (start) => code.slice(0, start).split("\n").length;
+const compact = (text) => text.replace(/\s+/g, " ").trim();
 
 function bodyStart(start) {
   const openParen = code.indexOf("(", start);
@@ -89,9 +90,13 @@ for (const name of traceNames) {
   let hit;
   while ((hit = re.exec(code))) {
     const pos = hit.index;
-    const owner = functions.filter((f) => f.start <= pos && pos < f.end).sort((a,b) => a.bytes - b.bytes)[0];
-    const decl = declarations.find((d) => d.name === name && d.start <= pos && pos < d.end);
-    hits.push(`line=${lineAt(pos)} owner=${decl ? "DECL" : owner?.name || "TOP"}`);
+    const ownerFunction = functions.filter((f) => f.start <= pos && pos < f.end).sort((a,b) => a.bytes - b.bytes)[0];
+    const ownerDecl = declarations.filter((d) => d.start <= pos && pos < d.end).sort((a,b) => a.bytes - b.bytes)[0];
+    const owner = ownerFunction ? `FN:${ownerFunction.name}` : ownerDecl ? `DECL:${ownerDecl.name}` : "TOP";
+    hits.push(`line=${lineAt(pos)} owner=${owner}`);
+    if (name === "TIPS_DATA") {
+      console.log(`APP_CONTEXT TIPS_DATA line=${lineAt(pos)} ${compact(code.slice(Math.max(0, pos - 220), Math.min(code.length, pos + 320)))}`);
+    }
   }
   console.log(`APP_REF ${name} count=${hits.length} ${hits.join(" | ")}`);
 }
