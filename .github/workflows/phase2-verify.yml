@@ -36,7 +36,14 @@ jobs:
           java-version: '21'
           cache: gradle
       - name: Report App.jsx function sizes
-        run: node scripts/report-app-functions.mjs
+        run: node scripts/report-app-functions.mjs | tee phase5-function-report.txt
+      - name: Persist analysis report
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add phase5-function-report.txt
+          git commit -m 'chore: persist phase 5 function report' || exit 0
+          git push
       - name: Verify clean install
         run: npm ci
       - name: Run tests
