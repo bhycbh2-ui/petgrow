@@ -6,6 +6,8 @@ on:
       - opt/phase2-20260828
     paths:
       - 'package.json'
+      - 'scripts/check-android-push-config.mjs'
+      - '.github/workflows/android-aab.yml'
       - '.github/workflows/phase2-verify.yml'
   workflow_dispatch:
 
