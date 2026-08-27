@@ -8,81 +8,45 @@ export default function petgrowSplashReadyGate(){
         injectTo:"head",
         children:`
           (function(){
-            var installed=false,finished=false,requested=false,observer=null,poll=null,criticalListener=false,criticalHandler=null;
-            var gateStarted=performance.now(),renderedAt=0;
-            function waitingNode(){return document.querySelector(".petgrow-boot-skeleton,#petgrow-fast-shell");}
-            function criticalReady(){return window.__petgrowCriticalAppReady===true;}
-            function hasRenderedApp(){
+            var started=performance.now();
+            var MAX_SPLASH_MS=1400;
+
+            function rendered(){
               var root=document.getElementById("root");
               return !!(root&&(root.firstElementChild||String(root.textContent||"").trim().length>0));
             }
-            function hasRealScreen(){
-              if(!hasRenderedApp())return false;
-              return !waitingNode();
-            }
-            function cleanup(){
-              if(observer){observer.disconnect();observer=null;}
-              if(poll){window.clearInterval(poll);poll=null;}
-              if(criticalListener&&criticalHandler){window.removeEventListener("petgrow:critical-ready",criticalHandler);}
-              criticalListener=false;criticalHandler=null;
-            }
-            function install(){
-              if(installed)return;
-              if(typeof window.__hidePetGrowSplash!=="function"){
-                window.setTimeout(install,8);return;
-              }
-              var finish=window.__hidePetGrowSplash;
-              if(finish&&finish.__petgrowReadyGate){installed=true;return;}
 
-              function finishFast(){
-                var state=window.__petgrowSplashV2State;
-                if(state){state.current=100;state.externalTarget=100;}
-                try{window.__petgrowSetSplashProgress&&window.__petgrowSetSplashProgress(100);}catch(e){}
-                finish();
-              }
-              function complete(force){
-                if(finished||!hasRealScreen())return;
-                if(!(force||requested||criticalReady()))return;
-                finished=true;cleanup();finishFast();
-              }
-              criticalHandler=function(){complete(true);};
-              function watchReady(){
-                if(observer||poll)return;
-                observer=new MutationObserver(function(){
-                  if(hasRealScreen()&&!renderedAt)renderedAt=performance.now();
-                  complete(false);
-                });
-                observer.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:["class"]});
-                if(!criticalListener&&criticalHandler){window.addEventListener("petgrow:critical-ready",criticalHandler);criticalListener=true;}
-                poll=window.setInterval(function(){
-                  if(finished)return;
-                  var now=performance.now();
-                  if(hasRealScreen()){
-                    if(!renderedAt)renderedAt=now;
-                    if(criticalReady()||requested){complete(false);return;}
-                    if(now-renderedAt>500){complete(true);return;}
-                  }
-                  if(hasRenderedApp()&&now-gateStarted>1800){
-                    finished=true;cleanup();finishFast();return;
-                  }
-                  if(now-gateStarted>2800&&hasRenderedApp()){
-                    finished=true;cleanup();finishFast();
-                  }
-                },50);
-              }
-              function gatedFinish(){
-                if(finished)return;
-                requested=true;
-                if(hasRealScreen()){complete(false);return;}
-                watchReady();
-              }
-              gatedFinish.__petgrowReadyGate=true;
-              window.__hidePetGrowSplash=gatedFinish;
-              installed=true;
-              watchReady();
+            function forceRemove(){
+              var splash=document.getElementById("petgrow-initial-splash");
+              if(!splash)return;
+              var bar=splash.querySelector(".petgrow-splash__progress-bar");
+              if(bar){bar.style.animation="none";bar.style.width="100%";}
+              splash.style.pointerEvents="none";
+              splash.style.opacity="0";
+              splash.style.visibility="hidden";
+              setTimeout(function(){if(splash&&splash.parentNode)splash.parentNode.removeChild(splash);},140);
             }
-            install();
-            if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",install,{once:true});
+
+            function finish(){
+              try{
+                if(typeof window.__hidePetGrowSplash==="function")window.__hidePetGrowSplash();
+                else forceRemove();
+              }catch(e){forceRemove();}
+            }
+
+            function probe(){
+              if(!document.getElementById("petgrow-initial-splash"))return;
+              var elapsed=performance.now()-started;
+              if(rendered()&&elapsed>=360){finish();return;}
+              if(elapsed>=MAX_SPLASH_MS){forceRemove();return;}
+              requestAnimationFrame(probe);
+            }
+
+            if(document.readyState==="loading"){
+              document.addEventListener("DOMContentLoaded",function(){requestAnimationFrame(probe);},{once:true});
+            }else requestAnimationFrame(probe);
+
+            setTimeout(forceRemove,MAX_SPLASH_MS+250);
           })();
         `
       }];
