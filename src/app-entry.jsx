@@ -20,12 +20,9 @@ import "./petlife-menu-regression-fix-20260822.js";
 import "./ugc-safety-runtime.js";
 import "./ugc-extra-block-runtime.js";
 import "./android-location-gate.js";
-import "./home-approved-redesign-20260828.js";
-import "./home-mobile-airiness-20260828.css";
 import "./home-pet-instant-sync-20260828.js";
 import "./ui-brand-consistency-20260828.css";
 import "./premium-core-surfaces-20260828.js";
-import "./home-flagship-10b-20260828.js";
 
 // Android WebView에서 /api/me 요청이 드물게 끝나지 않아도 앱 첫 화면 전체를 막지 않도록
 // 인증 확인만 짧게 제한합니다. 이후 focus 시 기존 App 로직이 다시 상태를 확인합니다.
@@ -110,5 +107,5 @@ if("requestIdleCallback" in window)requestIdleCallback(startDeferred,{timeout:85
 else setTimeout(startDeferred,260);
 
 if("serviceWorker" in navigator){
-  addEventListener("load",()=>navigator.serviceWorker.register("/sw.js?v=98",{updateViaCache:"none"}).catch(()=>{}),{once:true});
+  addEventListener("load",()=>navigator.serviceWorker.register("/sw.js?v=99",{updateViaCache:"none"}).catch(()=>{}),{once:true});
 }
