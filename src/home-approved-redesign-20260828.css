@@ -139,7 +139,9 @@
 @media(max-width:700px){
   .petgrow-dashboard-home.pg-approved-home-v1{padding:14px 14px calc(105px + env(safe-area-inset-bottom))!important}
   .petgrow-dashboard-home.pg-approved-home-v1 .dash-welcome{padding-top:3px!important}
-  .petgrow-dashboard-home.pg-approved-home-v1 .dash-welcome h1{font-size:25px!important}
+  .petgrow-dashboard-home.pg-approved-home-v1 .dash-welcome h1{font-size:22px!important;line-height:1.16!important;letter-spacing:-.035em!important}
+  .petgrow-dashboard-home.pg-approved-home-v1 .dash-welcome p{margin-top:7px!important;font-size:13px!important;line-height:1.48!important}
+  .petgrow-dashboard-home.pg-approved-home-v1 .dash-profile-dot{transform:scale(.9);transform-origin:center right}
   .petgrow-dashboard-home.pg-approved-home-v1 .dash-pet-spotlight{padding:18px!important;border-radius:23px!important}
   .petgrow-dashboard-home.pg-approved-home-v1 .dash-quick-grid{gap:7px!important}
   .petgrow-dashboard-home.pg-approved-home-v1 .dash-quick-grid>button[data-pg-approved-core="1"]{min-height:86px!important;padding:11px 4px!important;border-radius:17px!important}
@@ -156,6 +158,8 @@
   .petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-fun-btn svg{width:19px;height:19px}
 }
 @media(max-width:390px){
+  .petgrow-dashboard-home.pg-approved-home-v1 .dash-welcome h1{font-size:21px!important}
+  .petgrow-dashboard-home.pg-approved-home-v1 .dash-welcome p{font-size:12.5px!important}
   .petgrow-dashboard-home.pg-approved-home-v1 .dash-quick-grid>button[data-pg-approved-core="1"] span{font-size:10px!important}
   .petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-fun-btn em{display:none}
   .petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-fun-btn{padding-inline:7px}
