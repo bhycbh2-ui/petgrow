@@ -1,0 +1,29 @@
+/* PetGrow final brand consistency — typography + core brand hue only, 2026-08-28 */
+:root{
+  --pg-brand-font:"Pretendard","Noto Sans KR","Apple SD Gothic Neo",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --pg-brand-green:#4f805c;
+  --pg-brand-green-strong:#315f42;
+  --pg-brand-ink:#24312a;
+  --pg-brand-muted:#6b7a71;
+}
+
+/* Keep one typography stack across desktop web, mobile web and the Android WebView.
+   No external font request is introduced; unavailable faces fall back to the platform UI font. */
+html,body,#root,#petlife-react-root{
+  font-family:var(--pg-brand-font)!important;
+}
+button,input,select,textarea{
+  font-family:inherit!important;
+}
+
+/* The approved home had a brighter one-off green. Reuse the existing global PetGrow
+   emerald tokens so home, shared buttons and navigation feel like one product. */
+.petgrow-dashboard-home.pg-approved-home-v1{
+  --pgh-ink:var(--pg-brand-ink);
+  --pgh-sub:var(--pg-brand-muted);
+  --pgh-green:var(--pg-brand-green);
+  --pgh-green-dark:var(--pg-brand-green-strong);
+}
+
+/* Preserve feature-specific accents (PetTalk, PetMusic, PetBTI, Saju/Tarot, Nearby).
+   This layer intentionally changes only shared typography and the home brand tokens. */
