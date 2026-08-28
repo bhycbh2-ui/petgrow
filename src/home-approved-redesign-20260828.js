@@ -43,6 +43,28 @@ function keepSingle(home,selector){
   nodes.forEach(node=>node.remove());
   return first;
 }
+function removeLegacyGuide(home){
+  const selectors=[
+    '[data-home-extra="guide"]',
+    '[data-home-extra="petguide"]',
+    '[data-home-extra="pet-guide"]',
+    '[data-home-extra="petgrow-guide"]'
+  ];
+  selectors.forEach(selector=>{
+    home.querySelectorAll(selector).forEach(node=>{
+      const section=node.closest(".dash-section")||node;
+      if(section!==home)section.remove();
+    });
+  });
+
+  const guideLabels=["petgrow가이드","펫그로우가이드","반려생활가이드"];
+  home.querySelectorAll(".dash-section").forEach(section=>{
+    if(section.classList.contains("pg-approved-today")||section.classList.contains("pg-approved-fun")||section.classList.contains("pg-approved-info-section"))return;
+    const heading=section.querySelector(".dash-section-head h2, :scope > h2, :scope > h3");
+    const key=norm(heading?.textContent);
+    if(key&&guideLabels.some(label=>key.includes(norm(label))))section.remove();
+  });
+}
 
 function decorateQuick(home){
   const grid=home.querySelector(".dash-quick-grid");
@@ -140,6 +162,7 @@ function run(){
   const home=document.querySelector(HOME_SELECTOR);
   if(!home){document.getElementById(PETLIFE_HOME_ID)?.classList.remove("pg-approved-home-hidden-petlife");return;}
   home.classList.add("pg-approved-home-v1");
+  removeLegacyGuide(home);
   const quick=decorateQuick(home);
   const info=decorateInfo(home);
   const today=buildToday(home,quick,info);
