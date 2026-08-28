@@ -24,3 +24,211 @@ div:has(> img[alt="PetGrow"]),
 span:has(> img[alt="PetGrow"]){
   overflow:visible!important;
 }
+
+/* =========================================================
+   PetGrow UI consistency layer — 2026-08-28
+   One system font, one navigation rhythm, calmer brand surfaces.
+   Visual-only: no routing, ad, auth, PetLife data or API behavior changes.
+   ========================================================= */
+:root{
+  --pg-ui-font:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Segoe UI",Roboto,Arial,sans-serif;
+  --pg-ui-ink:#26372f;
+  --pg-ui-sub:#6d7b73;
+  --pg-ui-muted:#87938c;
+  --pg-ui-green:#3f7650;
+  --pg-ui-soft:#eef5ef;
+  --pg-ui-line:#dde7df;
+  --pg-ui-card-radius:24px;
+  --pg-ui-control-radius:14px;
+}
+
+html,body,#root,
+.bboggl-root,.landing-root,.legal-page-shell,
+.petgrow-content-stage,.petgrow-web-layout,
+#petlife-react-root,#pg-petlife-home-dashboard,#pg-petlife-my-pet-bridge{
+  font-family:var(--pg-ui-font)!important;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+button,input,select,textarea{
+  font-family:var(--pg-ui-font)!important;
+}
+.bboggl-root h1,.bboggl-root h2,.bboggl-root h3,
+.landing-root h1,.landing-root h2,.landing-root h3,
+.legal-page-shell h1,.legal-page-shell h2,.legal-page-shell h3,
+#petlife-react-root h1,#petlife-react-root h2,#petlife-react-root h3,
+.pgh-home-dashboard h1,.pgh-home-dashboard h2,.pgh-home-dashboard h3{
+  font-family:var(--pg-ui-font)!important;
+  color:var(--pg-ui-ink);
+  letter-spacing:-.035em;
+}
+
+/* Remove old Jua/Gowun split from visible brand/navigation copy. */
+.desktop-brand-name,.petgrow-sidebar-brand strong,
+.ham-panel-header>span,.landing-wordmark,
+.legal-page-shell button span,
+.bboggl-root [style*="font-family: 'Jua'"],
+.bboggl-root [style*="fontFamily: 'Jua'"]{
+  font-family:var(--pg-ui-font)!important;
+}
+
+/* Desktop/sidebar/mobile navigation: same font weight and spacing. */
+.desktop-nav-link,.petgrow-sidebar-nav button,.ham-nav-item,.app-bottom-nav-item{
+  font-family:var(--pg-ui-font)!important;
+  font-weight:650!important;
+  letter-spacing:-.02em!important;
+}
+.desktop-nav-link.active,.petgrow-sidebar-nav button.active,.ham-nav-item.active,.app-bottom-nav-item.active{
+  font-weight:750!important;
+}
+.petgrow-sidebar-brand strong,.desktop-brand-name,.ham-panel-header>span{
+  font-weight:800!important;
+  letter-spacing:-.035em!important;
+}
+.ham-section-label{
+  font-family:var(--pg-ui-font)!important;
+  font-weight:700!important;
+  letter-spacing:.10em!important;
+}
+
+/* Intro/About brand mark: remove the detached white circle treatment. */
+.landing-logo-badge{
+  width:122px!important;
+  height:122px!important;
+  border-radius:30px!important;
+  background:linear-gradient(145deg,#eef6f0,#f8fbf8)!important;
+  border:1px solid rgba(63,118,80,.10)!important;
+  box-shadow:0 8px 22px rgba(42,70,55,.055)!important;
+  padding:9px!important;
+  box-sizing:border-box!important;
+}
+.landing-logo-badge.about-logo-float{
+  width:136px!important;
+  height:136px!important;
+  border-radius:34px!important;
+  animation:none!important;
+  transform:none!important;
+}
+.landing-logo-badge img{
+  width:100%!important;
+  height:100%!important;
+  padding:0!important;
+  border-radius:24%!important;
+  object-fit:contain!important;
+  box-shadow:none!important;
+}
+.landing-about-icon{
+  width:94px!important;
+  height:94px!important;
+  border-radius:26px!important;
+  background:#eef6f0!important;
+  border:1px solid rgba(63,118,80,.10)!important;
+  box-shadow:none!important;
+}
+.landing-about-icon img{
+  width:68px!important;
+  height:68px!important;
+  padding:0!important;
+  border-radius:22%!important;
+}
+.landing-wordmark{
+  font-weight:800!important;
+  letter-spacing:-.045em!important;
+}
+.landing-section-title{
+  font-weight:780!important;
+  letter-spacing:-.035em!important;
+}
+.landing-about-text,.landing-tagline{
+  font-family:var(--pg-ui-font)!important;
+  font-weight:500!important;
+  color:var(--pg-ui-sub)!important;
+}
+
+/* PetLife Today: calm and consistent hierarchy. */
+.pgh-home-dashboard,.pgh-home-dashboard *{
+  font-family:var(--pg-ui-font)!important;
+}
+.pgh-headcopy small,.pgh-report-preview small,.pgh-empty-copy small,.pgmypet-copy small{
+  font-size:10.5px!important;
+  font-weight:750!important;
+  letter-spacing:.11em!important;
+  color:#75877d!important;
+}
+.pgh-headcopy h2{
+  margin:0!important;
+  font-size:26px!important;
+  line-height:1.2!important;
+  font-weight:780!important;
+  letter-spacing:-.04em!important;
+  color:var(--pg-ui-ink)!important;
+}
+.pgh-headcopy p{
+  margin-top:6px!important;
+  font-size:13px!important;
+  line-height:1.55!important;
+  font-weight:500!important;
+  color:var(--pg-ui-sub)!important;
+}
+.pgh-pet-switch{
+  border-radius:14px!important;
+  background:rgba(255,255,255,.86)!important;
+  border-color:var(--pg-ui-line)!important;
+}
+.pgh-pet-switch span{
+  font-size:11px!important;
+  font-weight:650!important;
+  color:#79857f!important;
+}
+.pgh-pet-switch select{
+  font-size:14px!important;
+  line-height:1.2!important;
+  font-weight:750!important;
+  color:#2c3d34!important;
+}
+.pgh-primary,.pgh-secondary,.pgh-linkbtn,.pgh-quick-actions button{
+  font-family:var(--pg-ui-font)!important;
+  font-weight:700!important;
+  letter-spacing:-.02em!important;
+}
+.pgh-primary{
+  border-radius:14px!important;
+  font-size:13px!important;
+}
+.pgh-stat small{font-weight:700!important}
+.pgh-stat strong{font-weight:760!important;letter-spacing:-.03em!important}
+.pgh-stat p{font-weight:500!important;color:var(--pg-ui-sub)!important}
+.pgh-report-preview b,.pgmypet-copy b{font-weight:750!important}
+
+/* Shared buttons/cards: keep the visual language consistent without changing layout. */
+.bg-btn,.tab-pill,.cm-my-activity-btn,.more-menu-card,
+.pgh-primary,.pgh-secondary{
+  border-radius:var(--pg-ui-control-radius)!important;
+}
+.bg-btn,.tab-pill,.bg-chip{
+  font-family:var(--pg-ui-font)!important;
+  letter-spacing:-.02em!important;
+}
+.bg-btn{font-weight:700!important}
+.tab-pill,.bg-chip{font-weight:650!important}
+.tab-pill.active,.bg-chip.active{font-weight:750!important}
+
+/* Avoid animated logo/icon scaling that makes the brand feel unstable. */
+.about-logo-float,.landing-logo-badge,
+.petgrow-sidebar-brand img,.desktop-brand img,
+img[alt="PetGrow"],img[aria-label="PetGrow"]{
+  animation:none!important;
+}
+
+@media(max-width:720px){
+  .pgh-headcopy h2{font-size:22px!important;line-height:1.22!important}
+  .pgh-headcopy p{font-size:12.5px!important}
+  .pgh-headcopy small{font-size:10px!important}
+  .pgh-pet-switch span{font-size:10.5px!important}
+  .pgh-pet-switch select{font-size:13.5px!important}
+  .pgh-head-actions>.pgh-primary{font-size:12.5px!important}
+  .landing-logo-badge{width:108px!important;height:108px!important;border-radius:27px!important;padding:8px!important}
+  .landing-logo-badge.about-logo-float{width:120px!important;height:120px!important;border-radius:30px!important}
+  .landing-about-icon{width:84px!important;height:84px!important;border-radius:23px!important}
+  .landing-about-icon img{width:60px!important;height:60px!important}
+}
