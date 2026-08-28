@@ -19,6 +19,36 @@ import "./logo-safe-area-fix-20260828.css";
 import "./home-news-fast-20260819.js";
 import "./petlife-menu-regression-fix-20260822.js";
 
+// A plain root launch should always settle on Home. This intentionally does not
+// touch OAuth returns or explicit deep links, and it yields if the user already
+// interacted with the app before the first render becomes ready.
+const isPlainRootLaunch=()=>{
+  try{
+    const url=new URL(location.href);
+    if(!/^\/(?:index\.html)?$/i.test(url.pathname))return false;
+    if(url.hash&&url.hash!=="#")return false;
+    for(const key of url.searchParams.keys()){
+      if(key!=="app_version")return false;
+    }
+    return true;
+  }catch{return false;}
+};
+
+if(isPlainRootLaunch()){
+  let homeEntryPending=true;
+  const cancelHomeEntry=()=>{homeEntryPending=false;};
+  addEventListener("pointerdown",cancelHomeEntry,{once:true,passive:true});
+  addEventListener("keydown",cancelHomeEntry,{once:true});
+  addEventListener("petgrow:critical-ready",()=>{
+    if(!homeEntryPending)return;
+    homeEntryPending=false;
+    requestAnimationFrame(()=>{
+      window.dispatchEvent(new CustomEvent("petgrow:navigate",{detail:"home"}));
+      window.scrollTo({top:0,behavior:"auto"});
+    });
+  },{once:true});
+}
+
 // Android WebView에서 /api/me 요청이 드물게 끝나지 않아도 앱 첫 화면 전체를 막지 않도록
 // 인증 확인만 짧게 제한합니다. 이후 focus 시 기존 App 로직이 다시 상태를 확인합니다.
 const nativeFetch=window.fetch.bind(window);
