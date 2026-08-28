@@ -1,0 +1,162 @@
+/* PetGrow approved home redesign — home only, 2026-08-28 */
+.petgrow-dashboard-home.pg-approved-home-v1{
+  --pgh-ink:#202d25;
+  --pgh-sub:#748078;
+  --pgh-green:#2f8a45;
+  --pgh-green-dark:#28733b;
+  --pgh-mint:#f1f8f2;
+  --pgh-line:#e6ece7;
+  --pgh-card:#fff;
+  background:#fcfdfb!important;
+  color:var(--pgh-ink)!important;
+  border-radius:0!important;
+  padding:20px 22px 34px!important;
+  max-width:1080px!important;
+  margin:0 auto!important;
+}
+.petgrow-dashboard-home.pg-approved-home-v1 *{font-family:inherit}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-welcome{padding:5px 2px 10px!important;margin:0!important}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-welcome .dash-eyebrow{display:none!important}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-welcome h1{margin:0!important;font-size:clamp(25px,3.2vw,38px)!important;line-height:1.22!important;font-weight:850!important;letter-spacing:-.045em!important;color:#1f2a23!important}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-welcome h1 strong,.petgrow-dashboard-home.pg-approved-home-v1 .dash-welcome h1 b{color:var(--pgh-green)!important}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-welcome p{margin:9px 0 0!important;font-size:14px!important;line-height:1.55!important;font-weight:500!important;color:var(--pgh-sub)!important}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-profile-dot{background:#f0f7f1!important;border:1px solid #e3ece5!important;color:var(--pgh-green)!important;box-shadow:none!important}
+
+/* One clean hero pet card */
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-pet-spotlight{
+  margin:18px 0 0!important;
+  padding:24px!important;
+  border:1px solid var(--pgh-line)!important;
+  border-radius:26px!important;
+  background:#fff!important;
+  box-shadow:0 12px 34px rgba(31,61,40,.065)!important;
+  overflow:hidden!important;
+}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-pet-photo{
+  background:#edf5ee!important;
+  border:0!important;
+  box-shadow:none!important;
+  border-radius:999px!important;
+}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-pet-photo img{border-radius:999px!important;object-fit:cover!important}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-pet-copy>small{color:var(--pgh-green)!important;font-size:11px!important;font-weight:750!important;letter-spacing:.04em!important}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-pet-copy h2{color:#1f2b24!important;font-weight:850!important;letter-spacing:-.035em!important}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-pet-copy p{color:var(--pgh-sub)!important}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-pet-metrics{gap:8px!important}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-pet-metrics span{
+  background:#f8faf8!important;
+  border:1px solid #edf1ee!important;
+  color:#4d5d53!important;
+  border-radius:13px!important;
+  box-shadow:none!important;
+}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-pet-spotlight button,.petgrow-dashboard-home.pg-approved-home-v1 .dash-pet-spotlight .bg-btn{
+  border-radius:14px!important;
+}
+
+/* Core 4 actions */
+.petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-core-section{margin-top:18px!important}
+.petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-core-section>.dash-section-head{display:none!important}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-quick-grid{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:10px!important;
+}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-quick-grid>button{display:none!important}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-quick-grid>button[data-pg-approved-core="1"]{
+  display:flex!important;
+  min-height:96px!important;
+  padding:14px 8px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex-direction:column!important;
+  gap:9px!important;
+  border:1px solid var(--pgh-line)!important;
+  border-radius:20px!important;
+  background:#fff!important;
+  color:#29372e!important;
+  box-shadow:0 7px 22px rgba(37,63,45,.055)!important;
+  transform:none!important;
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease!important;
+  overflow:visible!important;
+}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-quick-grid>button[data-pg-approved-core="1"]:hover{transform:translateY(-2px)!important;border-color:#d3e2d6!important;box-shadow:0 10px 25px rgba(37,63,45,.08)!important}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-quick-grid>button[data-pg-approved-core="1"] i{
+  display:grid!important;place-items:center!important;width:34px!important;height:34px!important;border:0!important;background:transparent!important;color:var(--pgh-green)!important;box-shadow:none!important;font-style:normal!important
+}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-quick-grid>button[data-pg-approved-core="1"] i svg{width:29px;height:29px;display:block;stroke:currentColor}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-quick-grid>button[data-pg-approved-core="1"] span{font-size:13px!important;font-weight:750!important;line-height:1.25!important;letter-spacing:-.02em!important;text-align:center!important}
+.petgrow-dashboard-home.pg-approved-home-v1 .pg-home-extra-menu-grid,.petgrow-dashboard-home.pg-approved-home-v1 .pg-home-quick-head-actions{display:none!important}
+
+/* Approved section heads */
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-section-head{margin-bottom:10px!important;align-items:center!important}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-section-head h2,.petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-section-title{
+  margin:0!important;font-size:19px!important;line-height:1.3!important;font-weight:820!important;letter-spacing:-.035em!important;color:#222d26!important
+}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-section-head .bg-chip{
+  padding:5px 2px!important;border:0!important;background:transparent!important;box-shadow:none!important;color:#6f7b73!important;font-size:12px!important;font-weight:700!important
+}
+.petgrow-dashboard-home.pg-approved-home-v1 .dash-section-head .bg-chip:after{content:"  ›";font-size:16px;vertical-align:-1px}
+
+/* Deprioritize old home modules; functionality remains elsewhere */
+.petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-home-deprioritized{display:none!important}
+.pg-approved-home-hidden-petlife{display:none!important}
+.petgrow-dashboard-home.pg-approved-home-v1 .pg-home-duplicate-widget-grid,.petgrow-dashboard-home.pg-approved-home-v1 .dash-widget-grid{display:none!important}
+.petgrow-dashboard-home.pg-approved-home-v1 [data-home-extra="music"]{display:none!important}
+
+/* Today's highlight */
+.petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-today{margin-top:30px!important}
+.petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-today-head,.petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-fun-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-today-card{
+  min-height:112px;border:1px solid #dbe9de;border-radius:21px;background:linear-gradient(115deg,#f5fbf6,#eef8f0 68%,#f8fbf8);padding:19px 20px;display:grid;grid-template-columns:46px minmax(0,1fr) auto;gap:14px;align-items:center;box-shadow:none
+}
+.petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-today-icon{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#e4f2e7;color:var(--pgh-green);font-size:21px}
+.petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-today-copy{min-width:0}
+.petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-today-copy small{display:block;color:var(--pgh-green);font-size:11px;font-weight:800;margin-bottom:4px}
+.petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-today-copy b{display:block;color:#243129;font-size:16px;line-height:1.4;font-weight:820;letter-spacing:-.025em}
+.petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-today-copy p{margin:4px 0 0;color:#768178;font-size:12px;line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-today-btn{border:0;border-radius:999px;background:var(--pgh-green);color:#fff;padding:11px 15px;font:750 12px/1 inherit;white-space:nowrap;cursor:pointer;box-shadow:0 6px 14px rgba(47,138,69,.15)}
+
+/* Two editorial information cards */
+.petgrow-dashboard-home.pg-approved-home-v1 [data-home-extra="petinfo"]{
+  margin-top:31px!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important
+}
+.petgrow-dashboard-home.pg-approved-home-v1 [data-home-extra="petinfo"]>div:not(.dash-section-head){grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:11px!important}
+.petgrow-dashboard-home.pg-approved-home-v1 [data-home-extra="petinfo"] .bg-card{display:none!important;border:1px solid var(--pgh-line)!important;border-radius:18px!important;background:#fff!important;box-shadow:0 6px 18px rgba(37,61,44,.045)!important;overflow:hidden!important}
+.petgrow-dashboard-home.pg-approved-home-v1 [data-home-extra="petinfo"] .bg-card:nth-child(-n+2){display:block!important}
+.petgrow-dashboard-home.pg-approved-home-v1 [data-home-extra="petinfo"] .bg-card button{padding:17px!important}
+.petgrow-dashboard-home.pg-approved-home-v1 [data-home-extra="petinfo"] .bg-card small:first-child{color:var(--pgh-green)!important}
+.petgrow-dashboard-home.pg-approved-home-v1 [data-home-extra="petinfo"] .bg-card button>div>div>div{font-size:14px!important;line-height:1.45!important;font-weight:780!important;color:#27342c!important}
+.petgrow-dashboard-home.pg-approved-home-v1 [data-home-extra="petinfo"] .bg-card button>small{font-size:10px!important;color:#8a948d!important}
+
+/* Fun chips */
+.petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-fun{margin-top:30px!important;margin-bottom:10px!important}
+.petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-fun-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-fun-btn{min-height:58px;border:1px solid var(--pgh-line);border-radius:17px;background:#fff;display:flex;align-items:center;justify-content:center;gap:9px;padding:10px 12px;color:#35433a;font:720 12px/1.25 inherit;cursor:pointer;box-shadow:0 5px 16px rgba(37,61,44,.04)}
+.petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-fun-btn svg{width:22px;height:22px;stroke:var(--pgh-green);fill:none;stroke-width:1.8}
+.petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-fun-btn em{font-style:normal;color:#9aa39d;font-size:17px;margin-left:auto}
+
+@media(max-width:700px){
+  .petgrow-dashboard-home.pg-approved-home-v1{padding:14px 14px calc(105px + env(safe-area-inset-bottom))!important}
+  .petgrow-dashboard-home.pg-approved-home-v1 .dash-welcome{padding-top:3px!important}
+  .petgrow-dashboard-home.pg-approved-home-v1 .dash-welcome h1{font-size:25px!important}
+  .petgrow-dashboard-home.pg-approved-home-v1 .dash-pet-spotlight{padding:18px!important;border-radius:23px!important}
+  .petgrow-dashboard-home.pg-approved-home-v1 .dash-quick-grid{gap:7px!important}
+  .petgrow-dashboard-home.pg-approved-home-v1 .dash-quick-grid>button[data-pg-approved-core="1"]{min-height:86px!important;padding:11px 4px!important;border-radius:17px!important}
+  .petgrow-dashboard-home.pg-approved-home-v1 .dash-quick-grid>button[data-pg-approved-core="1"] span{font-size:11px!important;white-space:nowrap!important}
+  .petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-today-card{grid-template-columns:40px minmax(0,1fr);padding:15px 14px;gap:10px;min-height:102px}
+  .petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-today-icon{width:39px;height:39px;font-size:18px}
+  .petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-today-btn{grid-column:2;justify-self:start;margin-top:-2px;padding:9px 12px}
+  .petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-today-copy b{font-size:14px}
+  .petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-today-copy p{white-space:normal;font-size:11px}
+  .petgrow-dashboard-home.pg-approved-home-v1 [data-home-extra="petinfo"]>div:not(.dash-section-head){grid-template-columns:1fr 1fr!important;gap:8px!important}
+  .petgrow-dashboard-home.pg-approved-home-v1 [data-home-extra="petinfo"] .bg-card button{padding:13px!important}
+  .petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-fun-grid{gap:7px}
+  .petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-fun-btn{min-height:53px;padding:8px 9px;font-size:11px;border-radius:15px;gap:6px}
+  .petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-fun-btn svg{width:19px;height:19px}
+}
+@media(max-width:390px){
+  .petgrow-dashboard-home.pg-approved-home-v1 .dash-quick-grid>button[data-pg-approved-core="1"] span{font-size:10px!important}
+  .petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-fun-btn em{display:none}
+  .petgrow-dashboard-home.pg-approved-home-v1 .pg-approved-fun-btn{padding-inline:7px}
+}
