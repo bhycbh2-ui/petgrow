@@ -13,41 +13,10 @@ import "./requested-final-fixes-20260818.css";
 import "./home-quick-petbti-20260819.css";
 import "./petgrow-global-palette-20260819.css";
 import "./petgrow-final-batch-20260819.css";
-import "./splash-motion-20260821.css";
 import "./loading-speed-20260822.css";
 import "./logo-safe-area-fix-20260828.css";
 import "./home-news-fast-20260819.js";
 import "./petlife-menu-regression-fix-20260822.js";
-
-// A plain root launch should always settle on Home. This intentionally does not
-// touch OAuth returns or explicit deep links, and it yields if the user already
-// interacted with the app before the first render becomes ready.
-const isPlainRootLaunch=()=>{
-  try{
-    const url=new URL(location.href);
-    if(!/^\/(?:index\.html)?$/i.test(url.pathname))return false;
-    if(url.hash&&url.hash!=="#")return false;
-    for(const key of url.searchParams.keys()){
-      if(key!=="app_version")return false;
-    }
-    return true;
-  }catch{return false;}
-};
-
-if(isPlainRootLaunch()){
-  let homeEntryPending=true;
-  const cancelHomeEntry=()=>{homeEntryPending=false;};
-  addEventListener("pointerdown",cancelHomeEntry,{once:true,passive:true});
-  addEventListener("keydown",cancelHomeEntry,{once:true});
-  addEventListener("petgrow:critical-ready",()=>{
-    if(!homeEntryPending)return;
-    homeEntryPending=false;
-    requestAnimationFrame(()=>{
-      window.dispatchEvent(new CustomEvent("petgrow:navigate",{detail:"home"}));
-      window.scrollTo({top:0,behavior:"auto"});
-    });
-  },{once:true});
-}
 
 // Android WebView에서 /api/me 요청이 드물게 끝나지 않아도 앱 첫 화면 전체를 막지 않도록
 // 인증 확인만 짧게 제한합니다. 이후 focus 시 기존 App 로직이 다시 상태를 확인합니다.
@@ -75,7 +44,10 @@ const root=document.getElementById("root");
 ReactDOM.createRoot(root).render(<React.StrictMode><App /></React.StrictMode>);
 window.__petgrowAppMountedAt=performance.now();
 
-const BOOT_BLOCKER_SELECTOR=".petgrow-boot-skeleton,#petgrow-fast-shell";
+// #petgrow-fast-shell은 React 바깥의 임시 셸입니다.
+// React가 직접 관리하는 .petgrow-boot-skeleton은 절대로 외부에서 remove() 하지 않습니다.
+// 이를 삭제하면 React fiber와 실제 DOM이 어긋나 iOS/Safari에서 빈 화면이 남을 수 있습니다.
+const FAST_BOOT_SHELL_SELECTOR="#petgrow-fast-shell";
 
 const ready=()=>{
   if(window.__petgrowCriticalAppReady)return;
@@ -83,32 +55,24 @@ const ready=()=>{
   window.dispatchEvent(new CustomEvent("petgrow:critical-ready"));
 };
 
-// 앱 본체/보조 UI가 이미 올라왔는데 스켈레톤만 남는 회귀를 막습니다.
-// 새로고침이나 캐시 삭제를 하지 않고 임시 로딩 레이어만 제거하므로 루프가 생기지 않습니다.
-const releaseStalledBootShell=(reason="timeout")=>{
-  const blockers=[...document.querySelectorAll(BOOT_BLOCKER_SELECTOR)];
-  if(!blockers.length)return false;
-  blockers.forEach((node)=>{
+const releaseFastBootShell=(reason="timeout")=>{
+  const shell=document.querySelector(FAST_BOOT_SHELL_SELECTOR);
+  if(shell){
     try{
-      node.setAttribute("aria-hidden","true");
-      node.style.setProperty("pointer-events","none","important");
-      node.style.setProperty("opacity","0","important");
-      node.style.setProperty("visibility","hidden","important");
-      node.style.setProperty("display","none","important");
-      node.remove();
+      shell.setAttribute("aria-hidden","true");
+      shell.style.setProperty("pointer-events","none","important");
+      shell.remove();
     }catch{}
-  });
+  }
   try{window.__hidePetGrowSplash?.();}catch{}
   try{window.dispatchEvent(new CustomEvent("petgrow:home-shell-released",{detail:{reason}}));}catch{}
-  ready();
-  return true;
+  return Boolean(shell);
 };
 
 const started=performance.now();
 const probe=()=>{
   const rendered=!!(root?.firstElementChild||String(root?.textContent||"").trim());
-  const blocking=document.querySelector(BOOT_BLOCKER_SELECTOR);
-  if((rendered&&!blocking)||(rendered&&performance.now()-started>700)||performance.now()-started>1200){ready();return;}
+  if(rendered||performance.now()-started>1400){ready();return;}
   requestAnimationFrame(probe);
 };
 requestAnimationFrame(()=>{
@@ -116,21 +80,20 @@ requestAnimationFrame(()=>{
   probe();
 });
 
-// 정상 로딩은 이보다 훨씬 빨리 끝납니다. 1.8초 뒤에도 로딩 레이어가 있으면
-// 앱 실행 실패가 아니라 '레이어 해제 누락'으로 보고 강제로 걷어냅니다.
-window.setTimeout(()=>releaseStalledBootShell("startup-timeout"),1800);
+// 스플래시는 일정 시간이 지나면 걷어내되 React의 로딩/홈 DOM은 그대로 둡니다.
+window.setTimeout(()=>releaseFastBootShell("startup-timeout"),1800);
 
 addEventListener("pageshow",()=>{
   try{window.__hidePetGrowSplash?.();}catch{}
-  window.setTimeout(()=>releaseStalledBootShell("pageshow"),650);
+  window.setTimeout(()=>releaseFastBootShell("pageshow"),650);
 });
 addEventListener("focus",()=>{
-  window.setTimeout(()=>releaseStalledBootShell("focus"),650);
+  window.setTimeout(()=>releaseFastBootShell("focus"),650);
 });
 document.addEventListener("visibilitychange",()=>{
   if(document.hidden)return;
   try{window.__hidePetGrowSplash?.();}catch{}
-  window.setTimeout(()=>releaseStalledBootShell("visible"),650);
+  window.setTimeout(()=>releaseFastBootShell("visible"),650);
 });
 
 const startDeferred=()=>import("./deferred-app-boot.js").then(m=>m.bootDeferredApp?.()).catch(()=>{});
@@ -138,5 +101,5 @@ if("requestIdleCallback" in window)requestIdleCallback(startDeferred,{timeout:85
 else setTimeout(startDeferred,260);
 
 if("serviceWorker" in navigator){
-  addEventListener("load",()=>navigator.serviceWorker.register("/sw.js?v=86",{updateViaCache:"none"}).catch(()=>{}),{once:true});
+  addEventListener("load",()=>navigator.serviceWorker.register("/sw.js?v=87",{updateViaCache:"none"}).catch(()=>{}),{once:true});
 }
