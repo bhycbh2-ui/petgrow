@@ -69,8 +69,8 @@ function schedule(){
 }
 function boot(){
   run();
-  const host=document.getElementById("root")||document.body;
-  new MutationObserver(schedule).observe(host,{subtree:true,childList:true});
+  // PetLife mounts as a sibling of #root, so watch body as well as routed React content.
+  new MutationObserver(schedule).observe(document.body,{subtree:true,childList:true});
   window.addEventListener("petgrow:navigate",()=>setTimeout(schedule,60));
   window.addEventListener("petgrow:critical-ready",schedule);
 }
