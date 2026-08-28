@@ -37,6 +37,12 @@ function petName(home){
   const value=raw.replace(/\s*오늘\s*관리.*$/u,"").replace(/\s*관리.*$/u,"").trim();
   return value||"우리 아이";
 }
+function keepSingle(home,selector){
+  const nodes=[...home.querySelectorAll(selector)];
+  const first=nodes.shift()||null;
+  nodes.forEach(node=>node.remove());
+  return first;
+}
 
 function decorateQuick(home){
   const grid=home.querySelector(".dash-quick-grid");
@@ -75,7 +81,7 @@ function decorateInfo(home){
 }
 
 function buildToday(home,quickSection,infoSection){
-  let section=home.querySelector(":scope > .pg-approved-today");
+  let section=keepSingle(home,".pg-approved-today");
   if(!section){
     section=document.createElement("section");
     section.className="dash-section pg-approved-today";
@@ -97,14 +103,13 @@ function buildToday(home,quickSection,infoSection){
   if(title)title.textContent=hasSchedule?(detail?`${detail.split("·")[0].trim()} 일정을 확인해 주세요`:`${name}의 다음 건강 일정을 확인해 주세요`):`${name}의 오늘 기록을 한 번 확인해 보세요`;
   if(desc)desc.textContent=hasSchedule?(detail||"예방접종·병원·약 일정을 미리 확인해 주세요."):"작은 기록이 쌓이면 우리 아이의 변화가 더 잘 보여요.";
   const btn=section.querySelector(".pg-approved-today-btn");if(btn)btn.textContent=hasSchedule?"일정 확인하기 ›":"기록 보기 ›";
-  const anchor=infoSection||quickSection?.nextElementSibling;
   if(infoSection&&section.nextElementSibling!==infoSection)infoSection.insertAdjacentElement("beforebegin",section);
   else if(!infoSection&&quickSection&&quickSection.nextElementSibling!==section)quickSection.insertAdjacentElement("afterend",section);
   return section;
 }
 
 function buildFun(home,infoSection,todaySection){
-  let section=home.querySelector(":scope > .pg-approved-fun");
+  let section=keepSingle(home,".pg-approved-fun");
   if(!section){
     section=document.createElement("section");
     section.className="dash-section pg-approved-fun";
