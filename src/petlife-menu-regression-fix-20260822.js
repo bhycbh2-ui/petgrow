@@ -2,7 +2,6 @@ import "./petlife-menu-regression-fix-20260822.css";
 
 const PETLIFE_LABELS = new Set(["펫라이프", "petlife", "pet生活"]);
 const LEGACY_GUIDE_LABELS = new Set(["정보가이드", "guide", "petgrow guide"]);
-const LEGACY_GUIDE_TITLE = "반려생활에 바로 쓰는 petgrow 가이드";
 const LEGACY_GUIDE_VIEW = "guide";
 const CURRENT_PETINFO_VIEW = "tips";
 let started = false;
@@ -37,19 +36,11 @@ function dispatchPetInfo() {
   window.dispatchEvent(new CustomEvent("petgrow:navigate", { detail: CURRENT_PETINFO_VIEW }));
 }
 
-function legacyGuideScreenVisible() {
-  if (document.querySelector(".info-guide-v4")) return true;
-  return Array.from(document.querySelectorAll("h1,h2,h3")).some(
-    (heading) => cleanText(heading) === LEGACY_GUIDE_TITLE,
-  );
-}
-
 function redirectLegacyGuideToPetInfo() {
   if (petInfoRedirectPending) return;
   petInfoRedirectPending = true;
 
-  // React의 전역 navigation effect가 붙기 전에도 안전하게 동작하도록
-  // 현재 tick과 다음 tick에서 Pet정보 화면을 요청합니다.
+  // 사용자가 실제로 예전 정보가이드 진입을 요청했을 때만 현재 Pet정보로 연결합니다.
   queueMicrotask(dispatchPetInfo);
   window.setTimeout(() => {
     dispatchPetInfo();
@@ -66,17 +57,11 @@ function hideLegacyGuideEntries() {
   });
 }
 
-function reconcileLegacyGuide() {
-  hideLegacyGuideEntries();
-  if (legacyGuideScreenVisible()) redirectLegacyGuideToPetInfo();
-}
-
 export function bootPetLifeMenuRegressionFix() {
   if (started || typeof document === "undefined") return;
   started = true;
 
-  // 예전에 제거한 정보가이드가 새로고침/렌더링 과정에서 다시 노출되는 회귀를 막습니다.
-  // 기존 guide 진입은 모두 현재 Pet정보(tips)로 통일합니다.
+  // 자동 DOM 감지로 화면을 바꾸지 않습니다. 명시적인 guide 요청만 Pet정보로 연결합니다.
   window.addEventListener("petgrow:navigate", (event) => {
     if (String(event?.detail || "").toLowerCase() !== LEGACY_GUIDE_VIEW) return;
     event.preventDefault?.();
@@ -89,8 +74,6 @@ export function bootPetLifeMenuRegressionFix() {
     const button = event.target?.closest?.("button");
 
     if (isPetLifeMenuButton(button)) {
-      // 2026-08-22 브랜드 리프레시에서 기존 '우리 아이' 메뉴의 표시명만
-      // PetLife로 바뀌어 클릭 시 예전 pets 화면으로 이동하던 회귀를 차단합니다.
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation?.();
@@ -105,14 +88,14 @@ export function bootPetLifeMenuRegressionFix() {
     redirectLegacyGuideToPetInfo();
   }, true);
 
-  const runReconcile = () => window.requestAnimationFrame(reconcileLegacyGuide);
+  const runHide = () => window.requestAnimationFrame(hideLegacyGuideEntries);
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", reconcileLegacyGuide, { once: true });
+    document.addEventListener("DOMContentLoaded", hideLegacyGuideEntries, { once: true });
   } else {
-    reconcileLegacyGuide();
+    hideLegacyGuideEntries();
   }
 
-  const observer = new MutationObserver(runReconcile);
+  const observer = new MutationObserver(runHide);
   observer.observe(document.documentElement, { childList: true, subtree: true });
 }
 
