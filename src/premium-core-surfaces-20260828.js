@@ -27,8 +27,7 @@ function tagAbout(){
     }
   });
 
-  // The long guide hub remains reachable directly for SEO, but it no longer competes
-  // with the product story on the About surface.
+  // 상세 가이드 URL은 유지하지만 소개 화면에서는 긴 가이드 허브를 노출하지 않습니다.
   root.querySelectorAll(".pg-about-guide").forEach(section=>{
     section.hidden=true;
     section.setAttribute("aria-hidden","true");
@@ -39,37 +38,19 @@ function tagAbout(){
   const video=hero?.querySelector(".intro-video-wrap");
   video?.closest(".about-fade")?.classList.add("pg-about-video-block");
 
-  // Give feature cards a restrained index for editorial rhythm without changing actions.
   root.querySelectorAll(".landing-features > .landing-feature-card").forEach((card,index)=>{
     card.style.setProperty("--pg-feature-index",String(index+1));
   });
 }
 
-function tagHome(){
-  const home=document.querySelector(".petgrow-dashboard-home.pg-approved-home-v1");
-  if(!home)return;
-  home.classList.add("pg-premium-home");
-  home.querySelector(".dash-pet-spotlight")?.setAttribute("data-pg-premium-hero","1");
-  home.querySelector(".pg-approved-core-section")?.setAttribute("data-pg-premium-core","1");
-  home.querySelector(".pg-approved-today")?.setAttribute("data-pg-premium-today","1");
-  home.querySelector('[data-home-extra="petinfo"]')?.setAttribute("data-pg-premium-editorial","1");
-}
-
-function tagPetLife(){
-  const root=document.getElementById("petlife-react-root");
-  if(!root)return;
-  root.classList.add("pg-premium-petlife");
-}
-
 let raf=0;
-function run(){tagHome();tagAbout();tagPetLife();}
+function run(){tagAbout();}
 function schedule(){
   if(raf)return;
   raf=requestAnimationFrame(()=>{raf=0;run();});
 }
 function boot(){
   run();
-  // PetLife mounts as a sibling of #root, so watch body as well as routed React content.
   new MutationObserver(schedule).observe(document.body,{subtree:true,childList:true});
   window.addEventListener("petgrow:navigate",()=>setTimeout(schedule,60));
   window.addEventListener("petgrow:critical-ready",schedule);
