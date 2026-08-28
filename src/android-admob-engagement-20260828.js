@@ -3,14 +3,8 @@ let api=null;
 let initialized=false;
 let scanFrame=0;
 let rewardedBusy=false;
-let interstitialBusy=false;
 
 const REWARDED_AD_ID="ca-app-pub-9699974051273244/3347474750";
-const INTERSTITIAL_AD_ID="ca-app-pub-9699974051273244/4416129367";
-const INTERSTITIAL_EVERY=5;
-const INTERSTITIAL_COOLDOWN_MS=20*60*1000;
-const COUNT_KEY="petgrow-admob-result-exits-v1";
-const LAST_INTERSTITIAL_KEY="petgrow-admob-last-interstitial-v1";
 
 const LABELS={
   ko:{
@@ -165,49 +159,11 @@ function ensureRewardCta(){
   document.body.append(button);
 }
 
-function readCount(){
-  try{return Math.max(0,Number.parseInt(localStorage.getItem(COUNT_KEY)||"0",10)||0);}catch{return 0;}
-}
-function writeCount(n){try{localStorage.setItem(COUNT_KEY,String(n));}catch{}}
-function readLastInterstitial(){try{return Number(localStorage.getItem(LAST_INTERSTITIAL_KEY)||0)||0;}catch{return 0;}}
-function writeLastInterstitial(t){try{localStorage.setItem(LAST_INTERSTITIAL_KEY,String(t));}catch{}}
-
-async function maybeShowInterstitial(){
-  if(interstitialBusy)return false;
-  const now=Date.now();
-  if(now-readLastInterstitial()<INTERSTITIAL_COOLDOWN_MS)return false;
-  const next=readCount()+1;
-  if(next<INTERSTITIAL_EVERY){writeCount(next);return false;}
-  writeCount(0);
-  interstitialBusy=true;
-  try{
-    if(!(await ensureInitialized()))return false;
-    await api.AdMob.prepareInterstitial({adId:INTERSTITIAL_AD_ID,isTesting:false});
-    await api.AdMob.showInterstitial();
-    writeLastInterstitial(Date.now());
-    window.dispatchEvent(new CustomEvent("petgrow:interstitial-ad-shown"));
-    return true;
-  }catch(e){
-    console.warn("PetGrow interstitial AdMob",e?.message||e);
-    return false;
-  }finally{interstitialBusy=false;}
-}
-
-function isResultRestartButton(button,kind){
-  const value=text(button);
-  if(kind==="petbti")return value==="다시 테스트하기"||value==="Take the test again";
-  if(kind==="saju")return value==="다시 보기"||value==="Try again";
-  return false;
-}
-
-function onClick(event){
-  const button=event.target?.closest?.("button");
-  if(!button||!isVisible(button))return;
-  const kind=detectResultKind();
-  if(!kind||!isResultRestartButton(button,kind))return;
-  // 결과를 확인하고 나가는 자연스러운 전환 시점에만 카운트합니다.
-  setTimeout(()=>{maybeShowInterstitial();},120);
-}
+// Google Play production hardening:
+// Automatic interstitial ads are intentionally disabled. Full-screen ads are never
+// triggered by restart/navigation buttons or at the beginning of a content segment.
+// Only the explicit, user-initiated rewarded ad above remains enabled.
+async function maybeShowInterstitial(){return false;}
 
 function queueScan(){
   if(scanFrame)return;
@@ -217,14 +173,12 @@ function queueScan(){
 async function boot(){
   if(booted)return;booted=true;
   if(!(await ensureApi()))return;
-  document.addEventListener("click",onClick,true);
   new MutationObserver(queueScan).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:["class","style","hidden","aria-hidden"]});
   window.addEventListener("petgrow:admob-consent-ready",queueScan);
   window.addEventListener("petgrow:critical-ready",queueScan);
   document.addEventListener("visibilitychange",queueScan);
   window.PetGrowEngagementAds={
     rewardedAdId:REWARDED_AD_ID,
-    interstitialAdId:INTERSTITIAL_AD_ID,
     showRewarded,
     maybeShowInterstitial,
     detectResultKind,
