@@ -1,4 +1,14 @@
 /* PetLife / 소개 사이드바 회귀 보정 — 2026-08-22 */
+
+/* PetLife 진입 버튼은 화면에서 숨깁니다.
+   PetLife 내부의 '우리 아이 등록' 기능과 기존 반려동물 데이터 로직은 삭제하지 않습니다. */
+#petlife-react-root .pl-launcher,
+.pl-launcher[aria-label="PetLife 열기"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 @media (min-width: 900px) {
   .petgrow-sidebar-nav {
     min-height: 0 !important;
