@@ -23,15 +23,6 @@ function isLegacyGuideButton(button) {
   return LEGACY_GUIDE_LABELS.has(cleanText(button));
 }
 
-function openPetLife(attempt = 0) {
-  const launcher = document.querySelector("#petlife-react-root .pl-launcher");
-  if (launcher instanceof HTMLButtonElement) {
-    launcher.click();
-    return;
-  }
-  if (attempt < 30) window.setTimeout(() => openPetLife(attempt + 1), 80);
-}
-
 function dispatchPetInfo() {
   window.dispatchEvent(new CustomEvent("petgrow:navigate", { detail: CURRENT_PETINFO_VIEW }));
 }
@@ -48,8 +39,15 @@ function redirectLegacyGuideToPetInfo() {
   }, 80);
 }
 
-function hideLegacyGuideEntries() {
+function hideRemovedMenuEntries() {
   document.querySelectorAll("button").forEach((button) => {
+    if (isPetLifeMenuButton(button)) {
+      button.setAttribute("aria-hidden", "true");
+      button.setAttribute("data-petgrow-petlife-menu", "removed");
+      button.style.setProperty("display", "none", "important");
+      return;
+    }
+
     if (!isLegacyGuideButton(button)) return;
     button.setAttribute("aria-hidden", "true");
     button.setAttribute("data-petgrow-legacy-guide", "hidden");
@@ -73,11 +71,11 @@ export function bootPetLifeMenuRegressionFix() {
   document.addEventListener("click", (event) => {
     const button = event.target?.closest?.("button");
 
+    // 펫라이프 메뉴는 제거된 항목입니다. DOM에 잠깐 생성되더라도 진입을 막습니다.
     if (isPetLifeMenuButton(button)) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation?.();
-      openPetLife();
       return;
     }
 
@@ -88,11 +86,11 @@ export function bootPetLifeMenuRegressionFix() {
     redirectLegacyGuideToPetInfo();
   }, true);
 
-  const runHide = () => window.requestAnimationFrame(hideLegacyGuideEntries);
+  const runHide = () => window.requestAnimationFrame(hideRemovedMenuEntries);
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", hideLegacyGuideEntries, { once: true });
+    document.addEventListener("DOMContentLoaded", hideRemovedMenuEntries, { once: true });
   } else {
-    hideLegacyGuideEntries();
+    hideRemovedMenuEntries();
   }
 
   const observer = new MutationObserver(runHide);
