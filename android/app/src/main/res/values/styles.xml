@@ -16,7 +16,18 @@
         <item name="android:windowLightStatusBar">true</item>
     </style>
 
+    <!--
+        Android 12+ ignores a normal android:background for the system splash.
+        Set the splash API attributes explicitly so the OS never falls back to
+        a cached/default launcher graphic (the white box / multicolor mark).
+    -->
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#FFFDF6</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
+        <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
+
+        <!-- Pre-Android-12 fallback. -->
         <item name="android:background">@drawable/petgrow_native_splash</item>
     </style>
 </resources>
