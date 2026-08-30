@@ -15,8 +15,45 @@ img[aria-label="PetGrow"]{
   transform:none!important;
   clip-path:none!important;
 }
-/* Keep a small visual safe area so rounded app/web containers never cut the mark. */
-img[alt="PetGrow"],img[aria-label="PetGrow"]{
+
+/*
+   Brand mark must always render as a square.  The sidebar/header previously
+   inherited a short fixed height from older navigation CSS, which squeezed
+   the 1:1 SVG into a horizontal green strip and visually cropped the paw.
+*/
+.petgrow-sidebar-brand,
+.desktop-brand,
+.ham-panel-header{
+  overflow:visible!important;
+  align-items:center!important;
+}
+.petgrow-sidebar-brand img,
+.desktop-brand img,
+.ham-panel-header img,
+.petgrow-sidebar-brand img[alt="PetGrow"],
+.desktop-brand img[alt="PetGrow"]{
+  width:52px!important;
+  height:52px!important;
+  min-width:52px!important;
+  min-height:52px!important;
+  max-width:52px!important;
+  max-height:52px!important;
+  aspect-ratio:1 / 1!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  padding:0!important;
+  margin:0!important;
+  border-radius:12px!important;
+  overflow:visible!important;
+  flex:0 0 52px!important;
+  transform:none!important;
+  clip-path:none!important;
+  box-sizing:border-box!important;
+}
+
+/* Generic PetGrow image fallback, excluding the explicit header mark above. */
+img[alt="PetGrow"]:not(.petgrow-sidebar-brand img):not(.desktop-brand img),
+img[aria-label="PetGrow"]:not(.petgrow-sidebar-brand img):not(.desktop-brand img){
   padding:3px!important;
 }
 a:has(> img[alt="PetGrow"]),
@@ -221,6 +258,18 @@ img[alt="PetGrow"],img[aria-label="PetGrow"]{
 }
 
 @media(max-width:720px){
+  .petgrow-sidebar-brand img,
+  .desktop-brand img,
+  .ham-panel-header img{
+    width:46px!important;
+    height:46px!important;
+    min-width:46px!important;
+    min-height:46px!important;
+    max-width:46px!important;
+    max-height:46px!important;
+    flex-basis:46px!important;
+    border-radius:11px!important;
+  }
   .pgh-headcopy h2{font-size:22px!important;line-height:1.22!important}
   .pgh-headcopy p{font-size:12.5px!important}
   .pgh-headcopy small{font-size:10px!important}
