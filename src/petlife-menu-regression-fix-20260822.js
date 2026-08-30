@@ -1,7 +1,15 @@
 import "./petlife-menu-regression-fix-20260822.css";
 
 const PETLIFE_LABELS = new Set(["펫라이프", "petlife", "pet生活"]);
-const LEGACY_GUIDE_LABELS = new Set(["정보가이드", "guide", "petgrow guide"]);
+const LEGACY_GUIDE_LABELS = new Set([
+  "정보가이드",
+  "펫가이드",
+  "펫 가이드",
+  "pet가이드",
+  "pet guide",
+  "guide",
+  "petgrow guide",
+]);
 const LEGACY_GUIDE_VIEW = "guide";
 const CURRENT_PETINFO_VIEW = "tips";
 let started = false;
