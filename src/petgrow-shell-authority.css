@@ -1,0 +1,125 @@
+/*
+ * PetGrow shell authority
+ * Header/sidebar brand rendering and navigation visibility only.
+ * Keep this file intentionally scoped: it must never style or inject content
+ * inside home cards, PetGuide/PetInfo pages, or other feature surfaces.
+ */
+
+/* Use the canonical vector mark for every top-level PetGrow brand image.
+   The legacy PNG can remain for Android/native resources, but web/PWA/WebView
+   chrome should not depend on its crop/cache state. */
+.petgrow-splash__logo,
+.petgrow-sidebar-brand img,
+.desktop-brand-logo,
+.mobile-brand-logo,
+.ham-panel-header img {
+  content: url("/petgrow-brand-source.svg") !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  box-sizing: border-box !important;
+  transform: none !important;
+  clip-path: none !important;
+  animation: none !important;
+  overflow: visible !important;
+}
+
+.petgrow-splash__logo-wrap,
+.petgrow-sidebar-brand,
+.desktop-brand,
+.mobile-topbar-premium > button[aria-label="홈으로 이동"],
+.native-app-topbar > button[aria-label="홈으로 이동"] {
+  overflow: visible !important;
+  align-items: center !important;
+}
+
+/* Desktop sidebar / desktop brand stay square. */
+.petgrow-sidebar-brand img,
+.desktop-brand-logo {
+  width: 50px !important;
+  height: 50px !important;
+  min-width: 50px !important;
+  min-height: 50px !important;
+  max-width: 50px !important;
+  max-height: 50px !important;
+  aspect-ratio: 1 / 1 !important;
+  flex: 0 0 50px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 12px !important;
+}
+
+/* Mobile web + native app header mark.  Older GlobalStyle blocks define this
+   class several times, so the square dimensions are authoritative here. */
+.mobile-brand-logo {
+  display: block !important;
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  min-height: 34px !important;
+  max-width: 34px !important;
+  max-height: 34px !important;
+  aspect-ratio: 1 / 1 !important;
+  flex: 0 0 34px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 9px !important;
+}
+
+@media (max-width: 430px) {
+  .mobile-brand-logo {
+    width: 31px !important;
+    height: 31px !important;
+    min-width: 31px !important;
+    min-height: 31px !important;
+    max-width: 31px !important;
+    max-height: 31px !important;
+    flex-basis: 31px !important;
+  }
+}
+
+/* PetInfo is a current menu, not a legacy guide.  The navigation guard marks
+   matching entries so older hide rules can never leave it invisible. */
+[data-petgrow-petinfo="current"] {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+.petgrow-sidebar-nav button[data-petgrow-petinfo="current"],
+.desktop-nav-links button[data-petgrow-petinfo="current"],
+.ham-nav button[data-petgrow-petinfo="current"],
+.more-menu-grid button[data-petgrow-petinfo="current"] {
+  display: flex !important;
+}
+
+/* On shorter desktop screens keep the INFO · SUPPORT section reachable without
+   making the user guess that the hidden-scrollbar sidebar can scroll. */
+@media (min-width: 900px) and (max-height: 900px) {
+  .petgrow-sidebar-nav {
+    gap: 2px !important;
+    scrollbar-width: thin !important;
+    scrollbar-gutter: stable !important;
+  }
+  .petgrow-sidebar-nav::-webkit-scrollbar {
+    width: 6px !important;
+  }
+  .petgrow-sidebar-nav::-webkit-scrollbar-thumb {
+    background: rgba(79, 138, 91, .24) !important;
+    border-radius: 999px !important;
+  }
+  .petgrow-sidebar-nav > button {
+    height: 38px !important;
+    min-height: 38px !important;
+  }
+  .petgrow-sidebar-nav > .sidebar-section-label {
+    padding-top: 7px !important;
+    padding-bottom: 2px !important;
+  }
+  .petgrow-sidebar-brand {
+    padding-bottom: 8px !important;
+    margin-bottom: 5px !important;
+  }
+  .petgrow-sidebar-bottom .petgrow-sidebar-message {
+    display: none !important;
+  }
+}
