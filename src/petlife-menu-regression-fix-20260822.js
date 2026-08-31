@@ -12,11 +12,12 @@ const LEGACY_GUIDE_LABELS = new Set([
 ]);
 const LEGACY_GUIDE_VIEW = "guide";
 const CURRENT_PETINFO_VIEW = "tips";
+const CANONICAL_BRAND_SRC = "/petgrow-brand-source.svg";
 
 /*
  * Only inspect actual navigation surfaces and the known legacy guide cards.
  * The previous version scanned every button/link in the document and then
- * watched the entire React tree.  That was too broad and made unrelated menu
+ * watched the entire React tree. That was too broad and made unrelated menu
  * state vulnerable to text-based hide rules.
  */
 const NAV_ENTRY_SELECTOR = [
@@ -33,9 +34,18 @@ const NAV_ENTRY_SELECTOR = [
   "[data-route='guide']",
 ].join(",");
 
+/* Top-level brand images only. Never search feature/home content for logos. */
+const BRAND_IMAGE_SELECTOR = [
+  ".petgrow-splash__logo",
+  ".petgrow-sidebar-brand img",
+  ".desktop-brand-logo",
+  ".mobile-brand-logo",
+  ".ham-panel-header img",
+].join(",");
+
 let started = false;
 let petInfoRedirectPending = false;
-let hideFrame = 0;
+let syncFrame = 0;
 
 function cleanText(node) {
   return String(node?.textContent || "").replace(/\s+/g, " ").trim().toLowerCase();
@@ -46,7 +56,6 @@ function isPetInfoEntry(entry) {
   return (
     label === "pet정보" ||
     label === "pet info" ||
-    label === "pet정보".toLowerCase() ||
     label === "pet情報".toLowerCase() ||
     label === "pet信息".toLowerCase() ||
     label.startsWith("pet정보 ") ||
@@ -90,6 +99,18 @@ function hideEntry(entry, reason) {
   entry.style.setProperty("display", "none", "important");
 }
 
+function syncBrandImages() {
+  document.querySelectorAll(BRAND_IMAGE_SELECTOR).forEach((node) => {
+    if (!(node instanceof HTMLImageElement)) return;
+    const currentPath = (() => {
+      try { return new URL(node.currentSrc || node.src, location.href).pathname; }
+      catch { return ""; }
+    })();
+    if (currentPath !== CANONICAL_BRAND_SRC) node.src = CANONICAL_BRAND_SRC;
+    node.setAttribute("data-petgrow-brand-source", "canonical");
+  });
+}
+
 function dispatchPetInfo() {
   window.dispatchEvent(new CustomEvent("petgrow:navigate", { detail: CURRENT_PETINFO_VIEW }));
 }
@@ -121,11 +142,16 @@ function syncNavigationEntries() {
   });
 }
 
-function scheduleNavigationSync() {
-  if (hideFrame) return;
-  hideFrame = window.requestAnimationFrame(() => {
-    hideFrame = 0;
-    syncNavigationEntries();
+function syncShell() {
+  syncBrandImages();
+  syncNavigationEntries();
+}
+
+function scheduleShellSync() {
+  if (syncFrame) return;
+  syncFrame = window.requestAnimationFrame(() => {
+    syncFrame = 0;
+    syncShell();
   });
 }
 
@@ -165,14 +191,14 @@ export function bootPetLifeMenuRegressionFix() {
   }, true);
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", syncNavigationEntries, { once: true });
+    document.addEventListener("DOMContentLoaded", syncShell, { once: true });
   } else {
-    syncNavigationEntries();
+    syncShell();
   }
 
-  /* React can replace navigation nodes. Observe those replacements, but the
-     actual scan remains limited to NAV_ENTRY_SELECTOR instead of all controls. */
-  const observer = new MutationObserver(scheduleNavigationSync);
+  /* React can replace navigation/header nodes. Observe those replacements, but
+     the actual scans remain limited to the explicit shell selectors above. */
+  const observer = new MutationObserver(scheduleShellSync);
   observer.observe(document.documentElement, { childList: true, subtree: true });
 }
 
