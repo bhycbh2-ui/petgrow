@@ -1,7 +1,7 @@
 const BRAND_ASSET = "/petgrow-brand-source.svg?v=20260822b";
 const SITE_URL = "https://www.petgrow.co.kr/";
 const SEO_TITLE = "PetGrow | 반려동물 평생 기록·건강·커뮤니티";
-const SEO_DESCRIPTION = "반려동물의 성장·건강·일상·추억을 기록하고, PetLife·커뮤니티·펫가이드·펫플레이스를 한곳에서 이용하는 PetGrow.";
+const SEO_DESCRIPTION = "반려동물의 성장·건강·일상·추억을 기록하고, 우리 아이·커뮤니티·Pet정보·내 주변 Pet을 한곳에서 이용하는 PetGrow.";
 const SEO_STRUCTURED_DATA = JSON.stringify({
   "@context": "https://schema.org",
   "@graph": [
@@ -28,41 +28,41 @@ const SEO_STRUCTURED_DATA = JSON.stringify({
 
 const PETGROW_MENU_LABELS_SOURCE = `const PETGROW_MENU_LABELS = {
   ko: {
-    myPetsNav: "펫라이프",
+    myPetsNav: "우리 아이",
     communityNav: "커뮤니티",
     sajuNav: "펫운세",
     petBtiNav: "펫성향",
-    tipsTitle: "펫가이드",
+    tipsTitle: "Pet정보",
     nearbyNav: "펫플레이스",
     nearbyTitle: "펫플레이스",
     myPageTitle: "내 정보",
   },
   en: {
-    myPetsNav: "PetLife",
+    myPetsNav: "My Pets",
     communityNav: "Community",
     sajuNav: "Pet Fortune",
     petBtiNav: "Pet Personality",
-    tipsTitle: "Pet Guide",
+    tipsTitle: "Pet Info",
     nearbyNav: "Pet Places",
     nearbyTitle: "Pet Places",
     myPageTitle: "My Profile",
   },
   ja: {
-    myPetsNav: "PetLife",
+    myPetsNav: "マイペット",
     communityNav: "コミュニティ",
     sajuNav: "Pet運勢",
     petBtiNav: "Pet性格",
-    tipsTitle: "Petガイド",
+    tipsTitle: "Pet情報",
     nearbyNav: "Petスポット",
     nearbyTitle: "Petスポット",
     myPageTitle: "マイページ",
   },
   zh: {
-    myPetsNav: "Pet生活",
+    myPetsNav: "我的宠物",
     communityNav: "社区",
     sajuNav: "Pet运势",
     petBtiNav: "Pet性格",
-    tipsTitle: "Pet指南",
+    tipsTitle: "Pet信息",
     nearbyNav: "Pet地点",
     nearbyTitle: "Pet地点",
     myPageTitle: "我的资料",
