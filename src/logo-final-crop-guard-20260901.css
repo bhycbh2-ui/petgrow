@@ -1,0 +1,51 @@
+/*
+ * PetGrow final header logo crop guard — 2026-09-01
+ * Keep this narrowly scoped to the mobile/native top bars.
+ */
+.mobile-topbar-premium,
+.native-app-topbar,
+.mobile-topbar-premium > button[aria-label="홈으로 이동"],
+.native-app-topbar > button[aria-label="홈으로 이동"] {
+  overflow: visible !important;
+}
+
+.mobile-topbar-premium,
+.native-app-topbar {
+  min-height: 48px !important;
+  align-items: center !important;
+}
+
+.mobile-topbar-premium > button[aria-label="홈으로 이동"],
+.native-app-topbar > button[aria-label="홈으로 이동"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  padding: 4px !important;
+  line-height: 1 !important;
+  box-sizing: border-box !important;
+}
+
+.mobile-topbar-premium .mobile-brand-logo,
+.native-app-topbar .mobile-brand-logo,
+.mobile-topbar-premium > button[aria-label="홈으로 이동"] img,
+.native-app-topbar > button[aria-label="홈으로 이동"] img {
+  display: block !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  aspect-ratio: 1 / 1 !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  flex: 0 0 32px !important;
+  transform: none !important;
+  clip-path: none !important;
+  overflow: visible !important;
+  box-sizing: border-box !important;
+}
