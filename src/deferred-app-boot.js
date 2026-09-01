@@ -6,15 +6,11 @@ const primary=[
     import("./tarot-saju-rebuild-20260818.css"),
     import("./pet-tarot-intro-fix-20260819.css"),
   ]),
-  ()=>Promise.all([import("./PetLifeApp.jsx"),import("./petlife-home-bridge.js")]).then(([petLife,bridge])=>{petLife.bootPetLife?.();bridge.bootPetLifeHomeBridge?.();}),
   ()=>import("./requested-polish-20260818.js"),
   ()=>import("./aab-ready-fixes-20260818.js"),
   ()=>import("./requested-final-fixes-20260818.js"),
   ()=>import("./home-quick-petbti-20260819.js"),
   ()=>import("./petgrow-final-batch-20260819.js"),
-  ()=>import("./petlife-final-qa.js"),
-  ()=>import("./petlife-mobile-form-v2.js"),
-  ()=>Promise.all([import("./petlife-navigation-ux.js"),import("./petlife-server-bridge.js")]).then(([navigation,serverBridge])=>{navigation.bootPetLifeNavigationUX?.();serverBridge.bootPetLifeServerBridge?.();}),
 ];
 
 const deep=[
