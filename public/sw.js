@@ -1,83 +1,92 @@
-// PetGrow service worker v30
-// HTML/API는 항상 최신 네트워크 응답을 사용하고, 해시 정적 자산과 버전된 브랜드 자산만 캐시합니다.
-const ASSET_CACHE = "petgrow-assets-v30";
-const ASSET_PATH = "/assets/";
-const HASHED_ASSET_RE = /\/assets\/[^/?]+-[A-Za-z0-9_-]{8,}\.[A-Za-z0-9]+$/;
-const MAX_CACHE_ENTRIES = 120;
-const BRAND_PATHS = new Set([
-  "/petgrow-brand-source.png",
-  "/petgrow-splash-logo.png",
-  "/icon-192.png",
-  "/icon-512.png",
-  "/icon-512-maskable.png",
-]);
+const CACHE_VERSION = "petgrow-2026-09-01-v1";
+const APP_CACHE = `${CACHE_VERSION}-app`;
 
-self.addEventListener("install", () => {
-  self.skipWaiting();
+const SHELL_ASSETS = [
+  "/",
+  "/index.html",
+  "/manifest.json",
+  "/icon-192.png",
+  "/icon-512.png"
+];
+
+self.addEventListener("install", (event) => {
+  event.waitUntil((async () => {
+    const cache = await caches.open(APP_CACHE);
+    await cache.addAll(SHELL_ASSETS);
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.filter((key) => key !== ASSET_CACHE).map((key) => caches.delete(key))))
-      .then(() => self.clients.claim())
-  );
+  event.waitUntil((async () => {
+    const names = await caches.keys();
+    await Promise.all(
+      names.map((name) => {
+        if (name !== APP_CACHE) return caches.delete(name);
+        return Promise.resolve(false);
+      })
+    );
+    await self.clients.claim();
+  })());
 });
 
-async function putAndTrim(cache, request, response) {
-  await cache.put(request, response);
-  const keys = await cache.keys();
-  if (keys.length > MAX_CACHE_ENTRIES) {
-    await Promise.all(keys.slice(0, keys.length - MAX_CACHE_ENTRIES).map((key) => cache.delete(key)));
+self.addEventListener("message", (event) => {
+  if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
+  if (event.data?.type === "CLEAR_PETGROW_CACHES") {
+    event.waitUntil((async () => {
+      const names = await caches.keys();
+      await Promise.all(names.map((name) => caches.delete(name)));
+    })());
   }
-}
-
-async function fetchAndCache(cache, request, event) {
-  const response = await fetch(request);
-  if (response && response.ok && response.status === 200 && response.type !== "opaque") {
-    // 사용자 응답과 캐시 기록을 분리하되 서비스워커 수명은 캐시 정리까지 유지합니다.
-    event.waitUntil(putAndTrim(cache, request, response.clone()).catch(() => {}));
-  }
-  return response;
-}
+});
 
 self.addEventListener("fetch", (event) => {
   const request = event.request;
   if (request.method !== "GET") return;
 
-  // Audio/video assets can be large and are commonly served with byte-range semantics.
-  // Leave media streaming to the browser/network instead of consuming the bounded app cache.
-  if (request.destination === "audio" || request.destination === "video") return;
+  const url = new URL(request.url);
 
-  // Other byte-range requests can return 206 Partial Content.
-  // Never cache those partial responses as if they were the complete asset.
-  if (request.headers.has("range")) return;
-
-  let url;
-  try { url = new URL(request.url); } catch { return; }
   if (url.origin !== self.location.origin) return;
 
-  // Vite의 해시가 실제 파일명에 붙은 자산만 장기 cache-first로 취급합니다.
-  // /assets/ 아래의 고정 파일명이 실수로 추가돼도 오래된 파일이 영구 재사용되지 않게 합니다.
-  const isHashedAsset = url.pathname.startsWith(ASSET_PATH) && HASHED_ASSET_RE.test(url.pathname);
-  const isBrandAsset = BRAND_PATHS.has(url.pathname);
-  if (!isHashedAsset && !isBrandAsset) return;
+  // Never cache the service worker itself or app-update metadata.
+  if (url.pathname === "/sw.js" || url.pathname === "/app-update.json") {
+    event.respondWith(fetch(request, { cache: "no-store" }));
+    return;
+  }
 
-  event.respondWith(
-    caches.open(ASSET_CACHE).then(async (cache) => {
-      const cached = await cache.match(request);
-
-      // 해시 자산은 URL 자체가 버전이므로 cache-first가 가장 효율적입니다.
-      if (cached && isHashedAsset) return cached;
-
-      // 로고/아이콘처럼 URL이 고정된 브랜드 자산은 캐시를 즉시 보여주되
-      // 백그라운드에서 최신 버전을 갱신해 다음 방문부터 오래된 이미지가 남지 않게 합니다.
-      if (cached && isBrandAsset) {
-        event.waitUntil(fetchAndCache(cache, request, event).catch(() => {}));
-        return cached;
+  // HTML/navigation must always prefer the network so removed UI/routes cannot
+  // reappear from a stale application shell. Fall back to the cached shell only
+  // when the device is genuinely offline.
+  if (request.mode === "navigate" || request.destination === "document") {
+    event.respondWith((async () => {
+      try {
+        return await fetch(request, { cache: "no-store" });
+      } catch {
+        const cache = await caches.open(APP_CACHE);
+        return (await cache.match("/index.html")) || Response.error();
       }
+    })());
+    return;
+  }
 
-      return fetchAndCache(cache, request, event);
-    })
-  );
+  // Hashed build assets are safe to cache. Use stale-while-revalidate so a
+  // previously downloaded asset can load immediately without pinning HTML.
+  if (url.pathname.startsWith("/assets/")) {
+    event.respondWith((async () => {
+      const cache = await caches.open(APP_CACHE);
+      const cached = await cache.match(request);
+      const network = fetch(request).then((response) => {
+        if (response.ok) cache.put(request, response.clone());
+        return response;
+      }).catch(() => null);
+      return cached || (await network) || Response.error();
+    })());
+    return;
+  }
+
+  // Everything else is network-first and is not persisted as page content.
+  event.respondWith(fetch(request).catch(async () => {
+    const cache = await caches.open(APP_CACHE);
+    return (await cache.match(request)) || Response.error();
+  }));
 });
