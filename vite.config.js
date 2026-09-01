@@ -1,7 +1,5 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { readdir, readFile, writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
 import petgrowBrandRefresh20260822 from "./build/petgrow-brand-refresh-20260822.mjs";
 import petgrowUiFixes from "./build/petgrow-ui-fixes.mjs";
 import petgrowStabilityCleanup from "./build/petgrow-stability-cleanup-20260818.mjs";
@@ -37,48 +35,8 @@ function petgrowAdsenseWeb() {
   };
 }
 
-function petgrowAdsenseEditorialPages() {
-  const loader = `
-<script data-petgrow-editorial-adsense>
-(function(){
-  if(!/^https?:$/.test(location.protocol))return;
-  if(/(?:^|[?&])app_version=/i.test(location.search))return;
-  if(document.querySelector('script[data-petgrow-adsense]'))return;
-  var main=document.querySelector('main');
-  var text=String(main&&main.innerText||'').trim();
-  if(text.length<700)return;
-  var s=document.createElement('script');
-  s.async=true;s.crossOrigin='anonymous';s.dataset.petgrowAdsense='true';
-  s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}';
-  document.head.appendChild(s);
-})();
-</script>`;
-  return {
-    name: "petgrow-adsense-editorial-pages",
-    apply: "build",
-    async closeBundle() {
-      const dist = resolve(process.cwd(), "dist");
-      const files = [resolve(dist, "pet-guide.html")];
-      const guideDir = resolve(dist, "guides");
-      try {
-        for (const entry of await readdir(guideDir, { withFileTypes: true })) {
-          if (entry.isFile() && entry.name.endsWith(".html")) files.push(resolve(guideDir, entry.name));
-        }
-      } catch {}
-      for (const file of files) {
-        try {
-          let html = await readFile(file, "utf8");
-          if (html.includes("data-petgrow-editorial-adsense")) continue;
-          html = html.replace(/<\/body>/i, `${loader}</body>`);
-          await writeFile(file, html, "utf8");
-        } catch {}
-      }
-    },
-  };
-}
-
 export default defineConfig({
-  plugins: [petgrowHomeBootUnblock20260828(), petgrowBrandRefresh20260822(), petgrowPetLifeLegalAudit20260821(), petgrowFullQa20260821(), petgrowSplashV4(), petgrowSplashReadyGate(), petgrowAdsenseWeb(), petgrowAdsenseEditorialPages(), petgrowPerformanceLazy(), petgrowRechartsTreeShake20260822(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), petgrowMenuSplitV3(), petgrowMenuSplitV4(), petgrowPetTalkSplitV5(), petgrowDeepMenuSplitV6(), petgrowDeepScreenSplitV7(), petgrowRouteSplitV8(), react()],
+  plugins: [petgrowHomeBootUnblock20260828(), petgrowBrandRefresh20260822(), petgrowPetLifeLegalAudit20260821(), petgrowFullQa20260821(), petgrowSplashV4(), petgrowSplashReadyGate(), petgrowAdsenseWeb(), petgrowPerformanceLazy(), petgrowRechartsTreeShake20260822(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), petgrowMenuSplitV3(), petgrowMenuSplitV4(), petgrowPetTalkSplitV5(), petgrowDeepMenuSplitV6(), petgrowDeepScreenSplitV7(), petgrowRouteSplitV8(), react()],
   esbuild: {
     legalComments: "none",
   },
