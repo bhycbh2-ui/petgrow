@@ -19,7 +19,7 @@ export default function petgrowFullQa20260821(){
 
       one(
         "Items subject to deletion may include the PetGrow account, Kakao authentication-related identifiers, pet information, profile photos, and saved test/service results.",
-        "Items subject to deletion may include the PetGrow account, Kakao authentication-related identifiers, pet information, profile photos, growth records, PetLife records/schedules/photos, saved test/service results, and Pet Talk posts/comments/likes/attached photos.",
+        "Items subject to deletion may include the PetGrow account, Kakao authentication-related identifiers, pet information, profile photos, growth records, saved test/service results, and Pet Talk posts/comments/likes/attached photos.",
         "privacy-en-deletion"
       );
 
@@ -31,8 +31,8 @@ export default function petgrowFullQa20260821(){
       );
 
       one(
-        'const labels={home:"홈",about:"소개",pets:"우리 아이",petlife:"PetLife",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"회원정보",support:"고객지원",admin:"관리자"};',
-        'const labels={home:"홈",about:"소개",pets:"우리 아이",petlife:"PetLife",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",news:"Pet뉴스",tips:"Pet정보",guide:"정보가이드",content:"콘텐츠",my:"회원정보",more:"더보기",support:"고객지원","ad-inquiry":"제휴문의",login:"로그인",terms:"이용약관",privacy:"개인정보",admin:"관리자"};',
+        'const labels={home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"회원정보",support:"고객지원",admin:"관리자"};',
+        'const labels={home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",news:"Pet뉴스",tips:"Pet정보",guide:"정보가이드",content:"콘텐츠",my:"회원정보",more:"더보기",support:"고객지원","ad-inquiry":"제휴문의",login:"로그인",terms:"이용약관",privacy:"개인정보",admin:"관리자"};',
         "admin-menu-labels"
       );
 
