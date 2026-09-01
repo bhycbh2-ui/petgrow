@@ -1,32 +1,49 @@
-const CACHE_VERSION = "petgrow-2026-09-01-v1";
-const APP_CACHE = `${CACHE_VERSION}-app`;
+const CACHE_VERSION = "petgrow-2026-09-01-v2";
+const APP_CACHE = `${CACHE_VERSION}-assets`;
 
-const SHELL_ASSETS = [
-  "/",
-  "/index.html",
+// Never precache HTML. This prevents an old document/app shell from being
+// resurrected by an installed PWA after the server version has changed.
+const SAFE_ASSETS = [
   "/manifest.json",
   "/icon-192.png",
   "/icon-512.png"
 ];
 
+const isLegacyGuidePath = (pathname) =>
+  pathname === "/pet-guide.html" ||
+  pathname === "/pet-guide" ||
+  pathname.startsWith("/guides/");
+
 self.addEventListener("install", (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(APP_CACHE);
-    await cache.addAll(SHELL_ASSETS);
+    await cache.addAll(SAFE_ASSETS);
     await self.skipWaiting();
   })());
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil((async () => {
+    // Delete every older PetGrow cache, including caches created by previous
+    // service-worker versions.
     const names = await caches.keys();
     await Promise.all(
-      names.map((name) => {
-        if (name !== APP_CACHE) return caches.delete(name);
-        return Promise.resolve(false);
-      })
+      names.map((name) => name === APP_CACHE ? Promise.resolve(false) : caches.delete(name))
     );
+
     await self.clients.claim();
+
+    // If an already-open iOS/Safari/PWA client is sitting on one of the deleted
+    // legacy guide pages, move that client back to the current home immediately.
+    const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    await Promise.all(clients.map(async (client) => {
+      try {
+        const clientUrl = new URL(client.url);
+        if (clientUrl.origin === self.location.origin && isLegacyGuidePath(clientUrl.pathname)) {
+          await client.navigate("/?legacy_guide_removed=20260901v2");
+        }
+      } catch (_) {}
+    }));
   })());
 });
 
@@ -45,32 +62,50 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET") return;
 
   const url = new URL(request.url);
-
   if (url.origin !== self.location.origin) return;
 
-  // Never cache the service worker itself or app-update metadata.
-  if (url.pathname === "/sw.js" || url.pathname === "/app-update.json") {
+  // Hard-block every old guide URL at the service-worker layer as well as on
+  // Vercel. This also protects installed PWAs that still try an old URL.
+  if (isLegacyGuidePath(url.pathname)) {
+    event.respondWith(Response.redirect(new URL("/?legacy_guide_removed=20260901v2", self.location.origin), 302));
+    return;
+  }
+
+  // Control files must always come from the network.
+  if (
+    url.pathname === "/sw.js" ||
+    url.pathname === "/manifest.json" ||
+    url.pathname === "/app-update.json" ||
+    url.pathname === "/sw-reset-20260901.js"
+  ) {
     event.respondWith(fetch(request, { cache: "no-store" }));
     return;
   }
 
-  // HTML/navigation must always prefer the network so removed UI/routes cannot
-  // reappear from a stale application shell. Fall back to the cached shell only
-  // when the device is genuinely offline.
+  // Documents are never read from or written to Cache Storage. If the network
+  // is unavailable, return a small offline response instead of an old app shell.
   if (request.mode === "navigate" || request.destination === "document") {
     event.respondWith((async () => {
       try {
         return await fetch(request, { cache: "no-store" });
       } catch {
-        const cache = await caches.open(APP_CACHE);
-        return (await cache.match("/index.html")) || Response.error();
+        return new Response(
+          "PetGrow 연결이 필요합니다. 네트워크를 확인한 뒤 다시 시도해 주세요.",
+          {
+            status: 503,
+            headers: {
+              "Content-Type": "text/plain; charset=utf-8",
+              "Cache-Control": "no-store"
+            }
+          }
+        );
       }
     })());
     return;
   }
 
-  // Hashed build assets are safe to cache. Use stale-while-revalidate so a
-  // previously downloaded asset can load immediately without pinning HTML.
+  // Hashed production assets can be cached safely because their URL changes on
+  // each build. Everything else remains network-first/no-persist.
   if (url.pathname.startsWith("/assets/")) {
     event.respondWith((async () => {
       const cache = await caches.open(APP_CACHE);
@@ -84,9 +119,5 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Everything else is network-first and is not persisted as page content.
-  event.respondWith(fetch(request).catch(async () => {
-    const cache = await caches.open(APP_CACHE);
-    return (await cache.match(request)) || Response.error();
-  }));
+  event.respondWith(fetch(request, { cache: "no-store" }));
 });
