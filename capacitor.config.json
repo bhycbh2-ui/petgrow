@@ -4,7 +4,7 @@
   "webDir": "dist",
   "server": {
     "androidScheme": "https",
-    "url": "https://www.petgrow.co.kr?app_version=1.7.0",
+    "url": "https://www.petgrow.co.kr?app_version=1.7.1",
     "cleartext": false
   },
   "plugins": {
