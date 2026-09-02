@@ -16,7 +16,9 @@ const primary=[
 const deep=[
   // Ads/privacy/admin are intentionally outside the first idle slice.
   ()=>import("./adsense-review-20260822.css"),
-  ()=>Promise.all([import("./adsense-review-20260822.js"),import("./admob-readiness-20260822.js")]),
+  // android-admob.js owns UMP consent and initializes Mobile Ads only after
+  // consent is obtained/not required. Do not initialize the SDK a second time here.
+  ()=>import("./adsense-review-20260822.js"),
   ()=>Promise.all([import("./android-admob.js"),import("./admob-privacy-entry.js"),import("./android-admob-engagement-20260828.js")]),
   ()=>import("./admin-news-music-20260818.css"),
   ()=>import("./legacy-server-sync.js"),

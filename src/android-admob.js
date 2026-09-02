@@ -8,7 +8,8 @@ let consentReady=false;
 let showTimer=0;
 
 const DEFAULT_BANNER_ID="ca-app-pub-9699974051273244/9809518314";
-const MIN_CONTENT_CHARS=700;
+const MIN_CONTENT_CHARS=900;
+const EMPTY_CONTENT_RE=/(게시물이\s*없|검색\s*결과가\s*없|콘텐츠가\s*없|아직\s*등록된|불러오는\s*중|준비\s*중|다시\s*시도)/i;
 const RESTRICTED_ROUTE_RE=/(?:^|[\/#?&=_-])(loading|login|signin|signup|auth|admin|error|404|empty|consent|terms|privacy|delete-account|account|profile)(?:$|[\/#?&=_-])/i;
 const RESTRICTED_HEADING_RE=/(로그인|회원가입|관리자\s*센터|회원\s*정보|개인정보\s*처리방침|이용약관|회원탈퇴|계정\s*삭제|오류|에러|페이지를\s*찾을\s*수|검색\s*결과\s*없|불러오는\s*중|준비\s*중|동의)/i;
 const CONTENT_VIEW_RE=/(pet\s*정보|pet정보|펫\s*정보|pet\s*뉴스|pet뉴스|펫\s*뉴스)/i;
@@ -119,6 +120,14 @@ function publisherTextLength(){
   return String(root.innerText||root.textContent||"").replace(/\s+/g," ").trim().length;
 }
 
+function visibleEditorialBlocks(){
+  const root=document.querySelector("main")||document.getElementById("root");
+  if(!root)return 0;
+  return [...root.querySelectorAll("article,section,p,.bg-card,.petnews-card-v10,.petnews-inline-detail")]
+    .filter(el=>isVisible(el)&&String(el.innerText||el.textContent||"").replace(/\s+/g," ").trim().length>=90)
+    .length;
+}
+
 function isAdEligibleScreen(){
   if(document.visibilityState!=="visible")return false;
   if(petLifeOpen||document.querySelector("#petlife-react-root .pl-shell"))return false;
@@ -131,7 +140,9 @@ function isAdEligibleScreen(){
   // 홈·우리 아이·커뮤니티·지도·음악·검사·사주·계정·입력/관리 화면에는 광고를 표시하지 않습니다.
   const label=activeViewLabel();
   if(!label||!CONTENT_VIEW_RE.test(label))return false;
-  if(publisherTextLength()<MIN_CONTENT_CHARS)return false;
+  const contentText=String((document.querySelector("main")||document.getElementById("root"))?.innerText||"");
+  if(EMPTY_CONTENT_RE.test(contentText))return false;
+  if(publisherTextLength()<MIN_CONTENT_CHARS||visibleEditorialBlocks()<3)return false;
   return true;
 }
 

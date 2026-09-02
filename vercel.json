@@ -49,6 +49,16 @@
       "continue": true
     },
     {
+      "src": "/guides/style.css",
+      "headers": { "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400" },
+      "continue": true
+    },
+    {
+      "src": "/(pet-guide.html|about.html|app.html|contact.html|editorial-policy.html|privacy-policy.html|terms.html|delete-account.html|guides/.*\\.html)",
+      "headers": { "Cache-Control": "public, max-age=300, stale-while-revalidate=3600" },
+      "continue": true
+    },
+    {
       "src": "/",
       "headers": {
         "Cache-Control": "no-cache, no-store, must-revalidate",
@@ -65,24 +75,6 @@
     { "src": "/api/nearby-reviews", "dest": "/api/core?route=nearby-reviews" },
     { "src": "/api/tarot", "dest": "/api/core?route=tarot" },
     { "src": "/api/auth/logout", "dest": "/api/account?route=logout" },
-    {
-      "src": "/pet-guide\\.html/?",
-      "status": 404,
-      "headers": {
-        "Cache-Control": "no-store, max-age=0",
-        "X-Robots-Tag": "noindex, nofollow, noarchive",
-        "Content-Type": "text/plain; charset=utf-8"
-      }
-    },
-    {
-      "src": "/guides/.*",
-      "status": 404,
-      "headers": {
-        "Cache-Control": "no-store, max-age=0",
-        "X-Robots-Tag": "noindex, nofollow, noarchive",
-        "Content-Type": "text/plain; charset=utf-8"
-      }
-    },
     { "handle": "filesystem" },
     {
       "src": "/assets/.*",

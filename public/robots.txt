@@ -10,5 +10,5 @@ Disallow:
 User-agent: Googlebot
 Disallow:
 
-Host: https://www.petgrow.co.kr
+Host: www.petgrow.co.kr
 Sitemap: https://www.petgrow.co.kr/sitemap.xml
