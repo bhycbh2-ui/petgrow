@@ -627,7 +627,7 @@ const STRINGS = {
     saveToastOk: "저장되었습니다.",
     saveToastError: "저장에 실패했어요 — 저장 공간이 가득 찼을 수 있어요. 오래된 사진을 정리해보세요.",
     welcomeBackMsg: (name) => name ? `다시 오셨군요! 🐾 ${name}의 기록을 이어가볼까요?` : "다시 오셨군요! 🐾 기록을 이어가볼까요?",
-    socialLabels: { youtube: "유튜브", instagram: "인스타그램", threads: "스레드", tiktok: "틱톡", blog: "네이버 블로그" },
+    socialLabels: { youtube: "유튜브", instagram: "인스타그램", threads: "스레드", tiktok: "틱톡", blog: "네이버 블로그", clip: "네이버 클립", kakao: "카카오톡 채널" },
     introVideoMute: "소리 끄기",
     introVideoUnmute: "소리 켜기",
     landingHeadlineHighlight: "PetGrow",
@@ -1169,7 +1169,7 @@ const STRINGS = {
     saveToastOk: "Saved",
     saveToastError: "Couldn't save — storage may be full. Try removing some older photos.",
     welcomeBackMsg: (name) => name ? `Welcome back! 🐾 Ready to continue tracking ${name}?` : "Welcome back! 🐾 Ready to continue your records?",
-    socialLabels: { youtube: "YouTube", instagram: "Instagram", threads: "Threads", tiktok: "TikTok", blog: "Naver Blog" },
+    socialLabels: { youtube: "YouTube", instagram: "Instagram", threads: "Threads", tiktok: "TikTok", blog: "Naver Blog", clip: "Naver Clip", kakao: "KakaoTalk Channel" },
     introVideoMute: "Mute",
     introVideoUnmute: "Unmute",
     landingHeadlineHighlight: "PetGrow",
@@ -1848,6 +1848,18 @@ const BlogIcon = (p) => (
     <path d="M5 3h9l5 5v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
     <path d="M14 3v5h5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
     <path d="M7 13h10M7 16.5h7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+  </svg>
+);
+const ClipIcon = (p) => (
+  <svg className="icon" viewBox="0 0 24 24" {...p}>
+    <rect x="2" y="2" width="20" height="20" rx="6" fill="currentColor" />
+    <path d="M10 8.2v7.6l6-3.8-6-3.8z" fill="#fff" />
+  </svg>
+);
+const KakaoChannelIcon = (p) => (
+  <svg className="icon" viewBox="0 0 24 24" {...p}>
+    <path d="M12 3C6.5 3 2 6.5 2 10.8c0 2.8 1.9 5.3 4.8 6.6l-1 3.6 4.2-2.7c.7.1 1.3.2 2 .2 5.5 0 10-3.5 10-7.7S17.5 3 12 3z" fill="currentColor" />
+    <path d="M8 8.2v1.1h1.6v4.4h1.2V9.3h1.6V8.2H8zm5.1 0v5.5h3.5v-1.1h-2.3V8.2h-1.2z" fill="#241E1E" />
   </svg>
 );
 const SoundOnIcon = (p) => (
@@ -3024,10 +3036,15 @@ const GlobalStyle = () => (
     .landing-trust{display:flex; flex-wrap:wrap; justify-content:center; gap:12px 28px; margin-top:44px;
       padding-top:28px; border-top:1px solid #E2E9E3;}
     .landing-trust-item{display:flex; align-items:center; gap:6px; font-size:13px; color:#737E76; font-weight:600;}
-    .social-links{display:flex; justify-content:center; gap:14px;}
+    .social-links{display:flex; flex-wrap:wrap; justify-content:center; gap:14px;}
     .social-btn{width:46px; height:46px; border-radius:50%; background:#fff; display:flex; align-items:center;
       justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.08); transition:.15s;}
     .social-btn:hover{transform:translateY(-3px); box-shadow:0 8px 20px rgba(0,0,0,.12);}
+    .kakao-chat-cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;padding:12px 20px;border-radius:999px;background:#FEE500;color:#241E1E;font-size:13px;font-weight:900;box-shadow:0 7px 18px rgba(42,36,21,.12);text-decoration:none}
+    .kakao-chat-cta:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(42,36,21,.16)}
+    .kakao-chat-fab{position:fixed;right:18px;bottom:24px;z-index:850;display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:999px;background:#FEE500;color:#241E1E;font-size:12px;font-weight:900;text-decoration:none;box-shadow:0 10px 28px rgba(31,35,31,.2)}
+    .kakao-chat-fab svg{width:19px;height:19px}.bboggl-root:not(.petgrow-web-layout) .kakao-chat-fab{bottom:88px}
+    @media(max-width:420px){.kakao-chat-fab{right:12px;padding:11px 13px}.kakao-chat-fab span{display:none}}
     .save-toast{position:fixed; left:50%; bottom:max(28px, calc(env(safe-area-inset-bottom) + 20px)); transform:translateX(-50%); z-index:200;
       background:var(--text); color:#fff; padding:12px 20px; border-radius:999px; font-size:13px; font-weight:700;
       display:flex; align-items:center; gap:8px; box-shadow:0 10px 24px rgba(0,0,0,.25); animation:toastIn .25s ease both;
@@ -9705,12 +9722,16 @@ function IntroVideo() {
 }
 
 // 공식 소셜 채널 링크
+const KAKAO_CHANNEL_URL = "https://pf.kakao.com/_TLyxaX";
+const KAKAO_CHAT_URL = `${KAKAO_CHANNEL_URL}/chat`;
 const SOCIAL_LINKS = [
   { id: "youtube", url: "https://www.youtube.com/@petgrow_official", icon: YoutubeIcon, color: "#FF0000" },
   { id: "instagram", url: "https://www.instagram.com/petgrow_official", icon: InstagramIcon, color: "#E1306C" },
   { id: "threads", url: "https://www.threads.com/@petgrow_official", icon: ThreadsIcon, color: "#223027" },
   { id: "tiktok", url: "https://www.tiktok.com/@petgrow_official", icon: TiktokIcon, color: "#223027" },
   { id: "blog", url: "https://blog.naver.com/petgrow", icon: BlogIcon, color: "#03C75A" },
+  { id: "clip", url: "https://naver.me/FORGDLhE", icon: ClipIcon, color: "#03C75A" },
+  { id: "kakao", url: KAKAO_CHANNEL_URL, icon: KakaoChannelIcon, color: "#FEE500" },
 ];
 function SocialLinks() {
   const t = useT();
@@ -9953,6 +9974,7 @@ function AboutPage({ onStart, onNavigate }) {
           <div style={{ marginTop: 40 }}>
             <div className="bg-sub" style={{ textAlign: "center", fontSize: 13, fontWeight: 700, marginBottom: 14 }}>{t.socialTitle}</div>
             <SocialLinks />
+            <div style={{ textAlign: "center" }}><a className="kakao-chat-cta" href={KAKAO_CHAT_URL} target="_blank" rel="noopener noreferrer"><KakaoChannelIcon style={{ width: 20, height: 20 }} />{lang === "en" ? "Chat on KakaoTalk" : "카카오톡 1:1 상담"}</a></div>
           </div>
         </div>
       </section>
@@ -11288,6 +11310,7 @@ function SupportPage({account,onBack}){
   const pages=Math.max(1,Math.ceil((data.total||0)/20));
   return <div className="support-page">
     <div className="support-head"><div><h1>고객지원</h1><p>공지사항과 문의/피드백을 확인할 수 있어요.</p></div><button className="bg-btn bg-btn-ghost support-back-right" onClick={onBack}>← 돌아가기</button></div>
+    <div className="bg-card" style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:14,marginBottom:14,background:"#FFFBE8",borderColor:"#F2DE62"}}><div><b>카카오톡 빠른 상담</b><p className="bg-sub" style={{margin:"4px 0 0"}}>펫그로우 채널의 1:1 채팅창으로 바로 연결돼요.</p></div><a className="kakao-chat-cta" style={{marginTop:0,flex:"0 0 auto"}} href={KAKAO_CHAT_URL} target="_blank" rel="noopener noreferrer"><KakaoChannelIcon style={{width:18,height:18}} />채팅하기</a></div>
     <div className="support-tabs">
       <button className={section==="notices"?"active":""} onClick={()=>{setSection("notices");setPage(1)}}>📢 공지사항</button>
       <button className={section==="public"?"active":""} onClick={()=>{setSection("public");setPage(1)}}>💬 공개 피드백</button>
@@ -12528,6 +12551,7 @@ function AppInner({ lang, setLang }) {
         message={t.welcomeBackMsg((pets.dog[0] || pets.cat[0] || {}).profile?.name || "")}
         onClose={() => setWelcomeBackOpen(false)}
       />
+      {effectiveView !== "admin" && <a className="kakao-chat-fab" href={KAKAO_CHAT_URL} target="_blank" rel="noopener noreferrer" aria-label="펫그로우 카카오톡 1:1 상담"><KakaoChannelIcon /><span>카카오톡 상담</span></a>}
     </div>
   );
 }

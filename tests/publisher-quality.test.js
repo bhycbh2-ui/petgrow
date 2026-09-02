@@ -41,3 +41,19 @@ test("Android ads remain consent-first and restricted to substantial content",()
   assert.match(admob,/visibleEditorialBlocks\(\)<3/);
   assert.match(admob,/CONTENT_VIEW_RE/);
 });
+
+test("official channel list includes the Naver Clip profile",()=>{
+  const app=read("src/App.jsx");
+  assert.match(app,/https:\/\/naver\.me\/FORGDLhE/);
+  assert.match(app,/clip: "네이버 클립"/);
+  assert.match(app,/\.social-links\{display:flex; flex-wrap:wrap;/);
+});
+
+test("Kakao channel and one-to-one chat are linked on app and web support",()=>{
+  const app=read("src/App.jsx");
+  const contact=read("public/contact.html");
+  assert.match(app,/https:\/\/pf\.kakao\.com\/_TLyxaX/);
+  assert.match(app,/KAKAO_CHAT_URL = `\$\{KAKAO_CHANNEL_URL\}\/chat`/);
+  assert.match(app,/카카오톡 1:1 상담/);
+  assert.match(contact,/https:\/\/pf\.kakao\.com\/_TLyxaX\/chat/);
+});
