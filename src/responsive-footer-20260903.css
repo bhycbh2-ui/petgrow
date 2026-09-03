@@ -1,50 +1,198 @@
-/* PetGrow footer: desktop web, mobile web, and native app */
+/* PetGrow footer: flat bottom footer for desktop web, mobile web, and native app */
 .petgrow-footer{
-  width:min(calc(100% - 40px),960px)!important;margin:48px auto 0!important;padding:28px 34px 0!important;
-  overflow:hidden!important;border:1px solid #dfe9e1!important;border-radius:24px!important;box-sizing:border-box;
-  background:radial-gradient(circle at 5% 0%,rgba(82,143,91,.10),transparent 32%),linear-gradient(145deg,#fbfdfb,#f5f9f5)!important;
-  box-shadow:0 14px 38px rgba(41,75,50,.07)!important;color:#4d5e52
+  width:min(100%,960px)!important;
+  margin:52px auto 0!important;
+  padding:24px 24px 16px!important;
+  box-sizing:border-box!important;
+  overflow:visible!important;
+  border:0!important;
+  border-top:1px solid rgba(92,119,99,.16)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:#4d5e52!important;
 }
-.petgrow-footer-social-title{margin:0 0 14px!important;color:#365d42!important;font-size:14px!important;font-weight:900!important}
-.petgrow-footer .social-links{justify-content:center!important;flex-wrap:wrap!important;gap:10px!important}
-.petgrow-footer .social-btn{width:44px!important;height:44px!important;flex:0 0 44px!important;border:1px solid rgba(63,104,72,.08)!important;box-shadow:0 7px 18px rgba(37,67,44,.08)!important}
-.petgrow-footer .social-btn:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(37,67,44,.13)!important}
-.petgrow-footer .social-btn:focus-visible,.petgrow-footer-links button:focus-visible{outline:3px solid rgba(79,143,91,.28);outline-offset:3px}
-.petgrow-footer-business{margin:20px 0 0!important;color:#526158!important;font-size:13px!important;font-weight:700!important;line-height:1.65!important;word-break:keep-all}
-.petgrow-footer-email{margin:3px 0 0!important;color:#477653!important;font-size:13px!important;font-weight:800!important;line-height:1.6!important}
-.petgrow-footer-copy{margin-top:5px!important;color:#859087!important;font-size:12px!important;line-height:1.55!important}
-.petgrow-footer-links{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:0!important;width:calc(100% + 68px)!important;margin:24px -34px 0!important;overflow:visible!important;border-top:1px solid #dfe8e1;background:rgba(255,255,255,.74)}
-.petgrow-footer-links button,.petgrow-footer-links a{position:relative;min-width:0!important;min-height:52px;padding:12px 8px!important;border:0;background:transparent;color:#397249!important;font:800 13px/1.35 inherit!important;letter-spacing:-.015em!important;white-space:normal!important;word-break:keep-all!important;cursor:pointer}
-.petgrow-footer-links button+button:before{content:"";position:absolute;top:15px;bottom:15px;left:0;width:1px;background:#e6ede7}
-.petgrow-footer-links button:hover{background:#edf5ef}
+.petgrow-footer-social-title{
+  margin:0 0 12px!important;
+  color:#52665a!important;
+  font-size:13px!important;
+  font-weight:800!important;
+}
+.petgrow-footer .social-links{
+  justify-content:center!important;
+  flex-wrap:wrap!important;
+  gap:9px!important;
+}
+.petgrow-footer .social-btn{
+  width:42px!important;
+  height:42px!important;
+  flex:0 0 42px!important;
+  border:1px solid rgba(63,104,72,.08)!important;
+  box-shadow:none!important;
+}
+.petgrow-footer .social-btn:hover{transform:translateY(-1px)}
+.petgrow-footer .social-btn:focus-visible,.petgrow-footer-links button:focus-visible{
+  outline:3px solid rgba(79,143,91,.24);
+  outline-offset:3px;
+}
+.petgrow-footer-business{
+  max-width:680px!important;
+  margin:18px auto 0!important;
+  color:#56645b!important;
+  font-size:12px!important;
+  font-weight:650!important;
+  line-height:1.7!important;
+  text-align:center!important;
+  word-break:keep-all!important;
+}
+.petgrow-footer-email{
+  margin:3px 0 0!important;
+  color:#5b7563!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  line-height:1.6!important;
+  text-align:center!important;
+}
+.petgrow-footer-copy{
+  margin-top:5px!important;
+  color:#8a938d!important;
+  font-size:11px!important;
+  line-height:1.55!important;
+  text-align:center!important;
+}
+.petgrow-footer-links{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:0!important;
+  width:100%!important;
+  margin:18px 0 0!important;
+  overflow:visible!important;
+  border-top:1px solid rgba(92,119,99,.12)!important;
+  background:transparent!important;
+}
+.petgrow-footer-links button,.petgrow-footer-links a{
+  position:relative;
+  min-width:0!important;
+  min-height:46px!important;
+  padding:10px 8px!important;
+  border:0!important;
+  background:transparent!important;
+  color:#54705c!important;
+  font:750 12px/1.35 inherit!important;
+  letter-spacing:-.015em!important;
+  white-space:normal!important;
+  word-break:keep-all!important;
+  cursor:pointer!important;
+}
+.petgrow-footer-links button+button:before{
+  content:"";
+  position:absolute;
+  top:13px;
+  bottom:13px;
+  left:0;
+  width:1px;
+  background:rgba(92,119,99,.12);
+}
+.petgrow-footer-links button:hover{background:rgba(255,255,255,.28)!important}
 
-/* Mobile web: larger channels and readable two-column policy links. */
+/* Mobile web: no floating card. Footer stays as the last page element. */
 @media(max-width:700px){
-  .petgrow-web-layout .petgrow-footer{width:calc(100% - 28px)!important;margin-top:34px!important;padding:23px 20px 0!important;border-radius:22px!important}
-  .petgrow-web-layout .petgrow-footer .social-links{width:min(100%,236px);margin:0 auto;gap:10px 12px!important}
-  .petgrow-web-layout .petgrow-footer .social-btn{width:48px!important;height:48px!important;flex-basis:48px!important}
-  .petgrow-web-layout .petgrow-footer-business{max-width:300px;margin:20px auto 0!important;font-size:12px!important;line-height:1.75!important}
-  .petgrow-web-layout .petgrow-footer-links{grid-template-columns:repeat(2,minmax(0,1fr))!important;width:calc(100% + 40px)!important;margin:20px -20px 0!important}
-  .petgrow-web-layout .petgrow-footer-links button{min-height:50px;font-size:13px!important}
-  .petgrow-web-layout .petgrow-footer-links button+button:before{display:none}
-  .petgrow-web-layout .petgrow-footer-links button:nth-child(even){border-left:1px solid #e6ede7}
-  .petgrow-web-layout .petgrow-footer-links button:nth-child(n+3){border-top:1px solid #e6ede7}
+  .petgrow-web-layout .petgrow-footer{
+    width:100%!important;
+    margin-top:38px!important;
+    padding:20px 18px 14px!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+  .petgrow-web-layout .petgrow-footer .social-links{
+    width:min(100%,236px)!important;
+    margin:0 auto!important;
+    gap:9px 11px!important;
+  }
+  .petgrow-web-layout .petgrow-footer .social-btn{
+    width:46px!important;
+    height:46px!important;
+    flex-basis:46px!important;
+  }
+  .petgrow-web-layout .petgrow-footer-business{
+    max-width:320px!important;
+    margin:16px auto 0!important;
+    font-size:11.5px!important;
+    line-height:1.7!important;
+  }
+  .petgrow-web-layout .petgrow-footer-links{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    width:100%!important;
+    margin:16px 0 0!important;
+  }
+  .petgrow-web-layout .petgrow-footer-links button{
+    min-height:46px!important;
+    font-size:12px!important;
+  }
+  .petgrow-web-layout .petgrow-footer-links button+button:before{display:none!important}
+  .petgrow-web-layout .petgrow-footer-links button:nth-child(even){border-left:1px solid rgba(92,119,99,.12)!important}
+  .petgrow-web-layout .petgrow-footer-links button:nth-child(n+3){border-top:1px solid rgba(92,119,99,.12)!important}
   .petgrow-web-layout .petgrow-footer-links button:last-child:nth-child(odd){grid-column:1/-1}
 }
 
-/* Native app: compact footer that clears the fixed bottom navigation. */
-.bboggl-root:not(.petgrow-web-layout) .petgrow-footer{width:calc(100% - 24px)!important;margin-top:28px!important;padding:19px 14px 0!important;border-radius:20px!important;box-shadow:none!important}
-.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-social-title{margin-bottom:11px!important;font-size:13px!important}
-.bboggl-root:not(.petgrow-web-layout) .petgrow-footer .social-links{flex-wrap:nowrap!important;gap:clamp(4px,2vw,9px)!important}
-.bboggl-root:not(.petgrow-web-layout) .petgrow-footer .social-btn{width:36px!important;height:36px!important;flex-basis:36px!important;box-shadow:0 5px 13px rgba(37,67,44,.07)!important}
-.bboggl-root:not(.petgrow-web-layout) .petgrow-footer .social-btn svg{width:19px!important;height:19px!important}
-.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-business{max-width:300px;margin:15px auto 0!important;font-size:11.5px!important;line-height:1.65!important}
-.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-email{font-size:12px!important}
-.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-copy{font-size:11px!important}
-.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-links{grid-template-columns:repeat(3,minmax(0,1fr))!important;width:calc(100% + 28px)!important;margin:17px -14px 0!important;padding-bottom:max(4px,env(safe-area-inset-bottom,0px))}
-.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-links button{min-height:46px;padding:9px 4px!important;font-size:11.5px!important}
-.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-links button+button:before{display:none}
-.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-links button:not(:nth-child(3n+1)){border-left:1px solid #e6ede7}
-.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-links button:nth-child(n+4){border-top:1px solid #e6ede7}
-@media(max-width:360px){.bboggl-root:not(.petgrow-web-layout) .petgrow-footer .social-links{gap:4px!important}.bboggl-root:not(.petgrow-web-layout) .petgrow-footer .social-btn{width:34px!important;height:34px!important;flex-basis:34px!important}.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-links button{font-size:11px!important}}
+/* Native app: thin transparent footer immediately above the fixed bottom navigation. */
+.bboggl-root:not(.petgrow-web-layout) .petgrow-footer{
+  width:100%!important;
+  margin:34px auto 0!important;
+  padding:17px 16px 12px!important;
+  border:0!important;
+  border-top:1px solid rgba(92,119,99,.14)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-social-title{
+  margin-bottom:10px!important;
+  font-size:12px!important;
+}
+.bboggl-root:not(.petgrow-web-layout) .petgrow-footer .social-links{
+  flex-wrap:nowrap!important;
+  gap:clamp(4px,2vw,8px)!important;
+}
+.bboggl-root:not(.petgrow-web-layout) .petgrow-footer .social-btn{
+  width:35px!important;
+  height:35px!important;
+  flex-basis:35px!important;
+  box-shadow:none!important;
+}
+.bboggl-root:not(.petgrow-web-layout) .petgrow-footer .social-btn svg{
+  width:18px!important;
+  height:18px!important;
+}
+.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-business{
+  max-width:310px!important;
+  margin:13px auto 0!important;
+  font-size:11px!important;
+  line-height:1.65!important;
+}
+.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-email{font-size:11px!important}
+.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-copy{font-size:10.5px!important}
+.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-links{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  width:100%!important;
+  margin:14px 0 0!important;
+  padding-bottom:max(2px,env(safe-area-inset-bottom,0px))!important;
+  background:transparent!important;
+}
+.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-links button{
+  min-height:42px!important;
+  padding:8px 4px!important;
+  font-size:11px!important;
+}
+.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-links button+button:before{display:none!important}
+.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-links button:not(:nth-child(3n+1)){border-left:1px solid rgba(92,119,99,.12)!important}
+.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-links button:nth-child(n+4){border-top:1px solid rgba(92,119,99,.12)!important}
+
+@media(max-width:360px){
+  .bboggl-root:not(.petgrow-web-layout) .petgrow-footer{padding-left:12px!important;padding-right:12px!important}
+  .bboggl-root:not(.petgrow-web-layout) .petgrow-footer .social-links{gap:4px!important}
+  .bboggl-root:not(.petgrow-web-layout) .petgrow-footer .social-btn{width:33px!important;height:33px!important;flex-basis:33px!important}
+  .bboggl-root:not(.petgrow-web-layout) .petgrow-footer-links button{font-size:10.5px!important}
+}
 @media(prefers-reduced-motion:reduce){.petgrow-footer .social-btn{transition:none!important}}
