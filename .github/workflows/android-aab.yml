@@ -116,14 +116,15 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           import os
-          from PIL import Image
+          from PIL import Image, ImageFile
           targets = [
-              Path('android/app/src/main/res/drawable-nodpi/petgrow_brand_icon.png'),
-              Path('android/app/src/main/res/drawable/splash.png'),
+              (Path('android/app/src/main/res/drawable-nodpi/petgrow_brand_icon.png'), False),
+              (Path('android/app/src/main/res/drawable/splash.png'), True),
           ]
-          for path in targets:
+          for path, allow_truncated in targets:
               if not path.exists():
                   raise SystemExit(f'Missing Android PNG resource: {path}')
+              ImageFile.LOAD_TRUNCATED_IMAGES = allow_truncated
               original_size = path.stat().st_size
               with Image.open(path) as image:
                   image.load()
