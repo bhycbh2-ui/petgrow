@@ -47,6 +47,9 @@ test("official channel list includes the Naver Clip profile",()=>{
   assert.match(app,/https:\/\/naver\.me\/FORGDLhE/);
   assert.match(app,/clip: "네이버 클립"/);
   assert.match(app,/\.social-links\{display:flex; flex-wrap:wrap;/);
+  assert.match(app,/\.petgrow-footer \.social-links\{flex-wrap:nowrap;/);
+  assert.match(app,/<footer className="petgrow-footer">[\s\S]*?<SocialLinks \/>/);
+  assert.match(app,/상호명 아우리녹 · 대표자 정재현 · 사업자등록번호 297-32-01792/);
 });
 
 test("Kakao channel and one-to-one chat are linked on app and web support",()=>{

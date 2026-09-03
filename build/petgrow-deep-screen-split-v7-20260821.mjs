@@ -6,7 +6,7 @@ const CLUSTERS = {
     entry: "AboutPage",
     functions: [
       "CommunityMockCard", "IllustCommunity", "IllustGrowth", "IllustMyPets",
-      "IntroVideo", "LandingFeatureCard", "LandingHighlightCard", "SocialLinks",
+      "IntroVideo", "LandingFeatureCard", "LandingHighlightCard",
       "AboutPage",
     ],
     title: "PetGrow 소개를 불러오는 중입니다",

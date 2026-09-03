@@ -2806,7 +2806,7 @@ const GlobalStyle = () => (
 .petgrow-unified-hero p{font-size:14px!important;line-height:1.65!important;margin:0!important;max-width:720px!important;word-break:keep-all!important}
 .petgrow-content-stage>.petgrow-unified-hero+.petmusic-page>.petmusic-hero,.petgrow-content-stage>.petgrow-unified-hero+.nearby-page>.nearby-hero{display:none!important}
 .petgrow-footer{width:calc(100% - 40px);max-width:900px;margin:34px auto 0;padding:22px 0 38px;border-top:1px solid var(--border);box-sizing:border-box;text-align:center}
-.petgrow-footer-email,.petgrow-footer-copy{font-size:11px;color:var(--sub);line-height:1.6}.petgrow-footer-copy{margin-top:2px}.petgrow-footer-links{display:flex;justify-content:center;align-items:center;gap:8px 18px;flex-wrap:wrap;margin-top:12px}.petgrow-footer-links button,.petgrow-footer-links a{font:600 11px/1.4 inherit;color:var(--primary);background:none;border:0;padding:3px 0;text-decoration:none;cursor:pointer}
+.petgrow-footer-social-title{font-size:12px;font-weight:800;color:var(--sub);margin-bottom:11px}.petgrow-footer .social-links{flex-wrap:nowrap;gap:10px}.petgrow-footer .social-btn{width:40px;height:40px;flex:0 0 40px}.petgrow-footer-business,.petgrow-footer-email,.petgrow-footer-copy{font-size:11px;color:var(--sub);line-height:1.6}.petgrow-footer-business{margin-top:15px;font-weight:600}.petgrow-footer-copy{margin-top:2px}.petgrow-footer-links{display:flex;justify-content:center;align-items:center;gap:8px 18px;flex-wrap:wrap;margin-top:12px}.petgrow-footer-links button,.petgrow-footer-links a{font:600 11px/1.4 inherit;color:var(--primary);background:none;border:0;padding:3px 0;text-decoration:none;cursor:pointer}
 .petnews-list{display:grid;gap:12px}.petnews-card{display:grid;grid-template-columns:180px minmax(0,1fr);gap:16px;padding:0!important;overflow:hidden;text-align:left;border:1px solid var(--border)!important;cursor:pointer}.petnews-card-media{min-height:145px;background:#eef4ee;overflow:hidden}.petnews-card-media img{width:100%;height:100%;min-height:145px;object-fit:cover;display:block}.petnews-card-body{padding:16px 18px 16px 0;min-width:0}.petnews-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--sub);margin-bottom:7px}.petnews-meta b{color:var(--primary)}.petnews-title{font-size:17px;line-height:1.42;font-weight:900;letter-spacing:-.025em;word-break:keep-all}.petnews-summary{font-size:13px;line-height:1.68;color:var(--sub);margin:7px 0 0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all}.petnews-detail{max-width:820px;margin:0 auto}.petnews-detail-back{margin:0 0 12px}.petnews-detail-hero{overflow:hidden;padding:0!important}.petnews-detail-image{width:100%;max-height:420px;object-fit:cover;display:block;background:#eef4ee}.petnews-detail-copy{padding:22px}.petnews-detail-copy h2{font-size:26px;line-height:1.35;letter-spacing:-.035em;margin:8px 0 14px;word-break:keep-all}.petnews-detail-summary{font-size:15px;line-height:1.85;white-space:pre-line;word-break:keep-all}.petnews-source-note{margin-top:18px;padding:14px 16px;border-radius:14px;background:var(--surface);font-size:12px;line-height:1.7;color:var(--sub)}
 @media(max-width:700px){.petgrow-content-stage>.petgrow-unified-hero{width:calc(100% - 28px)!important;padding:20px 18px!important;min-height:118px!important}.petgrow-page-top>.petgrow-unified-hero{padding:20px 18px!important;min-height:118px!important}.petgrow-unified-hero h1{font-size:23px!important}.petgrow-unified-hero p{font-size:13px!important}.petgrow-footer{width:calc(100% - 28px);padding:18px 0 92px}.petnews-card{grid-template-columns:112px minmax(0,1fr);gap:12px}.petnews-card-media,.petnews-card-media img{min-height:128px}.petnews-card-body{padding:12px 12px 12px 0}.petnews-title{font-size:15px}.petnews-summary{font-size:12px;-webkit-line-clamp:3}.petnews-detail-copy{padding:18px}.petnews-detail-copy h2{font-size:21px}.petnews-detail-summary{font-size:14px}}
 
@@ -3648,6 +3648,7 @@ const GlobalStyle = () => (
       }
       .mobile-topbar-premium > button[aria-label="홈으로 이동"]{
         gap:5px !important;
+        flex:0 0 auto;
       }
       .mobile-topbar-premium > button[aria-label="홈으로 이동"] > span{
         font-size:15px !important;
@@ -3671,13 +3672,38 @@ const GlobalStyle = () => (
 
     @media (max-width:390px){
       .mobile-topbar-premium > button[aria-label="홈으로 이동"] > span{
-        display:none;
+        display:inline;
       }
       .mobile-topbar-premium > button[aria-label="홈으로 이동"]{
-        flex:0 0 34px;
+        flex:0 0 auto;
       }
       .mobile-topbar-premium .account-btn{
         max-width:68px;
+      }
+    }
+
+    /* Keep the menu circle and PetGrow brand together on the left. */
+    @media (max-width:899px){
+      .mobile-topbar.mobile-topbar-premium{
+        justify-content:flex-start !important;
+      }
+      .mobile-topbar.mobile-topbar-premium > button[aria-label="홈으로 이동"]{
+        flex:0 0 auto !important;
+      }
+      .mobile-topbar.mobile-topbar-premium > div:last-child{
+        margin-left:auto;
+      }
+      .petgrow-footer .social-links{
+        gap:7px;
+      }
+      .petgrow-footer .social-btn{
+        width:34px;
+        height:34px;
+        flex-basis:34px;
+      }
+      .petgrow-footer .social-btn svg{
+        width:19px !important;
+        height:19px !important;
       }
     }
 
@@ -9962,7 +9988,7 @@ function AboutPage({ onStart, onNavigate }) {
         </div>
       </section>
 
-      {/* SNS + 신뢰 배지 */}
+      {/* 신뢰 배지 — 공식 SNS는 모든 화면의 공통 푸터에서 노출 */}
       <section className="landing-section landing-section-white">
         <div className="landing-wrap">
           <div className="landing-trust">
@@ -9970,11 +9996,6 @@ function AboutPage({ onStart, onNavigate }) {
             <span className="landing-trust-item"><PlusIcon style={{ width: 14, height: 14 }} />{t.landingTrust2}</span>
             <span className="landing-trust-item"><LeafIcon style={{ width: 14, height: 14 }} />{t.landingTrust3}</span>
             <span className="landing-trust-item"><InfoIcon style={{ width: 14, height: 14 }} />{t.landingTrust4}</span>
-          </div>
-          <div style={{ marginTop: 40 }}>
-            <div className="bg-sub" style={{ textAlign: "center", fontSize: 13, fontWeight: 700, marginBottom: 14 }}>{t.socialTitle}</div>
-            <SocialLinks />
-            <div style={{ textAlign: "center" }}><a className="kakao-chat-cta" href={KAKAO_CHAT_URL} target="_blank" rel="noopener noreferrer"><KakaoChannelIcon style={{ width: 20, height: 20 }} />{lang === "en" ? "Chat on KakaoTalk" : "카카오톡 1:1 상담"}</a></div>
           </div>
         </div>
       </section>
@@ -12460,6 +12481,9 @@ function AppInner({ lang, setLang }) {
 
       {effectiveView !== "login" && (
         <footer className="petgrow-footer">
+          <div className="petgrow-footer-social-title">{t.socialTitle}</div>
+          <SocialLinks />
+          <div className="petgrow-footer-business">상호명 아우리녹 · 대표자 정재현 · 사업자등록번호 297-32-01792</div>
           <div className="petgrow-footer-email">help.petgrow@gmail.com</div>
           <div className="petgrow-footer-copy">Copyright ⓒ PetGrow. All rights reserved.</div>
           <div className="petgrow-footer-links">
