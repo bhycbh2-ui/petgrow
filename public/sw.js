@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petgrow-2026-09-01-v2";
+const CACHE_VERSION = "petgrow-2026-09-03-icon-fix-v1";
 const APP_CACHE = `${CACHE_VERSION}-assets`;
 
 // Never precache HTML. This prevents an old document/app shell from being
