@@ -116,9 +116,7 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           import os
-          from PIL import Image, ImageFile
-
-          ImageFile.LOAD_TRUNCATED_IMAGES = True
+          from PIL import Image
           targets = [
               Path('android/app/src/main/res/drawable-nodpi/petgrow_brand_icon.png'),
               Path('android/app/src/main/res/drawable/splash.png'),
