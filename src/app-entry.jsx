@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
+import { Capacitor } from "@capacitor/core";
+import { App as CapacitorApp } from "@capacitor/app";
 import "./petgrow-premium-20260817.css";
 import "./final-ux-20260818.css";
 import "./ui-fixes-20260818.css";
@@ -25,6 +27,30 @@ import "./ui-brand-consistency-20260828.css";
 import "./premium-core-surfaces-20260828.js";
 import "./logo-final-crop-guard-20260901.css";
 import "./responsive-footer-20260903.css";
+
+const APP_AUTH_CALLBACK = "kr.co.petgrow.app://auth/callback";
+
+function continueAndroidKakaoLogin(rawUrl) {
+  if (!rawUrl || typeof rawUrl !== "string" || !rawUrl.startsWith(APP_AUTH_CALLBACK)) return false;
+  try {
+    const callbackUrl = new URL(rawUrl);
+    const token = callbackUrl.searchParams.get("token") || "";
+    if (!/^[A-Za-z0-9_-]{32,160}$/.test(token)) {
+      window.location.replace("/?login=error");
+      return true;
+    }
+    window.location.replace(`/api/auth/kakao/handoff?token=${encodeURIComponent(token)}`);
+    return true;
+  } catch {
+    window.location.replace("/?login=error");
+    return true;
+  }
+}
+
+if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === "android") {
+  CapacitorApp.addListener("appUrlOpen", ({ url }) => continueAndroidKakaoLogin(url));
+  CapacitorApp.getLaunchUrl().then(result => continueAndroidKakaoLogin(result?.url)).catch(() => {});
+}
 
 // Android WebView에서 /api/me 요청이 드물게 끝나지 않아도 앱 첫 화면 전체를 막지 않도록
 // 인증 확인만 짧게 제한합니다. 이후 focus 시 기존 App 로직이 다시 상태를 확인합니다.

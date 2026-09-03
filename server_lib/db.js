@@ -25,12 +25,85 @@ export function ensureAuthSchema() {
       `;
       await sql`alter table pg_users add column if not exists created_at timestamptz not null default now()`;
       await sql`alter table pg_users add column if not exists last_login_at timestamptz not null default now()`;
+      await sql`
+        create table if not exists pg_oauth_states (
+          state_hash text primary key,
+          client text not null,
+          expires_at timestamptz not null,
+          created_at timestamptz not null default now()
+        )
+      `;
+      await sql`
+        create table if not exists pg_auth_handoffs (
+          token_hash text primary key,
+          user_id text not null references pg_users(id) on delete cascade,
+          expires_at timestamptz not null,
+          created_at timestamptz not null default now()
+        )
+      `;
     })().catch((error) => {
       authSchemaReadyPromise = null;
       throw error;
     });
   }
   return authSchemaReadyPromise;
+}
+
+function authTokenHash(value) {
+  return crypto.createHash("sha256").update(String(value || "")).digest("hex");
+}
+
+function isValidAuthToken(value) {
+  return typeof value === "string" && /^[A-Za-z0-9_-]{32,160}$/.test(value);
+}
+
+export async function createOAuthState(client = "web") {
+  await ensureAuthSchema();
+  const normalizedClient = client === "android" ? "android" : "web";
+  const state = `${normalizedClient === "android" ? "a" : "w"}_${crypto.randomBytes(32).toString("base64url")}`;
+  const stateHash = authTokenHash(state);
+  await sql`delete from pg_oauth_states where expires_at <= now()`;
+  await sql`
+    insert into pg_oauth_states(state_hash, client, expires_at)
+    values(${stateHash}, ${normalizedClient}, now() + interval '10 minutes')
+  `;
+  return state;
+}
+
+export async function consumeOAuthState(state) {
+  if (!isValidAuthToken(state)) return null;
+  await ensureAuthSchema();
+  const stateHash = authTokenHash(state);
+  const { rows } = await sql`
+    delete from pg_oauth_states
+    where state_hash = ${stateHash} and expires_at > now()
+    returning client
+  `;
+  return rows[0] || null;
+}
+
+export async function createAuthHandoff(userId) {
+  await ensureAuthSchema();
+  const token = crypto.randomBytes(32).toString("base64url");
+  const tokenHash = authTokenHash(token);
+  await sql`delete from pg_auth_handoffs where expires_at <= now()`;
+  await sql`
+    insert into pg_auth_handoffs(token_hash, user_id, expires_at)
+    values(${tokenHash}, ${userId}, now() + interval '3 minutes')
+  `;
+  return token;
+}
+
+export async function consumeAuthHandoff(token) {
+  if (!isValidAuthToken(token)) return null;
+  await ensureAuthSchema();
+  const tokenHash = authTokenHash(token);
+  const { rows } = await sql`
+    delete from pg_auth_handoffs
+    where token_hash = ${tokenHash} and expires_at > now()
+    returning user_id
+  `;
+  return rows[0] || null;
 }
 
 export function ensureSchema() {

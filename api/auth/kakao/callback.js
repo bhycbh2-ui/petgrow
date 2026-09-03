@@ -1,23 +1,32 @@
 import { BASE_URL, OAUTH_STATE_COOKIE, SESSION_COOKIE, SESSION_MAX_AGE } from "../../../server_lib/config.js";
 import { parseCookies, signSession } from "../../../server_lib/session.js";
-import { findOrCreateUserByKakaoId } from "../../../server_lib/db.js";
+import { consumeOAuthState, createAuthHandoff, findOrCreateUserByKakaoId } from "../../../server_lib/db.js";
+
+const ANDROID_CALLBACK_URL = "kr.co.petgrow.app://auth/callback";
 
 export default async function handler(req, res) {
   const { code, state, error } = req.query;
   const cookies = parseCookies(req.headers.cookie || "");
+  const rawState = typeof state === "string" ? state : "";
+  const client = rawState.startsWith("a_") ? "android" : "web";
 
   const failRedirect = (reason) => {
     console.warn("kakao login failed:", reason);
     res.setHeader("Set-Cookie", [`${OAUTH_STATE_COOKIE}=; Path=/; Max-Age=0`]);
-    res.writeHead(302, { Location: `${BASE_URL}/?login=error` });
+    const location = client === "android"
+      ? `${ANDROID_CALLBACK_URL}?status=error`
+      : `${BASE_URL}/?login=error`;
+    res.writeHead(302, { Location: location });
     res.end();
   };
 
-  if (error) return failRedirect(`kakao error: ${error}`);
-  if (!code) return failRedirect("no code");
-  if (!state || !cookies[OAUTH_STATE_COOKIE] || state !== cookies[OAUTH_STATE_COOKIE]) {
+  if (client === "web" && (!cookies[OAUTH_STATE_COOKIE] || rawState !== cookies[OAUTH_STATE_COOKIE])) {
     return failRedirect("state mismatch");
   }
+  const oauthState = rawState ? await consumeOAuthState(rawState) : null;
+  if (!oauthState || oauthState.client !== client) return failRedirect("invalid or expired state");
+  if (error) return failRedirect(`kakao error: ${error}`);
+  if (!code) return failRedirect("no code");
 
   try {
     const redirectUri = `${BASE_URL}/api/auth/kakao/callback`;
@@ -51,6 +60,15 @@ export default async function handler(req, res) {
     const profileImage = kakaoUser.kakao_account?.profile?.profile_image_url || null;
 
     const user = await findOrCreateUserByKakaoId({ kakaoId, nickname, profileImage });
+
+    if (client === "android") {
+      const handoffToken = await createAuthHandoff(user.id);
+      res.setHeader("Set-Cookie", [`${OAUTH_STATE_COOKIE}=; Path=/; Max-Age=0`]);
+      res.writeHead(302, { Location: `${ANDROID_CALLBACK_URL}?token=${encodeURIComponent(handoffToken)}` });
+      res.end();
+      return;
+    }
+
     const sessionToken = signSession({ uid: user.id });
 
     res.setHeader("Set-Cookie", [
