@@ -1,3 +1,4 @@
+# Production-only manual upload artifact. This workflow never uploads to Google Play.
 name: PetGrow Production AAB Artifact 600415
 
 on:
