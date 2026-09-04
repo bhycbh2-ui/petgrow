@@ -88,7 +88,7 @@ export async function handleTarot(req,res){
     await stat(uid,"tarot_"+topic);
     return res.status(201).json({ok:true,id:row[0]?.id||id,date:today,result:row[0]?.result_json||result,saved:!!row[0]?.saved,pointEvent});
   }
-  if(req.method==="POST"&&action==="save"){const id=clean(req.body?.id,100);const {rowCount}=await sql`update pg_pet_daily_content set saved=true,updated_at=now() where id=${id} and user_id=${uid} and content_type='tarot'`;if(!rowCount)return res.status(404).json({error:"저장할 타로 결과를 찾지 못했어요."});await stat(uid,"saju_tarot_save");return res.status(200).json({ok:true});}
+  if(req.method==="POST"&&action==="save"){const id=clean(req.body?.id,240);const {rowCount}=await sql`update pg_pet_daily_content set saved=true,updated_at=now() where id=${id} and user_id=${uid} and content_type='tarot'`;if(!rowCount)return res.status(404).json({error:"저장할 타로 결과를 찾지 못했어요."});await stat(uid,"saju_tarot_save");return res.status(200).json({ok:true});}
   return res.status(405).json({error:"지원하지 않는 요청이에요."});
  }catch(e){console.error("core tarot error",e?.message||e);return res.status(500).json({error:"결과를 처리하지 못했어요. 잠시 후 다시 시도해 주세요."});}
 }

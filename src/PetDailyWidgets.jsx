@@ -1,15 +1,19 @@
-import React,{useEffect,useMemo,useState} from "react";
+import React,{useEffect,useMemo,useRef,useState} from "react";
 
 async function jsonFetch(url,options={}){const r=await fetch(url,{headers:{"Content-Type":"application/json",...(options.headers||{})},...options});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||"요청을 처리하지 못했어요.");return j;}
 
 export function DailyFortunePanel({pet,lang="ko",message,onBack,onAnalytics}){
   const petId=String(pet?.id||pet?.profile?.id||pet?.profile?.name||"pet");
   const petName=String(pet?.profile?.name||"우리 아이");
-  useEffect(()=>{if(!message)return;jsonFetch("/api/tarot?action=fortune",{method:"POST",body:JSON.stringify({petId,petName,message})}).catch(()=>{});try{onAnalytics?.("feature_use","saju_daily")}catch{}},[petId,message]);
-  return <div className="feature-module-shell"><div className="bg-card pet-daily-fortune-card">
+  const savedRef=useRef("");
+  const [saveState,setSaveState]=useState("saving");
+  const saveFortune=async()=>{if(!message)return;const key=`${petId}|${message}`;savedRef.current=key;setSaveState("saving");try{await jsonFetch("/api/tarot?action=fortune",{method:"POST",body:JSON.stringify({petId,petName,message})});setSaveState("saved");try{onAnalytics?.("feature_use","saju_daily")}catch{}}catch{savedRef.current="";setSaveState("error")}};
+  useEffect(()=>{const key=`${petId}|${message}`;if(!message||savedRef.current===key)return;saveFortune();},[petId,message]);
+  return <div className="feature-module-shell pg-oracle-shell pg-oracle-fortune"><div className="bg-card pet-daily-fortune-card pg-oracle-card">
+    <div className="pg-oracle-flow" aria-label={lang==="en"?"Today, rhythm, care":"오늘, 리듬, 돌봄"}><span className="active">01 TODAY</span><i/><span>02 RHYTHM</span><i/><span>03 CARE</span></div>
     <div className="pet-daily-orb">🌤️</div><small className="pet-daily-eyebrow">{lang==="en"?"TODAY'S PET FORTUNE":"오늘의 펫운세"}</small>
     <h2><span className="pet-user-name">{petName}</span>{lang==="en"?"'s fortune today":"의 오늘의 펫운세"}</h2>
-    <p>{message}</p><button className="bg-btn bg-btn-ghost" style={{width:"100%",marginTop:20}} onClick={onBack}>{lang==="en"?"Back to Pet Saju":"다른 Pet사주 보기"}</button>
+    <p>{message}</p><div className={`pg-oracle-save-state ${saveState}`}>{saveState==="saving"?(lang==="en"?"Saving today's record…":"오늘의 기록을 저장하는 중이에요…"):saveState==="saved"?(lang==="en"?"Saved to today's record":"오늘의 기록에 저장됐어요"):<button type="button" onClick={saveFortune}>{lang==="en"?"Save again":"기록 다시 저장"}</button>}</div><button className="bg-btn bg-btn-ghost" style={{width:"100%",marginTop:20}} onClick={onBack}>{lang==="en"?"Back to Pet Saju":"다른 Pet사주 보기"}</button>
   </div><div className="bg-sub" style={{fontSize:11,textAlign:"center",marginTop:16}}>{lang==="en"?"Fun content only; not a prediction of real events.":"재미로 보는 PetGrow 콘텐츠예요. 실제 미래를 판단하는 자료가 아니에요."}</div></div>;
 }
 
@@ -23,10 +27,12 @@ const TAROT_TOPICS=[
 const CARD_BACKS=Array.from({length:22},(_,i)=>i);
 export function PetTarotPanel({pet,lang="ko",onBack,onAnalytics}){
   const [topic,setTopic]=useState("daily"),[phase,setPhase]=useState("topics"),[result,setResult]=useState(null),[recordId,setRecordId]=useState(""),[error,setError]=useState(""),[saved,setSaved]=useState(false),[picked,setPicked]=useState(-1),[todayMap,setTodayMap]=useState({}),[loadingToday,setLoadingToday]=useState(false);
+  const sequenceTimers=useRef([]);
   const petId=String(pet?.id||pet?.profile?.id||pet?.profile?.name||"pet"),petName=String(pet?.profile?.name||"우리 아이");
+  const clearSequence=()=>{sequenceTimers.current.forEach(window.clearTimeout);sequenceTimers.current=[];};
   const loadToday=async()=>{setLoadingToday(true);try{const j=await jsonFetch("/api/tarot?action=today");const map={};(j.items||[]).filter(x=>x.content_type==="tarot"&&String(x.pet_id)===petId).forEach(x=>{const k=x.result_json?.topicKey||"daily";if(!map[k])map[k]=x;});setTodayMap(map);}catch{}finally{setLoadingToday(false)}};
-  useEffect(()=>{setPhase("topics");setResult(null);setRecordId("");setSaved(false);setPicked(-1);loadToday();},[petId]);
-  const chooseTopic=(key)=>{setTopic(key);setError("");const old=todayMap[key];if(old){setResult(old.result_json);setRecordId(old.id);setSaved(!!old.saved);setPhase("result");}else{setResult(null);setRecordId("");setSaved(false);setPicked(-1);setPhase("prompt");window.setTimeout(()=>setPhase("focus"),650);window.setTimeout(()=>setPhase("shuffle"),1300);window.setTimeout(()=>setPhase("choose"),2300);}};
+  useEffect(()=>{clearSequence();setPhase("topics");setResult(null);setRecordId("");setSaved(false);setPicked(-1);loadToday();return clearSequence;},[petId]);
+  const chooseTopic=(key)=>{clearSequence();setTopic(key);setError("");const old=todayMap[key];if(old){setResult(old.result_json);setRecordId(old.id);setSaved(!!old.saved);setPhase("result");}else{setResult(null);setRecordId("");setSaved(false);setPicked(-1);setPhase("prompt");sequenceTimers.current=[window.setTimeout(()=>setPhase("focus"),360),window.setTimeout(()=>setPhase("shuffle"),760),window.setTimeout(()=>setPhase("choose"),1380)];}};
   const draw=async(i)=>{if(phase==="drawing"||phase==="reveal")return;setPicked(i);setPhase("drawing");setError("");try{onAnalytics?.("feature_use","tarot_"+topic);const j=await jsonFetch("/api/tarot?action=draw",{method:"POST",body:JSON.stringify({petId,petName,topic,cardIndex:i})});if(j.pointEvent?.spent)window.dispatchEvent(new CustomEvent("petgrow:points",{detail:{amount:-j.pointEvent.spent,balance:j.pointEvent.balance,label:j.pointEvent.label||"Pet타로 이용"}}));window.setTimeout(()=>{setResult(j.result);setRecordId(j.id);setSaved(!!j.saved);setTodayMap(m=>({...m,[topic]:{id:j.id,pet_id:petId,pet_name:petName,content_type:"tarot",result_json:j.result,saved:!!j.saved}}));setPhase("reveal");window.setTimeout(()=>setPhase("result"),900)},500);}catch(e){setError(e.message);setPhase("choose")}};
   const save=async()=>{if(!recordId)return;setError("");try{const j=await jsonFetch("/api/tarot?action=save",{method:"POST",body:JSON.stringify({id:recordId})});if(!j.ok)throw new Error("저장 상태를 확인하지 못했어요.");const verify=await jsonFetch("/api/tarot?action=history");if(!(verify.items||[]).some(x=>x.id===recordId&&x.saved))throw new Error("저장 확인 중 오류가 발생했어요. 다시 눌러주세요.");setSaved(true);setTodayMap(m=>({...m,[topic]:{...(m[topic]||{}),saved:true}}));window.dispatchEvent(new CustomEvent("petgrow:tarot-saved"));onAnalytics?.("feature_use","saju_tarot_save");}catch(e){setError(e.message)}};
   const currentTopic=TAROT_TOPICS.find(x=>x.key===topic)||TAROT_TOPICS[0];
@@ -40,6 +46,7 @@ export function PetTarotPanel({pet,lang="ko",onBack,onAnalytics}){
 .pet-tarot-back22:hover{transform:translateY(-12px) scale(1.055)!important;box-shadow:0 16px 28px rgba(28,45,39,.25)!important;border-color:#e2c583!important}.pet-tarot-back22 b{font-family:Georgia,serif!important;letter-spacing:.04em!important}.pet-tarot-back22 small{color:#ead8aa!important}.pet-tarot-shuffle-stack i{border:2px solid #c9a96a!important;background:linear-gradient(145deg,#20332d,#355248)!important;box-shadow:0 12px 32px rgba(30,48,42,.24)!important;animation-duration:2.8s!important}.pet-tarot-reading-detail{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.pet-tarot-reading-detail section{padding:16px;border:1px solid #eadfca;border-radius:16px;background:#fffdf8}.pet-tarot-reading-detail h4{margin:0 0 7px;font-size:13px;color:#6f5831}.pet-tarot-reading-detail p{margin:0;font-size:13px;line-height:1.75}.pet-tarot-reading-detail .wide{grid-column:1/-1}.pet-tarot-point-cost{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:#fff5d9;color:#795b1f;font-size:11px;font-weight:900;margin-top:8px}@keyframes tarotSpreadIn{0%{opacity:0;transform:translateY(-18px) rotate(-4deg) scale(.88)}100%{opacity:1;transform:none}}@media(max-width:760px){.pet-tarot-deck22{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;padding-left:2px!important;padding-right:2px!important}.pet-tarot-back22{min-height:0!important;aspect-ratio:2/3!important}.pet-tarot-back22:nth-last-child(2):nth-child(4n+1){grid-column:2}.pet-tarot-reading-detail{grid-template-columns:1fr}.pet-tarot-reading-detail .wide{grid-column:auto}}
 `}</style>
     <div className="bg-card pet-tarot-stage">
+      <div className="pg-oracle-flow" aria-label={lang==="en"?"Topic, card, message":"주제, 카드, 메시지"}><span className="active">01 TOPIC</span><i/><span>02 CARD</span><i/><span>03 MESSAGE</span></div>
       <small className="pet-daily-eyebrow">{lang==="en"?"PETGROW TAROT · 22 MAJOR ARCANA":"PETGROW 타로 · 메이저 아르카나 22장"}</small><h2>{petName}{lang==="en"?"'s Tarot":"의 Pet타로"}</h2>
       {phase==="prompt"&&<div className="pet-tarot-guide-step"><span>🃏</span><b>카드를 뽑아주세요</b><small>오늘 마음이 가는 한 장을 천천히 골라볼게요.</small></div>}
       {phase==="focus"&&<div className="pet-tarot-guide-step focus"><span>✦</span><b>카드에 집중해 주세요</b><small>우리 아이를 떠올리며 잠시 카드에 마음을 모아보세요.</small></div>}

@@ -17,7 +17,7 @@ const CLUSTERS = {
     entry: "SajuPage",
     functions: ["generateSajuResult", "SajuInputForm", "renderSajuShareCard", "SajuShareModal", "SajuResultView", "SajuPage"],
     constants: ["SAJU_DATA", "SAJU_ONE_WORD", "SAJU_TAG_POOL", "SAJU_TODAY"],
-    deps: ["SAJU_DATA", "SAJU_ONE_WORD", "SAJU_TAG_POOL", "SAJU_TODAY", "seededPick", "SajuIcon", "breedName", "PETGROW_LOGO_DATA_URI", "loadImage", "roundRect", "wrapText", "Modal", "PlusIcon", "ShareIcon", "normalizePetDisplayText", "DailyFortunePanel", "FeaturePetHeader", "hashString", "petPointKstDate", "petPointSpend", "useLang", "useT"],
+    deps: ["SAJU_DATA", "SAJU_ONE_WORD", "SAJU_TAG_POOL", "SAJU_TODAY", "josa", "seededPick", "SajuIcon", "breedName", "PETGROW_LOGO_DATA_URI", "loadImage", "roundRect", "wrapText", "Modal", "PlusIcon", "ShareIcon", "normalizePetDisplayText", "DailyFortunePanel", "FeaturePetHeader", "hashString", "petPointKstDate", "petPointSpend", "useLang", "useT"],
     title: "Pet사주를 불러오는 중입니다",
   },
   petbti: {
