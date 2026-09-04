@@ -16,7 +16,7 @@ export default async function handler(req,res){
 
     const [newsResult,musicResult]=await Promise.all([
       sql`select id,title,description,category,source,link,naver_link,published_at,image from pet_news_archive order by published_at desc nulls last, first_seen_at desc limit 3`,
-      sql`select id,title,description,species,vocal_type,mood,cover_url,audio_url,like_count,comment_count,play_count from pg_music_tracks where active=true order by (like_count*4+comment_count*3+play_count)::numeric desc,created_at desc limit 5`
+      sql`select id,title,description,species,vocal_type,mood,case when cover_url like 'data:image/%' then null else cover_url end cover_url,audio_url,like_count,comment_count,play_count from pg_music_tracks where active=true order by (like_count*4+comment_count*3+play_count)::numeric desc,created_at desc limit 5`
     ]);
     const news=newsResult.rows.map(r=>({id:r.id,title:r.title,description:r.description||"",category:r.category||"반려동물",source:r.source||"언론사",link:r.link,naverLink:r.naver_link||r.link,publishedAt:r.published_at?new Date(r.published_at).toISOString():null,image:r.image||""}));
     const top5=mapMusic(musicResult.rows);

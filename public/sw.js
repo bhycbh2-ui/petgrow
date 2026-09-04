@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petgrow-2026-09-03-icon-fix-v1";
+const CACHE_VERSION = "petgrow-2026-09-04-stable-v1";
 const APP_CACHE = `${CACHE_VERSION}-assets`;
 
 // Never precache HTML. This prevents an old document/app shell from being
@@ -8,11 +8,6 @@ const SAFE_ASSETS = [
   "/icon-192.png",
   "/icon-512.png"
 ];
-
-const isLegacyGuidePath = (pathname) =>
-  pathname === "/pet-guide.html" ||
-  pathname === "/pet-guide" ||
-  pathname.startsWith("/guides/");
 
 self.addEventListener("install", (event) => {
   event.waitUntil((async () => {
@@ -33,28 +28,11 @@ self.addEventListener("activate", (event) => {
 
     await self.clients.claim();
 
-    // If an already-open iOS/Safari/PWA client is sitting on one of the deleted
-    // legacy guide pages, move that client back to the current home immediately.
-    const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
-    await Promise.all(clients.map(async (client) => {
-      try {
-        const clientUrl = new URL(client.url);
-        if (clientUrl.origin === self.location.origin && isLegacyGuidePath(clientUrl.pathname)) {
-          await client.navigate("/?legacy_guide_removed=20260901v2");
-        }
-      } catch (_) {}
-    }));
   })());
 });
 
 self.addEventListener("message", (event) => {
   if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
-  if (event.data?.type === "CLEAR_PETGROW_CACHES") {
-    event.waitUntil((async () => {
-      const names = await caches.keys();
-      await Promise.all(names.map((name) => caches.delete(name)));
-    })());
-  }
 });
 
 self.addEventListener("fetch", (event) => {
@@ -64,19 +42,11 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  // Hard-block every old guide URL at the service-worker layer as well as on
-  // Vercel. This also protects installed PWAs that still try an old URL.
-  if (isLegacyGuidePath(url.pathname)) {
-    event.respondWith(Response.redirect(new URL("/?legacy_guide_removed=20260901v2", self.location.origin), 302));
-    return;
-  }
-
   // Control files must always come from the network.
   if (
     url.pathname === "/sw.js" ||
     url.pathname === "/manifest.json" ||
-    url.pathname === "/app-update.json" ||
-    url.pathname === "/sw-reset-20260901.js"
+    url.pathname === "/app-update.json"
   ) {
     event.respondWith(fetch(request, { cache: "no-store" }));
     return;

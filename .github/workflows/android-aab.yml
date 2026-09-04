@@ -98,6 +98,16 @@ jobs:
       - name: Sync Capacitor Android
         run: npx cap sync android
 
+      - name: Remove remote-only music from Android bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          MUSIC_DIR="android/app/src/main/assets/public/petmusic"
+          if [ -d "$MUSIC_DIR" ]; then
+            find "$MUSIC_DIR" -type f \( -name '*.mp3' -o -name '*.wav' -o -name '*.m4a' -o -name '*.aac' \) -delete
+          fi
+          echo "Android uses the production server URL; duplicate bundled audio has been removed."
+
       - name: Verify Android release wiring
         shell: bash
         run: |
