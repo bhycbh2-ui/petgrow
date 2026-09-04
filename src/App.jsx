@@ -1444,7 +1444,22 @@ function goToKakaoLogin() {
     : "";
   window.location.href = `/api/auth/kakao/login${client}`;
 }
-async function fetchMe(timeoutMs = 2200) {
+const AUTH_ACCOUNT_CACHE_KEY = "petgrow:auth-account:v1";
+function readCachedAccount() {
+  try {
+    const account = JSON.parse(window.sessionStorage.getItem(AUTH_ACCOUNT_CACHE_KEY) || "null");
+    return account?.id ? account : null;
+  } catch {
+    return null;
+  }
+}
+function cacheAccount(account) {
+  try {
+    if (account?.id) window.sessionStorage.setItem(AUTH_ACCOUNT_CACHE_KEY, JSON.stringify(account));
+    else window.sessionStorage.removeItem(AUTH_ACCOUNT_CACHE_KEY);
+  } catch {}
+}
+async function fetchMe(timeoutMs = 5000) {
   // 401만 실제 로그아웃으로 판단해요. 서버 cold start/DB 지연은 한 번 재시도해서
   // 로그인된 사용자가 UI에서 다시 "로그인"으로 보이는 현상을 막습니다.
   for (let attempt = 0; attempt < 2; attempt += 1) {
@@ -1456,12 +1471,17 @@ async function fetchMe(timeoutMs = 2200) {
         signal: controller.signal,
         cache: "no-store",
       });
-      if (res.status === 401) return null;
+      if (res.status === 401) {
+        cacheAccount(null);
+        return null;
+      }
       if (!res.ok) throw new Error(`me_${res.status}`);
-      return await res.json();
+      const account = await res.json();
+      cacheAccount(account);
+      return account;
     } catch (err) {
       console.warn(`로그인 상태 확인 재시도 ${attempt + 1}/2:`, err);
-      if (attempt === 0) await new Promise((resolve) => window.setTimeout(resolve, 180));
+      if (attempt === 0) await new Promise((resolve) => window.setTimeout(resolve, 300));
     } finally {
       window.clearTimeout(timer);
     }
@@ -11792,7 +11812,7 @@ function AppInner({ lang, setLang }) {
 
   // 로그인 필요 화면 여부는 모든 effect보다 먼저 계산해야 해요.
   // 아래 통계/광고 effect에서 effectiveView를 참조하므로 TDZ(선언 전 접근) 오류를 방지합니다.
-  const needsLogin = GATED_VIEWS.includes(view) && !account;
+  const needsLogin = authChecked && GATED_VIEWS.includes(view) && !account;
   const effectiveView = needsLogin ? "login" : view;
   const [accountModalOpen, setAccountModalOpen] = useState(false);
   useEffect(()=>{if(account?.id)adminStatusFast().catch(()=>{})},[account?.id]);
@@ -11855,9 +11875,15 @@ function AppInner({ lang, setLang }) {
         setTimeout(() => setLoginToast(null), loginResult === "success" ? 2400 : 3600);
       }
 
-      const meResult = await fetchMe();
-      const me = meResult === undefined ? null : meResult;
+      let meResult = await fetchMe(loginResult === "success" ? 6500 : 5000);
+      if (meResult === undefined && loginResult === "success") {
+        await new Promise((resolve) => window.setTimeout(resolve, 400));
+        meResult = await fetchMe(6500);
+      }
+      const cachedAccount = readCachedAccount();
+      const me = meResult === undefined ? cachedAccount : meResult;
       if (meResult !== undefined) setAccount(meResult);
+      else if (cachedAccount) setAccount(cachedAccount);
       setAuthChecked(true);
       // 로그인 확인만 끝나면 홈부터 먼저 보여주고, 반려동물 데이터는 아래에서 비동기로 채워요.
       setLoaded(true);
@@ -11952,6 +11978,34 @@ function AppInner({ lang, setLang }) {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // 로그인 확인이 늦게 끝난 경우에도 계정의 저장 데이터를 공통 React 상태로 다시 불러옵니다.
+  // 홈 전용 빠른 동기화와 메뉴 화면의 상태가 서로 달라지는 일을 막습니다.
+  useEffect(() => {
+    if (!authChecked || !account?.id) return;
+    let cancelled = false;
+    (async () => {
+      const [dogsRaw, catsRaw, actives] = await Promise.all([
+        cloudGet("bboggl:dogs"),
+        cloudGet("bboggl:cats"),
+        cloudGet("bboggl:activeIds"),
+      ]);
+      if (cancelled) return;
+      const normalizeList = (items) => (items || []).map((pet) => ({
+        ...pet,
+        profile: { ...pet.profile, name: normalizePetDisplayText(pet.profile?.name, "") },
+        photos: normalizePhotos(pet.photos, pet.profile?.birthDate),
+      }));
+      const dogs = normalizeList(dogsRaw);
+      const cats = normalizeList(catsRaw);
+      setPets({ dog: dogs, cat: cats });
+      setActiveId({
+        dog: actives?.dog || dogs[0]?.id || null,
+        cat: actives?.cat || cats[0]?.id || null,
+      });
+    })().catch((error) => console.warn("계정 저장 데이터 새로고침 실패:", error));
+    return () => { cancelled = true; };
+  }, [account?.id, authChecked]);
 
   // 네이티브 앱의 정적 시작 화면이 준비되면 바로 웹 스플래시로 넘겨
   // 회전 로딩 애니메이션이 실제 초기화가 끝날 때까지 보이도록 해요.
@@ -12077,7 +12131,21 @@ function AppInner({ lang, setLang }) {
     requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: "auto" }));
   };
 
-  const goView = (v) => { const next=(v==="talk"||v==="pettalk"||v==="pet-talk")?"community":v; setView(next); if(account?.id)logPetActivity({section:next,action:"view",title:({home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",news:"Pet뉴스",guide:"정보가이드",my:"마이페이지",support:"고객지원"}[next]||next)}); scrollToTop(); };
+  const goView = async (v) => {
+    const next=(v==="talk"||v==="pettalk"||v==="pet-talk")?"community":v;
+    let currentAccount = account;
+    if (GATED_VIEWS.includes(next) && !currentAccount) {
+      setAuthChecked(false);
+      const refreshed = await fetchMe(6500);
+      setAuthChecked(true);
+      if (refreshed === undefined) return;
+      currentAccount = refreshed;
+      setAccount(refreshed);
+    }
+    setView(next);
+    if(currentAccount?.id)logPetActivity({section:next,action:"view",title:({home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",news:"Pet뉴스",guide:"정보가이드",my:"마이페이지",support:"고객지원"}[next]||next)});
+    scrollToTop();
+  };
 
   // 도움말은 자동으로 열지 않아요. 사용자가 각 화면의 ? 버튼을 눌렀을 때만 표시합니다.
   useEffect(() => {

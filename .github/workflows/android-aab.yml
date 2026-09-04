@@ -1,4 +1,4 @@
-name: PetGrow Android Closed Alpha Release
+name: PetGrow Android Production Release
 
 on:
   workflow_dispatch:
@@ -30,7 +30,7 @@ jobs:
     timeout-minutes: 40
     env:
       PACKAGE_NAME: kr.co.petgrow.app
-      PLAY_TRACK: alpha
+      PLAY_TRACK: production
       ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/android/app/petgrow-upload.jks
       ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
@@ -190,12 +190,12 @@ jobs:
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: PetGrow-alpha-aab-${{ steps.release.outputs.version_code }}
+          name: PetGrow-production-aab-${{ steps.release.outputs.version_code }}
           path: ${{ steps.release.outputs.aab_path }}
           if-no-files-found: error
           retention-days: 30
 
-      - name: Publish AAB to Google Play closed Alpha
+      - name: Publish AAB to Google Play production
         id: play-publish
         shell: bash
         env:
@@ -210,7 +210,7 @@ jobs:
 
           async function main() {
             const packageName = process.env.PACKAGE_NAME;
-            const track = process.env.PLAY_TRACK || 'alpha';
+            const track = process.env.PLAY_TRACK || 'production';
             const aabPath = process.env.AAB_PATH;
             const expectedVersionCode = String(process.env.VERSION_CODE);
             const versionName = process.env.VERSION_NAME || 'release';
@@ -286,12 +286,12 @@ jobs:
           main();
           NODE
 
-      - name: Closed Alpha release summary
+      - name: Production release summary
         if: success()
         shell: bash
         run: |
           {
-            echo '## PetGrow Google Play closed Alpha release'
+            echo '## PetGrow Google Play production release'
             echo ''
             echo "- Package: \`${PACKAGE_NAME}\`"
             echo "- Version name: \`${{ steps.release.outputs.version_name }}\`"

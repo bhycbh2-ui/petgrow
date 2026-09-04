@@ -52,27 +52,6 @@ if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === "android") {
   CapacitorApp.getLaunchUrl().then(result => continueAndroidKakaoLogin(result?.url)).catch(() => {});
 }
 
-// Android WebView에서 /api/me 요청이 드물게 끝나지 않아도 앱 첫 화면 전체를 막지 않도록
-// 인증 확인만 짧게 제한합니다. 이후 focus 시 기존 App 로직이 다시 상태를 확인합니다.
-const nativeFetch=window.fetch.bind(window);
-window.fetch=(input,init)=>{
-  let rawUrl="";
-  try{rawUrl=typeof input==="string"?input:String(input?.url||"");}catch{}
-  let path=rawUrl;
-  try{path=new URL(rawUrl,location.href).pathname;}catch{}
-  if(path!=="/api/me")return nativeFetch(input,init);
-
-  let timer=0;
-  const request=nativeFetch(input,init);
-  const hardTimeout=new Promise((resolve)=>{
-    timer=window.setTimeout(()=>resolve(new Response(JSON.stringify({error:"auth_check_timeout"}),{
-      status:503,
-      headers:{"Content-Type":"application/json"},
-    })),1200);
-  });
-  return Promise.race([request,hardTimeout]).finally(()=>window.clearTimeout(timer));
-};
-
 window.__petgrowCriticalAppReady=false;
 const root=document.getElementById("root");
 ReactDOM.createRoot(root).render(<React.StrictMode><App /></React.StrictMode>);
