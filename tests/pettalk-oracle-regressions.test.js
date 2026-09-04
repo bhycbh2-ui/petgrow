@@ -8,6 +8,7 @@ const transformedApp=transformPetTalkOracle(app);
 const widgets=readFileSync(new URL("../src/PetDailyWidgets.jsx",import.meta.url),"utf8");
 const tarotApi=readFileSync(new URL("../server_lib/tarot.js",import.meta.url),"utf8");
 const sajuSplit=readFileSync(new URL("../build/petgrow-deep-menu-split-v6-20260821.mjs",import.meta.url),"utf8");
+const menuSplit=readFileSync(new URL("../build/petgrow-menu-split-v4-20260821.mjs",import.meta.url),"utf8");
 const splash=readFileSync(new URL("../build/petgrow-splash-v4-20260822.mjs",import.meta.url),"utf8");
 const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
 
@@ -18,6 +19,8 @@ test("PetTalk composer dependencies and three examples remain available",()=>{
   assert.equal((demo[1].match(/^\s*\["/gm)||[]).length,3);
   assert.match(transformedApp,/onSaved\(saved\)/);
   assert.match(transformedApp,/if \(saved\?\.id\) setActivePostId\(saved\.id\)/);
+  assert.match(menuSplit,/communityDeps = \[[^\]]*"COMMUNITY_DEMO_POSTS"/);
+  assert.match(menuSplit,/PostCard, COMMUNITY_CATEGORY_KEYS, COMMUNITY_DEMO_POSTS \}/);
 });
 
 test("PetTalk deletion only leaves the detail after the API succeeds",()=>{

@@ -116,7 +116,7 @@ export default function petgrowMenuSplitV4() {
   const byResolved = Object.fromEntries(Object.entries(resolved).map(([k, v]) => [v, k]));
 
   const nearbyDeps = ["useT", "MapPinIcon", "ResponsiveCategoryMenu"];
-  const communityDeps = ["useT", "communityListPosts", "ResponsiveCategoryMenu", "ResponsivePagination", "SearchIcon", "PlusIcon", "UserIcon", "PostCard", "COMMUNITY_CATEGORY_KEYS"];
+  const communityDeps = ["useT", "communityListPosts", "ResponsiveCategoryMenu", "ResponsivePagination", "SearchIcon", "PlusIcon", "UserIcon", "PostCard", "COMMUNITY_CATEGORY_KEYS", "COMMUNITY_DEMO_POSTS"];
   const adminMusicDeps = ["adminMusicList", "adminMusicSave", "adminMusicToggle", "adminMusicDelete", "fileToDataUrl", "fileToCompressedDataUrl"];
   const adminDeps = [
     "adminStatus", "adminStats", "adminHealth", "adminListReports", "adminListPlaceReviewReports", "adminListMusicCommentReports", "adminLogs", "adminListAdmins",
@@ -157,7 +157,7 @@ export default function petgrowMenuSplitV4() {
 
       const wrappers = {
         nearby: lazyRuntime("nearby", VIRTUALS.nearby, { signature: "", forward: "" }, `{ useT, MapPinIcon, ResponsiveCategoryMenu }`, "내 주변 Pet을 불러오는 중입니다"),
-        community: lazyRuntime("community", VIRTUALS.community, { signature: "props", forward: "{...props}" }, `{ useT, communityListPosts, ResponsiveCategoryMenu, ResponsivePagination, SearchIcon, PlusIcon, UserIcon, PostCard, COMMUNITY_CATEGORY_KEYS }`, "Pet톡을 불러오는 중입니다"),
+        community: lazyRuntime("community", VIRTUALS.community, { signature: "props", forward: "{...props}" }, `{ useT, communityListPosts, ResponsiveCategoryMenu, ResponsivePagination, SearchIcon, PlusIcon, UserIcon, PostCard, COMMUNITY_CATEGORY_KEYS, COMMUNITY_DEMO_POSTS }`, "Pet톡을 불러오는 중입니다"),
         adminMusic: lazyRuntime("adminMusic", VIRTUALS.adminMusic, { signature: "", forward: "" }, `{ adminMusicList, adminMusicSave, adminMusicToggle, adminMusicDelete, fileToDataUrl, fileToCompressedDataUrl }`, "Pet음악 관리를 불러오는 중입니다"),
         admin: lazyRuntime("admin", VIRTUALS.admin, { signature: "props", forward: "{...props}" }, `{ adminStatus, adminStats, adminHealth, adminListReports, adminListPlaceReviewReports, adminListMusicCommentReports, adminLogs, adminListAdmins, adminSupportInquiries, adminListDirectAds, adminListAdInquiries, adminVerify, adminSetPin, adminBootstrap, adminRestrict, adminUnblock, adminResolveReport, adminHidePlaceReview, adminResolvePlaceReviewReport, adminHideMusicComment, adminResolveMusicCommentReport, adminReportSummary, adminReplyInquiry, adminCreateNotice, adminSaveDirectAd, adminToggleDirectAd, adminDeleteDirectAd, adminSetAdInquiryStatus, adminSearchUser, adminAddUser, adminChangeRole, adminResetPin, adminRemoveUser, AdminMusicPanel, PetPointAdminOverview }`, "관리자센터를 불러오는 중입니다"),
       };
