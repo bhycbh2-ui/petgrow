@@ -73,6 +73,19 @@ function placeType(categoryName, keyword) {
   return { key:"other", label:"반려동물 관련", icon:"🐾" };
 }
 
+function kakaoPlaceMatchesKeyword(place, keyword) {
+  const actual = `${place?.category_name || ""} ${place?.place_name || ""}`;
+  const requested = placeType("", keyword).key;
+  const rules = {
+    hospital: /동물병원|동물의료|수의|veterinary/i,
+    pharmacy: /동물약국/i,
+    grooming: /애견미용|펫미용|반려동물\s*미용|그루밍/i,
+    hotel: /애견호텔|펫호텔|동물호텔|애견유치원|반려동물\s*유치원|데이케어/i,
+    shop: /펫샵|펫\s*숍|반려동물용품|애견용품|애묘용품|고양이용품|동물판매업/i,
+  };
+  return Boolean(rules[requested]?.test(actual));
+}
+
 async function handleNearbyReviews(req, res) {
   await ensureSchema();
   const action = String(req.query?.action || "list");
@@ -418,8 +431,8 @@ async function handleNearby(req, res) {
   }
   if (!hasCoord) return res.status(400).json({ error:"검색할 주소를 입력해 주세요." });
 
-  const toPlace = (d, kw) => {
-    const type = placeType(d.category_name, kw);
+  const toPlace = (d) => {
+    const type = placeType(`${d.category_name || ""} ${d.place_name || ""}`, "");
     const plat=Number(d.y), plng=Number(d.x);
     return {
       id:d.id, sourceId:d.id, name:d.place_name, phone:d.phone||"",
@@ -442,7 +455,8 @@ async function handleNearby(req, res) {
           u.searchParams.set("x",String(nLng)); u.searchParams.set("y",String(nLat)); u.searchParams.set("radius","5000"); u.searchParams.set("sort","distance");
           const r=await fetch(u,{headers:{Authorization:`KakaoAK ${kakaoKey}`}}); kakaoStatus=r.status;
           if(!r.ok) break;
-          const j=await r.json(); const docs=j.documents||[]; rows.push(...docs.map(d=>toPlace(d,kw)));
+          const j=await r.json(); const docs=j.documents||[];
+          rows.push(...docs.filter(d=>kakaoPlaceMatchesKeyword(d,kw)).map(d=>toPlace(d)));
           if(j.meta?.is_end||docs.length<15) break;
         } catch(e) { console.warn("kakao radius search failed",kw,e?.message); break; }
       }
@@ -455,7 +469,7 @@ async function handleNearby(req, res) {
             const r=await fetch(u,{headers:{Authorization:`KakaoAK ${kakaoKey}`}}); kakaoStatus=r.status;
             if(!r.ok) break;
             const j=await r.json(); const docs=j.documents||[];
-            rows.push(...docs.map(d=>toPlace(d,kw)).filter(x=>Number(x.distance)<=10000));
+            rows.push(...docs.filter(d=>kakaoPlaceMatchesKeyword(d,kw)).map(d=>toPlace(d)).filter(x=>Number(x.distance)<=10000));
             if(j.meta?.is_end||docs.length<15) break;
           } catch(e) { console.warn("kakao area-text search failed",kw,e?.message); break; }
         }

@@ -18,21 +18,21 @@ export default async function handler(req,res){
 
     if(species==="dog"){
       [listResult,countResult,topResult]=await Promise.all([
-        sql`select t.*,exists(select 1 from pg_music_likes l where l.track_id=t.id and l.user_id=${uid||""}) liked from pg_music_tracks t where active=true and species in ('dog','all') order by created_at desc limit ${pageSize} offset ${offset}`,
+        sql`select t.id,t.title,t.description,t.species,t.vocal_type,t.mood,case when t.cover_url like 'data:image/%' then null else t.cover_url end cover_url,t.audio_url,t.created_at,t.like_count,t.comment_count,t.play_count,exists(select 1 from pg_music_likes l where l.track_id=t.id and l.user_id=${uid||""}) liked from pg_music_tracks t where active=true and species in ('dog','all') order by created_at desc limit ${pageSize} offset ${offset}`,
         sql`select count(*)::int n from pg_music_tracks where active=true and species in ('dog','all')`,
-        sql`select * from pg_music_tracks where active=true and species in ('dog','all') order by (like_count*4+comment_count*3+play_count)::numeric desc,created_at desc limit 5`
+        sql`select id,title,description,species,vocal_type,mood,case when cover_url like 'data:image/%' then null else cover_url end cover_url,audio_url,created_at,like_count,comment_count,play_count from pg_music_tracks where active=true and species in ('dog','all') order by (like_count*4+comment_count*3+play_count)::numeric desc,created_at desc limit 5`
       ]);
     } else if(species==="cat"){
       [listResult,countResult,topResult]=await Promise.all([
-        sql`select t.*,exists(select 1 from pg_music_likes l where l.track_id=t.id and l.user_id=${uid||""}) liked from pg_music_tracks t where active=true and species in ('cat','all') order by created_at desc limit ${pageSize} offset ${offset}`,
+        sql`select t.id,t.title,t.description,t.species,t.vocal_type,t.mood,case when t.cover_url like 'data:image/%' then null else t.cover_url end cover_url,t.audio_url,t.created_at,t.like_count,t.comment_count,t.play_count,exists(select 1 from pg_music_likes l where l.track_id=t.id and l.user_id=${uid||""}) liked from pg_music_tracks t where active=true and species in ('cat','all') order by created_at desc limit ${pageSize} offset ${offset}`,
         sql`select count(*)::int n from pg_music_tracks where active=true and species in ('cat','all')`,
-        sql`select * from pg_music_tracks where active=true and species in ('cat','all') order by (like_count*4+comment_count*3+play_count)::numeric desc,created_at desc limit 5`
+        sql`select id,title,description,species,vocal_type,mood,case when cover_url like 'data:image/%' then null else cover_url end cover_url,audio_url,created_at,like_count,comment_count,play_count from pg_music_tracks where active=true and species in ('cat','all') order by (like_count*4+comment_count*3+play_count)::numeric desc,created_at desc limit 5`
       ]);
     } else {
       [listResult,countResult,topResult]=await Promise.all([
-        sql`select t.*,exists(select 1 from pg_music_likes l where l.track_id=t.id and l.user_id=${uid||""}) liked from pg_music_tracks t where active=true order by created_at desc limit ${pageSize} offset ${offset}`,
+        sql`select t.id,t.title,t.description,t.species,t.vocal_type,t.mood,case when t.cover_url like 'data:image/%' then null else t.cover_url end cover_url,t.audio_url,t.created_at,t.like_count,t.comment_count,t.play_count,exists(select 1 from pg_music_likes l where l.track_id=t.id and l.user_id=${uid||""}) liked from pg_music_tracks t where active=true order by created_at desc limit ${pageSize} offset ${offset}`,
         sql`select count(*)::int n from pg_music_tracks where active=true`,
-        sql`select * from pg_music_tracks where active=true order by (like_count*4+comment_count*3+play_count)::numeric desc,created_at desc limit 5`
+        sql`select id,title,description,species,vocal_type,mood,case when cover_url like 'data:image/%' then null else cover_url end cover_url,audio_url,created_at,like_count,comment_count,play_count from pg_music_tracks where active=true order by (like_count*4+comment_count*3+play_count)::numeric desc,created_at desc limit 5`
       ]);
     }
 

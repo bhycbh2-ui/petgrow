@@ -527,7 +527,7 @@ const STRINGS = {
     communitySortPopular: "인기순",
     communitySearchPlaceholder: "제목이나 내용으로 검색해보세요",
     communityWriteBtn: "글쓰기",
-    communityEmptyFeed: "아직 게시글이 없어요. 첫 글을 남겨보세요 🐾",
+    communityEmptyFeed: "아직 회원 게시글이 없어요. 위 예시처럼 첫 글을 남겨보세요 🐾",
     communityLoadMore: "더 보기",
     communityLoading: "불러오는 중...",
     communityHealthNotice: "회원이 작성한 내용은 개인적인 경험이나 의견일 수 있어요. 반려동물의 건강 문제는 반드시 수의사와 상담해주세요.",
@@ -1074,7 +1074,7 @@ const STRINGS = {
     communitySortPopular: "Popular",
     communitySearchPlaceholder: "Search titles and posts",
     communityWriteBtn: "Write",
-    communityEmptyFeed: "No posts yet. Be the first to share 🐾",
+    communityEmptyFeed: "No member posts yet. Use the examples above and be the first to share 🐾",
     communityLoadMore: "Load more",
     communityLoading: "Loading...",
     communityHealthNotice: "Posts here reflect members' personal experience or opinions. Please consult a veterinarian for your pet's health issues.",
@@ -10438,10 +10438,10 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
   useEffect(()=>{
     let cancelled=false;
     if(!account?.id)return;
-    fetch('/api/core?action=state&key=home_quick_menu').then(r=>r.ok?r.json():null).then(j=>{if(cancelled)return;const v=j?.value;if(Array.isArray(v)&&v.length)setQuickKeys(v.filter(k=>allQuick.some(x=>x[0]===k)).slice(0,6));}).catch(()=>{});
+    fetch('/api/state?key=home_quick_menu').then(r=>r.ok?r.json():null).then(j=>{if(cancelled)return;const v=j?.value;if(Array.isArray(v)&&v.length)setQuickKeys(v.filter(k=>allQuick.some(x=>x[0]===k)).slice(0,6));}).catch(()=>{});
     return()=>{cancelled=true};
   },[account?.id]);
-  const saveQuick=(next)=>{const clean=next.filter(k=>allQuick.some(x=>x[0]===k)).slice(0,6);setQuickKeys(clean);try{localStorage.setItem(quickStorageKey,JSON.stringify(clean));}catch{}if(account?.id)fetch('/api/core?action=state',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:'home_quick_menu',value:clean})}).catch(()=>{});};
+  const saveQuick=(next)=>{const clean=next.filter(k=>allQuick.some(x=>x[0]===k)).slice(0,6);setQuickKeys(clean);try{localStorage.setItem(quickStorageKey,JSON.stringify(clean));}catch{}if(account?.id)fetch('/api/state',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:'home_quick_menu',value:clean})}).catch(()=>{});};
   const toggleQuick=(key)=>{if(quickKeys.includes(key))saveQuick(quickKeys.filter(k=>k!==key));else if(quickKeys.length<6)saveQuick([...quickKeys,key]);};
   const moveQuick=(key,dir)=>{const i=quickKeys.indexOf(key);if(i<0)return;const j=dir==='first'?0:dir==='last'?quickKeys.length-1:i+(dir==='left'?-1:1);if(j<0||j>=quickKeys.length||j===i)return;const next=[...quickKeys];next.splice(i,1);next.splice(j,0,key);saveQuick(next);};
   const [quickDragKey,setQuickDragKey]=useState(null);
@@ -11345,12 +11345,12 @@ function AdminMusicPanel(){
   return <div className="admin-report-list"><div className="bg-card"><h2>🎵 Pet음악 관리</h2><p className="bg-sub">음원을 등록하면 제목·설명과 함께 사용자 Pet음악 메뉴에 연결돼요. 새 음악의 커버는 기본 흰색으로 등록되고, 이후 수정에서 원하는 사진으로 교체할 수 있어요. 보컬 여부와 분위기 태그도 지정할 수 있고, 업로드일은 자동 기록되며 좋아요·댓글·재생수로 인기 TOP5가 계산됩니다.</p><div className="admin-music-form" style={{marginTop:14}}><input className="bg-input" placeholder="노래 제목" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/><select className="bg-input" value={form.species} onChange={e=>setForm({...form,species:e.target.value})}><option value="all">🐾 공용</option><option value="dog">🐶 강아지</option><option value="cat">🐱 고양이</option></select><select className="bg-input" value={form.vocalType} onChange={e=>setForm({...form,vocalType:e.target.value})}><option value="instrumental">🎼 인스트루멘탈</option><option value="vocal">🎤 보컬 있음</option></select><select className="bg-input" value={form.mood} onChange={e=>setForm({...form,mood:e.target.value})}><option value="relax">😌 휴식</option><option value="sleep">🌙 수면</option><option value="play">🐾 놀이</option><option value="nature">🌿 자연</option></select><textarea className="bg-input support-textarea full" placeholder="간단한 설명 (선택)" value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/><label className="bg-card" style={{padding:12}}><b style={{fontSize:12}}>음원 파일 {editing?"(교체할 때만 선택)":""}</b><input type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/mp4,audio/aac" onChange={pickAudio} style={{display:"block",marginTop:8,width:"100%"}}/><small className="bg-sub">MP3/WAV/M4A · 최대 12MB</small></label><label className="bg-card" style={{padding:12}}><b style={{fontSize:12}}>커버/로고 이미지 {editing?"(새 사진을 선택하면 바로 교체)":""}</b>{editing&&form.coverUrl&&<img src={form.coverUrl} alt="현재 커버" style={{display:"block",width:72,height:72,objectFit:"cover",borderRadius:14,marginTop:8,border:"1px solid var(--border)"}}/>}<input type="file" accept="image/jpeg,image/png,image/webp" onChange={pickCover} style={{display:"block",marginTop:8,width:"100%"}}/><small className="bg-sub">{form.coverFile?`새 커버 선택됨: ${form.coverFile.name}`:"정사각형 이미지 권장 · JPG/PNG/WebP · 기존 음악도 수정에서 교체 가능"}</small></label><label className="full" style={{fontSize:12,fontWeight:700}}><input type="checkbox" checked={form.active} onChange={e=>setForm({...form,active:e.target.checked})}/> 사용자에게 공개</label><div className="full" style={{display:"flex",gap:8}}><button className="bg-btn" disabled={busy} onClick={save}>{busy?(uploadStage||"업로드 중…"):editing?"수정 저장":"음악 등록"}</button>{editing&&<button className="bg-btn bg-btn-ghost" onClick={()=>{setEditing(null);setForm(blank)}}>취소</button>}</div></div></div><div className="bg-card"><h3>등록된 음악 {items.length}곡</h3><div className="admin-music-list">{items.length?items.map(x=><div className="admin-music-row" key={x.id}>{x.cover_url?<img className="admin-music-thumb" src={x.cover_url} alt=""/>:<div className="admin-music-thumb">🎵</div>}<div><b>{x.title}</b><small>{x.species==="dog"?"강아지":x.species==="cat"?"고양이":"공용"} · {x.vocal_type==="vocal"?"보컬":"인스트루멘탈"} · {({relax:"휴식",sleep:"수면",play:"놀이",nature:"자연"}[x.mood]||"휴식")} · {new Date(x.created_at).toLocaleDateString("ko-KR")} · ▶ {Number(x.play_count)||0} · ♥ {Number(x.like_count)||0} · 💬 {Number(x.comment_count)||0}</small></div><div className="admin-music-actions"><button onClick={()=>edit(x)}>수정</button><button onClick={async()=>{await adminMusicToggle(x.id,!x.active);await load()}}>{x.active?"비공개":"공개"}</button><button onClick={async()=>{if(!window.confirm(`'${x.title}' 음악을 삭제할까요?`))return;await adminMusicDelete(x.id);await load()}}>삭제</button></div></div>):<p className="bg-sub">등록된 음악이 없어요.</p>}</div></div></div>;
 }
 
-function SupportPage({account,onBack}){
+function SupportPage({account,onBack,lang="ko"}){
   const [section,setSection]=useState("notices"),[page,setPage]=useState(1),[data,setData]=useState({items:[],total:0}),[open,setOpen]=useState(null);
   const [form,setForm]=useState({category:"inquiry",title:"",body:"",isPublic:false});
   const load=async()=>{try{const r=section==="notices"?await supportNotices(page):await supportInquiries(page,section==="mine");setData(r)}catch(e){window.alert(e.message)}};
   useEffect(()=>{load()},[section,page]);
-  const submit=async()=>{if(!account){window.alert("로그인 후 문의를 작성할 수 있어요.");return}if(!window.confirm(`${form.isPublic?"공개":"비공개"} 문의로 등록할까요?`))return;try{await supportCreateInquiry(form);setForm({category:"inquiry",title:"",body:"",isPublic:false});setSection("mine");setPage(1);await load();window.alert("문의/피드백이 등록됐어요.")}catch(e){window.alert(e.message)}};
+  const submit=async()=>{if(!account){window.alert(lang==="en"?"Please log in to submit an inquiry.":"로그인 후 문의를 작성할 수 있어요.");return}if(!form.title.trim()||!form.body.trim()){window.alert(lang==="en"?"Please enter a title and message.":"제목과 내용을 입력해 주세요.");return}if(!window.confirm(lang==="en"?`Submit this ${form.isPublic?"public":"private"} inquiry?`:`${form.isPublic?"공개":"비공개"} 문의로 등록할까요?`))return;try{await supportCreateInquiry(form);setForm({category:"inquiry",title:"",body:"",isPublic:false});setSection("mine");setPage(1);await load();window.alert(lang==="en"?"Your inquiry was submitted.":"문의/피드백이 등록됐어요.")}catch(e){window.alert(e.message)}};
   const pages=Math.max(1,Math.ceil((data.total||0)/20));
   return <div className="support-page">
     <div className="support-head"><div><h1>고객지원</h1><p>공지사항과 문의/피드백을 확인할 수 있어요.</p></div><button className="bg-btn bg-btn-ghost support-back-right" onClick={onBack}>← 돌아가기</button></div>
@@ -11363,11 +11363,11 @@ function SupportPage({account,onBack}){
     </div>
     {section==="write"?<div className="bg-card support-write">
       <h2>문의/피드백 작성</h2>
-      <select className="bg-input" value={form.category} onChange={e=>setForm({...form,category:e.target.value})}><option value="inquiry">문의</option><option value="bug">오류신고</option><option value="suggestion">기능제안</option><option value="other">기타</option></select>
-      <input className="bg-input" maxLength={80} placeholder="제목" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/>
-      <textarea className="bg-input support-textarea" maxLength={3000} placeholder="내용을 입력해 주세요." value={form.body} onChange={e=>setForm({...form,body:e.target.value})}/>
+      <select className="bg-input" aria-label={lang==="en"?"Inquiry category":"문의 유형"} value={form.category} onChange={e=>setForm({...form,category:e.target.value})}><option value="inquiry">문의</option><option value="bug">오류신고</option><option value="suggestion">기능제안</option><option value="other">기타</option></select>
+      <input className="bg-input" name="support-title" required aria-label={lang==="en"?"Inquiry title":"문의 제목"} maxLength={80} placeholder="제목" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/>
+      <textarea className="bg-input support-textarea" name="support-body" required aria-label={lang==="en"?"Inquiry message":"문의 내용"} maxLength={3000} placeholder="내용을 입력해 주세요." value={form.body} onChange={e=>setForm({...form,body:e.target.value})}/>
       <label className="support-public-toggle"><input type="checkbox" checked={form.isPublic} onChange={e=>setForm({...form,isPublic:e.target.checked})}/><span><b>다른 회원에게 공개</b><small>체크 해제하면 운영진만 볼 수 있어요.</small></span></label>
-      <button className="bg-btn" onClick={submit}>등록하기</button>
+      <button className="bg-btn" disabled={!form.title.trim()||!form.body.trim()} onClick={submit}>등록하기</button>
     </div>:<div className="support-list">
       {(data.items||[]).length===0?<div className="bg-card">아직 등록된 내용이 없어요.</div>:(data.items||[]).map(x=><button className="bg-card support-row" key={x.id} onClick={()=>setOpen(open===x.id?null:x.id)}>
         <div><span className="support-badge">{x.category==="suggestion"?"기능제안":x.category==="bug"?"오류신고":x.category==="notice"?"공지":x.category||"문의"}</span>{x.pinned&&<span className="support-pin">중요</span>}<b>{x.title}</b></div>
@@ -11383,15 +11383,15 @@ function SupportPage({account,onBack}){
 /* PETNEWS_FINAL_INLINE_20260818 */
 function PetNewsPage({lang="ko"}){
   const [items,setItems]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState("");
-  const [category,setCategory]=useState("전체"),[query,setQuery]=useState(""),[page,setPage]=useState(1),[selected,setSelected]=useState(null),[localized,setLocalized]=useState({}),[detail,setDetail]=useState(null),[reaction,setReaction]=useState({likeCount:0,likedByMe:false,comments:[]}),[commentText,setCommentText]=useState(""),[busy,setBusy]=useState(false);
+  const [category,setCategory]=useState("전체"),[query,setQuery]=useState(""),[page,setPage]=useState(1),[total,setTotal]=useState(0),[totalPages,setTotalPages]=useState(1),[selected,setSelected]=useState(null),[localized,setLocalized]=useState({}),[detail,setDetail]=useState(null),[reaction,setReaction]=useState({likeCount:0,likedByMe:false,comments:[]}),[commentText,setCommentText]=useState(""),[busy,setBusy]=useState(false);
   const detailRef=React.useRef(null),PAGE=20,cats=["전체","반려견","반려묘","건강","정책·제도","입양·보호","산업·서비스","반려동물"];
   const ui={ko:["새로고침","뉴스 검색","기사 자세히 보기 →","기사 핵심 요약","원문 전체보기","좋아요","댓글을 남겨보세요","등록","조건에 맞는 뉴스가 없어요."],en:["Refresh","Search news","Read summary →","Article summary","Open original","Like","Write a comment","Post","No matching news."],ja:["更新","ニュース検索","要約を見る →","記事の要約","原文を見る","いいね","コメントを書く","投稿","該当するニュースがありません。"],zh:["刷新","搜索新闻","查看摘要 →","文章摘要","查看原文","点赞","发表评论","发布","没有符合条件的新闻。"]}[lang]||[];
   const catLabel=c=>({en:{"전체":"All","반려견":"Dogs","반려묘":"Cats","건강":"Health","정책·제도":"Policy","입양·보호":"Adoption","산업·서비스":"Industry","반려동물":"Pets"},ja:{"전체":"すべて","반려견":"犬","반려묘":"猫","건강":"健康","정책·제도":"制度","입양·보호":"保護・譲渡","산업·서비스":"サービス","반려동물":"ペット"},zh:{"전체":"全部","반려견":"犬","반려묘":"猫","건강":"健康","정책·제도":"政策","입양·보호":"领养保护","산업·서비스":"产业服务","반려동물":"宠物"}}[lang]?.[c]||c);
   const clean=v=>String(v||'').replace(/&nbsp;|&#160;|&#xA0;/gi,' ').replace(/\s+/g,' ').trim();
   const summary=v=>{const t=clean(v);return t?t.slice(0,260):(lang==='en'?'Open the original for details.':'자세한 내용은 원문에서 확인해 주세요.')};
-  const load=async()=>{setLoading(true);setError('');try{const j=await apiJson('/api/news');setItems(Array.isArray(j.items)?j.items:[]);if(!j.items?.length)setError(j.message||'새 뉴스를 찾고 있어요.')}catch(e){setError(e.message||'뉴스를 불러오지 못했어요.')}finally{setLoading(false)}};
-  useEffect(()=>{load()},[]);
-  const q=query.trim().toLowerCase(),filtered=items.filter(x=>(category==='전체'||x.category===category)&&(!q||`${x.title||''} ${x.description||''} ${x.source||''}`.toLowerCase().includes(q))),pages=Math.max(1,Math.ceil(filtered.length/PAGE)),safe=Math.min(page,pages),pageItems=filtered.slice((safe-1)*PAGE,safe*PAGE);
+  const load=async()=>{setLoading(true);setError('');try{const params=new URLSearchParams({page:String(page),pageSize:String(PAGE),category,query:query.trim()});const j=await apiJson(`/api/news?${params}`);const next=Array.isArray(j.items)?j.items:[];setItems(next);setTotal(Number(j.total)||0);setTotalPages(Math.max(1,Number(j.pages)||1));if(!next.length)setError(j.message||'조건에 맞는 뉴스가 없어요.')}catch(e){setError(e.message||'뉴스를 불러오지 못했어요.')}finally{setLoading(false)}};
+  useEffect(()=>{const timer=window.setTimeout(load,query.trim()?280:0);return()=>window.clearTimeout(timer)},[page,category,query]);
+  const pages=totalPages,safe=Math.min(page,pages),pageItems=items;
   useEffect(()=>{setPage(1)},[category,query]);
   useEffect(()=>{if(lang==='ko'){setLocalized({});return}const b=pageItems.map(x=>({id:String(x.id||x.link),title:x.title,description:x.description}));if(!b.length)return;fetch('/api/news-localize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lang,items:b})}).then(r=>r.ok?r.json():null).then(j=>{if(j?.items){const m={};j.items.forEach(x=>m[x.id]=x);setLocalized(m)}}).catch(()=>{})},[lang,safe,category,query,items.length]);
   const key=n=>String(n?.id||n?.link||n?.title||'');
@@ -11401,7 +11401,7 @@ function PetNewsPage({lang="ko"}){
   const comment=async()=>{const text=commentText.trim();if(!selected||!text||busy)return;setBusy(true);try{const r=await apiJson(`/api/news-community?action=comment&articleKey=${encodeURIComponent(key(selected))}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:text})});setReaction(v=>({...v,comments:[...(v.comments||[]),r.comment]}));setCommentText('')}catch(e){window.alert(e.message)}finally{setBusy(false)}};
   const del=async id=>{if(!window.confirm('댓글을 삭제할까요?'))return;try{await apiJson(`/api/news-community?action=comment&id=${encodeURIComponent(id)}&articleKey=${encodeURIComponent(key(selected))}`,{method:'DELETE'});setReaction(v=>({...v,comments:(v.comments||[]).filter(x=>x.id!==id)}))}catch(e){window.alert(e.message)}};
   const fallback=n=>/고양이|반려묘/.test(`${n.title} ${n.category}`)?'🐱':/강아지|반려견/.test(`${n.title} ${n.category}`)?'🐶':/병원|건강|수의/.test(`${n.title} ${n.category}`)?'🏥':'🐾';
-  return <div className="petnews-v10"><div className="petnews-refresh-row"><span>{items.length?`${items.length} ${lang==='ko'?'개의 최신 기사':''}`:''}</span><button className="bg-chip" onClick={load}>{ui[0]}</button></div><div className="petnews-tools"><div className="petnews-cats">{cats.map(c=><button key={c} className={category===c?'active':''} onClick={()=>setCategory(c)}>{catLabel(c)}</button>)}</div><div className="petnews-search"><span>⌕</span><input className="bg-input" value={query} onChange={e=>setQuery(e.target.value)} placeholder={ui[1]}/></div></div><div className="petnews-result-count">{filtered.length} {lang==='ko'?'건':''}</div>
+  return <div className="petnews-v10"><div className="petnews-refresh-row"><span>{total?`${total} ${lang==='ko'?'개의 최신 기사':''}`:''}</span><button className="bg-chip" onClick={load}>{ui[0]}</button></div><div className="petnews-tools"><div className="petnews-cats">{cats.map(c=><button key={c} className={category===c?'active':''} onClick={()=>setCategory(c)}>{catLabel(c)}</button>)}</div><div className="petnews-search"><span>⌕</span><input className="bg-input" value={query} onChange={e=>setQuery(e.target.value)} placeholder={ui[1]}/></div></div><div className="petnews-result-count">{total} {lang==='ko'?'건':''}</div>
   {loading?<div className="petnews-state">…</div>:error&&!items.length?<div className="petnews-state error"><b>{error}</b><button className="bg-btn" onClick={load}>{ui[0]}</button></div>:<><div className="petnews-grid">{pageItems.map((n,i)=>{const loc=localized[key(n)]||n;return <article className="petnews-card-v10" key={key(n)||i} onClick={()=>open(n)}><div className="petnews-media">{n.image&&<img src={n.image} alt="" loading="lazy" onError={e=>e.currentTarget.style.display='none'}/>}<div className={`petnews-image-fallback ${n.image?'':'show'}`}><span>{fallback(n)}</span><small>{catLabel(n.category||'반려동물')}</small></div></div><div className="petnews-card-body"><div className="petnews-meta"><span>{catLabel(n.category||'반려동물')}</span><small>{n.source||'Media'}{n.publishedAt?` · ${new Date(n.publishedAt).toLocaleDateString()}`:''}</small></div><h2>{clean(loc.title||n.title)}</h2><p>{summary(loc.description||n.description)}</p><button type="button">{ui[2]}</button></div></article>})}</div>{!pageItems.length&&<div className="petnews-state">{ui[8]}</div>}{pages>1&&<ResponsivePagination page={safe} totalPages={pages} lang={lang} onChange={setPage}/>}</>}
   {selected&&<section ref={detailRef} className="bg-card petnews-inline-detail"><div className="petnews-inline-head"><div><small>{catLabel(selected.category||'반려동물')} · {selected.source||'Media'}</small><h2>{detail?.title||localized[key(selected)]?.title||clean(selected.title)}</h2></div><button className="petnews-inline-close" onClick={()=>setSelected(null)}>×</button></div><div className="petnews-inline-body"><div><div className="petnews-summary-box"><b>{ui[3]}</b><p>{detail?.summary||summary(localized[key(selected)]?.description||selected.description)}</p></div><p className="petnews-source-note">{lang==='en'?'PetGrow provides a concise overview based on the public article description. Open the original for full details.':lang==='ja'?'公開されている記事説明をもとに要点を短くまとめます。詳細は原文をご確認ください。':lang==='zh'?'根据公开的新闻简介整理简短要点，详细内容请查看原文。':'PetGrow는 공개된 기사 설명을 바탕으로 핵심 내용을 짧게 정리해 보여줘요. 세부 내용은 원문에서 확인해 주세요.'}</p><a className="bg-btn" href={selected.link||selected.naverLink} target="_blank" rel="noreferrer">{ui[4]}</a></div>{selected.image&&<img src={selected.image} alt=""/>}</div><div className="petnews-reactions"><div className="petnews-reaction-toolbar"><button className={`petnews-like-btn ${reaction.likedByMe?'active':''}`} disabled={busy} onClick={like}>{reaction.likedByMe?'♥':'♡'} {ui[5]} {Number(reaction.likeCount)||0}</button><span className="bg-sub">💬 {(reaction.comments||[]).length}</span></div><div className="petnews-comment-compose"><input className="bg-input" maxLength={500} value={commentText} onChange={e=>setCommentText(e.target.value)} placeholder={ui[6]}/><button className="bg-btn" disabled={busy||!commentText.trim()} onClick={comment}>{ui[7]}</button></div><div className="petnews-comment-list">{(reaction.comments||[]).map(c=><div className="petnews-comment" key={c.id}><div><b>{c.authorNickname}</b><p>{c.content}</p><small>{c.createdAt?new Date(c.createdAt).toLocaleString():''}</small></div>{c.isOwner&&<button onClick={()=>del(c.id)}>삭제</button>}</div>)}</div></div></section>}</div>
 }
@@ -11803,8 +11803,9 @@ function AppInner({ lang, setLang }) {
   const [deleteTarget, setDeleteTarget] = useState(null); // {id, name} | null
 
   // 'about' | 'pets' | 'saju' | 'petbti' | 'tips' | 'guide' | 'privacy' | 'terms'
-  const [view, setView] = useState("home");
-  const GATED_VIEWS = ["pets", "saju", "petbti", "tips", "guide", "content", "my", "admin"];
+  const viewFromUrl=()=>{try{const value=new URLSearchParams(window.location.search).get("view")||"home";return ["home","about","pets","nearby","community","saju","tarot","petbti","music","tips","news","guide","my","support","ad-inquiry"].includes(value)?value:"home"}catch{return "home"}};
+  const [view, setView] = useState(viewFromUrl);
+  const GATED_VIEWS = ["pets", "saju", "petbti", "content", "my", "admin"];
 
   // ---- 계정(카카오 로그인) ----
   const [account, setAccount] = useState(null);
@@ -11814,9 +11815,16 @@ function AppInner({ lang, setLang }) {
   // 아래 통계/광고 effect에서 effectiveView를 참조하므로 TDZ(선언 전 접근) 오류를 방지합니다.
   const needsLogin = authChecked && GATED_VIEWS.includes(view) && !account;
   const effectiveView = needsLogin ? "login" : view;
+  useEffect(()=>{
+    const ko={home:"PetGrow",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",news:"Pet뉴스",guide:"정보가이드",my:"회원정보",support:"고객지원",login:"로그인"};
+    const en={home:"PetGrow",about:"About",pets:"My Pet",nearby:"Nearby Pet",community:"Pet Talk",saju:"Pet Saju",tarot:"Pet Tarot",petbti:"PetBTI",music:"Pet Music",tips:"Pet Info",news:"Pet News",guide:"Guide",my:"Account",support:"Support",login:"Login"};
+    const label=(lang==="en"?en:ko)[effectiveView]||"PetGrow";
+    document.title=label==="PetGrow"?"PetGrow | 반려동물 성장·생활 플랫폼":`${label} | PetGrow`;
+  },[effectiveView,lang]);
   const [accountModalOpen, setAccountModalOpen] = useState(false);
   useEffect(()=>{if(account?.id)adminStatusFast().catch(()=>{})},[account?.id]);
   useEffect(()=>{const h=e=>goView(e.detail);window.addEventListener("petgrow:navigate",h);return()=>window.removeEventListener("petgrow:navigate",h)},[]);
+  useEffect(()=>{const h=()=>setView(viewFromUrl());window.addEventListener("popstate",h);return()=>window.removeEventListener("popstate",h)},[]);
 
   const [hamOpen, setHamOpen] = useState(false);
   const [contentSubTab, setContentSubTab] = useState("all");
@@ -12143,6 +12151,11 @@ function AppInner({ lang, setLang }) {
       setAccount(refreshed);
     }
     setView(next);
+    try{
+      const url=new URL(window.location.href),current=url.searchParams.get("view")||"home";
+      if(next==="home")url.searchParams.delete("view");else url.searchParams.set("view",next);
+      if(current!==next)window.history.pushState({petgrowView:next},"",`${url.pathname}${url.search}${url.hash}`);
+    }catch{}
     if(currentAccount?.id)logPetActivity({section:next,action:"view",title:({home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",news:"Pet뉴스",guide:"정보가이드",my:"마이페이지",support:"고객지원"}[next]||next)});
     scrollToTop();
   };
@@ -12496,7 +12509,7 @@ function AppInner({ lang, setLang }) {
       ) : effectiveView === "admin" ? (
         <AdminReportsPage onBack={() => goView("my")} />
       ) : effectiveView === "support" ? (
-        <SupportPage account={account} onBack={() => goView("my")} />
+        <SupportPage account={account} lang={lang} onBack={() => goView("my")} />
       ) : effectiveView === "ad-inquiry" ? (
         <AdInquiryPage onBack={() => goView("home")} />
       ) : effectiveView === "news" ? (
@@ -12654,6 +12667,7 @@ function AppInner({ lang, setLang }) {
 export default function App() {
   const [lang, setLang] = useState(()=>{try{const v=localStorage.getItem("petgrow:lang");return ["ko","en","ja","zh"].includes(v)?v:"ko"}catch{return "ko"}});
   useEffect(()=>{try{localStorage.setItem("petgrow:lang",lang)}catch{}},[lang]);
+  useEffect(()=>{document.documentElement.lang=lang==="zh"?"zh-CN":lang},[lang]);
   const path = typeof window !== "undefined" ? window.location.pathname : "/";
   const isPrivacyPage = path === "/privacy" || path === "/privacy/";
   const isTermsPage = path === "/terms" || path === "/terms/";

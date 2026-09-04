@@ -49,6 +49,8 @@ export default function PetNewsPage({ lang = "ko", onActivity }) {
   const [category, setCategory] = useState("전체");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const [localized, setLocalized] = useState({});
   const PAGE = 20;
   const cats = ["전체", "반려견", "반려묘", "건강", "정책·제도", "입양·보호", "산업·서비스", "반려동물"];
@@ -74,22 +76,26 @@ export default function PetNewsPage({ lang = "ko", onActivity }) {
     setLoading(true);
     setError("");
     try {
-      const json = await apiJson("/api/news");
+      const params = new URLSearchParams({ page: String(page), pageSize: String(PAGE), category, query: query.trim() });
+      const json = await apiJson(`/api/news?${params}`);
       const nextItems = Array.isArray(json.items) ? json.items : [];
       setItems(nextItems);
+      setTotal(Number(json.total) || 0);
+      setTotalPages(Math.max(1, Number(json.pages) || 1));
       if (!nextItems.length) setError(json.message || "새 뉴스를 찾고 있어요.");
     } catch (err) {
       setError(err.message || "뉴스를 불러오지 못했어요.");
     } finally { setLoading(false); }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    const timer = window.setTimeout(load, query.trim() ? 280 : 0);
+    return () => window.clearTimeout(timer);
+  }, [page, category, query]);
 
-  const q = query.trim().toLowerCase();
-  const filtered = items.filter((x) => (category === "전체" || x.category === category) && (!q || `${x.title || ""} ${x.source || ""} ${x.category || ""}`.toLowerCase().includes(q)));
-  const pages = Math.max(1, Math.ceil(filtered.length / PAGE));
+  const pages = totalPages;
   const safe = Math.min(page, pages);
-  const pageItems = filtered.slice((safe - 1) * PAGE, safe * PAGE);
+  const pageItems = items;
 
   useEffect(() => { setPage(1); }, [category, query]);
   useEffect(() => {
@@ -110,9 +116,9 @@ export default function PetNewsPage({ lang = "ko", onActivity }) {
   }, [lang, safe, category, query, items.length]);
 
   return <div className="petnews-v10 petnews-direct-list">
-    <div className="petnews-refresh-row"><span>{items.length ? `${items.length} ${lang === "ko" ? "개의 최신 기사" : ""}` : ""}</span><button className="bg-chip" onClick={load}>{ui.refresh}</button></div>
+    <div className="petnews-refresh-row"><span>{total ? `${total} ${lang === "ko" ? "개의 최신 기사" : ""}` : ""}</span><button className="bg-chip" onClick={load}>{ui.refresh}</button></div>
     <div className="petnews-tools"><div className="petnews-cats">{cats.map((c) => <button key={c} className={category === c ? "active" : ""} onClick={() => setCategory(c)}>{catLabel(c)}</button>)}</div><div className="petnews-search"><span>⌕</span><input className="bg-input" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={ui.search} /></div></div>
-    <div className={`petnews-result-count ${loading ? "loading" : ""}`} role={loading ? "status" : undefined} aria-live="polite">{loading ? loadingCount : `${filtered.length}${lang === "ko" ? "건" : ""}`}</div>
+    <div className={`petnews-result-count ${loading ? "loading" : ""}`} role={loading ? "status" : undefined} aria-live="polite">{loading ? loadingCount : `${total}${lang === "ko" ? "건" : ""}`}</div>
     {loading ? <div className="petnews-state petnews-loading-state" role="status" aria-live="polite" aria-busy="true"><span className="petnews-loading-spinner" aria-hidden="true"></span><b>{loadingTitle}</b><small>{lang === "ko" ? "잠시만 기다려 주세요. 최신 기사와 출처를 확인하고 있어요." : ""}</small></div> : error && !items.length ? <div className="petnews-state error"><b>{error}</b><button className="bg-btn" onClick={load}>{ui.refresh}</button></div> : <>
       <div className="petnews-grid">{pageItems.map((n, i) => {
         const loc = localized[key(n)] || n;

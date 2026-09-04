@@ -12,5 +12,6 @@ export default async function handler(req, res) {
     return setHeader(name, value);
   };
   setHeader("Cache-Control", "no-store, max-age=0");
+  req.query = { ...(req.query || {}), refresh: "1", page: "1", pageSize: "20" };
   return newsHandler(req, res);
 }
