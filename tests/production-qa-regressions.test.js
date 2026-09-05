@@ -21,6 +21,7 @@ test("nearby results validate actual Kakao category or place name", () => {
   assert.match(core, /kakaoPlaceMatchesKeyword/);
   assert.match(core, /docs\.filter\(d=>kakaoPlaceMatchesKeyword\(d,kw\)\)/);
   assert.doesNotMatch(core, /placeType\(d\.category_name, kw\)/);
+  assert.match(core, /items\.filter\(x=>x\.typeKey===category\)/);
 });
 
 test("news is served in bounded pages and collection is cron-only", () => {
