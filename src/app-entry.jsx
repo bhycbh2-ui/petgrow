@@ -28,6 +28,7 @@ import "./premium-core-surfaces-20260828.js";
 import "./logo-final-crop-guard-20260901.css";
 import "./responsive-footer-20260903.css";
 import "./petgrow-oracle-suite-20260904.css";
+import "./petgrow-about-next-20260905.css";
 
 const APP_AUTH_CALLBACK = "kr.co.petgrow.app://auth/callback";
 

@@ -19,6 +19,7 @@ import petgrowSplashReadyGate from "./build/petgrow-splash-ready-gate-20260821.m
 import petgrowFullQa20260821 from "./build/petgrow-full-qa-20260821.mjs";
 import petgrowHomeBootUnblock20260828 from "./build/petgrow-home-boot-unblock-20260828.mjs";
 import petgrowPetTalkOracleFixes from "./build/petgrow-pettalk-oracle-fixes-20260904.mjs";
+import petgrowAboutNext from "./build/petgrow-about-next-20260905.mjs";
 
 const ADSENSE_CLIENT = "ca-pub-9699974051273244";
 
@@ -36,7 +37,7 @@ function petgrowAdsenseWeb() {
 }
 
 export default defineConfig({
-  plugins: [petgrowHomeBootUnblock20260828(), petgrowBrandRefresh20260822(), petgrowFullQa20260821(), petgrowSplashV4(), petgrowSplashReadyGate(), petgrowAdsenseWeb(), petgrowPerformanceLazy(), petgrowRechartsTreeShake20260822(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), petgrowPetTalkOracleFixes(), petgrowMenuSplitV3(), petgrowMenuSplitV4(), petgrowPetTalkSplitV5(), petgrowDeepMenuSplitV6(), petgrowDeepScreenSplitV7(), petgrowRouteSplitV8(), react()],
+  plugins: [petgrowHomeBootUnblock20260828(), petgrowBrandRefresh20260822(), petgrowFullQa20260821(), petgrowSplashV4(), petgrowSplashReadyGate(), petgrowAdsenseWeb(), petgrowPerformanceLazy(), petgrowRechartsTreeShake20260822(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), petgrowPetTalkOracleFixes(), petgrowAboutNext(), petgrowMenuSplitV3(), petgrowMenuSplitV4(), petgrowPetTalkSplitV5(), petgrowDeepMenuSplitV6(), petgrowDeepScreenSplitV7(), petgrowRouteSplitV8(), react()],
   esbuild: {
     legalComments: "none",
   },
