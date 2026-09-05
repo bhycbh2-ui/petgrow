@@ -5,6 +5,8 @@ import { readFileSync } from "node:fs";
 const entry=readFileSync(new URL("../src/app-entry.jsx",import.meta.url),"utf8");
 const css=readFileSync(new URL("../src/petgrow-color-harmony-20260905.css",import.meta.url),"utf8");
 const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
+const brandTransform=readFileSync(new URL("../build/petgrow-brand-refresh-20260822.mjs",import.meta.url),"utf8");
+const manifest=readFileSync(new URL("../public/manifest.json",import.meta.url),"utf8");
 
 test("the shared color layer loads after the page-specific themes",()=>{
   const about=entry.indexOf('petgrow-about-next-20260905.css');
@@ -23,4 +25,6 @@ test("core pages share one green-neutral palette",()=>{
 
 test("browser chrome uses the PetGrow deep green",()=>{
   assert.match(html,/<meta name="theme-color" content="#234f3c" \/>/);
+  assert.match(brandTransform,/theme-color[^\n]+#234f3c/);
+  assert.equal(JSON.parse(manifest).theme_color,"#234f3c");
 });
