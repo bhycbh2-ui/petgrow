@@ -20,6 +20,7 @@ test("core pages share one green-neutral palette",()=>{
   assert.match(css,/\.pg-about-next\{[\s\S]*--about-green:var\(--pg-harmony-deep\)/);
   assert.match(css,/\.pg-place-next\{[\s\S]*--place-green:var\(--pg-harmony-green\)/);
   assert.match(css,/\.dash-quick-grid>button:nth-child\(3n\+1\)/);
+  assert.match(css,/\.dash-section>div\[style\*="display: grid"\]>\.bg-card:nth-child\(3n\+1\)/);
   assert.doesNotMatch(css,/#(?:f4f0fb|eef5fb|fff4ec|fff1f3|fff8e9)/i);
 });
 
