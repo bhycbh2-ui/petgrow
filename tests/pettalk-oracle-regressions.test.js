@@ -14,6 +14,7 @@ const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
 
 test("PetTalk composer dependencies and three examples remain available",()=>{
   assert.match(transformedApp,/function validatePetTalkText\(\.\.\.parts\)/);
+  assert.match(transformedApp,/function petSnapshot\(pet\)/);
   const demo=transformedApp.match(/const COMMUNITY_DEMO_POSTS = \[([\s\S]*?)\n\];/);
   assert.ok(demo,"PetTalk demo list must exist");
   assert.equal((demo[1].match(/^\s*\["/gm)||[]).length,3);

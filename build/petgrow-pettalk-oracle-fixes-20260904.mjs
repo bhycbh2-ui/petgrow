@@ -16,6 +16,16 @@ function validatePetTalkText(...parts) {
   if (/[\\w.+-]+@[\\w.-]+\\.[A-Za-z]{2,}/.test(joined) || /(?:01[016789])[-\\s]?\\d{3,4}[-\\s]?\\d{4}/.test(joined)) return "전화번호나 이메일 같은 개인정보는 Pet톡에 직접 작성하지 말아 주세요.";
   return "";
 }
+function petSnapshot(pet) {
+  return {
+    id: pet.id,
+    name: pet.profile.name,
+    species: pet.species || pet.profile.species,
+    breed: pet.profile.breedName || null,
+    birthDate: pet.profile.birthDate || null,
+    photo: pet.profile.profileImage || null,
+  };
+}
 const COMMUNITY_DEMO_POSTS = [
   ["daily", "mint", "🐶", "버터네 보호자", "말티푸 · 4개월", "오늘 첫 산책 다녀왔어요 🐾", "처음엔 조금 긴장하더니 마지막에는 꼬리도 살랑살랑 흔들었어요. 천천히 익숙해지는 모습이 너무 기특하네요!", 8, 2],
   ["question", "blue", "🐶", "두부네 보호자", "비숑 · 7개월", "산책 중 갑자기 멈춰요, 괜찮을까요?", "요즘 산책하다가 몇 분씩 가만히 서 있을 때가 있어요. 냄새 맡는 건지 쉬는 건지 비슷한 경험 있으셨나요?", 5, 6],
