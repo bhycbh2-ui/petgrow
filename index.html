@@ -120,19 +120,13 @@
 
       .petgrow-splash__infographic {
         position: relative;
-        width: clamp(190px, 51vw, 232px);
+        width: clamp(172px, 46vw, 204px);
         aspect-ratio: 1 / 1;
         border-radius: 50%;
-        background:
-          radial-gradient(circle at 50% 48%, rgba(255,255,255,.96) 0 34%, rgba(226,240,230,.8) 35% 36%, transparent 37%),
-          linear-gradient(rgba(35,93,61,.045) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(35,93,61,.045) 1px, transparent 1px),
-          radial-gradient(circle, #f7fbf8 0%, #e8f2eb 72%, #dbe9df 100%);
-        background-size: auto, 18px 18px, 18px 18px, auto;
+        background:#fff;
         box-shadow:
-          0 24px 58px rgba(28, 82, 53, .14),
-          0 0 0 1px rgba(35, 92, 57, .08),
-          0 0 0 12px rgba(214, 235, 218, .42);
+          0 18px 46px rgba(28,82,53,.11),
+          0 0 0 1px rgba(35,92,57,.08);
         isolation: isolate;
         animation: petgrow-infographic-in 520ms cubic-bezier(.18,.82,.22,1) both;
       }
@@ -141,26 +135,21 @@
         position: absolute;
         pointer-events: none;
         border-radius: 50%;
-        border: 1px solid rgba(38,104,72,.2);
+        border:0;
       }
       .petgrow-splash__orbit--outer {
-        inset: 9%;
-        border-style: dashed;
-        animation: petgrow-orbit-spin 9s linear infinite;
+        inset:6%;
+        background:conic-gradient(from 18deg,#2e7654 0 30%,#dbe9df 30% 72%,#c5a454 72% 82%,#dbe9df 82% 100%);
+        -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));
+        mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));
+        animation:petgrow-orbit-spin 2.8s cubic-bezier(.4,0,.2,1) both;
       }
       .petgrow-splash__orbit--inner {
-        inset: 24%;
-        border-color: rgba(196,157,68,.28);
+        display:none;
       }
       .petgrow-splash__orbit--outer::after,
       .petgrow-splash__orbit--inner::after {
-        content: "";
-        position: absolute;
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: #2e7654;
-        box-shadow: 0 0 0 5px rgba(46,118,84,.1);
+        display:none;
       }
       .petgrow-splash__orbit--outer::after { right: 19%; top: 5%; }
       .petgrow-splash__orbit--inner::after { left: 4%; bottom: 24%; background: #c5a454; }
@@ -170,7 +159,7 @@
         z-index: 3;
         left: 50%;
         top: 50%;
-        width: 43%;
+        width: 54%;
         aspect-ratio: 1 / 1;
         display: grid;
         place-items: center;
@@ -185,23 +174,23 @@
         object-fit: contain;
         user-select: none;
         -webkit-user-drag: none;
-        filter: drop-shadow(0 10px 18px rgba(16,65,43,.2));
+        border-radius:24%;
+        filter:drop-shadow(0 8px 14px rgba(16,65,43,.16));
       }
 
       .petgrow-splash__growth {
         position: absolute;
         z-index: 2;
-        left: 11%;
-        bottom: 13%;
-        width: 78%;
+        left:14%;
+        bottom:9%;
+        width:72%;
         height: auto;
         overflow: visible;
       }
       .petgrow-splash__growth-guide {
         fill: none;
-        stroke: rgba(35,106,77,.14);
-        stroke-width: 2;
-        stroke-dasharray: 4 6;
+        stroke:rgba(35,106,77,.09);
+        stroke-width:2;
       }
       .petgrow-splash__growth-line {
         fill: none;
@@ -224,18 +213,7 @@
       .petgrow-splash__growth-dot--3 { animation-delay: .96s; fill: #d8bd76; stroke: #8f7336; }
 
       .petgrow-splash__data-label {
-        position: absolute;
-        z-index: 4;
-        padding: 5px 7px;
-        border: 1px solid rgba(35,106,77,.13);
-        border-radius: 8px;
-        background: rgba(255,255,255,.9);
-        color: #5f7468;
-        font: 800 8px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-        letter-spacing: .08em;
-        box-shadow: 0 7px 18px rgba(28,67,47,.07);
-        opacity: 0;
-        animation: petgrow-label-in 300ms ease-out forwards;
+        display:none;
       }
       .petgrow-splash__data-label--record { left: -2%; top: 26%; animation-delay: .28s; }
       .petgrow-splash__data-label--care { right: -1%; top: 37%; animation-delay: .52s; }
@@ -324,7 +302,11 @@
         68% { opacity: 1; transform: translate(-50%,-53%) scale(1.035); }
         100% { opacity: 1; transform: translate(-50%,-50%) scale(1); }
       }
-      @keyframes petgrow-orbit-spin { to { transform: rotate(360deg); } }
+      @keyframes petgrow-orbit-spin {
+        from { opacity:0; transform:rotate(-35deg) scale(.92); }
+        42% { opacity:1; }
+        to { opacity:1; transform:rotate(90deg) scale(1); }
+      }
       @keyframes petgrow-growth-draw { to { stroke-dashoffset: 0; } }
       @keyframes petgrow-growth-dot { to { opacity: 1; } }
       @keyframes petgrow-label-in {
@@ -347,7 +329,7 @@
 
       @media (orientation: landscape) and (max-height: 600px) {
         .petgrow-splash__content { transform: none; }
-        .petgrow-splash__infographic { width: 132px; }
+        .petgrow-splash__infographic { width: 122px; }
         .petgrow-splash__data-label { display: none; }
         .petgrow-splash__hello { margin-top: 11px; font-size: 22px; }
         .petgrow-splash__tagline { margin-top: 5px; font-size: 11px; }
@@ -357,7 +339,7 @@
       }
 
       @media (min-width: 900px) {
-        .petgrow-splash__infographic { width: 218px; }
+        .petgrow-splash__infographic { width: 196px; }
         .petgrow-splash__progress { width: 190px; }
       }
 
@@ -435,10 +417,6 @@
       <div class="petgrow-splash__content">
         <div class="petgrow-splash__infographic" aria-hidden="true">
           <span class="petgrow-splash__orbit petgrow-splash__orbit--outer"></span>
-          <span class="petgrow-splash__orbit petgrow-splash__orbit--inner"></span>
-          <span class="petgrow-splash__data-label petgrow-splash__data-label--record">RECORD</span>
-          <span class="petgrow-splash__data-label petgrow-splash__data-label--care">CARE</span>
-          <span class="petgrow-splash__data-label petgrow-splash__data-label--grow">GROW</span>
           <div class="petgrow-splash__mark-wrap">
             <img class="petgrow-splash__mark" src="/petgrow-brand-source.svg" alt="" width="512" height="512" fetchpriority="high" decoding="sync" />
           </div>
