@@ -1,4 +1,5 @@
 .pg-about-next{--about-ink:#13251c;--about-green:#1d5a3b;--about-lime:#b8ef82;--about-line:#dce6df;--about-paper:#f4f7f3;background:#fff;color:var(--about-ink);overflow:clip}
+.petgrow-splash__logo,.petgrow-sidebar-brand img,.desktop-brand-logo,.mobile-brand-logo,.ham-panel-header img{content:normal!important}
 .pg-about-next .pgx-section{padding:clamp(72px,8vw,118px) 24px!important;background:#fff!important}
 .pg-about-next .pgx-about-wrap{width:min(1180px,100%);margin:0 auto}
 .pg-about-next .pgx-about-hero{padding-top:clamp(64px,8vw,116px)!important;background:var(--about-paper)!important;border-bottom:1px solid var(--about-line)}

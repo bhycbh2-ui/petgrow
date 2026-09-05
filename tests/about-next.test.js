@@ -19,4 +19,5 @@ test("About page supports desktop, mobile and reduced-motion layouts",()=>{
   assert.match(css,/@media\(max-width:620px\)/);
   assert.match(css,/env\(safe-area-inset-bottom\)/);
   assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
+  assert.match(css,/petgrow-sidebar-brand img[^}]+content:normal!important/);
 });
