@@ -525,14 +525,16 @@ async function handleNearby(req, res) {
     if(dup){if(!dup.phone&&x.phone)dup.phone=x.phone;if(!dup.url&&x.url)dup.url=x.url;if(!dup.address&&x.address)dup.address=x.address;continue;}
     items.push(x);
   }
-  items.sort((a,b)=>(a.distance??1e12)-(b.distance??1e12));
+  // 유사 키워드로 함께 검색된 장소가 있어도 사용자가 선택한 업종만 반환합니다.
+  const categoryItems=category==="all"?items:items.filter(x=>x.typeKey===category);
+  categoryItems.sort((a,b)=>(a.distance??1e12)-(b.distance??1e12));
 
   // 구 검색은 최대 5km, 동/상세주소는 기본 3km. 결과가 없으면 최대 5km까지 자동 확대합니다.
   let searchRadius=preferredRadius;
-  let visible=items.filter(x=>Number(x.distance)<=searchRadius);
-  if(!visible.length && searchRadius<5000){searchRadius=5000;visible=items.filter(x=>Number(x.distance)<=5000);}
+  let visible=categoryItems.filter(x=>Number(x.distance)<=searchRadius);
+  if(!visible.length && searchRadius<5000){searchRadius=5000;visible=categoryItems.filter(x=>Number(x.distance)<=5000);}
   // 지역명 직접검색 결과가 5km 밖에만 있는 예외 상황에서는 가장 가까운 결과도 일부 보여줍니다.
-  if(!visible.length && items.length) { searchRadius=10000; visible=items.filter(x=>Number(x.distance)<=10000).slice(0,40); }
+  if(!visible.length && categoryItems.length) { searchRadius=10000; visible=categoryItems.filter(x=>Number(x.distance)<=10000).slice(0,40); }
   if(hasUserCoord){for(const x of visible)x.userDistance=calcDistance(uLat,uLng,Number(x.lat),Number(x.lng));}
 
   const needsMapActivation = kakaoStatus===401||kakaoStatus===403;
