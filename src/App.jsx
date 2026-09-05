@@ -11904,7 +11904,6 @@ function AppInner({ lang, setLang }) {
             await safeSet("petgrow:consent", consent, me);
           }
         } catch {}
-        setView("home");
       }
 
       const dogsKey = "bboggl:dogs";
