@@ -1447,7 +1447,9 @@ function goToKakaoLogin() {
 const AUTH_ACCOUNT_CACHE_KEY = "petgrow:auth-account:v1";
 function readCachedAccount() {
   try {
-    const account = JSON.parse(window.sessionStorage.getItem(AUTH_ACCOUNT_CACHE_KEY) || "null");
+    const raw = window.localStorage.getItem(AUTH_ACCOUNT_CACHE_KEY)
+      || window.sessionStorage.getItem(AUTH_ACCOUNT_CACHE_KEY);
+    const account = JSON.parse(raw || "null");
     return account?.id ? account : null;
   } catch {
     return null;
@@ -1455,39 +1457,54 @@ function readCachedAccount() {
 }
 function cacheAccount(account) {
   try {
-    if (account?.id) window.sessionStorage.setItem(AUTH_ACCOUNT_CACHE_KEY, JSON.stringify(account));
-    else window.sessionStorage.removeItem(AUTH_ACCOUNT_CACHE_KEY);
+    if (account?.id) {
+      const value = JSON.stringify(account);
+      window.localStorage.setItem(AUTH_ACCOUNT_CACHE_KEY, value);
+      window.sessionStorage.setItem(AUTH_ACCOUNT_CACHE_KEY, value);
+    } else {
+      window.localStorage.removeItem(AUTH_ACCOUNT_CACHE_KEY);
+      window.sessionStorage.removeItem(AUTH_ACCOUNT_CACHE_KEY);
+    }
   } catch {}
 }
-async function fetchMe(timeoutMs = 5000) {
+let fetchMeInFlight = null;
+async function fetchMe(timeoutMs = 16000) {
+  if (fetchMeInFlight) return fetchMeInFlight;
   // 401만 실제 로그아웃으로 판단해요. 서버 cold start/DB 지연은 한 번 재시도해서
   // 로그인된 사용자가 UI에서 다시 "로그인"으로 보이는 현상을 막습니다.
-  for (let attempt = 0; attempt < 2; attempt += 1) {
-    const controller = new AbortController();
-    const timer = window.setTimeout(() => controller.abort(), timeoutMs);
-    try {
-      const res = await fetch("/api/me", {
-        credentials: "include",
-        signal: controller.signal,
-        cache: "no-store",
-      });
-      if (res.status === 401) {
-        cacheAccount(null);
-        return null;
+  fetchMeInFlight = (async () => {
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      const controller = new AbortController();
+      const timer = window.setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const res = await fetch("/api/me", {
+          credentials: "include",
+          signal: controller.signal,
+          cache: "no-store",
+        });
+        if (res.status === 401) {
+          cacheAccount(null);
+          return null;
+        }
+        if (!res.ok) throw new Error(`me_${res.status}`);
+        const account = await res.json();
+        cacheAccount(account);
+        return account;
+      } catch (err) {
+        console.warn(`로그인 상태 확인 재시도 ${attempt + 1}/2:`, err);
+        if (attempt === 0) await new Promise((resolve) => window.setTimeout(resolve, 300));
+      } finally {
+        window.clearTimeout(timer);
       }
-      if (!res.ok) throw new Error(`me_${res.status}`);
-      const account = await res.json();
-      cacheAccount(account);
-      return account;
-    } catch (err) {
-      console.warn(`로그인 상태 확인 재시도 ${attempt + 1}/2:`, err);
-      if (attempt === 0) await new Promise((resolve) => window.setTimeout(resolve, 300));
-    } finally {
-      window.clearTimeout(timer);
     }
+    // 일시적 서버 오류를 로그아웃으로 확정하지 않습니다. 다음 focus/visibility에서 다시 확인해요.
+    return undefined;
+  })();
+  try {
+    return await fetchMeInFlight;
+  } finally {
+    fetchMeInFlight = null;
   }
-  // 일시적 서버 오류를 로그아웃으로 확정하지 않습니다. 다음 focus/visibility에서 다시 확인해요.
-  return undefined;
 }
 async function apiLogout() {
   try {
@@ -11831,7 +11848,7 @@ function AppInner({ lang, setLang }) {
   const GATED_VIEWS = ["pets", "saju", "petbti", "content", "my", "admin"];
 
   // ---- 계정(카카오 로그인) ----
-  const [account, setAccount] = useState(null);
+  const [account, setAccount] = useState(readCachedAccount);
   const [authChecked, setAuthChecked] = useState(false);
 
   // 로그인 필요 화면 여부는 모든 effect보다 먼저 계산해야 해요.
@@ -11906,10 +11923,17 @@ function AppInner({ lang, setLang }) {
         setTimeout(() => setLoginToast(null), loginResult === "success" ? 2400 : 3600);
       }
 
-      let meResult = await fetchMe(loginResult === "success" ? 6500 : 5000);
+      const initiallyCachedAccount = readCachedAccount();
+      if (initiallyCachedAccount) {
+        setAccount(initiallyCachedAccount);
+        setAuthChecked(true);
+        setLoaded(true);
+      }
+
+      let meResult = await fetchMe(loginResult === "success" ? 20000 : 16000);
       if (meResult === undefined && loginResult === "success") {
         await new Promise((resolve) => window.setTimeout(resolve, 400));
-        meResult = await fetchMe(6500);
+        meResult = await fetchMe(20000);
       }
       const cachedAccount = readCachedAccount();
       const me = meResult === undefined ? cachedAccount : meResult;
@@ -12166,7 +12190,7 @@ function AppInner({ lang, setLang }) {
     let currentAccount = account;
     if (GATED_VIEWS.includes(next) && !currentAccount) {
       setAuthChecked(false);
-      const refreshed = await fetchMe(6500);
+      const refreshed = await fetchMe(16000);
       setAuthChecked(true);
       if (refreshed === undefined) return;
       currentAccount = refreshed;
@@ -12283,6 +12307,7 @@ function AppInner({ lang, setLang }) {
     // 빈 화면이 남을 수 있어요. 세션을 종료한 뒤 React 상태를 즉시
     // 비로그인 홈으로 전환해서 웹/모바일 웹 모두 안정적으로 복귀시켜요.
     await apiLogout();
+    cacheAccount(null);
     setAccountModalOpen(false);
     setAccount(null);
     setPendingMigration(null);
@@ -12314,6 +12339,7 @@ function AppInner({ lang, setLang }) {
     setDeleteAccountDoneOpen(true);
     setAccountModalOpen(false);
     setAccount(null);
+    cacheAccount(null);
     setPendingMigration(null);
     setFeaturePetId(null);
     setMode("view");

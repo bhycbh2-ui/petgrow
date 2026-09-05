@@ -19,8 +19,9 @@ export default async function handler(req, res) {
   authorizeUrl.searchParams.set("redirect_uri", redirectUri);
   authorizeUrl.searchParams.set("response_type", "code");
   authorizeUrl.searchParams.set("state", state);
-  // 저장된 카카오 계정이 여러 개여도 사용자가 원하는 계정을 다시 선택할 수 있게 해요.
-  authorizeUrl.searchParams.set("prompt", "select_account");
+  // 평소에는 Kakao에 남아 있는 인증을 그대로 이어 받아 재로그인 단계를 줄여요.
+  // 사용자가 명시적으로 계정 전환을 요청한 경우에만 계정 선택 화면을 표시합니다.
+  if (req.query?.switch === "1") authorizeUrl.searchParams.set("prompt", "select_account");
 
   if (client === "web") {
     res.setHeader("Set-Cookie", [

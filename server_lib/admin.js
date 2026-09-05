@@ -3,7 +3,7 @@ import { sql } from "@vercel/postgres";
 import { ensureSchema, ensureAuthSchema } from "./db.js";
 const TTL=2*60*60*1000, attempts=new Map();
 const secret=()=>String(process.env.SESSION_SECRET||"");
-export async function isAdminUserId(userId){await ensureAuthSchema();if(!userId)return false;const {rows}=await sql`select 1 from pg_admins where user_id=${userId}`;return !!rows[0]}
+export async function isAdminUserId(userId){if(!userId)return false;try{const {rows}=await sql`select 1 from pg_admins where user_id=${userId}`;return !!rows[0]}catch(error){if(error?.code==="42P01")return false;throw error}}
 export async function adminExists(){await ensureAuthSchema();const {rows}=await sql`select exists(select 1 from pg_admins) ok`;return !!rows[0]?.ok}
 export function hashPin(pin,salt=crypto.randomBytes(16).toString("hex")){return {salt,hash:crypto.scryptSync(String(pin),salt,32).toString("hex")}}
 export async function verifyPin(userId,pin){await ensureAuthSchema();const now=Date.now(),a=attempts.get(userId)||{n:0,until:0};if(a.until>now)return {ok:false,locked:true};const {rows}=await sql`select pin_salt,pin_hash from pg_admins where user_id=${userId}`;const r=rows[0];let ok=false;try{ok=!!r&&crypto.timingSafeEqual(Buffer.from(r.pin_hash,"hex"),crypto.scryptSync(String(pin),r.pin_salt,32))}catch{}if(ok){attempts.delete(userId);return {ok:true}}a.n++;if(a.n>=5){a.n=0;a.until=now+15*60*1000}attempts.set(userId,a);return {ok:false,locked:a.until>now}}
