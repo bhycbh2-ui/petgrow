@@ -13,6 +13,8 @@ test("Pet Places uses a map-first workspace and selected-place panel",()=>{
   assert.match(transformed,/pg-place-focus/);
   assert.match(transformed,/nearby-category-grid/);
   assert.match(transformed,/selectCategory/);
+  assert.match(transformed,/category-one-row/);
+  assert.doesNotMatch(transformed,/\{expanded && secondary\.length/);
 });
 
 test("Pet Places supports desktop split view and mobile app map layout",()=>{

@@ -1,0 +1,68 @@
+/* 카테고리 탐색은 모든 화면에서 읽기 좋은 한 줄 가로 스크롤로 통일합니다. */
+.category-one-row .responsive-category-desktop,
+.category-one-row .responsive-category-primary,
+.petnews-cats,
+.petmusic-tabs,
+.tab-bar,
+.cm-filter-wrap {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto !important;
+  overflow-y: hidden;
+  padding: 2px 2px 8px !important;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.category-one-row .responsive-category-desktop::-webkit-scrollbar,
+.category-one-row .responsive-category-primary::-webkit-scrollbar,
+.petnews-cats::-webkit-scrollbar,
+.petmusic-tabs::-webkit-scrollbar,
+.tab-bar::-webkit-scrollbar,
+.cm-filter-wrap::-webkit-scrollbar { display: none; }
+
+.category-one-row .bg-chip,
+.petnews-cats button,
+.petmusic-tabs button,
+.tab-bar > *,
+.cm-filter-wrap > * {
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+  scroll-snap-align: start;
+}
+
+/* 펫위치도 같은 한 줄 규칙을 사용하되 아이콘과 글자를 나란히 표시합니다. */
+.nearby-category-grid {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 7px !important;
+  max-width: 100%;
+  overflow-x: auto !important;
+  overflow-y: hidden;
+  margin: 0 0 12px !important;
+  padding: 2px 2px 8px !important;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.nearby-category-grid::-webkit-scrollbar { display: none; }
+.nearby-category-grid button {
+  flex: 0 0 auto !important;
+  min-height: 44px !important;
+  flex-direction: row !important;
+  gap: 6px !important;
+  padding: 0 14px !important;
+  border-radius: 999px !important;
+}
+.nearby-category-grid button span { font-size: 1rem !important; }
+.nearby-category-grid button b { font-size: .8rem !important; }
+
+@media (max-width: 700px) {
+  .category-one-row .responsive-category-desktop { display: none !important; }
+  .category-one-row .responsive-category-mobile { display: block !important; }
+  .category-one-row .responsive-category-primary { display: flex !important; grid-template-columns: none !important; }
+  .nearby-category-grid { margin-inline: 12px !important; }
+}

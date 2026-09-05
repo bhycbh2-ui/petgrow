@@ -31,6 +31,7 @@ import "./petgrow-oracle-suite-20260904.css";
 import "./petgrow-about-next-20260905.css";
 import "./petgrow-nearby-next-20260905.css";
 import "./petgrow-color-harmony-20260905.css";
+import "./category-one-row-20260905.css";
 
 const APP_AUTH_CALLBACK = "kr.co.petgrow.app://auth/callback";
 

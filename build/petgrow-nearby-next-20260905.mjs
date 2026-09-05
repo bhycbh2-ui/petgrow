@@ -6,6 +6,33 @@ function replaceRequired(source, from, to, label) {
 export function transformNearbyNext(source) {
   let out = source;
   out = replaceRequired(out,
+    `function ResponsiveCategoryMenu({ items, activeId, onSelect, lang = "ko", primaryCount = 4, className = "" }) {
+  const [expanded, setExpanded] = useState(false);
+  const activeItem = items.find((item) => item.id === activeId);
+  let primary = items.slice(0, primaryCount);
+  if (activeItem && !primary.some((item) => item.id === activeId) && primary.length) {
+    primary = [...primary.slice(0, Math.max(0, primaryCount - 1)), activeItem];
+  }
+  const primaryIds = new Set(primary.map((item) => item.id));
+  const secondary = items.filter((item) => !primaryIds.has(item.id));
+  const renderItem = (item) => <button key={item.id} type="button" className={\`bg-chip \${activeId === item.id ? "active" : ""}\`} onClick={() => { onSelect(item.id); setExpanded(false); }}>{item.label}</button>;
+  return <div className={\`responsive-category-shell \${className}\`}>
+    <div className="responsive-category-desktop">{items.map(renderItem)}</div>
+    <div className="responsive-category-mobile">
+      <div className="responsive-category-primary">{primary.map(renderItem)}{secondary.length > 0 && <button type="button" className={\`bg-chip responsive-category-more \${expanded ? "active" : ""}\`} aria-expanded={expanded} onClick={() => setExpanded((v) => !v)}>{lang === "en" ? (expanded ? "Close" : "More") : (expanded ? "접기" : "더보기")} <span aria-hidden="true">{expanded ? "▴" : "▾"}</span></button>}</div>
+      {expanded && secondary.length > 0 && <div className="responsive-category-more-panel">{secondary.map(renderItem)}</div>}
+    </div>
+  </div>;
+}`,
+    `function ResponsiveCategoryMenu({ items, activeId, onSelect, className = "" }) {
+  const renderItem = (item) => <button key={item.id} type="button" className={\`bg-chip \${activeId === item.id ? "active" : ""}\`} aria-pressed={activeId === item.id} onClick={() => onSelect(item.id)}>{item.label}</button>;
+  return <div className={\`responsive-category-shell category-one-row \${className}\`}>
+    <div className="responsive-category-desktop">{items.map(renderItem)}</div>
+    <div className="responsive-category-mobile"><div className="responsive-category-primary">{items.map(renderItem)}</div></div>
+  </div>;
+}`,
+    'shared one-row categories');
+  out = replaceRequired(out,
     '  const pageSize=10;',
     '  const pageSize=6;\n  const mapResultLimit=12;',
     'result density');
