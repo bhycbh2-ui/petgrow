@@ -2,7 +2,7 @@
 .petgrow-footer{
   width:min(100%,960px)!important;
   margin:52px auto 0!important;
-  padding:24px 24px 16px!important;
+  padding:24px 24px 18px!important;
   box-sizing:border-box!important;
   overflow:visible!important;
   border:0!important;
@@ -20,7 +20,7 @@
 }
 .petgrow-footer .social-links{
   justify-content:center!important;
-  flex-wrap:wrap!important;
+  flex-wrap:nowrap!important;
   gap:9px!important;
 }
 .petgrow-footer .social-btn{
@@ -35,65 +35,68 @@
   outline:3px solid rgba(79,143,91,.24);
   outline-offset:3px;
 }
-.petgrow-footer-business{
-  max-width:680px!important;
-  margin:18px auto 0!important;
-  color:#56645b!important;
-  font-size:12px!important;
-  font-weight:650!important;
-  line-height:1.7!important;
-  text-align:center!important;
-  word-break:keep-all!important;
-}
-.petgrow-footer-email{
-  margin:3px 0 0!important;
-  color:#5b7563!important;
-  font-size:12px!important;
-  font-weight:700!important;
-  line-height:1.6!important;
-  text-align:center!important;
-}
 .petgrow-footer-copy{
-  margin-top:5px!important;
+  margin-top:7px!important;
   color:#8a938d!important;
   font-size:11px!important;
   line-height:1.55!important;
   text-align:center!important;
 }
 .petgrow-footer-links{
-  display:grid!important;
-  grid-template-columns:repeat(5,minmax(0,1fr))!important;
-  gap:0!important;
-  width:100%!important;
-  margin:18px 0 0!important;
-  overflow:visible!important;
-  border-top:1px solid rgba(92,119,99,.12)!important;
+  display:flex!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:6px 20px!important;
+  width:min(100%,680px)!important;
+  margin:18px auto 0!important;
+  overflow-x:auto!important;
+  border:0!important;
   background:transparent!important;
+  scrollbar-width:none!important;
 }
+.petgrow-footer-links::-webkit-scrollbar{display:none!important}
 .petgrow-footer-links button,.petgrow-footer-links a{
-  position:relative;
-  min-width:0!important;
-  min-height:46px!important;
-  padding:10px 8px!important;
+  position:relative!important;
+  flex:0 0 auto!important;
+  min-height:36px!important;
+  padding:7px 0!important;
   border:0!important;
   background:transparent!important;
   color:#54705c!important;
   font:750 12px/1.35 inherit!important;
   letter-spacing:-.015em!important;
-  white-space:normal!important;
+  white-space:nowrap!important;
   word-break:keep-all!important;
   cursor:pointer!important;
 }
 .petgrow-footer-links button+button:before{
   content:"";
   position:absolute;
-  top:13px;
-  bottom:13px;
-  left:0;
+  top:10px;
+  bottom:10px;
+  left:-10px;
   width:1px;
   background:rgba(92,119,99,.12);
 }
 .petgrow-footer-links button:hover{background:rgba(255,255,255,.28)!important}
+.petgrow-footer-meta{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:4px 15px!important;
+  max-width:720px!important;
+  margin:11px auto 0!important;
+  color:#657269!important;
+  font-size:11.5px!important;
+  font-weight:650!important;
+  line-height:1.6!important;
+  text-align:center!important;
+  word-break:keep-all!important;
+}
+.petgrow-footer-meta span,.petgrow-footer-meta a{position:relative;color:inherit!important;text-decoration:none!important;white-space:nowrap!important}
+.petgrow-footer-meta span+span:before,.petgrow-footer-meta a:before{content:"·";position:absolute;left:-9px;color:#a4aca6}
+.petgrow-footer-meta a:hover{text-decoration:underline!important;text-underline-offset:3px}
 
 /* Mobile web: no floating card. Footer stays as the last page element. */
 @media(max-width:700px){
@@ -115,25 +118,19 @@
     height:46px!important;
     flex-basis:46px!important;
   }
-  .petgrow-web-layout .petgrow-footer-business{
-    max-width:320px!important;
-    margin:16px auto 0!important;
-    font-size:11.5px!important;
-    line-height:1.7!important;
-  }
   .petgrow-web-layout .petgrow-footer-links{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
     width:100%!important;
+    justify-content:flex-start!important;
+    gap:18px!important;
     margin:16px 0 0!important;
+    padding:0 2px 2px!important;
   }
   .petgrow-web-layout .petgrow-footer-links button{
-    min-height:46px!important;
+    min-height:38px!important;
     font-size:12px!important;
   }
-  .petgrow-web-layout .petgrow-footer-links button+button:before{display:none!important}
-  .petgrow-web-layout .petgrow-footer-links button:nth-child(even){border-left:1px solid rgba(92,119,99,.12)!important}
-  .petgrow-web-layout .petgrow-footer-links button:nth-child(n+3){border-top:1px solid rgba(92,119,99,.12)!important}
-  .petgrow-web-layout .petgrow-footer-links button:last-child:nth-child(odd){grid-column:1/-1}
+  .petgrow-web-layout .petgrow-footer-links button+button:before{left:-9px!important}
+  .petgrow-web-layout .petgrow-footer-meta{max-width:330px!important;margin-top:10px!important;gap:2px 15px!important;font-size:11px!important}
 }
 
 /* Native app: thin transparent footer immediately above the fixed bottom navigation. */
@@ -165,34 +162,29 @@
   width:18px!important;
   height:18px!important;
 }
-.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-business{
-  max-width:310px!important;
-  margin:13px auto 0!important;
-  font-size:11px!important;
-  line-height:1.65!important;
-}
-.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-email{font-size:11px!important}
 .bboggl-root:not(.petgrow-web-layout) .petgrow-footer-copy{font-size:10.5px!important}
 .bboggl-root:not(.petgrow-web-layout) .petgrow-footer-links{
-  grid-template-columns:repeat(3,minmax(0,1fr))!important;
   width:100%!important;
+  justify-content:flex-start!important;
+  gap:16px!important;
   margin:14px 0 0!important;
-  padding-bottom:max(2px,env(safe-area-inset-bottom,0px))!important;
+  padding:0 2px max(2px,env(safe-area-inset-bottom,0px))!important;
   background:transparent!important;
 }
 .bboggl-root:not(.petgrow-web-layout) .petgrow-footer-links button{
-  min-height:42px!important;
-  padding:8px 4px!important;
+  min-height:36px!important;
+  padding:7px 0!important;
   font-size:11px!important;
 }
-.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-links button+button:before{display:none!important}
-.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-links button:not(:nth-child(3n+1)){border-left:1px solid rgba(92,119,99,.12)!important}
-.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-links button:nth-child(n+4){border-top:1px solid rgba(92,119,99,.12)!important}
+.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-links button+button:before{left:-8px!important}
+.bboggl-root:not(.petgrow-web-layout) .petgrow-footer-meta{max-width:310px!important;margin-top:9px!important;gap:2px 15px!important;font-size:10.5px!important}
 
 @media(max-width:360px){
   .bboggl-root:not(.petgrow-web-layout) .petgrow-footer{padding-left:12px!important;padding-right:12px!important}
   .bboggl-root:not(.petgrow-web-layout) .petgrow-footer .social-links{gap:4px!important}
   .bboggl-root:not(.petgrow-web-layout) .petgrow-footer .social-btn{width:33px!important;height:33px!important;flex-basis:33px!important}
   .bboggl-root:not(.petgrow-web-layout) .petgrow-footer-links button{font-size:10.5px!important}
+  .petgrow-footer-meta span:nth-child(2){width:100%!important}
+  .petgrow-footer-meta span:nth-child(2):before{display:none!important}
 }
 @media(prefers-reduced-motion:reduce){.petgrow-footer .social-btn{transition:none!important}}

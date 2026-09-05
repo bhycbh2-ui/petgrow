@@ -11904,7 +11904,6 @@ function AppInner({ lang, setLang }) {
             await safeSet("petgrow:consent", consent, me);
           }
         } catch {}
-        setView("home");
       }
 
       const dogsKey = "bboggl:dogs";
@@ -12567,16 +12566,19 @@ function AppInner({ lang, setLang }) {
         <footer className="petgrow-footer">
           <div className="petgrow-footer-social-title">{t.socialTitle}</div>
           <SocialLinks />
-          <div className="petgrow-footer-business">상호명 아우리녹 · 대표자 정재현 · 사업자등록번호 297-32-01792</div>
-          <div className="petgrow-footer-email">help.petgrow@gmail.com</div>
-          <div className="petgrow-footer-copy">Copyright ⓒ PetGrow. All rights reserved.</div>
-          <div className="petgrow-footer-links">
+          <nav className="petgrow-footer-links" aria-label={lang==="en"?"Footer links":"하단 메뉴"}>
             <button type="button" onClick={()=>goView("privacy")}>{t.privacyFooterLink}</button>
             <button type="button" onClick={()=>goView("terms")}>{t.termsFooterLink}</button>
             <button type="button" onClick={()=>goView("guide")}>{lang==="en"?"Guide":"정보가이드"}</button>
             <button type="button" onClick={()=>goView("ad-inquiry")}>{lang==="en"?"Partnerships":"광고·제휴 문의"}</button>
             <button type="button" onClick={()=>goView("support")}>{lang==="en"?"Support":"고객지원"}</button>
+          </nav>
+          <div className="petgrow-footer-meta">
+            <span>아우리녹</span>
+            <span>사업자등록번호 297-32-01792</span>
+            <a href="mailto:help.petgrow@gmail.com">help.petgrow@gmail.com</a>
           </div>
+          <div className="petgrow-footer-copy">© PetGrow. All rights reserved.</div>
         </footer>
       )}
 

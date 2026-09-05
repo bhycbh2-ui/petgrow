@@ -10,6 +10,13 @@ test("public PetInfo and guide views do not require login", () => {
   assert.doesNotMatch(gated, /"tips"|"guide"/);
 });
 
+test("account bootstrap preserves the route opened from a direct link", () => {
+  const app = read("src/App.jsx");
+  const bootstrap = app.match(/useEffect\(\(\) => \{\n    \(async \(\) => \{[\s\S]*?const dogsKey = "bboggl:dogs";/)?.[0] || "";
+  assert.match(bootstrap, /const loginResult = params\.get\("login"\)/);
+  assert.doesNotMatch(bootstrap, /setView\("home"\)/);
+});
+
 test("quick menu state uses the routed state endpoint", () => {
   const app = read("src/App.jsx");
   assert.doesNotMatch(app, /fetch\('\/api\/core\?action=state/);
@@ -30,6 +37,14 @@ test("news is served in bounded pages and collection is cron-only", () => {
   assert.match(news, /LIMIT \$\{safeSize\} OFFSET \$\{offset\}/);
   assert.match(news, /shouldCollect/);
   assert.match(cron, /refresh: "1"/);
+});
+
+test("PetNews uses its current loading UI without the obsolete App transform", () => {
+  const vite = read("vite.config.js");
+  const page = read("src/lazy/PetNewsPage.jsx");
+  assert.doesNotMatch(vite, /petNewsLoadingState/);
+  assert.match(page, /petnews-loading-state/);
+  assert.match(page, /aria-busy="true"/);
 });
 
 test("PWA no longer blocks published guide pages or runs the reset helper", () => {
