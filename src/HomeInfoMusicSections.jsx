@@ -39,8 +39,8 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
     const list = Array.isArray(tips) ? tips.filter(Boolean) : [];
     if (!list.length) return [];
     const day = getKstDayIndex();
-    const start = (day * 3) % list.length;
-    return [0, 1, 2].map((i) => list[(start + i) % list.length]).filter(Boolean);
+    const start = (day * 2) % list.length;
+    return [0, 1].map((i) => list[(start + i) % list.length]).filter(Boolean);
   }, [tips]);
 
   const [expandedTipKey, setExpandedTipKey] = useState("");
@@ -64,7 +64,7 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
     try {
       const cached = JSON.parse(sessionStorage.getItem(HOME_MUSIC_CACHE) || "null");
       if (cached?.at && Date.now() - cached.at < 10 * 60 * 1000 && Array.isArray(cached.items)) {
-        setMusic(normalize(cached.items.slice(0, 5)));
+        setMusic(normalize(cached.items.slice(0, 2)));
       }
     } catch {}
 
@@ -73,7 +73,7 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         if (cancelled) return;
-        const raw = Array.isArray(data?.top5) ? data.top5.slice(0, 5) : [];
+        const raw = Array.isArray(data?.top5) ? data.top5.slice(0, 2) : [];
         setMusic(normalize(raw));
         try { sessionStorage.setItem(HOME_MUSIC_CACHE, JSON.stringify({ at: Date.now(), items: raw })); } catch {}
       })
@@ -179,7 +179,7 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
 
       <section className="dash-section" data-home-extra="music">
         <div className="dash-section-head">
-          <h2>{lang === "en" ? "Popular Pet Music TOP 5" : "인기 Pet음악 TOP 5"}</h2>
+          <h2>{lang === "en" ? "Pet Music preview" : "Pet음악 미리듣기"}</h2>
           <button type="button" className="bg-chip" onClick={() => go("music")}>{lang === "en" ? "View all" : "전체보기"}</button>
         </div>
         {music.length > 0 ? (

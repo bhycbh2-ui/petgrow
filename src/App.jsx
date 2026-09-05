@@ -5660,11 +5660,14 @@ function PhotoAlbum({ birthDate, photos, onAdd, onEdit, onDelete }) {
   };
 
   return (
-    <div className="bg-card">
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 6 }}>
+    <section className="bg-card memory-diary-album">
+      <div className="memory-diary-head">
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <CameraIcon style={{ width: 18, height: 18, color: "var(--primary)" }} />
-          <h3 style={{ fontSize: 16 }}>{t.albumTitle}</h3>
+          <div>
+            <small>{lang === "en" ? "OUR DAYS, IN ORDER" : "우리의 하루를 차곡차곡"}</small>
+            <h3>{lang === "en" ? "Memory diary" : "추억 다이어리"}</h3>
+          </div>
         </div>
         {chronological.length > 0 && (
           <button type="button" className="bg-btn bg-btn-ghost" style={{ padding: "8px 12px", fontSize: 12 }}
@@ -5673,14 +5676,14 @@ function PhotoAlbum({ birthDate, photos, onAdd, onEdit, onDelete }) {
           </button>
         )}
       </div>
-      <p className="bg-sub" style={{ marginBottom: 14, fontSize: 13 }}>
-        {t.albumSubtitle}
+      <p className="bg-sub memory-diary-intro">
+        {lang === "en" ? "Add a photo and date to keep your pet’s everyday story in one place." : "사진과 날짜를 남기면 우리 아이의 하루가 시간순으로 쌓여요."}
       </p>
       <AddPhotoCard onAdd={onAdd} />
       {groups.length > 0 ? (
-        <div style={{ marginTop: 18, display: "flex", flexDirection: "column", gap: 22 }}>
+        <div className="memory-diary-timeline">
           {groups.map((group) => (
-            <div key={group.month}>
+            <article className="memory-diary-entry" key={group.month}>
               <div className="album-month-header">
                 <span>{group.month < 1 ? t.ageUnder1Month : t.monthLabel(group.month)}</span>
                 <span className="bg-sub">{t.photoCountLabel(group.photos.length)}</span>
@@ -5691,7 +5694,7 @@ function PhotoAlbum({ birthDate, photos, onAdd, onEdit, onDelete }) {
                     onOpenSlideshow={() => openSlideshowFor(photo.id)} />
                 ))}
               </div>
-            </div>
+            </article>
           ))}
         </div>
       ) : (
@@ -5700,7 +5703,7 @@ function PhotoAlbum({ birthDate, photos, onAdd, onEdit, onDelete }) {
         </div>
       )}
       <SlideshowModal open={slideshow !== null} photos={chronological} birthDate={birthDate} startIndex={slideshow} onClose={() => setSlideshow(null)} />
-    </div>
+    </section>
   );
 }
 
@@ -9324,12 +9327,12 @@ function ResultPage({ pet, breedGroups, onAddRecord, onDeleteRecord, onAddPhoto,
             <ShareIcon style={{ width: 16, height: 16 }} /> {t.shareCardBtn}
           </button>
         </div>
+        <PhotoAlbum birthDate={profile.birthDate} photos={photos} onAdd={onAddPhoto} onEdit={onEditPhoto} onDelete={onDeletePhoto} />
         <GrowthChartCard table={table} ageMonths={ageAtLatest} currentWeightKg={latest.weightKg} statusDiffGrams={latest.diffGrams} />
         <GrowthTableCard table={table} />
         <RecordSection records={sortedRecords} onAddRecord={handleAddRecord} onDeleteRecord={onDeleteRecord} />
         <MilestoneBadges pet={pet} ageMonths={ageMonthsNow} />
         <PeerCompareCard profile={profile} latestWeightKg={latest.weightKg} ageAtLatest={ageAtLatest} />
-        <PhotoAlbum birthDate={profile.birthDate} photos={photos} onAdd={onAddPhoto} onEdit={onEditPhoto} onDelete={onDeletePhoto} />
         <VaccineChecklist profile={profile} checklist={pet.vaccineChecklist || {}} onToggle={onToggleVaccineItem} />
         <InfoAccordion profile={profile} latestWeightKg={latest.weightKg} ageAtLatest={ageAtLatest} />
       </div>
@@ -10406,6 +10409,31 @@ function UnifiedMenuHero({ view, lang='ko' }) {
   return <section className="nearby-hero bg-card petgrow-unified-hero" style={{width:'100%',maxWidth:'none',margin:'0 0 18px'}}><div><span className="nearby-eyebrow">{x.eyebrow}</span><h1>{lang==='en'?x.en:x.ko}</h1><p>{lang==='en'?x.enDesc:x.koDesc}</p>{view==='pets'&&<small className="nearby-search-help">🐾 {lang==='en'?'Register dogs and cats separately and keep their changes organized over time.':'강아지와 고양이 정보를 각각 등록하고 우리 아이의 변화를 차곡차곡 기록해보세요.'}</small>}</div></section>;
 }
 
+function HomeMemoryDiary({ pet, lang, onOpen }) {
+  const petName = normalizePetDisplayText(pet?.profile?.name, lang === "en" ? "My pet" : "우리 아이");
+  const photos = useMemo(() => [...(Array.isArray(pet?.photos) ? pet.photos : [])]
+    .filter((photo) => photo?.dataUrl)
+    .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
+    .slice(0, 4), [pet?.photos]);
+  const locale = lang === "en" ? "en-US" : "ko-KR";
+  const formatDate = (date) => {
+    const parsed = new Date(date);
+    return Number.isNaN(parsed.getTime()) ? "" : parsed.toLocaleDateString(locale, { month: "short", day: "numeric" });
+  };
+  return <section className="home-memory-diary" aria-labelledby="home-memory-title">
+    <div className="home-memory-head">
+      <div><small>MEMORY DIARY</small><h2 id="home-memory-title">{lang === "en" ? `${petName}’s recent days` : `${petName}의 최근 추억`}</h2><p>{lang === "en" ? "Photos become a small diary of your days together." : "함께한 사진을 날짜와 함께 다이어리처럼 모아보세요."}</p></div>
+      <button type="button" className="bg-chip" onClick={onOpen}>{lang === "en" ? "Open diary" : "다이어리 열기"}</button>
+    </div>
+    {photos.length ? <div className={`home-memory-photos count-${photos.length}`}>
+      {photos.map((photo, index) => <button type="button" key={photo.id || `${photo.date}-${index}`} className={`home-memory-photo ${index === 0 ? "is-featured" : ""}`} onClick={onOpen}>
+        <img src={photo.dataUrl} alt={`${petName} ${formatDate(photo.date)}`} loading={index === 0 ? "eager" : "lazy"} />
+        <span><b>{index === 0 ? (lang === "en" ? "Latest memory" : "가장 최근 추억") : (lang === "en" ? "A day together" : "함께한 하루")}</b><time>{formatDate(photo.date)}</time></span>
+      </button>)}
+    </div> : <button type="button" className="home-memory-empty" onClick={onOpen}><span>＋</span><div><b>{lang === "en" ? "Add the first memory" : "첫 번째 추억을 남겨보세요"}</b><small>{lang === "en" ? "Upload a photo and keep this day." : "사진을 등록하면 이곳에 예쁘게 모아드려요."}</small></div><em>›</em></button>}
+  </section>;
+}
+
 function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
   const t = useT();
   const visiblePets = account ? pets : [];
@@ -10432,7 +10460,7 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
   const [homeNews,setHomeNews]=useState([]);
   useEffect(()=>{
     let cancelled=false;
-    fetch('/api/news').then(r=>r.ok?r.json():null).then(j=>{if(cancelled)return;const items=Array.isArray(j?.items)?j.items:[];const score=x=>{const h=(x.title+' '+x.description);let n=0;if(/정책|법|제도|정부|지자체|동물보호법/.test(h))n+=4;if(/건강|질병|감염|백신|병원|수의|안전|주의|리콜/.test(h))n+=5;if(/유기|보호|입양|학대/.test(h))n+=3;return n;};setHomeNews([...items].sort((a,b)=>score(b)-score(a)||new Date(b.publishedAt||0)-new Date(a.publishedAt||0)).slice(0,3));}).catch(()=>{});
+    fetch('/api/news').then(r=>r.ok?r.json():null).then(j=>{if(cancelled)return;const items=Array.isArray(j?.items)?j.items:[];const score=x=>{const h=(x.title+' '+x.description);let n=0;if(/정책|법|제도|정부|지자체|동물보호법/.test(h))n+=4;if(/건강|질병|감염|백신|병원|수의|안전|주의|리콜/.test(h))n+=5;if(/유기|보호|입양|학대/.test(h))n+=3;return n;};setHomeNews([...items].sort((a,b)=>score(b)-score(a)||new Date(b.publishedAt||0)-new Date(a.publishedAt||0)).slice(0,2));}).catch(()=>{});
     return()=>{cancelled=true};
   },[]);
   useEffect(()=>{
@@ -10465,25 +10493,21 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
         </> : <><div className="dash-empty-icon">＋</div><div><h2>{lang === "en" ? "Add your pet" : "우리 아이를 등록해보세요"}</h2><p>{lang === "en" ? "Start growth records and personalized features." : "성장 기록과 맞춤 기능을 바로 시작할 수 있어요."}</p></div><div className="dash-pet-arrow">›</div></>}
       </section>
 
+      {pet && <HomeMemoryDiary pet={pet} lang={lang} onOpen={onGoPets} />}
+
       <TodayPetHomeCard account={account} onOpenSaju={()=>onGoView("saju")} onOpenTarot={()=>onGoView("tarot")} lang={lang} />
 
-      <section className="dash-section"><div className="dash-section-head"><h2>{lang === "en" ? "Quick access" : "자주 사용하는 메뉴"}</h2><button type="button" className="bg-chip" onClick={()=>setQuickEditing(v=>!v)}>{quickEditing?(lang==='en'?'Done':'완료'):(lang==='en'?'Edit':'편집')}</button></div>{quickEditing&&<div className="bg-card" style={{padding:14,marginBottom:12}}><p className="bg-sub" style={{fontSize:12,margin:'0 0 10px'}}>{lang==='en'?'Choose up to six shortcuts, then reorder them below. Signed-in choices sync to your account.':'원하는 메뉴를 최대 6개까지 선택한 뒤 아래에서 순서를 바꿀 수 있어요. 로그인하면 계정에 저장돼 다른 기기에서도 그대로 보여요.'}</p><div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>{allQuick.map(([key,icon,label])=><button type="button" key={key} className={`bg-chip ${quickKeys.includes(key)?'active':''}`} onClick={()=>toggleQuick(key)}>{icon} {label}</button>)}</div><div className="quick-order-list">{quick.map(([key,icon,label])=><div className={`quick-order-row ${quickDragKey===key?'dragging':''}`} data-quick-key={key} key={key} draggable onDragStart={()=>setQuickDragKey(key)} onDragOver={e=>{e.preventDefault();if(quickDragKey&&quickDragKey!==key){reorderQuick(quickDragKey,key);setQuickDragKey(key)}}} onDragEnd={endQuickPointerDrag}><span><i>{icon}</i><b>{label}</b></span><button type="button" className="quick-drag-handle" aria-label={`${label} 순서 이동`} title={lang==='en'?'Drag to reorder':'끌어서 순서 변경'} onPointerDown={e=>beginQuickPointerDrag(e,key)} onPointerMove={moveQuickPointer} onPointerUp={endQuickPointerDrag} onPointerCancel={endQuickPointerDrag}>≡</button></div>)}</div></div>}<div className="dash-quick-grid">{quick.map(([key,icon,label])=><button type="button" key={key} onClick={()=>key==="pets"?onGoPets():onGoView(key)}><i>{icon}</i><span>{label}</span></button>)}</div>
+      <section className="dash-section"><div className="dash-section-head"><h2>{lang === "en" ? "Quick access" : "자주 사용하는 메뉴"}</h2><button type="button" className="bg-chip" onClick={()=>setQuickEditing(v=>!v)}>{quickEditing?(lang==='en'?'Done':'완료'):(lang==='en'?'Edit':'편집')}</button></div>{quickEditing&&<div className="bg-card" style={{padding:14,marginBottom:12}}><p className="bg-sub" style={{fontSize:12,margin:'0 0 10px'}}>{lang==='en'?'Choose up to six shortcuts, then reorder them below. Signed-in choices sync to your account.':'원하는 메뉴를 최대 6개까지 선택한 뒤 아래에서 순서를 바꿀 수 있어요. 로그인하면 계정에 저장돼 다른 기기에서도 그대로 보여요.'}</p><div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>{allQuick.map(([key,icon,label])=><button type="button" key={key} className={`bg-chip ${quickKeys.includes(key)?'active':''}`} onClick={()=>toggleQuick(key)}>{icon} {label}</button>)}</div><div className="quick-order-list">{quick.map(([key,icon,label])=><div className={`quick-order-row ${quickDragKey===key?'dragging':''}`} data-quick-key={key} key={key} draggable onDragStart={()=>setQuickDragKey(key)} onDragOver={e=>{e.preventDefault();if(quickDragKey&&quickDragKey!==key){reorderQuick(quickDragKey,key);setQuickDragKey(key)}}} onDragEnd={endQuickPointerDrag}><span><i>{icon}</i><b>{label}</b></span><button type="button" className="quick-drag-handle" aria-label={`${label} 순서 이동`} title={lang==='en'?'Drag to reorder':'끌어서 순서 변경'} onPointerDown={e=>beginQuickPointerDrag(e,key)} onPointerMove={moveQuickPointer} onPointerUp={endQuickPointerDrag} onPointerCancel={endQuickPointerDrag}>≡</button></div>)}</div></div>}<div className="dash-quick-grid">{quick.map(([key,icon,label])=><button type="button" key={key} onClick={()=>key==="pets"?onGoPets():onGoView(key)}><i>{icon}</i><span>{label}</span></button>)}</div></section>
       {/* HOME_INFO_MUSIC_SAFE_20260819 */}
-      <HomeInfoMusicSections lang={lang} onGoView={onGoView} tips={TIPS_DATA} /></section>
+      <HomeInfoMusicSections lang={lang} onGoView={onGoView} tips={TIPS_DATA} />
 
       {homeNews.length>0&&<section className="dash-section"><div className="dash-section-head"><h2>{lang==='en'?'Important Pet News':'주요 Pet뉴스'}</h2><button type="button" className="bg-chip" onClick={()=>onGoView('news')}>{lang==='en'?'View all':'전체보기'}</button></div><div style={{display:'grid',gap:10}}>{homeNews.map(n=><button key={n.id} type="button" className="bg-card" onClick={()=>onGoView('news')} style={{padding:'15px 16px',textAlign:'left',border:'1px solid var(--border)',cursor:'pointer'}}><small style={{fontWeight:800,color:'var(--primary)'}}>{n.category||'Pet뉴스'} · {n.source||''}</small><div style={{fontWeight:800,fontSize:15,lineHeight:1.5,marginTop:5}}>{n.title}</div><small className="bg-sub">{n.publishedAt?new Date(n.publishedAt).toLocaleDateString('ko-KR'):''}</small></button>)}</div></section>}
 
       <section className="dash-widget-grid">
-        <button type="button" className="dash-widget dash-widget-music" onClick={()=>onGoView("music")}><div className="dash-widget-icon">🎵</div><div><small>{lang === "en" ? "PET MUSIC" : "PET MUSIC"}</small><h3>{lang === "en" ? "Popular TOP5 & my likes" : "인기 TOP5 · 내가 좋아요한 음악"}</h3><p>{lang === "en" ? "Play, loop and keep your favorites close." : "좋아하는 음악을 바로 듣고 반복재생해요."}</p></div><b>›</b></button>
         <button type="button" className="dash-widget dash-widget-nearby" onClick={()=>onGoView("nearby")}><div className="dash-widget-icon">📍</div><div><small>{lang === "en" ? "NEARBY PET" : "내 주변 PET"}</small><h3>{lang === "en" ? "Find pet places near me" : "가까운 반려동물 시설 찾기"}</h3><p>{lang === "en" ? "Hospitals, shops, grooming and daycare." : "병원·약국·펫샵·미용·유치원을 거리순으로 확인해요."}</p></div><b>›</b></button>
         <button type="button" className="dash-widget dash-widget-talk" onClick={()=>onGoView("community")}><div className="dash-widget-icon">💬</div><div><small>PET TALK</small><h3>{lang === "en" ? "Share everyday moments" : "우리 아이 이야기를 나눠요"}</h3><p>{lang === "en" ? "Questions, tips and cute moments." : "질문·정보·일상 이야기를 편하게 공유해요."}</p></div><b>›</b></button>
         <button type="button" className="dash-widget dash-widget-content" onClick={()=>onGoView("petbti")}><div className="dash-widget-icon">🧠</div><div><small>PET CONTENT</small><h3>{lang === "en" ? "Pet personality test" : "우리 아이 PetBTI"}</h3><p>{lang === "en" ? "A 20-question personality test for dogs and cats." : "강아지·고양이 각 20문항으로 성향을 알아봐요."}</p></div><b>›</b></button>
-        <button type="button" className="dash-widget dash-widget-saju" onClick={()=>onGoView("saju")}><div className="dash-widget-icon">🔮</div><div><small>PET SAJU</small><h3>{lang === "en" ? "Fun pet fortune" : "Pet사주"}</h3><p>{lang === "en" ? "Enjoy a lighthearted fortune story for your pet." : "우리 아이의 특별한 이야기를 재미로 만나보세요."}</p></div><b>›</b></button>
         <button type="button" className="dash-widget dash-widget-guide" onClick={()=>onGoView("guide")}><div className="dash-widget-icon">📚</div><div><small>GUIDE</small><h3>{lang === "en" ? "PetGrow guide" : "정보가이드"}</h3><p>{lang === "en" ? "See how each PetGrow feature works." : "PetGrow의 주요 기능 사용법을 한곳에서 확인해요."}</p></div><b>›</b></button>
-        <button type="button" className="dash-widget dash-widget-news" onClick={()=>onGoView("news")}><div className="dash-widget-icon">📰</div><div><small>PET NEWS</small><h3>{lang === "en" ? "Pet news at a glance" : "최신 Pet뉴스"}</h3><p>{lang === "en" ? "Read clear titles and short summaries." : "반려동물 주요 소식을 제목과 핵심 요약으로 확인해요."}</p></div><b>›</b></button>
-        <button type="button" className="dash-widget dash-widget-tarot" onClick={()=>onGoView("tarot")}><div className="dash-widget-icon">🃏</div><div><small>PET TAROT</small><h3>{lang === "en" ? "Daily Pet Tarot" : "오늘의 Pet타로"}</h3><p>{lang === "en" ? "Draw one card for each daily topic." : "오늘·궁합·마음·산책·조언 카드 메시지를 만나보세요."}</p></div><b>›</b></button>
-        <button type="button" className="dash-widget dash-widget-info" onClick={()=>onGoView("tips")}><div className="dash-widget-icon">💡</div><div><small>PET INFO</small><h3>{lang === "en" ? "Practical pet info" : "Pet정보"}</h3><p>{lang === "en" ? "Health, food, training and daily care." : "건강·식단·훈련·생활 정보를 쉽고 빠르게 찾아봐요."}</p></div><b>›</b></button>
-        <button type="button" className="dash-widget dash-widget-pets" onClick={onGoPets}><div className="dash-widget-icon">🐾</div><div><small>MY PET</small><h3>{lang === "en" ? "Manage my pets" : "우리 아이 관리"}</h3><p>{lang === "en" ? "Profiles, growth records and photos." : "프로필·성장기록·사진과 건강정보를 한곳에서 관리해요."}</p></div><b>›</b></button>
       </section>
     </div>
   );
@@ -11662,8 +11686,7 @@ function MyPage({account,allPets,lang,onOpenAccount,onGoPets,onOpenPost,onOpenAd
   const togglePetTalk=()=>setOpenActivity(v=>v==="pettalk"?null:"pettalk");
   const toggleMusic=()=>{const x=openActivity!=="music";setOpenActivity(x?"music":null);if(x)loadLikedMusic(true)};
   return <div style={{maxWidth:760,margin:"0 auto",padding:"0 20px 70px"}}>
-    <div className="my-page-head"><div><div className="my-page-kicker">MY PETGROW</div><h1>{lang==="ja"?"マイページ":lang==="zh"?"我的页面":lang==="en"?"My Page":"마이페이지"}</h1><p style={{fontSize:13}}>{lang==="en"?"Your PetGrow account and activity hub.":"계정·우리 아이·포인트·활동내역을 한곳에서 관리해요."}</p></div><span className="my-page-head-icon" style={{fontSize:16,fontWeight:950}}>MY</span></div>
-    <section className="mypage-petpoint-section"><PetPointDashboard /></section>
+    <div className="my-page-head"><div><div className="my-page-kicker">MY PETGROW</div><h1>{lang==="ja"?"マイページ":lang==="zh"?"我的页面":lang==="en"?"My Page":"마이페이지"}</h1><p style={{fontSize:13}}>{lang==="en"?"Your PetGrow account and activity hub.":"계정·우리 아이·활동내역을 한곳에서 관리해요."}</p></div><span className="my-page-head-icon" style={{fontSize:16,fontWeight:950}}>MY</span></div>
     <div className="my-menu-grid my-menu-grid-top"><button type="button" className="my-menu-card my-menu-pink" onClick={onOpenAccount}><span className="my-menu-card-icon">✏️</span><span className="my-menu-card-copy"><strong>정보 수정</strong><small>닉네임과 계정 정보를 관리해요.</small></span><span className="my-menu-card-arrow">›</span></button><button type="button" className="my-menu-card my-menu-blue" onClick={onGoPets}><span className="my-menu-card-icon">🐾</span><span className="my-menu-card-copy"><strong>반려동물 관리</strong><small>등록한 아이 {allPets.length}마리를 관리해요.</small></span><span className="my-menu-card-arrow">›</span></button></div>
     <div className="my-activity-stack"><button type="button" className={`my-menu-card my-menu-purple my-menu-card-wide${openActivity==="pettalk"?" is-open":""}`} onClick={togglePetTalk}><span className="my-menu-card-icon">💬</span><span className="my-menu-card-copy"><strong>Pet톡 내 활동</strong><small>내 글·댓글·좋아요를 확인해요.</small></span><span className="my-menu-card-arrow">{openActivity==="pettalk"?"⌃":"›"}</span></button>
       {openActivity==="pettalk"&&<div className="bg-card my-activity-card my-accordion-panel"><MyActivityPage lang={lang} onOpenPost={onOpenPost} embedded /></div>}
@@ -12482,7 +12505,7 @@ function AppInner({ lang, setLang }) {
       ) : effectiveView === "terms" ? (
         <><TermsContent /><PetNewsTermsAddendum /><PetPointPolicyAddendum type="terms" /></>
       ) : effectiveView === "about" ? (
-        <><AboutPage onStart={() => goView("pets")} onNavigate={(v) => goView(v)} /><PetPointAboutCard /></>
+        <AboutPage onStart={() => goView("pets")} onNavigate={(v) => goView(v)} />
       ) : effectiveView === "home" ? (
         <HomePage account={account} pets={allPets} lang={lang}
           onGoPets={() => goView("pets")} onGoView={(v) => goView(v)} />
