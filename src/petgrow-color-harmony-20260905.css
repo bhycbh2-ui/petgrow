@@ -1,0 +1,70 @@
+/* PetGrow color harmony — shared brand family across core, About and Pet Places. */
+:root{
+  --pg-harmony-ink:#223027;
+  --pg-harmony-sub:#68736b;
+  --pg-harmony-deep:#234f3c;
+  --pg-harmony-green:#315f49;
+  --pg-harmony-mid:#4f8a5b;
+  --pg-harmony-soft:#edf5ee;
+  --pg-harmony-paper:#f8faf7;
+  --pg-harmony-line:#e2e9e3;
+  --pg-harmony-highlight:#ddefcb;
+}
+
+/* Keep the established light/dark green hierarchy available to legacy views. */
+.bboggl-root{
+  --primary:var(--pg-harmony-mid)!important;
+  --primary-dark:var(--pg-harmony-green)!important;
+  --text:var(--pg-harmony-ink)!important;
+  --sub:var(--pg-harmony-sub)!important;
+  --bg:var(--pg-harmony-paper)!important;
+  --surface:#f1f5f1!important;
+  --border:var(--pg-harmony-line)!important;
+}
+
+/* About and Pet Places were introduced with different one-off forest greens. */
+.pg-about-next{
+  --about-ink:var(--pg-harmony-ink);
+  --about-green:var(--pg-harmony-deep);
+  --about-lime:var(--pg-harmony-highlight);
+  --about-line:var(--pg-harmony-line);
+  --about-paper:var(--pg-harmony-paper);
+}
+.pg-place-next{
+  --place-ink:var(--pg-harmony-ink);
+  --place-green:var(--pg-harmony-green);
+  --place-green-2:var(--pg-harmony-mid);
+  --place-mint:var(--pg-harmony-soft);
+  --place-line:var(--pg-harmony-line);
+}
+
+/* The home shortcuts used unrelated purple, blue, orange and pink tints.
+   Retain gentle variation while keeping every card in one green-neutral family. */
+.petgrow-dashboard-home .dash-quick-grid>button:nth-child(3n+1){
+  background:linear-gradient(145deg,#fff,var(--pg-harmony-soft))!important;
+  border-color:#dbe8dd!important;
+}
+.petgrow-dashboard-home .dash-quick-grid>button:nth-child(3n+2){
+  background:linear-gradient(145deg,#fff,#f4f8f4)!important;
+  border-color:var(--pg-harmony-line)!important;
+}
+.petgrow-dashboard-home .dash-quick-grid>button:nth-child(3n){
+  background:linear-gradient(145deg,#fff,#f8faf7)!important;
+  border-color:var(--pg-harmony-line)!important;
+}
+.petgrow-dashboard-home .dash-quick-grid>button i,
+.petgrow-dashboard-home .dash-widget-icon,
+.more-menu-card i{
+  background:var(--pg-harmony-soft)!important;
+  border-color:#dbe8dd!important;
+  color:var(--pg-harmony-green)!important;
+}
+
+/* The profile control is part of the shell, not a semantic status indicator. */
+.petgrow-dashboard-home .dash-profile-dot{
+  background:var(--pg-harmony-soft)!important;
+  border-color:#d6e5d9!important;
+  color:var(--pg-harmony-green)!important;
+}
+
+/* Preserve warning, error, success and third-party brand colors. */
