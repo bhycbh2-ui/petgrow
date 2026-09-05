@@ -41,11 +41,12 @@ test("fortune save feedback and tarot sequence cleanup are wired",()=>{
   assert.match(tarotApi,/clean\(req\.body\?\.id,240\)/);
 });
 
-test("PetGrow splash welcomes users with pets peeking from a circle",()=>{
-  assert.match(html,/class="petgrow-splash__pet-window"/);
-  assert.match(html,/petgrow-splash-pets-20260905\.webp/);
-  assert.match(html,/@keyframes petgrow-pets-rise/);
-  assert.match(html,/@keyframes petgrow-pets-hello/);
+test("PetGrow splash uses a brand-native growth infographic",()=>{
+  assert.match(html,/class="petgrow-splash__infographic"/);
+  assert.match(html,/petgrow-brand-source\.svg/);
+  assert.match(html,/class="petgrow-splash__growth-line"/);
+  assert.match(html,/@keyframes petgrow-growth-draw/);
+  assert.doesNotMatch(html,/petgrow-splash-pets-20260905/);
   assert.doesNotMatch(html,/class="pg-growth-system"/);
   assert.doesNotMatch(html,/class="petgrow-runners"/);
 });
