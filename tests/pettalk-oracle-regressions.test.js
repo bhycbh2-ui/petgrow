@@ -9,7 +9,6 @@ const widgets=readFileSync(new URL("../src/PetDailyWidgets.jsx",import.meta.url)
 const tarotApi=readFileSync(new URL("../server_lib/tarot.js",import.meta.url),"utf8");
 const sajuSplit=readFileSync(new URL("../build/petgrow-deep-menu-split-v6-20260821.mjs",import.meta.url),"utf8");
 const menuSplit=readFileSync(new URL("../build/petgrow-menu-split-v4-20260821.mjs",import.meta.url),"utf8");
-const splash=readFileSync(new URL("../build/petgrow-splash-v4-20260822.mjs",import.meta.url),"utf8");
 const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
 
 test("PetTalk composer dependencies and three examples remain available",()=>{
@@ -42,9 +41,13 @@ test("fortune save feedback and tarot sequence cleanup are wired",()=>{
   assert.match(tarotApi,/clean\(req\.body\?\.id,240\)/);
 });
 
-test("PetGrow growth-system splash replaces the runner presentation",()=>{
-  assert.match(html,/class="pg-growth-system"/);
-  assert.match(splash,/petgrow-growth-system-splash-20260904/);
-  assert.match(splash,/\.petgrow-runners[\s\S]*?display:none!important/);
-  assert.match(splash,/pgGrowthChart/);
+test("PetGrow splash uses a brand-native growth infographic",()=>{
+  assert.match(html,/class="petgrow-splash__story"/);
+  assert.match(html,/petgrow-splash__metric-heart/);
+  assert.match(html,/class="petgrow-splash__stem"/);
+  assert.match(html,/class="petgrow-splash__metric"/);
+  assert.match(html,/@keyframes petgrow-stem-grow/);
+  assert.doesNotMatch(html,/petgrow-splash-pets-20260905/);
+  assert.doesNotMatch(html,/class="pg-growth-system"/);
+  assert.doesNotMatch(html,/class="petgrow-runners"/);
 });
