@@ -186,8 +186,18 @@ function topLevelBindings(code) {
     let match;
     while ((match = re.exec(top))) bindings.add(match[1]);
   }
+  // 앞 단계의 Recharts lazy transform은 `let LineChart, Line, Area, ...;`처럼
+  // 여러 이름을 한 번에 선언합니다. 첫 이름만 잡으면 뒤 이름들이 chunk에서
+  // 전역 변수로 남아 런타임 흰 화면을 만들 수 있어 모두 수집해야 해요.
+  const multiDeclarationRe = /\b(?:let|var)\s+([A-Za-z_$][\w$]*(?:\s*,\s*[A-Za-z_$][\w$]*)+)\s*;/g;
+  let declaration;
+  while ((declaration = multiDeclarationRe.exec(top))) {
+    for (const name of declaration[1].split(",")) bindings.add(name.trim());
+  }
 
-  const importRe = /^\s*import\s+(.+?)\s+from\s+["'][^"']+["'];?/gm;
+  // App.jsx의 import는 여러 줄에 걸쳐 있는 경우가 많습니다. `.` 기반 정규식은
+  // 첫 줄만 읽어 Recharts 같은 JSX 바인딩을 lazy chunk에 전달하지 못할 수 있어요.
+  const importRe = /^\s*import\s+([\s\S]+?)\s+from\s+["'][^"']+["'];?/gm;
   let imp;
   while ((imp = importRe.exec(code))) {
     const spec = imp[1].trim();

@@ -57,52 +57,68 @@ function isValidAuthToken(value) {
   return typeof value === "string" && /^[A-Za-z0-9_-]{32,160}$/.test(value);
 }
 
+function isMissingAuthSchema(error) {
+  return error?.code === "42P01" || error?.code === "42703";
+}
+
+async function withAuthSchemaFallback(operation) {
+  try {
+    return await operation();
+  } catch (error) {
+    // 정상 운영 요청마다 DDL을 실행하지 않습니다. 새 환경처럼 테이블/컬럼이
+    // 실제로 없을 때만 스키마를 준비한 뒤 원래 작업을 한 번 재시도해요.
+    if (!isMissingAuthSchema(error)) throw error;
+    await ensureAuthSchema();
+    return operation();
+  }
+}
+
 export async function createOAuthState(client = "web") {
-  await ensureAuthSchema();
   const normalizedClient = client === "android" ? "android" : "web";
   const state = `${normalizedClient === "android" ? "a" : "w"}_${crypto.randomBytes(32).toString("base64url")}`;
   const stateHash = authTokenHash(state);
-  await sql`delete from pg_oauth_states where expires_at <= now()`;
-  await sql`
-    insert into pg_oauth_states(state_hash, client, expires_at)
-    values(${stateHash}, ${normalizedClient}, now() + interval '10 minutes')
-  `;
+  await withAuthSchemaFallback(async () => {
+    await sql`delete from pg_oauth_states where expires_at <= now()`;
+    await sql`
+      insert into pg_oauth_states(state_hash, client, expires_at)
+      values(${stateHash}, ${normalizedClient}, now() + interval '10 minutes')
+    `;
+  });
   return state;
 }
 
 export async function consumeOAuthState(state) {
   if (!isValidAuthToken(state)) return null;
-  await ensureAuthSchema();
   const stateHash = authTokenHash(state);
-  const { rows } = await sql`
-    delete from pg_oauth_states
-    where state_hash = ${stateHash} and expires_at > now()
-    returning client
-  `;
+  const { rows } = await withAuthSchemaFallback(() => sql`
+      delete from pg_oauth_states
+      where state_hash = ${stateHash} and expires_at > now()
+      returning client
+    `);
   return rows[0] || null;
 }
 
 export async function createAuthHandoff(userId) {
-  await ensureAuthSchema();
   const token = crypto.randomBytes(32).toString("base64url");
   const tokenHash = authTokenHash(token);
-  await sql`delete from pg_auth_handoffs where expires_at <= now()`;
-  await sql`
-    insert into pg_auth_handoffs(token_hash, user_id, expires_at)
-    values(${tokenHash}, ${userId}, now() + interval '3 minutes')
-  `;
+  await withAuthSchemaFallback(async () => {
+    await sql`delete from pg_auth_handoffs where expires_at <= now()`;
+    await sql`
+      insert into pg_auth_handoffs(token_hash, user_id, expires_at)
+      values(${tokenHash}, ${userId}, now() + interval '3 minutes')
+    `;
+  });
   return token;
 }
 
 export async function consumeAuthHandoff(token) {
   if (!isValidAuthToken(token)) return null;
-  await ensureAuthSchema();
   const tokenHash = authTokenHash(token);
-  const { rows } = await sql`
-    delete from pg_auth_handoffs
-    where token_hash = ${tokenHash} and expires_at > now()
-    returning user_id
-  `;
+  const { rows } = await withAuthSchemaFallback(() => sql`
+      delete from pg_auth_handoffs
+      where token_hash = ${tokenHash} and expires_at > now()
+      returning user_id
+    `);
   return rows[0] || null;
 }
 
@@ -477,8 +493,7 @@ export function ensureSchema() {
 // 카카오 고유 식별정보(kakaoId)로 회원을 찾고, 없으면 새로 생성해요.
 // PetGrow 내부 user_id 는 여기서 발급되는 id(UUID) 예요 — 이후 모든 데이터는 이 id 를 기준으로 연결돼요.
 export async function findOrCreateUserByKakaoId({ kakaoId, nickname, profileImage }) {
-  await ensureAuthSchema();
-  const existing = await sql`select * from pg_users where kakao_id = ${kakaoId}`;
+  const existing = await withAuthSchemaFallback(() => sql`select * from pg_users where kakao_id = ${kakaoId}`);
   if (existing.rows[0]) {
     const updated = await sql`
       update pg_users
@@ -500,8 +515,7 @@ export async function findOrCreateUserByKakaoId({ kakaoId, nickname, profileImag
 }
 
 export async function getUserById(id) {
-  await ensureAuthSchema();
-  const { rows } = await sql`select * from pg_users where id = ${id}`;
+  const { rows } = await withAuthSchemaFallback(() => sql`select * from pg_users where id = ${id}`);
   return rows[0] || null;
 }
 

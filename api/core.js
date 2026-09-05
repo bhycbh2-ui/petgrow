@@ -9,9 +9,8 @@ import { handleTarot } from "../server_lib/tarot.js";
 async function handleMe(req, res) {
   const uid = getSessionUserId(req);
   if (!uid) return res.status(401).json({ error: "unauthenticated" });
-  const user = await getUserById(uid);
+  const [user, isAdmin] = await Promise.all([getUserById(uid), isAdminUserId(uid)]);
   if (!user) return res.status(401).json({ error: "unauthenticated" });
-  const isAdmin = await isAdminUserId(uid);
   return res.status(200).json({
     id: user.id,
     name: user.nickname || "PetGrow 회원",
