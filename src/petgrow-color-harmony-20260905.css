@@ -60,6 +60,25 @@
   color:var(--pg-harmony-green)!important;
 }
 
+/* Home info, music and news rows used the same blue/orange striping as the old
+   shortcut grid. Bring them into the shared family as well. */
+.petgrow-dashboard-home .dash-section>div[style*="display: grid"]>.bg-card:nth-child(3n+1){
+  background:#f2f7f3!important;
+  border-color:#dbe8dd!important;
+}
+.petgrow-dashboard-home .dash-section>div[style*="display: grid"]>.bg-card:nth-child(3n+2){
+  background:#f7faf7!important;
+  border-color:var(--pg-harmony-line)!important;
+}
+.petgrow-dashboard-home .dash-section>div[style*="display: grid"]>.bg-card:nth-child(3n){
+  background:#edf5ee!important;
+  border-color:#d9e6dc!important;
+}
+.petgrow-dashboard-home .home-music-row.is-playing{
+  background:linear-gradient(90deg,#e6f2e8,#f8fbf8)!important;
+  border-color:#a9c8ae!important;
+}
+
 /* The profile control is part of the shell, not a semantic status indicator. */
 .petgrow-dashboard-home .dash-profile-dot{
   background:var(--pg-harmony-soft)!important;
