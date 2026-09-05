@@ -14,7 +14,6 @@ import petgrowPetTalkSplitV5 from "./build/petgrow-pettalk-split-v5-20260821.mjs
 import petgrowDeepMenuSplitV6 from "./build/petgrow-deep-menu-split-v6-20260821.mjs";
 import petgrowDeepScreenSplitV7 from "./build/petgrow-deep-screen-split-v7-20260821.mjs";
 import petgrowRouteSplitV8 from "./build/petgrow-route-split-v8-20260821.mjs";
-import petgrowSplashV4 from "./build/petgrow-splash-v4-20260822.mjs";
 import petgrowSplashReadyGate from "./build/petgrow-splash-ready-gate-20260821.mjs";
 import petgrowFullQa20260821 from "./build/petgrow-full-qa-20260821.mjs";
 import petgrowHomeBootUnblock20260828 from "./build/petgrow-home-boot-unblock-20260828.mjs";
@@ -38,7 +37,7 @@ function petgrowAdsenseWeb() {
 }
 
 export default defineConfig({
-  plugins: [petgrowHomeBootUnblock20260828(), petgrowBrandRefresh20260822(), petgrowFullQa20260821(), petgrowSplashV4(), petgrowSplashReadyGate(), petgrowAdsenseWeb(), petgrowPerformanceLazy(), petgrowRechartsTreeShake20260822(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), petgrowPetTalkOracleFixes(), petgrowAboutNext(), petgrowNearbyNext(), petgrowMenuSplitV3(), petgrowMenuSplitV4(), petgrowPetTalkSplitV5(), petgrowDeepMenuSplitV6(), petgrowDeepScreenSplitV7(), petgrowRouteSplitV8(), react()],
+  plugins: [petgrowHomeBootUnblock20260828(), petgrowBrandRefresh20260822(), petgrowFullQa20260821(), petgrowSplashReadyGate(), petgrowAdsenseWeb(), petgrowPerformanceLazy(), petgrowRechartsTreeShake20260822(), petNewsLoadingState(), petInfoCmsSource(), petgrowUiFixes(), petgrowStabilityCleanup(), petgrowNewsPetTalkTarotFixes(), petgrowPetTalkOracleFixes(), petgrowAboutNext(), petgrowNearbyNext(), petgrowMenuSplitV3(), petgrowMenuSplitV4(), petgrowPetTalkSplitV5(), petgrowDeepMenuSplitV6(), petgrowDeepScreenSplitV7(), petgrowRouteSplitV8(), react()],
   esbuild: {
     legalComments: "none",
   },

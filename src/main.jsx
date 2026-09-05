@@ -83,7 +83,9 @@ if (hasRecentExternalReturnHint() || hasAuthReturnParams()) {
 
 function hideWhenReady() {
   if (!hasRenderedApp()) return false;
-  const minimumVisibleMs = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ? 220 : 360;
+  // Keep the welcome motion visible long enough to read as a deliberate greeting,
+  // while external-auth returns above still bypass it immediately.
+  const minimumVisibleMs = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ? 1450 : 1250;
   const elapsed = performance.now() - bootStartedAt;
   if (elapsed < minimumVisibleMs) {
     window.setTimeout(hardHideSplash, minimumVisibleMs - elapsed);
@@ -192,7 +194,7 @@ window.setTimeout(() => {
     hardHideSplash();
     renderObserver.disconnect();
   }
-}, 700);
+}, 1900);
 
 // If the entry module hangs rather than rejects, trigger the same one-time recovery.
 window.setTimeout(() => {
