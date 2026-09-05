@@ -49,7 +49,9 @@ test("official channel list includes the Naver Clip profile",()=>{
   assert.match(app,/\.social-links\{display:flex; flex-wrap:wrap;/);
   assert.match(app,/\.petgrow-footer \.social-links\{flex-wrap:nowrap;/);
   assert.match(app,/<footer className="petgrow-footer">[\s\S]*?<SocialLinks \/>/);
-  assert.match(app,/상호명 아우리녹 · 대표자 정재현 · 사업자등록번호 297-32-01792/);
+  assert.doesNotMatch(app,/대표자 정재현/);
+  assert.match(app,/<div className="petgrow-footer-meta">[\s\S]*?아우리녹[\s\S]*?사업자등록번호 297-32-01792/);
+  assert.match(app,/href="mailto:help\.petgrow@gmail\.com"/);
 });
 
 test("Kakao channel and one-to-one chat are linked on app and web support",()=>{
