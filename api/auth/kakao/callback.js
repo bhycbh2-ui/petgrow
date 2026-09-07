@@ -1,6 +1,7 @@
 import { BASE_URL, OAUTH_STATE_COOKIE, SESSION_COOKIE, SESSION_MAX_AGE } from "../../../server_lib/config.js";
 import { parseCookies, signSession } from "../../../server_lib/session.js";
-import { consumeOAuthState, createAuthHandoff, findOrCreateUserByKakaoId } from "../../../server_lib/db.js";
+import { consumeOAuthState, createAuthHandoff } from "../../../server_lib/db.js";
+import { linkOrCreateKakaoUser } from "../../../server_lib/passwordAuth.js";
 
 const ANDROID_CALLBACK_URL = "kr.co.petgrow.app://auth/callback";
 
@@ -58,8 +59,13 @@ export default async function handler(req, res) {
     const kakaoId = String(kakaoUser.id);
     const nickname = kakaoUser.kakao_account?.profile?.nickname || null;
     const profileImage = kakaoUser.kakao_account?.profile?.profile_image_url || null;
+    const email = kakaoUser.kakao_account?.email || null;
+    const emailVerified = kakaoUser.kakao_account?.is_email_valid === true
+      && kakaoUser.kakao_account?.is_email_verified === true;
 
-    const user = await findOrCreateUserByKakaoId({ kakaoId, nickname, profileImage });
+    // 이미 일반회원으로 가입한 이메일이라면 같은 내부 회원번호에 카카오 로그인을 연결합니다.
+    // 카카오가 검증한 이메일만 자동 연동에 사용해 계정 탈취를 방지합니다.
+    const user = await linkOrCreateKakaoUser({ kakaoId, nickname, profileImage, email, emailVerified });
 
     if (client === "android") {
       const handoffToken = await createAuthHandoff(user.id);

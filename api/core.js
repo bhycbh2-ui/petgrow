@@ -9,14 +9,15 @@ import { handleTarot } from "../server_lib/tarot.js";
 async function handleMe(req, res) {
   const uid = getSessionUserId(req);
   if (!uid) return res.status(401).json({ error: "unauthenticated" });
-  const user = await getUserById(uid);
+  const [user, isAdmin] = await Promise.all([getUserById(uid), isAdminUserId(uid)]);
   if (!user) return res.status(401).json({ error: "unauthenticated" });
-  const isAdmin = await isAdminUserId(uid);
   return res.status(200).json({
     id: user.id,
     name: user.nickname || "PetGrow 회원",
     profileImage: user.profile_image || null,
     accountCode: user.kakao_id ? String(user.kakao_id).slice(-4).padStart(4, "0") : null,
+    username: user.username || null,
+    loginMethods: { kakao: !!user.kakao_id, password: !!user.password_hash },
     isAdmin,
   });
 }
