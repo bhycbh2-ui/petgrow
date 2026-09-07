@@ -16,8 +16,6 @@ async function handleMe(req, res) {
     name: user.nickname || "PetGrow 회원",
     profileImage: user.profile_image || null,
     accountCode: user.kakao_id ? String(user.kakao_id).slice(-4).padStart(4, "0") : null,
-    username: user.username || null,
-    loginMethods: { kakao: !!user.kakao_id, password: !!user.password_hash },
     isAdmin,
   });
 }

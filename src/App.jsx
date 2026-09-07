@@ -1528,14 +1528,6 @@ async function apiUpdateNickname(nickname) {
   if (!res.ok) throw new Error(data?.error || "nickname update failed");
   return data;
 }
-async function localAuth(action, body = {}) {
-  const res = await fetch(`/api/auth/local?action=${encodeURIComponent(action)}`, {
-    method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
-  });
-  let data = null; try { data = await res.json(); } catch {}
-  if (!res.ok) throw new Error(data?.error || "요청을 처리하지 못했어요.");
-  return data;
-}
 
 /* ============================================================
    Pet톡 커뮤니티 — API 클라이언트 헬퍼
@@ -2068,10 +2060,9 @@ function GuideModal({ open, onClose }) {
    개인정보처리방침 (초안) — 법률 자문 아님, 배포 전 검토 필요
    ============================================================ */
 const PRIVACY_SECTIONS_KO = [
-  { title: "1. 개인정보의 처리 목적", body: "PetGrow는 일반 아이디 회원가입 및 카카오 간편로그인을 통한 회원 식별·계정 관리, 이메일 본인 확인, 아이디·비밀번호 찾기, 두 로그인 방식의 안전한 계정 연동, 로그인 유지, 공지사항 제공, 문의·피드백 접수 및 답변 관리, 광고 문의 접수 및 상담(회사/브랜드명, 담당자명, 이메일, 선택 입력 연락처·예산), 직접광고 캠페인 운영 및 노출기간 관리, 반려동물 정보 저장 및 기기 간 동기화, PetBTI 등 서비스 결과 저장·다시보기, Pet음악 재생·반복재생·즐겨찾기·좋아요·댓글 제공, 보호자 궁합 계산, 고객 문의, 서비스 안정성·품질 개선, 광고 제공 및 성과 측정, 부정 이용 방지, 회원탈퇴 및 개인정보 삭제 처리, 이용자가 입력한 주소를 기준으로 주변 반려동물 시설을 검색하고, 이용자가 선택적으로 위치 권한을 허용한 경우 지도에 현재 위치를 표시하고 장소까지의 거리를 계산하기 위하여 필요한 범위에서 정보를 처리할 수 있습니다." },
+  { title: "1. 개인정보의 처리 목적", body: "PetGrow는 카카오 간편로그인을 통한 회원 식별·계정 관리, 로그인 유지, 공지사항 제공, 문의·피드백 접수 및 답변 관리, 광고 문의 접수 및 상담(회사/브랜드명, 담당자명, 이메일, 선택 입력 연락처·예산), 직접광고 캠페인 운영 및 노출기간 관리, 반려동물 정보 저장 및 기기 간 동기화, PetBTI 등 서비스 결과 저장·다시보기, Pet음악 재생·반복재생·즐겨찾기·좋아요·댓글 제공, 보호자 궁합 계산, 고객 문의, 서비스 안정성·품질 개선, 광고 제공 및 성과 측정, 부정 이용 방지, 회원탈퇴 및 개인정보 삭제 처리, 이용자가 입력한 주소를 기준으로 주변 반려동물 시설을 검색하고, 이용자가 선택적으로 위치 권한을 허용한 경우 지도에 현재 위치를 표시하고 장소까지의 거리를 계산하기 위하여 필요한 범위에서 정보를 처리할 수 있습니다." },
   { title: "2. 처리하는 개인정보 항목", body: "가. 카카오 간편로그인\n- 카카오가 제공하는 사용자 고유 식별정보\n- 닉네임, 프로필 이미지 등은 실제로 동의받아 제공받고 서비스에서 사용하는 경우에만 처리\n- 이메일 등 추가 정보는 실제 구현상 필요한 경우에만 동의를 받아 처리\n\n나. 반려동물 및 서비스 정보\n- 반려동물 이름, 종류, 품종, 생년월일, 성별, 현재 체중 및 성장 관련 정보\n- 반려동물 프로필 사진\n- PetBTI 결과 및 검사일\n- Pet사주·오늘의 펫운세 및 Pet타로의 선택 주제·뽑은 카드·저장 여부 등 저장이 필요한 서비스 정보\n- Pet음악 좋아요·댓글 등 이용자가 직접 남긴 참여 기록\n\n다. 보호자 궁합 입력정보\n- 보호자 이름, 보호자 생년월일\n- 위 정보는 보호자 궁합 결과를 계산하기 위해 해당 화면에서만 일시적으로 사용하며, 현재 구현상 PetGrow 서버 또는 계정에 저장하지 않습니다.\n\n라. 광고·제휴 문의 정보\n- 필수: 회사/브랜드명, 담당자명, 이메일, 문의 내용\n- 선택: 연락처, 광고 유형, 예산 등 이용자가 직접 입력한 상담 정보\n- 처리 목적: 광고·제휴 상담, 견적·캠페인 협의 및 문의 이력 관리\n\n마. 자동으로 처리될 수 있는 정보\n- IP 주소, 기기·운영체제·브라우저 또는 앱 정보\n- 접속 및 서비스 이용기록, 오류·보안 관련 기록\n- Google Mobile Ads SDK 사용 시 광고 제공·분석·부정행위 방지를 위해 IP 주소, 앱 실행·탭·동영상 조회 등 이용 상호작용 정보, 앱/SDK 성능 관련 진단정보, Android 광고 ID·App Set ID 등 기기 또는 계정 식별자가 Google에 의해 자동으로 수집·공유될 수 있습니다. 광고 ID의 수집 여부는 앱 설정 및 SDK 구성에 따라 달라질 수 있습니다.\n\nPetGrow는 서비스 제공에 필요하지 않은 전화번호, 친구목록 등의 개인정보를 불필요하게 요청하지 않는 것을 원칙으로 합니다. 보호자 궁합에서 입력하는 보호자 이름·생년월일은 궁합 계산에만 일시적으로 사용되며 현재 구현상 서버로 전송하거나 계정에 저장하지 않습니다." },
-  { title: "2-1. 일반 회원가입 및 계정 복구 정보", body: "일반 회원가입 시 아이디, 단방향 암호화된 비밀번호, 이름, 닉네임, 이메일, 선택 입력한 휴대폰 번호를 처리합니다. 이메일 본인 확인과 비밀번호 재설정을 위해 인증번호의 해시, 발급·만료·사용 시각 및 오입력 횟수를 처리합니다. 인증번호는 10분간 유효하며 원문으로 저장하지 않습니다. 카카오가 유효성 및 인증 여부를 확인한 이메일이 일반가입 계정의 인증된 이메일과 일치하는 경우 두 로그인 방식을 같은 내부 계정에 연결할 수 있습니다." },
-  { title: "3. 개인정보의 저장 방식", body: "로그인 후 이용자가 등록하거나 생성한 정보는 단순히 '이 기기' 또는 '이 브라우저'에만 저장되는 구조를 원칙으로 하지 않으며, 로그인한 PetGrow 계정에 연결하여 서버 또는 클라우드 저장소에 저장·동기화될 수 있습니다. 동일한 PetGrow 계정에 연결된 카카오 로그인 또는 아이디 로그인으로 접속하면 지원되는 다른 기기 또는 웹 환경에서 저장된 정보를 불러올 수 있습니다. 로그인 기능 도입 이전의 기존 기기 저장정보는 이용자의 선택에 따라 계정으로 이전될 수 있습니다." },
+  { title: "3. 개인정보의 저장 방식", body: "로그인 후 이용자가 등록하거나 생성한 정보는 단순히 '이 기기' 또는 '이 브라우저'에만 저장되는 구조를 원칙으로 하지 않으며, 로그인한 PetGrow 계정에 연결하여 서버 또는 클라우드 저장소에 저장·동기화될 수 있습니다. 동일한 카카오 계정으로 로그인하면 지원되는 다른 기기 또는 웹 환경에서 저장된 정보를 불러올 수 있습니다. 로그인 기능 도입 이전의 기존 기기 저장정보는 이용자의 선택에 따라 계정으로 이전될 수 있습니다." },
   { title: "4. 개인정보의 처리 및 보유기간", body: "회원계정 및 계정에 연결된 개인정보는 원칙적으로 회원탈퇴 시까지 보유·이용합니다. 회원탈퇴 시 관계 법령에 따라 별도로 보관할 필요가 있는 정보를 제외하고 계정 및 관련 개인정보를 삭제합니다. Pet음악 좋아요와 댓글 등 계정에 연결된 참여 기록도 회원탈퇴 또는 해당 댓글 삭제 시 함께 삭제될 수 있습니다. 광고·제휴 문의를 통해 입력된 회사/브랜드명, 담당자명, 이메일, 선택 연락처·예산 및 문의 내용은 상담·제휴 검토 등 처리 목적이 달성될 때까지 보유하며, 목적 달성 후 지체 없이 삭제하는 것을 원칙으로 합니다. 분쟁 대응이나 법령상 보관 의무가 있는 경우에는 필요한 범위와 기간에 한해 별도로 보관할 수 있습니다. 외부 인증·광고·호스팅 사업자가 자체적으로 처리하는 정보는 해당 사업자의 정책 및 실제 처리 구조에 따를 수 있습니다." },
   { title: "5. 카카오 간편로그인", body: "PetGrow는 이용 편의를 위해 카카오 간편로그인을 제공할 수 있습니다. 로그인 과정에서 카카오의 동의 화면을 통해 이용자가 동의한 범위의 정보만 PetGrow에 제공될 수 있습니다. 처리 목적은 회원 식별, 계정 생성·관리, 사용자별 데이터 저장·동기화, 회원탈퇴 및 고객지원 등입니다." },
   { title: "6. 반려동물 정보 및 프로필 사진", body: "이용자가 등록한 반려동물 정보와 프로필 사진은 해당 PetGrow 계정과 연결하여 저장될 수 있으며, 우리 아이, 성장정보, Pet사주(기본 Pet사주·오늘의 펫운세·보호자 궁합), Pet타로(주제별 하루 1회), PetBTI 등 반려동물별 기능 제공에 이용될 수 있습니다." },
@@ -2289,19 +2280,14 @@ function TermsPage() {
 }
 
 /* ============================================================
-   로그인 / 회원가입 — 일반 아이디 로그인과 카카오 간편로그인을 함께 지원해요.
-   비밀번호는 서버에서 단방향 암호화하고 두 로그인 방식은 하나의 내부 회원번호에 연결해요.
+   로그인 / 회원가입 (데모 — Supabase Auth 연동 전 UI 목업)
+   카카오 간편로그인 전용. 실제 인가 코드 교환/세션 발급은 서버(/api/auth/kakao/*)에서 처리해요.
    ============================================================ */
-const CONSENT_VERSION = "2026-09-07-v3";
+const CONSENT_VERSION = "2026-08-16-v2";
 const CONSENT_STORAGE_KEY = "petgrow:consent";
 
 function LoginScreen({ onGoTerms, onGoPrivacy }) {
   const t = useT();
-  const [mode, setMode] = useState("login");
-  const [form, setForm] = useState({ username:"", password:"", passwordConfirm:"", realName:"", nickname:"", email:"", emailCode:"", phone:"", code:"", newPassword:"" });
-  const [busy, setBusy] = useState(false);
-  const [codeBusy, setCodeBusy] = useState(false);
-  const [message, setMessage] = useState("");
   const [termsOk, setTermsOk] = useState(false);
   const [privacyOk, setPrivacyOk] = useState(false);
   const [marketingOk, setMarketingOk] = useState(false);
@@ -2328,10 +2314,10 @@ function LoginScreen({ onGoTerms, onGoPrivacy }) {
 
   const allChecked = termsOk && privacyOk && marketingOk;
   const setAll = (checked) => { setTermsOk(checked); setPrivacyOk(checked); setMarketingOk(checked); };
-  const saveConsent = () => {
+  const startLogin = () => {
     if (!consentCompleted && (!termsOk || !privacyOk)) {
       window.alert("필수 약관과 개인정보 수집·이용에 동의해 주세요.");
-      return false;
+      return;
     }
     // 최초 동의이거나 현재 화면에서 동의 내용을 변경한 경우에만 현재 버전으로 저장합니다.
     if (!consentCompleted) {
@@ -2343,59 +2329,17 @@ function LoginScreen({ onGoTerms, onGoPrivacy }) {
         setConsentCompleted(true);
       } catch {}
     }
-    return true;
-  };
-  const startLogin = () => {
-    if (!saveConsent()) return;
     goToKakaoLogin();
   };
-  const update = (key) => (e) => setForm((current) => ({ ...current, [key]: e.target.value }));
-  const requestSignupCode = async () => {
-    setMessage("");
-    setCodeBusy(true);
-    try {
-      const result = await localAuth("request-email-code", { purpose:"signup", username:form.username, email:form.email });
-      setMessage(result.message);
-    } catch (error) { setMessage(error.message); }
-    finally { setCodeBusy(false); }
-  };
-  const submit = async (e) => {
-    e.preventDefault();
-    setMessage("");
-    if ((mode === "login" || mode === "signup") && !saveConsent()) return;
-    if (mode === "signup" && form.password !== form.passwordConfirm) return setMessage("비밀번호 확인이 일치하지 않아요.");
-    setBusy(true);
-    try {
-      if (mode === "login") {
-        await localAuth("login", form);
-        window.location.href = "/?login=success";
-      } else if (mode === "signup") {
-        await localAuth("signup", form);
-        window.location.href = "/?login=success";
-      } else if (mode === "find-id") {
-        const result = await localAuth("find-id", form);
-        setMessage(`회원님의 아이디는 ${result.username} 입니다.`);
-      } else if (mode === "reset") {
-        const result = await localAuth("request-reset", form);
-        setMessage(result.message);
-        setMode("reset-confirm");
-      } else if (mode === "reset-confirm") {
-        await localAuth("confirm-reset", form);
-        setMessage("비밀번호가 변경됐어요. 새 비밀번호로 로그인해 주세요.");
-        setMode("login");
-      }
-    } catch (error) { setMessage(error.message); }
-    finally { setBusy(false); }
-  };
   return (
-    <div className="member-auth" style={{ maxWidth: 440, margin: "24px auto 0", textAlign: "center" }}>
+    <div style={{ maxWidth: 420, margin: "32px auto 0", textAlign: "center" }}>
       <PetGrowLogo style={{ width: 56, height: 56, margin: "0 auto 14px" }} />
       <h2 style={{ fontSize: 20, fontFamily: "'Jua',sans-serif", marginBottom: 6 }}>
         <span style={{ color: "var(--text)" }}>Pet</span><span style={{ color: "var(--primary)" }}>Grow</span> 🐾
       </h2>
       <p className="bg-sub" style={{ fontSize: 14, lineHeight: 1.6, marginBottom: 22 }}>{t.loginTagline}</p>
 
-      {(mode === "login" || mode === "signup") && consentChecked && !consentCompleted && <>
+      {consentChecked && !consentCompleted && <>
         <div className="consent-box">
           <label className="consent-all"><input type="checkbox" checked={allChecked} onChange={e=>setAll(e.target.checked)}/><strong>전체 동의</strong></label>
           <div className="consent-divider"/>
@@ -2408,35 +2352,6 @@ function LoginScreen({ onGoTerms, onGoPrivacy }) {
 
       {consentChecked && consentCompleted && <div className="consent-complete-note">✓ 필수 약관 동의 완료 · 다음 로그인부터는 다시 묻지 않아요.</div>}
 
-      <div className="member-auth-tabs">
-        <button type="button" className={mode==="login"?"active":""} onClick={()=>{setMode("login");setMessage("")}}>로그인</button>
-        <button type="button" className={mode==="signup"?"active":""} onClick={()=>{setMode("signup");setMessage("")}}>회원가입</button>
-      </div>
-
-      <form className="member-auth-form" onSubmit={submit}>
-        {(mode === "login" || mode === "reset" || mode === "reset-confirm") && <input className="bg-input" autoComplete="username" placeholder="아이디" value={form.username} onChange={update("username")} required />}
-        {mode === "login" && <input className="bg-input" type="password" autoComplete="current-password" placeholder="비밀번호" value={form.password} onChange={update("password")} required />}
-        {mode === "signup" && <>
-          <div className="member-auth-id-row"><input className="bg-input" autoComplete="username" placeholder="아이디 (영문·숫자 4~20자)" value={form.username} onChange={update("username")} required /><button type="button" onClick={async()=>{try{const r=await localAuth("check-id",{username:form.username});setMessage(r.available?"사용할 수 있는 아이디예요.":"이미 사용 중인 아이디예요.")}catch(e){setMessage(e.message)}}}>중복확인</button></div>
-          <input className="bg-input" type="password" autoComplete="new-password" placeholder="비밀번호 (영문+숫자 8자 이상)" value={form.password} onChange={update("password")} required />
-          <input className="bg-input" type="password" autoComplete="new-password" placeholder="비밀번호 확인" value={form.passwordConfirm} onChange={update("passwordConfirm")} required />
-          <input className="bg-input" autoComplete="name" placeholder="이름" value={form.realName} onChange={update("realName")} required />
-          <input className="bg-input" placeholder="닉네임 (2~8자)" maxLength={8} value={form.nickname} onChange={update("nickname")} required />
-          <div className="member-auth-id-row"><input className="bg-input" type="email" autoComplete="email" placeholder="이메일" value={form.email} onChange={update("email")} required /><button type="button" disabled={codeBusy} onClick={requestSignupCode}>{codeBusy?"발송 중...":"인증번호 받기"}</button></div>
-          <input className="bg-input" inputMode="numeric" maxLength={6} placeholder="이메일 인증번호 6자리" value={form.emailCode} onChange={update("emailCode")} required />
-          <input className="bg-input" type="tel" inputMode="numeric" autoComplete="tel" placeholder="휴대폰 번호 (선택)" value={form.phone} onChange={update("phone")} />
-        </>}
-        {mode === "find-id" && <><input className="bg-input" autoComplete="name" placeholder="가입할 때 입력한 이름" value={form.realName} onChange={update("realName")} required /><input className="bg-input" type="email" autoComplete="email" placeholder="가입한 이메일" value={form.email} onChange={update("email")} required /></>}
-        {(mode === "reset" || mode === "reset-confirm") && <input className="bg-input" type="email" autoComplete="email" placeholder="가입한 이메일" value={form.email} onChange={update("email")} required />}
-        {mode === "reset-confirm" && <><input className="bg-input" inputMode="numeric" maxLength={6} placeholder="이메일 인증번호 6자리" value={form.code} onChange={update("code")} required /><input className="bg-input" type="password" autoComplete="new-password" placeholder="새 비밀번호 (영문+숫자 8자 이상)" value={form.newPassword} onChange={update("newPassword")} required /></>}
-        <button type="submit" className="bg-btn" disabled={busy}>{busy?"처리 중...":mode==="login"?"로그인":mode==="signup"?"회원가입":mode==="find-id"?"아이디 찾기":mode==="reset"?"인증번호 받기":"비밀번호 변경"}</button>
-      </form>
-      {message && <div className="member-auth-message" role="status">{message}</div>}
-      <div className="member-auth-links">
-        <button type="button" onClick={()=>{setMode("find-id");setMessage("")}}>아이디 찾기</button><span>·</span><button type="button" onClick={()=>{setMode("reset");setMessage("")}}>비밀번호 찾기</button>
-      </div>
-
-      <div className="login-divider">또는</div>
       <button type="button" className="kakao-login-btn" onClick={startLogin} disabled={!consentChecked}>
         <KakaoIcon style={{ width: 20, height: 20 }} /> {t.loginContinueKakao}
       </button>
@@ -2448,7 +2363,7 @@ function LoginScreen({ onGoTerms, onGoPrivacy }) {
 
       <Modal open={!!detail} onClose={()=>setDetail(null)} width={520}>
         {detail==="terms" && <><h3>이용약관 동의</h3><p className="consent-detail-text">PetGrow의 회원가입, 서비스 이용, 계정 및 데이터 저장·동기화, Pet톡 운영, 광고 및 외부서비스 등에 관한 이용약관에 동의합니다.</p><button className="bg-btn" onClick={()=>{setTermsOk(true);setDetail(null)}}>동의하고 닫기</button></>}
-        {detail==="privacy" && <><h3>개인정보 수집·이용 동의</h3><div className="consent-detail-text"><b>수집 항목</b><br/>일반 회원가입 시 아이디, 단방향 암호화된 비밀번호, 이름, 닉네임, 이메일, 선택 입력한 휴대폰 번호와 이메일 인증 기록을 수집합니다. 카카오 로그인 시 카카오 사용자 고유 식별정보와 실제 동의받아 제공되는 닉네임·프로필 이미지·검증된 이메일을 처리합니다. 그 밖에 반려동물 이름·종류·품종·생년월일·성별·현재 체중·프로필 사진, PetBTI 결과, Pet사주·Pet타로 결과 및 이용자가 저장한 기록, 내 주변 Pet 후기·별점·좋아요·신고 기록을 처리합니다.<br/><br/><b>선택적 위치 권한</b><br/>현재 위치는 필수 회원정보가 아닙니다. 위치 권한을 허용한 경우에만 현재 위치 주변 검색, 지도에 내 위치 표시, 장소까지의 거리 계산을 위해 일시적으로 사용하며 계정에 저장하지 않습니다. 위치 권한을 거부해도 주소 검색과 회원 기능은 이용할 수 있습니다.<br/><br/><b>이용 목적</b><br/>회원 식별·계정 관리, 본인 이메일 확인, 아이디·비밀번호 찾기, 카카오 계정과 일반 로그인 연동, 반려동물 프로필 및 PetGrow 서비스 제공, 계정별 데이터 저장·동기화<br/><br/><b>보유 기간</b><br/>회원 탈퇴 시까지 또는 처리 목적 달성 시까지. 인증번호는 10분간 유효하며 사용·만료된 기록은 시스템 정리 시 삭제됩니다. 관계 법령상 보관 의무가 있는 경우 해당 기간 동안 보관할 수 있습니다.<br/><br/><b>동의 거부권</b><br/>동의를 거부할 수 있으나 필수 정보이므로 회원 서비스 이용이 제한될 수 있습니다.</div><button className="bg-btn" onClick={()=>{setPrivacyOk(true);setDetail(null)}}>동의하고 닫기</button></>}
+        {detail==="privacy" && <><h3>개인정보 수집·이용 동의</h3><div className="consent-detail-text"><b>수집 항목</b><br/>카카오 사용자 고유 식별정보, 실제 동의받아 제공되는 닉네임·프로필 이미지, 반려동물 이름·종류·품종·생년월일·성별·현재 체중·프로필 사진, PetBTI 결과, Pet사주·Pet타로 결과 및 이용자가 저장한 타로 기록 등 저장되는 서비스 정보, 내 주변 Pet 후기·별점·좋아요·신고 기록. <br/><br/><b>선택적 위치 권한</b><br/>현재 위치는 필수 회원정보가 아닙니다. 위치 권한을 허용한 경우에만 현재 위치 주변 검색, 지도에 내 위치 표시, 장소까지의 거리 계산을 위해 일시적으로 사용하며 계정에 저장하지 않습니다. 위치 권한을 거부해도 주소 검색과 회원 기능은 이용할 수 있습니다.<br/><br/><b>이용 목적</b><br/>회원 식별·계정 관리, 반려동물 프로필 및 PetGrow 서비스 제공, 계정별 데이터 저장·동기화<br/><br/><b>보유 기간</b><br/>회원 탈퇴 시까지 또는 처리 목적 달성 시까지. 관계 법령상 보관 의무가 있는 경우 해당 기간 동안 보관할 수 있습니다.<br/><br/><b>동의 거부권</b><br/>동의를 거부할 수 있으나 필수 정보이므로 회원 서비스 이용이 제한될 수 있습니다.</div><button className="bg-btn" onClick={()=>{setPrivacyOk(true);setDetail(null)}}>동의하고 닫기</button></>}
         {detail==="marketing" && <><h3>광고·마케팅 정보 수신 동의 (선택)</h3><div className="consent-detail-text">PetGrow의 이벤트, 새 기능, 제휴 또는 프로모션 관련 안내를 받을 수 있도록 선택 동의를 받습니다. 동의하지 않아도 기본 서비스 이용에는 제한이 없습니다. 실제 마케팅 발송 기능을 운영하는 경우 동의한 범위에서만 이용합니다.</div><button className="bg-btn" onClick={()=>{setMarketingOk(true);setDetail(null)}}>동의하고 닫기</button></>}
       </Modal>
     </div>
@@ -2520,9 +2435,6 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
   const [nickname, setNickname] = useState(account?.name || "");
   const [saving, setSaving] = useState(false);
   const [adminEntry, setAdminEntry] = useState(null);
-  const [credentialForm, setCredentialForm] = useState({ username:"", password:"", passwordConfirm:"", realName:"", email:"", emailCode:"", phone:"" });
-  const [credentialBusy, setCredentialBusy] = useState(false);
-  const [credentialCodeBusy, setCredentialCodeBusy] = useState(false);
 
   useEffect(() => {
     setNickname(account?.name || "");
@@ -2571,27 +2483,6 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
     }
   }
 
-  async function addPasswordLogin(e) {
-    e.preventDefault();
-    if (credentialForm.password !== credentialForm.passwordConfirm) return window.alert("비밀번호 확인이 일치하지 않아요.");
-    setCredentialBusy(true);
-    try {
-      await localAuth("attach", { ...credentialForm, nickname: account?.name });
-      window.alert("일반 아이디 로그인이 연결됐어요. 이제 카카오와 아이디 로그인을 모두 사용할 수 있어요.");
-      window.location.reload();
-    } catch (error) { window.alert(error.message); }
-    finally { setCredentialBusy(false); }
-  }
-
-  async function requestAttachCode() {
-    setCredentialCodeBusy(true);
-    try {
-      const result = await localAuth("request-email-code", { purpose:"attach", email:credentialForm.email });
-      window.alert(result.message);
-    } catch (error) { window.alert(error.message); }
-    finally { setCredentialCodeBusy(false); }
-  }
-
   const showAdminEntry = !!adminEntry && (!adminEntry.adminExists || adminEntry.isAdmin || adminEntry.recoveryAvailable);
   const adminLabel = adminEntry?.isAdmin
     ? "관리자센터"
@@ -2620,24 +2511,10 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
           )}
           <div>
             <div style={{ fontWeight: 800, fontSize: 15 }}>{account.name}</div>
-            <div className="bg-sub" style={{ fontSize: 12 }}>{account.loginMethods?.kakao && account.loginMethods?.password ? "카카오 · 아이디 로그인 연동됨" : account.loginMethods?.kakao ? t.accountKakaoTag : "아이디로 로그인됨"}</div>
-            {account.username && <div className="bg-sub" style={{ fontSize: 11, marginTop: 2 }}>아이디 · {account.username}</div>}
+            <div className="bg-sub" style={{ fontSize: 12 }}>{t.accountKakaoTag}</div>
             {account.accountCode && <div className="bg-sub" style={{ fontSize: 11, marginTop: 2 }}>{t.accountCodeLabel} · ••••{account.accountCode}</div>}
           </div>
         </div>
-
-        {account.loginMethods?.kakao && !account.loginMethods?.password && <form className="account-link-form bg-surface-card" onSubmit={addPasswordLogin}>
-          <strong>아이디 로그인도 연결하기</strong>
-          <p className="bg-sub">현재 카카오 계정의 반려동물과 활동을 그대로 유지하면서 아이디·비밀번호 로그인을 추가할 수 있어요.</p>
-          <input className="bg-input" placeholder="새 아이디" autoComplete="username" value={credentialForm.username} onChange={e=>setCredentialForm(v=>({...v,username:e.target.value}))} required />
-          <input className="bg-input" type="password" placeholder="비밀번호 (영문+숫자 8자 이상)" autoComplete="new-password" value={credentialForm.password} onChange={e=>setCredentialForm(v=>({...v,password:e.target.value}))} required />
-          <input className="bg-input" type="password" placeholder="비밀번호 확인" autoComplete="new-password" value={credentialForm.passwordConfirm} onChange={e=>setCredentialForm(v=>({...v,passwordConfirm:e.target.value}))} required />
-          <input className="bg-input" placeholder="이름" autoComplete="name" value={credentialForm.realName} onChange={e=>setCredentialForm(v=>({...v,realName:e.target.value}))} required />
-          <div className="member-auth-id-row"><input className="bg-input" type="email" placeholder="이메일" autoComplete="email" value={credentialForm.email} onChange={e=>setCredentialForm(v=>({...v,email:e.target.value}))} required /><button type="button" disabled={credentialCodeBusy} onClick={requestAttachCode}>{credentialCodeBusy?"발송 중...":"인증번호 받기"}</button></div>
-          <input className="bg-input" inputMode="numeric" maxLength={6} placeholder="이메일 인증번호 6자리" value={credentialForm.emailCode} onChange={e=>setCredentialForm(v=>({...v,emailCode:e.target.value}))} required />
-          <input className="bg-input" type="tel" placeholder="휴대폰 번호 (선택)" autoComplete="tel" value={credentialForm.phone} onChange={e=>setCredentialForm(v=>({...v,phone:e.target.value}))} />
-          <button className="bg-btn" type="submit" disabled={credentialBusy}>{credentialBusy?"연결 중...":"아이디 로그인 연결"}</button>
-        </form>}
 
         <div className="bg-surface-card" style={{ marginBottom: 10 }}>
           <label className="bg-label">{t.accountNicknameLabel}</label>
@@ -3065,19 +2942,6 @@ const GlobalStyle = () => (
     .cm-comment-avatar{width:26px; height:26px; border-radius:50%; object-fit:cover; flex-shrink:0; background:var(--surface);}
     .login-divider{display:flex; align-items:center; gap:10px; margin:16px 0; color:var(--sub); font-size:12px;}
     .login-divider::before, .login-divider::after{content:""; flex:1; height:1px; background:var(--border);}
-    .member-auth-tabs{display:grid;grid-template-columns:1fr 1fr;margin:16px 0 12px;padding:4px;background:#F0F5F0;border-radius:14px;gap:4px}
-    .member-auth-tabs button{height:40px;border:0;border-radius:11px;background:transparent;color:var(--sub);font:800 14px/1 inherit;cursor:pointer}
-    .member-auth-tabs button.active{background:#fff;color:var(--primary);box-shadow:0 3px 10px rgba(38,61,43,.09)}
-    .member-auth-form{display:flex;flex-direction:column;gap:9px;text-align:left}
-    .member-auth-form .bg-input{font-size:15px;min-height:46px}
-    .member-auth-form>.bg-btn{width:100%;margin-top:3px;min-height:46px}
-    .member-auth-id-row{display:grid;grid-template-columns:1fr auto;gap:8px}
-    .member-auth-id-row button{border:1px solid var(--border);border-radius:12px;padding:0 13px;background:#F4F8F4;color:var(--primary);font-weight:800;white-space:nowrap;cursor:pointer}
-    .member-auth-message{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:#F0F6F0;color:#356A43;font-size:13px;font-weight:700;line-height:1.5;text-align:left}
-    .member-auth-links{display:flex;justify-content:center;gap:8px;margin-top:12px;color:var(--sub);font-size:12px}
-    .member-auth-links button{border:0;background:none;color:var(--sub);font:700 12px/1.4 inherit;cursor:pointer;padding:2px}
-    .account-link-form{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;text-align:left}
-    .account-link-form>strong{font-size:14px}.account-link-form>p{font-size:11px;line-height:1.55;margin:0 0 2px}
     .notif-wrap{position:relative;}
     .notif-badge{position:absolute; top:-4px; right:-4px; background:var(--primary); color:#fff; font-size:10px;
       font-weight:700; min-width:16px; height:16px; border-radius:8px; display:flex; align-items:center;
