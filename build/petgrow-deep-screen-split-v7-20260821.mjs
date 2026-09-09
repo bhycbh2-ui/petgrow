@@ -74,6 +74,11 @@ const REACT_BINDINGS = new Set([
   "useLayoutEffect", "useReducer", "useContext", "useId", "useDeferredValue", "useTransition",
 ]);
 
+const RESULT_CHART_BINDINGS = new Set([
+  "LineChart", "Line", "Area", "XAxis", "YAxis", "CartesianGrid", "Tooltip",
+  "ResponsiveContainer", "ReferenceDot", "ReferenceLine", "Label",
+]);
+
 function functionBodyStart(code, start) {
   const openParen = code.indexOf("(", start);
   if (openParen < 0) return -1;
@@ -326,10 +331,15 @@ function ${cluster.entry}(props){
 }
 
 function virtualModule(cluster, functionSources, externalDeps) {
+  // Keep chart bindings in the lazy result module. Copying the initially
+  // undefined App bindings into __deps leaves them stale when the chart gate loads.
+  const chartImport = cluster.entry === "ResultPage"
+    ? `import { ${[...RESULT_CHART_BINDINGS].join(", ")} } from "recharts";\n`
+    : "";
   const depDecl = externalDeps.length
     ? `let ${externalDeps.join(", ")};\nfunction __bindDeps(d){ ({ ${externalDeps.join(", ")} } = d || {}); }`
     : `function __bindDeps(){}`;
-  return `import React, { Fragment, useCallback, useContext, useDeferredValue, useEffect, useId, useLayoutEffect, useMemo, useReducer, useRef, useState, useTransition } from "react";\n${depDecl}\n${functionSources.join("\n")}\nfunction __PetGrowV7Entry({ __deps, ...props }){ __bindDeps(__deps); return React.createElement(${cluster.entry}, props); }\nexport default __PetGrowV7Entry;\n`;
+  return `import React, { Fragment, useCallback, useContext, useDeferredValue, useEffect, useId, useLayoutEffect, useMemo, useReducer, useRef, useState, useTransition } from "react";\n${chartImport}${depDecl}\n${functionSources.join("\n")}\nfunction __PetGrowV7Entry({ __deps, ...props }){ __bindDeps(__deps); return React.createElement(${cluster.entry}, props); }\nexport default __PetGrowV7Entry;\n`;
 }
 
 export default function petgrowDeepScreenSplitV7() {
@@ -374,7 +384,8 @@ export default function petgrowDeepScreenSplitV7() {
           }
         }
 
-        const externalDeps = externalDepsFor(hits, bindings, movedNames);
+        const externalDeps = externalDepsFor(hits, bindings, movedNames)
+          .filter((name) => cluster.entry !== "ResultPage" || !RESULT_CHART_BINDINGS.has(name));
         captured[key] = { functions: hits.map((hit) => hit.source), externalDeps };
         console.log(`PGV7_SPLIT ${key} deps=${JSON.stringify(externalDeps)}`);
 
