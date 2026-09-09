@@ -61,7 +61,7 @@ export default async function handler(req,res){
       musicReports:()=>sql`select count(*) filter(where status='open')::int open,count(*) filter(where status='resolved' and reviewed_at>=now()-interval '7 days')::int done7 from pg_music_comment_reports`,
       restrictions:()=>sql`select count(*)::int n from pg_community_restrictions where permanent=true or restricted_until>now()`,
       sessions:()=>sql`select count(*) filter(where day=(now() at time zone 'Asia/Seoul')::date)::int today,count(*) filter(where last_seen>now()-interval '5 minutes')::int online from pg_analytics_sessions`,
-      community:()=>sql`select (select count(*)::int from pg_posts where created_at>=(now() at time zone 'Asia/Seoul')::date) posts_today,(select count(*)::int from pg_comments where created_at>=(now() at time zone 'Asia/Seoul')::date) comments_today`,
+      community:()=>sql`select (select count(*)::int from pg_posts where created_at>=(((now() at time zone 'Asia/Seoul')::date)::timestamp at time zone 'Asia/Seoul')) posts_today,(select count(*)::int from pg_comments where created_at>=(((now() at time zone 'Asia/Seoul')::date)::timestamp at time zone 'Asia/Seoul')) comments_today`,
       inquiries:()=>sql`select count(*) filter(where status='waiting')::int waiting from pg_inquiries`,
       menuUsage:()=>sql`
         select dimension,
@@ -76,7 +76,7 @@ export default async function handler(req,res){
       `,
       featureUsage:()=>sql`
         select feature,
-          count(*) filter(where created_at>=(now() at time zone 'Asia/Seoul')::date)::int today,
+          count(*) filter(where created_at>=(((now() at time zone 'Asia/Seoul')::date)::timestamp at time zone 'Asia/Seoul'))::int today,
           count(*) filter(where created_at>=now()-interval '7 days')::int d7,
           count(*) filter(where created_at>=now()-interval '30 days')::int d30
         from pg_feature_usage
@@ -105,18 +105,19 @@ export default async function handler(req,res){
     const period=["daily","weekly","monthly"].includes(String(req.query.period||""))?String(req.query.period):"daily";
     const range=period==="daily"?"daily":period==="weekly"?"weekly":"monthly";
     const bounds=range==="daily"
-      ? await sql`select ((now() at time zone 'Asia/Seoul')::date-1) start_day,(now() at time zone 'Asia/Seoul')::date end_day`
+      ? await sql`select ((now() at time zone 'Asia/Seoul')::date-1)::text start_day,((now() at time zone 'Asia/Seoul')::date)::text end_day`
       : range==="weekly"
-      ? await sql`select ((now() at time zone 'Asia/Seoul')::date-7) start_day,(now() at time zone 'Asia/Seoul')::date end_day`
-      : await sql`select date_trunc('month',(now() at time zone 'Asia/Seoul')-interval '1 month')::date start_day,date_trunc('month',(now() at time zone 'Asia/Seoul'))::date end_day`;
+      ? await sql`select ((now() at time zone 'Asia/Seoul')::date-7)::text start_day,((now() at time zone 'Asia/Seoul')::date)::text end_day`
+      : await sql`select date_trunc('month',(now() at time zone 'Asia/Seoul')-interval '1 month')::date::text start_day,date_trunc('month',(now() at time zone 'Asia/Seoul'))::date::text end_day`;
     const start=bounds.rows[0].start_day,end=bounds.rows[0].end_day;
+    const startAt=`${String(start).slice(0,10)}T00:00:00+09:00`,endAt=`${String(end).slice(0,10)}T00:00:00+09:00`;
     const [sessions,members,community,music,places,reportsR,menu,platform]=await Promise.all([
       sql`select count(*)::int sessions from pg_analytics_sessions where day>=${start} and day<${end}`,
-      sql`select count(*)::int new_members from pg_users where created_at>=${start} and created_at<${end}`,
-      sql`select (select count(*)::int from pg_posts where created_at>=${start} and created_at<${end}) posts,(select count(*)::int from pg_comments where created_at>=${start} and created_at<${end}) comments`,
-      sql`select coalesce(sum(play_count),0)::int plays,(select count(*)::int from pg_music_likes where created_at>=${start} and created_at<${end}) likes,(select count(*)::int from pg_music_comments where created_at>=${start} and created_at<${end}) comments from pg_music_tracks where active=true`,
-      sql`select count(*)::int reviews,coalesce(round(avg(rating)::numeric,1),0) avg_rating from pg_place_reviews where created_at>=${start} and created_at<${end} and status='visible'`,
-      sql`select ((select count(*) from pg_reports where created_at>=${start} and created_at<${end})+(select count(*) from pg_place_review_reports where created_at>=${start} and created_at<${end})+(select count(*) from pg_music_comment_reports where created_at>=${start} and created_at<${end}))::int reports`,
+      sql`select count(*)::int new_members from pg_users where created_at>=${startAt}::timestamptz and created_at<${endAt}::timestamptz`,
+      sql`select (select count(*)::int from pg_posts where created_at>=${startAt}::timestamptz and created_at<${endAt}::timestamptz) posts,(select count(*)::int from pg_comments where created_at>=${startAt}::timestamptz and created_at<${endAt}::timestamptz) comments`,
+      sql`select coalesce(sum(play_count),0)::int plays,(select count(*)::int from pg_music_likes where created_at>=${startAt}::timestamptz and created_at<${endAt}::timestamptz) likes,(select count(*)::int from pg_music_comments where created_at>=${startAt}::timestamptz and created_at<${endAt}::timestamptz) comments from pg_music_tracks where active=true`,
+      sql`select count(*)::int reviews,coalesce(round(avg(rating)::numeric,1),0) avg_rating from pg_place_reviews where created_at>=${startAt}::timestamptz and created_at<${endAt}::timestamptz and status='visible'`,
+      sql`select ((select count(*) from pg_reports where created_at>=${startAt}::timestamptz and created_at<${endAt}::timestamptz)+(select count(*) from pg_place_review_reports where created_at>=${startAt}::timestamptz and created_at<${endAt}::timestamptz)+(select count(*) from pg_music_comment_reports where created_at>=${startAt}::timestamptz and created_at<${endAt}::timestamptz))::int reports`,
       sql`select dimension,sum(count)::int count from pg_daily_metrics where metric='pageview' and day>=${start} and day<${end} group by dimension order by count desc limit 8`,
       sql`select platform,count(*)::int count from pg_analytics_sessions where day>=${start} and day<${end} group by platform order by count desc`
     ]);
@@ -178,7 +179,8 @@ export default async function handler(req,res){
   }
   if(a==="admin-add"&&req.method==="POST"){
     const {userId,role:newRole}=req.body||{};if(!["operator","report","ads"].includes(newRole))return res.status(400).json({error:"선택할 수 없는 권한이에요."});
-    await sql`insert into pg_admins(user_id,role,added_by,pin_salt,pin_hash) values(${userId},${newRole},${u},null,null) on conflict(user_id) do update set role=excluded.role,added_by=excluded.added_by`;
+    const added=await sql`insert into pg_admins(user_id,role,added_by,pin_salt,pin_hash) values(${userId},${newRole},${u},null,null) on conflict(user_id) do nothing returning user_id`;
+    if(!added.rows.length)return res.status(409).json({error:"이미 관리자 계정이에요. 권한 변경 메뉴를 이용해 주세요."});
     await logAdmin(u,"ADMIN_ADD",userId,null,{role:newRole});return res.status(200).json({ok:true});
   }
   if(a==="admin-role"&&req.method==="POST"){

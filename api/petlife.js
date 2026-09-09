@@ -79,7 +79,21 @@ async function recalcWeight(userId,petId){
   const w=rows[0]?.weight_kg ?? null;
   await sql`update pg_pets set current_weight_kg=${w},updated_at=now() where id=${petId} and user_id=${userId}`;
 }
-async function safeDeleteBlob(url){ if(!/^https?:\/\//i.test(String(url||"")))return; try{await blobDel(url);}catch(e){console.warn("petlife blob delete failed",e?.message||e);} }
+async function safeDeleteBlob(url){
+  if(!/^https:\/\/[^/]+\.blob\.vercel-storage\.com\//i.test(String(url||"")))return;
+  try{
+    // A diary photo may also be the pet's profile photo or another record's photo.
+    // Check references after the DB mutation; preserve the file on uncertainty.
+    const {rows}=await sql`select (
+      exists(select 1 from pg_pets where photo_url=${url}) or
+      exists(select 1 from pg_pet_life_entries where photo_url=${url}) or
+      exists(select 1 from pg_post_images where storage_url=${url}) or
+      exists(select 1 from pg_music_tracks where cover_url=${url} or audio_url=${url}) or
+      exists(select 1 from pg_user_state where position(${url} in value::text)>0)
+    ) as referenced`;
+    if(rows[0]?.referenced===false)await blobDel(url);
+  }catch(e){console.warn("petlife blob cleanup deferred",e?.message||e);}
+}
 
 function extractLegacyPets(value,sourceKey){
   const out=[]; const seen=new Set();
@@ -169,8 +183,8 @@ export default async function handler(req,res){
     if(action==="pet-delete" && req.method==="POST"){
       const petId=text(req.body?.petId,80); const current=await petOwned(userId,petId); if(!current)return res.status(404).json({error:"반려동물을 찾지 못했어요."});
       const {rows:photos}=await sql`select photo_url from pg_pet_life_entries where pet_id=${petId} and user_id=${userId} and photo_url is not null`;
-      await Promise.all([current.photo_url,...photos.map(x=>x.photo_url)].filter(Boolean).map(safeDeleteBlob));
       await sql`delete from pg_pets where id=${petId} and user_id=${userId}`;
+      await Promise.all([...new Set([current.photo_url,...photos.map(x=>x.photo_url)].filter(Boolean))].map(safeDeleteBlob));
       return res.status(200).json({ok:true});
     }
     if(action==="entries" && req.method==="GET"){
@@ -195,8 +209,8 @@ export default async function handler(req,res){
       const category=text(b.category??current.category,30); if(!CATEGORIES.has(category))return res.status(400).json({error:"기록 종류를 확인해 주세요."});
       const occurredOn=dateOnly(b.occurredOn??current.occurred_on)||current.occurred_on; const title=text(b.title??current.title,100)||CATEGORY_LABELS[category];
       const note=nullableText(b.note??current.note,2000),weightKg=b.weightKg===undefined?(current.weight_kg==null?null:Number(current.weight_kg)):numberOrNull(b.weightKg,0.01,200),amountText=nullableText(b.amountText??current.amount_text,100),durationMinutes=b.durationMinutes===undefined?(current.duration_minutes==null?null:Number(current.duration_minutes)):intOrNull(b.durationMinutes,1,1440),photoUrl=nullableText(b.photoUrl??current.photo_url,1000),clinicName=nullableText(b.clinicName??current.clinic_name,120),nextDueOn=dateOnly(b.nextDueOn??current.next_due_on),metadata=(b.metadata&&typeof b.metadata==="object")?b.metadata:(current.metadata||{});
-      if(current.photo_url && current.photo_url!==photoUrl)await safeDeleteBlob(current.photo_url);
       const {rows}=await sql`update pg_pet_life_entries set category=${category},occurred_on=${occurredOn},title=${title},note=${note},weight_kg=${weightKg},amount_text=${amountText},duration_minutes=${durationMinutes},photo_url=${photoUrl},clinic_name=${clinicName},next_due_on=${nextDueOn},metadata=${JSON.stringify(metadata)}::jsonb,updated_at=now() where id=${entryId} and user_id=${userId} returning *`;
+      if(current.photo_url && current.photo_url!==photoUrl)await safeDeleteBlob(current.photo_url);
       if(current.category==="weight"||category==="weight")await recalcWeight(userId,current.pet_id);
       return res.status(200).json({entry:shapeEntry(rows[0])});
     }

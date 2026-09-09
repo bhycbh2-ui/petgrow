@@ -1,6 +1,6 @@
 import { sql } from "@vercel/postgres";
 import { getSessionUserId } from "../server_lib/session.js";
-import { getAdminRole, roleCan } from "../server_lib/admin.js";
+import { requireAdminCapability } from "../server_lib/admin.js";
 import { getPetLifeServerStats } from "../server_lib/petlifeAutomation.js";
 
 export default async function handler(req,res){
@@ -8,9 +8,8 @@ export default async function handler(req,res){
   if(req.method!=="GET") return res.status(405).json({error:"지원하지 않는 요청이에요."});
   const uid=getSessionUserId(req);
   if(!uid) return res.status(401).json({error:"로그인이 필요해요."});
-  const role=await getAdminRole(uid);
-  if(!role||!roleCan(role,"dashboard")) return res.status(403).json({error:"운영 대시보드 권한이 필요해요."});
   try{
+    if(!await requireAdminCapability(req,res,uid,"dashboard"))return;
     const [{rows},petLife,{rows:ops},{rows:moderation}]=await Promise.all([
       sql`select count(*)::int total_members from pg_users`,
       getPetLifeServerStats(),
@@ -25,7 +24,8 @@ export default async function handler(req,res){
       sql`
         select
           (select count(*)::int from pg_reports where status='open') community_open,
-          (select count(*)::int from pg_music_comment_reports where status='open') music_open
+          (select count(*)::int from pg_music_comment_reports where status='open') music_open,
+          (select count(*)::int from pg_place_review_reports where status='open') places_open
       `
     ]);
     const attempts=Number(ops[0]?.push_attempts_30d)||0;
@@ -44,7 +44,8 @@ export default async function handler(req,res){
       moderation:{
         communityOpen:Number(moderation[0]?.community_open)||0,
         musicOpen:Number(moderation[0]?.music_open)||0,
-        totalOpen:(Number(moderation[0]?.community_open)||0)+(Number(moderation[0]?.music_open)||0)
+        placesOpen:Number(moderation[0]?.places_open)||0,
+        totalOpen:(Number(moderation[0]?.community_open)||0)+(Number(moderation[0]?.music_open)||0)+(Number(moderation[0]?.places_open)||0)
       }
     });
   }catch(e){

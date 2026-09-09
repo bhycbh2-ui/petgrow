@@ -1,5 +1,5 @@
 import { getSessionUserId } from "../server_lib/session.js";
-import { getAdminRole, roleCan, logAdmin } from "../server_lib/admin.js";
+import { requireAdminCapability, logAdmin } from "../server_lib/admin.js";
 import { createEncryptedBackup, pruneEncryptedBackups, getBackupStatus, verifyEncryptedBackup, verifyLatestEncryptedBackup } from "../server_lib/backup.js";
 
 let running=null;
@@ -37,9 +37,10 @@ export default async function handler(req,res){
   if(!sameOrigin(req))return res.status(403).json({error:"허용되지 않은 요청이에요."});
   const uid=getSessionUserId(req);
   if(!uid)return res.status(401).json({error:"로그인이 필요해요."});
-  const role=await getAdminRole(uid);
-  if(!role||!roleCan(role,"service"))return res.status(403).json({error:"서비스 운영 권한이 필요해요."});
+  let role;
   try{
+    role=await requireAdminCapability(req,res,uid,"service");
+    if(!role)return;
     if(!running)running=runOnce().finally(()=>{running=null;});
     const result=await running;
     await logAdmin(uid,"backup_run",null,null,{role,ok:result?.ok!==false,skipped:Boolean(result?.skipped),reason:result?.reason||null,verified:Boolean(result?.verification?.verified),pathname:result?.verification?.pathname||result?.backup?.pathname||null}).catch(error=>console.warn("backup audit",error?.message||error));

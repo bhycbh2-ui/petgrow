@@ -2,7 +2,7 @@ import crypto from "crypto";
 import { sql } from "@vercel/postgres";
 
 const START_POINTS = 1000;
-export const POINT_COSTS = { saju_basic: 10, saju_daily: 5, saju_compat: 10, tarot: 5 };
+export const POINT_COSTS = { saju_basic: 0, saju_daily: 0, saju_compat: 0, tarot: 0 };
 const REWARDS = {
   daily_login: { label: "오늘의 첫 접속", amount: 50, cap: 1 },
   community_post: { label: "Pet톡 글 작성", amount: 50, cap: 5 },
@@ -62,14 +62,9 @@ export async function revokePoints(uid, refKey, label="활동 삭제로 포인�
   await sql`insert into pg_point_ledger(id,user_id,amount,reason,label,ref_key) values(${crypto.randomUUID()},${uid},${-n},'revoke',${label},${reverse})`;
   return {revoked:n,balance:Number(b[0]?.balance)||0,label};
 }
-export async function spendPoints(uid, feature, cost, refKey) {
-  await ensureAccount(uid);const n=Math.max(1,Number(cost)||POINT_COSTS[feature]||0);
-  if(refKey){const {rows:d}=await sql`select 1 from pg_point_ledger where user_id=${uid} and ref_key=${refKey} limit 1`;if(d[0])return {spent:0,balance:await ensureAccount(uid),already:true};}
-  const {rows:b}=await sql`update pg_point_accounts set balance=balance-${n},updated_at=now() where user_id=${uid} and balance>=${n} returning balance`;
-  if(!b[0]){const bal=await ensureAccount(uid);const e=new Error(`PetPoint가 부족해요. 현재 ${bal}P 보유 중이에요.`);e.code="POINTS_INSUFFICIENT";throw e;}
-  const labels={saju_basic:"기본 Pet사주 이용",saju_daily:"오늘의 펫운세 이용",saju_compat:"보호자 궁합 이용",tarot:"Pet타로 카드 뽑기"};
-  await sql`insert into pg_point_ledger(id,user_id,amount,reason,label,ref_key) values(${crypto.randomUUID()},${uid},${-n},${feature},${labels[feature]||"PetGrow 콘텐츠 이용"},${refKey||null})`;
-  return {spent:n,balance:Number(b[0].balance)||0,label:labels[feature]||"PetGrow 콘텐츠 이용"};
+export async function spendPoints() {
+  // PetPoint was retired. Content must not fail because of a hidden balance.
+  return {spent:0,balance:0,label:""};
 }
 export async function getPointSummary(uid,{dailyLogin=true}={}) {
   await ensureAccount(uid);let pointEvent=null;if(dailyLogin){const e=await awardPoints(uid,"daily_login",`daily-login:${kstDate()}`);if(e.awarded)pointEvent=e;}

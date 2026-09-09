@@ -1,7 +1,7 @@
 import { sql } from "@vercel/postgres";
 import { list } from "@vercel/blob";
 import { getSessionUserId } from "../server_lib/session.js";
-import { getAdminRole, roleCan } from "../server_lib/admin.js";
+import { requireAdminCapability } from "../server_lib/admin.js";
 import { ensureSchema } from "../server_lib/db.js";
 import { ensurePetLifeAutomationSchema } from "../server_lib/petlifeAutomation.js";
 import { getBackupStatus } from "../server_lib/backup.js";
@@ -65,8 +65,9 @@ async function runDeepScan(){
       scannedBlobs:blobState.blobs.length,
       scanTruncated:blobState.truncated,
       referencedBlobUrls:refSet.size,
-      missingReferenceCount:missingReferences.length,
-      missingReferenceSample:missingReferences.slice(0,20),
+      missingReferenceCount:blobState.configured&&!blobState.truncated?missingReferences.length:null,
+      missingReferenceSample:blobState.configured&&!blobState.truncated?missingReferences.slice(0,20):[],
+      unverifiedReferenceCount:blobState.truncated?missingReferences.length:0,
       orphanCandidateCount:orphanCandidates.length,
       orphanCandidateSample:orphanCandidates.slice(0,20).map(b=>({pathname:b.pathname,url:b.url,size:b.size,uploadedAt:b.uploadedAt}))
     },
@@ -79,9 +80,8 @@ export default async function handler(req,res){
   if(req.method!=="GET")return res.status(405).json({error:"지원하지 않는 요청이에요."});
   const uid=getSessionUserId(req);
   if(!uid)return res.status(401).json({error:"로그인이 필요해요."});
-  const role=await getAdminRole(uid);
-  if(!role||!roleCan(role,"service"))return res.status(403).json({error:"서비스 운영 권한이 필요해요."});
   try{
+    if(!await requireAdminCapability(req,res,uid,"service"))return;
     await ensureSchema();
     await ensurePetLifeAutomationSchema();
     const deep=String(req.query?.deep||"")==="1";

@@ -29,3 +29,20 @@ export function roleCan(role,cap){
   };
   return !!map[role]?.has(cap);
 }
+
+export async function requireAdminCapability(req, res, uid, capability) {
+  if (!uid) {
+    res.status(401).json({error:"로그인이 필요해요."});
+    return null;
+  }
+  if (!verifyToken(req.headers?.["x-petgrow-admin-token"], uid)) {
+    res.status(403).json({error:"관리자 PIN 인증이 필요해요.",code:"ADMIN_TOKEN_EXPIRED"});
+    return null;
+  }
+  const role = await getAdminRole(uid);
+  if (!roleCan(role, capability)) {
+    res.status(403).json({error:"이 관리자 기능에 대한 권한이 없어요."});
+    return null;
+  }
+  return role;
+}
