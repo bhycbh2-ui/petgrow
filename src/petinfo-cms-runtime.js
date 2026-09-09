@@ -1,3 +1,5 @@
+import { toLocalDateTimeInput } from "./local-datetime.js";
+
 const CATEGORY_LABELS = {
   dog: "강아지", cat: "고양이", health: "건강", life: "생활",
   food: "식단·영양", training: "훈련", safety: "안전", grooming: "미용·위생",
@@ -98,7 +100,7 @@ function openCms() {
     formEl.bodyKo.value = form.bodyKo || ""; formEl.bodyEn.value = form.bodyEn || "";
     formEl.featured.checked = !!form.featured; formEl.active.checked = form.active !== false;
     formEl.sortOrder.value = Number(form.sortOrder) || 0;
-    formEl.publishAt.value = form.publishAt ? String(form.publishAt).slice(0,16) : "";
+    formEl.publishAt.value = toLocalDateTimeInput(form.publishAt);
     formEl.titleKo.focus();
   };
   const renderList = () => {
@@ -153,8 +155,8 @@ function escapeHtml(value) {
 function installAdminButton() {
   const tabs = document.querySelector(".admin-tabs");
   if (!tabs || tabs.querySelector("[data-petinfo-cms-button]")) return;
-  const roleText = document.body.textContent || "";
-  if (!/최고관리자|운영관리자|관리자센터/.test(roleText)) return;
+  const roleText = document.querySelector(".admin-hero small")?.textContent || "";
+  if (!/최고관리자|운영관리자/.test(roleText)) return;
   const button = document.createElement("button");
   button.type = "button";
   button.dataset.petinfoCmsButton = "1";

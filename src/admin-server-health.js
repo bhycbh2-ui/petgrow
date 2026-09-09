@@ -5,6 +5,7 @@ let verifyRunning=false;
 let deepRunning=false;
 let lastLoad=0;
 let lastHealth=null;
+let lastToken="";
 let mutationTimer=0;
 
 function installStyle(){
@@ -32,7 +33,8 @@ async function requestJson(url,options={},timeout=10000){
   const controller=new AbortController();
   const timer=window.setTimeout(()=>controller.abort(),timeout);
   try{
-    const r=await fetch(url,{credentials:"same-origin",cache:"no-store",...options,signal:controller.signal});
+    const token=sessionStorage.getItem("petgrow_admin_token")||"";
+    const r=await fetch(url,{credentials:"same-origin",cache:"no-store",...options,headers:{...options.headers,"X-PetGrow-Admin-Token":token},signal:controller.signal});
     if(r.status===401||r.status===403)return null;
     const j=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(j.error||j.reason||String(r.status));e.payload=j;throw e;}return j;
   }finally{window.clearTimeout(timer);}
@@ -112,7 +114,7 @@ function renderCurrent(){
   const age=backup.lastBackupAgeHours==null?"":` · ${backup.lastBackupAgeHours}시간 전`;
   const canBackup=Boolean(hasService&&backup.configured),canVerify=Boolean(hasService&&backup.configured&&backup.lastBackup);
   const scanMeta=checked?`${storage.scannedBlobs||0} Blob · ${storage.referencedBlobUrls||0} 참조${health?.durationMs?` · ${(health.durationMs/1000).toFixed(1)}초`:""}${storage.cached?" · 최근 결과":""}`:"자동 새로고침에서는 무거운 Blob 전체 검사를 생략합니다.";
-  box.innerHTML=`<div class="pg-ash-head"><div class="pg-ash-title"><b>서버 운영 상태</b><small>PetLife · 푸시 · 백업 · 모더레이션</small></div><div class="pg-ash-head-actions"><button id="pg-refresh-health" class="pg-ash-action" type="button">새로고침</button></div></div><div class="pg-ash-grid">${metric("30일 PetLife 사용자",p.activeUsers30d)}${metric("30일 기록",p.records30d)}${metric("푸시 성공률",p.pushSuccessRate30d==null?"-":`${p.pushSuccessRate30d}%`)}${metric("미처리 신고",m.totalOpen)}${metric("활성 푸시 기기",p.activePushDevices)}${metric("7일 내 일정",p.upcoming7d)}${metric("월간 리포트",p.monthlyReports)}${metric("Blob 고아 후보",checked?(storage.orphanCandidateCount??0):"검사 전")}</div><div class="pg-ash-foot"><span class="${p.pushConfigured?"ok":"warn"}">FCM ${p.pushConfigured?"연결됨":"설정 필요"}</span>${hasService?`<span class="${backupClass(backup)}">암호화 백업 ${backupLabel(backup)}</span><span>최근 백업 ${lastBackup}${age}</span>`:""}<span class="${storageClass}">스토리지 정합성 ${storageState}</span>${checked?`<span class="${(storage.missingReferenceCount||0)===0?"ok":"warn"}">누락 Blob 참조 ${storage.missingReferenceCount??0}</span>`:""}<div class="pg-ash-scan"><b>데이터 정합성</b><small>${scanMeta}</small></div>${hasService?`<div class="pg-ash-actions"><button id="pg-run-deep-health" class="pg-ash-action" type="button" data-enabled="1">스토리지 검사</button><button id="pg-verify-backup" class="pg-ash-action" type="button" data-enabled="${canVerify?"1":"0"}" ${canVerify?"":"disabled"}>무결성 검증</button><button id="pg-run-backup" class="pg-ash-action primary" type="button" data-enabled="${canBackup?"1":"0"}" ${canBackup?"":"disabled"}>지금 백업</button></div>`:""}<span class="pg-ash-msg" aria-live="polite"></span></div>`;
+  box.innerHTML=`<div class="pg-ash-head"><div class="pg-ash-title"><b>서버 운영 상태</b><small>PetLife · 푸시 · 백업 · 모더레이션</small></div><div class="pg-ash-head-actions"><button id="pg-refresh-health" class="pg-ash-action" type="button">새로고침</button></div></div><div class="pg-ash-grid">${metric("30일 PetLife 사용자",p.activeUsers30d)}${metric("30일 기록",p.records30d)}${metric("푸시 성공률",p.pushSuccessRate30d==null?"-":`${p.pushSuccessRate30d}%`)}${metric("미처리 신고",m.totalOpen)}${metric("활성 푸시 기기",p.activePushDevices)}${metric("7일 내 일정",p.upcoming7d)}${metric("월간 리포트",p.monthlyReports)}${metric("Blob 고아 후보",checked?(storage.orphanCandidateCount??0):"검사 전")}</div><div class="pg-ash-foot"><span class="${p.pushConfigured?"ok":"warn"}">FCM ${p.pushConfigured?"연결됨":"설정 필요"}</span>${hasService?`<span class="${backupClass(backup)}">암호화 백업 ${backupLabel(backup)}</span><span>최근 백업 ${lastBackup}${age}</span>`:""}<span class="${storageClass}">스토리지 정합성 ${storageState}</span>${checked?`<span class="${(storage.missingReferenceCount||0)===0?"ok":"warn"}">누락 Blob 참조 ${storage.missingReferenceCount??"미확인"}</span>`:""}<div class="pg-ash-scan"><b>데이터 정합성</b><small>${scanMeta}</small></div>${hasService?`<div class="pg-ash-actions"><button id="pg-run-deep-health" class="pg-ash-action" type="button" data-enabled="1">스토리지 검사</button><button id="pg-verify-backup" class="pg-ash-action" type="button" data-enabled="${canVerify?"1":"0"}" ${canVerify?"":"disabled"}>무결성 검증</button><button id="pg-run-backup" class="pg-ash-action primary" type="button" data-enabled="${canBackup?"1":"0"}" ${canBackup?"":"disabled"}>지금 백업</button></div>`:""}<span class="pg-ash-msg" aria-live="polite"></span></div>`;
   box.querySelector("#pg-refresh-health")?.addEventListener("click",()=>refresh(true));
   box.querySelector("#pg-run-deep-health")?.addEventListener("click",runDeepHealth);
   box.querySelector("#pg-run-backup")?.addEventListener("click",runBackup);
@@ -120,14 +122,18 @@ function renderCurrent(){
   setButtonsBusy();
 }
 async function refresh(force=false){
+  const token=sessionStorage.getItem("petgrow_admin_token")||"";
+  if(!token){lastToken="";lastOverview=null;lastHealth=null;lastLoad=0;document.getElementById("petgrow-admin-server-health")?.remove();return;}
+  if(token!==lastToken){lastToken=token;lastOverview=null;lastHealth=null;lastLoad=0;}
   const box=ensureBox();if(!box||loading)return;
   if(!force&&Date.now()-lastLoad<120000)return;
   loading=true;lastLoad=Date.now();setButtonsBusy();
   try{
     const [overview,health]=await Promise.all([requestJson("/api/admin-overview-lite"),requestJson("/api/admin-data-health")]);
-    if(!overview){box.remove();return;}
+    if(!overview){lastOverview=null;lastHealth=null;box.textContent="운영 상태 조회 권한이 없거나 PIN 인증이 만료됐어요. 관리자센터에서 다시 인증해 주세요.";return;}
+    if(token!==(sessionStorage.getItem("petgrow_admin_token")||""))return;
     lastOverview=overview;
-    if(health)lastHealth=health;
+    lastHealth=health;
     renderCurrent();
   }catch(e){
     if(!lastOverview)box.innerHTML='<div class="pg-ash-head"><div class="pg-ash-title"><b>서버 운영 상태</b><small class="warn">상태 조회 실패</small></div></div>';
@@ -140,7 +146,7 @@ export function bootAdminServerHealth(){
   const root=document.getElementById("root")||document.body;
   const observer=new MutationObserver(()=>{
     window.clearTimeout(mutationTimer);
-    mutationTimer=window.setTimeout(()=>{if(findHost())refresh();},180);
+    mutationTimer=window.setTimeout(()=>{if(findHost())refresh();else{lastOverview=null;lastHealth=null;lastLoad=0;}},180);
   });
   if(root)observer.observe(root,{childList:true,subtree:true});
   window.setTimeout(()=>refresh(true),1800);

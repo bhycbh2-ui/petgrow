@@ -1,5 +1,5 @@
 import { getSessionUserId } from "../server_lib/session.js";
-import { getAdminRole } from "../server_lib/admin.js";
+import { requireAdminCapability } from "../server_lib/admin.js";
 import { getPointSummary, getPointAdminStats, spendPoints, POINT_COSTS } from "../server_lib/points.js";
 
 export default async function handler(req,res){
@@ -13,8 +13,7 @@ export default async function handler(req,res){
       return res.status(200).json(data);
     }
     if(req.method==="GET"&&action==="admin"){
-      const role=await getAdminRole(uid);
-      if(!role)return res.status(403).json({error:"관리자 권한이 필요해요."});
+      if(!await requireAdminCapability(req,res,uid,"dashboard"))return;
       return res.status(200).json(await getPointAdminStats());
     }
     if(req.method==="POST"&&action==="spend"){
