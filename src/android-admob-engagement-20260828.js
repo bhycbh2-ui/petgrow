@@ -1,6 +1,7 @@
+import { initializeAdMob } from "./android-admob.js";
+
 let booted=false;
 let api=null;
-let initialized=false;
 let scanFrame=0;
 let rewardedBusy=false;
 
@@ -29,6 +30,7 @@ function isAndroidNative(){
 
 function isVisible(el){
   if(!el)return false;
+  if(el.closest('[hidden],[inert],[aria-hidden="true"]'))return false;
   const style=getComputedStyle(el);
   if(style.display==="none"||style.visibility==="hidden"||Number(style.opacity)===0)return false;
   const rect=el.getBoundingClientRect();
@@ -70,10 +72,7 @@ async function ensureApi(){
 async function ensureInitialized(){
   const m=await ensureApi();
   if(!m||!consentReady())return false;
-  if(initialized)return true;
-  await m.AdMob.initialize({initializeForTesting:false,testingDevices:[]});
-  initialized=true;
-  return true;
+  return initializeAdMob();
 }
 
 function bonusCopy(kind,lang){
@@ -175,6 +174,7 @@ async function boot(){
   if(!(await ensureApi()))return;
   new MutationObserver(queueScan).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:["class","style","hidden","aria-hidden"]});
   window.addEventListener("petgrow:admob-consent-ready",queueScan);
+  window.addEventListener("petgrow:admob-consent-changed",queueScan);
   window.addEventListener("petgrow:critical-ready",queueScan);
   document.addEventListener("visibilitychange",queueScan);
   window.PetGrowEngagementAds={
