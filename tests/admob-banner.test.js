@@ -17,10 +17,12 @@ async function fixture() {
   let timerId = 0;
   let nativeShow = async () => {};
   const classList = { contains: x => classes.has(x), toggle: (x, on) => on ? classes.add(x) : classes.delete(x) };
-  const element = () => ({ classList, setAttribute() {}, getBoundingClientRect: () => ({ width: 400, height: 600 }) });
+  const element = () => ({ classList, setAttribute() {}, closest: () => null, getBoundingClientRect: () => ({ width: 400, height: 600 }) });
   const block = { ...element(), innerText: "content ".repeat(30) };
   const root = { ...element(), innerText: "content ".repeat(200), querySelectorAll: () => [block, block, block] };
   const view = { dataset: { petgrowView: "tips" } };
+  let menuOpen = false;
+  const menu = { ...element(), closest: () => menuOpen ? null : menu };
   const document = {
     visibilityState: "visible",
     documentElement: { classList, toggleAttribute: (x, on) => on ? attrs.add(x) : attrs.delete(x) },
@@ -29,7 +31,7 @@ async function fixture() {
     getElementById: id => id === "root" ? root : elements.get(id),
     createElement: element,
     querySelector: selector => selector === "main" ? root : selector === "[data-petgrow-view]" ? view : null,
-    querySelectorAll: () => [],
+    querySelectorAll: selector => selector.startsWith('[role="dialog"]') ? [menu] : [],
     addEventListener() {},
   };
   const AdMob = {
@@ -65,6 +67,7 @@ async function fixture() {
   return {
     calls, classes, ads: window.PetGrowAdMob,
     setView(value) { view.dataset.petgrowView = value; window.reconcile(); },
+    setMenuOpen(value) { menuOpen = value; window.reconcile(); },
     setNativeShow(fn) { nativeShow = fn; },
     emit: (name, data) => listeners.get(name)?.(data),
     async advance(ms) {
@@ -118,4 +121,15 @@ test("native load failure clears reserved space and permits a retry after backof
   await f.advance(30000);
   assert.equal(f.calls.filter(x => x === "show").length, 2);
   assert.equal(f.ads.getStatus().bannerCreated, true);
+});
+
+test("a closed inert navigation drawer does not block ads but an open drawer does", async () => {
+  const f = await fixture();
+  assert.equal(f.ads.isAdEligibleScreen(), true);
+  await f.ads.showBanner();
+  f.setMenuOpen(true);
+  assert.equal(f.ads.isAdEligibleScreen(), false);
+  assert.equal(f.ads.getStatus().bannerCreated, false);
+  f.setMenuOpen(false);
+  assert.equal(f.ads.isAdEligibleScreen(), true);
 });

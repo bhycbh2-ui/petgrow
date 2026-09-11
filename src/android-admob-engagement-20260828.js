@@ -30,6 +30,7 @@ function isAndroidNative(){
 
 function isVisible(el){
   if(!el)return false;
+  if(el.closest('[hidden],[inert],[aria-hidden="true"]'))return false;
   const style=getComputedStyle(el);
   if(style.display==="none"||style.visibility==="hidden"||Number(style.opacity)===0)return false;
   const rect=el.getBoundingClientRect();

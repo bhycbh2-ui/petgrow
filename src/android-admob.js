@@ -53,6 +53,7 @@ function ensureSafetyZone(){
 
 function isVisible(el){
   if(!el)return false;
+  if(el.closest('[hidden],[inert],[aria-hidden="true"]'))return false;
   const s=getComputedStyle(el);
   if(s.display==="none"||s.visibility==="hidden"||Number(s.opacity)===0)return false;
   const r=el.getBoundingClientRect();
