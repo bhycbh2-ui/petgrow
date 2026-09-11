@@ -1,18 +1,31 @@
+import { createAdMobSession } from "./admob-session.js";
+
 let started=false;
-let initialized=false;
 let bannerVisible=false;
+let bannerCreated=false;
+let bannerLoadPromise=null;
+let bannerRemovalPromise=null;
+let bannerVersion=0;
+let listenersReady=false;
+let nextBannerAttemptAt=0;
+let lastBannerError=null;
 let petLifeOpen=false;
 let api=null;
-let consentPromise=null;
-let consentReady=false;
 let showTimer=0;
+
+const session=createAdMobSession(ensureApi,state=>{
+  document.documentElement.toggleAttribute("data-petgrow-ad-consent-ready",state.ready);
+  document.documentElement.toggleAttribute("data-petgrow-ad-privacy-required",state.privacyOptionsRequired);
+  window.dispatchEvent(new CustomEvent("petgrow:admob-consent-changed",{detail:state}));
+  if(state.ready)window.dispatchEvent(new CustomEvent("petgrow:admob-consent-ready"));
+});
 
 const DEFAULT_BANNER_ID="ca-app-pub-9699974051273244/9809518314";
 const MIN_CONTENT_CHARS=900;
 const EMPTY_CONTENT_RE=/(게시물이\s*없|검색\s*결과가\s*없|콘텐츠가\s*없|아직\s*등록된|불러오는\s*중|준비\s*중|다시\s*시도)/i;
 const RESTRICTED_ROUTE_RE=/(?:^|[\/#?&=_-])(loading|login|signin|signup|auth|admin|error|404|empty|consent|terms|privacy|delete-account|account|profile)(?:$|[\/#?&=_-])/i;
 const RESTRICTED_HEADING_RE=/(로그인|회원가입|관리자\s*센터|회원\s*정보|개인정보\s*처리방침|이용약관|회원탈퇴|계정\s*삭제|오류|에러|페이지를\s*찾을\s*수|검색\s*결과\s*없|불러오는\s*중|준비\s*중|동의)/i;
-const CONTENT_VIEW_RE=/(pet\s*정보|pet정보|펫\s*정보|pet\s*뉴스|pet뉴스|펫\s*뉴스)/i;
+const CONTENT_VIEW_RE=/(pet\s*정보|펫\s*정보|pet\s*뉴스|펫\s*뉴스|pet\s*info|pet\s*news)/i;
 
 function installInsetStyle(){
   if(document.getElementById("petgrow-admob-inset-style"))return;
@@ -55,47 +68,7 @@ async function ensureApi(){
   return api;
 }
 
-async function ensureConsent(){
-  if(consentReady)return true;
-  if(consentPromise)return consentPromise;
-  consentPromise=(async()=>{
-    try{
-      const m=await ensureApi();
-      if(!m)return false;
-      let info=await m.AdMob.requestConsentInfo({tagForUnderAgeOfConsent:false});
-      const status=String(info?.status||"UNKNOWN").toUpperCase();
-      if(status==="REQUIRED"){
-        if(!info?.isConsentFormAvailable)return false;
-        info=await m.AdMob.showConsentForm();
-      }
-      const finalStatus=String(info?.status||"UNKNOWN").toUpperCase();
-      // UMP의 OBTAINED는 사용자가 동의 화면에서 선택을 완료했다는 뜻이며,
-      // NOT_REQUIRED는 해당 지역/상황에서 동의 화면이 필요하지 않다는 뜻입니다.
-      consentReady=finalStatus==="OBTAINED"||finalStatus==="NOT_REQUIRED";
-      document.documentElement.toggleAttribute("data-petgrow-ad-consent-ready",consentReady);
-      if(consentReady)window.dispatchEvent(new CustomEvent("petgrow:admob-consent-ready"));
-      return consentReady;
-    }catch(e){
-      console.warn("PetGrow AdMob consent",e?.message||e);
-      // 동의 상태를 확인하지 못한 세션에서는 광고를 요청하지 않는 fail-closed 방식입니다.
-      consentReady=false;
-      return false;
-    }finally{
-      consentPromise=null;
-    }
-  })();
-  return consentPromise;
-}
-
-async function initialize(){
-  if(initialized)return true;
-  const m=await ensureApi();
-  if(!m)return false;
-  if(!(await ensureConsent()))return false;
-  await m.AdMob.initialize({initializeForTesting:false,testingDevices:[]});
-  initialized=true;
-  return true;
-}
+export const initializeAdMob=()=>session.initialize();
 
 function hasBlockingOverlay(){
   if(document.querySelector("#petgrow-initial-splash,.petgrow-boot-skeleton,#petgrow-fast-shell"))return true;
@@ -138,60 +111,102 @@ function isAdEligibleScreen(){
 
   // 심사 안정성을 위해 앱 광고는 'Pet정보/Pet뉴스'처럼 편집 콘텐츠가 중심인 화면에서만 허용합니다.
   // 홈·우리 아이·커뮤니티·지도·음악·검사·사주·계정·입력/관리 화면에는 광고를 표시하지 않습니다.
-  const label=activeViewLabel();
-  if(!label||!CONTENT_VIEW_RE.test(label))return false;
+  const view=document.querySelector("[data-petgrow-view]")?.dataset.petgrowView;
+  if(view){if(view!=="tips"&&view!=="news")return false;}
+  else if(!CONTENT_VIEW_RE.test(activeViewLabel()))return false;
   const contentText=String((document.querySelector("main")||document.getElementById("root"))?.innerText||"");
   if(EMPTY_CONTENT_RE.test(contentText))return false;
   if(publisherTextLength()<MIN_CONTENT_CHARS||visibleEditorialBlocks()<3)return false;
   return true;
 }
 
-async function showBanner(){
-  if(bannerVisible||!isAdEligibleScreen())return;
-  try{
-    if(!(await initialize())||!isAdEligibleScreen())return;
-    const {AdMob,BannerAdPosition,BannerAdSize}=api;
-    const adId=String(import.meta.env.VITE_ADMOB_BANNER_ID||DEFAULT_BANNER_ID).trim();
-    if(!adId)return;
-    ensureSafetyZone();
-    await AdMob.showBanner({
-      adId,
-      adSize:BannerAdSize.ADAPTIVE_BANNER,
-      position:BannerAdPosition.BOTTOM_CENTER,
-      margin:0,
-      isTesting:false
-    });
-    bannerVisible=true;
-    document.documentElement.classList.add("petgrow-admob-banner");
-  }catch(e){console.warn("PetGrow AdMob banner",e?.message||e);}
+function setBannerVisible(visible){
+  bannerVisible=visible;
+  // Avoid feeding no-op class mutations back into the screen observer.
+  if(document.documentElement.classList.contains("petgrow-admob-banner")!==visible){
+    document.documentElement.classList.toggle("petgrow-admob-banner",visible);
+  }
 }
 
-async function hideBanner(){
-  clearTimeout(showTimer);showTimer=0;
-  if(!bannerVisible){document.documentElement.classList.remove("petgrow-admob-banner");return;}
-  try{await api?.AdMob?.hideBanner?.();}catch{}
-  bannerVisible=false;
-  document.documentElement.classList.remove("petgrow-admob-banner");
+async function installBannerListeners(){
+  if(listenersReady)return;
+  const {AdMob,BannerAdPluginEvents}=api;
+  await AdMob.addListener(BannerAdPluginEvents.Loaded,()=>{
+    if(!bannerCreated)return;
+    if(!session.getStatus().ready||!isAdEligibleScreen()){removeBanner();return;}
+    lastBannerError=null;
+    setBannerVisible(true);
+    window.dispatchEvent(new CustomEvent("petgrow:ad-event",{detail:{event:"ad_ready"}}));
+  });
+  await AdMob.addListener(BannerAdPluginEvents.FailedToLoad,error=>{
+    if(!bannerCreated)return;
+    lastBannerError=String(error?.message||error?.code||"banner-load-failed").slice(0,240);
+    nextBannerAttemptAt=Date.now()+30000;
+    window.dispatchEvent(new CustomEvent("petgrow:ad-event",{detail:{event:"ad_error"}}));
+    removeBanner().then(reconcileBanner);
+  });
+  listenersReady=true;
 }
 
 async function removeBanner(){
   clearTimeout(showTimer);showTimer=0;
-  try{await api?.AdMob?.removeBanner?.();}catch{}
-  bannerVisible=false;
-  document.documentElement.classList.remove("petgrow-admob-banner");
+  bannerVersion++;
+  setBannerVisible(false);
+  if(bannerRemovalPromise)return bannerRemovalPromise;
+  if(!bannerCreated)return;
+  bannerCreated=false;
+  bannerRemovalPromise=(async()=>{
+    try{await api?.AdMob?.removeBanner?.();}catch(e){console.warn("PetGrow AdMob remove",e?.message||e);}
+    finally{bannerRemovalPromise=null;}
+  })();
+  return bannerRemovalPromise;
+}
+
+// Destroy hidden banners so the plugin can create and resolve a fresh request
+// when returning to content; showBanner on an existing native view may not resolve.
+const hideBanner=removeBanner;
+
+async function showBanner(){
+  if(bannerLoadPromise)return bannerLoadPromise;
+  if(bannerCreated||!isAdEligibleScreen()||Date.now()<nextBannerAttemptAt)return;
+  const version=++bannerVersion;
+  bannerLoadPromise=(async()=>{
+    try{
+      if(bannerRemovalPromise)await bannerRemovalPromise;
+      if(!(await initializeAdMob())){nextBannerAttemptAt=Date.now()+30000;return;}
+      await installBannerListeners();
+      if(version!==bannerVersion||!session.getStatus().ready||!isAdEligibleScreen())return;
+      const {AdMob,BannerAdPosition,BannerAdSize}=api;
+      const adId=String(import.meta.env.VITE_ADMOB_BANNER_ID||DEFAULT_BANNER_ID).trim();
+      ensureSafetyZone();
+      bannerCreated=true;
+      window.dispatchEvent(new CustomEvent("petgrow:ad-event",{detail:{event:"ad_request"}}));
+      await AdMob.showBanner({adId,adSize:BannerAdSize.ADAPTIVE_BANNER,position:BannerAdPosition.BOTTOM_CENTER,margin:0,isTesting:false});
+      if(version!==bannerVersion||!session.getStatus().ready||!isAdEligibleScreen())await removeBanner();
+    }catch(e){
+      lastBannerError=String(e?.message||e).slice(0,240);
+      nextBannerAttemptAt=Date.now()+30000;
+      await removeBanner();
+      console.warn("PetGrow AdMob banner",e?.message||e);
+    }finally{
+      bannerLoadPromise=null;
+      reconcileBanner();
+    }
+  })();
+  return bannerLoadPromise;
 }
 
 function reconcileBanner(){
   if(!isAdEligibleScreen()){
-    hideBanner();
+    if(bannerCreated||bannerLoadPromise||showTimer)hideBanner();
     return;
   }
-  if(bannerVisible||showTimer)return;
+  if(bannerCreated||bannerLoadPromise||showTimer)return;
   // 화면 전환 직후 광고가 먼저 뜨는 일을 막고 실제 콘텐츠가 안정된 뒤에만 요청합니다.
   showTimer=window.setTimeout(()=>{
     showTimer=0;
     if(isAdEligibleScreen())showBanner();
-  },900);
+  },Math.max(900,nextBannerAttemptAt-Date.now()));
 }
 
 function watchScreenSafety(){
@@ -205,7 +220,7 @@ function watchScreenSafety(){
     if(queued)return;
     queued=requestAnimationFrame(scan);
   };
-  new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:["class","style","hidden","aria-hidden","aria-modal"]});
+  new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:["class","style","hidden","aria-hidden","aria-modal","data-petgrow-view"]});
   addEventListener("popstate",queue);
   addEventListener("hashchange",queue);
   document.addEventListener("visibilitychange",queue);
@@ -216,11 +231,8 @@ function watchScreenSafety(){
 async function requestPrivacyChoices(){
   try{
     const m=await ensureApi();if(!m)return false;
-    await hideBanner();
-    await m.AdMob.resetConsentInfo();
-    consentReady=false;consentPromise=null;
-    document.documentElement.removeAttribute("data-petgrow-ad-consent-ready");
-    const ok=await ensureConsent();
+    await removeBanner();
+    const ok=await session.requestPrivacyChoices();
     reconcileBanner();
     return ok;
   }catch(e){console.warn("PetGrow AdMob privacy choices",e?.message||e);return false;}
@@ -232,9 +244,10 @@ export async function bootAndroidAdMob(){
     if(!(await ensureApi()))return;
     watchScreenSafety();
     // UMP 상태를 먼저 갱신합니다. 실패/UNKNOWN이면 이번 세션은 광고를 요청하지 않습니다.
-    await ensureConsent();
+    await session.ensureConsent();
     reconcileBanner();
-    window.PetGrowAdMob={showBanner,hideBanner,removeBanner,requestPrivacyChoices,isAdEligibleScreen};
+    window.PetGrowAdMob={showBanner,hideBanner,removeBanner,requestPrivacyChoices,isAdEligibleScreen,
+      getStatus:()=>({...session.getStatus(),eligible:isAdEligibleScreen(),bannerCreated,bannerVisible,lastBannerError})};
   }catch(e){console.warn("PetGrow AdMob init",e?.message||e);}
 }
 

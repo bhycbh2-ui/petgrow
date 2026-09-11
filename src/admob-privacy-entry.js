@@ -25,6 +25,10 @@ async function waitForAdMobApi(timeout=2500){
 }
 
 function installEntry(){
+  if(!document.documentElement.hasAttribute("data-petgrow-ad-privacy-required")){
+    document.getElementById("petgrow-ad-privacy-entry")?.remove();
+    return;
+  }
   const container=findPrivacyContainer();
   if(!container||container.querySelector("#petgrow-ad-privacy-entry"))return;
   const wrap=document.createElement("div");
@@ -47,7 +51,7 @@ function installEntry(){
     try{
       const admob=await waitForAdMobApi();
       if(!admob)throw new Error("AdMob privacy API unavailable");
-      await admob.requestPrivacyChoices();
+      if(!(await admob.requestPrivacyChoices()))throw new Error("Privacy choices could not be refreshed");
     }catch(e){
       console.warn("PetGrow privacy choices",e?.message||e);
       window.alert("광고 개인정보 설정을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.");
@@ -70,6 +74,7 @@ export async function bootAdMobPrivacyEntry(){
       frame=requestAnimationFrame(()=>{frame=0;installEntry();});
     };
     new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:["class","style","hidden","aria-hidden"]});
+    window.addEventListener("petgrow:admob-consent-changed",queue);
     queue();
   }catch(e){console.warn("PetGrow privacy entry",e?.message||e);}
 }
