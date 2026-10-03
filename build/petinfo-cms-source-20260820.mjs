@@ -18,7 +18,19 @@ const cmsEffect = `  useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const cmsItems = await fetchPetInfoCmsItems();
+        const pageSize = 500;
+        const firstRes = await fetch(\`/api/petinfo?action=list&page=1&pageSize=\${pageSize}\`, { headers: { Accept: "application/json" } });
+        if (!firstRes.ok) throw new Error("Pet정보 CMS 조회 실패");
+        const first = await firstRes.json();
+        const cmsItems = Array.isArray(first?.items) ? [...first.items] : [];
+        const total = Number(first?.total) || cmsItems.length;
+        const totalPages = Math.max(1, Math.ceil(total / pageSize));
+        for (let cmsPage = 2; cmsPage <= totalPages; cmsPage += 1) {
+          const res = await fetch(\`/api/petinfo?action=list&page=\${cmsPage}&pageSize=\${pageSize}\`, { headers: { Accept: "application/json" } });
+          if (!res.ok) throw new Error("Pet정보 CMS 추가 페이지 조회 실패");
+          const data = await res.json();
+          if (Array.isArray(data?.items)) cmsItems.push(...data.items);
+        }
         if (!cancelled && cmsItems.length > 0) {
           const cmsIds = new Set(cmsItems.map((item) => String(item?.id || "")));
           setTipsSource([...cmsItems, ...TIPS_DATA.filter((item) => !cmsIds.has(String(item?.id || "")))]);
@@ -71,7 +83,7 @@ async function fetchPetInfoCmsItems() {
 
 export function transformPetInfoCmsSource(code, id = '') {
   if (!/[/\\]src[/\\]App\.jsx(?:\?|$)/.test(id)) return null;
-  if (code.includes(MARK) && code.includes('const cmsItems = await fetchPetInfoCmsItems();')) return code;
+  if (code.includes(MARK) && code.includes('const pageSize = 500;') && code.includes('const cmsItems = Array.isArray(first?.items)')) return code;
 
   const tipsPageAnchor = 'function TipsPage({ onClose }) {';
   const count = code.split(tipsPageAnchor).length - 1;
@@ -80,7 +92,7 @@ export function transformPetInfoCmsSource(code, id = '') {
 
   let next = code.replace(tipsPageAnchor, helper + tipsPageAnchor);
   next = next.replace(legacyEffect, cmsEffect);
-  if (!next.includes(MARK) || !next.includes('const cmsItems = await fetchPetInfoCmsItems();')) {
+  if (!next.includes(MARK) || !next.includes('const pageSize = 500;') || !next.includes('const cmsItems = Array.isArray(first?.items)')) {
     throw new Error('[petinfo-cms] transform verification failed');
   }
   return next;
