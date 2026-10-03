@@ -1,5 +1,6 @@
 import { sql } from "@vercel/postgres";
 import { getSessionUserId } from "../server_lib/session.js";
+import { withFallbackMusicCovers } from "../server_lib/music-cover.js";
 
 function validSpecies(value){
   const v=String(value||"all");
@@ -38,7 +39,7 @@ export default async function handler(req,res){
 
     const total=Number(countResult.rows?.[0]?.n||0);
     res.setHeader("Cache-Control",uid?"private, max-age=15":"public, s-maxage=120, stale-while-revalidate=600");
-    return res.status(200).json({items:listResult.rows,top5:topResult.rows,total,page,pages:Math.max(1,Math.ceil(total/pageSize)),fast:true});
+    return res.status(200).json({items:withFallbackMusicCovers(listResult.rows),top5:withFallbackMusicCovers(topResult.rows),total,page,pages:Math.max(1,Math.ceil(total/pageSize)),fast:true});
   }catch(error){
     console.error("music-list",error?.message||error);
     res.setHeader("Cache-Control","no-store");

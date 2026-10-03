@@ -20,7 +20,8 @@ const cmsEffect = `  useEffect(() => {
       try {
         const cmsItems = await fetchPetInfoCmsItems();
         if (!cancelled && cmsItems.length > 0) {
-          setTipsSource(cmsItems);
+          const cmsIds = new Set(cmsItems.map((item) => String(item?.id || "")));
+          setTipsSource([...cmsItems, ...TIPS_DATA.filter((item) => !cmsIds.has(String(item?.id || "")))]);
           return;
         }
       } catch {

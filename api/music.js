@@ -5,6 +5,7 @@ import { sql } from "@vercel/postgres";
 import { ensureSchema } from "../server_lib/db.js";
 import { getSessionUserId } from "../server_lib/session.js";
 import { getAdminRole, verifyToken, roleCan, logAdmin } from "../server_lib/admin.js";
+import { withFallbackMusicCovers } from "../server_lib/music-cover.js";
 
 const MAX_AUDIO_BYTES = 12 * 1024 * 1024;
 const MAX_COVER_BYTES = 4 * 1024 * 1024;
@@ -110,12 +111,12 @@ export default async function handler(req,res){
       }
       const total=countRows?.[0]?.n||0;
       res.setHeader("Cache-Control",uid?"private, max-age=15":"public, s-maxage=60, stale-while-revalidate=300");
-      return res.status(200).json({items:rows,top5:topRows,total,page,pages:Math.max(1,Math.ceil(total/pageSize))});
+      return res.status(200).json({items:withFallbackMusicCovers(rows),top5:withFallbackMusicCovers(topRows),total,page,pages:Math.max(1,Math.ceil(total/pageSize))});
     }
     if(action==="liked" && req.method==="GET"){
       const uid=getSessionUserId(req); if(!uid)return res.status(200).json({items:[]});
       const {rows}=await sql`select t.*,true liked from pg_music_likes l join pg_music_tracks t on t.id=l.track_id where l.user_id=${uid} and t.active=true order by l.created_at desc limit 100`;
-      return res.status(200).json({items:rows});
+      return res.status(200).json({items:withFallbackMusicCovers(rows)});
     }
     if(action==="play" && req.method==="POST"){
       const id=String(req.body?.id||""); if(!id)return res.status(400).json({error:"곡 정보가 없어요."});

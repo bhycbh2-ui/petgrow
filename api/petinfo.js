@@ -2,6 +2,7 @@ import crypto from "crypto";
 import { sql } from "@vercel/postgres";
 import { getSessionUserId } from "../server_lib/session.js";
 import { getAdminRole, roleCan, verifyToken, logAdmin } from "../server_lib/admin.js";
+import { publishDailyPetInfo } from "../server_lib/petinfo-daily.js";
 
 const CATEGORIES = new Set(["dog", "cat", "health", "life", "food", "training", "safety", "grooming"]);
 
@@ -86,6 +87,7 @@ export default async function handler(req, res) {
     const action = String(req.query.action || "list");
 
     if (action === "list" && req.method === "GET") {
+      await publishDailyPetInfo(sql);
       res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=300");
       const category = clean(req.query.category, 30);
       const search = clean(req.query.q, 100);

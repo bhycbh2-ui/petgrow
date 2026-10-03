@@ -1,7 +1,8 @@
 import { sql } from "@vercel/postgres";
+import { fallbackMusicCover } from "../server_lib/music-cover.js";
 
 function mapMusic(rows=[]){
-  return rows.map(r=>({id:r.id,title:r.title,description:r.description||"",species:r.species,vocalType:r.vocal_type,mood:r.mood,coverUrl:r.cover_url||"",audioUrl:r.audio_url||"",likeCount:Number(r.like_count||0),commentCount:Number(r.comment_count||0),playCount:Number(r.play_count||0)}));
+  return rows.map(r=>({id:r.id,title:r.title,description:r.description||"",species:r.species,vocalType:r.vocal_type,mood:r.mood,coverUrl:fallbackMusicCover(r),audioUrl:r.audio_url||"",likeCount:Number(r.like_count||0),commentCount:Number(r.comment_count||0),playCount:Number(r.play_count||0)}));
 }
 
 export default async function handler(req,res){

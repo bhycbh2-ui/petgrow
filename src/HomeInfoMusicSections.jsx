@@ -32,22 +32,33 @@ function getKstDayIndex() {
   return Math.floor(Date.UTC(Number(value.year), Number(value.month) - 1, Number(value.day)) / 86400000);
 }
 
-const HOME_MUSIC_CACHE = "petgrow_home_music_cache_v1";
+const HOME_MUSIC_CACHE = "petgrow_home_music_cache_v2";
 
 export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = [] }) {
+  const [liveTips, setLiveTips] = useState([]);
   const recommendedTips = useMemo(() => {
-    const list = Array.isArray(tips) ? tips.filter(Boolean) : [];
+    const liveIds = new Set(liveTips.map((tip) => String(tip?.id || "")));
+    const list = [...liveTips, ...(Array.isArray(tips) ? tips.filter((tip) => tip && !liveIds.has(String(tip?.id || ""))) : [])];
     if (!list.length) return [];
     const day = getKstDayIndex();
     const start = (day * 2) % list.length;
     return [0, 1].map((i) => list[(start + i) % list.length]).filter(Boolean);
-  }, [tips]);
+  }, [tips, liveTips]);
 
   const [expandedTipKey, setExpandedTipKey] = useState("");
   const [music, setMusic] = useState([]);
   const [playingId, setPlayingId] = useState("");
   const audioRef = useRef(null);
   const loadedTrackIdRef = useRef("");
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/petinfo?action=list&page=1&pageSize=20", { headers: { Accept:"application/json" } })
+      .then((response) => response.ok ? response.json() : null)
+      .then((data) => { if (!cancelled && Array.isArray(data?.items)) setLiveTips(data.items); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;

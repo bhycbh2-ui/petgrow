@@ -1,0 +1,55 @@
+/* PetGrow responsive navigation and mobile discovery layout — 2026-09-29 */
+.pg-mobile-discovery{display:none}
+
+@media (min-width:900px){
+  .petgrow-web-layout{padding-left:0!important;background:#f8faf8!important}
+  .petgrow-web-layout .petgrow-page-top{width:min(1240px,calc(100% - 40px))!important;max-width:1240px!important;padding:14px 0 0!important}
+  .petgrow-web-layout .desktop-nav-shell{display:flex!important;position:sticky!important;top:12px!important;min-height:72px!important;margin:0 auto 24px!important;border-radius:22px!important}
+  .petgrow-sidebar{display:none!important}
+  .petgrow-content-stage{width:min(1180px,calc(100% - 40px));margin-inline:auto}
+  .desktop-nav-links{justify-content:center!important;gap:5px!important}
+  .desktop-nav-link{padding-inline:13px!important;white-space:nowrap}
+  .app-bottom-nav{display:none!important}
+}
+
+@media (max-width:899px){
+  body{background:#f3f5f3!important}
+  .bboggl-root{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))!important}
+  .petgrow-content-stage{padding-bottom:12px}
+  .mobile-topbar-premium,.native-app-topbar{position:sticky!important;top:max(6px,env(safe-area-inset-top,0px));z-index:140;margin-bottom:12px!important;background:rgba(255,255,255,.95)!important;border:1px solid #e4e9e5!important;border-radius:18px!important;box-shadow:0 8px 25px rgba(26,47,34,.07)!important;backdrop-filter:blur(18px)}
+  .native-app-topbar{min-height:56px;padding:7px 9px;box-sizing:border-box}
+  .native-brand-row{display:flex;align-items:center;gap:7px;min-width:0}
+  .native-brand-button{display:flex;align-items:center;gap:7px;border:0;background:transparent;padding:0;cursor:pointer;font-family:'Jua',sans-serif;font-size:17px}
+  .native-brand-button span span{color:var(--text)}
+  .native-brand-button b{color:var(--primary);font-weight:inherit}
+  .app-bottom-nav{display:flex!important;left:0!important;right:0!important;bottom:0!important;border:0!important;border-top:1px solid #e1e6e2!important;border-radius:0!important;padding:7px 8px max(7px,env(safe-area-inset-bottom,7px))!important;background:rgba(255,255,255,.97)!important;box-shadow:0 -8px 25px rgba(24,46,32,.08)!important}
+  .app-bottom-nav-item{min-height:55px!important;font-size:10px!important;border-radius:14px!important}
+  .app-bottom-nav-item.active{background:#eaf4ec!important;color:#2f7448!important}
+  .app-bottom-nav-item.active:after{display:none!important}
+  .kakao-chat-fab{bottom:calc(88px + env(safe-area-inset-bottom,0px))!important}
+  .pg-mobile-discovery{display:block;margin:0 0 18px}
+  .pg-mobile-category-strip{display:flex;gap:8px;overflow-x:auto;margin:0 -20px 14px;padding:2px 20px 7px;scrollbar-width:none}
+  .pg-mobile-category-strip::-webkit-scrollbar{display:none}
+  .pg-mobile-category-strip button{flex:0 0 auto;min-height:38px;padding:0 15px;border:1px solid #dfe6e1;border-radius:999px;background:#fff;color:#5e6862;font:800 13px/1 inherit;cursor:pointer;white-space:nowrap}
+  .pg-mobile-category-strip button.active{border-color:#20342a;background:#20342a;color:#fff}
+  .pg-mobile-ranking-card{padding:20px 18px;border:1px solid #e3e8e4;border-radius:24px;background:#fff;box-shadow:0 10px 30px rgba(30,51,38,.055)}
+  .pg-mobile-ranking-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:15px}
+  .pg-mobile-ranking-head span{display:block;margin-bottom:5px;color:#4f8a5b;font-size:9px;font-weight:900;letter-spacing:.14em}
+  .pg-mobile-ranking-head h2{margin:0;font-size:21px;letter-spacing:-.045em}
+  .pg-mobile-ranking-head>button{border:0;background:transparent;color:#6e7b73;font-size:11px;font-weight:800;cursor:pointer}
+  .pg-mobile-ranking-card ol{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+  .pg-mobile-ranking-card li button{display:grid;grid-template-columns:30px 1fr auto;align-items:center;gap:9px;width:100%;min-height:54px;padding:8px 12px;border:0;border-radius:16px;background:#f5f7f5;color:#222d27;text-align:left;cursor:pointer}
+  .pg-mobile-ranking-card li b{display:grid;place-items:center;width:27px;height:27px;border-radius:50%;background:#fff;color:#617068;font-size:12px;box-shadow:0 3px 10px rgba(28,52,36,.06)}
+  .pg-mobile-ranking-card li:nth-child(1) b{background:#fff1b8;color:#8a6716}
+  .pg-mobile-ranking-card li:nth-child(2) b{background:#edf0f3;color:#617083}
+  .pg-mobile-ranking-card li:nth-child(3) b{background:#f4dfca;color:#8a5c34}
+  .pg-mobile-ranking-card li span{font-size:13px;font-weight:750;line-height:1.4;word-break:keep-all}
+  .pg-mobile-ranking-card li em{color:#a0aaa4;font-size:18px;font-style:normal}
+}
+
+@media (max-width:420px){
+  .pg-mobile-ranking-card{padding:18px 14px;border-radius:21px}
+  .pg-mobile-ranking-head h2{font-size:19px}
+  .pg-mobile-ranking-card li button{padding-inline:10px}
+  .pg-mobile-ranking-card li span{font-size:12.5px}
+}
