@@ -47,6 +47,13 @@ test("PetNews uses its current loading UI without the obsolete App transform", (
   assert.match(page, /aria-busy="true"/);
 });
 
+test("PetNews keeps each page compact with eight articles", () => {
+  const page = read("src/lazy/PetNewsPage.jsx");
+  assert.match(page, /const PAGE_SIZE = 8;/);
+  assert.match(page, /pageSize: String\(PAGE_SIZE\)/);
+  assert.match(page, /<ResponsivePagination/);
+});
+
 test("PWA no longer blocks published guide pages or runs the reset helper", () => {
   const html = read("index.html");
   const sw = read("public/sw.js");
