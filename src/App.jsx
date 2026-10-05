@@ -10445,6 +10445,26 @@ function HomeMemoryDiary({ pet, lang, onOpen }) {
   </section>;
 }
 
+const CARE_GUIDE_LINKS = [
+  ["weight-record", "체중기록", "체중을 같은 조건에서 기록하기", "매번 같은 저울과 비슷한 시간에 측정하고 식사·활동 변화도 함께 남겨요."],
+  ["walk-routine", "산책", "우리 아이에게 맞는 산책 기록", "거리만 비교하지 말고 날씨, 바닥 상태, 쉬는 횟수와 산책 후 반응을 살펴요."],
+  ["vaccination-record", "예방접종", "예방접종 기록과 병원 상담 준비", "접종 날짜와 병원 안내를 정리하고 다음 일정은 담당 수의사와 확인해요."],
+  ["dental-care", "구강관리", "무리하지 않는 양치 적응", "입 주변에 닿는 연습부터 짧게 시작하고 불편한 반응이 보이면 중단해요."],
+  ["cat-water-litter", "고양이", "음수와 화장실 변화 알아차리기", "평소 물그릇과 화장실 이용 패턴을 기록하고 달라진 행동을 함께 비교해요."],
+  ["senior-home", "노령동물", "노령 반려동물을 위한 집안 점검", "미끄러운 바닥과 높은 턱, 휴식 공간과 이동 동선을 차례로 살펴요."],
+];
+
+function HomeCareGuides() {
+  return <section className="dash-section petgrow-care-reading" aria-labelledby="care-reading-title">
+    <div className="dash-section-head"><h2 id="care-reading-title">반려생활 가이드</h2><a href="/pet-guide.html">전체 글 보기 →</a></div>
+    <p>반려동물의 변화를 알아차리는 첫걸음은 다른 아이의 평균보다 우리 아이의 평소 모습을 아는 것입니다. PetGrow 가이드는 체중, 산책, 구강관리와 집안 환경을 같은 기준으로 살펴보고 기록하는 방법을 소개합니다. 모든 글은 로그인 없이 읽을 수 있습니다.</p>
+    <div className="petgrow-care-reading-grid">{CARE_GUIDE_LINKS.map(([slug, category, title, description]) => <article key={slug}>
+      <small>{category}</small><h3><a href={`/guides/${slug}.html`}>{title}</a></h3><p>{description}</p>
+    </article>)}</div>
+    <div className="petgrow-care-reading-note"><h3>기록을 상담에 활용하는 방법</h3><p>날짜와 관찰한 사실을 짧게 남기세요. 체중 변화가 있었다면 측정 조건과 식사량을, 산책을 힘들어했다면 기온과 쉬었던 지점을 함께 적으면 전후 상황을 비교하기 쉽습니다. 사진과 기록은 진료 때 보여줄 참고자료이며 기록만으로 건강 상태를 판단하지 않습니다.</p><p>갑자기 평소와 다른 모습이 나타나면 온라인 글만으로 원인을 단정하지 말고 동물병원에 문의하세요. 가이드는 일반적인 생활 정보이며 개별 진단이나 치료를 대신하지 않습니다.</p><a href="/editorial-policy.html">콘텐츠 편집 원칙</a> · <a href="/contact.html">오류 제보·문의</a></div>
+  </section>;
+}
+
 function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
   const t = useT();
   const visiblePets = account ? pets : [];
@@ -10512,6 +10532,8 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
 
       <section className="dash-section"><div className="dash-section-head"><h2>{lang === "en" ? "Quick access" : "자주 사용하는 메뉴"}</h2><button type="button" className="bg-chip" onClick={()=>setQuickEditing(v=>!v)}>{quickEditing?(lang==='en'?'Done':'완료'):(lang==='en'?'Edit':'편집')}</button></div>{quickEditing&&<div className="bg-card" style={{padding:14,marginBottom:12}}><p className="bg-sub" style={{fontSize:12,margin:'0 0 10px'}}>{lang==='en'?'Choose up to six shortcuts, then reorder them below. Signed-in choices sync to your account.':'원하는 메뉴를 최대 6개까지 선택한 뒤 아래에서 순서를 바꿀 수 있어요. 로그인하면 계정에 저장돼 다른 기기에서도 그대로 보여요.'}</p><div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>{allQuick.map(([key,icon,label])=><button type="button" key={key} className={`bg-chip ${quickKeys.includes(key)?'active':''}`} onClick={()=>toggleQuick(key)}>{icon} {label}</button>)}</div><div className="quick-order-list">{quick.map(([key,icon,label])=><div className={`quick-order-row ${quickDragKey===key?'dragging':''}`} data-quick-key={key} key={key} draggable onDragStart={()=>setQuickDragKey(key)} onDragOver={e=>{e.preventDefault();if(quickDragKey&&quickDragKey!==key){reorderQuick(quickDragKey,key);setQuickDragKey(key)}}} onDragEnd={endQuickPointerDrag}><span><i>{icon}</i><b>{label}</b></span><button type="button" className="quick-drag-handle" aria-label={`${label} 순서 이동`} title={lang==='en'?'Drag to reorder':'끌어서 순서 변경'} onPointerDown={e=>beginQuickPointerDrag(e,key)} onPointerMove={moveQuickPointer} onPointerUp={endQuickPointerDrag} onPointerCancel={endQuickPointerDrag}>≡</button></div>)}</div></div>}<div className="dash-quick-grid">{quick.map(([key,icon,label])=><button type="button" key={key} onClick={()=>key==="pets"?onGoPets():onGoView(key)}><i>{icon}</i><span>{label}</span></button>)}</div></section>
       {/* HOME_INFO_MUSIC_SAFE_20260819 */}
+      <HomeCareGuides />
+
       <HomeInfoMusicSections lang={lang} onGoView={onGoView} tips={TIPS_DATA} />
 
       {homeNews.length>0&&<section className="dash-section"><div className="dash-section-head"><h2>{lang==='en'?'Important Pet News':'주요 Pet뉴스'}</h2><button type="button" className="bg-chip" onClick={()=>onGoView('news')}>{lang==='en'?'View all':'전체보기'}</button></div><div style={{display:'grid',gap:10}}>{homeNews.map(n=><button key={n.id} type="button" className="bg-card" onClick={()=>onGoView('news')} style={{padding:'15px 16px',textAlign:'left',border:'1px solid var(--border)',cursor:'pointer'}}><small style={{fontWeight:800,color:'var(--primary)'}}>{n.category||'Pet뉴스'} · {n.source||''}</small><div style={{fontWeight:800,fontSize:15,lineHeight:1.5,marginTop:5}}>{n.title}</div><small className="bg-sub">{n.publishedAt?new Date(n.publishedAt).toLocaleDateString('ko-KR'):''}</small></button>)}</div></section>}
@@ -12603,6 +12625,8 @@ function AppInner({ lang, setLang }) {
             <button type="button" onClick={()=>goView("privacy")}>{t.privacyFooterLink}</button>
             <button type="button" onClick={()=>goView("terms")}>{t.termsFooterLink}</button>
             <button type="button" onClick={()=>goView("guide")}>{lang==="en"?"Guide":"정보가이드"}</button>
+            <a href="/pet-guide.html">{lang==="en"?"Pet care articles":"반려생활 가이드"}</a>
+            <a href="/about.html">{lang==="en"?"About PetGrow":"서비스 소개"}</a>
             <button type="button" onClick={()=>goView("ad-inquiry")}>{lang==="en"?"Partnerships":"광고·제휴 문의"}</button>
             <button type="button" onClick={()=>goView("support")}>{lang==="en"?"Support":"고객지원"}</button>
           </nav>
