@@ -1,6 +1,6 @@
-import { BASE_URL, SESSION_COOKIE, SESSION_MAX_AGE } from "../../../server_lib/config.js";
+import { BASE_URL } from "../../../server_lib/config.js";
 import { consumeAuthHandoff } from "../../../server_lib/db.js";
-import { signSession } from "../../../server_lib/session.js";
+import { createSessionCookies } from "../../../server_lib/session.js";
 
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
@@ -18,10 +18,7 @@ export default async function handler(req, res) {
     return;
   }
 
-  const sessionToken = signSession({ uid: handoff.user_id });
-  res.setHeader("Set-Cookie", [
-    `${SESSION_COOKIE}=${sessionToken}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${SESSION_MAX_AGE}`,
-  ]);
+  res.setHeader("Set-Cookie", createSessionCookies(req, handoff.user_id));
   res.writeHead(302, { Location: `${BASE_URL}/?login=success` });
   res.end();
 }

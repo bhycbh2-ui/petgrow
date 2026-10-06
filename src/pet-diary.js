@@ -14,3 +14,14 @@ export async function persistDiaryChange({ pets, target, species, account, write
   const ok = await write(targetSpecies === 'cat' ? 'bboggl:cats' : 'bboggl:dogs', list, account);
   return ok ? { ...pets, [targetSpecies]: list } : null;
 }
+
+// Photos and writing belong to the same diary day; never pair unrelated dates.
+export function latestDiaryPreview(pet) {
+  const photos = (Array.isArray(pet?.photos) ? pet.photos : []).filter(photo => photo?.dataUrl && photo?.date);
+  const entries = (Array.isArray(pet?.diaryEntries) ? pet.diaryEntries : []).filter(entry => entry?.text?.trim() && entry?.date);
+  const date = [...photos, ...entries].map(item => item.date).sort().at(-1);
+  if (!date) return null;
+  const photo = photos.filter(item => item.date === date).at(-1);
+  const entry = entries.filter(item => item.date === date).sort((a, b) => (a.createdAt || '').localeCompare(b.createdAt || '')).at(-1);
+  return { date, photo: photo || null, text: entry?.text || '' };
+}

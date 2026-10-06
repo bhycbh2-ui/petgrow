@@ -36,3 +36,12 @@ test('deletion removes only the requested entry; missing target never writes', a
   assert.equal(next.cat[1], pets.cat[1]);
   assert.equal(await persistDiaryChange({ pets, target: { id: 'missing' }, species: 'dog', write: () => { throw new Error('must not write'); }, change: () => [] }), null);
 });
+
+test('home shows one latest day with matching photo and text', async () => {
+  const { latestDiaryPreview } = await import('../src/pet-diary.js');
+  const pet = { photos: [{ date: '2026-10-05', dataUrl: 'old' }, { date: '2026-10-06', dataUrl: 'first' }, { date: '2026-10-06', dataUrl: 'last' }], diaryEntries: [{ date: '2026-10-06', text: 'older', createdAt: '01' }, { date: '2026-10-06', text: 'latest', createdAt: '02' }] };
+  assert.deepEqual(latestDiaryPreview(pet), { date: '2026-10-06', photo: pet.photos[2], text: 'latest' });
+  pet.diaryEntries.push({ date: '2026-10-07', text: 'text only' });
+  assert.deepEqual(latestDiaryPreview(pet), { date: '2026-10-07', photo: null, text: 'text only' });
+  assert.equal(latestDiaryPreview({}), null);
+});

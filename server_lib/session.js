@@ -36,12 +36,8 @@ export function verifySession(token) {
   if (parts.length !== 2) return null;
   const [data, sig] = parts;
   if (!data || !sig) return null;
-  let expected;
-  try {
-    expected = crypto.createHmac("sha256", getSecret()).update(data).digest("base64url");
-  } catch {
-    return null;
-  }
+  // A missing server secret is an infrastructure error, not an expired login.
+  const expected = crypto.createHmac("sha256", getSecret()).update(data).digest("base64url");
   const a = Buffer.from(sig);
   const b = Buffer.from(expected);
   if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null;
@@ -77,9 +73,41 @@ export function parseCookies(header) {
   return out;
 }
 
-// 요청에서 로그인한 사용자의 user_id 를 꺼내요. 로그인 안 되어 있으면 null.
-export function getSessionUserId(req) {
+// Shared production cookie has a separate name so legacy host-only cookies cannot shadow it.
+export const SHARED_SESSION_COOKIE = "pg_session_shared";
+function productionDomain(req) {
+  const host = String(req.headers?.host || "").toLowerCase().split(":")[0];
+  return host === "petgrow.co.kr" || host === "www.petgrow.co.kr" ? "; Domain=petgrow.co.kr" : "";
+}
+export function getSessionPayload(req) {
   const cookies = parseCookies(req.headers.cookie || "");
-  const payload = verifySession(cookies[SESSION_COOKIE]);
-  return payload ? payload.uid : null;
+  // If the new cookie exists but is invalid, do not resurrect a different legacy session.
+  if (cookies[SHARED_SESSION_COOKIE]) return verifySession(cookies[SHARED_SESSION_COOKIE]);
+  return verifySession(cookies[SESSION_COOKIE]);
+}
+export function getSessionUserId(req) {
+  return getSessionPayload(req)?.uid || null;
+}
+export function createSessionCookies(req, uid) {
+  const domain = productionDomain(req);
+  const name = domain ? SHARED_SESSION_COOKIE : SESSION_COOKIE;
+  const token = signSession({ uid });
+  return [
+    `${name}=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${SESSION_MAX_AGE}${domain}`,
+    ...(domain ? [`${SESSION_COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`] : []),
+  ];
+}
+export function clearSessionCookies(req) {
+  const suffix = "; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0";
+  const domain = productionDomain(req);
+  return [ `${SESSION_COOKIE}=${suffix}`, `${SHARED_SESSION_COOKIE}=${suffix}`,
+    ...(domain ? [`${SHARED_SESSION_COOKIE}=${suffix}${domain}`, `${SESSION_COOKIE}=${suffix}${domain}`] : []) ];
+}
+export function renewSessionIfNeeded(req, res, payload) {
+  if (!payload || payload.exp <= Math.floor(Date.now() / 1000)) return;
+  const cookies = parseCookies(req.headers.cookie || "");
+  const migrate = productionDomain(req) && !cookies[SHARED_SESSION_COOKIE];
+  const age = Math.floor(Date.now() / 1000) - payload.iat;
+  // Renew after a day of use; never renew an expired, invalid or deleted user's session.
+  if (migrate || age >= 24 * 60 * 60) res.setHeader("Set-Cookie", createSessionCookies(req, payload.uid));
 }

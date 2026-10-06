@@ -1,16 +1,19 @@
 import crypto from "crypto";
 import { sql } from "@vercel/postgres";
-import { getSessionUserId } from "../server_lib/session.js";
+import { getSessionUserId, getSessionPayload, renewSessionIfNeeded } from "../server_lib/session.js";
 import { getUserById, getState, setState, logServiceHealth, ensureSchema } from "../server_lib/db.js";
 import { isAdminUserId } from "../server_lib/admin.js";
 import proj4 from "proj4";
 import { handleTarot } from "../server_lib/tarot.js";
 
 async function handleMe(req, res) {
-  const uid = getSessionUserId(req);
+  res.setHeader("Cache-Control", "no-store, max-age=0");
+  const payload = getSessionPayload(req);
+  const uid = payload?.uid;
   if (!uid) return res.status(401).json({ error: "unauthenticated" });
   const [user, isAdmin] = await Promise.all([getUserById(uid), isAdminUserId(uid)]);
   if (!user) return res.status(401).json({ error: "unauthenticated" });
+  renewSessionIfNeeded(req, res, payload);
   return res.status(200).json({
     id: user.id,
     name: user.nickname || "PetGrow 회원",

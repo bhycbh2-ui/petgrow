@@ -1,5 +1,6 @@
+import { createSessionChecker } from "./session-checker.js";
 import DiaryNotebook from "./DiaryNotebook.jsx";
-import { saveDiaryEntry, persistDiaryChange } from "./pet-diary.js";
+import { saveDiaryEntry, persistDiaryChange, latestDiaryPreview } from "./pet-diary.js";
 import HomeInfoMusicSections from "./HomeInfoMusicSections.jsx";
 import React, { useState, useMemo, useEffect, useRef, useContext, createContext } from "react";
 import * as LeafletLib from "leaflet";
@@ -1461,57 +1462,29 @@ function cacheAccount(account) {
     }
   } catch {}
 }
-let fetchMeInFlight = null;
+const sessionChecker = createSessionChecker({ fetcher: (...args) => fetch(...args), cacheAccount });
 async function fetchMe(timeoutMs = 16000) {
-  if (fetchMeInFlight) return fetchMeInFlight;
-  // 401만 실제 로그아웃으로 판단해요. 서버 cold start/DB 지연은 한 번 재시도해서
-  // 로그인된 사용자가 UI에서 다시 "로그인"으로 보이는 현상을 막습니다.
-  fetchMeInFlight = (async () => {
-    for (let attempt = 0; attempt < 2; attempt += 1) {
-      const controller = new AbortController();
-      const timer = window.setTimeout(() => controller.abort(), timeoutMs);
-      try {
-        const res = await fetch("/api/me", {
-          credentials: "include",
-          signal: controller.signal,
-          cache: "no-store",
-        });
-        if (res.status === 401) {
-          cacheAccount(null);
-          return null;
-        }
-        if (!res.ok) throw new Error(`me_${res.status}`);
-        const account = await res.json();
-        cacheAccount(account);
-        return account;
-      } catch (err) {
-        console.warn(`로그인 상태 확인 재시도 ${attempt + 1}/2:`, err);
-        if (attempt === 0) await new Promise((resolve) => window.setTimeout(resolve, 300));
-      } finally {
-        window.clearTimeout(timer);
-      }
-    }
-    // 일시적 서버 오류를 로그아웃으로 확정하지 않습니다. 다음 focus/visibility에서 다시 확인해요.
-    return undefined;
-  })();
-  try {
-    return await fetchMeInFlight;
-  } finally {
-    fetchMeInFlight = null;
-  }
+  return sessionChecker.check(timeoutMs);
 }
 async function apiLogout() {
+  await sessionChecker.suspend();
   try {
-    await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
-  } catch {}
+    const res = await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+    if (!res.ok) return false;
+    cacheAccount(null);
+    return true;
+  } catch { return false; }
+  finally { sessionChecker.resume(); }
 }
 async function apiDeleteAccount() {
+  await sessionChecker.suspend();
   try {
     const res = await fetch("/api/account", { method: "POST", credentials: "include" });
+    if (res.ok) cacheAccount(null);
     return res.ok;
   } catch {
     return false;
-  }
+  } finally { sessionChecker.resume(); }
 }
 async function apiUpdateNickname(nickname) {
   const res = await fetch("/api/account", {
@@ -10428,29 +10401,24 @@ function UnifiedMenuHero({ view, lang='ko' }) {
 
 function HomeMemoryDiary({ pet, lang, onOpen }) {
   const petName = normalizePetDisplayText(pet?.profile?.name, lang === "en" ? "My pet" : "우리 아이");
-  const allPhotos = useMemo(() => [...(Array.isArray(pet?.photos) ? pet.photos : [])]
-    .filter((photo) => photo?.dataUrl)
-    .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
-    , [pet?.photos]);
-  const photos = allPhotos.slice(0, 4);
+  const memory = latestDiaryPreview(pet);
   const locale = lang === "en" ? "en-US" : "ko-KR";
   const formatDate = (date) => {
-    const parsed = new Date(date);
+    const parsed = new Date(`${date}T12:00:00`);
     return Number.isNaN(parsed.getTime()) ? "" : parsed.toLocaleDateString(locale, { month: "short", day: "numeric" });
   };
   return <section className="home-memory-diary" aria-labelledby="home-memory-title">
     <div className="home-memory-head">
-      <div><small>MEMORY DIARY</small><h2 id="home-memory-title">{lang === "en" ? `${petName}’s recent days` : `${petName}의 최근 추억`}</h2><p>{lang === "en" ? "Photos become a small diary of your days together." : "함께한 사진을 날짜와 함께 다이어리처럼 모아보세요."}</p></div>
-      <button type="button" className="bg-chip" onClick={onOpen}>{lang === "en" ? "Open diary" : "다이어리 열기"}</button>
+      <div><small>MEMORY DIARY</small><h2 id="home-memory-title">{lang === "en" ? `${petName}’s latest diary` : `${petName}의 최근 일기`}</h2></div>
+      <button type="button" className="bg-chip" onClick={onOpen}>{lang === "en" ? "View all" : "전체 보기"}</button>
     </div>
-    {photos.length ? <div className={`home-memory-photos count-${photos.length}`}>
-      {photos.map((photo, index) => <button type="button" key={photo.id || `${photo.date}-${index}`} className="home-memory-photo" onClick={onOpen}>
-        <img src={photo.dataUrl} alt={`${petName} ${formatDate(photo.date)}`} loading={index === 0 ? "eager" : "lazy"} />
-        <span><b>{index === 0 ? (lang === "en" ? "Latest memory" : "가장 최근 추억") : (lang === "en" ? "A day together" : "함께한 하루")}</b><time>{formatDate(photo.date)}</time></span>
-      </button>)}
-      {photos.length % 2 === 1 && <button type="button" className="home-memory-add" onClick={onOpen}><span aria-hidden="true">＋</span><b>{lang === "en" ? "Add a memory" : "추억 추가"}</b></button>}
-    </div> : <button type="button" className="home-memory-empty" onClick={onOpen}><span>＋</span><div><b>{lang === "en" ? "Add the first memory" : "첫 번째 추억을 남겨보세요"}</b><small>{lang === "en" ? "Upload a photo and keep this day." : "사진을 등록하면 이곳에 예쁘게 모아드려요."}</small></div><em>›</em></button>}
-    {allPhotos.length > 0 && <div className="home-memory-foot"><span>{lang === "en" ? `${allPhotos.length} photos · latest ${photos.length} shown` : `총 ${allPhotos.length}장 · 최근 ${photos.length}장`}</span><button type="button" onClick={onOpen}>{lang === "en" ? "View all" : "전체 보기"}</button></div>}
+    {memory ? <button type="button" className={`home-memory-latest ${memory.photo ? "with-photo" : "text-only"}`} onClick={onOpen}>
+      {memory.photo && <img src={memory.photo.dataUrl} alt={`${petName} ${formatDate(memory.date)}`} loading="lazy" />}
+      <div className="home-memory-latest-copy"><time dateTime={memory.date}>{formatDate(memory.date)}</time>
+        <p>{memory.text || (lang === "en" ? "A day to remember together." : "함께한 하루를 사진으로 남겼어요.")}</p>
+        <span>{lang === "en" ? "Read diary →" : "일기 보기 →"}</span>
+      </div>
+    </button> : <button type="button" className="home-memory-empty" onClick={onOpen}><span>＋</span><div><b>{lang === "en" ? "Write your first diary entry" : "첫 번째 일기를 남겨보세요"}</b><small>{lang === "en" ? "Keep a photo or a few words about today." : "사진이나 짧은 글로 오늘 하루를 기록해요."}</small></div><em>›</em></button>}
   </section>;
 }
 
@@ -10465,12 +10433,11 @@ const CARE_GUIDE_LINKS = [
 
 function HomeCareGuides() {
   return <section className="dash-section petgrow-care-reading" aria-labelledby="care-reading-title">
-    <div className="dash-section-head"><h2 id="care-reading-title">반려생활 가이드</h2><a href="/pet-guide.html">전체 글 보기 →</a></div>
-    <p>반려동물의 변화를 알아차리는 첫걸음은 다른 아이의 평균보다 우리 아이의 평소 모습을 아는 것입니다. PetGrow 가이드는 체중, 산책, 구강관리와 집안 환경을 같은 기준으로 살펴보고 기록하는 방법을 소개합니다. 모든 글은 로그인 없이 읽을 수 있습니다.</p>
-    <div className="petgrow-care-reading-grid">{CARE_GUIDE_LINKS.map(([slug, category, title, description]) => <article key={slug}>
+    <div className="dash-section-head"><h2 id="care-reading-title">반려생활 가이드</h2><a href="/pet-guide.html">전체 보기 →</a></div>
+    <div className="petgrow-care-reading-grid">{CARE_GUIDE_LINKS.slice(0, 3).map(([slug, category, title, description]) => <article key={slug}>
       <small>{category}</small><h3><a href={`/guides/${slug}.html`}>{title}</a></h3><p>{description}</p>
     </article>)}</div>
-    <div className="petgrow-care-reading-note"><h3>기록을 상담에 활용하는 방법</h3><p>날짜와 관찰한 사실을 짧게 남기세요. 체중 변화가 있었다면 측정 조건과 식사량을, 산책을 힘들어했다면 기온과 쉬었던 지점을 함께 적으면 전후 상황을 비교하기 쉽습니다. 사진과 기록은 진료 때 보여줄 참고자료이며 기록만으로 건강 상태를 판단하지 않습니다.</p><p>갑자기 평소와 다른 모습이 나타나면 온라인 글만으로 원인을 단정하지 말고 동물병원에 문의하세요. 가이드는 일반적인 생활 정보이며 개별 진단이나 치료를 대신하지 않습니다.</p><a href="/editorial-policy.html">콘텐츠 편집 원칙</a> · <a href="/contact.html">오류 제보·문의</a></div>
+    <div className="petgrow-care-reading-links"><a href="/editorial-policy.html">콘텐츠 편집 원칙</a> · <a href="/contact.html">오류 제보·문의</a></div>
   </section>;
 }
 
@@ -12124,9 +12091,14 @@ function AppInner({ lang, setLang }) {
       }
     };
     const onVisibility = () => { if (document.visibilityState === "visible") refreshAccount(); };
+    const onOnline = () => refreshAccount();
+    const interval = window.setInterval(() => { if (document.visibilityState === "visible") refreshAccount(); }, 30 * 60 * 1000);
+    window.addEventListener("online", onOnline);
     window.addEventListener("focus", refreshAccount);
     document.addEventListener("visibilitychange", onVisibility);
     return () => {
+      window.clearInterval(interval);
+      window.removeEventListener("online", onOnline);
       window.removeEventListener("focus", refreshAccount);
       document.removeEventListener("visibilitychange", onVisibility);
     };
@@ -12359,7 +12331,10 @@ function AppInner({ lang, setLang }) {
     // 로그아웃 후 전체 페이지를 강제로 새로고침하면 PWA/캐시 환경에서
     // 빈 화면이 남을 수 있어요. 세션을 종료한 뒤 React 상태를 즉시
     // 비로그인 홈으로 전환해서 웹/모바일 웹 모두 안정적으로 복귀시켜요.
-    await apiLogout();
+    if (!await apiLogout()) {
+      window.alert(lang === "en" ? "Could not log out. Please try again." : "로그아웃하지 못했어요. 연결 상태를 확인하고 다시 시도해주세요.");
+      return;
+    }
     cacheAccount(null);
     setAccountModalOpen(false);
     setAccount(null);

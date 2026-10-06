@@ -32,7 +32,8 @@ test("OAuth state and Android handoff tokens are short-lived and one-time", () =
   assert.match(callback, /createAuthHandoff\(user\.id\)/);
   assert.match(callback, /kr\.co\.petgrow\.app:\/\/auth\/callback/);
   assert.match(handoff, /consumeAuthHandoff\(token\)/);
-  assert.match(handoff, /HttpOnly; Secure; SameSite=Lax/);
+  assert.match(handoff, /createSessionCookies\(req, handoff.user_id\)/);
+  assert.match(read("server_lib/session.js"), /HttpOnly; Secure; SameSite=Lax/);
   assert.match(db, /delete from pg_oauth_states[\s\S]*returning client/);
   assert.match(db, /delete from pg_auth_handoffs[\s\S]*returning user_id/);
   assert.match(db, /interval '10 minutes'/);

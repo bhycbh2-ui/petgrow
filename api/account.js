@@ -1,7 +1,6 @@
 import { sql } from "@vercel/postgres";
 import { del as blobDel } from "@vercel/blob";
-import { SESSION_COOKIE } from "../server_lib/config.js";
-import { getSessionUserId } from "../server_lib/session.js";
+import { getSessionUserId, clearSessionCookies } from "../server_lib/session.js";
 import { deleteUser, updateUserNickname } from "../server_lib/db.js";
 import { validateNickname } from "../server_lib/nicknamePolicy.js";
 import { isAdminUserId } from "../server_lib/admin.js";
@@ -35,7 +34,9 @@ async function deletePetLifeBlobsForUser(userId) {
 // DB 데이터는 ON DELETE CASCADE로 삭제하고, DB 밖의 Vercel Blob 파일은 계정 삭제 전에 함께 정리합니다.
 export default async function handler(req, res) {
   if (String(req.query?.route || "") === "logout") {
-    res.setHeader("Set-Cookie", [`${SESSION_COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`]);
+    if (req.method !== "POST") return res.status(405).json({ error: "method not allowed" });
+    res.setHeader("Cache-Control", "no-store");
+    res.setHeader("Set-Cookie", clearSessionCookies(req));
     res.status(200).json({ ok: true });
     return;
   }
@@ -80,6 +81,6 @@ export default async function handler(req, res) {
 
   await deletePetLifeBlobsForUser(uid);
   await deleteUser(uid);
-  res.setHeader("Set-Cookie", [`${SESSION_COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`]);
+  res.setHeader("Set-Cookie", clearSessionCookies(req));
   res.status(200).json({ ok: true });
 }

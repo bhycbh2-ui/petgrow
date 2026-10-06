@@ -1,5 +1,5 @@
-import { BASE_URL, OAUTH_STATE_COOKIE, SESSION_COOKIE, SESSION_MAX_AGE } from "../../../server_lib/config.js";
-import { parseCookies, signSession } from "../../../server_lib/session.js";
+import { BASE_URL, OAUTH_STATE_COOKIE } from "../../../server_lib/config.js";
+import { parseCookies, createSessionCookies } from "../../../server_lib/session.js";
 import { consumeOAuthState, createAuthHandoff, findOrCreateUserByKakaoId } from "../../../server_lib/db.js";
 
 const ANDROID_CALLBACK_URL = "kr.co.petgrow.app://auth/callback";
@@ -69,10 +69,8 @@ export default async function handler(req, res) {
       return;
     }
 
-    const sessionToken = signSession({ uid: user.id });
-
     res.setHeader("Set-Cookie", [
-      `${SESSION_COOKIE}=${sessionToken}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${SESSION_MAX_AGE}`,
+      ...createSessionCookies(req, user.id),
       `${OAUTH_STATE_COOKIE}=; Path=/; Max-Age=0`,
     ]);
     res.writeHead(302, { Location: `${BASE_URL}/?login=success` });

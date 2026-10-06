@@ -14,8 +14,8 @@ test("home prioritizes the pet profile and a recent memory diary", () => {
   assert.ok(profileIndex >= 0);
   assert.ok(diaryIndex > profileIndex);
   assert.ok(quickIndex > diaryIndex);
-  assert.match(app, /slice\(0, 4\)/);
-  assert.match(styles, /\.home-memory-photos/);
+  assert.match(app, /const memory = latestDiaryPreview\(pet\)/);
+  assert.match(styles, /\.home-memory-latest/);
 });
 
 test("the full photo album is styled and ordered as a memory diary", () => {
@@ -44,4 +44,12 @@ test("the memory diary stylesheet is loaded last", () => {
   const categoryIndex = entry.indexOf('import "./category-one-row-20260905.css"');
   const diaryStyleIndex = entry.indexOf('import "./home-memory-diary-20260906.css"');
   assert.ok(diaryStyleIndex > categoryIndex);
+});
+
+
+test("home recommends three guides with all articles linked and no record-use section", () => {
+  const section = app.slice(app.indexOf("function HomeCareGuides()"), app.indexOf("function HomePage("));
+  assert.match(section, /CARE_GUIDE_LINKS.slice\(0, 3\)/);
+  assert.match(section, /href="\/pet-guide.html">전체 보기/);
+  assert.doesNotMatch(section, /기록을 상담에 활용하는 방법/);
 });
