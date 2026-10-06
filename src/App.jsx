@@ -12204,7 +12204,7 @@ function AppInner({ lang, setLang }) {
     requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: "auto" }));
   };
 
-  const goView = async (v) => {
+  const goView = async (v, diaryPetId = null) => {
     const next=(v==="talk"||v==="pettalk"||v==="pet-talk")?"community":v;
     let currentAccount = account;
     if (GATED_VIEWS.includes(next) && !currentAccount) {
@@ -12219,7 +12219,9 @@ function AppInner({ lang, setLang }) {
     try{
       const url=new URL(window.location.href),current=url.searchParams.get("view")||"home";
       if(next==="home")url.searchParams.delete("view");else url.searchParams.set("view",next);
-      if(current!==next)window.history.pushState({petgrowView:next},"",`${url.pathname}${url.search}${url.hash}`);
+      if(next === "diary" && diaryPetId) url.searchParams.set("petId", diaryPetId);
+      else if(next !== "diary") url.searchParams.delete("petId");
+      if(current!==next || (next === "diary" && diaryPetId))window.history.pushState({petgrowView:next},"",`${url.pathname}${url.search}${url.hash}`);
     }catch{}
     if(currentAccount?.id)logPetActivity({section:next,action:"view",title:({home:"홈",about:"소개",pets:"우리 아이",diary:"추억 다이어리",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",news:"Pet뉴스",guide:"정보가이드",my:"마이페이지",support:"고객지원"}[next]||next)});
     scrollToTop();
@@ -12238,14 +12240,15 @@ function AppInner({ lang, setLang }) {
   ];
   const featurePet = allPets.find((p) => p.id === featurePetId) || currentPet || allPets[0] || null;
 
-  const diaryPet = currentPet || allPets[0] || null;
+  const diaryPetId = view === "diary" ? new URLSearchParams(window.location.search).get("petId") : null;
+  const diaryPet = allPets.find((p) => p.id === diaryPetId) || currentPet || allPets[0] || null;
   const openDiary = (pet) => {
     if (pet) {
       setSpecies(pet.species);
       persistActive({ ...activeId, [pet.species]: pet.id });
     }
     setMode("view");
-    goView("diary");
+    goView("diary", pet?.id);
   };
 
   const handleAddPet = (profileData) => {
