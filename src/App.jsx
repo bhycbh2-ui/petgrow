@@ -10424,10 +10424,11 @@ function UnifiedMenuHero({ view, lang='ko' }) {
 
 function HomeMemoryDiary({ pet, lang, onOpen }) {
   const petName = normalizePetDisplayText(pet?.profile?.name, lang === "en" ? "My pet" : "우리 아이");
-  const photos = useMemo(() => [...(Array.isArray(pet?.photos) ? pet.photos : [])]
+  const allPhotos = useMemo(() => [...(Array.isArray(pet?.photos) ? pet.photos : [])]
     .filter((photo) => photo?.dataUrl)
     .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
-    .slice(0, 4), [pet?.photos]);
+    , [pet?.photos]);
+  const photos = allPhotos.slice(0, 4);
   const locale = lang === "en" ? "en-US" : "ko-KR";
   const formatDate = (date) => {
     const parsed = new Date(date);
@@ -10439,11 +10440,13 @@ function HomeMemoryDiary({ pet, lang, onOpen }) {
       <button type="button" className="bg-chip" onClick={onOpen}>{lang === "en" ? "Open diary" : "다이어리 열기"}</button>
     </div>
     {photos.length ? <div className={`home-memory-photos count-${photos.length}`}>
-      {photos.map((photo, index) => <button type="button" key={photo.id || `${photo.date}-${index}`} className={`home-memory-photo ${index === 0 ? "is-featured" : ""}`} onClick={onOpen}>
+      {photos.map((photo, index) => <button type="button" key={photo.id || `${photo.date}-${index}`} className="home-memory-photo" onClick={onOpen}>
         <img src={photo.dataUrl} alt={`${petName} ${formatDate(photo.date)}`} loading={index === 0 ? "eager" : "lazy"} />
         <span><b>{index === 0 ? (lang === "en" ? "Latest memory" : "가장 최근 추억") : (lang === "en" ? "A day together" : "함께한 하루")}</b><time>{formatDate(photo.date)}</time></span>
       </button>)}
+      {photos.length % 2 === 1 && <button type="button" className="home-memory-add" onClick={onOpen}><span aria-hidden="true">＋</span><b>{lang === "en" ? "Add a memory" : "추억 추가"}</b></button>}
     </div> : <button type="button" className="home-memory-empty" onClick={onOpen}><span>＋</span><div><b>{lang === "en" ? "Add the first memory" : "첫 번째 추억을 남겨보세요"}</b><small>{lang === "en" ? "Upload a photo and keep this day." : "사진을 등록하면 이곳에 예쁘게 모아드려요."}</small></div><em>›</em></button>}
+    {allPhotos.length > 0 && <div className="home-memory-foot"><span>{lang === "en" ? `${allPhotos.length} photos · latest ${photos.length} shown` : `총 ${allPhotos.length}장 · 최근 ${photos.length}장`}</span><button type="button" onClick={onOpen}>{lang === "en" ? "View all" : "전체 보기"}</button></div>}
   </section>;
 }
 

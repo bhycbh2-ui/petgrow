@@ -10,13 +10,14 @@
 .home-memory-head small,.memory-diary-head small{display:block;color:#7c6d4f;font-size:10px;font-weight:900;letter-spacing:.15em}
 .home-memory-head h2{margin:5px 0 4px;font-size:22px;color:#28372d}
 .home-memory-head p{margin:0;color:var(--sub);font-size:12px}
-.home-memory-photos{position:relative;z-index:1;display:grid;grid-template-columns:1.4fr repeat(3,minmax(0,1fr));gap:10px}
-.home-memory-photo{position:relative;min-width:0;aspect-ratio:4/5;padding:0;overflow:hidden;border:0;border-radius:17px;background:#eef3ec;cursor:pointer;box-shadow:0 7px 18px rgba(38,55,40,.1)}
-.home-memory-photo.is-featured{aspect-ratio:auto;min-height:250px}
+.home-memory-photos{position:relative;z-index:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.home-memory-photo{position:relative;min-width:0;aspect-ratio:1/1;padding:0;overflow:hidden;border:0;border-radius:17px;background:#eef3ec;cursor:pointer;box-shadow:0 7px 18px rgba(38,55,40,.1)}
 .home-memory-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s ease}
 .home-memory-photo:hover img{transform:scale(1.025)}
 .home-memory-photo span{position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;gap:1px;padding:24px 11px 10px;text-align:left;color:#fff;background:linear-gradient(transparent,rgba(22,31,24,.75))}
-.home-memory-photo b{font-size:11px}.home-memory-photo time{font-size:10px;opacity:.85}
+.home-memory-photo b{font-size:14px}.home-memory-photo time{font-size:12px;opacity:.9}
+.home-memory-add{min-width:0;aspect-ratio:1/1;border:1px dashed #bacbb9;border-radius:17px;background:#f4f8f2;color:var(--primary);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer}.home-memory-add span{font-size:30px}.home-memory-add b{font-size:14px}
+.home-memory-foot{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;color:var(--sub);font-size:14px}.home-memory-foot button{border:0;background:transparent;color:var(--primary);font-size:14px;font-weight:700;min-height:44px;padding:0 8px;cursor:pointer}
 .home-memory-empty{position:relative;z-index:1;width:100%;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;padding:18px;border:1px dashed #bacbb9;border-radius:18px;background:rgba(255,255,255,.72);text-align:left;color:var(--text);cursor:pointer}
 .home-memory-empty>span{width:44px;height:44px;display:grid;place-items:center;border-radius:14px;background:#e7f1e3;color:var(--primary);font-size:24px}.home-memory-empty b,.home-memory-empty small{display:block}.home-memory-empty small{margin-top:3px;color:var(--sub)}.home-memory-empty em{font-size:24px;font-style:normal;color:var(--primary)}
 .petgrow-dashboard-home [data-home-extra="petinfo"]>div:nth-child(2){grid-template-columns:repeat(2,minmax(0,1fr))!important}
@@ -44,9 +45,9 @@
   .petgrow-dashboard-home .dash-pet-metrics{margin-top:12px}
   .home-memory-diary{margin:14px 0 22px;padding:18px 15px;border-radius:22px}
   .home-memory-head{align-items:center}.home-memory-head h2{font-size:19px}.home-memory-head p{display:none}
-  .home-memory-photos{display:flex;overflow-x:auto;gap:9px;padding:0 1px 6px;scroll-snap-type:x mandatory;scrollbar-width:none}.home-memory-photos::-webkit-scrollbar{display:none}
-  .home-memory-photo,.home-memory-photo.is-featured{flex:0 0 72%;min-height:224px;aspect-ratio:4/5;scroll-snap-align:start}
-  .home-memory-photo:not(.is-featured){flex-basis:48%}
+  .home-memory-photos{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .home-memory-photo,.home-memory-add{aspect-ratio:1/1;min-height:0}
+  .home-memory-photo span{padding:24px 9px 9px}
   .petgrow-dashboard-home [data-home-extra="petinfo"]>div:nth-child(2){display:flex!important;overflow-x:auto;scroll-snap-type:x mandatory}.petgrow-dashboard-home [data-home-extra="petinfo"]>div:nth-child(2)>*{flex:0 0 86%;scroll-snap-align:start}
   .petgrow-dashboard-home .dash-widget-grid{grid-template-columns:1fr!important}
   .memory-diary-album{padding:19px 15px!important}
@@ -59,5 +60,5 @@
   .petgrow-dashboard-home .dash-pet-spotlight{grid-template-columns:76px minmax(0,1fr) auto!important}
   .petgrow-dashboard-home .dash-pet-photo{width:76px!important;height:76px!important;border-radius:20px!important}
   .petgrow-dashboard-home .dash-pet-metrics span:nth-child(n+3){display:none}
-  .home-memory-head .bg-chip{padding:7px 9px;font-size:10px}
+  .home-memory-head .bg-chip{padding:9px 10px;font-size:14px;white-space:nowrap}
 }
