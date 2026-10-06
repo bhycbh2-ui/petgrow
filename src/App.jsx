@@ -9242,7 +9242,7 @@ function FeaturePetHeader({ pet }) {
 /* ============================================================
    ResultPage
    ============================================================ */
-function ResultPage({ pet, breedGroups, onAddRecord, onDeleteRecord, onAddPhoto, onEditPhoto, onDeletePhoto, onEdit, onDelete, onUpdateProfileImage, onToggleVaccineItem }) {
+function ResultPage({ pet, diaryOnly = false, breedGroups, onAddRecord, onDeleteRecord, onAddPhoto, onEditPhoto, onDeletePhoto, onEdit, onDelete, onUpdateProfileImage, onToggleVaccineItem }) {
   const lang = useLang();
   const t = useT();
   const { profile, records, photos } = pet;
@@ -9298,6 +9298,8 @@ function ResultPage({ pet, breedGroups, onAddRecord, onDeleteRecord, onAddPhoto,
       newEstimateKg: newEstimate,
     });
   };
+
+  if (diaryOnly) return <PhotoAlbum birthDate={profile.birthDate} photos={photos || []} onAdd={onAddPhoto} onEdit={onEditPhoto} onDelete={onDeletePhoto} />;
 
   return (
     <div className="pet-result-page" style={{ maxWidth: 900, margin: "0 auto", padding: "18px 20px 60px" }}>
@@ -10465,7 +10467,7 @@ function HomeCareGuides() {
   </section>;
 }
 
-function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
+function HomePage({ account, pets = [], lang, onGoPets, onGoDiary, onGoView }) {
   const t = useT();
   const visiblePets = account ? pets : [];
   const pet = visiblePets[0] || null;
@@ -10521,12 +10523,12 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoView }) {
       <section className={`dash-pet-spotlight ${pet ? "has-pet" : "empty"}`} onClick={onGoPets}>
         {pet ? <>
           <div className="dash-pet-photo">{pet.profile.profileImage ? <img src={pet.profile.profileImage} alt={`${petName || "반려동물"} 프로필`} fetchPriority="high" /> : <span>{pet.species === "cat" ? "🐱" : "🐶"}</span>}</div>
-          <div className="dash-pet-copy"><small>{lang === "en" ? "TODAY WITH MY PET" : "오늘의 우리 아이"}</small><h2 className="pet-user-name">{petName}</h2><p>{[pet.profile.breedName, petAgeLabel(pet.profile.birthDate, lang)].filter(Boolean).join(" · ")}</p><div className="dash-pet-metrics"><span><b>{weight ? `${Number(weight).toFixed(1)}kg` : "—"}</b><small>{lang === "en" ? "Weight" : "현재 체중"}</small></span><span><b>{pet.profile.gender === "male" ? "♂" : pet.profile.gender === "female" ? "♀" : "—"}</b><small>{lang === "en" ? "Gender" : "성별"}</small></span><span><b>{pet.species === "cat" ? "CAT" : "DOG"}</b><small>{lang === "en" ? "Type" : "구분"}</small></span></div></div>
+          <div className="dash-pet-copy"><small>{lang === "en" ? "TODAY WITH MY PET" : "오늘의 우리 아이"}</small><h2 className="pet-user-name">{petName}</h2><p>{[pet.profile.breedName, petAgeLabel(pet.profile.birthDate, lang)].filter(Boolean).join(" · ")}</p><div className="dash-pet-metrics"><span><b>{weight ? `${Number(weight).toFixed(1)}kg` : "—"}</b><small>{lang === "en" ? "Weight" : "현재 체중"}</small></span><span><b>{pet.profile.gender === "male" ? (lang === "en" ? "Male" : "남아 ♂") : pet.profile.gender === "female" ? (lang === "en" ? "Female" : "여아 ♀") : (lang === "en" ? "Not set" : "미등록")}</b><small>{lang === "en" ? "Gender" : "성별"}</small></span><span><b>{lang === "en" ? (pet.species === "cat" ? "CAT" : "DOG") : (pet.species === "cat" ? "고양이" : "강아지")}</b><small>{lang === "en" ? "Type" : "구분"}</small></span></div></div>
           <div className="dash-pet-arrow">›</div>
         </> : <><div className="dash-empty-icon">＋</div><div><h2>{lang === "en" ? "Add your pet" : "우리 아이를 등록해보세요"}</h2><p>{lang === "en" ? "Start growth records and personalized features." : "성장 기록과 맞춤 기능을 바로 시작할 수 있어요."}</p></div><div className="dash-pet-arrow">›</div></>}
       </section>
 
-      {pet && <HomeMemoryDiary pet={pet} lang={lang} onOpen={onGoPets} />}
+      {pet && <HomeMemoryDiary pet={pet} lang={lang} onOpen={() => onGoDiary(pet)} />}
 
       <TodayPetHomeCard account={account} onOpenSaju={()=>onGoView("saju")} onOpenTarot={()=>onGoView("tarot")} lang={lang} />
 
@@ -11872,9 +11874,9 @@ function AppInner({ lang, setLang }) {
   const [deleteTarget, setDeleteTarget] = useState(null); // {id, name} | null
 
   // 'about' | 'pets' | 'saju' | 'petbti' | 'tips' | 'guide' | 'privacy' | 'terms'
-  const viewFromUrl=()=>{try{const value=new URLSearchParams(window.location.search).get("view")||"home";return ["home","about","pets","nearby","community","saju","tarot","petbti","music","tips","news","guide","my","support","ad-inquiry"].includes(value)?value:"home"}catch{return "home"}};
+  const viewFromUrl=()=>{try{const value=new URLSearchParams(window.location.search).get("view")||"home";return ["home","about","pets","diary","nearby","community","saju","tarot","petbti","music","tips","news","guide","my","support","ad-inquiry"].includes(value)?value:"home"}catch{return "home"}};
   const [view, setView] = useState(viewFromUrl);
-  const GATED_VIEWS = ["pets", "saju", "petbti", "content", "my", "admin"];
+  const GATED_VIEWS = ["pets", "diary", "saju", "petbti", "content", "my", "admin"];
 
   // ---- 계정(카카오 로그인) ----
   const [account, setAccount] = useState(readCachedAccount);
@@ -11885,8 +11887,8 @@ function AppInner({ lang, setLang }) {
   const needsLogin = authChecked && GATED_VIEWS.includes(view) && !account;
   const effectiveView = needsLogin ? "login" : view;
   useEffect(()=>{
-    const ko={home:"PetGrow",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",news:"Pet뉴스",guide:"정보가이드",my:"회원정보",support:"고객지원",login:"로그인"};
-    const en={home:"PetGrow",about:"About",pets:"My Pet",nearby:"Nearby Pet",community:"Pet Talk",saju:"Pet Saju",tarot:"Pet Tarot",petbti:"PetBTI",music:"Pet Music",tips:"Pet Info",news:"Pet News",guide:"Guide",my:"Account",support:"Support",login:"Login"};
+    const ko={home:"PetGrow",about:"소개",pets:"우리 아이",diary:"추억 다이어리",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",news:"Pet뉴스",guide:"정보가이드",my:"회원정보",support:"고객지원",login:"로그인"};
+    const en={home:"PetGrow",about:"About",pets:"My Pet",diary:"Memory diary",nearby:"Nearby Pet",community:"Pet Talk",saju:"Pet Saju",tarot:"Pet Tarot",petbti:"PetBTI",music:"Pet Music",tips:"Pet Info",news:"Pet News",guide:"Guide",my:"Account",support:"Support",login:"Login"};
     const label=(lang==="en"?en:ko)[effectiveView]||"PetGrow";
     document.title=label==="PetGrow"?"PetGrow | 반려동물 성장·생활 플랫폼":`${label} | PetGrow`;
   },[effectiveView,lang]);
@@ -12219,7 +12221,7 @@ function AppInner({ lang, setLang }) {
       if(next==="home")url.searchParams.delete("view");else url.searchParams.set("view",next);
       if(current!==next)window.history.pushState({petgrowView:next},"",`${url.pathname}${url.search}${url.hash}`);
     }catch{}
-    if(currentAccount?.id)logPetActivity({section:next,action:"view",title:({home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",news:"Pet뉴스",guide:"정보가이드",my:"마이페이지",support:"고객지원"}[next]||next)});
+    if(currentAccount?.id)logPetActivity({section:next,action:"view",title:({home:"홈",about:"소개",pets:"우리 아이",diary:"추억 다이어리",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",news:"Pet뉴스",guide:"정보가이드",my:"마이페이지",support:"고객지원"}[next]||next)});
     scrollToTop();
   };
 
@@ -12235,6 +12237,16 @@ function AppInner({ lang, setLang }) {
     ...pets.cat.map((p) => ({ ...p, species: "cat" })),
   ];
   const featurePet = allPets.find((p) => p.id === featurePetId) || currentPet || allPets[0] || null;
+
+  const diaryPet = currentPet || allPets[0] || null;
+  const openDiary = (pet) => {
+    if (pet) {
+      setSpecies(pet.species);
+      persistActive({ ...activeId, [pet.species]: pet.id });
+    }
+    setMode("view");
+    goView("diary");
+  };
 
   const handleAddPet = (profileData) => {
     const isFirstEver = pets.dog.length + pets.cat.length === 0;
@@ -12291,8 +12303,11 @@ function AppInner({ lang, setLang }) {
   };
 
   const updateCurrentPet = (updater) => {
-    const nextList = currentList.map((p) => (p.id === currentPet.id ? updater(p) : p));
-    persistPets({ ...pets, [species]: nextList });
+    const target = view === "diary" ? diaryPet : currentPet;
+    if (!target) return;
+    const targetSpecies = target.species || species;
+    const nextList = pets[targetSpecies].map((p) => (p.id === target.id ? updater(p) : p));
+    persistPets({ ...pets, [targetSpecies]: nextList });
   };
   // PetBTI는 현재 활성 반려동물이 아닌 다른 아이를 테스트할 수도 있어서, 강아지·고양이 목록 전체에서 id로 찾아 업데이트해요
   const handleUpdatePetBti = (petId, petBti) => {
@@ -12540,7 +12555,13 @@ function AppInner({ lang, setLang }) {
         <AboutPage onStart={() => goView("pets")} onNavigate={(v) => goView(v)} />
       ) : effectiveView === "home" ? (
         <HomePage account={account} pets={allPets} lang={lang}
-          onGoPets={() => goView("pets")} onGoView={(v) => goView(v)} />
+          onGoPets={() => goView("pets")} onGoDiary={openDiary} onGoView={(v) => goView(v)} />
+      ) : effectiveView === "diary" ? (
+        <div className="legal-page-shell">
+          <div className="dash-section-head"><h1>{lang === "en" ? "Memory diary" : "추억 다이어리"}</h1><button type="button" className="bg-chip" onClick={() => goView("home")}>{lang === "en" ? "Home" : "홈으로"}</button></div>
+          <PetPicker pets={allPets} activeId={diaryPet?.id} onSelect={(id) => openDiary(allPets.find((p) => p.id === id))} />
+          {diaryPet ? <ResultPage key={diaryPet.id} pet={diaryPet} breedGroups={breedGroups} diaryOnly onAddPhoto={handleAddPhoto} onEditPhoto={handleEditPhoto} onDeletePhoto={handleDeletePhoto} /> : <section className="bg-card"><h2>{lang === "en" ? "Add your pet first" : "먼저 우리 아이를 등록해주세요"}</h2><button type="button" className="bg-btn" onClick={() => { setMode("onboarding"); goView("pets"); }}>{lang === "en" ? "Add pet" : "우리 아이 등록"}</button></section>}
+        </div>
       ) : effectiveView === "more" ? (
         <MoreMenuPage lang={lang} onNavigate={(v)=>goView(v)} />
       ) : effectiveView === "guide" ? (
