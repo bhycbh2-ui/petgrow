@@ -62,3 +62,22 @@
   .petgrow-dashboard-home .dash-pet-metrics span:nth-child(n+3){display:none}
   .home-memory-head .bg-chip{padding:9px 10px;font-size:14px;white-space:nowrap}
 }
+
+.memory-notebook-compose { padding: 18px; border: 1px solid #d6e4da; border-radius: 18px; background: #f7faf6; }
+.memory-notebook h4 { margin: 0 0 14px; font-size: 17px; }
+.memory-notebook-date { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; font-size: 14px; }
+.memory-notebook-date input { min-width: 0; max-width: 100%; padding: 9px 12px; border: 1px solid #d6e4da; border-radius: 10px; background: white; color: inherit; font: inherit; }
+.memory-notebook-label { display: block; margin-bottom: 8px; font-size: 13px; }
+.memory-notebook textarea { width: 100%; box-sizing: border-box; resize: vertical; min-height: 130px; padding: 14px; border: 1px solid #d6e4da; border-radius: 12px; background: white; color: inherit; font: inherit; line-height: 1.75; }
+.memory-notebook textarea:focus { outline: 2px solid var(--primary); outline-offset: 2px; }
+.memory-notebook-actions { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 12px; }
+.memory-notebook-actions > div { display: flex; gap: 8px; }
+.memory-notebook-actions small { color: #67766b; }
+.memory-notebook-error { color: #a13428; font-size: 14px; }
+.memory-notebook-entries { display: grid; gap: 12px; margin: 22px 0; }
+.memory-notebook-entries h4 { margin-bottom: 0; }
+.memory-notebook-entry { border: 1px solid #e2e6da; border-radius: 16px; padding: 18px; background: #fffdf6; }
+.memory-notebook-entry time { color: #56745e; font-size: 13px; font-weight: 700; }
+.memory-notebook-entry p { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.85; margin: 12px 0; }
+.memory-notebook-entry-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.memory-notebook .bg-btn { padding: 9px 14px; font-size: 13px; }

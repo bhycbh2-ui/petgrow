@@ -1,3 +1,5 @@
+import DiaryNotebook from "./DiaryNotebook.jsx";
+import { saveDiaryEntry, persistDiaryChange } from "./pet-diary.js";
 import HomeInfoMusicSections from "./HomeInfoMusicSections.jsx";
 import React, { useState, useMemo, useEffect, useRef, useContext, createContext } from "react";
 import * as LeafletLib from "leaflet";
@@ -5657,7 +5659,7 @@ function groupPhotosByMonth(photos, birthDate) {
   }));
 }
 
-function PhotoAlbum({ birthDate, photos, onAdd, onEdit, onDelete }) {
+function PhotoAlbum({ birthDate, photos, onAdd, onEdit, onDelete, diaryEntries, onSaveDiary, onDeleteDiary }) {
   const t = useT();
   const lang = useLang();
   // 슬라이드쇼는 오래된 순으로 넘겨보는 게 자연스러워서 별도로 정렬해요
@@ -5690,6 +5692,8 @@ function PhotoAlbum({ birthDate, photos, onAdd, onEdit, onDelete }) {
       <p className="bg-sub memory-diary-intro">
         {lang === "en" ? "Add a photo and date to keep your pet’s everyday story in one place." : "사진과 날짜를 남기면 우리 아이의 하루가 시간순으로 쌓여요."}
       </p>
+      <DiaryNotebook entries={diaryEntries} onSave={onSaveDiary} onDelete={onDeleteDiary} lang={lang} />
+      <h4>{lang === "en" ? "Photo memories" : "사진으로 남긴 추억"}</h4>
       <AddPhotoCard onAdd={onAdd} />
       {groups.length > 0 ? (
         <div className="memory-diary-timeline">
@@ -9242,7 +9246,7 @@ function FeaturePetHeader({ pet }) {
 /* ============================================================
    ResultPage
    ============================================================ */
-function ResultPage({ pet, diaryOnly = false, breedGroups, onAddRecord, onDeleteRecord, onAddPhoto, onEditPhoto, onDeletePhoto, onEdit, onDelete, onUpdateProfileImage, onToggleVaccineItem }) {
+function ResultPage({ pet, diaryOnly = false, breedGroups, onAddRecord, onDeleteRecord, onAddPhoto, onEditPhoto, onDeletePhoto, onSaveDiary, onDeleteDiary, onEdit, onDelete, onUpdateProfileImage, onToggleVaccineItem }) {
   const lang = useLang();
   const t = useT();
   const { profile, records, photos } = pet;
@@ -9299,7 +9303,7 @@ function ResultPage({ pet, diaryOnly = false, breedGroups, onAddRecord, onDelete
     });
   };
 
-  if (diaryOnly) return <PhotoAlbum birthDate={profile.birthDate} photos={photos || []} onAdd={onAddPhoto} onEdit={onEditPhoto} onDelete={onDeletePhoto} />;
+  if (diaryOnly) return <PhotoAlbum birthDate={profile.birthDate} photos={photos || []} onAdd={onAddPhoto} onEdit={onEditPhoto} onDelete={onDeletePhoto} diaryEntries={pet.diaryEntries || []} onSaveDiary={onSaveDiary} onDeleteDiary={onDeleteDiary} />;
 
   return (
     <div className="pet-result-page" style={{ maxWidth: 900, margin: "0 auto", padding: "18px 20px 60px" }}>
@@ -9340,7 +9344,7 @@ function ResultPage({ pet, diaryOnly = false, breedGroups, onAddRecord, onDelete
             <ShareIcon style={{ width: 16, height: 16 }} /> {t.shareCardBtn}
           </button>
         </div>
-        <PhotoAlbum birthDate={profile.birthDate} photos={photos} onAdd={onAddPhoto} onEdit={onEditPhoto} onDelete={onDeletePhoto} />
+        <PhotoAlbum birthDate={profile.birthDate} photos={photos} onAdd={onAddPhoto} onEdit={onEditPhoto} onDelete={onDeletePhoto} diaryEntries={pet.diaryEntries || []} onSaveDiary={onSaveDiary} onDeleteDiary={onDeleteDiary} />
         <GrowthChartCard table={table} ageMonths={ageAtLatest} currentWeightKg={latest.weightKg} statusDiffGrams={latest.diffGrams} />
         <GrowthTableCard table={table} />
         <RecordSection records={sortedRecords} onAddRecord={handleAddRecord} onDeleteRecord={onDeleteRecord} />
@@ -12315,6 +12319,17 @@ function AppInner({ lang, setLang }) {
     const nextList = pets[targetSpecies].map((p) => (p.id === target.id ? updater(p) : p));
     persistPets({ ...pets, [targetSpecies]: nextList });
   };
+  const saveDiaryChange = async (change) => {
+    try {
+      const next = await persistDiaryChange({ pets, target: view === "diary" ? diaryPet : currentPet, species, account, write: safeSet, change });
+      if (!next) { flashSaveToast(false); return false; }
+      setPets(next);
+      flashSaveToast(true);
+      return true;
+    } catch { flashSaveToast(false); return false; }
+  };
+  const handleSaveDiary = (entry) => saveDiaryChange((entries) => saveDiaryEntry(entries, entry));
+  const handleDeleteDiary = (id) => saveDiaryChange((entries) => entries.filter((entry) => entry.id !== id));
   // PetBTI는 현재 활성 반려동물이 아닌 다른 아이를 테스트할 수도 있어서, 강아지·고양이 목록 전체에서 id로 찾아 업데이트해요
   const handleUpdatePetBti = (petId, petBti) => {
     const nextDogs = pets.dog.map((p) => (p.id === petId ? { ...p, petBti } : p));
@@ -12566,7 +12581,7 @@ function AppInner({ lang, setLang }) {
         <div className="legal-page-shell">
           <div className="dash-section-head"><h1>{lang === "en" ? "Memory diary" : "추억 다이어리"}</h1><button type="button" className="bg-chip" onClick={() => goView("home")}>{lang === "en" ? "Home" : "홈으로"}</button></div>
           <PetPicker pets={allPets} activeId={diaryPet?.id} onSelect={(id) => openDiary(allPets.find((p) => p.id === id))} />
-          {diaryPet ? <ResultPage key={diaryPet.id} pet={diaryPet} breedGroups={breedGroups} diaryOnly onAddPhoto={handleAddPhoto} onEditPhoto={handleEditPhoto} onDeletePhoto={handleDeletePhoto} /> : <section className="bg-card"><h2>{lang === "en" ? "Add your pet first" : "먼저 우리 아이를 등록해주세요"}</h2><button type="button" className="bg-btn" onClick={() => { setMode("onboarding"); goView("pets"); }}>{lang === "en" ? "Add pet" : "우리 아이 등록"}</button></section>}
+          {diaryPet ? <ResultPage key={diaryPet.id} pet={diaryPet} breedGroups={breedGroups} diaryOnly onSaveDiary={handleSaveDiary} onDeleteDiary={handleDeleteDiary} onAddPhoto={handleAddPhoto} onEditPhoto={handleEditPhoto} onDeletePhoto={handleDeletePhoto} /> : <section className="bg-card"><h2>{lang === "en" ? "Add your pet first" : "먼저 우리 아이를 등록해주세요"}</h2><button type="button" className="bg-btn" onClick={() => { setMode("onboarding"); goView("pets"); }}>{lang === "en" ? "Add pet" : "우리 아이 등록"}</button></section>}
         </div>
       ) : effectiveView === "more" ? (
         <MoreMenuPage lang={lang} onNavigate={(v)=>goView(v)} />
@@ -12634,6 +12649,8 @@ function AppInner({ lang, setLang }) {
             onDeleteRecord={handleDeleteRecord}
             onAddPhoto={handleAddPhoto}
             onEditPhoto={handleEditPhoto}
+            onSaveDiary={handleSaveDiary}
+            onDeleteDiary={handleDeleteDiary}
             onDeletePhoto={handleDeletePhoto}
             onEdit={() => setMode("edit")}
             onDelete={requestDeletePet}
