@@ -10463,7 +10463,7 @@ function HomeCareGuides() {
     <div className="petgrow-care-reading-grid">{CARE_GUIDE_LINKS.map(([slug, category, title, description]) => <article key={slug}>
       <small>{category}</small><h3><a href={`/guides/${slug}.html`}>{title}</a></h3><p>{description}</p>
     </article>)}</div>
-    <div className="petgrow-care-reading-note"><h3>기록을 상담에 활용하는 방법</h3><p>날짜와 관찰한 사실을 짧게 남기세요. 체중 변화가 있었다면 측정 조건과 식사량을, 산책을 힘들어했다면 기온과 쉬었던 지점을 함께 적으면 전후 상황을 비교하기 쉽습니다. 사진과 기록은 진료 때 보여줄 참고자료이며 기록만으로 건강 상태를 판단하지 않습니다.</p><p>갑자기 평소와 다른 모습이 나타나면 온라인 글만으로 원인을 단정하지 말고 동물병원에 문의하세요. 가이드는 일반적인 생활 정보이며 개별 진단이나 치료를 대신하지 않습니다.</p><a href="/contact.html">오류 제보·문의</a></div>
+    <div className="petgrow-care-reading-note"><h3>기록을 상담에 활용하는 방법</h3><p>날짜와 관찰한 사실을 짧게 남기세요. 체중 변화가 있었다면 측정 조건과 식사량을, 산책을 힘들어했다면 기온과 쉬었던 지점을 함께 적으면 전후 상황을 비교하기 쉽습니다. 사진과 기록은 진료 때 보여줄 참고자료이며 기록만으로 건강 상태를 판단하지 않습니다.</p><p>갑자기 평소와 다른 모습이 나타나면 온라인 글만으로 원인을 단정하지 말고 동물병원에 문의하세요. 가이드는 일반적인 생활 정보이며 개별 진단이나 치료를 대신하지 않습니다.</p><a href="/editorial-policy.html">콘텐츠 편집 원칙</a> · <a href="/contact.html">오류 제보·문의</a></div>
   </section>;
 }
 
