@@ -1,6 +1,26 @@
 const ABOUT_PAGE_NEXT = String.raw`function AboutPage({ onStart, onNavigate }) {
   const lang = useLang();
   const en = lang === 'en';
+  const aboutRef = useRef(null);
+  useEffect(() => {
+    const root = aboutRef.current;
+    if (!root || window.matchMedia('(prefers-reduced-motion: reduce)').matches || typeof IntersectionObserver === 'undefined') return;
+    const targets = Array.from(root.querySelectorAll('.pgo-reveal'));
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
+    targets.forEach(target => {
+      if (target.getBoundingClientRect().top < window.innerHeight - 30) target.classList.add('is-visible');
+      else observer.observe(target);
+    });
+    root.classList.add('pgo-animate');
+    return () => observer.disconnect();
+  }, []);
   const go = view => onNavigate ? onNavigate(view) : onStart();
   const sections = [
     { id:'records', image:'/about-menu-records.webp', Icon:PawIcon, title:en?'My pet, growing every day':'우리 아이의 성장과 생활 기록', desc:en?'Build a profile for each dog or cat. Keep weight and everyday changes together and explore growth estimates.':'강아지와 고양이의 프로필을 각각 등록하고, 체중과 생활 변화를 차곡차곡 남겨요. 성장 기록을 살펴보고 예상 성장도 확인할 수 있어요.', links:[['pets',en?'Open My Pet':'우리 아이 기록하기']] },
@@ -10,17 +30,17 @@ const ABOUT_PAGE_NEXT = String.raw`function AboutPage({ onStart, onNavigate }) {
     { id:'music', image:'/about-menu-music.webp', Icon:MusicIcon, title:en?'A soundtrack for time together':'함께 듣는 음악, 편안한 휴식', desc:en?'Listen to music for dogs and cats, replay your favorites and share reactions through likes and comments.':'반려동물과 함께하는 일상에 어울리는 음악을 만나보세요. 좋아하는 곡을 반복해서 듣고, 좋아요와 댓글로 감상을 나눌 수 있어요.', links:[['music',en?'Listen to Pet Music':'Pet음악 듣기']] },
     { id:'fun', image:'/about-menu-fun.webp', Icon:SajuIcon, title:en?'A little fun with your pet':'우리 아이를 알아보는 작은 재미', desc:en?'Explore PetBTI, Pet Saju and a daily tarot card for lighthearted moments with your pet.':'PetBTI로 우리 아이의 성향을 살펴보고, Pet사주와 Pet타로로 하루의 재미를 더해보세요. 가볍게 즐기는 콘텐츠로 반려생활에 새로운 이야기를 만들어요.', links:[['petbti','PetBTI'],['saju',en?'Pet Saju':'Pet사주'],['tarot',en?'Pet Tarot':'Pet타로']] },
   ];
-  return <main className="landing-root pg-about-next pg-about-overview">
+  return <main ref={aboutRef} className="landing-root pg-about-next pg-about-overview">
     <section className="pgo-hero">
       <div className="pgo-hero-copy"><span className="pgo-eyebrow">HELLO, PETGROW</span><h1>{en?<>Every moment with your pet,<br/><em>together in PetGrow.</em></>:<>반려생활의 모든 순간을,<br/><em>펫그로우에서.</em></>}</h1><p>{en?'From growth records and diaries to community, helpful information and music. A place for the days you share with your dog or cat.':'우리 아이의 성장과 소중한 일상부터, 함께 나누는 이야기와 필요한 정보까지. 강아지·고양이와 보내는 하루를 기록하고 즐기는 반려생활 공간이에요.'}</p><div className="pgo-actions"><button type="button" className="pgo-primary" onClick={onStart}>{en?'Start with My Pet':'우리 아이 등록하기'}</button><a className="pgo-secondary" href="#petgrow-features">{en?'Explore all features':'전체 기능 살펴보기'}</a></div><div className="pgo-hero-tags"><span>{en?'Dogs & cats':'강아지·고양이'}</span><span>{en?'Photos & diaries':'사진·일기 기록'}</span><span>{en?'A shared pet life':'함께하는 반려생활'}</span></div></div>
 
     </section>
 
-    <section className="pgo-video"><div><span className="pgo-eyebrow">PETGROW IN A MINUTE</span><h2>{en?'A glimpse of life together':'영상으로 만나는 펫그로우'}</h2><p>{en?'Watch the introduction at your own pace.':'함께 기록하고 즐기는 반려생활, 영상으로 먼저 만나보세요.'}</p></div><div className="pgo-video-frame"><IntroVideo /></div></section>
-    <section className="pgo-features" id="petgrow-features"><div className="pgo-section-head"><span className="pgo-eyebrow">EXPLORE PETGROW</span><h2>{en?'Everything you can do in PetGrow':'펫그로우에서 할 수 있는 일'}</h2></div><div className="pgo-feature-grid">{sections.map(({id,image,Icon,title,desc,links},index)=><article className="pgo-feature" key={id}><div className="pgo-feature-image"><img src={image} alt={title} loading="lazy" /></div><div className="pgo-feature-body"><div className="pgo-feature-top"><span className="pgo-feature-icon"><Icon/></span><span className="pgo-number">0{index+1}</span></div><h3>{title}</h3><p>{desc}</p><div className="pgo-feature-links">{links.map(([key,label])=><button type="button" key={key} onClick={()=>go(key)}>{label}</button>)}</div></div></article>)}</div></section>
-    <section className="pgo-start"><div><span className="pgo-eyebrow">YOUR FIRST DAY</span><h2>{en?'A simple way to begin':'첫 시작은 간단하게'}</h2><p>{en?'Start small and add more moments over time.':'우리 아이를 등록하고, 오늘의 작은 순간 하나를 남겨보세요.'}</p></div><ol><li><b>01</b><div><h3>{en?'Create a pet profile':'우리 아이 프로필 등록'}</h3><p>{en?'Add your pet’s name, breed and basic information.':'이름, 견종·묘종, 생일 등 기본 정보를 입력해요.'}</p></div></li><li><b>02</b><div><h3>{en?'Leave your first record':'첫 번째 기록 남기기'}</h3><p>{en?'Keep a weight record, a photo or a short diary.':'체중 기록이나 사진, 짧은 일기로 하루를 남겨요.'}</p></div></li><li><b>03</b><div><h3>{en?'Explore your pet life':'필요한 기능 즐기기'}</h3><p>{en?'Discover community stories, information and music.':'Pet톡과 정보, 음악 등 원하는 기능을 둘러봐요.'}</p></div></li></ol></section>
+    <section className="pgo-video pgo-reveal"><div><span className="pgo-eyebrow">PETGROW IN A MINUTE</span><h2>{en?'A glimpse of life together':'영상으로 만나는 펫그로우'}</h2><p>{en?'Watch the introduction at your own pace.':'함께 기록하고 즐기는 반려생활, 영상으로 먼저 만나보세요.'}</p></div><div className="pgo-video-frame"><IntroVideo /></div></section>
+    <section className="pgo-features" id="petgrow-features"><div className="pgo-section-head pgo-reveal"><span className="pgo-eyebrow">EXPLORE PETGROW</span><h2>{en?'Everything you can do in PetGrow':'펫그로우에서 할 수 있는 일'}</h2></div><div className="pgo-feature-grid">{sections.map(({id,image,Icon,title,desc,links},index)=><article className="pgo-feature pgo-reveal" key={id}><div className="pgo-feature-image"><img src={image} alt={title} loading="lazy" /></div><div className="pgo-feature-body"><div className="pgo-feature-top"><span className="pgo-feature-icon"><Icon/></span><span className="pgo-number">0{index+1}</span></div><h3>{title}</h3><p>{desc}</p><div className="pgo-feature-links">{links.map(([key,label])=><button type="button" key={key} onClick={()=>go(key)}>{label}</button>)}</div></div></article>)}</div></section>
+    <section className="pgo-start pgo-reveal"><div><span className="pgo-eyebrow">YOUR FIRST DAY</span><h2>{en?'A simple way to begin':'첫 시작은 간단하게'}</h2><p>{en?'Start small and add more moments over time.':'우리 아이를 등록하고, 오늘의 작은 순간 하나를 남겨보세요.'}</p></div><ol><li><b>01</b><div><h3>{en?'Create a pet profile':'우리 아이 프로필 등록'}</h3><p>{en?'Add your pet’s name, breed and basic information.':'이름, 견종·묘종, 생일 등 기본 정보를 입력해요.'}</p></div></li><li><b>02</b><div><h3>{en?'Leave your first record':'첫 번째 기록 남기기'}</h3><p>{en?'Keep a weight record, a photo or a short diary.':'체중 기록이나 사진, 짧은 일기로 하루를 남겨요.'}</p></div></li><li><b>03</b><div><h3>{en?'Explore your pet life':'필요한 기능 즐기기'}</h3><p>{en?'Discover community stories, information and music.':'Pet톡과 정보, 음악 등 원하는 기능을 둘러봐요.'}</p></div></li></ol></section>
 
-    <section className="pgo-finish"><div><span className="pgo-eyebrow">OUR DAYS, OUR STORY</span><h2>{en?'Your pet’s story starts today.':'오늘의 기록이 우리 아이의 이야기가 돼요.'}</h2><p>{en?'Keep a moment, share a story and enjoy another day together.':'작은 순간을 남기고, 이야기를 나누며 함께하는 하루를 더 특별하게 만들어보세요.'}</p></div><button type="button" className="pgo-primary" onClick={onStart}>{en?'Start PetGrow':'펫그로우 시작하기'}</button></section>
+    <section className="pgo-finish pgo-reveal"><div><span className="pgo-eyebrow">OUR DAYS, OUR STORY</span><h2>{en?'Your pet’s story starts today.':'오늘의 기록이 우리 아이의 이야기가 돼요.'}</h2><p>{en?'Keep a moment, share a story and enjoy another day together.':'작은 순간을 남기고, 이야기를 나누며 함께하는 하루를 더 특별하게 만들어보세요.'}</p></div><button type="button" className="pgo-primary" onClick={onStart}>{en?'Start PetGrow':'펫그로우 시작하기'}</button></section>
   </main>;
 }`;
 
