@@ -7,11 +7,11 @@ const app=readFileSync(new URL("../src/App.jsx",import.meta.url),"utf8");
 const transformed=transformAboutNext(app);
 const css=readFileSync(new URL("../src/petgrow-about-next-20260905.css",import.meta.url),"utf8");
 
-test("About page uses the PetGrow record-insight-care narrative",()=>{
-  assert.match(transformed,/className="landing-root pg-about-next"/);
-  assert.match(transformed,/RECORD → INSIGHT → CARE/);
-  assert.match(transformed,/기록이 쌓일수록/);
-  assert.match(transformed,/우리 아이에게 필요한 기능을 하나의 흐름으로/);
+test("About page introduces the complete pet life experience",()=>{
+  assert.match(transformed,/className="landing-root pg-about-next pg-about-overview"/);
+  for (const feature of ['성장과 생활 기록','다이어리','Pet톡','정보와 뉴스','음악','PetBTI','Pet사주','Pet타로','내 주변 Pet']) assert.ok(transformed.includes(feature));
+  assert.match(transformed,/<IntroVideo \/>/);
+  assert.doesNotMatch(transformed,/GROWTH SIGNAL|\+12\.4%/);
 });
 
 test("About page supports desktop, mobile and reduced-motion layouts",()=>{

@@ -1,109 +1,26 @@
 const ABOUT_PAGE_NEXT = String.raw`function AboutPage({ onStart, onNavigate }) {
   const lang = useLang();
-  const en = lang === "en";
-  const go = (view) => (onNavigate ? onNavigate(view) : onStart());
-  const features = [
-    { key: "pets", Icon: PawIcon, index: "01", title: en ? "Growth records" : "성장 기록", desc: en ? "Keep weight, photos and everyday changes together." : "체중·사진·생활 변화를 한곳에 차곡차곡 기록해요." },
-    { key: "community", Icon: PlusIcon, index: "02", title: en ? "Pet Talk" : "Pet톡", desc: en ? "Share everyday moments and practical questions." : "일상과 질문을 다른 보호자들과 편하게 나눠요." },
-    { key: "saju", Icon: SajuIcon, index: "03", title: en ? "Saju & fortune" : "사주·운세", desc: en ? "Enjoy lighthearted insights made for your pet." : "우리 아이 정보로 만든 재미 콘텐츠를 즐겨요." },
-    { key: "tarot", Icon: CatIcon, index: "04", title: en ? "Pet Tarot" : "Pet타로", desc: en ? "Draw a daily message with a calm card ritual." : "하루 한 장의 메시지를 차분한 카드 경험으로 만나요." },
-    { key: "music", Icon: MusicIcon, index: "05", title: en ? "Pet Music" : "Pet음악", desc: en ? "Play music for rest, sleep and time together." : "휴식·수면·교감 시간에 어울리는 음악을 들어요." },
-    { key: "nearby", Icon: MapPinIcon, index: "06", title: en ? "Nearby Pet" : "내 주변 Pet", desc: en ? "Find useful pet places around your location." : "내 주변 병원·약국·미용·돌봄 장소를 찾아요." },
+  const en = lang === 'en';
+  const go = view => onNavigate ? onNavigate(view) : onStart();
+  const sections = [
+    { id:'records', Icon:PawIcon, title:en?'My pet, growing every day':'우리 아이의 성장과 생활 기록', desc:en?'Build a profile for each dog or cat. Keep weight and everyday changes together and explore growth estimates.':'강아지와 고양이의 프로필을 각각 등록하고, 체중과 생활 변화를 차곡차곡 남겨요. 성장 기록을 살펴보고 예상 성장도 확인할 수 있어요.', links:[['pets',en?'Open My Pet':'우리 아이 기록하기']] },
+    { id:'diary', Icon:CameraIcon, title:en?'Small moments, lasting memories':'사진과 글로 남기는 다이어리', desc:en?'Write a few words about a walk, a meal or a lovely moment. Save dated photos and read your latest diary on home.':'산책한 날, 잘 먹은 날, 유난히 귀여웠던 순간을 짧은 일기로 남겨요. 날짜별 사진과 글을 모으고 홈에서 최근 일기를 다시 만나보세요.', links:[['pets',en?'Open diary':'다이어리 시작하기']] },
+    { id:'community', Icon:TalkIcon, title:en?'Everyday stories, shared':'보호자들과 함께 나누는 Pet톡', desc:en?'Share everyday photos, ask questions and exchange experiences with other pet parents through comments and likes.':'반려동물의 일상과 사진을 공유하고, 궁금한 점을 물어보세요. 댓글과 좋아요로 이야기를 나누며 다른 보호자들의 경험을 만날 수 있어요.', links:[['community',en?'Visit Pet Talk':'Pet톡 둘러보기']] },
+    { id:'info', Icon:LightbulbIcon, title:en?'Helpful information in one place':'알아두면 좋은 정보와 뉴스', desc:en?'Explore pet care tips and guides, browse recent pet news and find nearby places for daily care.':'행동·건강·돌봄에 관한 Pet정보와 반려생활 가이드를 읽어보세요. 반려동물 뉴스와 주변 병원·미용·돌봄 장소도 함께 찾아볼 수 있어요.', links:[['tips',en?'Pet Info':'Pet정보'],['guide',en?'Guides':'정보가이드'],['news',en?'Pet News':'Pet뉴스'],['nearby',en?'Nearby Pet':'내 주변 Pet']] },
+    { id:'music', Icon:MusicIcon, title:en?'A soundtrack for time together':'함께 듣는 음악, 편안한 휴식', desc:en?'Listen to music for dogs and cats, replay your favorites and share reactions through likes and comments.':'반려동물과 함께하는 일상에 어울리는 음악을 만나보세요. 좋아하는 곡을 반복해서 듣고, 좋아요와 댓글로 감상을 나눌 수 있어요.', links:[['music',en?'Listen to Pet Music':'Pet음악 듣기']] },
+    { id:'fun', Icon:SajuIcon, title:en?'A little fun with your pet':'우리 아이를 알아보는 작은 재미', desc:en?'Explore PetBTI, Pet Saju and a daily tarot card for lighthearted moments with your pet.':'PetBTI로 우리 아이의 성향을 살펴보고, Pet사주와 Pet타로로 하루의 재미를 더해보세요. 가볍게 즐기는 콘텐츠로 반려생활에 새로운 이야기를 만들어요.', links:[['petbti','PetBTI'],['saju',en?'Pet Saju':'Pet사주'],['tarot',en?'Pet Tarot':'Pet타로']] },
   ];
-  return (
-    <main className="landing-root pg-about-next">
-      <section className="pgx-section pgx-about-hero">
-        <div className="pgx-about-wrap pgx-hero-grid">
-          <div className="pgx-hero-copy about-fade">
-            <div className="pgx-kicker"><span>LIVE</span> PETGROW · PET LIFE SYSTEM</div>
-            <h1>{en ? <>The more you record,<br/><em>the better you understand.</em></> : <>기록이 쌓일수록<br/><em>우리 아이를 더 잘 이해해요.</em></>}</h1>
-            <p>{en ? "PetGrow connects growth, daily care, community and delightful content around one pet profile." : "성장 기록부터 일상 돌봄, 커뮤니티와 재미 콘텐츠까지. 우리 아이 프로필 하나로 반려생활의 흐름을 자연스럽게 이어갑니다."}</p>
-            <div className="pgx-hero-actions">
-              <button type="button" className="pgx-primary" onClick={onStart}>{en ? "Start with my pet" : "우리 아이와 시작하기"}<span>↗</span></button>
-              <button type="button" className="pgx-secondary" onClick={() => go("pets")}>{en ? "See growth records" : "성장 기록 살펴보기"}</button>
-            </div>
-            <div className="pgx-hero-proof"><span><ShieldIcon/> {en ? "Private account records" : "계정 기반 안전한 기록"}</span><span><LeafIcon/> {en ? "Made for daily care" : "매일 쓰기 쉬운 돌봄 도구"}</span></div>
-          </div>
-          <div className="pgx-hero-visual about-fade" aria-label={en ? "PetGrow record, insight and care system" : "PetGrow 기록, 이해, 돌봄 시스템"}>
-            <div className="pgx-photo-stack">
-              <figure className="pgx-photo pgx-photo-dog"><img src="/pettalk-demo-dog.webp" alt={en ? "A dog in everyday life" : "일상을 보내는 강아지"}/><figcaption>DOG · DAILY</figcaption></figure>
-              <figure className="pgx-photo pgx-photo-cat"><img src="/pettalk-demo-cat.webp" alt={en ? "A cat in everyday life" : "일상을 보내는 고양이"}/><figcaption>CAT · MOMENT</figcaption></figure>
-            </div>
-            <div className="pgx-signal-card">
-              <div className="pgx-signal-head"><span>GROWTH SIGNAL</span><b>LIVE</b></div>
-              <div className="pgx-signal-chart" aria-hidden="true"><i/><i/><i/><i/><i/><i/></div>
-              <div className="pgx-signal-foot"><strong>{en ? "Small changes, clearly." : "작은 변화도 선명하게."}</strong><span>RECORD → INSIGHT → CARE</span></div>
-            </div>
-            <div className="pgx-orbit-mark"><PetGrowLogo/></div>
-          </div>
-        </div>
-      </section>
-
-      <section className="pgx-section pgx-system-band">
-        <div className="pgx-about-wrap">
-          <p className="pgx-section-label">THE PETGROW WAY</p>
-          <div className="pgx-system-grid">
-            <article><span>01</span><div><b>{en ? "Record" : "기록"}</b><p>{en ? "Capture growth and daily moments without complexity." : "성장과 일상의 순간을 어렵지 않게 남깁니다."}</p></div></article>
-            <article><span>02</span><div><b>{en ? "Understand" : "이해"}</b><p>{en ? "Turn accumulated records into an easy-to-read flow." : "쌓인 기록을 한눈에 읽히는 흐름으로 바꿉니다."}</p></div></article>
-            <article><span>03</span><div><b>{en ? "Grow together" : "함께 성장"}</b><p>{en ? "Use that understanding for better days together." : "그 이해를 더 좋은 반려생활로 이어갑니다."}</p></div></article>
-          </div>
-        </div>
-      </section>
-
-      <section className="pgx-section pgx-capabilities">
-        <div className="pgx-about-wrap">
-          <div className="pgx-section-head"><div><p className="pgx-section-label">ONE PROFILE, ONE FLOW</p><h2>{en ? "Everything your pet needs, connected." : "우리 아이에게 필요한 기능을 하나의 흐름으로."}</h2></div><p>{en ? "Open the feature you need now. Every experience stays connected to the same pet." : "지금 필요한 기능을 바로 열어보세요. 모든 경험은 같은 우리 아이를 중심으로 이어집니다."}</p></div>
-          <div className="pgx-feature-grid">
-            {features.map(({key,Icon,index,title,desc}) => <button type="button" className="pgx-feature-card" key={key} onClick={() => go(key)}><span className="pgx-feature-index">{index}</span><span className="pgx-feature-icon"><Icon/></span><strong>{title}</strong><p>{desc}</p><span className="pgx-feature-arrow">↗</span></button>)}
-          </div>
-        </div>
-      </section>
-
-      <section className="pgx-section pgx-record-story">
-        <div className="pgx-about-wrap pgx-story-grid">
-          <div className="pgx-story-copy">
-            <p className="pgx-section-label">FROM MOMENT TO MEANING</p>
-            <h2>{en ? "Not just a photo album. A readable growth story." : "사진을 모으는 데서 끝나지 않는, 읽히는 성장 이야기."}</h2>
-            <p>{en ? "Weight, photos and notes form one timeline, so you can notice how today differs from yesterday." : "체중, 사진, 생활 기록이 하나의 타임라인에 쌓여 어제와 오늘의 차이를 자연스럽게 발견할 수 있어요."}</p>
-            <button type="button" className="pgx-text-link" onClick={() => go("pets")}>{en ? "Open My Pet" : "우리 아이 기록 열기"}<span>→</span></button>
-          </div>
-          <div className="pgx-record-panel" aria-label={en ? "Growth record preview" : "성장 기록 미리보기"}>
-            <div className="pgx-record-top"><div><small>MY PET · GROWTH</small><b>{en ? "A steady rhythm" : "꾸준히 이어지는 성장 리듬"}</b></div><span>+12.4%</span></div>
-            <div className="pgx-record-bars" aria-hidden="true">{[32,43,40,58,65,72,86].map((h,i)=><i key={i} style={{height:h+"%"}}/>)}</div>
-            <div className="pgx-record-meta"><span><b>7</b>{en ? "records" : "개의 기록"}</span><span><b>3</b>{en ? "photo moments" : "번의 사진 순간"}</span><span><b>1</b>{en ? "connected profile" : "개의 연결 프로필"}</span></div>
-          </div>
-        </div>
-      </section>
-
-      <section className="pgx-section pgx-community-story">
-        <div className="pgx-about-wrap pgx-community-grid">
-          <div className="pgx-community-preview">
-            <article className="pgx-talk-card pgx-talk-main"><header><img src="/pettalk-demo-dog.webp" alt=""/><div><b>{en ? "Butter’s guardian" : "버터네 보호자"}</b><span>{en ? "Daily · just now" : "일상 · 방금 전"}</span></div></header><p>{en ? "We took our first calm walk today. Small steps felt like a big milestone." : "오늘 천천히 첫 산책을 다녀왔어요. 작은 한 걸음이 큰 성장처럼 느껴졌어요."}</p><footer>♡ 24 <span>💬 7</span></footer></article>
-            <article className="pgx-talk-card pgx-talk-side"><span>PET TALK</span><b>{en ? "Everyday answers from people who understand." : "같은 마음을 아는 보호자들의 생활 답변."}</b></article>
-          </div>
-          <div className="pgx-story-copy pgx-story-copy-light">
-            <p className="pgx-section-label">SHARE THE REAL DAYS</p>
-            <h2>{en ? "Growth becomes warmer when it is shared." : "함께 나누면 반려생활은 조금 더 든든해집니다."}</h2>
-            <p>{en ? "Ask practical questions, share small wins and discover useful stories from other guardians." : "생활 속 궁금한 점을 묻고, 작은 성장을 자랑하고, 다른 보호자의 경험에서 필요한 힌트를 찾아보세요."}</p>
-            <button type="button" className="pgx-light-link" onClick={() => go("community")}>{en ? "Go to Pet Talk" : "Pet톡 둘러보기"}<span>↗</span></button>
-          </div>
-        </div>
-      </section>
-
-      <section className="pgx-section pgx-start">
-        <div className="pgx-about-wrap">
-          <div className="pgx-start-card">
-            <div className="pgx-start-mark"><PetGrowLogo/></div>
-            <p className="pgx-section-label">START SMALL, GROW TOGETHER</p>
-            <h2>{en ? "Begin with one profile today." : "오늘, 우리 아이 프로필 하나부터 시작하세요."}</h2>
-            <p>{en ? "The first record becomes tomorrow’s understanding." : "첫 기록이 내일의 이해가 되고, 함께한 시간이 우리 아이만의 성장 이야기가 됩니다."}</p>
-            <button type="button" className="pgx-primary pgx-primary-light" onClick={onStart}>{en ? "Start PetGrow" : "PetGrow 시작하기"}<span>↗</span></button>
-          </div>
-          <div className="pgx-trust-row"><span><ShieldIcon/>{en ? "Account-based data" : "계정 기반 기록"}</span><span><InfoIcon/>{en ? "Clear guidance" : "명확한 이용 안내"}</span><span><LeafIcon/>{en ? "Everyday pet care" : "반려생활 중심"}</span></div>
-        </div>
-      </section>
-    </main>
-  );
+  return <main className="landing-root pg-about-next pg-about-overview">
+    <section className="pgo-hero">
+      <div className="pgo-hero-copy"><span className="pgo-eyebrow">HELLO, PETGROW</span><h1>{en?<>Every moment with your pet,<br/><em>together in PetGrow.</em></>:<>반려생활의 모든 순간을,<br/><em>펫그로우에서.</em></>}</h1><p>{en?'From growth records and diaries to community, helpful information and music. A place for the days you share with your dog or cat.':'우리 아이의 성장과 소중한 일상부터, 함께 나누는 이야기와 필요한 정보까지. 강아지·고양이와 보내는 하루를 기록하고 즐기는 반려생활 공간이에요.'}</p><div className="pgo-actions"><button type="button" className="pgo-primary" onClick={onStart}>{en?'Start with My Pet':'우리 아이 등록하기'}</button><a className="pgo-secondary" href="#petgrow-features">{en?'Explore all features':'전체 기능 살펴보기'}</a></div><div className="pgo-hero-tags"><span>{en?'Dogs & cats':'강아지·고양이'}</span><span>{en?'Photos & diaries':'사진·일기 기록'}</span><span>{en?'A shared pet life':'함께하는 반려생활'}</span></div></div>
+      <div className="pgo-hero-photos"><figure><img src="/pettalk-demo-dog.webp" alt={en?'A dog enjoying a daily moment':'반려생활의 순간을 함께하는 강아지'}/><figcaption>{en?'Growing together':'함께 자라는 하루'}</figcaption></figure><figure><img src="/pettalk-demo-cat.webp" alt={en?'A cat enjoying a quiet moment':'편안한 일상을 보내는 고양이'}/><figcaption>{en?'Memories together':'함께 쌓는 추억'}</figcaption></figure></div>
+    </section>
+    <section className="pgo-intro"><span className="pgo-eyebrow">ONE PLACE, MANY MOMENTS</span><h2>{en?'Record. Share. Explore. Enjoy.':'기록하고, 나누고, 알아보고, 즐겨요.'}</h2><p>{en?'PetGrow brings the tools and content of everyday pet life into one place. Choose what you need today.':'펫그로우는 반려동물의 성장 기록과 다이어리, 커뮤니티와 다양한 콘텐츠를 한곳에 모았어요. 오늘 필요한 기능부터 편하게 이용해보세요.'}</p></section>
+    <section className="pgo-features" id="petgrow-features"><div className="pgo-section-head"><span className="pgo-eyebrow">EXPLORE PETGROW</span><h2>{en?'Everything you can do in PetGrow':'펫그로우에서 할 수 있는 일'}</h2></div><div className="pgo-feature-grid">{sections.map(({id,Icon,title,desc,links},index)=><article className="pgo-feature" key={id}><div className="pgo-feature-top"><span className="pgo-feature-icon"><Icon/></span><span className="pgo-number">0{index+1}</span></div><h3>{title}</h3><p>{desc}</p><div className="pgo-feature-links">{links.map(([key,label])=><button type="button" key={key} onClick={()=>go(key)}>{label}</button>)}</div></article>)}</div></section>
+    <section className="pgo-start"><div><span className="pgo-eyebrow">YOUR FIRST DAY</span><h2>{en?'A simple way to begin':'첫 시작은 간단하게'}</h2><p>{en?'Start small and add more moments over time.':'우리 아이를 등록하고, 오늘의 작은 순간 하나를 남겨보세요.'}</p></div><ol><li><b>01</b><div><h3>{en?'Create a pet profile':'우리 아이 프로필 등록'}</h3><p>{en?'Add your pet’s name, breed and basic information.':'이름, 견종·묘종, 생일 등 기본 정보를 입력해요.'}</p></div></li><li><b>02</b><div><h3>{en?'Leave your first record':'첫 번째 기록 남기기'}</h3><p>{en?'Keep a weight record, a photo or a short diary.':'체중 기록이나 사진, 짧은 일기로 하루를 남겨요.'}</p></div></li><li><b>03</b><div><h3>{en?'Explore your pet life':'필요한 기능 즐기기'}</h3><p>{en?'Discover community stories, information and music.':'Pet톡과 정보, 음악 등 원하는 기능을 둘러봐요.'}</p></div></li></ol></section>
+    <section className="pgo-video"><div><span className="pgo-eyebrow">A DAY WITH PETGROW</span><h2>{en?'A glimpse of life together':'펫그로우와 함께하는 반려생활'}</h2><p>{en?'Watch the introduction at your own pace.':'소개 영상으로 함께하는 일상을 만나보세요.'}</p></div><div className="pgo-video-frame"><IntroVideo /></div></section>
+    <section className="pgo-finish"><div><span className="pgo-eyebrow">OUR DAYS, OUR STORY</span><h2>{en?'Your pet’s story starts today.':'오늘의 기록이 우리 아이의 이야기가 돼요.'}</h2><p>{en?'Keep a moment, share a story and enjoy another day together.':'작은 순간을 남기고, 이야기를 나누며 함께하는 하루를 더 특별하게 만들어보세요.'}</p></div><button type="button" className="pgo-primary" onClick={onStart}>{en?'Start PetGrow':'펫그로우 시작하기'}</button></section>
+  </main>;
 }`;
 
 function functionBodyStart(code, start) {
