@@ -2,14 +2,39 @@
 .pg-mobile-discovery{display:none}
 
 @media (min-width:900px){
-  .petgrow-web-layout{padding-left:0!important;background:#f8faf8!important}
-  .petgrow-web-layout .petgrow-page-top{width:min(1240px,calc(100% - 40px))!important;max-width:1240px!important;padding:14px 0 0!important}
+  .bboggl-root.petgrow-web-layout{--pg-desktop-gutter:clamp(20px,2.4vw,44px);padding-left:0!important;background:#f8faf8!important}
+  .bboggl-root.petgrow-web-layout .petgrow-page-top,
+  .bboggl-root.petgrow-web-layout .petgrow-content-stage{
+    width:calc(100% - 2 * var(--pg-desktop-gutter))!important;
+    max-width:none!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+    box-sizing:border-box;
+  }
+  .bboggl-root.petgrow-web-layout .petgrow-page-top{padding:14px 0 0!important}
+  .bboggl-root.petgrow-web-layout .petgrow-content-stage{padding:28px 0 72px!important;min-width:0}
+  .bboggl-root.petgrow-web-layout > div[style*="max-width: 900"][style*="40px"]{
+    width:calc(100% - 2 * var(--pg-desktop-gutter))!important;
+    max-width:none!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+    box-sizing:border-box;
+  }
   .petgrow-web-layout .desktop-nav-shell{display:flex!important;position:sticky!important;top:12px!important;min-height:72px!important;margin:0 auto 24px!important;border-radius:22px!important}
   .petgrow-sidebar{display:none!important}
-  .petgrow-content-stage{width:min(1180px,calc(100% - 40px));margin-inline:auto}
   .desktop-nav-links{justify-content:center!important;gap:5px!important}
   .desktop-nav-link{padding-inline:13px!important;white-space:nowrap}
+  .bboggl-root.petgrow-web-layout .desktop-nav-shell{flex-wrap:wrap!important;gap:12px!important}
+  .bboggl-root.petgrow-web-layout .desktop-nav-links{min-width:0;flex-wrap:wrap!important}
+  .desktop-all-menu{display:flex;align-items:center;gap:7px;min-height:42px;padding:9px 12px;border:1px solid #dfe6e1;border-radius:12px;background:#fff;color:#315245;font-family:inherit;font-size:14px;font-weight:700;line-height:1.4;white-space:nowrap;cursor:pointer}
+  .desktop-all-menu:hover{background:#eaf4ec}
+  .desktop-all-menu:focus-visible{outline:2px solid var(--primary);outline-offset:3px}
   .app-bottom-nav{display:none!important}
+}
+
+@media (min-width:900px) and (max-width:1200px){
+  .bboggl-root.petgrow-web-layout .desktop-nav-links{order:3;flex-basis:100%!important;justify-content:space-evenly!important}
+  .bboggl-root.petgrow-web-layout .desktop-nav-actions{margin-left:auto}
 }
 
 @media (max-width:899px){

@@ -12495,6 +12495,7 @@ function AppInner({ lang, setLang }) {
               </nav>
 
               <div className="desktop-nav-actions">
+                <button type="button" className="desktop-all-menu" aria-label={lang === "en" ? "All menus" : "전체 메뉴"} aria-expanded={hamOpen} onClick={() => setHamOpen(true)}><HamburgerIcon style={{ width: 20, height: 20 }} /><span>{lang === "en" ? "All menus" : "전체 메뉴"}</span></button>
                 <LangToggle lang={lang} onChange={setLang} />
                 <AccountButton account={account} onOpen={() => (account ? setAccountModalOpen(true) : goView("pets"))} />
               </div>
