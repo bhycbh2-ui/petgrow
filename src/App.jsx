@@ -12486,16 +12486,24 @@ function AppInner({ lang, setLang }) {
               </button>
 
               <nav className="desktop-nav-links" aria-label={lang === "en" ? "Main navigation" : "주요 메뉴"}>
+                <button type="button" className={`desktop-nav-link ${view === "home" ? "active" : ""}`} onClick={() => goView("home")}><HomeIcon />{lang === "en" ? "Home" : "홈"}</button>
                 <button type="button" className={`desktop-nav-link ${view === "about" ? "active" : ""}`} onClick={() => goView("about")}><InfoIcon />{t.aboutNav}</button>
                 <button type="button" className={`desktop-nav-link ${view === "pets" ? "active" : ""}`} onClick={() => goView("pets")}><HeartOutlineIcon />{t.myPetsNav}</button>
                 <button type="button" className={`desktop-nav-link ${view === "community" ? "active" : ""}`} onClick={() => goView("community")}><TalkIcon />{t.communityNav}</button>
                 <button type="button" className={`desktop-nav-link ${view === "saju" ? "active" : ""}`} onClick={() => goView("saju")}><SajuIcon />{t.sajuNav}</button>
                 <button type="button" className={`desktop-nav-link ${view === "petbti" ? "active" : ""}`} onClick={() => goView("petbti")}><PetBtiIcon />{t.petBtiNav}</button>
                 <button type="button" className={`desktop-nav-link ${view === "tips" ? "active" : ""}`} onClick={() => goView("tips")}><LightbulbIcon />{t.tipsTitle}</button>
+                <button type="button" className={`desktop-nav-link ${view === "tarot" ? "active" : ""}`} onClick={() => goView("tarot")}><SajuIcon />{lang === "en" ? "Pet Tarot" : "Pet타로"}</button>
+                <button type="button" className={`desktop-nav-link ${view === "music" ? "active" : ""}`} onClick={() => goView("music")}><MusicIcon />{lang === "en" ? "Pet Music" : "Pet음악"}</button>
+                <button type="button" className={`desktop-nav-link ${view === "news" ? "active" : ""}`} onClick={() => goView("news")}><InfoIcon />{lang === "en" ? "Pet News" : "Pet뉴스"}</button>
+                <button type="button" className={`desktop-nav-link ${view === "nearby" ? "active" : ""}`} onClick={() => goView("nearby")}><MapPinIcon />{t.nearbyNav}</button>
+                <button type="button" className={`desktop-nav-link ${view === "guide" ? "active" : ""}`} onClick={() => goView("guide")}><InfoIcon />{lang === "en" ? "Guide" : "정보가이드"}</button>
+                <button type="button" className={`desktop-nav-link ${view === "my" ? "active" : ""}`} onClick={() => goView("my")}><UserIcon />{lang === "en" ? "My Page" : "마이페이지"}</button>
+                <button type="button" className={`desktop-nav-link ${view === "support" ? "active" : ""}`} onClick={() => goView("support")}><InfoIcon />{lang === "en" ? "Support" : "고객지원"}</button>
+                <button type="button" className={`desktop-nav-link ${view === "ad-inquiry" ? "active" : ""}`} onClick={() => goView("ad-inquiry")}><MailIcon />{lang === "en" ? "Advertising" : "광고·제휴"}</button>
               </nav>
 
               <div className="desktop-nav-actions">
-                <button type="button" className="desktop-all-menu" aria-label={lang === "en" ? "All menus" : "전체 메뉴"} aria-expanded={hamOpen} onClick={() => setHamOpen(true)}><HamburgerIcon style={{ width: 20, height: 20 }} /><span>{lang === "en" ? "All menus" : "전체 메뉴"}</span></button>
                 <LangToggle lang={lang} onChange={setLang} />
                 <AccountButton account={account} onOpen={() => (account ? setAccountModalOpen(true) : goView("pets"))} />
               </div>
