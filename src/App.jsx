@@ -1,3 +1,4 @@
+import { loadPetState, petViewStatus } from "./pet-state-loader.js";
 import PetGrowIntroVideo from "./PetGrowIntroVideo.jsx";
 import DesktopNavigation from "./DesktopNavigation.jsx";
 import { createSessionChecker } from "./session-checker.js";
@@ -10406,7 +10407,17 @@ function HomeCareGuides() {
   </section>;
 }
 
-function HomePage({ account, pets = [], lang, onGoPets, onGoDiary, onGoView }) {
+function PetDataNotice({ status, lang, onRetry }) {
+  const error = status === "error";
+  return <section className="bg-card pet-data-notice" role={error ? "alert" : "status"} aria-busy={!error} style={{maxWidth:760,margin:"20px auto",padding:"28px 22px",textAlign:"center"}}>
+    <span style={{fontSize:30}}>🐾</span>
+    <h2 style={{fontSize:18,margin:"12px 0 8px"}}>{lang === "en" ? (error ? "Could not load your pet information" : "Loading your pet information") : (error ? "우리 아이 정보를 불러오지 못했어요" : "우리 아이 정보를 불러오고 있어요")}</h2>
+    <p className="bg-sub" style={{fontSize:14,lineHeight:1.6}}>{lang === "en" ? (error ? "Please check your connection and try again." : "Your saved profile and records will appear shortly.") : (error ? "연결 상태를 확인한 뒤 다시 시도해 주세요." : "저장된 프로필과 기록을 확인하고 있어요. 잠시만 기다려 주세요.")}</p>
+    {error && <button type="button" className="bg-btn" onClick={onRetry}>{lang === "en" ? "Try again" : "다시 불러오기"}</button>}
+  </section>;
+}
+
+function HomePage({ account, pets = [], petStatus = "ready", onRetryPets, lang, onGoPets, onGoDiary, onGoView }) {
   const t = useT();
   const visiblePets = account ? pets : [];
   const pet = visiblePets[0] || null;
@@ -10459,7 +10470,7 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoDiary, onGoView }) {
 
       <MobileContentHighlights lang={lang} onNavigate={onGoView} />
 
-      <section className={`dash-pet-spotlight ${pet ? "has-pet" : "empty"}`} onClick={onGoPets}>
+      {petStatus !== "ready" ? <PetDataNotice status={petStatus} lang={lang} onRetry={onRetryPets} /> : <section className={`dash-pet-spotlight ${pet ? "has-pet" : "empty"}`} onClick={onGoPets}>
         {pet ? <>
           <div className="dash-pet-photo">{pet.profile.profileImage ? <img src={pet.profile.profileImage} alt={`${petName || "반려동물"} 프로필`} fetchPriority="high" /> : <span>{pet.species === "cat" ? "🐱" : "🐶"}</span>}</div>
           <div className="dash-pet-copy"><small>{lang === "en" ? "TODAY WITH MY PET" : "오늘의 우리 아이"}</small><h2 className="pet-user-name">{petName}</h2><p>{[pet.profile.breedName, petAgeLabel(pet.profile.birthDate, lang)].filter(Boolean).join(" · ")}</p><div className="dash-pet-metrics"><span><b>{weight ? `${Number(weight).toFixed(1)}kg` : "—"}</b><small>{lang === "en" ? "Weight" : "현재 체중"}</small></span><span><b>{pet.profile.gender === "male" ? (lang === "en" ? "Male" : "남아 ♂") : pet.profile.gender === "female" ? (lang === "en" ? "Female" : "여아 ♀") : (lang === "en" ? "Not set" : "미등록")}</b><small>{lang === "en" ? "Gender" : "성별"}</small></span><span><b>{lang === "en" ? (pet.species === "cat" ? "CAT" : "DOG") : (pet.species === "cat" ? "고양이" : "강아지")}</b><small>{lang === "en" ? "Type" : "구분"}</small></span></div></div>
@@ -10467,9 +10478,10 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoDiary, onGoView }) {
         </> : <><div className="dash-empty-icon">＋</div><div><h2>{lang === "en" ? "Add your pet" : "우리 아이를 등록해보세요"}</h2><p>{lang === "en" ? "Start growth records and personalized features." : "성장 기록과 맞춤 기능을 바로 시작할 수 있어요."}</p></div><div className="dash-pet-arrow">›</div></>}
       </section>
 
-      {pet && <HomeMemoryDiary pet={pet} lang={lang} onOpen={() => onGoDiary(pet)} />}
+      }
+      {petStatus === "ready" && pet && <HomeMemoryDiary pet={pet} lang={lang} onOpen={() => onGoDiary(pet)} />}
 
-      <TodayPetHomeCard account={account} onOpenSaju={()=>onGoView("saju")} onOpenTarot={()=>onGoView("tarot")} lang={lang} />
+      {petStatus === "ready" && <TodayPetHomeCard account={account} onOpenSaju={()=>onGoView("saju")} onOpenTarot={()=>onGoView("tarot")} lang={lang} />}
 
       <section className="dash-section"><div className="dash-section-head"><h2>{lang === "en" ? "Quick access" : "자주 사용하는 메뉴"}</h2><button type="button" className="bg-chip" onClick={()=>setQuickEditing(v=>!v)}>{quickEditing?(lang==='en'?'Done':'완료'):(lang==='en'?'Edit':'편집')}</button></div>{quickEditing&&<div className="bg-card" style={{padding:14,marginBottom:12}}><p className="bg-sub" style={{fontSize:12,margin:'0 0 10px'}}>{lang==='en'?'Choose up to six shortcuts, then reorder them below. Signed-in choices sync to your account.':'원하는 메뉴를 최대 6개까지 선택한 뒤 아래에서 순서를 바꿀 수 있어요. 로그인하면 계정에 저장돼 다른 기기에서도 그대로 보여요.'}</p><div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>{allQuick.map(([key,icon,label])=><button type="button" key={key} className={`bg-chip ${quickKeys.includes(key)?'active':''}`} onClick={()=>toggleQuick(key)}>{icon} {label}</button>)}</div><div className="quick-order-list">{quick.map(([key,icon,label])=><div className={`quick-order-row ${quickDragKey===key?'dragging':''}`} data-quick-key={key} key={key} draggable onDragStart={()=>setQuickDragKey(key)} onDragOver={e=>{e.preventDefault();if(quickDragKey&&quickDragKey!==key){reorderQuick(quickDragKey,key);setQuickDragKey(key)}}} onDragEnd={endQuickPointerDrag}><span><i>{icon}</i><b>{label}</b></span><button type="button" className="quick-drag-handle" aria-label={`${label} 순서 이동`} title={lang==='en'?'Drag to reorder':'끌어서 순서 변경'} onPointerDown={e=>beginQuickPointerDrag(e,key)} onPointerMove={moveQuickPointer} onPointerUp={endQuickPointerDrag} onPointerCancel={endQuickPointerDrag}>≡</button></div>)}</div></div>}<div className="dash-quick-grid">{quick.map(([key,icon,label])=><button type="button" key={key} onClick={()=>key==="pets"?onGoPets():onGoView(key)}><i>{icon}</i><span>{label}</span></button>)}</div></section>
       {/* HOME_INFO_MUSIC_SAFE_20260819 */}
@@ -10554,13 +10566,13 @@ function PetContentPage({ subTab, onSubTabChange, allPets, featurePet, onSelectF
       {subTab === "saju" && (
         <>
           <PetPicker pets={allPets} activeId={featurePet?.id} onSelect={onSelectFeaturePet} />
-          <SajuPage pet={featurePet} onGoRegister={onGoRegister} />
+          <SajuPage key={featurePet?.id || "empty"} pet={featurePet} onGoRegister={onGoRegister} />
         </>
       )}
       {subTab === "petbti" && (
         <>
           <PetPicker pets={allPets} activeId={featurePet?.id} onSelect={onSelectFeaturePet} />
-          <PetBtiPage pet={featurePet} onUpdatePetBti={onUpdatePetBti} onGoRegister={onGoRegister} />
+          <PetBtiPage key={featurePet?.id || "empty"} pet={featurePet} onUpdatePetBti={onUpdatePetBti} onGoRegister={onGoRegister} />
         </>
       )}
       {subTab === "tips" && <TipsPage />}
@@ -11821,6 +11833,11 @@ function AppInner({ lang, setLang }) {
   const authEpochRef = useRef(0);
   const [account, setAccount] = useState(readCachedAccount);
   const [authChecked, setAuthChecked] = useState(false);
+  const [authResolved, setAuthResolved] = useState(false);
+  const [authLoadError, setAuthLoadError] = useState(false);
+  const [petLoad, setPetLoad] = useState({ accountId: null, status: "loading" });
+  const [petLoadRetry, setPetLoadRetry] = useState(0);
+  const petStatus = petViewStatus({ authResolved, authError: authLoadError, accountId: account?.id, load: petLoad });
 
   // 로그인 필요 화면 여부는 모든 effect보다 먼저 계산해야 해요.
   // 아래 통계/광고 effect에서 effectiveView를 참조하므로 TDZ(선언 전 접근) 오류를 방지합니다.
@@ -11913,8 +11930,10 @@ function AppInner({ lang, setLang }) {
       const me = meResult === undefined ? cachedAccount : meResult;
       if (meResult !== undefined) setAccount(meResult);
       else if (cachedAccount) setAccount(cachedAccount);
+      setAuthResolved(true);
+      setAuthLoadError(meResult === undefined && !cachedAccount);
       setAuthChecked(true);
-      // 로그인 확인만 끝나면 홈부터 먼저 보여주고, 반려동물 데이터는 아래에서 비동기로 채워요.
+      // 인증 결과를 먼저 반영하고 반려동물 조회 상태는 각 메뉴에서 별도로 표시해요.
       setLoaded(true);
       // 로그인 직전에 받은 약관/개인정보 동의 기록을 계정 상태에도 저장해요.
       if (me) {
@@ -11927,118 +11946,57 @@ function AppInner({ lang, setLang }) {
         } catch {}
       }
 
-      if (epoch !== authEpochRef.current) return;
-      const dogsKey = "bboggl:dogs";
-      const catsKey = "bboggl:cats";
-      const activesKey = "bboggl:activeIds";
-
-      let [dogs, cats, actives] = await Promise.all([
-        safeGet(dogsKey, me),
-        safeGet(catsKey, me),
-        safeGet(activesKey, me),
-      ]);
-
-      if (epoch !== authEpochRef.current) return;
-      if (!me) {
-        // 로그인 전(게스트) 상태에서만 예전 버전 로컬 데이터를 함께 확인해요
-        if (!dogs || dogs.length === 0) {
-          const guestDogs = await safeGet("bboggl:dogs:guest", me);
-          if (guestDogs && guestDogs.length > 0) { dogs = guestDogs; safeSet(dogsKey, dogs, me); }
-        }
-        if (!cats || cats.length === 0) {
-          const guestCats = await safeGet("bboggl:cats:guest", me);
-          if (guestCats && guestCats.length > 0) { cats = guestCats; safeSet(catsKey, cats, me); }
-        }
-        if (!dogs || dogs.length === 0) {
-          const legacyProfile = await safeGet("bboggl:profile", me);
-          if (legacyProfile) {
-            const legacyRecords = (await safeGet("bboggl:records", me)) || [{
-              id: "initial", date: new Date().toISOString().slice(0, 10), weightKg: legacyProfile.initialWeightKg,
-            }];
-            const legacyPhotos = (await safeGet("bboggl:photos", me)) || {};
-            dogs = [{
-              id: "dog-legacy",
-              profile: { ...legacyProfile, species: "dog" },
-              records: legacyRecords,
-              photos: normalizePhotos(legacyPhotos, legacyProfile.birthDate),
-            }];
-            safeSet(dogsKey, dogs, me);
-          }
-        }
-      }
-
-      if (epoch !== authEpochRef.current) return;
-      dogs = (dogs || []).map((p) => ({ ...p, profile: { ...p.profile, name: normalizePetDisplayText(p.profile?.name, "") }, photos: normalizePhotos(p.photos, p.profile.birthDate) }));
-      cats = (cats || []).map((p) => ({ ...p, profile: { ...p.profile, name: normalizePetDisplayText(p.profile?.name, "") }, photos: normalizePhotos(p.photos, p.profile.birthDate) }));
-
-      // 비로그인 상태에서는 과거 localStorage 데이터를 화면 상태에 올리지 않아요.
-      // 데이터 자체는 삭제하지 않아, 이후 로그인 시 기존 데이터 이전 안내에 사용할 수 있어요.
-      if (!me) {
-        dogs = [];
-        cats = [];
-      }
-
-      setPets({ dog: dogs, cat: cats });
-      setActiveId({
-        dog: (actives && actives.dog) || (dogs[0] && dogs[0].id) || null,
-        cat: (actives && actives.cat) || (cats[0] && cats[0].id) || null,
-      });
-
-      // 로그인된 계정인데 클라우드에 등록된 아이가 하나도 없다면, 로그인 전 이 기기에 남아있던
-      // 데이터가 있는지 확인해서 계정으로 이전할지 물어봐요 (중복 이전 방지를 위해 클라우드가 비어있을 때만)
-      if (me && dogs.length === 0 && cats.length === 0) {
-        try {
-          const localDogsRaw = window.localStorage.getItem(dogsKey);
-          const localCatsRaw = window.localStorage.getItem(catsKey);
-          const localDogs = localDogsRaw ? JSON.parse(localDogsRaw) : [];
-          const localCats = localCatsRaw ? JSON.parse(localCatsRaw) : [];
-          if ((localDogs && localDogs.length > 0) || (localCats && localCats.length > 0)) {
-            setPendingMigration({ dogs: localDogs || [], cats: localCats || [] });
-          }
-        } catch {}
-      }
-
-      if (dogs.length > 0 || cats.length > 0) {
-        const today = new Date().toISOString().slice(0, 10);
-        const lastWelcome = await safeGet("bboggl:lastWelcomeDate", me);
-        if (epoch !== authEpochRef.current) return;
-        if (lastWelcome !== today) {
-          setWelcomeBackOpen(true);
-          safeSet("bboggl:lastWelcomeDate", today, me);
-        }
-      }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 로그인 확인이 늦게 끝난 경우에도 계정의 저장 데이터를 공통 React 상태로 다시 불러옵니다.
-  // 홈 전용 빠른 동기화와 메뉴 화면의 상태가 서로 달라지는 일을 막습니다.
+  // One account-specific load drives every pet-dependent menu. Failed requests are never an empty list.
   useEffect(() => {
-    if (!authChecked || !account?.id) return;
+    if (!authChecked || !authResolved) return;
+    const id = account?.id;
+    if (!id) {
+      setPets({ dog: [], cat: [] });
+      setActiveId({ dog: null, cat: null });
+      setPetLoad({ accountId: null, status: "ready" });
+      return;
+    }
     let cancelled = false;
     const epoch = authEpochRef.current;
+    const stale = () => cancelled || epoch !== authEpochRef.current;
+    setPetLoad({ accountId: id, status: "loading" });
     (async () => {
-      const [dogsRaw, catsRaw, actives] = await Promise.all([
-        cloudGet("bboggl:dogs"),
-        cloudGet("bboggl:cats"),
-        cloudGet("bboggl:activeIds"),
-      ]);
-      if (cancelled || epoch !== authEpochRef.current) return;
-      const normalizeList = (items) => (items || []).map((pet) => ({
-        ...pet,
+      const readShadow = key => { try { return JSON.parse(window.localStorage.getItem(`${key}:account:${id}`) || "null"); } catch { return null; } };
+      const { dogs: dogsRaw, cats: catsRaw, actives } = await loadPetState({ readShadow });
+      if (stale()) return;
+      const normalizeList = items => items.map(pet => ({ ...pet,
         profile: { ...pet.profile, name: normalizePetDisplayText(pet.profile?.name, "") },
         photos: normalizePhotos(pet.photos, pet.profile?.birthDate),
       }));
-      const dogs = normalizeList(dogsRaw);
-      const cats = normalizeList(catsRaw);
+      const dogs = normalizeList(dogsRaw), cats = normalizeList(catsRaw);
       setPets({ dog: dogs, cat: cats });
-      setActiveId({
-        dog: actives?.dog || dogs[0]?.id || null,
-        cat: actives?.cat || cats[0]?.id || null,
-      });
-    })().catch((error) => console.warn("계정 저장 데이터 새로고침 실패:", error));
+      setSpecies(previous => previous === "dog" && !dogs.length && cats.length ? "cat" : previous === "cat" && !cats.length && dogs.length ? "dog" : previous);
+      setActiveId({ dog: dogs.some(p => p.id === actives?.dog) ? actives.dog : dogs[0]?.id || null,
+        cat: cats.some(p => p.id === actives?.cat) ? actives.cat : cats[0]?.id || null });
+      setPetLoad({ accountId: id, status: "ready" });
+      if (dogs.length || cats.length) {
+        const today = new Date().toISOString().slice(0, 10);
+        safeGet("bboggl:lastWelcomeDate", account).then(lastWelcome => {
+          if (!stale() && lastWelcome !== today) {
+            setWelcomeBackOpen(true);
+            safeSet("bboggl:lastWelcomeDate", today, account);
+          }
+        }).catch(() => {});
+      }
+      if (!dogs.length && !cats.length) {
+        const localDogs = await localGet("bboggl:dogs"), localCats = await localGet("bboggl:cats");
+        if (!stale() && (localDogs?.length || localCats?.length)) setPendingMigration({ dogs: localDogs || [], cats: localCats || [] });
+      }
+    })().catch(error => {
+      if (!stale()) setPetLoad({ accountId: id, status: "error" });
+      console.warn("계정 저장 데이터 새로고침 실패:", error);
+    });
     return () => { cancelled = true; };
-  }, [account?.id, authChecked]);
+  }, [account?.id, authChecked, authResolved, petLoadRetry]);
 
   useEffect(() => {
     const onSignOut = (event) => {
@@ -12049,6 +12007,9 @@ function AppInner({ lang, setLang }) {
       clearAccountBrowserData();
       window.dispatchEvent(new Event("petgrow:auth-reset"));
       setAccount(null);
+      setAuthResolved(true);
+      setAuthLoadError(false);
+      setPetLoad({ accountId: null, status: "ready" });
       setAuthChecked(true);
       setLoaded(true);
       setPets({ dog: [], cat: [] });
@@ -12085,7 +12046,11 @@ function AppInner({ lang, setLang }) {
       const epoch = authEpochRef.current;
       try {
         const me = await fetchMe();
-        if (epoch === authEpochRef.current && me !== undefined) setAccount(me);
+        if (epoch === authEpochRef.current && me !== undefined) {
+          setAccount(me);
+          setAuthResolved(true);
+          setAuthLoadError(false);
+        }
       } finally {
         busy = false;
       }
@@ -12195,6 +12160,8 @@ function AppInner({ lang, setLang }) {
       if (refreshed === undefined) return;
       currentAccount = refreshed;
       setAccount(refreshed);
+      setAuthResolved(true);
+      setAuthLoadError(false);
     }
     setView(next);
     try{
@@ -12341,6 +12308,9 @@ function AppInner({ lang, setLang }) {
     cacheAccount(null);
     clearAccountBrowserData();
     window.dispatchEvent(new Event("petgrow:auth-reset"));
+    setAuthResolved(true);
+    setAuthLoadError(false);
+    setPetLoad({ accountId: null, status: "ready" });
     setAuthChecked(true);
     setAccountModalOpen(false);
     setWelcomeBackOpen(false);
@@ -12391,6 +12361,9 @@ function AppInner({ lang, setLang }) {
     try { window.localStorage.removeItem(CONSENT_STORAGE_KEY); } catch {}
     setWelcomeBackOpen(false);
     window.dispatchEvent(new Event("petgrow:auth-reset"));
+    setAuthResolved(true);
+    setAuthLoadError(false);
+    setPetLoad({ accountId: null, status: "ready" });
     setAuthChecked(true);
 
     setView("home");
@@ -12534,7 +12507,7 @@ function AppInner({ lang, setLang }) {
           </div>
         )}
 
-        {effectiveView === "pets" && <>
+        {effectiveView === "pets" && petStatus === "ready" && <>
           <UnifiedMenuHero view="pets" lang={lang} />
           <SpeciesTabBar species={species} dogCount={pets.dog.length} catCount={pets.cat.length}
             onChange={(s) => { setSpecies(s); setMode("view"); }} />
@@ -12543,7 +12516,9 @@ function AppInner({ lang, setLang }) {
 
       <div className="petgrow-content-stage">
       {["community","tips","saju","tarot","petbti","guide","my","more","support","ad-inquiry","nearby","music","news"].includes(effectiveView) && <UnifiedMenuHero view={effectiveView} lang={lang} />}
-      {effectiveView === "login" ? (
+      {["pets","diary","saju","tarot","petbti","content","my","community"].includes(view) && petStatus !== "ready" ? (
+        <PetDataNotice status={petStatus} lang={lang} onRetry={() => authLoadError ? window.location.reload() : setPetLoadRetry(v => v + 1)} />
+      ) : effectiveView === "login" ? (
         <LoginScreen onGoTerms={() => goView("terms")} onGoPrivacy={() => goView("privacy")} />
       ) : effectiveView === "privacy" ? (
         <><PrivacyContent /><PetNewsPrivacyAddendum /><PetPointPolicyAddendum type="privacy" /></>
@@ -12552,7 +12527,7 @@ function AppInner({ lang, setLang }) {
       ) : effectiveView === "about" ? (
         <AboutPage onStart={() => goView("pets")} onNavigate={(v) => goView(v)} />
       ) : effectiveView === "home" ? (
-        <HomePage account={account} pets={allPets} lang={lang}
+        <HomePage account={account} pets={allPets} petStatus={petStatus} onRetryPets={() => authLoadError ? window.location.reload() : setPetLoadRetry(v => v + 1)} lang={lang}
           onGoPets={() => goView("pets")} onGoDiary={openDiary} onGoView={(v) => goView(v)} />
       ) : effectiveView === "diary" ? (
         <div className="legal-page-shell">
@@ -12569,7 +12544,7 @@ function AppInner({ lang, setLang }) {
       ) : effectiveView === "music" ? (
         <PetMusicPage account={account} lang={lang} />
       ) : effectiveView === "content" ? (
-        <PetContentPage subTab={contentSubTab} onSubTabChange={setContentSubTab}
+        <PetContentPage key={account?.id || "guest"} subTab={contentSubTab} onSubTabChange={setContentSubTab}
           allPets={allPets} featurePet={featurePet} onSelectFeaturePet={setFeaturePetId}
           onUpdatePetBti={handleUpdatePetBti} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} />
       ) : effectiveView === "community" ? (
@@ -12592,17 +12567,17 @@ function AppInner({ lang, setLang }) {
       ) : effectiveView === "saju" ? (
         <div className="legal-page-shell feature-page-shell feature-page-saju">
           <PetPicker pets={allPets} activeId={featurePet?.id} onSelect={setFeaturePetId} />
-          <SajuPage pet={featurePet} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} />
+          <SajuPage key={`${account?.id || "guest"}:${featurePet?.id || "empty"}`} pet={featurePet} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} />
         </div>
       ) : effectiveView === "tarot" ? (
         <div className="legal-page-shell feature-page-shell feature-page-tarot">
           <PetPicker pets={allPets} activeId={featurePet?.id} onSelect={setFeaturePetId} />
-          {featurePet ? <PetTarotPanel pet={featurePet} lang={lang} /> : <div className="feature-empty-wrap"><div className="bg-card feature-empty-card"><span className="feature-empty-icon">🃏</span><h2>등록된 아이가 아직 없어요</h2><p className="bg-sub">Pet타로는 '우리 아이'에 등록한 반려동물만 이용할 수 있어요. 먼저 반려동물을 등록해 주세요.</p><button className="bg-btn" onClick={()=>{setMode("onboarding");goView("pets")}}>우리 아이 등록하러 가기</button></div></div>}
+          {featurePet ? <PetTarotPanel key={`${account?.id || "guest"}:${featurePet?.id || "empty"}`} pet={featurePet} lang={lang} /> : <div className="feature-empty-wrap"><div className="bg-card feature-empty-card"><span className="feature-empty-icon">🃏</span><h2>등록된 아이가 아직 없어요</h2><p className="bg-sub">Pet타로는 '우리 아이'에 등록한 반려동물만 이용할 수 있어요. 먼저 반려동물을 등록해 주세요.</p><button className="bg-btn" onClick={()=>{setMode("onboarding");goView("pets")}}>우리 아이 등록하러 가기</button></div></div>}
         </div>
       ) : effectiveView === "petbti" ? (
         <div className="legal-page-shell feature-page-shell feature-page-petbti">
           <PetPicker pets={allPets} activeId={featurePet?.id} onSelect={setFeaturePetId} />
-          <PetBtiPage pet={featurePet} onUpdatePetBti={handleUpdatePetBti} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} />
+          <PetBtiPage key={`${account?.id || "guest"}:${featurePet?.id || "empty"}`} pet={featurePet} onUpdatePetBti={handleUpdatePetBti} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} />
         </div>
       ) : showOnboarding ? (
         <OnboardingPage

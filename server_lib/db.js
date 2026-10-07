@@ -568,6 +568,13 @@ export async function getState(userId, key) {
   return rows[0] ? rows[0].value : null;
 }
 
+export async function getStates(userId, keys) {
+  await ensureSchema();
+  const { rows } = await sql`select key, value from pg_user_state
+    where user_id = ${userId} and key in (select jsonb_array_elements_text(${JSON.stringify(keys)}::jsonb))`;
+  return Object.fromEntries(keys.map(key => [key, rows.find(row => row.key === key)?.value ?? null]));
+}
+
 export async function setState(userId, key, value) {
   await ensureSchema();
   await sql`

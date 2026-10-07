@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import { sql } from "@vercel/postgres";
 import { getSessionUserId, getSessionPayload, renewSessionIfNeeded } from "../server_lib/session.js";
-import { getUserById, getState, setState, logServiceHealth, ensureSchema } from "../server_lib/db.js";
+import { getUserById, getState, getStates, setState, logServiceHealth, ensureSchema } from "../server_lib/db.js";
 import { isAdminUserId } from "../server_lib/admin.js";
 import proj4 from "proj4";
 import { handleTarot } from "../server_lib/tarot.js";
@@ -24,9 +24,16 @@ async function handleMe(req, res) {
 }
 
 async function handleState(req, res) {
+  res.setHeader("Cache-Control", "no-store");
   const uid = getSessionUserId(req);
   if (!uid) return res.status(401).json({ error: "unauthenticated" });
   if (req.method === "GET") {
+    if (req.query.keys !== undefined) {
+      if (typeof req.query.keys !== "string") return res.status(400).json({ error: "invalid keys" });
+      const keys = [...new Set(req.query.keys.split(","))];
+      if (!keys.length || keys.length > 10 || keys.some(key => !key || key.length > 200)) return res.status(400).json({ error: "invalid keys" });
+      return res.status(200).json({ values: await getStates(uid, keys) });
+    }
     const key = req.query.key;
     if (!key || typeof key !== "string") return res.status(400).json({ error: "key is required" });
     const value = await getState(uid, key);

@@ -14,7 +14,7 @@ test("gated navigation rechecks the shared server session before showing login",
   const app = read("src/App.jsx");
   assert.match(app, /authChecked\s*&&\s*GATED_VIEWS\.includes\(view\)\s*&&\s*!account/);
   assert.match(app, /GATED_VIEWS\.includes\(next\)[\s\S]*await fetchMe\(16000\)/);
-  assert.match(app, /cloudGet\("bboggl:dogs"\)[\s\S]*cloudGet\("bboggl:cats"\)[\s\S]*cloudGet\("bboggl:activeIds"\)/);
+  assert.match(app, /await loadPetState\(\{ readShadow \}\)/);
 });
 
 test("auth continuity survives new tabs and transient API latency", () => {

@@ -12,7 +12,7 @@ test("public PetInfo and guide views do not require login", () => {
 
 test("account bootstrap preserves the route opened from a direct link", () => {
   const app = read("src/App.jsx");
-  const bootstrap = app.match(/useEffect\(\(\) => \{\n    \(async \(\) => \{[\s\S]*?const dogsKey = "bboggl:dogs";/)?.[0] || "";
+  const bootstrap = app.slice(app.indexOf('const epoch = authEpochRef.current;'), app.indexOf('// One account-specific load'));
   assert.match(bootstrap, /const loginResult = params\.get\("login"\)/);
   assert.doesNotMatch(bootstrap, /setView\("home"\)/);
 });
