@@ -10471,8 +10471,9 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoDiary, onGoView }) {
   return (
     <div className="legal-page-shell petgrow-dashboard-home">
       <section className="home-intro-banner" aria-label={lang === "en" ? "Meet PetGrow" : "펫그로우 소개 영상"}>
-        <div className="home-intro-copy"><span>HELLO, PETGROW</span><h2>{lang === "en" ? "Every day together, in PetGrow." : "반려생활의 모든 순간, 펫그로우"}</h2><p>{lang === "en" ? "Records, diaries, stories and music for the days you share." : "우리 아이의 기록과 다이어리, 함께 나누는 이야기와 음악을 만나보세요."}</p><button type="button" onClick={() => onGoView("about")}>{lang === "en" ? "Explore PetGrow" : "펫그로우 알아보기"}</button></div>
+        <div className="home-intro-copy"><span>HELLO, PETGROW</span><h2>{lang === "en" ? "Every day together, in PetGrow." : "반려생활의 모든 순간, 펫그로우"}</h2></div>
         <PetGrowIntroVideo lang={lang} />
+        <div className="home-intro-copy home-intro-details"><p>{lang === "en" ? "Records, diaries, stories and music for the days you share." : "우리 아이의 기록과 다이어리, 함께 나누는 이야기와 음악을 만나보세요."}</p><button type="button" onClick={() => onGoView("about")}>{lang === "en" ? "Explore PetGrow" : "펫그로우 알아보기"}</button></div>
       </section>
       <section className="dash-welcome">
         <div><span className="dash-eyebrow">PetGrow</span><h1>{accountName ? t.homeGreeting(accountName) : (lang === "en" ? "Welcome to PetGrow! 🐾" : "오늘도 우리 아이와 행복한 하루 🐾")}</h1><p>{lang === "en" ? "Everything your pet needs, in one simple dashboard." : "우리 아이의 성장·음악·주변 시설·커뮤니티를 한곳에서 확인해요."}</p></div>
