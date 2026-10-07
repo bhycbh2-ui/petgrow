@@ -1,6 +1,7 @@
 import PetGrowIntroVideo from "./PetGrowIntroVideo.jsx";
 import DesktopNavigation from "./DesktopNavigation.jsx";
 import { createSessionChecker } from "./session-checker.js";
+import { AUTH_SIGNED_OUT_KEY, readCachedAccount, cacheAccount, kakaoLoginPath, clearAccountBrowserData } from "./auth-browser.js";
 import DiaryNotebook from "./DiaryNotebook.jsx";
 import { saveDiaryEntry, persistDiaryChange, latestDiaryPreview } from "./pet-diary.js";
 import HomeInfoMusicSections from "./HomeInfoMusicSections.jsx";
@@ -514,7 +515,8 @@ const STRINGS = {
     accountNicknameSave: "저장하기",
     accountNicknameSaved: "닉네임이 변경됐어요.",
     accountNicknameError: "닉네임은 2~8자로 입력해주세요.",
-    accountFreshLoginHelp: "로그아웃 후 다시 로그인하면 저장된 카카오 계정 중 원하는 계정을 선택할 수 있어요.",
+    accountSwitchBtn: "다른 카카오 계정으로 로그인",
+    accountFreshLoginHelp: "다른 계정으로 로그인하려면 아래 버튼을 누르고 원하는 카카오 계정을 입력해 주세요. 카카오톡 안에서 계정 변경이 안 되면 Chrome 또는 Safari에서 열어 주세요.",
     loginToastSuccess: "로그인됐어요",
     loginToastError: "로그인에 실패했어요. 다시 시도해주세요.",
     communityNav: "Pet톡",
@@ -1056,7 +1058,8 @@ const STRINGS = {
     accountNicknameSave: "Save nickname",
     accountNicknameSaved: "Nickname updated.",
     accountNicknameError: "Please enter 2–20 characters.",
-    accountFreshLoginHelp: "After logging out, Kakao login lets you choose from saved accounts again.",
+    accountSwitchBtn: "Log in with another Kakao account",
+    accountFreshLoginHelp: "Use the button below to enter another Kakao account. If account switching is unavailable inside KakaoTalk, open PetGrow in Chrome or Safari.",
     loginTagline: "Grow healthy together with your pet",
     loginGateTitle: "Please log in",
     loginGateBody: "Log in with Kakao to save your pet's info to your account — and pick up right where you left off on any device.",
@@ -1434,35 +1437,9 @@ async function safeSet(key, value, account) {
    ============================================================ */
 function logPetActivity(payload={}) { try { fetch("/api/activity?action=log",{method:"POST",credentials:"include",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}).catch(()=>{}); } catch {} }
 
-function goToKakaoLogin() {
-  // 전체 페이지 이동으로 카카오 로그인 화면으로 리다이렉트해요 (실제 OAuth 인가 흐름).
-  const client = Capacitor.isNativePlatform() && Capacitor.getPlatform() === "android"
-    ? "?client=android"
-    : "";
-  window.location.href = `/api/auth/kakao/login${client}`;
-}
-const AUTH_ACCOUNT_CACHE_KEY = "petgrow:auth-account:v1";
-function readCachedAccount() {
-  try {
-    const raw = window.localStorage.getItem(AUTH_ACCOUNT_CACHE_KEY)
-      || window.sessionStorage.getItem(AUTH_ACCOUNT_CACHE_KEY);
-    const account = JSON.parse(raw || "null");
-    return account?.id ? account : null;
-  } catch {
-    return null;
-  }
-}
-function cacheAccount(account) {
-  try {
-    if (account?.id) {
-      const value = JSON.stringify(account);
-      window.localStorage.setItem(AUTH_ACCOUNT_CACHE_KEY, value);
-      window.sessionStorage.setItem(AUTH_ACCOUNT_CACHE_KEY, value);
-    } else {
-      window.localStorage.removeItem(AUTH_ACCOUNT_CACHE_KEY);
-      window.sessionStorage.removeItem(AUTH_ACCOUNT_CACHE_KEY);
-    }
-  } catch {}
+function goToKakaoLogin({ switchAccount = false } = {}) {
+  window.location.href = kakaoLoginPath({ switchAccount,
+    android: Capacitor.isNativePlatform() && Capacitor.getPlatform() === "android" });
 }
 const sessionChecker = createSessionChecker({ fetcher: (...args) => fetch(...args), cacheAccount });
 async function fetchMe(timeoutMs = 16000) {
@@ -2283,7 +2260,7 @@ function LoginScreen({ onGoTerms, onGoPrivacy }) {
 
   const allChecked = termsOk && privacyOk && marketingOk;
   const setAll = (checked) => { setTermsOk(checked); setPrivacyOk(checked); setMarketingOk(checked); };
-  const startLogin = () => {
+  const startLogin = (switchAccount = false) => {
     if (!consentCompleted && (!termsOk || !privacyOk)) {
       window.alert("필수 약관과 개인정보 수집·이용에 동의해 주세요.");
       return;
@@ -2298,7 +2275,7 @@ function LoginScreen({ onGoTerms, onGoPrivacy }) {
         setConsentCompleted(true);
       } catch {}
     }
-    goToKakaoLogin();
+    goToKakaoLogin({ switchAccount });
   };
   return (
     <div style={{ maxWidth: 420, margin: "32px auto 0", textAlign: "center" }}>
@@ -2321,9 +2298,13 @@ function LoginScreen({ onGoTerms, onGoPrivacy }) {
 
       {consentChecked && consentCompleted && <div className="consent-complete-note">✓ 필수 약관 동의 완료 · 다음 로그인부터는 다시 묻지 않아요.</div>}
 
-      <button type="button" className="kakao-login-btn" onClick={startLogin} disabled={!consentChecked}>
+      <button type="button" className="kakao-login-btn" onClick={() => startLogin()} disabled={!consentChecked}>
         <KakaoIcon style={{ width: 20, height: 20 }} /> {t.loginContinueKakao}
       </button>
+      <button type="button" className="bg-btn bg-btn-ghost" style={{width:"100%",marginTop:10,minHeight:44,fontSize:14}} onClick={() => startLogin(true)} disabled={!consentChecked}>
+        {t.accountSwitchBtn}
+      </button>
+      <p className="bg-sub" style={{fontSize:13,lineHeight:1.6,marginTop:10}}>{t.accountFreshLoginHelp}</p>
 
       <div style={{ display: "flex", justifyContent: "center", gap: 14, marginTop: 18 }}>
         <button type="button" onClick={onGoTerms} style={{ fontSize: 12, fontWeight: 700, color: "var(--sub)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>{t.termsFooterLink}</button>
@@ -2399,7 +2380,7 @@ function validateNicknameLocal(value = "") {
   return { ok:true, nickname };
 }
 
-function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNicknameUpdated, onOpenAdmin }) {
+function AccountModal({ open, onClose, account, onLogout, onSwitchAccount, onRequestDelete, onNicknameUpdated, onOpenAdmin }) {
   const t = useT();
   const [nickname, setNickname] = useState(account?.name || "");
   const [saving, setSaving] = useState(false);
@@ -2523,11 +2504,12 @@ function AccountModal({ open, onClose, account, onLogout, onRequestDelete, onNic
           </button>
         )}
 
-        <div className="bg-sub" style={{ fontSize: 10.5, lineHeight: 1.45, marginBottom: 8 }}>{t.accountFreshLoginHelp}</div>
+        <div className="bg-sub" style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 8 }}>{t.accountFreshLoginHelp}</div>
       </>)}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         <button type="button" className="bg-btn bg-btn-ghost" onClick={()=>{onClose();window.dispatchEvent(new CustomEvent("petgrow:navigate",{detail:"support"}));}}>📢 공지사항 · 문의/피드백</button>
+        <button type="button" className="bg-btn bg-btn-ghost" onClick={onSwitchAccount}>{t.accountSwitchBtn}</button>
         <button type="button" className="bg-btn bg-btn-ghost" onClick={onLogout}>{t.accountLogoutBtn}</button>
         <button type="button" className="bg-btn bg-btn-ghost" style={{ color: "#C0392B" }} onClick={onRequestDelete}>{t.accountDeleteBtn}</button>
       </div>
@@ -11683,7 +11665,7 @@ function AccountActivityHub({lang}){
   return <section className="my-activity-hub"><div className="my-activity-hub-head"><div><h2>{title}</h2><small className="bg-sub">PetGrow 메뉴 이용·글·댓글·좋아요·신고·문의 등을 최근순으로 확인해요.</small></div><button onClick={load}>{loading?"…":"새로고침"}</button></div>{loading&&!items.length?<div className="bg-sub">활동내역을 불러오는 중…</div>:items.length?<div className="my-activity-timeline">{items.slice(0,40).map((x,i)=><div className="my-activity-row" key={`${x.type}-${x.createdAt}-${i}`}><span>{icon(x.type)}</span><div><b>{x.title||"PetGrow 활동"}</b>{x.detail&&<small>{x.detail}</small>}</div><time>{x.createdAt?new Date(x.createdAt).toLocaleString(lang==="ja"?"ja-JP":lang==="zh"?"zh-CN":lang==="en"?"en-US":"ko-KR",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"}):""}</time></div>)}</div>:<div className="bg-sub">아직 기록된 활동이 없어요. 앞으로 이용한 메뉴와 활동이 여기에 쌓여요.</div>}</section>
 }
 
-function MyPage({account,allPets,lang,onOpenAccount,onGoPets,onOpenPost,onOpenAdmin,onLogout,onDeleteAccount,onGoSupport}){
+function MyPage({account,allPets,lang,onOpenAccount,onGoPets,onOpenPost,onOpenAdmin,onLogout,onSwitchAccount,onDeleteAccount,onGoSupport}){
   const [adminEntry,setAdminEntry]=useState(null),[likedMusic,setLikedMusic]=useState([]),[likedMusicLoaded,setLikedMusicLoaded]=useState(false),[likedMusicLoading,setLikedMusicLoading]=useState(false),[openActivity,setOpenActivity]=useState(null);
   const loadLikedMusic=async(force=false)=>{if(!account){setLikedMusic([]);setLikedMusicLoaded(true);return}if(likedMusicLoading||(likedMusicLoaded&&!force))return;setLikedMusicLoading(true);try{const r=await musicLiked();setLikedMusic(r.items||[]);setLikedMusicLoaded(true)}catch{}finally{setLikedMusicLoading(false)}};
   useEffect(()=>{setLikedMusic([]);setLikedMusicLoaded(false);setOpenActivity(null)},[account?.id]);
@@ -11701,7 +11683,7 @@ function MyPage({account,allPets,lang,onOpenAccount,onGoPets,onOpenPost,onOpenAd
     </div>
     <AccountActivityHub lang={lang}/>
     {adminEntry&&(!adminEntry.adminExists||adminEntry.isAdmin||adminEntry.recoveryAvailable)&&<button type="button" className="my-admin-below-activity" onClick={onOpenAdmin}><span>🛡️</span><div><b>{adminEntry.isAdmin?"관리자센터":(adminEntry.adminExists?"관리자 등록/복구":"최초 관리자 등록")}</b><small>운영 데이터는 PIN 인증 후 확인할 수 있어요.</small></div><em>›</em></button>}
-    <section className="my-account-manage"><h2>계정 관리</h2><div className="my-account-actions"><button type="button" className="logout" onClick={onLogout}>로그아웃</button><button type="button" className="delete" onClick={onDeleteAccount}>회원탈퇴</button></div>{onGoSupport&&<button type="button" className="bg-btn bg-btn-ghost" style={{width:"100%",marginTop:8}} onClick={onGoSupport}>내 문의 · 고객지원 확인</button>}</section>
+    <section className="my-account-manage"><h2>계정 관리</h2><button type="button" className="bg-btn bg-btn-ghost" style={{width:"100%",marginBottom:8,minHeight:44,fontSize:14}} onClick={onSwitchAccount}>{lang==="en"?"Log in with another Kakao account":"다른 카카오 계정으로 로그인"}</button><div className="my-account-actions"><button type="button" className="logout" onClick={onLogout}>로그아웃</button><button type="button" className="delete" onClick={onDeleteAccount}>회원탈퇴</button></div>{onGoSupport&&<button type="button" className="bg-btn bg-btn-ghost" style={{width:"100%",marginTop:8}} onClick={onGoSupport}>내 문의 · 고객지원 확인</button>}</section>
   </div>
 }
 
@@ -11836,6 +11818,7 @@ function AppInner({ lang, setLang }) {
   const GATED_VIEWS = ["pets", "diary", "saju", "petbti", "content", "my", "admin"];
 
   // ---- 계정(카카오 로그인) ----
+  const authEpochRef = useRef(0);
   const [account, setAccount] = useState(readCachedAccount);
   const [authChecked, setAuthChecked] = useState(false);
 
@@ -11899,10 +11882,12 @@ function AppInner({ lang, setLang }) {
   }, [isNativeApp]);
 
   useEffect(() => {
+    const epoch = authEpochRef.current;
     (async () => {
       // 카카오 로그인 콜백에서 돌아온 경우(/?login=success|error) 안내 후 URL 정리
       const params = new URLSearchParams(window.location.search);
       const loginResult = params.get("login");
+      if (loginResult === "success") cacheAccount(null);
       if (loginResult) {
         setLoginToast(loginResult === "success" ? "success" : "error");
         params.delete("login");
@@ -11911,7 +11896,7 @@ function AppInner({ lang, setLang }) {
         setTimeout(() => setLoginToast(null), loginResult === "success" ? 2400 : 3600);
       }
 
-      const initiallyCachedAccount = readCachedAccount();
+      const initiallyCachedAccount = loginResult === "success" ? null : readCachedAccount();
       if (initiallyCachedAccount) {
         setAccount(initiallyCachedAccount);
         setAuthChecked(true);
@@ -11923,7 +11908,8 @@ function AppInner({ lang, setLang }) {
         await new Promise((resolve) => window.setTimeout(resolve, 400));
         meResult = await fetchMe(20000);
       }
-      const cachedAccount = readCachedAccount();
+      if (epoch !== authEpochRef.current) return;
+      const cachedAccount = loginResult === "success" ? null : readCachedAccount();
       const me = meResult === undefined ? cachedAccount : meResult;
       if (meResult !== undefined) setAccount(meResult);
       else if (cachedAccount) setAccount(cachedAccount);
@@ -11941,6 +11927,7 @@ function AppInner({ lang, setLang }) {
         } catch {}
       }
 
+      if (epoch !== authEpochRef.current) return;
       const dogsKey = "bboggl:dogs";
       const catsKey = "bboggl:cats";
       const activesKey = "bboggl:activeIds";
@@ -11951,6 +11938,7 @@ function AppInner({ lang, setLang }) {
         safeGet(activesKey, me),
       ]);
 
+      if (epoch !== authEpochRef.current) return;
       if (!me) {
         // 로그인 전(게스트) 상태에서만 예전 버전 로컬 데이터를 함께 확인해요
         if (!dogs || dogs.length === 0) {
@@ -11979,6 +11967,7 @@ function AppInner({ lang, setLang }) {
         }
       }
 
+      if (epoch !== authEpochRef.current) return;
       dogs = (dogs || []).map((p) => ({ ...p, profile: { ...p.profile, name: normalizePetDisplayText(p.profile?.name, "") }, photos: normalizePhotos(p.photos, p.profile.birthDate) }));
       cats = (cats || []).map((p) => ({ ...p, profile: { ...p.profile, name: normalizePetDisplayText(p.profile?.name, "") }, photos: normalizePhotos(p.photos, p.profile.birthDate) }));
 
@@ -12012,6 +12001,7 @@ function AppInner({ lang, setLang }) {
       if (dogs.length > 0 || cats.length > 0) {
         const today = new Date().toISOString().slice(0, 10);
         const lastWelcome = await safeGet("bboggl:lastWelcomeDate", me);
+        if (epoch !== authEpochRef.current) return;
         if (lastWelcome !== today) {
           setWelcomeBackOpen(true);
           safeSet("bboggl:lastWelcomeDate", today, me);
@@ -12026,13 +12016,14 @@ function AppInner({ lang, setLang }) {
   useEffect(() => {
     if (!authChecked || !account?.id) return;
     let cancelled = false;
+    const epoch = authEpochRef.current;
     (async () => {
       const [dogsRaw, catsRaw, actives] = await Promise.all([
         cloudGet("bboggl:dogs"),
         cloudGet("bboggl:cats"),
         cloudGet("bboggl:activeIds"),
       ]);
-      if (cancelled) return;
+      if (cancelled || epoch !== authEpochRef.current) return;
       const normalizeList = (items) => (items || []).map((pet) => ({
         ...pet,
         profile: { ...pet.profile, name: normalizePetDisplayText(pet.profile?.name, "") },
@@ -12048,6 +12039,31 @@ function AppInner({ lang, setLang }) {
     })().catch((error) => console.warn("계정 저장 데이터 새로고침 실패:", error));
     return () => { cancelled = true; };
   }, [account?.id, authChecked]);
+
+  useEffect(() => {
+    const onSignOut = (event) => {
+      if (event.key !== AUTH_SIGNED_OUT_KEY || !event.newValue) return;
+      authEpochRef.current++;
+      sessionChecker.invalidate();
+      try { window.sessionStorage.removeItem("petgrow:auth-account:v1"); } catch {}
+      clearAccountBrowserData();
+      window.dispatchEvent(new Event("petgrow:auth-reset"));
+      setAccount(null);
+      setAuthChecked(true);
+      setLoaded(true);
+      setPets({ dog: [], cat: [] });
+      setActiveId({ dog: null, cat: null });
+      setPendingMigration(null);
+      setFeaturePetId(null);
+      setAccountModalOpen(false);
+      setDeleteAccountConfirmOpen(false);
+      setWelcomeBackOpen(false);
+      setMode("view");
+      setView("home");
+    };
+    window.addEventListener("storage", onSignOut);
+    return () => window.removeEventListener("storage", onSignOut);
+  }, []);
 
   // 네이티브 앱의 정적 시작 화면이 준비되면 바로 웹 스플래시로 넘겨
   // 회전 로딩 애니메이션이 실제 초기화가 끝날 때까지 보이도록 해요.
@@ -12066,9 +12082,10 @@ function AppInner({ lang, setLang }) {
     const refreshAccount = async () => {
       if (busy) return;
       busy = true;
+      const epoch = authEpochRef.current;
       try {
         const me = await fetchMe();
-        if (me !== undefined) setAccount(me);
+        if (epoch === authEpochRef.current && me !== undefined) setAccount(me);
       } finally {
         busy = false;
       }
@@ -12171,7 +12188,9 @@ function AppInner({ lang, setLang }) {
     let currentAccount = account;
     if (GATED_VIEWS.includes(next) && !currentAccount) {
       setAuthChecked(false);
+      const epoch = authEpochRef.current;
       const refreshed = await fetchMe(16000);
+      if (epoch !== authEpochRef.current) return;
       setAuthChecked(true);
       if (refreshed === undefined) return;
       currentAccount = refreshed;
@@ -12310,7 +12329,8 @@ function AppInner({ lang, setLang }) {
   }));
 
   // ---- 로그인 / 로그아웃 / 회원탈퇴 ----
-  const handleLogout = async () => {
+  const handleLogout = async ({ switchAccount = false } = {}) => {
+    authEpochRef.current++;
     // 로그아웃 후 전체 페이지를 강제로 새로고침하면 PWA/캐시 환경에서
     // 빈 화면이 남을 수 있어요. 세션을 종료한 뒤 React 상태를 즉시
     // 비로그인 홈으로 전환해서 웹/모바일 웹 모두 안정적으로 복귀시켜요.
@@ -12319,14 +12339,18 @@ function AppInner({ lang, setLang }) {
       return;
     }
     cacheAccount(null);
+    clearAccountBrowserData();
+    window.dispatchEvent(new Event("petgrow:auth-reset"));
+    setAuthChecked(true);
     setAccountModalOpen(false);
+    setWelcomeBackOpen(false);
     setAccount(null);
     setPendingMigration(null);
     setFeaturePetId(null);
     setMode("view");
 
     // 로그아웃 즉시 화면의 반려동물 상태를 비워 개인정보가 남아 보이지 않게 해요.
-    // 기존 localStorage 데이터는 삭제하지 않고 보관해, 다음 로그인 때 이전 안내에 사용할 수 있어요.
+    // 서버의 계정 데이터는 보관하고, 기기에 남은 이전 계정의 임시 데이터만 정리해요.
     setPets({ dog: [], cat: [] });
     setActiveId({ dog: null, cat: null });
 
@@ -12337,12 +12361,18 @@ function AppInner({ lang, setLang }) {
     if (window.location.pathname !== "/" || window.location.search) {
       window.history.replaceState({}, "", "/");
     }
+    if (switchAccount) goToKakaoLogin({ switchAccount: true });
   };
+  const handleSwitchAccount = () => handleLogout({ switchAccount: true });
   const handleConfirmDeleteAccount = async () => {
+    authEpochRef.current++;
     setDeletingAccount(true);
     const ok = await apiDeleteAccount();
     setDeletingAccount(false);
-    if (!ok) return;
+    if (!ok) {
+      window.alert(lang === "en" ? "Could not delete your account. Please try again." : "회원탈퇴하지 못했어요. 연결 상태를 확인하고 다시 시도해 주세요.");
+      return;
+    }
 
     // 회원탈퇴 API가 성공하면 서버 세션 쿠키도 함께 만료돼요.
     // 확인 팝업을 닫고 완료 안내를 보여준 뒤 비로그인 홈 상태로 전환해요.
@@ -12357,15 +12387,11 @@ function AppInner({ lang, setLang }) {
     setPets({ dog: [], cat: [] });
     setActiveId({ dog: null, cat: null });
 
-    // 과거 버전에서 브라우저에 남았을 수 있는 계정 관련 로컬 데이터도 정리해요.
-    // 탈퇴 후 예전 반려동물 정보가 다시 보이는 일을 막습니다.
-    try {
-      [
-        "bboggl:dogs", "bboggl:cats", "bboggl:activeIds",
-        "bboggl:dogs:guest", "bboggl:cats:guest", "bboggl:activeIds:guest",
-        "bboggl:photos", "bboggl:profile", "bboggl:records"
-      ].forEach((key) => window.localStorage.removeItem(key));
-    } catch {}
+    clearAccountBrowserData({ withdrawn: true });
+    try { window.localStorage.removeItem(CONSENT_STORAGE_KEY); } catch {}
+    setWelcomeBackOpen(false);
+    window.dispatchEvent(new Event("petgrow:auth-reset"));
+    setAuthChecked(true);
 
     setView("home");
     scrollToTop();
@@ -12552,7 +12578,7 @@ function AppInner({ lang, setLang }) {
         <MyPage account={account} allPets={allPets} lang={lang}
           onOpenAccount={() => setAccountModalOpen(true)} onGoPets={() => goView("pets")}
           onOpenPost={() => goView("community")} onOpenAdmin={() => goView("admin")}
-          onLogout={handleLogout} onDeleteAccount={() => setDeleteAccountConfirmOpen(true)} onGoSupport={() => goView("support")} />
+          onLogout={() => handleLogout()} onSwitchAccount={handleSwitchAccount} onDeleteAccount={() => setDeleteAccountConfirmOpen(true)} onGoSupport={() => goView("support")} />
       ) : effectiveView === "admin" ? (
         <AdminReportsPage onBack={() => goView("my")} />
       ) : effectiveView === "support" ? (
@@ -12657,7 +12683,8 @@ function AppInner({ lang, setLang }) {
         open={accountModalOpen}
         onClose={() => setAccountModalOpen(false)}
         account={account}
-        onLogout={handleLogout}
+        onLogout={() => handleLogout()}
+        onSwitchAccount={handleSwitchAccount}
         onRequestDelete={() => { setAccountModalOpen(false); setDeleteAccountConfirmOpen(true); }}
         onNicknameUpdated={(name) => setAccount((prev) => prev ? { ...prev, name } : prev)}
         onOpenAdmin={() => goView("admin")}

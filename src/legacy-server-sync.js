@@ -1,6 +1,7 @@
 let started=false;
+let authReset=false;
 const SAFE_KEY=/^(petgrow|petlife|pg_|pet_|pets?$|mypets?$|favorites?$|petbti|saju|growth|profile|settings)/i;
-const BLOCKED_KEY=/(token|secret|password|passwd|session|cookie|authorization|admin|pin|oauth|credential|private[_-]?key)/i;
+const BLOCKED_KEY=/(auth|token|secret|password|passwd|session|cookie|authorization|admin|pin|oauth|credential|private[_-]?key)/i;
 
 function parseValue(value){
   if(value==null)return null;
@@ -42,16 +43,18 @@ function restoreMissing(serverState){
 }
 
 export async function syncLegacyState(){
+  if(authReset)return;
   try{
     const local=collectSafeState();
     if(Object.keys(local).length)await request("POST",{state:local});
     const server=await request("GET");
-    if(server?.state)restoreMissing(server.state);
+    if(!authReset&&server?.state)restoreMissing(server.state);
   }catch(e){console.warn("PetGrow legacy server sync",e?.message||e);}
 }
 
 export function bootLegacyServerSync(){
   if(started)return;started=true;
+  window.addEventListener("petgrow:auth-reset",()=>{authReset=true;});
   window.setTimeout(()=>syncLegacyState(),6500);
   document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")syncLegacyState();});
 }

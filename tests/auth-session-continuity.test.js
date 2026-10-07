@@ -19,8 +19,9 @@ test("gated navigation rechecks the shared server session before showing login",
 
 test("auth continuity survives new tabs and transient API latency", () => {
   const app = read("src/App.jsx");
-  assert.match(app, /window\.localStorage\.getItem\(AUTH_ACCOUNT_CACHE_KEY\)/);
-  assert.match(app, /window\.localStorage\.setItem\(AUTH_ACCOUNT_CACHE_KEY, value\)/);
+  const browser = read("src/auth-browser.js");
+  assert.match(browser, /browser\.localStorage\.getItem\(AUTH_ACCOUNT_CACHE_KEY\)/);
+  assert.match(browser, /browser\.localStorage\.setItem\(AUTH_ACCOUNT_CACHE_KEY,/);
   assert.match(app, /useState\(readCachedAccount\)/);
   assert.match(app, /async function fetchMe\(timeoutMs = 16000\)/);
   assert.match(app, /if \(meResult !== undefined\) setAccount\(meResult\)/);
@@ -28,8 +29,8 @@ test("auth continuity survives new tabs and transient API latency", () => {
 
 test("normal Kakao login reuses the existing Kakao session", () => {
   const login = read("api/auth/kakao/login.js");
-  assert.match(login, /if \(req\.query\?\.switch === "1"\) authorizeUrl\.searchParams\.set\("prompt", "select_account"\)/);
-  assert.equal((login.match(/searchParams\.set\("prompt", "select_account"\)/g) || []).length, 1);
+  assert.match(login, /if \(req\.query\?\.switch === "1"\) authorizeUrl\.searchParams\.set\("prompt", "login"\)/);
+  assert.equal((login.match(/searchParams\.set\("prompt", "login"\)/g) || []).length, 1);
 });
 
 test("deep result split forwards multiline Recharts imports", () => {

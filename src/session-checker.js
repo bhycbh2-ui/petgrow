@@ -43,6 +43,7 @@ export function createSessionChecker({ fetcher, cacheAccount, delay = ms => new 
   };
   return {
     check,
+    invalidate() { generation++; activeController?.abort(); },
     async suspend() { suspended = true; generation++; activeController?.abort(); await inFlight; },
     resume() { suspended = false; },
   };

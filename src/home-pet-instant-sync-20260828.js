@@ -3,6 +3,7 @@ const SELECTED_PET_KEY="petgrow_petlife_dashboard_pet_v1";
 const SNAPSHOT_KEY="petgrow_home_pet_snapshot_session_v1";
 
 let currentPet=null;
+let authReset=false;
 let inFlight=null;
 let lastFetchAt=0;
 let emptyHits=0;
@@ -61,13 +62,14 @@ async function fetchPetList(){
   return {unauth:false,pets:Array.isArray(payload.pets)?payload.pets:[]};
 }
 async function refreshPets(force=false){
+  if(authReset)return null;
   const now=Date.now();
   if(inFlight)return inFlight;
   if(!force&&currentPet&&now-lastFetchAt<5000){hydrateHomePet();return currentPet;}
   lastFetchAt=now;
   inFlight=(async()=>{
     try{
-      const result=await fetchPetList();if(result.unauth)return null;
+      const result=await fetchPetList();if(authReset||result.unauth)return null;
       const pet=choosePet(result.pets);
       if(pet){
         emptyHits=0;currentPet=pet;saveSnapshot(pet);hydrateHomePet(pet);
@@ -98,6 +100,7 @@ function mutationIntent(target){
 }
 
 function boot(){
+  window.addEventListener("petgrow:auth-reset",()=>{authReset=true;clearTimeout(retryTimer);clearPet();});
   const snapshot=readSnapshot();if(snapshot){currentPet=snapshot;hydrateHomePet(snapshot);}
   const root=document.getElementById("root")||document.body;
   if(root)new MutationObserver(scheduleHydrate).observe(root,{subtree:true,childList:true});

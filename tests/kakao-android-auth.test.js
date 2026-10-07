@@ -10,7 +10,8 @@ test("Android Kakao login uses an app-specific OAuth path and deep link", () => 
   const entry = read("src/app-entry.jsx");
   const manifest = read("android/app/src/main/AndroidManifest.xml");
 
-  assert.match(app, /client=android/);
+  assert.match(app, /android: Capacitor\.isNativePlatform/);
+  assert.match(read("src/auth-browser.js"), /params\.set\("client", "android"\)/);
   assert.match(entry, /@capacitor\/app/);
   assert.match(entry, /appUrlOpen/);
   assert.match(entry, /getLaunchUrl/);

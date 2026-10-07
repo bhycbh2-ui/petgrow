@@ -33,6 +33,7 @@ async function deletePetLifeBlobsForUser(userId) {
 // 회원탈퇴: PetGrow 계정, 카카오 인증 연동 정보, 반려동물 정보·사진·성장기록·PetLife 기록·PetBTI 결과 등
 // DB 데이터는 ON DELETE CASCADE로 삭제하고, DB 밖의 Vercel Blob 파일은 계정 삭제 전에 함께 정리합니다.
 export default async function handler(req, res) {
+  res.setHeader("Cache-Control", "no-store");
   if (String(req.query?.route || "") === "logout") {
     if (req.method !== "POST") return res.status(405).json({ error: "method not allowed" });
     res.setHeader("Cache-Control", "no-store");

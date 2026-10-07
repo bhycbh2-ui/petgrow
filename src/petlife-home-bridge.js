@@ -8,6 +8,7 @@ const TYPE_LABELS={weight:"몸무게",vaccine:"예방접종",hospital:"병원방
 const TAB_LABELS={timeline:["기록"],schedule:["일정"],report:["리포트"],album:["성장앨범"]};
 
 let booted=false;
+let authReset=false;
 let observer=null;
 let renderRaf=0;
 let loadPromise=null;
@@ -44,18 +45,20 @@ async function petApi(action,{method="GET",body,params={}}={}){
 function getSelectedPet(pets){let saved="";try{saved=localStorage.getItem(PET_KEY)||"";}catch{}return pets.find(p=>p.id===saved)||pets.find(p=>p.id===state.petId)||pets[0]||null;}
 async function loadDetails(petId){const [entries,report,album]=await Promise.all([petApi("entries",{params:{petId,limit:120}}),petApi("report",{params:{petId,days:30}}),petApi("album",{params:{petId}})]);return {entries:entries.entries||[],upcoming:entries.upcoming||[],report,album};}
 async function loadDashboard(force=false){
+  if(authReset)return;
   if(loadPromise)return loadPromise;if(!force&&state.loadedAt&&Date.now()-state.loadedAt<30000)return;
   const cold=!state.detail||state.status==="idle"||state.status==="error"||state.status==="unauth";if(cold)state.status="loading";state.error="";scheduleRender();
   loadPromise=(async()=>{
     try{
-      let result=await petApi("pets"),pets=result.pets||[];
+      let result=await petApi("pets"),pets=result.pets||[];if(authReset)return;
       if(!pets.length){let attempted=false;try{attempted=sessionStorage.getItem(IMPORT_KEY)==="1";}catch{}if(!attempted){try{sessionStorage.setItem(IMPORT_KEY,"1");}catch{};try{const migrated=await petApi("import-legacy",{method:"POST",body:{}});pets=migrated.pets||[];}catch{}}}
-      state.pets=pets;const selected=getSelectedPet(pets);state.petId=selected?.id||"";if(selected){try{localStorage.setItem(PET_KEY,selected.id);}catch{};state.detail=await loadDetails(selected.id);}else state.detail=null;state.status="ready";state.loadedAt=Date.now();
-    }catch(error){state.error=error.message||"PetLife 정보를 불러오지 못했어요.";state.status=error.status===401?"unauth":"error";state.detail=null;state.loadedAt=Date.now();}
+      if(authReset)return;
+      state.pets=pets;const selected=getSelectedPet(pets);state.petId=selected?.id||"";if(selected){try{localStorage.setItem(PET_KEY,selected.id);}catch{};const detail=await loadDetails(selected.id);if(authReset)return;state.detail=detail;}else state.detail=null;state.status="ready";state.loadedAt=Date.now();
+    }catch(error){if(authReset)return;state.error=error.message||"PetLife 정보를 불러오지 못했어요.";state.status=error.status===401?"unauth":"error";state.detail=null;state.loadedAt=Date.now();}
     finally{loadPromise=null;scheduleRender();}
   })();return loadPromise;
 }
-async function selectPet(petId){if(!petId||petId===state.petId)return;state.petId=petId;state.status="loading";state.error="";try{localStorage.setItem(PET_KEY,petId);}catch{};scheduleRender();try{state.detail=await loadDetails(petId);state.status="ready";state.loadedAt=Date.now();}catch(error){state.error=error.message||"우리 아이 기록을 불러오지 못했어요.";state.status=error.status===401?"unauth":"error";}scheduleRender();}
+async function selectPet(petId){if(authReset||!petId||petId===state.petId)return;state.petId=petId;state.status="loading";state.error="";try{localStorage.setItem(PET_KEY,petId);}catch{};scheduleRender();try{const detail=await loadDetails(petId);if(authReset)return;state.detail=detail;state.status="ready";state.loadedAt=Date.now();}catch(error){if(authReset)return;state.error=error.message||"우리 아이 기록을 불러오지 못했어요.";state.status=error.status===401?"unauth":"error";}scheduleRender();}
 
 function petLifeRoot(){return document.getElementById("petlife-react-root")||document;}
 function clickMatching(selector,terms,attempt=0){const root=petLifeRoot(),nodes=[...root.querySelectorAll(selector)],target=nodes.find(node=>terms.some(term=>cleanText(node)===term||cleanText(node).includes(term)));if(target){target.click();return true;}if(attempt<12)setTimeout(()=>clickMatching(selector,terms,attempt+1),120);return false;}
@@ -96,6 +99,6 @@ function surfacePresent(){return !!homeElement()||!!findMyPetHeading();}
 function run(){const home=ensureHome(),my=ensureMyPet();if((home||my)&&state.status==="idle")loadDashboard(false);}
 function scheduleRender(){if(renderRaf)return;renderRaf=requestAnimationFrame(()=>{renderRaf=0;run();});}
 function bootPetLifeHomeBridge(){
-  if(booted||typeof document==="undefined")return;booted=true;const root=document.getElementById("root")||document.body;observer=new MutationObserver(scheduleRender);observer.observe(root,{subtree:true,childList:true});window.addEventListener("petgrow:navigate",()=>setTimeout(scheduleRender,60));window.addEventListener("focus",()=>{if(surfacePresent())loadDashboard(Date.now()-state.loadedAt>30000);});document.addEventListener("click",event=>{const btn=event.target?.closest?.("#petlife-react-root button");if(!btn)return;const label=cleanText(btn);if(/저장|삭제/.test(label))setTimeout(()=>{if(surfacePresent())loadDashboard(true);},900);},true);intervalId=window.setInterval(()=>{if(surfacePresent()&&state.status!=="loading")loadDashboard(false);},60000);scheduleRender();
+  if(booted||typeof document==="undefined")return;booted=true;window.addEventListener("petgrow:auth-reset",()=>{authReset=true;Object.assign(state,{status:"unauth",pets:[],petId:"",detail:null,error:"",loadedAt:0});scheduleRender();});const root=document.getElementById("root")||document.body;observer=new MutationObserver(scheduleRender);observer.observe(root,{subtree:true,childList:true});window.addEventListener("petgrow:navigate",()=>setTimeout(scheduleRender,60));window.addEventListener("focus",()=>{if(surfacePresent())loadDashboard(Date.now()-state.loadedAt>30000);});document.addEventListener("click",event=>{const btn=event.target?.closest?.("#petlife-react-root button");if(!btn)return;const label=cleanText(btn);if(/저장|삭제/.test(label))setTimeout(()=>{if(surfacePresent())loadDashboard(true);},900);},true);intervalId=window.setInterval(()=>{if(surfacePresent()&&state.status!=="loading")loadDashboard(false);},60000);scheduleRender();
 }
 export {bootPetLifeHomeBridge};
