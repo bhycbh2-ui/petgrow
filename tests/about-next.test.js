@@ -11,6 +11,8 @@ test("About page introduces the complete pet life experience",()=>{
   assert.match(transformed,/className="landing-root pg-about-next pg-about-overview"/);
   for (const feature of ['성장과 생활 기록','다이어리','Pet톡','정보와 뉴스','음악','PetBTI','Pet사주','Pet타로','내 주변 Pet']) assert.ok(transformed.includes(feature));
   assert.match(transformed,/<IntroVideo \/>/);
+  assert.ok(transformed.indexOf('className="pgo-video"') < transformed.indexOf('className="pgo-features"'));
+  assert.match(transformed, /className="pgo-feature-image"><img src=\{image\}/);
   assert.doesNotMatch(transformed,/GROWTH SIGNAL|\+12\.4%/);
 });
 

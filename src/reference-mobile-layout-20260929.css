@@ -27,14 +27,14 @@
   .bboggl-root.petgrow-web-layout .desktop-nav-shell{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto;gap:12px!important;padding:12px 16px!important;overflow:visible!important}
   .bboggl-root.petgrow-web-layout .desktop-nav-actions{margin-left:0}
   .bboggl-root.petgrow-web-layout .desktop-nav-links{display:flex!important;flex-wrap:nowrap!important;justify-content:center!important;gap:5px!important;min-width:0;width:auto;padding:0;border:0}
-  .bboggl-root.petgrow-web-layout .desktop-nav-link{display:flex!important;align-items:center;justify-content:center;gap:5px;min-height:44px;padding:9px 12px!important;border-radius:12px;background:transparent;font-size:14px!important;white-space:nowrap}
+  .bboggl-root.petgrow-web-layout .desktop-nav-link{display:flex!important;align-items:center;justify-content:center;gap:7px;min-height:50px;height:auto!important;padding:12px 16px!important;border-radius:12px;background:transparent;font-size:17px!important;font-weight:800;color:#314c3b;white-space:nowrap}
   .bboggl-root.petgrow-web-layout .desktop-nav-link:hover,
   .bboggl-root.petgrow-web-layout .desktop-nav-link.active{background:#e3f0e6;color:#2f7448}
   .desktop-nav-group{position:relative;flex:0 0 auto}
   .desktop-nav-chevron{font-size:16px;line-height:1}
-  .desktop-nav-dropdown{position:absolute;top:100%;left:0;z-index:190;min-width:180px;padding:10px;border:1px solid #e0e8e2;border-radius:16px;background:#fff;box-shadow:0 14px 35px rgba(28,52,36,.14)}
+  .desktop-nav-dropdown{position:absolute;top:100%;left:0;z-index:190;min-width:200px;padding:10px;border:1px solid #e0e8e2;border-radius:16px;background:#fff;box-shadow:0 14px 35px rgba(28,52,36,.14)}
   .desktop-nav-dropdown[hidden]{display:none!important}
-  .desktop-nav-dropdown button{display:block;width:100%;min-height:44px;padding:10px 13px;border:0;border-radius:10px;background:transparent;color:#315245;text-align:left;font:inherit;font-size:14px;white-space:nowrap;cursor:pointer}
+  .desktop-nav-dropdown button{display:block;width:100%;min-height:48px;padding:12px 15px;border:0;border-radius:10px;background:transparent;color:#315245;text-align:left;font:inherit;font-size:16px;font-weight:700;white-space:nowrap;cursor:pointer}
   .desktop-nav-dropdown button:hover,.desktop-nav-dropdown button.active{background:#eaf4ec;color:#2f7448}
   .desktop-nav-link:focus-visible,.desktop-nav-dropdown button:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
   .app-bottom-nav{display:none!important}
@@ -44,7 +44,7 @@
   .bboggl-root.petgrow-web-layout .desktop-brand-tagline{display:none!important}
   .bboggl-root.petgrow-web-layout .desktop-nav-shell{gap:6px!important;padding-inline:10px!important}
   .bboggl-root.petgrow-web-layout .desktop-nav-links{gap:2px!important}
-  .bboggl-root.petgrow-web-layout .desktop-nav-link{padding-inline:8px!important}
+  .bboggl-root.petgrow-web-layout .desktop-nav-link{padding-inline:8px!important;font-size:16px!important}
   .bboggl-root.petgrow-web-layout .desktop-nav-actions{gap:6px!important}
 }
 

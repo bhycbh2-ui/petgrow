@@ -1,3 +1,4 @@
+import PetGrowIntroVideo from "./PetGrowIntroVideo.jsx";
 import DesktopNavigation from "./DesktopNavigation.jsx";
 import { createSessionChecker } from "./session-checker.js";
 import DiaryNotebook from "./DiaryNotebook.jsx";
@@ -9741,27 +9742,8 @@ function LandingPage({ onEnter }) {
    ============================================================ */
 // 소개 페이지 영상 — 자동재생하지 않고 사용자가 직접 재생해요.
 function IntroVideo() {
-  const videoRef = useRef(null);
-  const DEFAULT_VOLUME = 0.5;
-
-  useEffect(() => {
-    if (videoRef.current) videoRef.current.volume = DEFAULT_VOLUME;
-  }, []);
-
-  return (
-    <div className="intro-video-wrap about-fade">
-      <video
-        ref={videoRef}
-        className="intro-video"
-        src="/intro-video.mp4"
-        poster="/intro-video-poster.webp"
-        controls
-        loop
-        playsInline
-        preload="metadata"
-      />
-    </div>
-  );
+  const lang = useLang();
+  return <PetGrowIntroVideo lang={lang} />;
 }
 
 // 공식 소셜 채널 링크
@@ -10435,7 +10417,7 @@ const CARE_GUIDE_LINKS = [
 function HomeCareGuides() {
   return <section className="dash-section petgrow-care-reading" aria-labelledby="care-reading-title">
     <div className="dash-section-head"><h2 id="care-reading-title">반려생활 가이드</h2><a href="/pet-guide.html">전체 보기 →</a></div>
-    <div className="petgrow-care-reading-grid">{CARE_GUIDE_LINKS.slice(0, 3).map(([slug, category, title, description]) => <article key={slug}>
+    <div className="petgrow-care-reading-grid">{CARE_GUIDE_LINKS.slice(0, 4).map(([slug, category, title, description]) => <article key={slug}>
       <small>{category}</small><h3><a href={`/guides/${slug}.html`}>{title}</a></h3><p>{description}</p>
     </article>)}</div>
     <div className="petgrow-care-reading-links"><a href="/editorial-policy.html">콘텐츠 편집 원칙</a> · <a href="/contact.html">오류 제보·문의</a></div>
@@ -10468,7 +10450,7 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoDiary, onGoView }) {
   const [homeNews,setHomeNews]=useState([]);
   useEffect(()=>{
     let cancelled=false;
-    fetch('/api/news').then(r=>r.ok?r.json():null).then(j=>{if(cancelled)return;const items=Array.isArray(j?.items)?j.items:[];const score=x=>{const h=(x.title+' '+x.description);let n=0;if(/정책|법|제도|정부|지자체|동물보호법/.test(h))n+=4;if(/건강|질병|감염|백신|병원|수의|안전|주의|리콜/.test(h))n+=5;if(/유기|보호|입양|학대/.test(h))n+=3;return n;};setHomeNews([...items].sort((a,b)=>score(b)-score(a)||new Date(b.publishedAt||0)-new Date(a.publishedAt||0)).slice(0,2));}).catch(()=>{});
+    fetch('/api/news').then(r=>r.ok?r.json():null).then(j=>{if(cancelled)return;const items=Array.isArray(j?.items)?j.items:[];const score=x=>{const h=(x.title+' '+x.description);let n=0;if(/정책|법|제도|정부|지자체|동물보호법/.test(h))n+=4;if(/건강|질병|감염|백신|병원|수의|안전|주의|리콜/.test(h))n+=5;if(/유기|보호|입양|학대/.test(h))n+=3;return n;};setHomeNews([...items].sort((a,b)=>score(b)-score(a)||new Date(b.publishedAt||0)-new Date(a.publishedAt||0)).slice(0,4));}).catch(()=>{});
     return()=>{cancelled=true};
   },[]);
   useEffect(()=>{
@@ -10488,6 +10470,10 @@ function HomePage({ account, pets = [], lang, onGoPets, onGoDiary, onGoView }) {
   const quick=quickKeys.map(k=>allQuick.find(x=>x[0]===k)).filter(Boolean);
   return (
     <div className="legal-page-shell petgrow-dashboard-home">
+      <section className="home-intro-banner" aria-label={lang === "en" ? "Meet PetGrow" : "펫그로우 소개 영상"}>
+        <div className="home-intro-copy"><span>HELLO, PETGROW</span><h2>{lang === "en" ? "Every day together, in PetGrow." : "반려생활의 모든 순간, 펫그로우"}</h2><p>{lang === "en" ? "Records, diaries, stories and music for the days you share." : "우리 아이의 기록과 다이어리, 함께 나누는 이야기와 음악을 만나보세요."}</p><button type="button" onClick={() => onGoView("about")}>{lang === "en" ? "Explore PetGrow" : "펫그로우 알아보기"}</button></div>
+        <PetGrowIntroVideo lang={lang} />
+      </section>
       <section className="dash-welcome">
         <div><span className="dash-eyebrow">PetGrow</span><h1>{accountName ? t.homeGreeting(accountName) : (lang === "en" ? "Welcome to PetGrow! 🐾" : "오늘도 우리 아이와 행복한 하루 🐾")}</h1><p>{lang === "en" ? "Everything your pet needs, in one simple dashboard." : "우리 아이의 성장·음악·주변 시설·커뮤니티를 한곳에서 확인해요."}</p></div>
         <button type="button" className="dash-profile-dot" onClick={() => onGoView(account ? "my" : "pets")} aria-label="마이페이지">{"MY"}</button>

@@ -28,9 +28,9 @@ test("the full photo album is styled and ordered as a memory diary", () => {
 });
 
 test("home keeps news and music previews compact", () => {
-  assert.match(app, /setHomeNews\([\s\S]*?slice\(0,2\)\)/);
-  assert.match(homeExtras, /cached\.items\.slice\(0, 2\)/);
-  assert.match(homeExtras, /data\?\.top5\) \? data\.top5\.slice\(0, 2\)/);
+  assert.match(app, /setHomeNews\([\s\S]*?slice\(0,4\)\)/);
+  assert.match(homeExtras, /cached\.items\.slice\(0, 4\)/);
+  assert.match(homeExtras, /data\?\.top5\) \? data\.top5\.slice\(0, 4\)/);
   assert.match(homeExtras, /Pet음악 미리듣기/);
 });
 
@@ -47,9 +47,9 @@ test("the memory diary stylesheet is loaded last", () => {
 });
 
 
-test("home recommends three guides with all articles linked and no record-use section", () => {
+test("home recommends four guides with all articles linked and no record-use section", () => {
   const section = app.slice(app.indexOf("function HomeCareGuides()"), app.indexOf("function HomePage("));
-  assert.match(section, /CARE_GUIDE_LINKS.slice\(0, 3\)/);
+  assert.match(section, /CARE_GUIDE_LINKS.slice\(0, 4\)/);
   assert.match(section, /href="\/pet-guide.html">전체 보기/);
   assert.doesNotMatch(section, /기록을 상담에 활용하는 방법/);
 });

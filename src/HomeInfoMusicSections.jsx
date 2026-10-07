@@ -41,8 +41,8 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
     const list = [...liveTips, ...(Array.isArray(tips) ? tips.filter((tip) => tip && !liveIds.has(String(tip?.id || ""))) : [])];
     if (!list.length) return [];
     const day = getKstDayIndex();
-    const start = (day * 2) % list.length;
-    return [0, 1].map((i) => list[(start + i) % list.length]).filter(Boolean);
+    const start = (day * 4) % list.length;
+    return Array.from({ length: Math.min(4, list.length) }, (_, i) => list[(start + i) % list.length]).filter(Boolean);
   }, [tips, liveTips]);
 
   const [expandedTipKey, setExpandedTipKey] = useState("");
@@ -75,7 +75,7 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
     try {
       const cached = JSON.parse(sessionStorage.getItem(HOME_MUSIC_CACHE) || "null");
       if (cached?.at && Date.now() - cached.at < 10 * 60 * 1000 && Array.isArray(cached.items)) {
-        setMusic(normalize(cached.items.slice(0, 2)));
+        setMusic(normalize(cached.items.slice(0, 4)));
       }
     } catch {}
 
@@ -84,7 +84,7 @@ export default function HomeInfoMusicSections({ lang = "ko", onGoView, tips = []
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         if (cancelled) return;
-        const raw = Array.isArray(data?.top5) ? data.top5.slice(0, 2) : [];
+        const raw = Array.isArray(data?.top5) ? data.top5.slice(0, 4) : [];
         setMusic(normalize(raw));
         try { sessionStorage.setItem(HOME_MUSIC_CACHE, JSON.stringify({ at: Date.now(), items: raw })); } catch {}
       })
