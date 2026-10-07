@@ -95,8 +95,9 @@ function renderMyPet(root){
 function ensureMyPet(){
   const heading=findMyPetHeading();if(!heading)return false;let root=document.getElementById(MY_ID);if(state.status==="unauth"){root?.remove();return true;}if(!root||!root.isConnected||root.previousElementSibling!==heading){root?.remove();root=make("aside","pgmypet-life-strip");root.id=MY_ID;heading.insertAdjacentElement("afterend",root);}const signature=stateSignature();if(root.dataset.pgSignature!==signature){root.dataset.pgSignature=signature;renderMyPet(root);}return true;
 }
-function surfacePresent(){return !!homeElement()||!!findMyPetHeading();}
-function run(){const home=ensureHome(),my=ensureMyPet();if((home||my)&&state.status==="idle")loadDashboard(false);}
+function petDataPending(){const status=document.querySelector(".bboggl-root[data-petgrow-pets-status]")?.dataset.petgrowPetsStatus;return !!status&&status!=="ready";}
+function surfacePresent(){return !petDataPending()&&(!!homeElement()||!!findMyPetHeading());}
+function run(){if(petDataPending()){document.getElementById(HOME_ID)?.remove();document.getElementById(MY_ID)?.remove();return;}const home=ensureHome(),my=ensureMyPet();if((home||my)&&state.status==="idle")loadDashboard(false);}
 function scheduleRender(){if(renderRaf)return;renderRaf=requestAnimationFrame(()=>{renderRaf=0;run();});}
 function bootPetLifeHomeBridge(){
   if(booted||typeof document==="undefined")return;booted=true;window.addEventListener("petgrow:auth-reset",()=>{authReset=true;Object.assign(state,{status:"unauth",pets:[],petId:"",detail:null,error:"",loadedAt:0});scheduleRender();});const root=document.getElementById("root")||document.body;observer=new MutationObserver(scheduleRender);observer.observe(root,{subtree:true,childList:true});window.addEventListener("petgrow:navigate",()=>setTimeout(scheduleRender,60));window.addEventListener("focus",()=>{if(surfacePresent())loadDashboard(Date.now()-state.loadedAt>30000);});document.addEventListener("click",event=>{const btn=event.target?.closest?.("#petlife-react-root button");if(!btn)return;const label=cleanText(btn);if(/저장|삭제/.test(label))setTimeout(()=>{if(surfacePresent())loadDashboard(true);},900);},true);intervalId=window.setInterval(()=>{if(surfacePresent()&&state.status!=="loading")loadDashboard(false);},60000);scheduleRender();

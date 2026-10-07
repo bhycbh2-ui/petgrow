@@ -12430,7 +12430,7 @@ function AppInner({ lang, setLang }) {
   const showOnboarding = mode === "onboarding" || mode === "edit" || (mode === "view" && !currentPet);
 
   return (
-    <div data-petgrow-view={effectiveView} className={`bboggl-root ${!isNativeApp ? "petgrow-web-layout" : ""} ${effectiveView === "admin" ? "admin-entry-root" : ""}`} style={{ minHeight: effectiveView === "admin" ? "auto" : "100vh" }}>
+    <div data-petgrow-view={effectiveView} data-petgrow-pets-status={petStatus} className={`bboggl-root ${!isNativeApp ? "petgrow-web-layout" : ""} ${effectiveView === "admin" ? "admin-entry-root" : ""}`} style={{ minHeight: effectiveView === "admin" ? "auto" : "100vh" }}>
       <GlobalStyle />
       {!isNativeApp && (
         <aside className="petgrow-sidebar">
