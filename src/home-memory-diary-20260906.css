@@ -90,4 +90,4 @@
 .home-memory-latest p { white-space: pre-wrap; overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow: hidden; line-height: 1.7; margin: 10px 0; font-size: 15px; }
 .home-memory-latest-copy > span { color: var(--primary); font-size: 13px; font-weight: 700; }
 .petgrow-care-reading-links { margin-top: 12px; font-size: 12px; color: var(--sub); }
-@media(max-width:600px) { .home-memory-latest { grid-template-columns: minmax(0, 110px) minmax(0, 1fr); gap: 13px; } .home-memory-latest p { font-size: 14px; -webkit-line-clamp: 3; } }
+@media(max-width:600px) { .home-memory-latest { grid-template-columns: minmax(0, 1fr); gap: 13px; } .home-memory-latest img { max-height: 260px; aspect-ratio: 4 / 3; } .home-memory-latest p { font-size: 16px; -webkit-line-clamp: 5; } }

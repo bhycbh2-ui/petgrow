@@ -19,7 +19,8 @@ export async function persistDiaryChange({ pets, target, species, account, write
 export function latestDiaryPreview(pet) {
   const photos = (Array.isArray(pet?.photos) ? pet.photos : []).filter(photo => photo?.dataUrl && photo?.date);
   const entries = (Array.isArray(pet?.diaryEntries) ? pet.diaryEntries : []).filter(entry => entry?.text?.trim() && entry?.date);
-  const date = [...photos, ...entries].map(item => item.date).sort().at(-1);
+  // Prefer the latest written diary so a newer photo cannot hide its text.
+  const date = (entries.length ? entries : photos).map(item => item.date).sort().at(-1);
   if (!date) return null;
   const photo = photos.filter(item => item.date === date).at(-1);
   const entry = entries.filter(item => item.date === date).sort((a, b) => (a.createdAt || '').localeCompare(b.createdAt || '')).at(-1);

@@ -45,3 +45,13 @@ test('home shows one latest day with matching photo and text', async () => {
   assert.deepEqual(latestDiaryPreview(pet), { date: '2026-10-07', photo: null, text: 'text only' });
   assert.equal(latestDiaryPreview({}), null);
 });
+
+test('a newer photo does not hide the latest written diary or mix dates', async () => {
+  const { latestDiaryPreview } = await import('../src/pet-diary.js');
+  const pet = { photos: [{ date: '2026-10-06', dataUrl: 'matching' }, { date: '2026-10-07', dataUrl: 'newer' }], diaryEntries: [{ date: '2026-10-06', text: '산책했어요' }] };
+  assert.deepEqual(latestDiaryPreview(pet), { date: '2026-10-06', photo: pet.photos[0], text: '산책했어요' });
+  pet.photos.shift();
+  assert.deepEqual(latestDiaryPreview(pet), { date: '2026-10-06', photo: null, text: '산책했어요' });
+  pet.diaryEntries = [];
+  assert.deepEqual(latestDiaryPreview(pet), { date: '2026-10-07', photo: pet.photos[0], text: '' });
+});

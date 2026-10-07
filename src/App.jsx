@@ -10405,7 +10405,7 @@ function HomeMemoryDiary({ pet, lang, onOpen }) {
   const locale = lang === "en" ? "en-US" : "ko-KR";
   const formatDate = (date) => {
     const parsed = new Date(`${date}T12:00:00`);
-    return Number.isNaN(parsed.getTime()) ? "" : parsed.toLocaleDateString(locale, { month: "short", day: "numeric" });
+    return Number.isNaN(parsed.getTime()) ? "" : parsed.toLocaleDateString(locale, { year: "numeric", month: "long", day: "numeric" });
   };
   return <section className="home-memory-diary" aria-labelledby="home-memory-title">
     <div className="home-memory-head">
