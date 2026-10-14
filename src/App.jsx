@@ -8206,11 +8206,34 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines = 3) {
 function SajuShareModal({ open, onClose, result, name, lang, petPhoto }) {
   const t = useT();
   const [dataUrl, setDataUrl] = useState(null);
+  const [shareError, setShareError] = useState("");
 
   useEffect(() => {
     if (!open || !result) { setDataUrl(null); return; }
-    renderSajuShareCard({ result, name, lang, t, petPhoto }).then(setDataUrl);
+    let active = true;
+    setShareError("");
+    renderSajuShareCard({ result, name, lang, t, petPhoto }).then(url => { if (active) setDataUrl(url); }).catch(() => { if (active) setShareError("공유 이미지를 만들지 못했어요. 창을 닫고 다시 시도해 주세요."); });
+    return () => { active = false; };
   }, [open, result, lang, petPhoto]);
+
+  useEffect(() => {
+    if (!open) return;
+    const previous = document.activeElement;
+    const card = document.querySelector(".pg-oracle-share-card");
+    card?.setAttribute("role", "dialog");
+    card?.setAttribute("aria-modal", "true");
+    card?.setAttribute("aria-label", "Pet사주 공유");
+    card?.querySelector("button")?.focus();
+    const key = event => {
+      if (event.key === "Escape") { event.preventDefault(); onClose(); }
+      if (event.key !== "Tab" || !card) return;
+      const buttons = [...card.querySelectorAll("button:not(:disabled)")];
+      if (event.shiftKey && document.activeElement === buttons[0]) { event.preventDefault(); buttons.at(-1)?.focus(); }
+      else if (!event.shiftKey && document.activeElement === buttons.at(-1)) { event.preventDefault(); buttons[0]?.focus(); }
+    };
+    document.addEventListener("keydown", key);
+    return () => { document.removeEventListener("keydown", key); if (previous?.isConnected) previous.focus(); };
+  }, [open]);
 
   const triggerDownloadLink = () => {
     if (!dataUrl) return;
@@ -8245,10 +8268,10 @@ function SajuShareModal({ open, onClose, result, name, lang, petPhoto }) {
       {dataUrl ? (
         <img src={dataUrl} alt="saju share card" style={{ width: "100%", borderRadius: 16, marginBottom: 16, boxShadow: "0 8px 24px rgba(0,0,0,.12)" }} />
       ) : (
-        <div className="bg-sub" style={{ textAlign: "center", padding: "60px 0" }}>{t.shareCardLoading}</div>
+        <div className="bg-sub" style={{ textAlign: "center", padding: "60px 0" }}>{shareError || t.shareCardLoading}</div>
       )}
       <div style={{ display: "flex", gap: 8 }}>
-        <button className="bg-btn bg-btn-ghost" style={{ flex: 1 }} onClick={handleShare}>{t.sajuShareBtn}</button>
+        <button className="bg-btn bg-btn-ghost" style={{ flex: 1 }} onClick={handleShare} disabled={!dataUrl}>{t.sajuShareBtn}</button>
       </div>
     </Modal>
   );

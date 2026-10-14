@@ -7,7 +7,7 @@
 .pg-oracle-result-header small { font-size:10px; letter-spacing:.14em; font-weight:800; color:#698577; }
 .pg-oracle-result-header h2 { margin:7px 0 0; font-size:22px; line-height:1.4; letter-spacing:-.035em; overflow-wrap:anywhere; }
 .pg-oracle-result-header p { margin:5px 0 0; font-size:14px; color:#607468; overflow-wrap:anywhere; }
-.pg-oracle-close { display:grid; place-items:center; flex-shrink:0; width:44px; height:44px; border:1px solid #dde7df; border-radius:50%; color:#234c3a; background:#f4f7f3; font:400 28px/1 inherit; cursor:pointer; }
+.pg-oracle-close { display:grid; place-items:center; flex-shrink:0; width:44px; height:44px; border:1px solid #dde7df; border-radius:50%; color:#234c3a; background:#f4f7f3; font-family:inherit; font-size:28px!important; font-weight:400; line-height:1; cursor:pointer; }
 .pg-oracle-result-scroll { flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:24px; scrollbar-gutter:stable; -webkit-overflow-scrolling:touch; overflow-wrap:anywhere; }
 .pg-oracle-result-footer { flex-shrink:0; display:flex; gap:10px; padding:14px 24px max(16px,env(safe-area-inset-bottom)); border-top:1px solid #e4ebe5; background:#fff; }
 .pg-oracle-result-footer .bg-btn { flex:1; min-width:0; min-height:48px; height:auto; padding:12px 14px; border-radius:14px; font-size:14px; line-height:1.4; box-shadow:none; }
