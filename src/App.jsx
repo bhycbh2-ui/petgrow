@@ -175,7 +175,7 @@ const STRINGS = {
     hamCloseAria: "메뉴 닫기",
     hamNavHome: "홈",
     aboutNav: "소개",
-    hamNavMy: "회원정보",
+    hamNavMy: "마이페이지",
     hamNavSettings: "정보 수정",
     appTabPetInfo: "Pet정보",
     appTabPetContent: "Pet콘텐츠",
@@ -582,7 +582,7 @@ const STRINGS = {
     communityMyEmptyPosts: "아직 작성한 글이 없어요.",
     communityMyEmptyComments: "아직 작성한 댓글이 없어요.",
     communityMyEmptyLikes: "아직 좋아요한 글이 없어요.",
-    myPageTitle: "회원정보",
+    myPageTitle: "마이페이지",
     myPageAccountTitle: "내 계정",
     myPagePetsTitle: "등록한 우리 아이",
     myPagePetsCount: (n) => `${n}마리`,
@@ -10359,7 +10359,7 @@ function UnifiedMenuHero({ view, lang='ko' }) {
     music:{eyebrow:'PETGROW SOUND',ko:'Pet음악',en:'Pet Music',koDesc:'강아지와 고양이를 위한 음악을 듣고 좋아요·댓글로 반응을 나눠보세요.',enDesc:'Listen to music for dogs and cats and save your favorites.'},
     news:{eyebrow:'PETGROW NEWS',ko:'Pet뉴스',en:'Pet News',koDesc:'반려견·반려묘·건강·정책 등 최신 반려동물 뉴스를 보기 좋게 모아봐요.',enDesc:'Browse recent pet news with clear summaries and publisher links.'},
     support:{eyebrow:'PETGROW SUPPORT',ko:'고객지원',en:'Support',koDesc:'서비스 이용 중 궁금한 점이나 도움이 필요한 내용을 남겨주세요.',enDesc:'Ask questions or get help using PetGrow.'},
-    'ad-inquiry':{eyebrow:'PETGROW PARTNERS',ko:'광고 문의',en:'Advertising',koDesc:'PetGrow와 함께할 광고·제휴 문의를 편하게 남겨주세요.',enDesc:'Contact PetGrow about advertising and partnership opportunities.'}
+    'ad-inquiry':{eyebrow:'PETGROW PARTNERS',ko:'광고·제휴 문의',en:'Advertising & Partnerships',koDesc:'PetGrow와 함께할 광고·제휴 문의를 편하게 남겨주세요.',enDesc:'Contact PetGrow about advertising and partnership opportunities.'}
   };
   const x=meta[view]; if(!x)return null;
   return <section className="nearby-hero bg-card petgrow-unified-hero" style={{width:'100%',maxWidth:'none',margin:'0 0 18px'}}><div><span className="nearby-eyebrow">{x.eyebrow}</span><h1>{lang==='en'?x.en:x.ko}</h1><p>{lang==='en'?x.enDesc:x.koDesc}</p>{view==='pets'&&<small className="nearby-search-help">🐾 {lang==='en'?'Register dogs and cats separately and keep their changes organized over time.':'강아지와 고양이 정보를 각각 등록하고 우리 아이의 변화를 차곡차곡 기록해보세요.'}</small>}</div></section>;
@@ -10502,7 +10502,7 @@ function HomePage({ account, pets = [], petStatus = "ready", onRetryPets, lang, 
 }
 
 function MobileContentHighlights({ lang, onNavigate }) {
-  const categories = [["home",lang==="en"?"Recommended":"추천"],["pets",lang==="en"?"My Pet":"우리아이"],["community",lang==="en"?"Pet Talk":"Pet톡"],["saju",lang==="en"?"Pet Saju":"Pet사주"],["petbti","PetBTI"],["tips",lang==="en"?"Pet Info":"Pet정보"]];
+  const categories = [["home",lang==="en"?"Recommended":"추천"],["pets",lang==="en"?"My Pet":"우리 아이"],["community",lang==="en"?"Pet Talk":"Pet톡"],["saju",lang==="en"?"Pet Saju":"Pet사주"],["petbti","PetBTI"],["tips",lang==="en"?"Pet Info":"Pet정보"]];
   const recommended = lang === "en" ? [["tips","A simple daily health checklist for pets"],["pets","Make growth records easier to review"],["community","Pet parents' most helpful conversations"],["petbti","Discover your pet's personality type"],["saju","A lighthearted look at today's pet fortune"]] : [["tips","우리 아이 매일 건강 체크, 이것만 확인해요"],["pets","한눈에 보는 성장기록과 생활 리포트"],["community","반려인들이 많이 나눈 생활 고민 이야기"],["petbti","우리 아이 성향을 알아보는 PetBTI"],["saju","가볍게 즐기는 오늘의 Pet사주"]];
   return <section className="pg-mobile-discovery" aria-label={lang==="en"?"PetGrow recommendations":"펫그로우 추천 콘텐츠"}><div className="pg-mobile-category-strip">{categories.map(([key,label],index)=><button key={key} type="button" className={index===0?"active":""} onClick={()=>onNavigate(key)}>{label}</button>)}</div><div className="pg-mobile-ranking-card"><div className="pg-mobile-ranking-head"><div><span>WEEKLY PICK</span><h2>{lang==="en"?"Recommended this week":"이번 주 추천 콘텐츠"}</h2></div><button type="button" onClick={()=>onNavigate("tips")}>{lang==="en"?"View all":"전체보기"}</button></div><ol>{recommended.map(([key,title],index)=><li key={`${key}-${index}`}><button type="button" onClick={()=>onNavigate(key)}><b>{index+1}</b><span>{title}</span><em>›</em></button></li>)}</ol></div></section>;
 }
@@ -10602,7 +10602,7 @@ function InfoGuidePage() {
     {key:"community",icon:"💬",title:"Pet톡",sub:"반려생활 이야기를 나누는 커뮤니티",tone:"sage",intro:"일상·질문·건강·산책 등 다양한 주제로 다른 보호자들과 이야기를 나눌 수 있어요.",steps:["Pet톡에서 원하는 카테고리나 글을 찾아봐요.","글쓰기에서 우리 아이와 제목·내용·사진을 등록해요.","댓글과 좋아요로 소통하고 회원정보에서 내 활동을 확인해요."],faq:"글과 댓글 활동으로 PetPoint를 모을 수 있으며 일일 적립 한도가 있어요.",tip:"개인정보나 타인의 권리를 침해하는 내용은 게시하지 말아 주세요."},
     {key:"news",icon:"📰",title:"Pet뉴스",sub:"최신 반려동물 소식을 보기 쉽게",tone:"cream",intro:"반려견·반려묘·건강·정책 등 최신 뉴스를 요약과 함께 확인할 수 있어요.",steps:["Pet뉴스 목록에서 관심 있는 기사를 선택해요.","PetGrow 안에서 핵심 요약을 먼저 확인해요.","자세한 내용은 원문 전체보기를 통해 언론사 페이지에서 확인해요."],faq:"뉴스는 기사 전문을 복사하지 않고 검색 결과의 설명을 바탕으로 요약해 보여줘요.",tip:"의료·정책 관련 내용은 기사 작성일과 원문을 함께 확인해 주세요."},
     {key:"points",icon:"🪙",title:"PetPoint",sub:"활동하고 모아서 재미 콘텐츠 이용",tone:"gold",intro:"현금 결제가 아닌 PetGrow 내부 무료 활동 포인트예요. Pet톡 활동과 하루 첫 접속으로 모을 수 있어요.",steps:["처음 이용하면 기본 1,000P가 지급돼요.","Pet톡 글·댓글·좋아요 받기와 하루 첫 접속으로 포인트를 모아요.","Pet사주·오늘의 운세·보호자 궁합·Pet타로 이용 시 안내된 포인트가 차감돼요."],faq:"현금 구매·환전·출금·양도는 지원하지 않아요.",tip:"회원정보와 홈에서 현재 포인트를 실시간으로 확인할 수 있어요."},
-    {key:"my",icon:"👤",title:"회원정보",sub:"계정·내 활동·저장 기록 관리",tone:"blue",intro:"닉네임과 계정 정보, Pet톡 활동, 좋아요한 음악과 저장 기록을 한곳에서 관리해요.",steps:["회원정보에서 현재 계정과 PetPoint를 확인해요.","Pet톡 내 활동과 좋아요한 콘텐츠를 펼쳐 확인해요.","필요하면 정보 수정·로그아웃·회원탈퇴 메뉴를 이용해요."],faq:"동일한 카카오 계정으로 로그인하면 서버에 저장된 지원 데이터가 동기화돼요.",tip:"회원탈퇴 전 필요한 기록이 남아 있는지 먼저 확인해 주세요."}
+    {key:"my",icon:"👤",title:"마이페이지",sub:"계정·내 활동·저장 기록 관리",tone:"blue",intro:"닉네임과 계정 정보, Pet톡 활동, 좋아요한 음악과 저장 기록을 한곳에서 관리해요.",steps:["회원정보에서 현재 계정과 PetPoint를 확인해요.","Pet톡 내 활동과 좋아요한 콘텐츠를 펼쳐 확인해요.","필요하면 정보 수정·로그아웃·회원탈퇴 메뉴를 이용해요."],faq:"동일한 카카오 계정으로 로그인하면 서버에 저장된 지원 데이터가 동기화돼요.",tip:"회원탈퇴 전 필요한 기록이 남아 있는지 먼저 확인해 주세요."}
   ];
   const filtered=guides;
   const active=guides.find(g=>g.key===activeKey)||guides[0];
@@ -11537,7 +11537,7 @@ function AdminReportsPage({onBack}){
  return <div className="admin-reports-page">
    <div className="admin-hero admin-hero-toolbar admin-mobile-safe-header">
   <div><small>{status.roleLabel}</small><h1>PetGrow 관리자센터</h1><p className="bg-sub">서비스 운영·신고·문의·광고를 한 곳에서 관리해요.</p></div>
-  <button className="bg-btn bg-btn-ghost admin-exit-btn" onClick={onBack}>← 회원정보</button>
+  <button className="bg-btn bg-btn-ghost admin-exit-btn" onClick={onBack}>← 마이페이지</button>
 </div>
    {adminLoadErrors.length>0&&<div className="bg-card" role="alert"><b>일부 데이터를 불러오지 못했어요.</b><p>{adminLoadErrors.join(" · ")}</p><button className="bg-btn" onClick={()=>loadAll({background:true})}>다시 불러오기</button></div>}
    {stats?.warnings?.length>0&&<div className="bg-card" role="alert">{stats.warnings.join(" · ")}</div>}
@@ -11546,7 +11546,7 @@ function AdminReportsPage({onBack}){
      <div className="admin-stat-grid">{[["미처리 신고",c.openReports||0],["답변대기 문의",c.waitingInquiries||0],["이용제한 중",c.restricted||0],["오늘 방문",c.todaySessions||0],["현재 접속 추정",c.onlineSessions5m||0],["7일 활성회원",c.active7d||0],["7일 신규회원",c.new7d||0],["오늘 Pet톡 글",c.postsToday||0]].map(([a,b])=><div className="admin-stat-card" key={a}><strong>{b}</strong><small>{a}</small></div>)}</div>
      <div className="bg-card admin-menu-analytics">
        <div className="admin-menu-analytics-head"><div><h3>메뉴 이용 통계</h3><small>페이지 진입 기준 · 오늘 / 7일 / 30일 이용량을 확인해요.</small></div><span className="bg-chip active admin-menu-period-chip">30일</span></div>
-       {(()=>{const labels={home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"회원정보",support:"고객지원",admin:"관리자"};const rows=(stats?.menuUsage||[]).filter(x=>labels[x.dimension]);const max=Math.max(1,...rows.map(x=>Number(x.d30)||0));return rows.length?<><div className="admin-menu-top">🏆 가장 자주 이용 <span>{labels[rows[0]?.dimension]||rows[0]?.dimension}</span></div>{rows.map((x,i)=><div className="admin-menu-row" key={x.dimension}><div className="admin-menu-name">{i<3?["🥇 ","🥈 ","🥉 "][i]:""}{labels[x.dimension]||x.dimension}</div><div className="admin-menu-bar"><i style={{width:`${Math.max(3,Math.round((Number(x.d30)||0)/max*100))}%`}}/></div><div className="admin-menu-value"><b>{Number(x.d30)||0}회</b><br/><small>7일 {Number(x.d7)||0} · 오늘 {Number(x.today)||0}</small></div></div>)}</>:<div className="bg-sub" style={{padding:"10px 0"}}>아직 메뉴 이용 데이터가 충분하지 않아요. 배포 후 방문부터 자동 집계됩니다.</div>})()}
+       {(()=>{const labels={home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"마이페이지",support:"고객지원",admin:"관리자"};const rows=(stats?.menuUsage||[]).filter(x=>labels[x.dimension]);const max=Math.max(1,...rows.map(x=>Number(x.d30)||0));return rows.length?<><div className="admin-menu-top">🏆 가장 자주 이용 <span>{labels[rows[0]?.dimension]||rows[0]?.dimension}</span></div>{rows.map((x,i)=><div className="admin-menu-row" key={x.dimension}><div className="admin-menu-name">{i<3?["🥇 ","🥈 ","🥉 "][i]:""}{labels[x.dimension]||x.dimension}</div><div className="admin-menu-bar"><i style={{width:`${Math.max(3,Math.round((Number(x.d30)||0)/max*100))}%`}}/></div><div className="admin-menu-value"><b>{Number(x.d30)||0}회</b><br/><small>7일 {Number(x.d7)||0} · 오늘 {Number(x.today)||0}</small></div></div>)}</>:<div className="bg-sub" style={{padding:"10px 0"}}>아직 메뉴 이용 데이터가 충분하지 않아요. 배포 후 방문부터 자동 집계됩니다.</div>})()}
      </div>
      <div className="bg-card admin-menu-analytics">
        <div className="admin-menu-analytics-head"><div><h3>Pet사주 · Pet타로 이용 현황</h3><small>주제별 결과 생성 및 저장 이용량 · 오늘 / 7일 / 30일</small></div></div>
@@ -11555,7 +11555,7 @@ function AdminReportsPage({onBack}){
    </>)}
    {tab==="reporting"&&<div className="admin-reporting-page">
      <div className="bg-card admin-reporting-head"><div><h2>📊 운영 보고서</h2><p className="bg-sub">일일은 어제, 주간은 오늘을 제외한 최근 7일, 월간은 지난달 전체를 집계해요.</p>{reportData&&<div className="admin-report-period">집계기간 <b>{reportRangeLabel(reportData)}</b></div>}</div><div className="admin-reporting-tabs">{[["daily","일일보고"],["weekly","주간보고"],["monthly","월간보고"]].map(([k,l])=><button type="button" disabled={reportLoading} className={reportPeriod===k?"active":""} key={k} onClick={()=>loadReport(k)}>{l}</button>)}</div></div>
-     {!reportData&&!reportLoading?<div className="bg-card admin-report-empty"><b>보고서 종류를 선택해 주세요.</b><p className="bg-sub">일일보고는 어제, 주간보고는 최근 7일(오늘 제외), 월간보고는 지난달 기준이에요.</p><button className="bg-btn" onClick={()=>loadReport("daily")}>일일보고 불러오기</button></div>:reportLoading?<div className="bg-card admin-report-empty">보고서를 계산하는 중...</div>:<>{(()=>{const r=reportData?.summary||{};return <><div className="admin-report-kpi-grid">{[["방문 세션",r.sessions||0,"👥"],["신규 회원",r.newMembers||0,"✨"],["Pet톡 글",r.posts||0,"💬"],["Pet톡 댓글",r.comments||0,"🗨️"],["음악 좋아요",r.musicLikes||0,"♥"],["음악 댓글",r.musicComments||0,"🎵"],["주변 Pet 후기",r.placeReviews||0,"📍"],["신고 접수",r.reports||0,"🚨"]].map(([l,v,ic])=><div className="bg-card admin-report-kpi" key={l}><span>{ic}</span><strong>{v}</strong><small>{l}</small></div>)}</div><div className="admin-reporting-grid"><div className="bg-card"><h3>🏆 이용 메뉴 TOP</h3>{(reportData.topMenus||[]).length?(reportData.topMenus||[]).slice(0,8).map((x,i)=><div className="admin-report-rank" key={x.dimension}><b>{i+1}. {({home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"회원정보",support:"고객지원",admin:"관리자센터"}[x.dimension]||x.dimension)}</b><span>{Number(x.count)||0}회</span></div>):<p className="bg-sub">집계 데이터가 없어요.</p>}</div><div className="bg-card"><h3>📱 접속 환경</h3>{(reportData.platforms||[]).length?(reportData.platforms||[]).map(x=><div className="admin-report-rank" key={x.platform}><b>{{web:"웹사이트",mobile_web:"모바일 웹",pwa:"PWA",android:"Android 앱",ios:"iOS 앱"}[x.platform]||x.platform}</b><span>{Number(x.count)||0}</span></div>):<p className="bg-sub">집계 데이터가 없어요.</p>}<hr/><p className="bg-sub">내 주변 Pet 후기 평균 <b>★ {r.placeAvgRating||0}</b></p></div></div></>})()}</>}
+     {!reportData&&!reportLoading?<div className="bg-card admin-report-empty"><b>보고서 종류를 선택해 주세요.</b><p className="bg-sub">일일보고는 어제, 주간보고는 최근 7일(오늘 제외), 월간보고는 지난달 기준이에요.</p><button className="bg-btn" onClick={()=>loadReport("daily")}>일일보고 불러오기</button></div>:reportLoading?<div className="bg-card admin-report-empty">보고서를 계산하는 중...</div>:<>{(()=>{const r=reportData?.summary||{};return <><div className="admin-report-kpi-grid">{[["방문 세션",r.sessions||0,"👥"],["신규 회원",r.newMembers||0,"✨"],["Pet톡 글",r.posts||0,"💬"],["Pet톡 댓글",r.comments||0,"🗨️"],["음악 좋아요",r.musicLikes||0,"♥"],["음악 댓글",r.musicComments||0,"🎵"],["주변 Pet 후기",r.placeReviews||0,"📍"],["신고 접수",r.reports||0,"🚨"]].map(([l,v,ic])=><div className="bg-card admin-report-kpi" key={l}><span>{ic}</span><strong>{v}</strong><small>{l}</small></div>)}</div><div className="admin-reporting-grid"><div className="bg-card"><h3>🏆 이용 메뉴 TOP</h3>{(reportData.topMenus||[]).length?(reportData.topMenus||[]).slice(0,8).map((x,i)=><div className="admin-report-rank" key={x.dimension}><b>{i+1}. {({home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"마이페이지",support:"고객지원",admin:"관리자센터"}[x.dimension]||x.dimension)}</b><span>{Number(x.count)||0}회</span></div>):<p className="bg-sub">집계 데이터가 없어요.</p>}</div><div className="bg-card"><h3>📱 접속 환경</h3>{(reportData.platforms||[]).length?(reportData.platforms||[]).map(x=><div className="admin-report-rank" key={x.platform}><b>{{web:"웹사이트",mobile_web:"모바일 웹",pwa:"PWA",android:"Android 앱",ios:"iOS 앱"}[x.platform]||x.platform}</b><span>{Number(x.count)||0}</span></div>):<p className="bg-sub">집계 데이터가 없어요.</p>}<hr/><p className="bg-sub">내 주변 Pet 후기 평균 <b>★ {r.placeAvgRating||0}</b></p></div></div></>})()}</>}
    </div>}
    {tab==="service"&&(!health?<div className="bg-card" role="status">서비스 상태를 확인하지 못했어요. 아직 정상 여부를 판단할 수 없어요.<button className="bg-btn" onClick={()=>loadAll({background:true})}>다시 확인</button></div>:<div className="service-health-wrap">
  <div className={`service-health-hero ${health?.level||"healthy"}`}><div className="service-health-dot">{health?.level==="down"?"🔴":health?.level==="warning"?"🟡":"🟢"}</div><div><small>현재 서비스 상태</small><h2>{health?.level==="down"?"장애":health?.level==="warning"?"주의":"정상"}</h2>{health?.reason && !["정상","주의","장애"].includes(health.reason) ? <p>{health.reason}</p> : <p className="service-health-subtext">{health?.level==="healthy"?"모든 주요 기능이 정상적으로 동작하고 있어요.":health?.level==="warning"?"일부 요청 지연이나 오류가 감지됐어요.":"서비스 장애 징후가 감지됐어요."}</p>}</div><button className="bg-btn bg-btn-ghost" onClick={async()=>{try{setHealth(await adminHealth())}catch(e){window.alert(e.message)}}}>새로고침</button></div>
@@ -11783,7 +11783,7 @@ const MENU_HELP = {
   petbti: { icon: "🧩", koTitle: "PetBTI", koBody: "강아지·고양이별 20개 행동 질문으로 우리 아이의 성향을 더 구체적으로 알아봐요.", enTitle: "PetBTI", enBody: "Answer behavior questions and discover a fun personality type for your pet." },
   music: { icon: "🎵", koTitle: "Pet음악", koBody: "강아지·고양이를 위한 음악을 듣고 반복재생하며 좋아요와 댓글로 우리 아이의 반응을 나눠보세요.", enTitle: "Pet Music", enBody: "Listen to pet-friendly music, loop favorites, and share reactions with likes and comments." },
   tips: { icon: "💡", koTitle: "Pet정보", koBody: "건강·식단·생활·훈련 등 반려생활에 바로 써먹기 좋은 정보를 모아봤어요.", enTitle: "Pet Tips", enBody: "Browse practical tips for health, food, daily care and training." },
-  my: { icon: "👤", koTitle: "회원정보", koBody: "닉네임과 계정 정보를 수정하고, 반려동물 관리와 Pet톡 내 활동을 확인할 수 있어요.", enTitle: "Member info", enBody: "Edit your nickname and account, manage pets, and review your Pet Talk activity." },
+  my: { icon: "👤", koTitle: "마이페이지", koBody: "닉네임과 계정 정보를 수정하고, 반려동물 관리와 Pet톡 내 활동을 확인할 수 있어요.", enTitle: "My Page", enBody: "Edit your nickname and account, manage pets, and review your Pet Talk activity." },
   content: { icon: "✨", koTitle: "Pet 콘텐츠", koBody: "Pet사주·PetBTI·Pet정보을 한곳에서 골라 이용할 수 있어요.", enTitle: "Pet Content", enBody: "Choose Pet Saju, PetBTI and Pet Tips in one place." },
 };
 
@@ -11844,8 +11844,8 @@ function AppInner({ lang, setLang }) {
   const needsLogin = authChecked && GATED_VIEWS.includes(view) && !account;
   const effectiveView = needsLogin ? "login" : view;
   useEffect(()=>{
-    const ko={home:"PetGrow",about:"소개",pets:"우리 아이",diary:"추억 다이어리",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",news:"Pet뉴스",guide:"정보가이드",my:"회원정보",support:"고객지원",login:"로그인"};
-    const en={home:"PetGrow",about:"About",pets:"My Pet",diary:"Memory diary",nearby:"Nearby Pet",community:"Pet Talk",saju:"Pet Saju",tarot:"Pet Tarot",petbti:"PetBTI",music:"Pet Music",tips:"Pet Info",news:"Pet News",guide:"Guide",my:"Account",support:"Support",login:"Login"};
+    const ko={home:"PetGrow",about:"소개",pets:"우리 아이",diary:"추억 다이어리",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",news:"Pet뉴스",guide:"정보가이드",my:"마이페이지",support:"고객지원",login:"로그인"};
+    const en={home:"PetGrow",about:"About",pets:"My Pet",diary:"Memory diary",nearby:"Nearby Pet",community:"Pet Talk",saju:"Pet Saju",tarot:"Pet Tarot",petbti:"PetBTI",music:"Pet Music",tips:"Pet Info",news:"Pet News",guide:"Guide",my:"My Page",support:"Support",login:"Login"};
     const label=(lang==="en"?en:ko)[effectiveView]||"PetGrow";
     document.title=label==="PetGrow"?"PetGrow | 반려동물 성장·생활 플랫폼":`${label} | PetGrow`;
   },[effectiveView,lang]);

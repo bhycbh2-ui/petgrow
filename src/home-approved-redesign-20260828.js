@@ -15,7 +15,7 @@ const ROUTES=[
   ["tips",["pet정보","pet info"]],
 ];
 const CORE_ORDER={pets:0,community:1,nearby:2,petbti:3};
-const CORE_LABEL={pets:"성장기록",community:"Pet톡",nearby:"내 주변 Pet",petbti:"PetBTI"};
+const CORE_LABEL={pets:"우리 아이",community:"Pet톡",nearby:"내 주변 Pet",petbti:"PetBTI"};
 const ICONS={
   pets:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5m0 14h16M7 15l3-4 3 2 4-6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></svg>',
   community:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18.5 3.8 21l3.3-1.1A9 9 0 1 0 5 18.5Z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/><path d="M8 12h.01M12 12h.01M16 12h.01" stroke="currentColor" stroke-linecap="round" stroke-width="2.2"/></svg>',

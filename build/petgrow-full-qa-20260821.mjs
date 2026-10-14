@@ -31,8 +31,8 @@ export default function petgrowFullQa20260821(){
       );
 
       one(
-        'const labels={home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"회원정보",support:"고객지원",admin:"관리자"};',
-        'const labels={home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",news:"Pet뉴스",tips:"Pet정보",guide:"정보가이드",content:"콘텐츠",my:"회원정보",more:"더보기",support:"고객지원","ad-inquiry":"제휴문의",login:"로그인",terms:"이용약관",privacy:"개인정보",admin:"관리자"};',
+        'const labels={home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"마이페이지",support:"고객지원",admin:"관리자"};',
+        'const labels={home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",news:"Pet뉴스",tips:"Pet정보",guide:"정보가이드",content:"콘텐츠",my:"마이페이지",more:"더보기",support:"고객지원","ad-inquiry":"광고·제휴 문의",login:"로그인",terms:"이용약관",privacy:"개인정보",admin:"관리자"};',
         "admin-menu-labels"
       );
 
