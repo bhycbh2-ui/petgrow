@@ -1,3 +1,4 @@
+import OracleResultDialog from "./OracleResultDialog.jsx";
 import React,{useEffect,useMemo,useRef,useState} from "react";
 
 async function jsonFetch(url,options={}){const r=await fetch(url,{headers:{"Content-Type":"application/json",...(options.headers||{})},...options});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||"요청을 처리하지 못했어요.");return j;}
@@ -9,12 +10,12 @@ export function DailyFortunePanel({pet,lang="ko",message,onBack,onAnalytics}){
   const [saveState,setSaveState]=useState("saving");
   const saveFortune=async()=>{if(!message)return;const key=`${petId}|${message}`;savedRef.current=key;setSaveState("saving");try{await jsonFetch("/api/tarot?action=fortune",{method:"POST",body:JSON.stringify({petId,petName,message})});setSaveState("saved");try{onAnalytics?.("feature_use","saju_daily")}catch{}}catch{savedRef.current="";setSaveState("error")}};
   useEffect(()=>{const key=`${petId}|${message}`;if(!message||savedRef.current===key)return;saveFortune();},[petId,message]);
-  return <div className="feature-module-shell pg-oracle-shell pg-oracle-fortune"><div className="bg-card pet-daily-fortune-card pg-oracle-card">
+  return <OracleResultDialog title={lang==="en"?"Today’s fortune":"오늘의 펫운세"} subtitle={petName} onClose={onBack} lang={lang}><div className="feature-module-shell pg-oracle-shell pg-oracle-fortune"><div className="bg-card pet-daily-fortune-card pg-oracle-card">
     <div className="pg-oracle-flow" aria-label={lang==="en"?"Today, rhythm, care":"오늘, 리듬, 돌봄"}><span className="active">01 TODAY</span><i/><span>02 RHYTHM</span><i/><span>03 CARE</span></div>
     <div className="pet-daily-orb">🌤️</div><small className="pet-daily-eyebrow">{lang==="en"?"TODAY'S PET FORTUNE":"오늘의 펫운세"}</small>
     <h2><span className="pet-user-name">{petName}</span>{lang==="en"?"'s fortune today":"의 오늘의 펫운세"}</h2>
     <p>{message}</p><div className={`pg-oracle-save-state ${saveState}`}>{saveState==="saving"?(lang==="en"?"Saving today's record…":"오늘의 기록을 저장하는 중이에요…"):saveState==="saved"?(lang==="en"?"Saved to today's record":"오늘의 기록에 저장됐어요"):<button type="button" onClick={saveFortune}>{lang==="en"?"Save again":"기록 다시 저장"}</button>}</div><button className="bg-btn bg-btn-ghost" style={{width:"100%",marginTop:20}} onClick={onBack}>{lang==="en"?"Back to Pet Saju":"다른 Pet사주 보기"}</button>
-  </div><div className="bg-sub" style={{fontSize:11,textAlign:"center",marginTop:16}}>{lang==="en"?"Fun content only; not a prediction of real events.":"재미로 보는 PetGrow 콘텐츠예요. 실제 미래를 판단하는 자료가 아니에요."}</div></div>;
+  </div><div className="bg-sub" style={{fontSize:11,textAlign:"center",marginTop:16}}>{lang==="en"?"Fun content only; not a prediction of real events.":"재미로 보는 PetGrow 콘텐츠예요. 실제 미래를 판단하는 자료가 아니에요."}</div></div></OracleResultDialog>;
 }
 
 const TAROT_TOPICS=[
@@ -26,15 +27,33 @@ const TAROT_TOPICS=[
 ];
 const CARD_BACKS=Array.from({length:22},(_,i)=>i);
 export function PetTarotPanel({pet,lang="ko",onBack,onAnalytics}){
-  const [topic,setTopic]=useState("daily"),[phase,setPhase]=useState("topics"),[result,setResult]=useState(null),[recordId,setRecordId]=useState(""),[error,setError]=useState(""),[saved,setSaved]=useState(false),[picked,setPicked]=useState(-1),[todayMap,setTodayMap]=useState({}),[loadingToday,setLoadingToday]=useState(false);
+  const [topic,setTopic]=useState("daily"),[phase,setPhase]=useState("topics"),[result,setResult]=useState(null),[recordId,setRecordId]=useState(""),[error,setError]=useState(""),[saved,setSaved]=useState(false),[picked,setPicked]=useState(-1),[todayMap,setTodayMap]=useState({}),[loadingToday,setLoadingToday]=useState(false),[saving,setSaving]=useState(false);
   const sequenceTimers=useRef([]);
+  const sequenceEpoch=useRef(0);
   const petId=String(pet?.id||pet?.profile?.id||pet?.profile?.name||"pet"),petName=String(pet?.profile?.name||"우리 아이");
-  const clearSequence=()=>{sequenceTimers.current.forEach(window.clearTimeout);sequenceTimers.current=[];};
+  const clearSequence=()=>{sequenceEpoch.current++;sequenceTimers.current.forEach(window.clearTimeout);sequenceTimers.current=[];};
   const loadToday=async()=>{setLoadingToday(true);try{const j=await jsonFetch("/api/tarot?action=today");const map={};(j.items||[]).filter(x=>x.content_type==="tarot"&&String(x.pet_id)===petId).forEach(x=>{const k=x.result_json?.topicKey||"daily";if(!map[k])map[k]=x;});setTodayMap(map);}catch{}finally{setLoadingToday(false)}};
   useEffect(()=>{clearSequence();setPhase("topics");setResult(null);setRecordId("");setSaved(false);setPicked(-1);loadToday();return clearSequence;},[petId]);
   const chooseTopic=(key)=>{clearSequence();setTopic(key);setError("");const old=todayMap[key];if(old){setResult(old.result_json);setRecordId(old.id);setSaved(!!old.saved);setPhase("result");}else{setResult(null);setRecordId("");setSaved(false);setPicked(-1);setPhase("prompt");sequenceTimers.current=[window.setTimeout(()=>setPhase("focus"),360),window.setTimeout(()=>setPhase("shuffle"),760),window.setTimeout(()=>setPhase("choose"),1380)];}};
-  const draw=async(i)=>{if(phase==="drawing"||phase==="reveal")return;setPicked(i);setPhase("drawing");setError("");try{onAnalytics?.("feature_use","tarot_"+topic);const j=await jsonFetch("/api/tarot?action=draw",{method:"POST",body:JSON.stringify({petId,petName,topic,cardIndex:i})});if(j.pointEvent?.spent)window.dispatchEvent(new CustomEvent("petgrow:points",{detail:{amount:-j.pointEvent.spent,balance:j.pointEvent.balance,label:j.pointEvent.label||"Pet타로 이용"}}));window.setTimeout(()=>{setResult(j.result);setRecordId(j.id);setSaved(!!j.saved);setTodayMap(m=>({...m,[topic]:{id:j.id,pet_id:petId,pet_name:petName,content_type:"tarot",result_json:j.result,saved:!!j.saved}}));setPhase("reveal");window.setTimeout(()=>setPhase("result"),900)},500);}catch(e){setError(e.message);setPhase("choose")}};
-  const save=async()=>{if(!recordId)return;setError("");try{const j=await jsonFetch("/api/tarot?action=save",{method:"POST",body:JSON.stringify({id:recordId})});if(!j.ok)throw new Error("저장 상태를 확인하지 못했어요.");const verify=await jsonFetch("/api/tarot?action=history");if(!(verify.items||[]).some(x=>x.id===recordId&&x.saved))throw new Error("저장 확인 중 오류가 발생했어요. 다시 눌러주세요.");setSaved(true);setTodayMap(m=>({...m,[topic]:{...(m[topic]||{}),saved:true}}));window.dispatchEvent(new CustomEvent("petgrow:tarot-saved"));onAnalytics?.("feature_use","saju_tarot_save");}catch(e){setError(e.message)}};
+  const draw=async(i)=>{
+    if(phase!=="choose")return;
+    const epoch=sequenceEpoch.current;
+    setPicked(i);setPhase("drawing");setError("");
+    try{
+      onAnalytics?.("feature_use","tarot_"+topic);
+      const j=await jsonFetch("/api/tarot?action=draw",{method:"POST",body:JSON.stringify({petId,petName,topic,cardIndex:i})});
+      if(epoch!==sequenceEpoch.current)return;
+      if(!j.result||!j.id)throw new Error("카드 결과를 확인하지 못했어요. 다시 시도해 주세요.");
+      sequenceTimers.current.push(window.setTimeout(()=>{
+        if(epoch!==sequenceEpoch.current)return;
+        setResult(j.result);setRecordId(j.id);setSaved(!!j.saved);
+        setTodayMap(m=>({...m,[topic]:{id:j.id,pet_id:petId,pet_name:petName,content_type:"tarot",result_json:j.result,saved:!!j.saved}}));
+        setPhase("reveal");
+        sequenceTimers.current.push(window.setTimeout(()=>{if(epoch===sequenceEpoch.current)setPhase("result")},900));
+      },500));
+    }catch(e){if(epoch===sequenceEpoch.current){setError(e.message);setPhase("choose")}}
+  };
+  const save=async()=>{if(!recordId||saving||saved)return;setSaving(true);setError("");try{const j=await jsonFetch("/api/tarot?action=save",{method:"POST",body:JSON.stringify({id:recordId})});if(!j.ok)throw new Error("저장 상태를 확인하지 못했어요.");const verify=await jsonFetch("/api/tarot?action=history");if(!(verify.items||[]).some(x=>x.id===recordId&&x.saved))throw new Error("저장 확인 중 오류가 발생했어요. 다시 눌러주세요.");setSaved(true);setTodayMap(m=>({...m,[topic]:{...(m[topic]||{}),saved:true}}));window.dispatchEvent(new CustomEvent("petgrow:tarot-saved"));onAnalytics?.("feature_use","saju_tarot_save");}catch(e){setError(e.message)}finally{setSaving(false)}};
   const currentTopic=TAROT_TOPICS.find(x=>x.key===topic)||TAROT_TOPICS[0];
   return <div className="feature-module-shell pet-tarot-shell"><style>{`
 /* PETGROW_TAROT_PREMIUM_V2 */
@@ -52,14 +71,13 @@ export function PetTarotPanel({pet,lang="ko",onBack,onAnalytics}){
       {phase==="focus"&&<div className="pet-tarot-guide-step focus"><span>✦</span><b>카드에 집중해 주세요</b><small>우리 아이를 떠올리며 잠시 카드에 마음을 모아보세요.</small></div>}
       {phase==="shuffle"&&<div className="pet-tarot-shuffle-scene"><div className="pet-tarot-shuffle-stack">{[0,1,2,3,4,5,6].map(i=><i key={i} style={{"--i":i}}><span>✦</span><b>PetGrow</b><em>🐾</em></i>)}</div><b>카드를 섞고 있어요</b><small>오늘의 메시지를 담은 22장을 준비하는 중이에요.</small></div>}
       {phase==="topics"&&<><p className="bg-sub pet-tarot-intro">주제마다 하루에 한 번씩 뽑을 수 있어요. 오늘 뽑은 카드는 같은 날 다시 바뀌지 않아요.</p><div className="pet-tarot-topic-grid">{TAROT_TOPICS.map(x=><button key={x.key} type="button" className={"pet-tarot-topic "+(todayMap[x.key]?"done":"")} onClick={()=>chooseTopic(x.key)}><span>{x.icon}</span><div><b>{x.label}</b><small>{x.desc}</small>{todayMap[x.key]&&<em>오늘 뽑기 완료 · 다시 보기</em>}</div></button>)}</div>{loadingToday&&<div className="pet-tarot-loading">오늘의 Pet타로 기록을 확인하는 중…</div>}</>}
-      {(phase==="choose"||phase==="drawing")&&<><button type="button" className="pet-tarot-back-link" onClick={()=>setPhase("topics")}>← 다른 주제 선택</button><div className="pet-tarot-topic-title"><span>{currentTopic.icon}</span><div><b>{currentTopic.label}</b><small>{currentTopic.desc}</small></div></div><p className="bg-sub pet-tarot-intro">22장의 메이저 아르카나가 섞여 있어요. 마음이 가는 카드 한 장을 골라보세요.</p><div className="pet-tarot-deck22">{CARD_BACKS.map(i=><button key={i} type="button" aria-label={(i+1)+"번째 타로카드"} style={{"--r":`${(i-10.5)*1.7}deg`,"--lift":`${Math.abs(i-10.5)*0.72}px`,"--delay":`${i*16}ms`}} className={"pet-tarot-back22 "+(picked===i&&phase==="drawing"?"picked":"")} disabled={phase==="drawing"} onClick={()=>draw(i)}><span>✦</span><b>PetGrow</b><em>🐾</em><small>{String(i+1).padStart(2,"0")}</small></button>)}</div></>}
+      {(phase==="choose"||phase==="drawing")&&<><button type="button" className="pet-tarot-back-link" onClick={()=>{clearSequence();setPhase("topics")}}>← 다른 주제 선택</button><div className="pet-tarot-topic-title"><span>{currentTopic.icon}</span><div><b>{currentTopic.label}</b><small>{currentTopic.desc}</small></div></div><p className="bg-sub pet-tarot-intro">22장의 메이저 아르카나가 섞여 있어요. 마음이 가는 카드 한 장을 골라보세요.</p><div className="pet-tarot-deck22">{CARD_BACKS.map(i=><button key={i} type="button" aria-label={(i+1)+"번째 타로카드"} style={{"--r":`${(i-10.5)*1.7}deg`,"--lift":`${Math.abs(i-10.5)*0.72}px`,"--delay":`${i*16}ms`}} className={"pet-tarot-back22 "+(picked===i&&phase==="drawing"?"picked":"")} disabled={phase==="drawing"} onClick={()=>draw(i)}><span>✦</span><b>PetGrow</b><em>🐾</em><small>{String(i+1).padStart(2,"0")}</small></button>)}</div></>}
       {phase==="drawing"&&<div className="pet-tarot-loading">선택한 카드를 천천히 펼치는 중…</div>}
       {phase==="reveal"&&result&&<div className="pet-tarot-reveal-scene"><div className={"pet-tarot-reveal-card tarot-"+result.key}><div className="pet-tarot-reveal-inner"><div className="pet-tarot-reveal-back"><span>✦</span><b>PetGrow</b><em>🐾</em></div><div className="pet-tarot-reveal-front"><small>{String(result.cardId).padStart(2,"0")}</small><span>{result.symbol}</span><b>{result.name}</b></div></div></div><b>짜잔! 오늘의 카드가 열렸어요</b></div>}
-      {phase==="result"&&result&&<><button type="button" className="pet-tarot-back-link" onClick={()=>setPhase("topics")}>← 다른 주제 보기</button><div className="pet-tarot-result-topic">{currentTopic.icon} <b>{result.topicLabel||currentTopic.label}</b><span>오늘의 카드는 이미 정해졌어요</span></div><div className="pet-tarot-result-wrap">
+      {phase==="result"&&result&&<OracleResultDialog title={result.topicLabel||currentTopic.label} subtitle={petName} onClose={()=>setPhase("topics")} lang={lang} actions={<button type="button" className="bg-btn" onClick={save} disabled={saved||saving}>{saved?"✓ 마이페이지에 저장됨":saving?"저장 중…":"타로카드 저장"}</button>}><button type="button" className="pet-tarot-back-link" onClick={()=>{clearSequence();setPhase("topics")}}>← 다른 주제 보기</button><div className="pet-tarot-result-topic">{currentTopic.icon} <b>{result.topicLabel||currentTopic.label}</b><span>오늘의 카드는 이미 정해졌어요</span></div><div className="pet-tarot-result-wrap">
         <div className={"pet-tarot-face tarot-"+result.key}><div className="pet-tarot-number">{String(result.cardId).padStart(2,"0")}</div><div className="pet-tarot-art"><span>{result.symbol}</span><i>✦</i><i>•</i><i>✧</i></div><div className="pet-tarot-title"><b>{result.name}</b>{lang==="en"&&<small>{result.en}</small>}</div></div>
         <div className="pet-tarot-reading"><span className="bg-chip active">{result.keyword}</span><h3>{result.topicLabel||currentTopic.label}</h3><p>{result.overview||result.topicMeaning||result.meaning}</p><div className="pet-tarot-reading-detail"><section><h4>💗 우리 아이의 마음</h4><p>{result.emotion||result.topicTip||result.tip}</p></section><section><h4>🤝 보호자와의 교감</h4><p>{result.bond||result.topicTip||result.tip}</p></section><section><h4>🌿 산책·놀이 흐름</h4><p>{result.activity||result.tip}</p></section><section><h4>🔎 오늘 살펴볼 점</h4><p>{result.caution||result.tip}</p></section><section className="wide"><h4>✨ 오늘의 실천</h4><p>{result.action||result.topicTip||result.tip}</p></section><section className="wide"><h4>🔮 카드가 전하는 한마디</h4><p>{result.closing||result.meaning}</p></section></div><div className="pet-tarot-luck">🍀 오늘의 행운 포인트 <b>{result.luck}</b></div></div>
-        <div className="pet-tarot-actions"><button type="button" className="bg-btn" onClick={save} disabled={saved}>{saved?"✓ 회원정보에 저장됨":"타로카드 저장"}</button></div>
-      </div><p className="pet-tarot-once-note">이 주제는 오늘 이미 뽑았어요. 내일 다시 새로운 카드를 만날 수 있어요.</p></>}
+      </div><p className="pet-tarot-once-note">이 주제는 오늘 이미 뽑았어요. 내일 다시 새로운 카드를 만날 수 있어요.</p>{error&&<p className="pg-oracle-result-error" role="alert">{error}</p>}</OracleResultDialog>}
       {error&&<div className="nearby-message" style={{marginTop:12}}>{error}</div>}
       {onBack&&<button type="button" className="bg-btn bg-btn-ghost" style={{width:"100%",marginTop:18}} onClick={onBack}>돌아가기</button>}
     </div><div className="bg-sub" style={{fontSize:11,textAlign:"center",marginTop:14,lineHeight:1.65,wordBreak:"keep-all"}}>메이저 아르카나 22장의 전통적인 상징을 PetGrow식 반려생활 메시지로 재해석한 재미 콘텐츠예요. 실제 미래·건강·의학적 상태를 판단하는 자료가 아니에요.</div>

@@ -1,3 +1,4 @@
+import OracleResultDialog from "./OracleResultDialog.jsx";
 import { loadPetState, petViewStatus } from "./pet-state-loader.js";
 import PetGrowIntroVideo from "./PetGrowIntroVideo.jsx";
 import DesktopNavigation from "./DesktopNavigation.jsx";
@@ -6077,7 +6078,7 @@ function ShareCardModal({ open, onClose, pet, estimate, range, breedDisplayName 
   };
 
   return (
-    <Modal open={open} onClose={onClose} width={480}>
+    <Modal open={open} onClose={onClose} width={480} cardClassName="pg-oracle-share-card">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
         <h3 style={{ fontSize: 18 }}>{t.shareCardTitle}</h3>
         <button type="button" className="icon-btn" aria-label={t.cancel} onClick={onClose}>
@@ -8234,7 +8235,7 @@ function SajuShareModal({ open, onClose, result, name, lang, petPhoto }) {
   };
 
   return (
-    <Modal open={open} onClose={onClose} width={480}>
+    <Modal open={open} onClose={onClose} width={480} cardClassName="pg-oracle-share-card">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
         <h3 style={{ fontSize: 18 }}>{t.sajuShareTitle}</h3>
         <button type="button" className="icon-btn" aria-label={t.cancel} onClick={onClose}>
@@ -8260,6 +8261,7 @@ function SajuResultView({ input, onRestart }) {
   const result = useMemo(() => generateSajuResult(input, lang), [input, lang]);
 
   return (
+    <OracleResultDialog title={lang === "en" ? "Pet Saju result" : "Pet사주 결과"} subtitle={input.name} onClose={onRestart} lang={lang}>
     <div style={{ maxWidth: 720, margin: "0 auto" }}>
       <div style={{ textAlign: "center", marginBottom: 12 }}>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, marginBottom: 12 }}>
@@ -8312,6 +8314,7 @@ function SajuResultView({ input, onRestart }) {
 
       <SajuShareModal open={shareOpen} onClose={() => setShareOpen(false)} result={result} name={input.name} lang={lang} petPhoto={input.profileImage} />
     </div>
+    </OracleResultDialog>
   );
 }
 
@@ -8343,7 +8346,7 @@ function SajuPage({ pet, onGoRegister }) {
     .trim()
     .slice(0, 30) || (lang === "en" ? "My pet" : "우리 아이");
   const dailyMessages = lang === "en" ? ["A great day for a relaxed walk and lots of praise.", "A small new experience could become a happy memory today.", "Slow down and enjoy some cozy time together today."] : ["오늘은 여유로운 산책과 칭찬을 듬뿍 받으면 기분이 더 좋아지는 날이에요. 🐾", "작은 새로운 경험 하나가 즐거운 추억이 되기 좋은 날이에요. ✨", "오늘은 서두르기보다 보호자님과 포근하게 쉬는 시간이 행운을 불러와요. 💚"];
-  const todayKey = new Date().toISOString().slice(0, 10);
+  const todayKey = petPointKstDate();
   const dailySeed = `${petName}|${pet.profile.birthDate || ""}|${pet.profile.species || ""}|${todayKey}`;
   const idx = hashString(dailySeed) % dailyMessages.length;
 
@@ -8956,7 +8959,7 @@ function PetBtiShareModal({ open, onClose, result, name, lang, petPhoto }) {
   };
 
   return (
-    <Modal open={open} onClose={onClose} width={480}>
+    <Modal open={open} onClose={onClose} width={480} cardClassName="pg-oracle-share-card">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
         <h3 style={{ fontSize: 18 }}>{t.petBtiShareTitle}</h3>
         <button type="button" className="icon-btn" aria-label={t.cancel} onClick={onClose}>

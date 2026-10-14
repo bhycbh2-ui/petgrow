@@ -48,7 +48,9 @@ export default function petgrowUiFixes() {
         let out=code;
         out=replaceRequired(out,'  return <div className="feature-module-shell pet-tarot-shell"><style>{`','  return <div className="feature-module-shell pet-tarot-shell"><div className="pg-tarot-pet-identity"><span className="pg-tarot-pet-avatar">{(pet?.profile?.profileImage||pet?.profile?.photo||pet?.profileImage||pet?.photo) ? <img src={pet?.profile?.profileImage||pet?.profile?.photo||pet?.profileImage||pet?.photo} alt={petName} /> : <em>{String(pet?.profile?.species||pet?.species||pet?.profile?.type||pet?.type||"dog").toLowerCase().includes("cat")||String(pet?.profile?.species||pet?.species||"").includes("고양")?"🐱":"🐶"}</em>}</span><b className="pet-user-name">{petName}</b></div><style>{`',"PetTarot identity");
         if(!out.includes('sequenceTimers.current=[window.setTimeout(()=>setPhase("focus"),360),window.setTimeout(()=>setPhase("shuffle"),760),window.setTimeout(()=>setPhase("choose"),1380)];'))throw new Error('[petgrow-ui-fixes] missing required pattern: PetTarot opening timing');
+        if (!out.includes("const sequenceEpoch=useRef(0)")) {
         out=replaceRequired(out,'setPhase("reveal");window.setTimeout(()=>setPhase("result"),900)},500);','setPhase("reveal");window.setTimeout(()=>setPhase("result"),420)},160);',"PetTarot reveal timing");
+        }
         out=replaceOptionalAll(out,'PetPoint {result.pointCost||30}P 사용','PetPoint {result.pointCost||5}P 사용');
         out=replaceOptionalAll(out,'{lang==="en"?"PETGROW TAROT · 22 MAJOR ARCANA":"PETGROW 타로 · 메이저 아르카나 22장"}','{lang==="en"?"PETGROW TAROT · 22 MAJOR ARCANA":lang==="ja"?"PETGROW タロット · 大アルカナ22枚":lang==="zh"?"PETGROW 塔罗 · 22张大阿尔卡那":"PETGROW 타로 · 메이저 아르카나 22장"}');
         out=replaceOptionalAll(out,'{petName}{lang==="en"?"\'s Tarot":"의 Pet타로"}','{petName}{lang==="en"?"\'s Tarot":lang==="ja"?"のPetタロット":lang==="zh"?"的Pet塔罗":"의 Pet타로"}');

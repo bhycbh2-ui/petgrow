@@ -37,6 +37,7 @@ import "./reference-mobile-layout-20260929.css";
 import "./publisher-content.css";
 import "./adsense-review-20260822.css";
 import "./adsense-review-20260822.js";
+import "./oracle-mobile-20261015.css";
 
 const APP_AUTH_CALLBACK = "kr.co.petgrow.app://auth/callback";
 
