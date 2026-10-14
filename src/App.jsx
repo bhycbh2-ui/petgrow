@@ -8373,6 +8373,8 @@ function SajuPage({ pet, onGoRegister }) {
   const dailySeed = `${petName}|${pet.profile.birthDate || ""}|${pet.profile.species || ""}|${todayKey}`;
   const idx = hashString(dailySeed) % dailyMessages.length;
 
+  if (mode === "tarot") return <PetTarotPanel pet={pet} lang={lang} onBack={() => setMode("menu")} />;
+
   if (mode === "daily") return <DailyFortunePanel pet={pet} lang={lang} message={dailyMessages[idx]} onBack={() => setMode("menu")} />;
 
 

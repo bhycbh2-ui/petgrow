@@ -23,3 +23,15 @@ test('lazy Saju result keeps its dialog dependency and renders all result sectio
   assert.match(html,/Pet사주 결과/);
   for(const label of Object.values(t.sajuCategoryTitle))assert.ok(html.includes(label),label);
 });
+
+test('Saju Tarot mode renders the Tarot panel for the selected pet', async () => {
+  const plugin = split();const context = {error(message){throw new Error(message)}};
+  plugin.transform.call(context,transformPetTalkOracle(fs.readFileSync(new URL('../src/App.jsx',import.meta.url),'utf8')),'/app/src/App.jsx');
+  const loaded = await plugin.load.call(context,plugin.resolveId('virtual:petgrow-v6-saju'));
+  const compiled=await transform(loaded.code,{format:'cjs',platform:'node'});
+  let index=0;const initial=[null,'tarot','','',null];const hooks={...React,useState:value=>[index<initial.length?initial[index++]:value,()=>{}]};
+  const module={exports:{}};const require=createRequire(import.meta.url);
+  new Function('require','module','exports',compiled.code)(name=>name==='react'?hooks:require(name),module,module.exports);
+  const html=renderToString(React.createElement(module.exports.default,{pet:{id:'selected-pet',profile:{name:'꼬미',birthDate:'2026-07-25'}},__deps:{useLang:()=> 'ko',useT:()=>({}),hashString:()=>0,petPointKstDate:()=> '2026-10-15',PetTarotPanel:({pet})=>React.createElement('section',{'data-pet':pet.id},'Pet타로')} }));
+  assert.match(html,/data-pet="selected-pet"/);assert.match(html,/Pet타로/);
+});
