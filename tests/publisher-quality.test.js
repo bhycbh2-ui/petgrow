@@ -29,8 +29,30 @@ test("publisher guide pages are substantial and listed in sitemap",()=>{
 
 test("Vercel serves publisher content instead of returning review-time 404s",()=>{
   const config=JSON.parse(read("vercel.json"));
-  const blocked=(config.routes||[]).filter(route=>route.status===404&&/pet-guide|guides/.test(String(route.src)));
-  assert.deepEqual(blocked,[]);
+  // Resolve ordered legacy routes against real public files. Missing guide URLs
+  // must not reach the SPA fallback, while existing articles and CSS must resolve directly.
+  const resolve=(url)=>{
+    for(const route of config.routes){
+      if(route.handle==="filesystem"){
+        if(fs.existsSync(path.resolve("public",`.${url}`))) return {status:200,dest:url};
+        continue;
+      }
+      if(!route.src || !new RegExp(`^(?:${route.src})$`).test(url) || route.continue) continue;
+      return {status:route.status||200,dest:route.dest};
+    }
+  };
+  const urls=["/pet-guide.html","/guides/style.css",...fs.readdirSync("public/guides").filter(name=>name.endsWith(".html")).map(name=>`/guides/${name}`)];
+  for(const url of urls) assert.deepEqual(resolve(url),{status:200,dest:url});
+  for(const url of ["/guides/missing.html","/guides/missing","/guides/missing.css"]){
+    const result=resolve(url);
+    assert.equal(result.status,404);
+    assert.ok(fs.existsSync(path.resolve("public",`.${result.dest}`)));
+    assert.match(read(`public${result.dest}`),/name="robots" content="noindex"/);
+  }
+  assert.deepEqual(resolve("/delete-account"),{status:200,dest:"/delete-account.html"});
+  assert.deepEqual(resolve("/privacy"),{status:200,dest:"/index.html"});
+  assert.deepEqual(resolve("/api/me"),{status:200,dest:"/api/core?route=me"});
+  assert.equal(resolve("/assets/missing.js").status,404);
 });
 
 test("Android ads remain consent-first and restricted to substantial content",()=>{
