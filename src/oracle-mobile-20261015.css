@@ -1,0 +1,70 @@
+/* A calm, readable mobile experience for the three oracle services. */
+.pg-oracle-shell,.pet-tarot-shell { min-width:0; --oracle-ink:#173e31; --oracle-emerald:#236a4d; }
+.pg-oracle-result-overlay { position:fixed; inset:0; z-index:12000; display:flex; align-items:center; justify-content:center; padding:24px; background:rgba(16,34,27,.58); backdrop-filter:blur(8px); }
+.pg-oracle-result-dialog { display:flex; flex-direction:column; width:min(760px,100%); max-height:calc(100dvh - 48px); min-height:0; color:#173e31; background:#f6f8f5; border:1px solid rgba(255,255,255,.7); border-radius:28px; box-shadow:0 28px 100px rgba(9,26,19,.3); overflow:hidden; font-family:inherit; }
+.pg-oracle-result-header { flex-shrink:0; display:flex; align-items:flex-start; justify-content:space-between; gap:14px; padding:22px 24px 18px; background:#fff; border-bottom:1px solid #e4ebe5; }
+.pg-oracle-result-header>div { min-width:0; }
+.pg-oracle-result-header small { font-size:10px; letter-spacing:.14em; font-weight:800; color:#698577; }
+.pg-oracle-result-header h2 { margin:7px 0 0; font-size:22px; line-height:1.4; letter-spacing:-.035em; overflow-wrap:anywhere; }
+.pg-oracle-result-header p { margin:5px 0 0; font-size:14px; color:#607468; overflow-wrap:anywhere; }
+.pg-oracle-close { display:grid; place-items:center; flex-shrink:0; width:44px; height:44px; border:1px solid #dde7df; border-radius:50%; color:#234c3a; background:#f4f7f3; font-family:inherit; font-size:28px!important; font-weight:400; line-height:1; cursor:pointer; }
+.pg-oracle-result-scroll { flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:24px; scrollbar-gutter:stable; -webkit-overflow-scrolling:touch; overflow-wrap:anywhere; }
+.pg-oracle-result-footer { flex-shrink:0; display:flex; gap:10px; padding:14px 24px max(16px,env(safe-area-inset-bottom)); border-top:1px solid #e4ebe5; background:#fff; }
+.pg-oracle-result-footer .bg-btn { flex:1; min-width:0; min-height:48px; height:auto; padding:12px 14px; border-radius:14px; font-size:14px; line-height:1.4; box-shadow:none; }
+.pg-oracle-result-dialog .pg-oracle-flow { display:none; }
+.pg-oracle-result-dialog .feature-module-shell { width:100%; max-width:none; padding:0; margin:0; }
+.pg-oracle-result-dialog .bg-card { box-shadow:none!important; }
+.pg-oracle-result-dialog .pet-user-name { overflow-wrap:anywhere; white-space:normal!important; }
+.pg-oracle-result-error { margin:16px 0 0; padding:14px; border:1px solid #efc8bd; border-radius:12px; background:#fff3ef; color:#943e2d; font-size:14px; line-height:1.6; }
+.pg-oracle-result-dialog .pet-tarot-result-wrap { margin:0!important; padding:20px!important; gap:20px!important; border-radius:20px!important; grid-template-columns:150px minmax(0,1fr)!important; border:1px solid #e2e8de!important; }
+.pg-oracle-result-dialog .pet-tarot-face { width:150px; max-width:100%; height:228px; margin:0 auto; border-radius:16px; }
+.pg-oracle-result-dialog .pet-tarot-reading { min-width:0; }
+.pg-oracle-result-dialog .pet-tarot-reading p,.pg-oracle-result-dialog .pet-tarot-reading-detail p { font-size:15px!important; line-height:1.85!important; color:#445d4e; word-break:normal; overflow-wrap:anywhere; }
+.pg-oracle-result-dialog .pet-tarot-reading-detail { grid-template-columns:1fr!important; gap:12px; }
+.pg-oracle-result-dialog .pet-tarot-reading-detail h4 { font-size:15px!important; }
+.pg-oracle-result-dialog .pet-tarot-reading-detail section { padding:16px!important; background:#f7faf6!important; }
+.pg-oracle-result-dialog .pet-tarot-result-topic { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 18px; line-height:1.6; }
+.pg-oracle-result-dialog .pet-tarot-result-topic span { flex-basis:100%; font-size:12px; color:#6b7c6f; }
+.pg-oracle-result-dialog .pet-tarot-once-note { font-size:12px; line-height:1.7; color:#6b7c6f; margin:16px 0 0; }
+.pg-oracle-result-dialog .pet-tarot-back-link { min-height:44px; }
+.pg-oracle-result-dialog .pet-daily-fortune-card { padding:26px 20px!important; border-radius:20px!important; }
+.pg-oracle-result-dialog .pet-daily-fortune-card h2 { font-size:24px!important; line-height:1.5!important; }
+.pg-oracle-result-dialog .pet-daily-fortune-card>p { font-size:17px!important; line-height:1.9!important; text-align:left; }
+.pg-oracle-result-dialog .pg-oracle-save-state { padding:10px 14px; height:auto; border-radius:12px; font-size:12px; }
+.pg-oracle-result-open .modal-overlay { z-index:13000!important; padding:16px!important; }
+.pg-oracle-share-card { max-height:calc(100dvh - 32px)!important; overflow-y:auto!important; overscroll-behavior:contain; padding:20px!important; border-radius:20px!important; }
+.pg-oracle-share-card .icon-btn { min-width:44px; min-height:44px; }
+.pg-oracle-share-card .bg-btn { min-height:48px; }
+.pg-oracle-result-dialog button:focus-visible,.pet-tarot-shell button:focus-visible { outline:3px solid #b49850; outline-offset:3px; }
+@media(max-width:700px) {
+  .pg-oracle-result-overlay { padding:0; align-items:flex-end; }
+  .pg-oracle-result-dialog { width:100%; max-height:calc(100dvh - max(12px,env(safe-area-inset-top))); border-radius:24px 24px 0 0; border-bottom:0; }
+  .pg-oracle-result-header { padding:18px 18px 14px; }
+  .pg-oracle-result-header h2 { font-size:20px; }
+  .pg-oracle-result-scroll { padding:18px 16px; scrollbar-gutter:auto; }
+  .pg-oracle-result-footer { padding:12px 16px max(16px,env(safe-area-inset-bottom)); }
+  .pg-oracle-result-dialog .pet-tarot-result-wrap { grid-template-columns:minmax(0,1fr)!important; padding:18px 14px!important; }
+  .pg-oracle-result-dialog .pet-tarot-face { width:150px!important; }
+  .pg-oracle-shell.pg-oracle-menu .bg-surface-card { min-height:104px; padding:18px 16px!important; gap:14px!important; border:1px solid #dce7df!important; border-radius:20px!important; }
+  .pg-oracle-menu .bg-surface-card>span:nth-child(2) { flex:1; min-width:0; }
+  .pg-oracle-menu .bg-surface-card strong { font-size:17px!important; }
+  .pg-oracle-menu .bg-surface-card .bg-sub { font-size:14px!important; line-height:1.65!important; }
+  .pg-oracle-compat input { min-height:50px; font-size:16px!important; width:100%; box-sizing:border-box; }
+  .pg-oracle-shell .bg-btn { min-height:48px; }
+  .pet-tarot-shell .pet-tarot-topic-grid { grid-template-columns:1fr!important; gap:10px!important; }
+  .pet-tarot-shell .pet-tarot-topic { min-height:100px!important; padding:18px 16px!important; border-radius:18px!important; text-align:left; }
+  .pet-tarot-shell .pet-tarot-topic div { min-width:0; }
+  .pet-tarot-shell .pet-tarot-topic b { font-size:16px!important; }
+  .pet-tarot-shell .pet-tarot-topic small { font-size:13px!important; line-height:1.65!important; }
+  .pet-tarot-shell .pet-tarot-topic em { font-size:12px!important; }
+  .pet-tarot-shell .pet-tarot-deck22 { grid-template-columns:repeat(4,minmax(0,1fr))!important; gap:10px!important; padding:16px 0!important; }
+  .pet-tarot-shell .pet-tarot-back22 { min-width:44px; min-height:80px!important; border-radius:12px!important; }
+  .pet-tarot-shell .pet-tarot-back22 b { font-size:9px!important; }
+  .pet-tarot-shell .pet-tarot-back22:hover { transform:none!important; }
+  .pet-tarot-shell .pet-tarot-intro { font-size:14px!important; line-height:1.75!important; }
+  .pg-oracle-saju-result h2 { font-size:24px!important; }
+  .pg-oracle-saju-result .bg-surface-card { padding:18px!important; border-radius:18px!important; }
+  .pg-oracle-saju-result .bg-surface-card>div:first-child { font-size:16px!important; }
+  .pg-oracle-saju-result .bg-surface-card>div:last-child { font-size:15px!important; line-height:1.9!important; }
+}
+@media(prefers-reduced-motion:reduce) { .pet-tarot-shell *,.pg-oracle-result-dialog * { animation:none!important; transition:none!important; } }

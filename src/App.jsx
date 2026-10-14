@@ -1,3 +1,4 @@
+import OracleResultDialog from "./OracleResultDialog.jsx";
 import { loadPetState, petViewStatus } from "./pet-state-loader.js";
 import PetGrowIntroVideo from "./PetGrowIntroVideo.jsx";
 import DesktopNavigation from "./DesktopNavigation.jsx";
@@ -6077,7 +6078,7 @@ function ShareCardModal({ open, onClose, pet, estimate, range, breedDisplayName 
   };
 
   return (
-    <Modal open={open} onClose={onClose} width={480}>
+    <Modal open={open} onClose={onClose} width={480} cardClassName="pg-oracle-share-card">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
         <h3 style={{ fontSize: 18 }}>{t.shareCardTitle}</h3>
         <button type="button" className="icon-btn" aria-label={t.cancel} onClick={onClose}>
@@ -8205,11 +8206,34 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines = 3) {
 function SajuShareModal({ open, onClose, result, name, lang, petPhoto }) {
   const t = useT();
   const [dataUrl, setDataUrl] = useState(null);
+  const [shareError, setShareError] = useState("");
 
   useEffect(() => {
     if (!open || !result) { setDataUrl(null); return; }
-    renderSajuShareCard({ result, name, lang, t, petPhoto }).then(setDataUrl);
+    let active = true;
+    setShareError("");
+    renderSajuShareCard({ result, name, lang, t, petPhoto }).then(url => { if (active) setDataUrl(url); }).catch(() => { if (active) setShareError("공유 이미지를 만들지 못했어요. 창을 닫고 다시 시도해 주세요."); });
+    return () => { active = false; };
   }, [open, result, lang, petPhoto]);
+
+  useEffect(() => {
+    if (!open) return;
+    const previous = document.activeElement;
+    const card = document.querySelector(".pg-oracle-share-card");
+    card?.setAttribute("role", "dialog");
+    card?.setAttribute("aria-modal", "true");
+    card?.setAttribute("aria-label", "Pet사주 공유");
+    card?.querySelector("button")?.focus();
+    const key = event => {
+      if (event.key === "Escape") { event.preventDefault(); onClose(); }
+      if (event.key !== "Tab" || !card) return;
+      const buttons = [...card.querySelectorAll("button:not(:disabled)")];
+      if (event.shiftKey && document.activeElement === buttons[0]) { event.preventDefault(); buttons.at(-1)?.focus(); }
+      else if (!event.shiftKey && document.activeElement === buttons.at(-1)) { event.preventDefault(); buttons[0]?.focus(); }
+    };
+    document.addEventListener("keydown", key);
+    return () => { document.removeEventListener("keydown", key); if (previous?.isConnected) previous.focus(); };
+  }, [open]);
 
   const triggerDownloadLink = () => {
     if (!dataUrl) return;
@@ -8234,7 +8258,7 @@ function SajuShareModal({ open, onClose, result, name, lang, petPhoto }) {
   };
 
   return (
-    <Modal open={open} onClose={onClose} width={480}>
+    <Modal open={open} onClose={onClose} width={480} cardClassName="pg-oracle-share-card">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
         <h3 style={{ fontSize: 18 }}>{t.sajuShareTitle}</h3>
         <button type="button" className="icon-btn" aria-label={t.cancel} onClick={onClose}>
@@ -8244,10 +8268,10 @@ function SajuShareModal({ open, onClose, result, name, lang, petPhoto }) {
       {dataUrl ? (
         <img src={dataUrl} alt="saju share card" style={{ width: "100%", borderRadius: 16, marginBottom: 16, boxShadow: "0 8px 24px rgba(0,0,0,.12)" }} />
       ) : (
-        <div className="bg-sub" style={{ textAlign: "center", padding: "60px 0" }}>{t.shareCardLoading}</div>
+        <div className="bg-sub" style={{ textAlign: "center", padding: "60px 0" }}>{shareError || t.shareCardLoading}</div>
       )}
       <div style={{ display: "flex", gap: 8 }}>
-        <button className="bg-btn bg-btn-ghost" style={{ flex: 1 }} onClick={handleShare}>{t.sajuShareBtn}</button>
+        <button className="bg-btn bg-btn-ghost" style={{ flex: 1 }} onClick={handleShare} disabled={!dataUrl}>{t.sajuShareBtn}</button>
       </div>
     </Modal>
   );
@@ -8260,6 +8284,7 @@ function SajuResultView({ input, onRestart }) {
   const result = useMemo(() => generateSajuResult(input, lang), [input, lang]);
 
   return (
+    <OracleResultDialog title={lang === "en" ? "Pet Saju result" : "Pet사주 결과"} subtitle={input.name} onClose={onRestart} lang={lang}>
     <div style={{ maxWidth: 720, margin: "0 auto" }}>
       <div style={{ textAlign: "center", marginBottom: 12 }}>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, marginBottom: 12 }}>
@@ -8312,6 +8337,7 @@ function SajuResultView({ input, onRestart }) {
 
       <SajuShareModal open={shareOpen} onClose={() => setShareOpen(false)} result={result} name={input.name} lang={lang} petPhoto={input.profileImage} />
     </div>
+    </OracleResultDialog>
   );
 }
 
@@ -8343,7 +8369,7 @@ function SajuPage({ pet, onGoRegister }) {
     .trim()
     .slice(0, 30) || (lang === "en" ? "My pet" : "우리 아이");
   const dailyMessages = lang === "en" ? ["A great day for a relaxed walk and lots of praise.", "A small new experience could become a happy memory today.", "Slow down and enjoy some cozy time together today."] : ["오늘은 여유로운 산책과 칭찬을 듬뿍 받으면 기분이 더 좋아지는 날이에요. 🐾", "작은 새로운 경험 하나가 즐거운 추억이 되기 좋은 날이에요. ✨", "오늘은 서두르기보다 보호자님과 포근하게 쉬는 시간이 행운을 불러와요. 💚"];
-  const todayKey = new Date().toISOString().slice(0, 10);
+  const todayKey = petPointKstDate();
   const dailySeed = `${petName}|${pet.profile.birthDate || ""}|${pet.profile.species || ""}|${todayKey}`;
   const idx = hashString(dailySeed) % dailyMessages.length;
 
@@ -8956,7 +8982,7 @@ function PetBtiShareModal({ open, onClose, result, name, lang, petPhoto }) {
   };
 
   return (
-    <Modal open={open} onClose={onClose} width={480}>
+    <Modal open={open} onClose={onClose} width={480} cardClassName="pg-oracle-share-card">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
         <h3 style={{ fontSize: 18 }}>{t.petBtiShareTitle}</h3>
         <button type="button" className="icon-btn" aria-label={t.cancel} onClick={onClose}>
