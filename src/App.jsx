@@ -8341,7 +8341,7 @@ function SajuResultView({ input, onRestart }) {
   );
 }
 
-function SajuPage({ pet, onGoRegister }) {
+function SajuPage({ pet, onGoRegister, onGoTarot }) {
   const t = useT();
   const lang = useLang();
   const [input, setInput] = useState(null);
@@ -8424,7 +8424,7 @@ function SajuPage({ pet, onGoRegister }) {
   const modes = [
     { id: "basic", icon: "🔮", title: lang === "en" ? "Basic Pet Saju" : "기본 Pet사주", desc: lang === "en" ? "Personality, bonds, play style and luck" : "타고난 성격·인연·놀이 스타일·복을 재미로 봐요.", bg: "#F1F5F1", click: startBasic },
     { id: "daily", icon: "🌤️", title: lang === "en" ? "Today's Pet Fortune" : "오늘의 펫운세", desc: lang === "en" ? "A light daily fortune for your pet" : "오늘 우리 아이에게 어울리는 행운 메시지를 확인해요.", bg: "#F5F8F4", click: () => setMode("daily") },
-    { id: "tarot", icon: "🃏", title: lang === "en" ? "Today's Pet Tarot" : "오늘의 Pet타로", desc: lang === "en" ? "Pick a Major Arcana card and read today's message" : "마음이 가는 카드를 골라 오늘의 메시지를 확인해요.", bg: "#F7F3EB", click: () => setMode("tarot") },
+    { id: "tarot", icon: "🃏", title: lang === "en" ? "Today's Pet Tarot" : "오늘의 Pet타로", desc: lang === "en" ? "Pick a Major Arcana card and read today's message" : "마음이 가는 카드를 골라 오늘의 메시지를 확인해요.", bg: "#F7F3EB", click: () => onGoTarot ? onGoTarot() : setMode("tarot") },
     { id: "compat", icon: "🫶", title: lang === "en" ? "Guardian Compatibility" : "보호자 궁합", desc: lang === "en" ? "See the fun chemistry between you two" : "우리 아이와 보호자님의 케미와 유대감을 재미로 확인해요.", bg: "#F1F6F2", click: () => setMode("compat") },
   ];
   return <div className="feature-module-shell"><div style={{ textAlign: "center", marginBottom: 18 }}><FeaturePetHeader pet={pet} /><h2 className="pet-user-name" style={{ fontSize: 21, marginTop: 10 }}>{lang === "en" ? `Choose ${petName}'s Pet Saju` : `${petName}와 어떤 Pet사주를 볼까요?`}</h2><p className="bg-sub" style={{ fontSize: 13, marginTop: 6 }}>{lang === "en" ? "Choose one of four fun contents." : "원하는 콘텐츠를 골라 재미로 즐겨보세요."}</p></div>
@@ -10578,7 +10578,7 @@ function MoreMenuPage({ lang, onNavigate }) {
 }
 
 // Pet콘텐츠 (전체 | Pet사주 | PetBTI | Pet정보) — 앱 하단탭에서만 진입하는 통합 콘텐츠 허브
-function PetContentPage({ subTab, onSubTabChange, allPets, featurePet, onSelectFeaturePet, onGoRegister, onUpdatePetBti }) {
+function PetContentPage({ subTab, onSubTabChange, allPets, featurePet, onSelectFeaturePet, onGoRegister, onUpdatePetBti, onGoTarot }) {
   const t = useT();
   return (
     <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 90px" }}>
@@ -10599,7 +10599,7 @@ function PetContentPage({ subTab, onSubTabChange, allPets, featurePet, onSelectF
       {subTab === "saju" && (
         <>
           <PetPicker pets={allPets} activeId={featurePet?.id} onSelect={onSelectFeaturePet} />
-          <SajuPage key={featurePet?.id || "empty"} pet={featurePet} onGoRegister={onGoRegister} />
+          <SajuPage key={featurePet?.id || "empty"} pet={featurePet} onGoRegister={onGoRegister} onGoTarot={onGoTarot} />
         </>
       )}
       {subTab === "petbti" && (
@@ -12579,7 +12579,7 @@ function AppInner({ lang, setLang }) {
       ) : effectiveView === "content" ? (
         <PetContentPage key={account?.id || "guest"} subTab={contentSubTab} onSubTabChange={setContentSubTab}
           allPets={allPets} featurePet={featurePet} onSelectFeaturePet={setFeaturePetId}
-          onUpdatePetBti={handleUpdatePetBti} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} />
+          onUpdatePetBti={handleUpdatePetBti} onGoTarot={() => goView("tarot")} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} />
       ) : effectiveView === "community" ? (
         <PetTalkErrorBoundary key={`pettalk-${account?.id||"guest"}`}><CommunityPage allPets={allPets} account={account} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} /></PetTalkErrorBoundary>
       ) : effectiveView === "my" ? (
@@ -12600,7 +12600,7 @@ function AppInner({ lang, setLang }) {
       ) : effectiveView === "saju" ? (
         <div className="legal-page-shell feature-page-shell feature-page-saju">
           <PetPicker pets={allPets} activeId={featurePet?.id} onSelect={setFeaturePetId} />
-          <SajuPage key={`${account?.id || "guest"}:${featurePet?.id || "empty"}`} pet={featurePet} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} />
+          <SajuPage key={`${account?.id || "guest"}:${featurePet?.id || "empty"}`} pet={featurePet} onGoTarot={() => goView("tarot")} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} />
         </div>
       ) : effectiveView === "tarot" ? (
         <div className="legal-page-shell feature-page-shell feature-page-tarot">
@@ -12610,7 +12610,7 @@ function AppInner({ lang, setLang }) {
       ) : effectiveView === "petbti" ? (
         <div className="legal-page-shell feature-page-shell feature-page-petbti">
           <PetPicker pets={allPets} activeId={featurePet?.id} onSelect={setFeaturePetId} />
-          <PetBtiPage key={`${account?.id || "guest"}:${featurePet?.id || "empty"}`} pet={featurePet} onUpdatePetBti={handleUpdatePetBti} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} />
+          <PetBtiPage key={`${account?.id || "guest"}:${featurePet?.id || "empty"}`} pet={featurePet} onUpdatePetBti={handleUpdatePetBti} onGoTarot={() => goView("tarot")} onGoRegister={() => { setMode("onboarding"); goView("pets"); }} />
         </div>
       ) : showOnboarding ? (
         <OnboardingPage

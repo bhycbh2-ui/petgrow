@@ -35,3 +35,17 @@ test('Saju Tarot mode renders the Tarot panel for the selected pet', async () =>
   const html=renderToString(React.createElement(module.exports.default,{pet:{id:'selected-pet',profile:{name:'꼬미',birthDate:'2026-07-25'}},__deps:{useLang:()=> 'ko',useT:()=>({}),hashString:()=>0,petPointKstDate:()=> '2026-10-15',PetTarotPanel:({pet})=>React.createElement('section',{'data-pet':pet.id},'Pet타로')} }));
   assert.match(html,/data-pet="selected-pet"/);assert.match(html,/Pet타로/);
 });
+
+test('opening Tarot from the Saju menu navigates to the Tarot page',async()=>{
+  const plugin=split();const context={error(message){throw new Error(message)}};
+  plugin.transform.call(context,transformPetTalkOracle(fs.readFileSync(new URL('../src/App.jsx',import.meta.url),'utf8')),'/app/src/App.jsx');
+  const loaded=await plugin.load.call(context,plugin.resolveId('virtual:petgrow-v6-saju'));
+  const compiled=await transform(loaded.code,{format:'cjs',platform:'node'});
+  const hooks={...React,useState:value=>[value,()=>{}],useMemo:fn=>fn()};
+  const module={exports:{}};const require=createRequire(import.meta.url);
+  new Function('require','module','exports',compiled.code)(name=>name==='react'?hooks:require(name),module,module.exports);
+  let navigated=0;
+  const tree=module.exports.default({pet:{id:'qa-pet',profile:{name:'꼬미'}},onGoTarot:()=>navigated++,__deps:{useLang:()=> 'ko',useT:()=>({}),hashString:()=>0,petPointKstDate:()=> '2026-10-15',FeaturePetHeader:()=>null}});
+  const find=node=>{if(!node||typeof node!=='object')return null;if(typeof node.type==='function')return find(node.type(node.props));if(node.type==='button'&&JSON.stringify(node.props.children).includes('오늘의 Pet타로'))return node;for(const child of React.Children.toArray(node.props?.children)){const found=find(child);if(found)return found}return null;};
+  const button=find(tree);assert.ok(button);button.props.onClick();assert.equal(navigated,1);
+});
