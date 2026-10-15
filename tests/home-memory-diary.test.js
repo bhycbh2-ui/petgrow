@@ -47,9 +47,9 @@ test("the memory diary stylesheet is loaded last", () => {
 });
 
 
-test("home recommends four guides with all articles linked and no record-use section", () => {
+test("home recommends three guides with all articles linked and no record-use section", () => {
   const section = app.slice(app.indexOf("function HomeCareGuides()"), app.indexOf("function HomePage("));
-  assert.match(section, /CARE_GUIDE_LINKS.slice\(0, 4\)/);
+  assert.match(section, /CARE_GUIDE_LINKS.slice\(0, 3\)/);
   assert.match(section, /href="\/pet-guide.html">전체 보기/);
   assert.doesNotMatch(section, /기록을 상담에 활용하는 방법/);
 });

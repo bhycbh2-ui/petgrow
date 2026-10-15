@@ -10433,7 +10433,8 @@ const CARE_GUIDE_LINKS = [
 function HomeCareGuides() {
   return <section className="dash-section petgrow-care-reading" aria-labelledby="care-reading-title">
     <div className="dash-section-head"><h2 id="care-reading-title">반려생활 가이드</h2><a href="/pet-guide.html">전체 보기 →</a></div>
-    <div className="petgrow-care-reading-grid">{CARE_GUIDE_LINKS.slice(0, 4).map(([slug, category, title, description]) => <article key={slug}>
+    <p>로그인 없이 읽는 관찰·기록 안내예요. 비교표와 작성 예시를 확인하고 <a href="/record-tools.html">생활기록 도구</a>로 우리 아이의 메모를 정리해보세요.</p>
+    <div className="petgrow-care-reading-grid">{CARE_GUIDE_LINKS.slice(0, 3).map(([slug, category, title, description]) => <article key={slug}>
       <small>{category}</small><h3><a href={`/guides/${slug}.html`}>{title}</a></h3><p>{description}</p>
     </article>)}</div>
     <div className="petgrow-care-reading-links"><a href="/editorial-policy.html">콘텐츠 편집 원칙</a> · <a href="/contact.html">오류 제보·문의</a></div>
