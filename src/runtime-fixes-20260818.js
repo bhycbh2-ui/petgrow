@@ -118,29 +118,27 @@ function copy(){ return PG_COPY[currentLang()] || PG_COPY.ko; }
 function setText(el,value){ if(el && typeof value==='string' && el.textContent!==value) el.textContent=value; }
 function buttonSpan(button){ return button?.querySelector('span:last-child') || null; }
 
+// Translate by the button's feature identity, never by its position.
+function translateNavButton(button,c){
+  const label=buttonSpan(button); if(!label)return;
+  const text=(label.textContent||'').trim();
+  const key=Object.keys(PG_COPY.ko).find(key=>typeof PG_COPY.ko[key]==='string' && Object.values(PG_COPY).some(copy=>copy[key]===text));
+  if(key && typeof c[key]==='string') setText(label,c[key]);
+}
 function applySidebar(){
   const nav=document.querySelector('.petgrow-sidebar-nav.petgrow-sidebar-nav-grouped');
-  if(!nav) return;
+  if(!nav)return;
   const c=copy();
   const section=[...nav.querySelectorAll(':scope > .sidebar-section-label')];
   setText(section[0],c.petLife); setText(section[1],c.content); setText(section[2],c.info);
-  const buttons=[...nav.querySelectorAll(':scope > button')];
-  // Current React order: home / pets / nearby / music / community / bti / saju / tarot / tips / news / about.
-  const labels=[c.home,c.pets,c.nearby,c.music,c.talk,c.bti,c.saju,c.tarot,c.tips,c.news,c.about];
-  buttons.forEach((b,i)=>{ if(labels[i]) setText(buttonSpan(b),labels[i]); });
+  nav.querySelectorAll(':scope > button').forEach(button=>translateNavButton(button,c));
 }
-
 function applyHamburger(){
-  const panel=document.querySelector('.ham-panel'); if(!panel) return;
+  const panel=document.querySelector('.ham-panel'); if(!panel)return;
   const c=copy();
-  const groups=[...panel.querySelectorAll('.ham-nav-group')];
   const sectionLabels=[c.petLife,c.content,c.info];
-  const groupLabels=[[c.pets,c.nearby,c.music],[c.talk,c.bti,c.saju,c.tarot],[c.tips,c.news,c.about]];
-  groups.forEach((g,gi)=>{
-    setText(g.querySelector('.ham-section-label'),sectionLabels[gi]);
-    [...g.querySelectorAll('.ham-nav-item')].forEach((b,bi)=>{ if(groupLabels[gi]?.[bi]) setText(buttonSpan(b),groupLabels[gi][bi]); });
-  });
-  const home=panel.querySelector('.ham-nav > .ham-nav-item'); if(home) setText(buttonSpan(home),c.home);
+  panel.querySelectorAll('.ham-nav-group').forEach((group,index)=>setText(group.querySelector('.ham-section-label'),sectionLabels[index]));
+  panel.querySelectorAll('.ham-nav-item').forEach(button=>translateNavButton(button,c));
 }
 
 function inferHeroKey(hero){
