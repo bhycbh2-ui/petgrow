@@ -12661,8 +12661,6 @@ function AppInner({ lang, setLang }) {
             <button type="button" onClick={()=>goView("support")}>{lang==="en"?"Support":"고객지원"}</button>
           </nav>
           <div className="petgrow-footer-meta">
-            <span>아우리녹</span>
-            <span>사업자등록번호 297-32-01792</span>
             <a href="mailto:help.petgrow@gmail.com">help.petgrow@gmail.com</a>
           </div>
           <div className="petgrow-footer-copy">© PetGrow. All rights reserved.</div>

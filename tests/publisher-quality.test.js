@@ -71,8 +71,8 @@ test("official channel list includes the Naver Clip profile",()=>{
   assert.match(app,/\.social-links\{display:flex; flex-wrap:wrap;/);
   assert.match(app,/\.petgrow-footer \.social-links\{flex-wrap:nowrap;/);
   assert.match(app,/<footer className="petgrow-footer">[\s\S]*?<SocialLinks \/>/);
-  assert.doesNotMatch(app,/대표자 정재현/);
-  assert.match(app,/<div className="petgrow-footer-meta">[\s\S]*?아우리녹[\s\S]*?사업자등록번호 297-32-01792/);
+  assert.doesNotMatch(app,/대표자 정재현|아우리녹|297-32-01792/);
+  assert.doesNotMatch(read("public/about.html"),/아우리녹|297-32-01792/);
   assert.match(app,/href="mailto:help\.petgrow@gmail\.com"/);
 });
 
