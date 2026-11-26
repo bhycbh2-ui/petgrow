@@ -2,6 +2,7 @@ import OracleResultDialog from "./OracleResultDialog.jsx";
 import { loadPetState, petViewStatus } from "./pet-state-loader.js";
 import PetGrowIntroVideo from "./PetGrowIntroVideo.jsx";
 import DesktopNavigation from "./DesktopNavigation.jsx";
+import "./discovery-navigation.css";
 import { createSessionChecker } from "./session-checker.js";
 import { AUTH_SIGNED_OUT_KEY, readCachedAccount, cacheAccount, kakaoLoginPath, clearAccountBrowserData } from "./auth-browser.js";
 import DiaryNotebook from "./DiaryNotebook.jsx";
@@ -2349,7 +2350,7 @@ function HamburgerMenu({ open, onClose, view, onNavigate, onOpenAccount, account
   const t=useT(),lang=useLang();
   useEffect(()=>{if(!open)return;const prev=document.body.style.overflow;document.body.style.overflow="hidden";return()=>{document.body.style.overflow=prev}},[open]);
   const groups=[
-    {label:lang==="en"?"PET LIFE":"반려생활",items:[{key:"pets",label:t.myPetsNav,Icon:PawIcon},{key:"nearby",label:t.nearbyNav,Icon:MapPinIcon},{key:"music",label:lang==="en"?"Pet Music":"Pet음악",Icon:MusicIcon}]},
+    {label:lang==="en"?"PET LIFE":"반려생활",items:[{key:"pets",label:t.myPetsNav,Icon:PawIcon},{key:"hospital",label:lang==="en"?"Vet finder":"동물병원 찾기",Icon:MapPinIcon},{key:"nearby",label:t.nearbyNav,Icon:MapPinIcon},{key:"music",label:lang==="en"?"Pet Music":"Pet음악",Icon:MusicIcon}]},
     {label:lang==="en"?"COMMUNITY · CONTENT":"커뮤니티 · 콘텐츠",items:[{key:"community",label:t.communityNav,Icon:TalkIcon},{key:"petbti",label:t.petBtiNav,Icon:PetBtiIcon},{key:"saju",label:t.sajuNav,Icon:SajuIcon},{key:"tarot",label:lang==="en"?"Pet Tarot":"Pet타로",Icon:SajuIcon}]},
     {label:lang==="en"?"INFO · SUPPORT":"정보 · 지원",items:[{key:"tips",label:t.tipsTitle,Icon:LightbulbIcon},{key:"news",label:lang==="en"?"Pet News":"Pet뉴스",Icon:InfoIcon},{key:"about",label:t.aboutNav,Icon:InfoIcon}]}
   ];
@@ -10059,7 +10060,7 @@ function HomeServiceCard({ Illust, bg, title, desc, onClick }) {
 }
 
 
-function NearbyPetPage(){
+function NearbyPetPage({ hospitalOnly = false }){
   const t=useT();
   const mapRef=useRef(null);
   const mapObj=useRef(null);
@@ -10068,7 +10069,8 @@ function NearbyPetPage(){
   const [items,setItems]=useState([]);
   const [page,setPage]=useState(1);
   const pageSize=10;
-  const [cat,setCat]=useState("all");
+  const [cat,setCat]=useState(hospitalOnly ? "hospital" : "all");
+  const [hospitalName, setHospitalName] = useState("");
   const [area,setArea]=useState("");
   const [searchMode,setSearchMode]=useState("address");
   const [loading,setLoading]=useState(false);
@@ -10089,7 +10091,7 @@ function NearbyPetPage(){
   const locationRequested=useRef(false);
   const nearbyCache=useRef(new Map());
   const requestSeq=useRef(0);
-  const [followMyLocation,setFollowMyLocation]=useState(true);
+  const [followMyLocation,setFollowMyLocation]=useState(!hospitalOnly);
   const locationWatchId=useRef(null);
 
   const loadReviews=async(place)=>{
@@ -10305,7 +10307,7 @@ function NearbyPetPage(){
     },()=>{}, {enableHighAccuracy:true,maximumAge:15000,timeout:10000});
     return()=>{if(locationWatchId.current!=null){navigator.geolocation.clearWatch(locationWatchId.current);locationWatchId.current=null;}};
   },[followMyLocation]);
-    useEffect(()=>{ if(!locationRequested.current){locationRequested.current=true;locate();} },[]);
+    useEffect(()=>{ if(!hospitalOnly&&!locationRequested.current){locationRequested.current=true;locate();} },[]);
   useEffect(()=>{
     if(searchMode==="address"&&area.trim())search(cat,null,area,{background:false,mode:"address"});
     else if(searchMode==="current"&&pos)search(cat,pos,"",{background:false,mode:"current",userCoords:pos});
@@ -10325,24 +10327,29 @@ function NearbyPetPage(){
   const saveEditReview=async()=>{const text=editingText.trim();if(!editingReviewId||!text)return window.alert("후기 내용을 입력해 주세요.");setReviewBusy(true);try{const r=await fetch('/api/nearby-reviews?action=update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reviewId:editingReviewId,rating:editingRating,content:text})});const j=await r.json();if(!r.ok)throw new Error(j.error||'후기를 수정하지 못했어요.');cancelEditReview();await loadReviews(selected);}catch(e){window.alert(e.message)}finally{setReviewBusy(false)}};
   const deleteReview=async(rvw)=>{if(!window.confirm("이 후기를 삭제할까요? 삭제한 후기는 복구할 수 없어요."))return;setReviewBusy(true);try{const r=await fetch('/api/nearby-reviews?action=delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reviewId:rvw.id})});const j=await r.json();if(!r.ok)throw new Error(j.error||'후기를 삭제하지 못했어요.');if(editingReviewId===rvw.id)cancelEditReview();await loadReviews(selected);}catch(e){window.alert(e.message)}finally{setReviewBusy(false)}};
   const reportReview=async(rvw)=>{const reason=window.prompt("신고 사유를 간단히 입력해주세요. (욕설·광고·개인정보·허위정보 등)","부적절한 내용");if(reason===null)return;try{const r=await fetch('/api/nearby-reviews?action=report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reviewId:rvw.id,reason:'other',detail:reason})});const j=await r.json();if(!r.ok)throw new Error(j.error||'신고하지 못했어요.');window.alert(j.already?"이미 신고한 후기예요.":"신고가 접수됐어요. 운영진이 확인할게요.");}catch(e){window.alert(e.message)}};
-  const totalPages=Math.max(1,Math.ceil(items.length/pageSize));
+  const nameFilter = hospitalName.toLocaleLowerCase().replace(/\s+/g, "");
+  const matchingItems = hospitalOnly && nameFilter
+    ? items.filter(place => String(place.name || "").toLocaleLowerCase().replace(/\s+/g, "").includes(nameFilter))
+    : items;
+  const totalPages=Math.max(1,Math.ceil(matchingItems.length/pageSize));
   const safePage=Math.min(page,totalPages);
-  const pageItems=items.slice((safePage-1)*pageSize,safePage*pageSize);
+  const pageItems=matchingItems.slice((safePage-1)*pageSize,safePage*pageSize);
 
-  return <div className="nearby-page">
-    <section className="nearby-hero bg-card">
+  return <div className={`nearby-page ${hospitalOnly ? "pg-hospital-finder" : ""}`}>
+    {hospitalOnly ? <header className="pg-hospital-intro"><h1>동물병원 찾기</h1><p>주소나 현재 위치를 기준으로 가까운 동물병원을 찾아보세요.</p></header> : <section className="nearby-hero bg-card">
       <div><span className="nearby-eyebrow">PETGROW LOCAL</span><h1>{t.nearbyTitle}</h1><p>{t.nearbySubtitle}</p><small className="nearby-search-help">📍 주소로 검색하거나 현재 위치 주변을 바로 검색할 수 있어요. 위치를 허용하면 현재 위치 주변 검색과 지도 표시, 업체까지의 거리 확인도 할 수 있어요.</small></div>
-    </section>
-    <div className="nearby-search-row"><input className="bg-input" value={area} onChange={e=>setArea(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"){if(area.trim())search(cat,null,area,{mode:"address"});else setMsg("검색할 주소를 입력해 주세요.");}}} placeholder="구·동·도로명·지번 검색 (예: 강남구, 역삼동, 역삼동 695-26)"/><button className="bg-btn nearby-address-search-btn" onClick={()=>area.trim()?search(cat,null,area,{mode:"address"}):setMsg("검색할 주소를 입력해 주세요.")}>{loading?"검색 중…":"주소 검색"}</button><button type="button" className="nearby-current-search-btn" onClick={searchCurrentLocation} disabled={loading}><MapPinIcon/>{loading&&searchMode==="current"?"찾는 중…":"현재 위치로 검색"}</button></div>
-    <ResponsiveCategoryMenu className="nearby-responsive-categories" primaryCount={3} items={cats.map(([id,label])=>({id,label}))} activeId={cat} onSelect={setCat} lang={"ko"} />
+    </section>}
+    <div className="nearby-search-row"><input className="bg-input" aria-label="지역 또는 주소" value={area} onChange={e=>setArea(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"){if(area.trim())search(cat,null,area,{mode:"address"});else setMsg("검색할 주소를 입력해 주세요.");}}} placeholder="구·동·도로명·지번 검색 (예: 강남구, 역삼동, 역삼동 695-26)"/><button className="bg-btn nearby-address-search-btn" onClick={()=>area.trim()?search(cat,null,area,{mode:"address"}):setMsg("검색할 주소를 입력해 주세요.")}>{loading?"검색 중…":"주소 검색"}</button><button type="button" className="nearby-current-search-btn" onClick={searchCurrentLocation} disabled={loading}><MapPinIcon/>{loading&&searchMode==="current"?"찾는 중…":"현재 위치로 검색"}</button></div>
+    {hospitalOnly ? <label className="pg-hospital-name">병원 이름으로 결과 좁히기<input className="bg-input" type="search" value={hospitalName} onChange={event => { setHospitalName(event.target.value); setPage(1); setSelected(null); }} placeholder="병원 이름 입력" /></label> : <ResponsiveCategoryMenu className="nearby-responsive-categories" primaryCount={3} items={cats.map(([id,label])=>({id,label}))} activeId={cat} onSelect={setCat} lang={"ko"} />}
     <section className="nearby-map-card bg-card modern-nearby-map">
       <div className="nearby-map-head"><div><b>{searchMode==="current"?"현재 위치 주변":"검색한 주소 주변"}</b><small className="nearby-map-description">{pos?"빨간 점은 실시간 내 위치예요. 장소를 누르면 상세 정보를 확인할 수 있어요.":"위치 권한을 허용하면 지도에 내 위치와 장소까지의 거리를 함께 표시해요."}</small></div>{pos&&<span className="nearby-live-pill">LIVE</span>}</div>
-      <div className="nearby-map-shell"><div ref={mapRef} className="nearby-map"><div className="nearby-map-fallback"><MapPinIcon/><b>지도를 불러오는 중이에요</b><span>가까운 반려동물 장소를 간결하게 표시해요.</span></div></div><div className="nearby-map-floating-controls"><button type="button" className="nearby-map-icon-btn" onClick={locate} aria-label={pos?"현재 위치 새로고침":"현재 위치 표시"} title={pos?"현재 위치 새로고침":"현재 위치 표시"}><MapPinIcon/></button><button type="button" className={`nearby-map-icon-btn follow ${followMyLocation?'active':''}`} onClick={()=>setFollowMyLocation(v=>!v)} aria-label="실시간 위치 따라가기" title="실시간 위치 따라가기">◎</button></div></div>
+      <div className="nearby-map-shell"><div ref={mapRef} className="nearby-map"><div className="nearby-map-fallback"><MapPinIcon/><b>{hospitalOnly ? "검색 결과를 지도에서 확인할 수 있어요" : "지도를 불러오는 중이에요"}</b><span>{hospitalOnly ? "먼저 주소나 현재 위치로 검색해 주세요." : "가까운 반려동물 장소를 간결하게 표시해요."}</span></div></div><div className="nearby-map-floating-controls"><button type="button" className="nearby-map-icon-btn" onClick={locate} aria-label={pos?"현재 위치 새로고침":"현재 위치 표시"} title={pos?"현재 위치 새로고침":"현재 위치 표시"}><MapPinIcon/></button><button type="button" className={`nearby-map-icon-btn follow ${followMyLocation?'active':''}`} onClick={()=>setFollowMyLocation(v=>!v)} aria-label="실시간 위치 따라가기" title="실시간 위치 따라가기">◎</button></div></div>
     </section>
     {msg&&<div className="nearby-message">{msg}</div>}
-    <div className="nearby-results-head"><div><h2>{searchMode==="current"?"현재 위치 주변":"검색 주소 주변"}</h2><span>{items.length}곳</span></div><small className="nearby-results-detail">{searchMode==="current"?`내 위치에서 가까운 순 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`}`:pos?`내 위치에서 가까운 순 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`}`:`검색 주소 기준 가까운 순 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`}`}</small></div>
+    <div className="nearby-results-head"><div><h2>{hospitalOnly ? "주변 동물병원" : searchMode==="current"?"현재 위치 주변":"검색 주소 주변"}</h2><span>{matchingItems.length}곳</span></div><small className="nearby-results-detail">{searchMode==="current"?`내 위치에서 가까운 순 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`}`:pos?`내 위치에서 가까운 순 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`}`:`검색 주소 기준 가까운 순 · 검색범위 ${searchRadius < 1000 ? `${searchRadius}m` : `${searchRadius/1000}km`}`}</small></div>
     <div className="nearby-list">
       {loading&&!items.length?<div className="bg-card nearby-empty">주변 Pet 정보를 찾는 중…</div>:
+      hospitalOnly && !matchingItems.length ? <div className="bg-card nearby-empty">{items.length ? "이름이 일치하는 병원이 없어요." : "주소를 입력하거나 현재 위치로 검색해 주세요."}</div> :
       pageItems.map((p,i)=><article id={`nearby-place-${p.id}`} key={p.id} className={`bg-card nearby-place ${selected?.id===p.id?"selected":""}`} onClick={()=>{setSelected(p);window.setTimeout(()=>loadMap({lat:Number(p.lat),lng:Number(p.lng)},[p],null,false).catch(()=>{}),0);}}>
         <div className="nearby-rank">{(safePage-1)*pageSize+i+1}</div>
         <div className="nearby-place-main">
@@ -10354,7 +10361,7 @@ function NearbyPetPage(){
         <div className="nearby-place-actions"><div className="nearby-place-action-buttons">{p.phone&&<a href={`tel:${p.phone}`} onClick={e=>e.stopPropagation()}>전화</a>}{p.url&&<a href={p.url} target="_blank" rel="noreferrer" onClick={e=>e.stopPropagation()}>카카오맵</a>}</div><strong className="nearby-desktop-distance">{searchMode==="current"?`내 위치에서 ${fmt(p.userDistance ?? p.distance)}`:pos?`내 위치에서 ${fmt(p.userDistance ?? p.distance)}`:`주소에서 ${fmt(p.distance)}`}</strong></div>
       </article>)}
     </div>
-    {items.length>pageSize&&<nav className="nearby-pagination" aria-label="내 주변 Pet 페이지">
+    {matchingItems.length>pageSize&&<nav className="nearby-pagination" aria-label="내 주변 Pet 페이지">
       <button type="button" disabled={safePage<=1} onClick={()=>{setPage(p=>Math.max(1,p-1));window.scrollTo({top:0,behavior:"smooth"})}}>이전</button>
       {Array.from({length:totalPages},(_,i)=>i+1).slice(Math.max(0,safePage-3),Math.max(0,safePage-3)+5).map(n=><button type="button" key={n} className={n===safePage?"active":""} onClick={()=>setPage(n)}>{n}</button>)}
       <button type="button" disabled={safePage>=totalPages} onClick={()=>{setPage(p=>Math.min(totalPages,p+1));window.scrollTo({top:0,behavior:"smooth"})}}>다음</button>
@@ -10502,6 +10509,20 @@ function HomePage({ account, pets = [], petStatus = "ready", onRetryPets, lang, 
         <button type="button" className="dash-profile-dot" onClick={() => onGoView(account ? "my" : "pets")} aria-label="마이페이지">{"MY"}</button>
       </section>
 
+      <nav className="pg-home-destinations" aria-label={lang === "en" ? "Explore PetGrow" : "PetGrow 주요 메뉴"}>
+        {[
+          ["hospital", lang === "en" ? "Vet finder" : "동물병원", MapPinIcon],
+          ["tips", lang === "en" ? "Pet care" : "Pet정보", LightbulbIcon],
+          ["community", lang === "en" ? "Pet Talk" : "Pet톡", TalkIcon],
+          ["nearby", lang === "en" ? "Pet places" : "주변 시설", SearchIcon],
+          ["pets", lang === "en" ? "My pet" : "우리 아이", PawIcon],
+          ["guide", lang === "en" ? "Guide" : "생활 가이드", InfoIcon],
+        ].map(([key, label, Icon]) => (
+          <button key={key} type="button" onClick={() => onGoView(key)}>
+            <span aria-hidden="true"><Icon style={{ width: 23, height: 23 }} /></span>{label}
+          </button>
+        ))}
+      </nav>
       <MobileContentHighlights lang={lang} onNavigate={onGoView} />
 
       {petStatus !== "ready" ? <PetDataNotice status={petStatus} lang={lang} onRetry={onRetryPets} /> : <section className={`dash-pet-spotlight ${pet ? "has-pet" : "empty"}`} onClick={onGoPets}>
@@ -10546,9 +10567,9 @@ function AppBottomNav({ active, onNavigate }) {
   const t = useT();
   const items = [
     { key: "home", label: t.hamNavHome, Icon: HomeIcon },
+    { key: "hospital", label: useLang() === "en" ? "Vets" : "동물병원", Icon: MapPinIcon },
     { key: "pets", label: t.appTabPetInfo, Icon: PawIcon },
     { key: "community", label: "Pet톡", Icon: TalkIcon },
-    { key: "tips", label: "Pet정보", Icon: LightbulbIcon },
     { key: "my", label: "MY", Icon: UserIcon },
   ];
   return (
@@ -11580,7 +11601,7 @@ function AdminReportsPage({onBack}){
      <div className="admin-stat-grid">{[["미처리 신고",c.openReports||0],["답변대기 문의",c.waitingInquiries||0],["이용제한 중",c.restricted||0],["오늘 방문",c.todaySessions||0],["현재 접속 추정",c.onlineSessions5m||0],["7일 활성회원",c.active7d||0],["7일 신규회원",c.new7d||0],["오늘 Pet톡 글",c.postsToday||0]].map(([a,b])=><div className="admin-stat-card" key={a}><strong>{b}</strong><small>{a}</small></div>)}</div>
      <div className="bg-card admin-menu-analytics">
        <div className="admin-menu-analytics-head"><div><h3>메뉴 이용 통계</h3><small>페이지 진입 기준 · 오늘 / 7일 / 30일 이용량을 확인해요.</small></div><span className="bg-chip active admin-menu-period-chip">30일</span></div>
-       {(()=>{const labels={home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"마이페이지",support:"고객지원",admin:"관리자"};const rows=(stats?.menuUsage||[]).filter(x=>labels[x.dimension]);const max=Math.max(1,...rows.map(x=>Number(x.d30)||0));return rows.length?<><div className="admin-menu-top">🏆 가장 자주 이용 <span>{labels[rows[0]?.dimension]||rows[0]?.dimension}</span></div>{rows.map((x,i)=><div className="admin-menu-row" key={x.dimension}><div className="admin-menu-name">{i<3?["🥇 ","🥈 ","🥉 "][i]:""}{labels[x.dimension]||x.dimension}</div><div className="admin-menu-bar"><i style={{width:`${Math.max(3,Math.round((Number(x.d30)||0)/max*100))}%`}}/></div><div className="admin-menu-value"><b>{Number(x.d30)||0}회</b><br/><small>7일 {Number(x.d7)||0} · 오늘 {Number(x.today)||0}</small></div></div>)}</>:<div className="bg-sub" style={{padding:"10px 0"}}>아직 메뉴 이용 데이터가 충분하지 않아요. 배포 후 방문부터 자동 집계됩니다.</div>})()}
+       {(()=>{const labels={home:"홈",about:"소개",pets:"우리 아이",nearby:"내 주변 Pet",hospital:"동물병원 찾기",community:"Pet톡",saju:"Pet사주",tarot:"Pet타로",petbti:"PetBTI",music:"Pet음악",tips:"Pet정보",my:"마이페이지",support:"고객지원",admin:"관리자"};const rows=(stats?.menuUsage||[]).filter(x=>labels[x.dimension]);const max=Math.max(1,...rows.map(x=>Number(x.d30)||0));return rows.length?<><div className="admin-menu-top">🏆 가장 자주 이용 <span>{labels[rows[0]?.dimension]||rows[0]?.dimension}</span></div>{rows.map((x,i)=><div className="admin-menu-row" key={x.dimension}><div className="admin-menu-name">{i<3?["🥇 ","🥈 ","🥉 "][i]:""}{labels[x.dimension]||x.dimension}</div><div className="admin-menu-bar"><i style={{width:`${Math.max(3,Math.round((Number(x.d30)||0)/max*100))}%`}}/></div><div className="admin-menu-value"><b>{Number(x.d30)||0}회</b><br/><small>7일 {Number(x.d7)||0} · 오늘 {Number(x.today)||0}</small></div></div>)}</>:<div className="bg-sub" style={{padding:"10px 0"}}>아직 메뉴 이용 데이터가 충분하지 않아요. 배포 후 방문부터 자동 집계됩니다.</div>})()}
      </div>
      <div className="bg-card admin-menu-analytics">
        <div className="admin-menu-analytics-head"><div><h3>Pet사주 · Pet타로 이용 현황</h3><small>주제별 결과 생성 및 저장 이용량 · 오늘 / 7일 / 30일</small></div></div>
@@ -11859,7 +11880,7 @@ function AppInner({ lang, setLang }) {
   const [deleteTarget, setDeleteTarget] = useState(null); // {id, name} | null
 
   // 'about' | 'pets' | 'saju' | 'petbti' | 'tips' | 'guide' | 'privacy' | 'terms'
-  const viewFromUrl=()=>{try{const value=new URLSearchParams(window.location.search).get("view")||"home";return ["home","about","pets","diary","nearby","community","saju","tarot","petbti","music","tips","news","guide","my","support","ad-inquiry"].includes(value)?value:"home"}catch{return "home"}};
+  const viewFromUrl=()=>{try{const value=new URLSearchParams(window.location.search).get("view")||"home";return ["home","about","pets","diary","nearby","hospital","community","saju","tarot","petbti","music","tips","news","guide","my","support","ad-inquiry"].includes(value)?value:"home"}catch{return "home"}};
   const [view, setView] = useState(viewFromUrl);
   const GATED_VIEWS = ["pets", "diary", "saju", "petbti", "content", "my", "admin"];
 
@@ -12574,7 +12595,9 @@ function AppInner({ lang, setLang }) {
       ) : effectiveView === "guide" ? (
         <InfoGuidePage />
       ) : effectiveView === "nearby" ? (
-        <NearbyPetPage />
+        <NearbyPetPage key="nearby" />
+      ) : effectiveView === "hospital" ? (
+        <NearbyPetPage key="hospital" hospitalOnly />
       ) : effectiveView === "music" ? (
         <PetMusicPage account={account} lang={lang} />
       ) : effectiveView === "content" ? (
@@ -12669,7 +12692,7 @@ function AppInner({ lang, setLang }) {
 
       {effectiveView !== "admin" && (
         <AppBottomNav
-          active={["home","pets","community","tips","my"].includes(view) ? view : ""}
+          active={["home","hospital","pets","community","my"].includes(view) ? view : ""}
           onNavigate={(key) => goView(key)}
         />
       )}
