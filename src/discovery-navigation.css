@@ -1,0 +1,98 @@
+.bboggl-root .pg-home-destinations {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 24px;
+}
+
+.bboggl-root .pg-home-destinations button {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 8px;
+  min-height: 100px;
+  padding: 10px 4px;
+  border: 1px solid #dce8df;
+  border-radius: 18px;
+  background: #fff;
+  color: #234b38;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.pg-home-destinations button > span {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 14px;
+  background: #eef5ee;
+}
+
+.bboggl-root .pg-home-destinations button:first-child {
+  background: #e5f2e8;
+  border-color: #bddbc5;
+}
+
+.bboggl-root .pg-home-destinations button:hover {
+  border-color: #799e85;
+}
+
+.pg-home-destinations button:focus-visible,
+.pg-hospital-finder input:focus-visible {
+  outline: 2px solid #307651;
+  outline-offset: 2px;
+}
+
+.bboggl-root .nearby-page.pg-hospital-finder {
+  width: 100%;
+  max-width: 1120px;
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+
+.pg-hospital-intro {
+  margin-bottom: 14px;
+  padding: clamp(20px, 4vw, 36px);
+  border: 1px solid #d5e7db;
+  border-radius: 22px;
+  background: linear-gradient(125deg, #e3f1e7, #f5f9f5);
+  color: #193b2b;
+}
+
+.pg-hospital-intro h1 { margin: 0 0 8px; }
+.pg-hospital-intro p { margin: 0; line-height: 1.6; }
+
+.pg-hospital-name {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 16px;
+  color: #254737;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.pg-hospital-name input { width: 100%; box-sizing: border-box; }
+
+@media (min-width: 900px) {
+  .bboggl-root .pg-hospital-finder .nearby-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .pg-hospital-finder .nearby-empty { grid-column: 1 / -1; }
+}
+
+@media (max-width: 899px) {
+  .bboggl-root .pg-home-destinations {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .bboggl-root .pg-home-destinations button { min-height: 78px; }
+  .bboggl-root .pg-hospital-finder .nearby-search-row { display: grid !important; }
+}
